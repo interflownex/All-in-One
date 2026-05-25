@@ -2,8 +2,8 @@
   "platform": "All-in-One",
   "version": "0.1.0",
   "apps": [
-    {"slug": "all-in-one-user", "scope": "Cadastro, identidade, wallet, marketplace, delivery, mobility, saude e historico."},
-    {"slug": "all-in-one-business", "scope": "Empresas, filiais, RBAC, ERP, WMS, TMS, CRM, financeiro e faturamento."},
+    {"slug": "all-in-one-user", "scope": "Cadastro, identidade, wallet, marketplace, delivery, mobility, saude, Jobs com curriculo e busca de vagas, e historico."},
+    {"slug": "all-in-one-business", "scope": "Empresas, filiais, RBAC, recrutamento Jobs autorizado, ERP, WMS, TMS, CRM, financeiro e faturamento."},
     {"slug": "all-in-one-riders", "scope": "Candidatura, veiculos, entregas, corridas, ganhos e ocorrencias."},
     {"slug": "all-in-one-services", "scope": "Prestadores, visitas, orcamentos, contratos, escrow e avaliacoes."},
     {"slug": "all-in-one-health", "scope": "Pacientes, profissionais, agenda, prontuario e telemedicina."},
@@ -99,6 +99,15 @@
       "events": ["mobility.ride.requested", "mobility.ride.accepted", "mobility.ride.completed", "mobility.ticket.purchased", "mobility.ticket.used"],
       "monetization": "Comissao de 15 a 25 por cento, cancelamento, tickets e passes.",
       "branch": "module/mobility"
+    },
+    {
+      "slug": "jobs",
+      "title": "Jobs",
+      "description": "Curriculos do usuario final, importacao rastreavel da CTPS Digital PDF, experiencias autodeclaradas, vagas e candidaturas com acesso Business controlado.",
+      "entities": ["resumes", "employment_records", "resume_documents", "job_postings", "applications", "resume_access_logs"],
+      "events": ["jobs.resume.created", "jobs.resume.ctps_imported", "jobs.employment.self_declared", "jobs.job_posting.created", "jobs.application.created", "jobs.resume.viewed"],
+      "monetization": "Plano Business de recrutamento e publicacao de vagas com acesso auditado a candidatos.",
+      "branch": "module/jobs"
     },
     {
       "slug": "erp",

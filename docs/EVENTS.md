@@ -25,6 +25,10 @@ fica preservada de modo imutavel em `audit.event_deliveries`.
   `services.contract.completed`, `mobility.ride.requested`,
   `mobility.ride.accepted`, `mobility.ride.completed`,
   `mobility.ticket.purchased`, `mobility.ticket.used`.
+- Jobs: `jobs.resume.created`, `jobs.resume.ctps_imported`,
+  `jobs.employment.ctps_imported`, `jobs.employment.self_declared`,
+  `jobs.job_posting.created`, `jobs.job_posting.published`,
+  `jobs.application.created`, `jobs.resume.viewed`.
 - Finance e seguros: `payment.escrow.created`, `payment.escrow.released`,
   `payment.refunded`, `payment.split.executed`, `insurance.quote.created`,
   `insurance.policy.created`, `insurance.claim.created`.

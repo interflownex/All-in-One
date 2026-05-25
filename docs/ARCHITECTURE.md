@@ -8,6 +8,8 @@
 4. Cada modulo publica contrato HTTP e eventos; nenhum acesso cruza bancos sem
    API ou evento versionado.
 5. Empresas e riders nao ficam publicos antes de aprovacao manual.
+6. Curriculos sao privados por padrao; leitura por recrutador exige Business
+   ativa, escopo Jobs e evento de acesso auditavel.
 
 ## Visao de componentes
 
@@ -15,10 +17,13 @@
 flowchart LR
   U["Apps: User, Business, Riders, Services, Health, Mobility"] --> G["API Hub / OAuth2 / Rate Limit"]
   G --> I["Identity + Permissions"]
-  G --> D["Dominio: Marketplace, Delivery, Services, Mobility"]
+  G --> D["Dominio: Marketplace, Delivery, Services, Mobility, Jobs"]
   G --> E["Enterprise: ERP, WMS, TMS, CRM, BPM"]
   G --> V["Verticals: Health, Vision, Legal, Property"]
   D --> F["Finance / Escrow / Billing"]
+  D --> J["Jobs: Curriculo, CTPS PDF, Vagas"]
+  J --> P
+  J --> Q
   E --> F
   V --> F
   I --> P[("PostgreSQL")]

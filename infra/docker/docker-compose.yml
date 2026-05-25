@@ -10,6 +10,10 @@ x-module-common: &module-common
     rabbitmq:
       condition: service_healthy
   networks: [platform]
+  environment:
+    ALL_IN_ONE_STORAGE_DIR: /data
+  volumes:
+    - domain-data:/data
 
 services:
   postgres:
@@ -157,9 +161,17 @@ services:
       dockerfile: modules/health/Dockerfile
     ports: ["8111:8000"]
 
+  jobs:
+    <<: *module-common
+    build:
+      context: ../..
+      dockerfile: modules/jobs/Dockerfile
+    ports: ["8112:8000"]
+
 volumes:
   postgres-data:
   mongodb-data:
+  domain-data:
 
 networks:
   platform:

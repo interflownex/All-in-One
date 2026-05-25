@@ -18,6 +18,15 @@
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
+- `GET /catalog`
+- `POST /resources/{resource_type}`
+- `GET /resources/{resource_type}`
+- `GET /resources/{resource_type}/{resource_id}`
+- `PATCH /resources/{resource_type}/{resource_id}`
+- `DELETE /resources/{resource_type}/{resource_id}`
+- `POST /resources/{resource_type}/{resource_id}/actions/{action}`
+- `GET /audit/events`
+- `GET /events/outbox`
 - `POST /create`
 - `GET /{id}`
 - `PATCH /{id}`
@@ -26,6 +35,7 @@
 - `POST /approve`
 - `POST /reject`
 - `POST /audit`
+
 
         ## Eventos
 

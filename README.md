@@ -1,17 +1,19 @@
 # All-in-One
 
 SuperApp modular com identidade unica para consumidores, empresas, riders,
-prestadores, mobilidade, saude e operacoes empresariais. Este repositorio
-inicializa o baseline arquitetural e executavel definido no documento mestre:
+prestadores, mobilidade, Jobs, saude e operacoes empresariais. Este repositorio
+implementa a plataforma arquitetural e executavel definida no documento mestre:
 microservicos FastAPI, contratos OpenAPI, persistencia PostgreSQL/MongoDB,
 eventos, controles de seguranca, infraestrutura e gates de CI.
 
 ## Baseline implementado
 
 - Seis superficies de aplicacao em `apps/`, todas dependentes do All-in-One ID.
-- Vinte e quatro microservicos em `modules/`, cada um com runtime funcional,
-  contrato, OpenAPI, Dockerfile, documentacao de dominio e quatro testes.
-- PostgreSQL com 29 schemas, identidade, business/KYB, RBAC/ABAC, wallet,
+- Vinte e cinco microservicos em `modules/`, cada um com runtime funcional,
+  contrato, OpenAPI, Dockerfile, documentacao de dominio e testes.
+- Runtime compartilhado com persistencia contratual SQLite, autorizacao,
+  workflows, idempotencia, auditoria imutavel e outbox de eventos.
+- PostgreSQL com 30 schemas, identidade, business/KYB, Jobs, RBAC/ABAC, wallet,
   ledger, escrow, operacoes e verticais; ledger/auditoria sao append-only.
 - MongoDB validado para memoria IA consentida, social, metricas de influencer
   e telemetria.
@@ -19,6 +21,19 @@ eventos, controles de seguranca, infraestrutura e gates de CI.
   limit; Docker Compose e manifests Kubernetes.
 - CI para scaffold, contratos, testes, banco, OpenAPI, seguranca e automacao
   controlada de branches.
+
+## Jobs E CTPS Digital
+
+O usuario final pode manter curriculo, registrar experiencias informais,
+buscar vagas e candidatar-se. O modulo `jobs` importa um PDF da CTPS Digital,
+preserva o hash da evidencia e exibe itens extraidos como
+`validated_by_document_import`; dados digitados pelo usuario sao exibidos
+como `self_declared_unverified`. A importacao nao declara verificacao oficial
+externa sem integracao autorizada.
+
+Somente recrutadores vinculados a empresa ativa no All-in-One Business, com
+escopo Jobs, acessam a base visivel de curriculos. Cada consulta individual
+gera log append-only. Veja [docs/JOBS_CTSP_DIGITAL.md](docs/JOBS_CTSP_DIGITAL.md).
 
 ## Identidade e integridade
 
@@ -59,7 +74,7 @@ uvicorn main:app --port 8000
 
 ## Estado
 
-O baseline torna todos os modulos inicializaveis e testaveis. Integracoes
+O motor de dominio torna todos os modulos inicializaveis e testaveis. Integracoes
 reguladas ou externas (Pix/cartoes, fiscal oficial, biometria, assinatura,
 OCR, IA produtiva, hospitais, GPS de concessionarias) permanecem bloqueadas
 para producao ate credenciais, homologacao, DPIA/LGPD e testes E2E

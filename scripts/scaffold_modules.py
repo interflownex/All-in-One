@@ -9,7 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from textwrap import dedent
+from textwrap import dedent, indent
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +25,15 @@ ENDPOINTS = [
     "GET /version",
     "GET /status",
     "GET /metrics",
+    "GET /catalog",
+    "POST /resources/{resource_type}",
+    "GET /resources/{resource_type}",
+    "GET /resources/{resource_type}/{resource_id}",
+    "PATCH /resources/{resource_type}/{resource_id}",
+    "DELETE /resources/{resource_type}/{resource_id}",
+    "POST /resources/{resource_type}/{resource_id}/actions/{action}",
+    "GET /audit/events",
+    "GET /events/outbox",
     "POST /create",
     "GET /{id}",
     "PATCH /{id}",
@@ -95,6 +104,22 @@ def render_contract(module: dict) -> str:
     entities = "\n".join(f"- `{item}`" for item in module["entities"])
     events = "\n".join(f"- `{item}`" for item in module["events"])
     routes = "\n".join(f"- `{item}`" for item in ENDPOINTS)
+    special = ""
+    if module["slug"] == "identity":
+        special = "\n- `POST /registrations` cria o All-in-One ID inicial sem ator preexistente e preserva controles de duplicidade.\n"
+    if module["slug"] == "jobs":
+        special = dedent(
+            """
+
+            ## Fluxo Jobs e procedencia
+
+            - `POST /resumes/{resume_id}/imports/ctps-digital` recebe PDF da CTPS Digital, registra hash imutavel e classifica itens extraidos como `validated_by_document_import`.
+            - Experiencias digitadas em `employment_records` sao sempre `self_declared_unverified`, inclusive trabalho informal e descricoes adicionais.
+            - `GET /vacancies` expõe vagas publicadas para candidatos.
+            - `GET /recruiting/resumes/{resume_id}` exige empresa ativa no All-in-One Business, papel de recrutador, escopo Jobs e registra cada visualizacao.
+            - O importador documental nao equivale a verificacao oficial externa; esse estado permanece exibido em `official_verification_status`.
+            """
+        )
     return dedent(
         f"""\
         # Contrato: {module["title"]}
@@ -110,6 +135,7 @@ def render_contract(module: dict) -> str:
         ## APIs
 
         {routes}
+        {special}
 
         ## Eventos
 
@@ -146,15 +172,114 @@ def render_contract(module: dict) -> str:
     )
 
 
+def render_additional_paths(slug: str) -> str:
+    paths = dedent(
+        """\
+          /catalog:
+            get:
+              responses:
+                '200':
+                  description: Contracted domain resources
+          /resources/{resource_type}:
+            post:
+              responses:
+                '201':
+                  description: Domain resource created
+            get:
+              responses:
+                '200':
+                  description: Authorized domain resource collection
+          /resources/{resource_type}/{resource_id}:
+            get:
+              responses:
+                '200':
+                  description: Authorized domain resource
+            patch:
+              responses:
+                '200':
+                  description: Domain resource updated
+            delete:
+              responses:
+                '204':
+                  description: Domain resource soft-deleted
+          /resources/{resource_type}/{resource_id}/actions/{action}:
+            post:
+              responses:
+                '200':
+                  description: Workflow transition recorded
+          /audit/events:
+            get:
+              responses:
+                '200':
+                  description: Immutable audit evidence
+          /events/outbox:
+            get:
+              responses:
+                '200':
+                  description: Transactional outbox domain events
+        """
+    )
+    if slug == "identity":
+        paths += dedent(
+            """\
+              /registrations:
+                post:
+                  security: []
+                  responses:
+                    '201':
+                      description: All-in-One user registration pending validation
+            """
+        )
+    if slug == "jobs":
+        paths += dedent(
+            """\
+              /resumes/{resume_id}/imports/ctps-digital:
+                post:
+                  requestBody:
+                    required: true
+                    content:
+                      application/pdf:
+                        schema:
+                          type: string
+                          format: binary
+                  responses:
+                    '201':
+                      description: CTPS Digital PDF evidence imported
+              /resumes/{resume_id}/complete:
+                get:
+                  responses:
+                    '200':
+                      description: Candidate resume grouped by provenance
+              /vacancies:
+                get:
+                  security: []
+                  responses:
+                    '200':
+                      description: Published vacancies
+              /recruiting/resumes:
+                get:
+                  responses:
+                    '200':
+                      description: Business-authorized candidate search
+              /recruiting/resumes/{resume_id}:
+                get:
+                  responses:
+                    '200':
+                      description: Audited Business recruiter resume view
+            """
+        )
+    return indent(paths, "  ")
+
+
 def render_openapi(module: dict) -> str:
     slug = module["slug"]
     title = module["title"].replace('"', "")
-    return dedent(
+    document = dedent(
         f"""\
         openapi: 3.1.0
         info:
           title: All-in-One {title} API
-          version: 0.1.0
+          version: 0.2.0
         servers:
           - url: /api/v1/{slug}
         security:
@@ -323,6 +448,7 @@ def render_openapi(module: dict) -> str:
                   additionalProperties: true
         """
     )
+    return document.replace("components:\n", f"{render_additional_paths(slug)}components:\n")
 
 
 def render_database(module: dict) -> str:
@@ -392,11 +518,11 @@ def render_status(module: dict) -> str:
         f"""\
         # Status: {module["title"]}
 
-        - Estado: `baseline_active`
-        - Runtime: FastAPI com endpoints minimos funcionais
+        - Estado: `domain_engine_active`
+        - Runtime: FastAPI com persistencia SQLite contratual, autorizacao, auditoria e outbox
         - Contrato: publicado localmente em `OPENAPI.yaml` e `CONTRACT.md`
         - Persistencia: schema e tabelas iniciais cobertos por migracoes
-        - Proximo incremento: logica vertical detalhada, integracoes externas e E2E
+        - Proximo incremento: integracoes externas homologadas e E2E produtivo
         """
     )
 
@@ -457,7 +583,6 @@ def render_test_contract(slug: str) -> str:
 
 
 def render_test_permissions(slug: str) -> str:
-    expected = 201 if slug == "identity" else 401
     return dedent(
         f"""\
         from uuid import uuid4
@@ -467,7 +592,7 @@ def render_test_permissions(slug: str) -> str:
 
         def test_create_auth_boundary():
             response = client_for("{slug}").post("/create", json={{"user_id": str(uuid4()), "payload": {{}}}})
-            assert response.status_code == {expected}
+            assert response.status_code == 401
         """
     )
 
@@ -521,7 +646,11 @@ def expected_files(catalog: dict) -> dict[Path, str]:
             {
                 base / "README.md": render_readme(module),
                 base / "main.py": render_main(slug),
-                base / "requirements.txt": "fastapi==0.136.1\nstarlette==1.0.1\nuvicorn[standard]==0.34.2\n",
+                base / "requirements.txt": (
+                    "fastapi==0.136.1\npypdf==6.12.1\nstarlette==1.0.1\nuvicorn[standard]==0.34.2\n"
+                    if slug == "jobs"
+                    else "fastapi==0.136.1\nstarlette==1.0.1\nuvicorn[standard]==0.34.2\n"
+                ),
                 base / "CONTRACT.md": render_contract(module),
                 base / "STATUS.md": render_status(module),
                 base / "OPENAPI.yaml": render_openapi(module),

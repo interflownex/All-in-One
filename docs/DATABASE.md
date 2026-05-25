@@ -8,7 +8,7 @@ As migracoes em `database/postgres/migrations/` criam os schemas:
 `services`, `mobility`, `erp`, `wms`, `tms`, `crm`, `bpm`, `document`,
 `finance`, `billing`, `fiscal`, `hr`, `health`, `vision`, `legal`,
 `property`, `audit`, `compliance`, `notifications`, `api_hub`, `insurance`,
-`bi` e `ai_core`.
+`bi`, `ai_core` e `jobs`.
 
 Valores BRL usam `NUMERIC(18, 4)`; saldo/token NEX usa `NUMERIC(18, 8)`.
 Tabelas operacionais incluem UUID, `user_id`, status, timestamps, atores e
@@ -29,6 +29,19 @@ mesmo durante o cadastro.
 trigger que rejeita `UPDATE` e `DELETE`. A outbox `audit.domain_events` pode
 marcar publicacao; cada tentativa de entrega e preservada separadamente.
 Correcoes financeiras devem ser novos lancamentos compensatorios.
+
+## Jobs E Procedencia Documental
+
+- `jobs.resumes` pertence ao usuario e define se o curriculo pode ser
+  encontrado por recrutadores Business.
+- `jobs.resume_documents` preserva SHA-256 do PDF CTPS e rejeita alteracao ou
+  exclusao por trigger append-only.
+- `jobs.employment_records` possui constraint de procedencia: itens extraidos
+  do documento exigem `validated_by_document_import` e documento de origem;
+  itens manuais exigem `self_declared_unverified`.
+- `jobs.job_postings` e `jobs.applications` modelam vagas e candidaturas.
+- `jobs.resume_access_logs` preserva toda leitura empresarial de curriculo e
+  tambem e append-only.
 
 ## MongoDB
 

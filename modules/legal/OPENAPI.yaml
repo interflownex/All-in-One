@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: All-in-One Legal API
-  version: 0.1.0
+  version: 0.2.0
 servers:
   - url: /api/v1/legal
 security:
@@ -107,6 +107,48 @@ paths:
       responses:
         '201':
           description: Audit evidence accepted
+  /catalog:
+    get:
+      responses:
+        '200':
+          description: Contracted domain resources
+  /resources/{resource_type}:
+    post:
+      responses:
+        '201':
+          description: Domain resource created
+    get:
+      responses:
+        '200':
+          description: Authorized domain resource collection
+  /resources/{resource_type}/{resource_id}:
+    get:
+      responses:
+        '200':
+          description: Authorized domain resource
+    patch:
+      responses:
+        '200':
+          description: Domain resource updated
+    delete:
+      responses:
+        '204':
+          description: Domain resource soft-deleted
+  /resources/{resource_type}/{resource_id}/actions/{action}:
+    post:
+      responses:
+        '200':
+          description: Workflow transition recorded
+  /audit/events:
+    get:
+      responses:
+        '200':
+          description: Immutable audit evidence
+  /events/outbox:
+    get:
+      responses:
+        '200':
+          description: Transactional outbox domain events
 components:
   securitySchemes:
     bearerAuth:

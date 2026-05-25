@@ -1,0 +1,245 @@
+openapi: 3.1.0
+info:
+  title: All-in-One Jobs API
+  version: 0.2.0
+servers:
+  - url: /api/v1/jobs
+security:
+  - bearerAuth: []
+paths:
+  /health:
+    get:
+      security: []
+      responses:
+        '200':
+          description: Healthy
+  /version:
+    get:
+      security: []
+      responses:
+        '200':
+          description: Version information
+  /status:
+    get:
+      responses:
+        '200':
+          description: Operational status
+  /metrics:
+    get:
+      responses:
+        '200':
+          description: Prometheus metrics
+  /create:
+    post:
+      parameters:
+        - $ref: '#/components/parameters/ActorUserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePayload'
+      responses:
+        '201':
+          description: Resource created
+  /list:
+    get:
+      responses:
+        '200':
+          description: Resource collection
+  /{id}:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: Resource detail
+    patch:
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+        - $ref: '#/components/parameters/ActorUserId'
+      responses:
+        '200':
+          description: Resource updated
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+        - $ref: '#/components/parameters/ActorUserId'
+      responses:
+        '204':
+          description: Resource soft-deleted
+  /approve:
+    post:
+      parameters:
+        - $ref: '#/components/parameters/ActorUserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecisionPayload'
+      responses:
+        '200':
+          description: Resource approved
+  /reject:
+    post:
+      parameters:
+        - $ref: '#/components/parameters/ActorUserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecisionPayload'
+      responses:
+        '200':
+          description: Resource rejected
+  /audit:
+    post:
+      parameters:
+        - $ref: '#/components/parameters/ActorUserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuditPayload'
+      responses:
+        '201':
+          description: Audit evidence accepted
+  /catalog:
+    get:
+      responses:
+        '200':
+          description: Contracted domain resources
+  /resources/{resource_type}:
+    post:
+      responses:
+        '201':
+          description: Domain resource created
+    get:
+      responses:
+        '200':
+          description: Authorized domain resource collection
+  /resources/{resource_type}/{resource_id}:
+    get:
+      responses:
+        '200':
+          description: Authorized domain resource
+    patch:
+      responses:
+        '200':
+          description: Domain resource updated
+    delete:
+      responses:
+        '204':
+          description: Domain resource soft-deleted
+  /resources/{resource_type}/{resource_id}/actions/{action}:
+    post:
+      responses:
+        '200':
+          description: Workflow transition recorded
+  /audit/events:
+    get:
+      responses:
+        '200':
+          description: Immutable audit evidence
+  /events/outbox:
+    get:
+      responses:
+        '200':
+          description: Transactional outbox domain events
+  /resumes/{resume_id}/imports/ctps-digital:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/pdf:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '201':
+          description: CTPS Digital PDF evidence imported
+  /resumes/{resume_id}/complete:
+    get:
+      responses:
+        '200':
+          description: Candidate resume grouped by provenance
+  /vacancies:
+    get:
+      security: []
+      responses:
+        '200':
+          description: Published vacancies
+  /recruiting/resumes:
+    get:
+      responses:
+        '200':
+          description: Business-authorized candidate search
+  /recruiting/resumes/{resume_id}:
+    get:
+      responses:
+        '200':
+          description: Audited Business recruiter resume view
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ActorUserId:
+      name: X-Actor-User-Id
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    CreatePayload:
+      type: object
+      required: [user_id]
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        entity_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        payload:
+          type: object
+          additionalProperties: true
+    DecisionPayload:
+      type: object
+      required: [id, reason]
+      properties:
+        id:
+          type: string
+          format: uuid
+        reason:
+          type: string
+          minLength: 3
+    AuditPayload:
+      type: object
+      required: [action, resource_type, resource_id]
+      properties:
+        action:
+          type: string
+        resource_type:
+          type: string
+        resource_id:
+          type: string
+          format: uuid
+        payload:
+          type: object
+          additionalProperties: true

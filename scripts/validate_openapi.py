@@ -13,6 +13,15 @@ REQUIRED_OPERATIONS = {
     ("/version", "get"),
     ("/status", "get"),
     ("/metrics", "get"),
+    ("/catalog", "get"),
+    ("/resources/{resource_type}", "post"),
+    ("/resources/{resource_type}", "get"),
+    ("/resources/{resource_type}/{resource_id}", "get"),
+    ("/resources/{resource_type}/{resource_id}", "patch"),
+    ("/resources/{resource_type}/{resource_id}", "delete"),
+    ("/resources/{resource_type}/{resource_id}/actions/{action}", "post"),
+    ("/audit/events", "get"),
+    ("/events/outbox", "get"),
     ("/create", "post"),
     ("/list", "get"),
     ("/{id}", "get"),
@@ -46,6 +55,19 @@ def main() -> int:
         for operation in ["/create", "/approve", "/reject", "/audit"]:
             if "requestBody" not in paths.get(operation, {}).get("post", {}):
                 errors.append(f"{slug}: requestBody ausente em POST {operation}")
+        required_by_module = {
+            "identity": [("/registrations", "post")],
+            "jobs": [
+                ("/resumes/{resume_id}/imports/ctps-digital", "post"),
+                ("/resumes/{resume_id}/complete", "get"),
+                ("/vacancies", "get"),
+                ("/recruiting/resumes", "get"),
+                ("/recruiting/resumes/{resume_id}", "get"),
+            ],
+        }
+        for path, operation in required_by_module.get(slug, []):
+            if operation not in paths.get(path, {}):
+                errors.append(f"{slug}: operacao especializada ausente {operation.upper()} {path}")
     if errors:
         print("OpenAPI invalido:")
         print("\n".join(f"- {error}" for error in errors))

@@ -6,11 +6,16 @@
 - MFA requerido no modelo de identidade e aprovacao manual para KYC/KYB/Rider.
 - FK de proprietario para wallet, LED/NFC, ledger, rider e escrow.
 - Logs e ledger append-only via trigger SQL.
-- Runtime de modulos exige ator para mutacoes e audita create/update/delete/
-  approve/reject.
+- Runtime de modulos exige ator para mutacoes, valida assinatura do gateway em
+  producao e audita create/update/delete/transicoes.
 - Bloqueio inicial de telefone, e-mail, rede social, Pix e URL em conteudo de
   Marketplace, Delivery, Services e Mobility.
 - MongoDB com retencao TTL para memoria e telemetria.
+- Curriculos ficam privados por padrao; consulta de terceiros no Jobs exige
+  empresa Business `active`, papel de recrutador e escopo `jobs:resumes:read`.
+- O PDF CTPS importado e evidenciado por hash; registros extraidos sao
+  separados visualmente de declaracoes manuais e cada leitura empresarial e
+  registrada de forma imutavel.
 
 ## Controles de producao obrigatorios
 

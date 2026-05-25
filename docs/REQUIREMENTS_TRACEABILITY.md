@@ -13,19 +13,20 @@ necessarios para producao.
 | Riders, Marketplace, Stock, Delivery, Services e Mobility | Migration 003 e respectivos modulos |
 | ERP, WMS, TMS, CRM, BPM, GED, HR, Health, Vision, Legal e Property | Migration 004 e modulos |
 | Auditoria, eventos, anti-burla e API Hub | Migration 005, runtime comum e documentacao |
+| Curriculo, CTPS Digital PDF, vagas e acesso Business | Migration 006, `modules/jobs/`, `docs/JOBS_CTSP_DIGITAL.md` |
 | IA, social e telemetria | `database/mongodb/init/001_ai_social_telemetry.js` |
 | Seis apps | `apps/all-in-one-*` |
-| Microservicos funcionais | 24 diretorios em `modules/`, gerados pelo catalogo |
+| Microservicos funcionais | 25 diretorios em `modules/`, gerados pelo catalogo |
 | Contratos e OpenAPI | `contracts/`, `modules/*/OPENAPI.yaml`, validador OpenAPI |
 | Infraestrutura | `infra/docker/`, `infra/kubernetes/`, `infra/terraform/` |
 | CI/CD | `.github/workflows/` |
-| Testes minimos por modulo | `modules/*/tests/`, 96 testes no baseline |
+| Testes de modulo e Jobs | `modules/*/tests/`, `tests/test_identity_jobs_domain.py` |
 | Seguranca, monetizacao e operacao | `docs/SECURITY.md`, `docs/MONETIZATION.md`, `docs/OPERATIONS.md` |
 
 ## Limite correto do baseline
 
-Os microservicos possuem endpoints funcionais e contratos, mas seus adapters
-de persistencia e integracoes reguladas ainda nao representam operacao
-produtiva. O roadmap exige provider KYC/KYB, pagamento/fiscal, aplicativos
+Os microservicos possuem endpoints funcionais, store contratual e contratos,
+mas integracoes reguladas ainda nao representam operacao produtiva. O roadmap
+exige provider KYC/KYB/CTPS, pagamento/fiscal, aplicativos
 visuais, observabilidade, E2E, carga, homologacao e compliance antes de beta
 ou producao.

@@ -30,7 +30,7 @@ REQUIRED_SCHEMAS = {
     "services", "mobility", "erp", "wms", "tms", "crm", "bpm", "document",
     "finance", "billing", "fiscal", "hr", "health", "vision", "legal",
     "property", "audit", "compliance", "notifications", "api_hub",
-    "insurance", "bi", "ai_core",
+    "insurance", "bi", "ai_core", "jobs",
 }
 
 
@@ -42,8 +42,8 @@ def main() -> int:
     errors: list[str] = []
     modules = CATALOG["modules"]
     slugs = {module["slug"] for module in modules}
-    if len(slugs) != 24:
-        fail(f"Esperados 24 modulos; catalogo possui {len(slugs)}.", errors)
+    if len(slugs) != 25:
+        fail(f"Esperados 25 modulos; catalogo possui {len(slugs)}.", errors)
     for module in modules:
         base = ROOT / "modules" / module["slug"]
         for relative in REQUIRED_MODULE_FILES:
@@ -68,6 +68,9 @@ def main() -> int:
         "NUMERIC(18, 8)",
         "reject_immutable_change",
         "audit.logs",
+        "jobs.resumes",
+        "employment_provenance_integrity",
+        "immutable_jobs_resume_access_logs",
     ]:
         if needle not in migrations:
             fail(f"Controle SQL ausente: {needle}", errors)

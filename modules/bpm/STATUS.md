@@ -1,7 +1,7 @@
 # Status: BPM
 
-- Estado: `baseline_active`
-- Runtime: FastAPI com endpoints minimos funcionais
+- Estado: `domain_engine_active`
+- Runtime: FastAPI com persistencia SQLite contratual, autorizacao, auditoria e outbox
 - Contrato: publicado localmente em `OPENAPI.yaml` e `CONTRACT.md`
 - Persistencia: schema e tabelas iniciais cobertos por migracoes
-- Proximo incremento: logica vertical detalhada, integracoes externas e E2E
+- Proximo incremento: integracoes externas homologadas e E2E produtivo

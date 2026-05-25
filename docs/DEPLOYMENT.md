@@ -6,8 +6,8 @@
 2. Execute `docker compose -f infra/docker/docker-compose.yml up --build`.
 3. Aplique migrations automaticamente pelo container `migrations` ou rode
    `psql` em ambiente limpo.
-4. Consulte Identity em `http://localhost:8101/health` e API Hub em
-   `http://localhost:8100/health`.
+4. Consulte Identity em `http://localhost:8101/health`, API Hub em
+   `http://localhost:8100/health` e Jobs em `http://localhost:8112/health`.
 
 ## Producao
 

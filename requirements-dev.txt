@@ -1,6 +1,7 @@
 fastapi==0.136.1
 httpx==0.28.1
 pytest==9.0.3
+pypdf==6.12.1
 PyYAML==6.0.2
 starlette==1.0.1
 uvicorn[standard]==0.34.2
