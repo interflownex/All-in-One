@@ -11,6 +11,9 @@ metadata:
 data:
   EVENT_BUS: rabbitmq
   LOG_LEVEL: info
+  ALL_IN_ONE_OUTBOX_EXCHANGE: all-in-one.domain
+  ALL_IN_ONE_OUTBOX_BATCH_SIZE: "100"
+  ALL_IN_ONE_OUTBOX_POLL_SECONDS: "1"
 ---
 apiVersion: v1
 kind: Secret
@@ -21,6 +24,8 @@ type: Opaque
 stringData:
   DATABASE_URL: REPLACE_WITH_VAULT_REFERENCE
   JWT_SIGNING_KEY: REPLACE_WITH_VAULT_REFERENCE
+  ALL_IN_ONE_OUTBOX_POSTGRES_DSN: REPLACE_WITH_VAULT_REFERENCE
+  ALL_IN_ONE_RABBITMQ_URL: REPLACE_WITH_VAULT_REFERENCE
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -83,6 +88,26 @@ metadata:
 spec:
   selector: {app: api-hub}
   ports: [{port: 80, targetPort: 8000}]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: outbox-dispatcher
+  namespace: all-in-one
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: outbox-dispatcher}
+  template:
+    metadata:
+      labels: {app: outbox-dispatcher}
+    spec:
+      containers:
+        - name: outbox-dispatcher
+          image: all-in-one/outbox-dispatcher:0.3.0
+          envFrom:
+            - configMapRef: {name: platform-config}
+            - secretRef: {name: platform-secrets-placeholder}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler

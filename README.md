@@ -17,8 +17,8 @@ eventos, controles de seguranca, infraestrutura e gates de CI.
   ledger, escrow, operacoes e verticais; ledger/auditoria sao append-only.
 - MongoDB validado para memoria IA consentida, social, metricas de influencer
   e telemetria.
-- RabbitMQ como contrato inicial de eventos; Redis para suporte a cache/rate
-  limit; Docker Compose e manifests Kubernetes.
+- RabbitMQ com dispatcher transacional da outbox PostgreSQL, publisher confirms
+  e evidencias de entrega append-only; Redis para suporte a cache/rate limit.
 - CI para scaffold, contratos, testes, banco, OpenAPI, seguranca e automacao
   controlada de branches.
 
@@ -37,7 +37,21 @@ gera log append-only. Veja [docs/JOBS_CTSP_DIGITAL.md](docs/JOBS_CTSP_DIGITAL.md
 
 Jobs usa tabelas PostgreSQL tipadas e a outbox central quando
 `ALL_IN_ONE_JOBS_POSTGRES_DSN` esta configurada; sem DSN, o store SQLite
-permanece disponivel para desenvolvimento isolado.
+permanece disponivel para desenvolvimento isolado. O Docker Compose configura
+essa DSN e inicia Jobs somente depois das migrations.
+
+## Eventos E Front-End Stitch
+
+`workers/outbox_dispatcher` publica eventos pendentes de `audit.domain_events`
+no exchange RabbitMQ `all-in-one.domain`, confirma a entrega e preserva cada
+tentativa em `audit.event_deliveries`. Mensagens Jobs usam payload minimizado
+e nao carregam PDF, chave de storage nem texto livre de curriculo.
+
+O planejamento visual de front-end usa o Google Stitch por projeto isolado
+para cada microservico. Execute `python scripts/stitch_orchestrator.py plan`
+para gerar o contrato local; `discover` e `sync` exigem credencial Stitch
+rotacionada fornecida via secret local. Veja
+[docs/STITCH_FRONTEND.md](docs/STITCH_FRONTEND.md).
 
 ## Identidade e integridade
 
@@ -74,6 +88,7 @@ uvicorn main:app --port 8000
 | `database/` | Migracoes PostgreSQL e validacoes MongoDB |
 | `docs/` | Arquitetura, seguranca, eventos, operacao e roadmap |
 | `infra/` | Docker, Kubernetes e Terraform inicial |
+| `workers/` | Dispatchers e consumidores assincronos da plataforma |
 | `.github/workflows/` | Gates e automacoes de entrega |
 
 ## Estado

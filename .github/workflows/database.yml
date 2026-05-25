@@ -3,9 +3,9 @@ name: Database
 on:
   push:
     branches: [main]
-    paths: ["database/**", "modules/shared/**", "tests/test_jobs_postgres_integration.py", "requirements-dev.txt", ".github/workflows/database.yml"]
+    paths: ["database/**", "modules/shared/**", "workers/**", "infra/docker/docker-compose.yml", "tests/test_jobs_postgres_integration.py", "tests/test_outbox_rabbitmq_integration.py", "requirements-dev.txt", ".github/workflows/database.yml"]
   pull_request:
-    paths: ["database/**", "modules/shared/**", "tests/test_jobs_postgres_integration.py", "requirements-dev.txt", ".github/workflows/database.yml"]
+    paths: ["database/**", "modules/shared/**", "workers/**", "infra/docker/docker-compose.yml", "tests/test_jobs_postgres_integration.py", "tests/test_outbox_rabbitmq_integration.py", "requirements-dev.txt", ".github/workflows/database.yml"]
 
 jobs:
   migrations:
@@ -21,6 +21,15 @@ jobs:
         options: >-
           --health-cmd "pg_isready -U all_in_one -d all_in_one"
           --health-interval 5s --health-timeout 5s --health-retries 10
+      rabbitmq:
+        image: rabbitmq:3-management-alpine
+        env:
+          RABBITMQ_DEFAULT_USER: all_in_one
+          RABBITMQ_DEFAULT_PASS: test-password
+        ports: ["5672:5672"]
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q ping"
+          --health-interval 10s --health-timeout 5s --health-retries 12
     env:
       PGPASSWORD: test-password
     steps:
@@ -42,3 +51,8 @@ jobs:
         env:
           ALL_IN_ONE_JOBS_POSTGRES_TEST_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
         run: python -m pytest --import-mode=importlib -q tests/test_jobs_postgres_integration.py
+      - name: Dispatch PostgreSQL outbox to RabbitMQ with immutable delivery evidence
+        env:
+          ALL_IN_ONE_OUTBOX_POSTGRES_TEST_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
+          ALL_IN_ONE_RABBITMQ_TEST_URL: amqp://all_in_one:test-password@localhost:5672/%2F
+        run: python -m pytest --import-mode=importlib -q tests/test_outbox_rabbitmq_integration.py

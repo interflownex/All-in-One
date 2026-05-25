@@ -170,11 +170,36 @@ services:
       ALL_IN_ONE_STORAGE_DIR: /data
       ALL_IN_ONE_PRIVATE_DOCUMENT_DIR: /private-documents
       ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY: ${ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY:-}
-      ALL_IN_ONE_JOBS_POSTGRES_DSN: ${ALL_IN_ONE_JOBS_POSTGRES_DSN:-}
+      ALL_IN_ONE_JOBS_POSTGRES_DSN: ${ALL_IN_ONE_JOBS_POSTGRES_DSN:-postgresql://all_in_one:local-development-only@postgres:5432/all_in_one}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
     volumes:
       - domain-data:/data
       - private-document-data:/private-documents
     ports: ["8112:8000"]
+
+  outbox-dispatcher:
+    build:
+      context: ../..
+      dockerfile: workers/outbox_dispatcher/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      ALL_IN_ONE_OUTBOX_POSTGRES_DSN: ${ALL_IN_ONE_OUTBOX_POSTGRES_DSN:-postgresql://all_in_one:local-development-only@postgres:5432/all_in_one}
+      ALL_IN_ONE_RABBITMQ_URL: ${ALL_IN_ONE_RABBITMQ_URL:-amqp://all_in_one:local-development-only@rabbitmq:5672/%2F}
+      ALL_IN_ONE_OUTBOX_EXCHANGE: ${ALL_IN_ONE_OUTBOX_EXCHANGE:-all-in-one.domain}
+      ALL_IN_ONE_OUTBOX_BATCH_SIZE: ${ALL_IN_ONE_OUTBOX_BATCH_SIZE:-100}
+      ALL_IN_ONE_OUTBOX_POLL_SECONDS: ${ALL_IN_ONE_OUTBOX_POLL_SECONDS:-1}
+    networks: [platform]
 
 volumes:
   postgres-data:

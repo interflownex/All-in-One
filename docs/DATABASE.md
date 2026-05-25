@@ -47,6 +47,14 @@ Correcoes financeiras devem ser novos lancamentos compensatorios.
 - Com `ALL_IN_ONE_JOBS_POSTGRES_DSN`, o runtime Jobs grava diretamente nessas
   tabelas tipadas e nas tabelas centrais `audit.logs`/`audit.domain_events`.
 
+## Publicacao Da Outbox
+
+O worker `workers/outbox_dispatcher` publica eventos PostgreSQL pendentes no
+RabbitMQ com confirmacao do broker. Sucesso atualiza `audit.domain_events`;
+sucesso e falha adicionam evidencias imutaveis em `audit.event_deliveries`.
+Consumidores devem aplicar deduplicacao por `event_id`, pois a garantia e
+`at-least-once`.
+
 ## MongoDB
 
 `database/mongodb/init/001_ai_social_telemetry.js` valida `ai_memory`,

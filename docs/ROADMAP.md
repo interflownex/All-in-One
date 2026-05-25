@@ -10,18 +10,23 @@
   exibivel e consulta restrita a empresas Business ativas.
 - Jobs com adapter PostgreSQL tipado e cofre CTPS AES-256-GCM para execucao
   configurada por DSN/chave secreta.
+- Dispatcher RabbitMQ da outbox PostgreSQL com publisher confirms, retry
+  auditavel e payload Jobs minimizado.
+- Orquestracao Google Stitch declarativa com um projeto visual por
+  microservico e telas Jobs/Business/User especializadas.
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.
 
 ## Proximos incrementos bloqueadores para beta
 
-1. Expandir o adapter PostgreSQL ja implementado para Jobs aos demais dominios
-   e publicar a outbox no barramento RabbitMQ.
+1. Expandir o adapter PostgreSQL ja implementado para Jobs aos demais dominios;
+   a publicacao da outbox no RabbitMQ ja esta implementada.
 2. Integrar Identity/API Hub com OIDC, MFA, KMS, KYC/KYB e liveness aprovados.
 3. Integrar verificador oficial autorizado para CTPS Digital, sem alterar a
    classificacao historica dos itens autodeclarados; storage privado cifrado
    ja esta implementado.
 4. Integrar payment provider, fiscal brasileiro e conciliacao em sandbox.
-5. Implementar jornadas web/mobile dos seis apps e testes E2E.
+5. Sincronizar os projetos Stitch com credencial rotacionada, implementar as
+   jornadas web/mobile dos seis apps e testes E2E.
 6. Entregar moderacao OCR/IA, notificacoes e observabilidade.
 
 ## Bloqueadores para producao

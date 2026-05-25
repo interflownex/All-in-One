@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "strategy": "one_stitch_project_per_microservice",
+  "source": "config/module_catalog.json",
+  "project_count": 25,
+  "screen_count": 172,
+  "screen_generation": {
+    "standard": [
+      "overview",
+      "one_screen_per_entity",
+      "audit_permissions"
+    ],
+    "special_defined_in": "scripts/stitch_orchestrator.py:SPECIAL_SCREENS"
+  },
+  "projects": [
+    {"module": "identity", "project_name": "All-in-One - Identity", "screen_count": 9, "special_screens": ["registration_kyc"]},
+    {"module": "business", "project_name": "All-in-One - Business", "screen_count": 6, "special_screens": []},
+    {"module": "permissions", "project_name": "All-in-One - Permissions", "screen_count": 7, "special_screens": []},
+    {"module": "finance", "project_name": "All-in-One - Finance Pay Billing Fiscal", "screen_count": 8, "special_screens": ["wallet_ledger"]},
+    {"module": "marketplace", "project_name": "All-in-One - Marketplace", "screen_count": 8, "special_screens": []},
+    {"module": "stock", "project_name": "All-in-One - Stock", "screen_count": 6, "special_screens": []},
+    {"module": "delivery", "project_name": "All-in-One - Delivery", "screen_count": 7, "special_screens": []},
+    {"module": "riders", "project_name": "All-in-One - Riders", "screen_count": 6, "special_screens": []},
+    {"module": "services", "project_name": "All-in-One - One Services", "screen_count": 7, "special_screens": []},
+    {"module": "mobility", "project_name": "All-in-One - Mobility", "screen_count": 7, "special_screens": []},
+    {"module": "jobs", "project_name": "All-in-One - Jobs", "screen_count": 12, "special_screens": ["candidate_resume", "ctps_import", "vacancy_search", "recruiter_resume_review"]},
+    {"module": "erp", "project_name": "All-in-One - ERP", "screen_count": 7, "special_screens": []},
+    {"module": "wms", "project_name": "All-in-One - WMS", "screen_count": 7, "special_screens": []},
+    {"module": "tms", "project_name": "All-in-One - TMS", "screen_count": 7, "special_screens": []},
+    {"module": "crm", "project_name": "All-in-One - CRM", "screen_count": 6, "special_screens": []},
+    {"module": "bpm", "project_name": "All-in-One - BPM", "screen_count": 6, "special_screens": []},
+    {"module": "document", "project_name": "All-in-One - GED ECM", "screen_count": 6, "special_screens": []},
+    {"module": "hr", "project_name": "All-in-One - HR HCM ATS LMS", "screen_count": 7, "special_screens": []},
+    {"module": "health", "project_name": "All-in-One - Health", "screen_count": 7, "special_screens": []},
+    {"module": "vision", "project_name": "All-in-One - Vision", "screen_count": 6, "special_screens": []},
+    {"module": "legal", "project_name": "All-in-One - Legal", "screen_count": 6, "special_screens": []},
+    {"module": "property", "project_name": "All-in-One - Property", "screen_count": 7, "special_screens": []},
+    {"module": "bi", "project_name": "All-in-One - BI", "screen_count": 6, "special_screens": []},
+    {"module": "ai_core", "project_name": "All-in-One - AI Core", "screen_count": 5, "special_screens": []},
+    {"module": "api_hub", "project_name": "All-in-One - API Hub", "screen_count": 6, "special_screens": []}
+  ]
+}

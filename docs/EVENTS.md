@@ -5,6 +5,22 @@ routing keys versionadas, payload minimizado e identificadores de correlacao.
 O outbox relacional inicial e `audit.domain_events`; cada tentativa publicada
 fica preservada de modo imutavel em `audit.event_deliveries`.
 
+## Dispatcher de outbox
+
+`workers/outbox_dispatcher` consome eventos `pending` em lotes com
+`FOR UPDATE SKIP LOCKED`, publica mensagens persistentes no exchange e exige
+publisher confirm antes de marcar `published_at` e `status = 'published'`.
+Falhas geram entrega `failed_retryable` append-only e deixam o evento pendente
+para nova tentativa.
+
+A entrega e `at-least-once`: se o broker confirmar e a transacao PostgreSQL
+falhar depois, a mensagem pode reaparecer. Consumidores deduplicam por
+`event_id`.
+
+Eventos Jobs sao publicados com allowlist de dados de processo. PDF CTPS,
+chaves de storage, texto livre do curriculo e dados brutos do documento nunca
+saem na mensagem.
+
 ## Fluxos obrigatorios cobertos
 
 - Identity: `identity.user.created`, `identity.user.verified`,
@@ -36,5 +52,5 @@ fica preservada de modo imutavel em `audit.event_deliveries`.
   `health.telemedicine.started`, `health.prescription.issued`,
   `erp.invoice.created`.
 
-Consumidores devem persistir idempotency key e nao incluir biometria,
-documentos ou prontuario em mensagens fora de referencias seguras.
+Consumidores devem persistir `event_id` como chave idempotente e nao incluir
+biometria, documentos ou prontuario em mensagens fora de referencias seguras.

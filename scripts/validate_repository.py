@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = json.loads((ROOT / "config" / "module_catalog.json").read_text(encoding="utf-8"))
+STITCH_MANIFEST = ROOT / "config" / "stitch" / "screen_manifest.json"
 REQUIRED_MODULE_FILES = {
     "README.md",
     "main.py",
@@ -79,6 +80,17 @@ def main() -> int:
     for workflow in ["ci.yml", "security.yml", "database.yml", "openapi.yml", "autocommit.yml", "automerge.yml"]:
         if not (ROOT / ".github" / "workflows" / workflow).is_file():
             fail(f"Workflow ausente: {workflow}", errors)
+    if not (ROOT / "workers" / "outbox_dispatcher" / "main.py").is_file():
+        fail("Worker da outbox RabbitMQ ausente.", errors)
+    if not STITCH_MANIFEST.is_file():
+        fail("Manifesto de telas Stitch ausente.", errors)
+    else:
+        stitch = json.loads(STITCH_MANIFEST.read_text(encoding="utf-8"))
+        projects = stitch.get("projects", [])
+        if stitch.get("project_count") != len(modules) or len(projects) != len(modules):
+            fail("Stitch deve declarar um projeto por modulo.", errors)
+        if not all(project.get("screen_count", 0) > 0 for project in projects):
+            fail("Todo projeto Stitch deve declarar telas.", errors)
     if errors:
         print("Validacao falhou:")
         print("\n".join(f"- {error}" for error in errors))

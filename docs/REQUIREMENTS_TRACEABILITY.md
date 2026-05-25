@@ -16,6 +16,8 @@ necessarios para producao.
 | Curriculo, CTPS Digital PDF, vagas e acesso Business | Migrations 006/007, `modules/jobs/`, `modules/shared/private_documents.py`, `modules/shared/jobs_postgres_store.py`, `docs/JOBS_CTSP_DIGITAL.md` |
 | IA, social e telemetria | `database/mongodb/init/001_ai_social_telemetry.js` |
 | Seis apps | `apps/all-in-one-*` |
+| Projetos e telas Stitch por microservico | `scripts/stitch_orchestrator.py`, `config/stitch/screen_manifest.json`, `docs/STITCH_FRONTEND.md` |
+| Outbox PostgreSQL publicada em RabbitMQ | `modules/shared/outbox_dispatcher.py`, `workers/outbox_dispatcher/`, `tests/test_outbox_rabbitmq_integration.py` |
 | Microservicos funcionais | 25 diretorios em `modules/`, gerados pelo catalogo |
 | Contratos e OpenAPI | `contracts/`, `modules/*/OPENAPI.yaml`, validador OpenAPI |
 | Infraestrutura | `infra/docker/`, `infra/kubernetes/`, `infra/terraform/` |
