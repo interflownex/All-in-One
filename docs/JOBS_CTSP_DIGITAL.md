@@ -11,7 +11,9 @@
    `self_declared_unverified`.
 4. Pode importar a Carteira de Trabalho Digital em PDF em
    `POST /api/v1/jobs/resumes/{resume_id}/imports/ctps-digital`.
-5. Busca vagas publicadas por `GET /api/v1/jobs/vacancies` e registra
+5. Pode rever seu proprio PDF importado em
+   `GET /api/v1/jobs/resumes/{resume_id}/documents/{document_id}/content`.
+6. Busca vagas publicadas por `GET /api/v1/jobs/vacancies` e registra
    candidatura em `applications`.
 
 ## Classificacao Visivel
@@ -40,10 +42,16 @@ Toda abertura individual do curriculo cria `jobs.resume_access_logs`, tabela
 append-only. O gateway assina esses atributos em producao para impedir que
 cabecalhos sejam forjados fora da borda confiavel.
 
+Recrutadores recebem somente os selos de procedencia; nunca recebem o PDF
+CTPS ou sua chave de storage. O download do PDF e exclusivo do titular e gera
+evento de auditoria `document_content_read`.
+
 ## Persistencia E Auditoria
 
 `database/postgres/migrations/006_jobs_recruitment_ctps.sql` implementa
 curriculos, documentos, experiencias, vagas, candidaturas e acessos. Uma
 constraint impede classificar declaracao manual como documento importado.
-PDFs devem ser armazenados em storage privado; o banco preserva referencia,
-hash, extracao e status, nunca publica o arquivo para recrutadores.
+PDFs sao armazenados em storage privado cifrado com AES-256-GCM; o banco
+preserva referencia, hash, extracao e status, nunca publica o arquivo para
+recrutadores. Em producao, `ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY` deve ser
+provido por vault/KMS; a inicializacao falha sem esse segredo.

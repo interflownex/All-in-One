@@ -166,6 +166,11 @@ paths:
       responses:
         '200':
           description: Candidate resume grouped by provenance
+  /resumes/{resume_id}/documents/{document_id}/content:
+    get:
+      responses:
+        '200':
+          description: Candidate-owned encrypted CTPS document content
   /vacancies:
     get:
       security: []

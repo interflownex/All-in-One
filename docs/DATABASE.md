@@ -42,6 +42,10 @@ Correcoes financeiras devem ser novos lancamentos compensatorios.
 - `jobs.job_postings` e `jobs.applications` modelam vagas e candidaturas.
 - `jobs.resume_access_logs` preserva toda leitura empresarial de curriculo e
   tambem e append-only.
+- A migration `007_jobs_runtime_private_documents.sql` registra criptografia
+  do documento e idempotencia para operacoes Jobs.
+- Com `ALL_IN_ONE_JOBS_POSTGRES_DSN`, o runtime Jobs grava diretamente nessas
+  tabelas tipadas e nas tabelas centrais `audit.logs`/`audit.domain_events`.
 
 ## MongoDB
 

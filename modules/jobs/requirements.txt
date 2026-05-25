@@ -1,4 +1,6 @@
+cryptography==48.0.0
 fastapi==0.136.1
 pypdf==6.12.1
+psycopg[binary]==3.3.4
 starlette==1.0.1
 uvicorn[standard]==0.34.2

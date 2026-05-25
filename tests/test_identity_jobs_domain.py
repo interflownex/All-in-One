@@ -1,9 +1,14 @@
+import base64
 from io import BytesIO
 from uuid import uuid4
 
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from fastapi.testclient import TestClient
 from pypdf import PdfWriter
+import pytest
 
 from modules.shared.ctps_import import parse_employment_text
+from modules.shared.runtime import create_module_app
 from platform_test_support import client_for
 
 
@@ -178,3 +183,58 @@ def test_jobs_active_business_can_publish_vacancy_for_candidates() -> None:
     )
     assert application.status_code == 201
     assert application.json()["status"] == "submitted"
+
+
+def test_jobs_ctps_pdf_is_encrypted_and_downloadable_only_by_owner(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
+    key = base64.urlsafe_b64encode(AESGCM.generate_key(bit_length=256)).decode("ascii")
+    monkeypatch.setenv("ALL_IN_ONE_PRIVATE_DOCUMENT_DIR", str(tmp_path))
+    monkeypatch.setenv("ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY", key)
+    client = TestClient(create_module_app("jobs"))
+    owner_id = str(uuid4())
+    resume = client.post(
+        "/resources/resumes",
+        headers=owner_headers(owner_id),
+        json={
+            "user_id": owner_id,
+            "payload": {"headline": "Candidato protegido", "recruiter_visibility": "business_recruiters"},
+        },
+    )
+    resume_id = resume.json()["id"]
+    writer = PdfWriter()
+    writer.add_blank_page(width=100, height=100)
+    stream = BytesIO()
+    writer.write(stream)
+    original = stream.getvalue()
+
+    imported = client.post(
+        f"/resumes/{resume_id}/imports/ctps-digital",
+        headers={**owner_headers(owner_id), "Content-Type": "application/pdf"},
+        content=original,
+    )
+    document_id = imported.json()["document"]["id"]
+    assert "storage_key" not in imported.json()["document"]["payload"]
+    ciphertext = next(tmp_path.rglob("*.aesgcm")).read_bytes()
+    assert ciphertext != original
+    assert b"%PDF" not in ciphertext
+
+    owner_download = client.get(
+        f"/resumes/{resume_id}/documents/{document_id}/content",
+        headers=owner_headers(owner_id),
+    )
+    assert owner_download.status_code == 200
+    assert owner_download.content == original
+
+    denied = client.get(
+        f"/resumes/{resume_id}/documents/{document_id}/content",
+        headers=recruiter_headers(str(uuid4()), str(uuid4())),
+    )
+    assert denied.status_code == 403
+
+
+def test_jobs_requires_document_secret_in_production(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
+    monkeypatch.setenv("ALL_IN_ONE_ENV", "production")
+    monkeypatch.setenv("ALL_IN_ONE_PRIVATE_DOCUMENT_DIR", str(tmp_path))
+    monkeypatch.delenv("ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY", raising=False)
+
+    with pytest.raises(RuntimeError, match="obrigatoria em producao"):
+        create_module_app("jobs")

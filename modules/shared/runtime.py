@@ -93,6 +93,14 @@ def _database_path(module_name: str) -> str:
     return str(Path(directory) / f"{module_name}.db")
 
 
+def _store_for(module_name: str) -> Any:
+    if module_name == "jobs" and os.getenv("ALL_IN_ONE_JOBS_POSTGRES_DSN"):
+        from .jobs_postgres_store import JobsPostgresStore
+
+        return JobsPostgresStore(os.environ["ALL_IN_ONE_JOBS_POSTGRES_DSN"])
+    return SQLiteStore(module_name, _database_path(module_name))
+
+
 def _authorize_owner_or_operator(actor: Actor, user_id: UUID, action: str) -> None:
     if actor.user_id != user_id and not actor.roles.intersection(APPROVER_ROLES):
         raise HTTPException(status_code=403, detail=f"Ator nao autorizado para {action} em recurso de outro usuario.")
@@ -110,7 +118,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     if module_name not in MODULE_ENTITIES:
         raise ValueError(f"Modulo desconhecido: {module_name}")
     app = FastAPI(title=f"All-in-One {module_name}", version=version)
-    store = SQLiteStore(module_name, _database_path(module_name))
+    store = _store_for(module_name)
     legacy_rule = ResourceRule()
 
     def fetch(resource_type: str, resource_id: UUID) -> dict[str, Any]:
@@ -118,6 +126,12 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         if item is None:
             raise HTTPException(status_code=404, detail="Registro nao encontrado.")
         return item
+
+    def authorize_business_recruiter(actor: Actor, action: str, required_scope: str) -> None:
+        demand_active_business_recruiter(actor, action, required_scope)
+        verifier = getattr(store, "verify_active_business_recruiter", None)
+        if verifier and not verifier(str(actor.user_id), str(actor.business_id)):
+            raise HTTPException(status_code=403, detail="Membership Business ativa nao confirmada no banco.")
 
     def create_secured(
         resource_type: str,
@@ -152,7 +166,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
                 }
             )
         if module_name == "jobs" and resource_type == "job_postings":
-            demand_active_business_recruiter(actor, "publicar vagas", "jobs:manage")
+            authorize_business_recruiter(actor, "publicar vagas", "jobs:manage")
             if str(payload.get("company_id")) != str(actor.business_id):
                 raise HTTPException(status_code=403, detail="Vaga deve pertencer a empresa Business autenticada.")
         if module_name == "jobs" and resource_type == "applications":
@@ -185,7 +199,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
 
     @app.get("/health")
     def health() -> dict[str, str]:
-        return {"status": "ok", "module": module_name, "storage": "sqlite_contract_store"}
+        return {"status": "ok", "module": module_name, "storage": store.backend}
 
     @app.get("/version")
     def get_version() -> dict[str, str]:
@@ -315,11 +329,11 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             raise HTTPException(status_code=422, detail=f"Acao nao suportada: {action}.")
         item = fetch(resource_type, resource_id)
         if module_name == "jobs" and resource_type == "job_postings":
-            demand_active_business_recruiter(actor, "gerenciar vagas", "jobs:manage")
+            authorize_business_recruiter(actor, "gerenciar vagas", "jobs:manage")
             if str(item["payload"].get("company_id")) != str(actor.business_id):
                 raise HTTPException(status_code=403, detail="Vaga pertence a outra empresa Business.")
         if module_name == "jobs" and resource_type == "applications" and action != "withdraw":
-            demand_active_business_recruiter(actor, "avaliar candidaturas", "jobs:manage")
+            authorize_business_recruiter(actor, "avaliar candidaturas", "jobs:manage")
             posting = fetch("job_postings", UUID(str(item["payload"].get("job_posting_id"))))
             if str(posting["payload"].get("company_id")) != str(actor.business_id):
                 raise HTTPException(status_code=403, detail="Candidatura pertence a outra empresa Business.")
@@ -362,6 +376,24 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
 
     if module_name == "jobs":
         from .ctps_import import extract_ctps_pdf
+        from .private_documents import DocumentConfigurationError, DocumentNotFoundError, PrivateDocumentStore
+
+        try:
+            private_documents = PrivateDocumentStore()
+        except DocumentConfigurationError as exc:
+            raise RuntimeError(str(exc)) from exc
+
+        def protect_document_metadata(item: dict[str, Any], for_recruiter: bool = False) -> dict[str, Any]:
+            protected = {**item, "payload": dict(item["payload"])}
+            protected["payload"].pop("storage_key", None)
+            if for_recruiter:
+                protected["payload"] = {
+                    "document_type": item["payload"].get("document_type"),
+                    "evidence_status": item["payload"].get("evidence_status"),
+                    "official_verification_status": item["payload"].get("official_verification_status"),
+                    "extraction_status": item["payload"].get("extraction_status"),
+                }
+            return protected
 
         def assemble_resume(resume: dict[str, Any], for_recruiter: bool = False) -> dict[str, Any]:
             records = [
@@ -374,19 +406,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
                 for item in store.list("resume_documents", resume["user_id"])
                 if item["payload"].get("resume_id") == resume["id"]
             ]
-            if for_recruiter:
-                documents = [
-                    {
-                        **item,
-                        "payload": {
-                            "document_type": item["payload"].get("document_type"),
-                            "evidence_status": item["payload"].get("evidence_status"),
-                            "official_verification_status": item["payload"].get("official_verification_status"),
-                            "extraction_status": item["payload"].get("extraction_status"),
-                        },
-                    }
-                    for item in documents
-                ]
+            documents = [protect_document_metadata(item, for_recruiter) for item in documents]
             return {
                 "resume": resume,
                 "employment_records": {
@@ -422,6 +442,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
                 raise HTTPException(status_code=422, detail=str(exc)) from None
             document_payload = {key: value for key, value in result.items() if key != "employment_records"}
             document_payload["resume_id"] = str(resume_id)
+            document_payload.update(private_documents.save(result["sha256"], document))
             evidence = store.create(
                 "resume_documents",
                 resume["user_id"],
@@ -455,12 +476,45 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
                     )
                 )
             return {
-                "document": evidence,
+                "document": protect_document_metadata(evidence),
                 "imported_employment_records": imported,
                 "extraction_status": result["extraction_status"],
                 "display_badge": "Validado por importacao CTPS Digital",
                 "official_verification_status": "not_verified_externally",
             }
+
+        @app.get("/resumes/{resume_id}/documents/{document_id}/content")
+        def own_resume_document(
+            resume_id: UUID,
+            document_id: UUID,
+            actor: Actor = Depends(actor_from_headers),
+        ) -> Response:
+            resume = fetch("resumes", resume_id)
+            if actor.user_id != UUID(resume["user_id"]):
+                raise HTTPException(status_code=403, detail="Somente o titular pode acessar o PDF da CTPS Digital.")
+            evidence = fetch("resume_documents", document_id)
+            if evidence["payload"].get("resume_id") != str(resume_id):
+                raise HTTPException(status_code=404, detail="Documento nao pertence ao curriculo.")
+            try:
+                contents = private_documents.read(evidence["payload"]["storage_key"], evidence["payload"]["sha256"])
+            except (KeyError, DocumentNotFoundError, ValueError) as exc:
+                raise HTTPException(status_code=404, detail="Documento privado indisponivel.") from exc
+            store.audit_external(
+                str(actor.user_id),
+                "document_content_read",
+                "resume_documents",
+                evidence["id"],
+                {
+                    "resume_id": str(resume_id),
+                    "user_id": resume["user_id"],
+                    "purpose": "candidate_owned_document_access",
+                },
+            )
+            return Response(
+                contents,
+                media_type="application/pdf",
+                headers={"Content-Disposition": 'inline; filename="ctps-digital.pdf"'},
+            )
 
         @app.get("/resumes/{resume_id}/complete")
         def own_complete_resume(resume_id: UUID, actor: Actor = Depends(actor_from_headers)) -> dict[str, Any]:
@@ -486,7 +540,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             q: str | None = Query(default=None, max_length=100),
             actor: Actor = Depends(actor_from_headers),
         ) -> list[dict[str, Any]]:
-            demand_active_business_recruiter(actor)
+            authorize_business_recruiter(actor, "consultar curriculos", "jobs:resumes:read")
             terms = q.casefold() if q else None
             resumes = [
                 item for item in store.list("resumes")
@@ -513,7 +567,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             purpose: str = Query(min_length=3, max_length=200),
             actor: Actor = Depends(actor_from_headers),
         ) -> dict[str, Any]:
-            demand_active_business_recruiter(actor)
+            authorize_business_recruiter(actor, "consultar curriculos", "jobs:resumes:read")
             resume = fetch("resumes", resume_id)
             if resume["payload"].get("recruiter_visibility") != "business_recruiters":
                 raise HTTPException(status_code=403, detail="Usuario nao autorizou visibilidade a recrutadores.")

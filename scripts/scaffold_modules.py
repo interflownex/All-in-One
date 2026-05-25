@@ -114,10 +114,13 @@ def render_contract(module: dict) -> str:
             ## Fluxo Jobs e procedencia
 
             - `POST /resumes/{resume_id}/imports/ctps-digital` recebe PDF da CTPS Digital, registra hash imutavel e classifica itens extraidos como `validated_by_document_import`.
+            - `GET /resumes/{resume_id}/documents/{document_id}/content` descriptografa o PDF somente para o titular autenticado; recrutadores nao recebem o arquivo.
             - Experiencias digitadas em `employment_records` sao sempre `self_declared_unverified`, inclusive trabalho informal e descricoes adicionais.
             - `GET /vacancies` expõe vagas publicadas para candidatos.
             - `GET /recruiting/resumes/{resume_id}` exige empresa ativa no All-in-One Business, papel de recrutador, escopo Jobs e registra cada visualizacao.
             - O importador documental nao equivale a verificacao oficial externa; esse estado permanece exibido em `official_verification_status`.
+            - PDFs CTPS ficam cifrados em cofre privado AES-256-GCM; em producao a chave deve vir de vault/KMS.
+            - `ALL_IN_ONE_JOBS_POSTGRES_DSN` habilita persistencia tipada em `jobs.*` com auditoria e outbox PostgreSQL.
             """
         )
     return dedent(
@@ -250,6 +253,11 @@ def render_additional_paths(slug: str) -> str:
                   responses:
                     '200':
                       description: Candidate resume grouped by provenance
+              /resumes/{resume_id}/documents/{document_id}/content:
+                get:
+                  responses:
+                    '200':
+                      description: Candidate-owned encrypted CTPS document content
               /vacancies:
                 get:
                   security: []
@@ -490,11 +498,12 @@ def render_events(module: dict) -> str:
 
 
 def render_security(module: dict) -> str:
-    extra = (
-        "Conteudos de texto, links e anexos passam por bloqueio anti-burla e moderacao."
-        if module["slug"] in {"marketplace", "delivery", "services", "mobility"}
-        else "Dados sensiveis devem ser criptografados e expostos somente por escopo autorizado."
-    )
+    if module["slug"] == "jobs":
+        extra = "PDFs CTPS sao cifrados em storage privado; somente o titular recupera o arquivo e cada leitura gera auditoria."
+    elif module["slug"] in {"marketplace", "delivery", "services", "mobility"}:
+        extra = "Conteudos de texto, links e anexos passam por bloqueio anti-burla e moderacao."
+    else:
+        extra = "Dados sensiveis devem ser criptografados e expostos somente por escopo autorizado."
     return dedent(
         f"""\
         # Security: {module["title"]}
@@ -647,7 +656,7 @@ def expected_files(catalog: dict) -> dict[Path, str]:
                 base / "README.md": render_readme(module),
                 base / "main.py": render_main(slug),
                 base / "requirements.txt": (
-                    "fastapi==0.136.1\npypdf==6.12.1\nstarlette==1.0.1\nuvicorn[standard]==0.34.2\n"
+                    "cryptography==48.0.0\nfastapi==0.136.1\npypdf==6.12.1\npsycopg[binary]==3.3.4\nstarlette==1.0.1\nuvicorn[standard]==0.34.2\n"
                     if slug == "jobs"
                     else "fastapi==0.136.1\nstarlette==1.0.1\nuvicorn[standard]==0.34.2\n"
                 ),

@@ -60,6 +60,7 @@ def main() -> int:
             "jobs": [
                 ("/resumes/{resume_id}/imports/ctps-digital", "post"),
                 ("/resumes/{resume_id}/complete", "get"),
+                ("/resumes/{resume_id}/documents/{document_id}/content", "get"),
                 ("/vacancies", "get"),
                 ("/recruiting/resumes", "get"),
                 ("/recruiting/resumes/{resume_id}", "get"),

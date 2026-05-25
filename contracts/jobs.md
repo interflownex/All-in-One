@@ -41,10 +41,13 @@
 ## Fluxo Jobs e procedencia
 
 - `POST /resumes/{resume_id}/imports/ctps-digital` recebe PDF da CTPS Digital, registra hash imutavel e classifica itens extraidos como `validated_by_document_import`.
+- `GET /resumes/{resume_id}/documents/{document_id}/content` descriptografa o PDF somente para o titular autenticado; recrutadores nao recebem o arquivo.
 - Experiencias digitadas em `employment_records` sao sempre `self_declared_unverified`, inclusive trabalho informal e descricoes adicionais.
 - `GET /vacancies` expõe vagas publicadas para candidatos.
 - `GET /recruiting/resumes/{resume_id}` exige empresa ativa no All-in-One Business, papel de recrutador, escopo Jobs e registra cada visualizacao.
 - O importador documental nao equivale a verificacao oficial externa; esse estado permanece exibido em `official_verification_status`.
+- PDFs CTPS ficam cifrados em cofre privado AES-256-GCM; em producao a chave deve vir de vault/KMS.
+- `ALL_IN_ONE_JOBS_POSTGRES_DSN` habilita persistencia tipada em `jobs.*` com auditoria e outbox PostgreSQL.
 
 
         ## Eventos

@@ -166,12 +166,21 @@ services:
     build:
       context: ../..
       dockerfile: modules/jobs/Dockerfile
+    environment:
+      ALL_IN_ONE_STORAGE_DIR: /data
+      ALL_IN_ONE_PRIVATE_DOCUMENT_DIR: /private-documents
+      ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY: ${ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY:-}
+      ALL_IN_ONE_JOBS_POSTGRES_DSN: ${ALL_IN_ONE_JOBS_POSTGRES_DSN:-}
+    volumes:
+      - domain-data:/data
+      - private-document-data:/private-documents
     ports: ["8112:8000"]
 
 volumes:
   postgres-data:
   mongodb-data:
   domain-data:
+  private-document-data:
 
 networks:
   platform:

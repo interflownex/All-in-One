@@ -26,7 +26,7 @@ eventos, controles de seguranca, infraestrutura e gates de CI.
 
 O usuario final pode manter curriculo, registrar experiencias informais,
 buscar vagas e candidatar-se. O modulo `jobs` importa um PDF da CTPS Digital,
-preserva o hash da evidencia e exibe itens extraidos como
+preserva o hash da evidencia, cifra o arquivo em storage privado e exibe itens extraidos como
 `validated_by_document_import`; dados digitados pelo usuario sao exibidos
 como `self_declared_unverified`. A importacao nao declara verificacao oficial
 externa sem integracao autorizada.
@@ -34,6 +34,10 @@ externa sem integracao autorizada.
 Somente recrutadores vinculados a empresa ativa no All-in-One Business, com
 escopo Jobs, acessam a base visivel de curriculos. Cada consulta individual
 gera log append-only. Veja [docs/JOBS_CTSP_DIGITAL.md](docs/JOBS_CTSP_DIGITAL.md).
+
+Jobs usa tabelas PostgreSQL tipadas e a outbox central quando
+`ALL_IN_ONE_JOBS_POSTGRES_DSN` esta configurada; sem DSN, o store SQLite
+permanece disponivel para desenvolvimento isolado.
 
 ## Identidade e integridade
 

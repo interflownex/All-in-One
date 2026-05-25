@@ -1,7 +1,9 @@
 fastapi==0.136.1
+cryptography==48.0.0
 httpx==0.28.1
 pytest==9.0.3
 pypdf==6.12.1
+psycopg[binary]==3.3.4
 PyYAML==6.0.2
 starlette==1.0.1
 uvicorn[standard]==0.34.2

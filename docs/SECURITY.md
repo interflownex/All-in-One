@@ -16,6 +16,8 @@
 - O PDF CTPS importado e evidenciado por hash; registros extraidos sao
   separados visualmente de declaracoes manuais e cada leitura empresarial e
   registrada de forma imutavel.
+- Arquivos CTPS sao cifrados em storage privado com AES-256-GCM, recuperaveis
+  somente pelo titular; producao exige chave carregada por vault/KMS.
 
 ## Controles de producao obrigatorios
 

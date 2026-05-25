@@ -3,9 +3,9 @@ name: Database
 on:
   push:
     branches: [main]
-    paths: ["database/**", ".github/workflows/database.yml"]
+    paths: ["database/**", "modules/shared/**", "tests/test_jobs_postgres_integration.py", "requirements-dev.txt", ".github/workflows/database.yml"]
   pull_request:
-    paths: ["database/**", ".github/workflows/database.yml"]
+    paths: ["database/**", "modules/shared/**", "tests/test_jobs_postgres_integration.py", "requirements-dev.txt", ".github/workflows/database.yml"]
 
 jobs:
   migrations:
@@ -25,6 +25,11 @@ jobs:
       PGPASSWORD: test-password
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
       - name: Apply migrations
         run: |
           for file in database/postgres/migrations/*.sql; do
@@ -32,4 +37,8 @@ jobs:
           done
       - name: Confirm immutable triggers
         run: |
-          psql -h localhost -U all_in_one -d all_in_one -c "SELECT tgname FROM pg_trigger WHERE tgname IN ('immutable_audit_logs','immutable_finance_ledger');"
+          test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM pg_trigger WHERE tgname IN ('immutable_audit_logs','immutable_finance_ledger','immutable_jobs_resume_documents','immutable_jobs_resume_access_logs');")" = "4"
+      - name: Exercise Jobs typed persistence and private CTPS vault
+        env:
+          ALL_IN_ONE_JOBS_POSTGRES_TEST_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
+        run: python -m pytest --import-mode=importlib -q tests/test_jobs_postgres_integration.py

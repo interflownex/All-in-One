@@ -23,6 +23,7 @@ class SQLiteStore:
 
     def __init__(self, module: str, database_path: str = ":memory:") -> None:
         self.module = module
+        self.backend = "sqlite_contract_store"
         if database_path != ":memory:":
             Path(database_path).parent.mkdir(parents=True, exist_ok=True)
         self.connection = sqlite3.connect(database_path, check_same_thread=False)

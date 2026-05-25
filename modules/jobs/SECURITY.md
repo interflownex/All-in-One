@@ -5,4 +5,4 @@
 - RBAC/ABAC, device fingerprint, rate limit e auditoria imutavel.
 - Segredos apenas via vault ou variaveis de ambiente.
 - Retencao, consentimento e anonimizacao em conformidade com LGPD.
-- Dados sensiveis devem ser criptografados e expostos somente por escopo autorizado.
+- PDFs CTPS sao cifrados em storage privado; somente o titular recupera o arquivo e cada leitura gera auditoria.

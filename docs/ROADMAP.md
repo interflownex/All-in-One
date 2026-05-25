@@ -8,15 +8,18 @@
 - PostgreSQL/MongoDB, identidade, RBAC, wallet, escrow, auditoria e eventos.
 - Curriculo, busca/publicacao de vagas, importacao PDF da CTPS com procedencia
   exibivel e consulta restrita a empresas Business ativas.
+- Jobs com adapter PostgreSQL tipado e cofre CTPS AES-256-GCM para execucao
+  configurada por DSN/chave secreta.
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.
 
 ## Proximos incrementos bloqueadores para beta
 
-1. Vincular os adapters produtivos dos endpoints aos schemas PostgreSQL e ao
-   barramento RabbitMQ; o store SQLite atual executa o contrato local.
+1. Expandir o adapter PostgreSQL ja implementado para Jobs aos demais dominios
+   e publicar a outbox no barramento RabbitMQ.
 2. Integrar Identity/API Hub com OIDC, MFA, KMS, KYC/KYB e liveness aprovados.
-3. Conectar storage privado e verificador autorizado para CTPS Digital, sem
-   alterar a classificacao historica dos itens autodeclarados.
+3. Integrar verificador oficial autorizado para CTPS Digital, sem alterar a
+   classificacao historica dos itens autodeclarados; storage privado cifrado
+   ja esta implementado.
 4. Integrar payment provider, fiscal brasileiro e conciliacao em sandbox.
 5. Implementar jornadas web/mobile dos seis apps e testes E2E.
 6. Entregar moderacao OCR/IA, notificacoes e observabilidade.

@@ -71,6 +71,8 @@ def main() -> int:
         "jobs.resumes",
         "employment_provenance_integrity",
         "immutable_jobs_resume_access_logs",
+        "storage_encryption",
+        "idx_jobs_documents_idempotency",
     ]:
         if needle not in migrations:
             fail(f"Controle SQL ausente: {needle}", errors)
