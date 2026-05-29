@@ -1,0 +1,23 @@
+{
+  "version": "2026-05-29",
+  "language": "pt-BR",
+  "enabled": true,
+  "scope": "workspace",
+  "workspace": "C:\\Users\\ereta\\.codex\\worktrees\\all-in-one",
+  "default_remote": "origin",
+  "default_branch_strategy": "current_branch",
+  "required_closeout_commands": [
+    "git add -A",
+    "git commit",
+    "git push"
+  ],
+  "script": "scripts/git_auto_sync.ps1",
+  "default_command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -Activity \"<descricao da atividade>\"",
+  "rules": [
+    "Executar a sincronizacao ao concluir cada atividade com alteracoes no workspace.",
+    "Nao criar commit vazio quando nao houver mudancas staged.",
+    "Bloquear sincronizacao automatica se houver merge ou rebase em andamento.",
+    "Usar mensagem de commit rastreavel com prefixo chore(auto-sync).",
+    "Manter respostas, alertas, erros, orientacoes e opcoes em portugues do Brasil."
+  ]
+}
