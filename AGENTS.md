@@ -14,5 +14,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 ```
 
 - A politica persistente fica em `config/autonomy/git_auto_sync_policy.json`.
+- Neste checkout, o push automatico deve usar o remoto `fork` quando `origin` nao aceitar escrita.
 - Nao criar commit vazio quando nao houver mudancas.
 - Se houver merge ou rebase em andamento, parar e reportar o bloqueio em portugues do Brasil.

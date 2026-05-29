@@ -1,6 +1,6 @@
 param(
     [string]$Activity = "atividade Codex",
-    [string]$Remote = "origin",
+    [string]$Remote = "",
     [string]$Branch = "",
     [switch]$NoFetch,
     [Parameter(ValueFromRemainingArguments = $true)]
@@ -41,6 +41,19 @@ if ([string]::IsNullOrWhiteSpace($Branch)) {
     $Branch = (& git branch --show-current).Trim()
     if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($Branch)) {
         throw "Nao foi possivel identificar a branch atual."
+    }
+}
+
+if ([string]::IsNullOrWhiteSpace($Remote)) {
+    $Remote = (& git config --get "branch.$Branch.pushRemote").Trim()
+    if ([string]::IsNullOrWhiteSpace($Remote)) {
+        $Remote = (& git config --get remote.pushDefault).Trim()
+    }
+    if ([string]::IsNullOrWhiteSpace($Remote)) {
+        $Remote = (& git config --get "branch.$Branch.remote").Trim()
+    }
+    if ([string]::IsNullOrWhiteSpace($Remote)) {
+        $Remote = "origin"
     }
 }
 
