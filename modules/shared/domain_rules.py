@@ -48,7 +48,7 @@ class ResourceRule:
 
 
 MODULE_ENTITIES: dict[str, tuple[str, ...]] = {
-    "identity": ("users", "documents", "biometrics", "sessions", "identity_verifications", "consent_records"),
+    "identity": ("users", "kyc_records", "business_profiles", "consents", "audit_logs"),
     "business": ("companies", "branches", "company_documents", "user_company_memberships"),
     "permissions": ("roles", "permissions", "user_roles", "access_policies", "approval_limits"),
     "finance": ("wallets", "ledger_entries", "escrows", "splits", "invoices"),
@@ -110,20 +110,38 @@ def lifecycle_flow(prefix: str) -> dict[str, Transition]:
 
 RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
     ("identity", "users"): ResourceRule(
-        ("full_name", "cpf_document", "email", "phone_e164", "face_hash", "terms_accepted_at", "lgpd_consent_at"),
-        ("cpf_document", "email", "phone_e164", "face_hash"),
-        "pending_validation",
+        ("full_name", "email", "password_hash"),
+        ("email", "document_cpf"),
+        "PENDING_KYC",
         sensitive=True,
         transitions={
-            "verify": Transition(
-                frozenset({"pending_validation", "under_review"}),
-                "verified",
-                APPROVER_ROLES,
-                True,
-                "identity.user.verified",
-            ),
-            "block": Transition(frozenset({"pending_validation", "verified", "active"}), "blocked", APPROVER_ROLES, True),
+            "verify": Transition(frozenset({"PENDING_KYC"}), "ACTIVE", APPROVER_ROLES, True, "identity.user.verified"),
+            "suspend": Transition(frozenset({"ACTIVE"}), "SUSPENDED", APPROVER_ROLES, True),
+            "block": Transition(frozenset({"PENDING_KYC", "ACTIVE", "SUSPENDED"}), "BLOCKED", APPROVER_ROLES, True),
         },
+    ),
+    ("identity", "kyc_records"): ResourceRule(
+        ("user_id", "biometry_hash"),
+        initial_status="PROCESSING",
+        sensitive=True,
+        transitions={
+            "approve": Transition(frozenset({"PROCESSING"}), "APPROVED", APPROVER_ROLES, True, "identity.kyc.approved"),
+            "reject": Transition(frozenset({"PROCESSING"}), "REJECTED", APPROVER_ROLES, True, "identity.kyc.rejected"),
+        },
+    ),
+    ("identity", "business_profiles"): ResourceRule(
+        ("owner_user_id", "legal_name", "document_cnpj"),
+        ("document_cnpj",),
+        "PENDING_KYB",
+        transitions={
+            "approve": Transition(frozenset({"PENDING_KYB"}), "ACTIVE", APPROVER_ROLES, True, "identity.kyb.approved"),
+            "reject": Transition(frozenset({"PENDING_KYB"}), "REJECTED", APPROVER_ROLES, True, "identity.kyb.rejected"),
+        },
+    ),
+    ("identity", "consents"): ResourceRule(
+        ("user_id", "document_version", "consent_type"),
+        initial_status="accepted",
+        immutable=True,
     ),
     ("business", "companies"): ResourceRule(
         ("cnpj", "root_cnpj", "legal_name", "legal_representative_user_id"),

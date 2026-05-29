@@ -48,7 +48,12 @@ SPECIAL_SCREENS = {
         ("recruiter_resume_review", "Triagem Business com acesso auditado, filtros e selo de procedencia de cada experiencia."),
     ],
     "identity": [
-        ("registration_kyc", "Cadastro All-in-One ID, consentimento LGPD e jornada de verificacao de identidade."),
+        ("auth_gateway", "Login, geracao e validacao de tokens JWT/OAuth2."),
+        ("kyc_verification", "Interface e servico de processamento de biometria facial e OCR de documentos fisicos."),
+        ("kyb_business", "Servico de onboarding corporativo, validacao de CNPJ e quadro societário."),
+        ("mfa_manager", "Servico de duplo fator de autenticacao (TOTP/SMS/Email)."),
+        ("consent_lgpd", "Gestao de aceite de termos e versionamento de politicas de privacidade."),
+        ("session_control", "Monitoramento de dispositivos logados e revogação remota de acesso."),
     ],
     "finance": [
         ("wallet_ledger", "Wallet e extrato imutavel com BRL, NEX, transacoes e seguranca."),

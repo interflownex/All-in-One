@@ -54,10 +54,9 @@ class AuditPayload(BaseModel):
 
 class IdentityRegistration(BaseModel):
     full_name: str = Field(min_length=3, max_length=200)
-    cpf_document: str = Field(min_length=5, max_length=32)
     email: str = Field(min_length=5, max_length=254)
-    phone_e164: str = Field(min_length=8, max_length=20)
-    face_hash: str = Field(min_length=16, max_length=256)
+    password_hash: str = Field(min_length=8)
+    document_cpf: str | None = Field(default=None, min_length=11, max_length=14)
     terms_accepted_at: str = Field(min_length=10, max_length=40)
     lgpd_consent_at: str = Field(min_length=10, max_length=40)
 
@@ -96,8 +95,13 @@ def _database_path(module_name: str) -> str:
 def _store_for(module_name: str) -> Any:
     if module_name == "jobs" and os.getenv("ALL_IN_ONE_JOBS_POSTGRES_DSN"):
         from .jobs_postgres_store import JobsPostgresStore
-
         return JobsPostgresStore(os.environ["ALL_IN_ONE_JOBS_POSTGRES_DSN"])
+    if module_name == "identity" and os.getenv("ALL_IN_ONE_IDENTITY_POSTGRES_DSN"):
+        from .identity_postgres_store import IdentityPostgresStore
+        return IdentityPostgresStore(os.environ["ALL_IN_ONE_IDENTITY_POSTGRES_DSN"])
+    if module_name == "finance" and os.getenv("ALL_IN_ONE_FINANCE_POSTGRES_DSN"):
+        from .finance_postgres_store import FinancePostgresStore
+        return FinancePostgresStore(os.environ["ALL_IN_ONE_FINANCE_POSTGRES_DSN"])
     return SQLiteStore(module_name, _database_path(module_name))
 
 
@@ -664,4 +668,5 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         store.soft_delete(item, str(actor.user_id))
         return Response(status_code=204)
 
+    app.extra = {"store": store, "rule_for": rule_for}
     return app

@@ -89,6 +89,16 @@ services:
     build:
       context: ../..
       dockerfile: modules/identity/Dockerfile
+    environment:
+      ALL_IN_ONE_STORAGE_DIR: /data
+      ALL_IN_ONE_IDENTITY_POSTGRES_DSN: ${ALL_IN_ONE_IDENTITY_POSTGRES_DSN:-postgresql://all_in_one:local-development-only@postgres:5432/all_in_one}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
     ports: ["8101:8000"]
 
   finance:
@@ -96,6 +106,16 @@ services:
     build:
       context: ../..
       dockerfile: modules/finance/Dockerfile
+    environment:
+      ALL_IN_ONE_STORAGE_DIR: /data
+      ALL_IN_ONE_FINANCE_POSTGRES_DSN: ${ALL_IN_ONE_FINANCE_POSTGRES_DSN:-postgresql://all_in_one:local-development-only@postgres:5432/all_in_one}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
     ports: ["8102:8000"]
 
   marketplace:

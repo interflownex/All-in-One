@@ -10,10 +10,10 @@ param(
 $ErrorActionPreference = "Stop"
 
 function Invoke-Git {
-    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
-    & git @Args
+    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$GitArgs)
+    & git @GitArgs
     if ($LASTEXITCODE -ne 0) {
-        throw "git $($Args -join ' ') falhou com codigo $LASTEXITCODE"
+        throw "git $($GitArgs -join ' ') falhou com codigo $LASTEXITCODE"
     }
 }
 

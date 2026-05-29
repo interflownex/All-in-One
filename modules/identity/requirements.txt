@@ -1,3 +1,7 @@
 fastapi==0.136.1
 starlette==1.0.1
 uvicorn[standard]==0.34.2
+PyJWT==2.10.1
+passlib[argon2]==1.7.4
+motor==3.7.0
+pymongo==4.11.1
