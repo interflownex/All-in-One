@@ -1,18 +1,16 @@
 name: Codex Publish
 
 on:
-  push:
+  pull_request:
     branches:
-      - codex/ambiente-desenvolvimento-persistente
-    paths:
-      - .codex-publish.patch
-      - .github/workflows/codex-publish.yml
+      - main
 
 permissions:
   contents: write
 
 jobs:
   publish:
+    if: github.event.pull_request.head.ref == 'codex/ambiente-desenvolvimento-persistente'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
