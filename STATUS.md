@@ -1,5 +1,66 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-06-07 Ambiente de Desenvolvimento Persistente
+
+### Concluido neste ciclo
+
+- Ferramentas do Cloud Shell verificadas e expostas persistentemente no
+  `PATH`: Python 3.12, uv, Node.js 24, npm 11, Gemini CLI, ripgrep, Code OSS,
+  Docker/Compose, Terraform, gcloud, GitHub CLI, kubectl e PowerShell.
+- Ambiente `.venv` completado com todas as dependencias centrais, dos 25
+  modulos e dos workers, incluindo `pip`, Playwright e `pytest-playwright`.
+- Chromium, Chromium Headless Shell e FFmpeg do Playwright instalados no
+  diretorio persistente do usuario.
+- Dependencias dos frontends Valley, Valley Business e Valley Rider instaladas
+  pelos respectivos `package-lock.json`.
+- As 11 extensoes recomendadas em `.vscode/extensions.json` estao presentes no
+  Code OSS, incluindo Python, Pylance, Debugpy, Docker, PowerShell, YAML,
+  GitHub Actions, GitHub Pull Requests, GitLens, Remote WSL e Kubernetes.
+- Workspace configurado para o interpretador Linux `.venv/bin/python`, terminal
+  Bash e integracoes Google, AlloyDB, Gemini Code Assist e Stitch ativas.
+- Corrigido o polling do painel de telemetria Business para evitar atualizacao
+  sincrona de estado dentro de `useEffect`.
+
+### Validacoes executadas
+
+- Suite Python completa: 277 testes aprovados e 31 ignorados por dependerem de
+  servicos ou cenarios externos opcionais.
+- Lint e build de producao aprovados nos tres frontends React/Vite.
+- Smoke test real do Chromium via Playwright aprovado.
+- Docker Compose, configuracao Stitch, scaffold de 452 artefatos e validador
+  central do repositorio aprovados.
+- Todas as sete flags persistentes de integracao foram confirmadas em nova
+  sessao de login.
+
+## STATUS OPERACIONAL - 2026-06-07 Importacao, Stitch e Suite Central
+
+### Concluido neste ciclo
+
+- Repositorio `https://github.com/interflownex/All-in-One` importado em ambiente
+  Google Cloud Shell e alinhado com `origin/main`.
+- MCP Stitch configurado de forma persistente no Codex por transporte HTTP,
+  usando `STITCH_API_KEY` somente por variavel de ambiente.
+- `requirements-dev.txt` passou a instalar `PyJWT==2.10.1`, dependencia exigida
+  pelos testes e pelas rotas autenticadas de Identity e API Hub.
+- Eliminada a falha em que `modules/api_hub/main.py` carregava `jwt = None` na
+  suite central, derrubando os testes do gateway de catalogo, pagamento,
+  historico, avaliacao e suporte.
+
+### Validacoes executadas
+
+- `python3 scripts/validate_stitch_mcp_config.py`: sucesso.
+- `.venv/bin/python scripts/check_generated_artifacts.py`: sucesso para 452
+  artefatos, 25 contratos OpenAPI e validacao completa do repositorio.
+- `.venv/bin/python -m pytest -q tests/test_api_hub_catalog_gateway.py`: 11
+  testes aprovados.
+- `.venv/bin/python -m pytest -q --ignore=tests/e2e`: 272 testes aprovados e 31
+  ignorados por dependencias/servicos externos opcionais.
+
+### Pendencias rastreadas
+
+- Executar validacoes Docker/PostgreSQL/RabbitMQ e integracoes remotas que
+  dependem de servicos, credenciais e infraestrutura externa.
+
 ## STATUS OPERACIONAL - 2026-06-06 Suporte, Disputa e Metrics CRM/BI
 
 ### Concluido neste ciclo

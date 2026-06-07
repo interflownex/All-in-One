@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface TelemetryMetrics {
   status: string;
@@ -16,7 +16,7 @@ export function TelemetryDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchMetrics = async () => {
+  const fetchMetrics = useCallback(async () => {
     try {
       setLoading(true);
       // Aqui usamos o endpoint do gateway
@@ -32,14 +32,16 @@ export function TelemetryDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    fetchMetrics();
+    const initialFetch = setTimeout(fetchMetrics, 0);
     const interval = setInterval(fetchMetrics, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      clearTimeout(initialFetch);
+      clearInterval(interval);
+    };
+  }, [fetchMetrics]);
 
   return (
     <div className="glass-card" style={{ gridColumn: '1 / -1' }}>

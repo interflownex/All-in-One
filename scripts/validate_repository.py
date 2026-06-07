@@ -199,7 +199,7 @@ def main() -> int:
         fail("Configuracao VS Code ausente: .vscode/settings.json", errors)
     else:
         settings = json.loads(VSCODE_SETTINGS.read_text(encoding="utf-8"))
-        expected_python = "${workspaceFolder}\\.venv\\Scripts\\python.exe"
+        expected_python = "${workspaceFolder}/.venv/bin/python"
         if settings.get("python.defaultInterpreterPath") != expected_python:
             fail(f"python.defaultInterpreterPath deve ser {expected_python}. Corrija no .vscode/settings.json e execute python -m venv .venv", errors)
         if settings.get("python.testing.pytestArgs") not in ([], None):
