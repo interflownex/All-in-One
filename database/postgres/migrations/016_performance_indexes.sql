@@ -3,10 +3,13 @@
 
 -- 1. Otimizacao do Dispatcher da Outbox (Busca por eventos prontos para envio/retry)
 CREATE INDEX IF NOT EXISTS idx_outbox_dispatcher_ready
-ON audit.domain_events (next_retry_at, status)
+ON audit.domain_events ((metadata->>'next_retry_at'), status)
 WHERE status = 'pending';
 
 -- 2. Rastreabilidade Transversal (Busca por Correlation ID em Logs e Eventos)
+ALTER TABLE audit.logs
+ADD COLUMN IF NOT EXISTS correlation_id UUID NOT NULL DEFAULT gen_random_uuid();
+
 CREATE INDEX IF NOT EXISTS idx_audit_logs_correlation ON audit.logs (correlation_id);
 CREATE INDEX IF NOT EXISTS idx_audit_events_correlation ON audit.domain_events (correlation_id);
 

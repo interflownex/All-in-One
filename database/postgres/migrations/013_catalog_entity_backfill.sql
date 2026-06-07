@@ -12,8 +12,6 @@ BEGIN
                 ('finance', 'splits'),
                 ('finance', 'invoices'),
                 ('marketplace', 'carts'),
-                ('marketplace', 'reviews'),
-                ('marketplace', 'disputes'),
                 ('stock', 'price_rules'),
                 ('stock', 'supplier_orders'),
                 ('delivery', 'quotes'),

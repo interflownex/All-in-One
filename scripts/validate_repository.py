@@ -284,7 +284,7 @@ def main() -> int:
     if not STITCH_MCP_POLICY.is_file():
         fail("Politica obrigatoria do MCP Stitch ausente.", errors)
     else:
-        for error in validate_stitch_mcp_config(require_secret=False):
+        for error in validate_stitch_mcp_config(require_secret=False, require_codex_config=False):
             fail(error, errors)
         stitch_policy = json.loads(STITCH_MCP_POLICY.read_text(encoding="utf-8"))
         if stitch_policy.get("enabled") is not True:

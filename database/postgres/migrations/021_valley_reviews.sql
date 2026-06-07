@@ -1,5 +1,25 @@
 BEGIN;
 
+DO $$
+BEGIN
+    IF to_regclass('marketplace.reviews') IS NOT NULL
+       AND NOT EXISTS (
+           SELECT 1
+           FROM information_schema.columns
+           WHERE table_schema = 'marketplace'
+             AND table_name = 'reviews'
+             AND column_name = 'order_id'
+       )
+    THEN
+        IF to_regclass('marketplace.reviews_legacy_catalog') IS NOT NULL THEN
+            RAISE EXCEPTION
+                'marketplace.reviews uses the legacy catalog schema and marketplace.reviews_legacy_catalog already exists';
+        END IF;
+
+        ALTER TABLE marketplace.reviews RENAME TO reviews_legacy_catalog;
+    END IF;
+END $$;
+
 CREATE TABLE IF NOT EXISTS marketplace.reviews (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES identity.users(id),
