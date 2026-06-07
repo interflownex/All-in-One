@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface TelemetryMetrics {
   status: string;
@@ -16,10 +16,10 @@ export function TelemetryDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchMetrics = async () => {
+  const fetchMetrics = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       const res = await fetch('http://127.0.0.1:8000/gateway/telemetry/outbox');
       if (!res.ok) {
         throw new Error(`Erro HTTP: ${res.status}`);
@@ -32,14 +32,16 @@ export function TelemetryDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    
-    fetchMetrics();
+    const initialFetch = setTimeout(fetchMetrics, 0);
     const interval = setInterval(fetchMetrics, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      clearTimeout(initialFetch);
+      clearInterval(interval);
+    };
+  }, [fetchMetrics]);
 
   return (
     <div className="glass-card" style={{ gridColumn: '1 / -1' }}>

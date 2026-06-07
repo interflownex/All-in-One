@@ -45,6 +45,15 @@ function Test-GitPath {
     return (Test-Path $value)
 }
 
+function Get-GitConfigValue {
+    param([string]$Key)
+    $value = & $GitExecutable config --get $Key
+    if ($LASTEXITCODE -ne 0 -or $null -eq $value) {
+        return ""
+    }
+    return ([string]$value).Trim()
+}
+
 $repoRoot = & $GitExecutable rev-parse --show-toplevel
 if ($LASTEXITCODE -ne 0) {
     throw "Este comando precisa ser executado dentro de um repositorio Git."
@@ -64,12 +73,12 @@ if ([string]::IsNullOrWhiteSpace($Branch)) {
 }
 
 if ([string]::IsNullOrWhiteSpace($Remote)) {
-    $Remote = (& $GitExecutable config --get "branch.$Branch.pushRemote").Trim()
+    $Remote = Get-GitConfigValue "branch.$Branch.pushRemote"
     if ([string]::IsNullOrWhiteSpace($Remote)) {
-        $Remote = (& $GitExecutable config --get remote.pushDefault).Trim()
+        $Remote = Get-GitConfigValue "remote.pushDefault"
     }
     if ([string]::IsNullOrWhiteSpace($Remote)) {
-        $Remote = (& $GitExecutable config --get "branch.$Branch.remote").Trim()
+        $Remote = Get-GitConfigValue "branch.$Branch.remote"
     }
     if ([string]::IsNullOrWhiteSpace($Remote)) {
         $Remote = "origin"
