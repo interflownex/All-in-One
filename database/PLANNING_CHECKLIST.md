@@ -77,9 +77,11 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
   - **Dependência:** Módulo Jobs funcional.
   - **Módulo Afetado:** `modules/jobs/`.
 
----
-
-## 📄 [FRENTE 5] VALIDAÇÃO DE NEGÓCIO E DOCUMENTOS (JOBS & CTPS DIGITAL)
+- [X] **Tarefa: Manifestos de Deploy K8s para Logística** (2026-06-08)
+  - **Critério de Aceite:** `delivery`, `wms` e `tms` rodando no GKE.
+  - **Status:** Manifestos de Logística concluídos e integrados ao Ingress global.
+  - **Dependência:** Terraform concluído.
+  - **Módulo Afetado:** `infra/kubernetes/logistics/`.
 
 - [ ] **Tarefa: Homologação do Verificador de CTPS Digital**
   - **Critério de Aceite:** Integração com o provedor oficial (ou adapter de alta fidelidade) para validação de procedência do PDF.

@@ -24,3 +24,38 @@ spec:
             name: api-hub
             port:
               number: 80
+      - path: /finance
+        pathType: Prefix
+        backend:
+          service:
+            name: finance
+            port:
+              number: 80
+      - path: /marketplace
+        pathType: Prefix
+        backend:
+          service:
+            name: marketplace
+            port:
+              number: 80
+      - path: /delivery
+        pathType: Prefix
+        backend:
+          service:
+            name: delivery
+            port:
+              number: 80
+      - path: /wms
+        pathType: Prefix
+        backend:
+          service:
+            name: wms
+            port:
+              number: 80
+      - path: /tms
+        pathType: Prefix
+        backend:
+          service:
+            name: tms
+            port:
+              number: 80

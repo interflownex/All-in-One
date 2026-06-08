@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wms
+  namespace: all-in-one
+  labels:
+    app: wms
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: wms
+  template:
+    metadata:
+      labels:
+        app: wms
+    spec:
+      containers:
+      - name: wms
+        image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/wms:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ALL_IN_ONE_WMS_POSTGRES_DSN
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: wms-dsn
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wms
+  namespace: all-in-one
+spec:
+  selector:
+    app: wms
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
