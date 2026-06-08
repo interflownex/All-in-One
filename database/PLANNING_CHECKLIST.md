@@ -1,0 +1,92 @@
+# 📑 CHECKLIST MESTRE DE PLANEJAMENTO - ALL-IN-ONE
+
+Este documento é a fonte da verdade para a orquestração técnica e evolução do projeto. Atualizado incrementalmente a cada ciclo.
+
+---
+
+## 🏗️ [FRENTE 1] PERSISTÊNCIA DE DADOS (ALLOYDB & MONGODB)
+
+- [ ] **Tarefa: Migração de Stores SQLite para PostgreSQL (AlloyDB)**
+  - **Critério de Aceite:** Todos os 25 módulos utilizando `BasePostgresStore` com sucesso em ambiente de staging.
+  - **Dependência:** Provisionamento do cluster AlloyDB via Terraform.
+  - **Módulo Afetado:** `modules/*/store.py`, `infra/terraform`.
+
+- [ ] **Tarefa: Tipagem Forte de Stores Prioritários (Risco 1-5)**
+  - **Critério de Aceite:** Stores de `finance`, `identity`, `business`, `api_hub` e `marketplace` com schemas tipados e validação de constraints.
+  - **Dependência:** Fase 2 do Plano de Execução.
+  - **Módulo Afetado:** `modules/{finance,identity,business,api_hub,marketplace}`.
+
+- [ ] **Tarefa: Validação de Auditoria Append-Only e Outbox**
+  - **Critério de Aceite:** Logs de auditoria gravados no Postgres e eventos publicados no RabbitMQ para todos os fluxos de mutação.
+  - **Dependência:** Fase 3 do Plano de Execução.
+  - **Módulo Afetado:** `workers/outbox_dispatcher`, `modules/*/main.py`.
+
+---
+
+## 🚢 [FRENTE 2] ORQUESTRAÇÃO E RUNTIME KUBERNETES (GKE)
+
+- [X] **Tarefa: Validação de Disponibilidade no Artifact Registry** (2026-06-08)
+  - **Critério de Aceite:** Script de check confirma as 27 imagens com tag `:latest` disponíveis para pull.
+  - **Dependência:** Conclusão do build `eb8a5547-16ab-4ee4-919e-a4b62212921a`.
+  - **Módulo Afetado:** `scripts/check_artifact_registry.py`.
+
+- [ ] **Tarefa: Provisionamento de Infraestrutura via Terraform**
+  - **Critério de Aceite:** Cluster GKE, AlloyDB e Redis (Memorystore) ativos na GCP via `.tf`.
+  - **Status:** Manifestos de AlloyDB, Redis e VPC criados em `infra/terraform/`.
+  - **Dependência:** Permissões de IAM configuradas.
+  - **Módulo Afetado:** `infra/terraform/`.
+
+- [ ] **Tarefa: Manifestos de Deploy K8s para o Core**
+  - **Critério de Aceite:** `identity`, `api-hub` e `jobs` rodando no GKE com HPA e Ingress configurados.
+  - **Status:** Manifestos de `identity` e Ingress global criados em `infra/kubernetes/core/`.
+  - **Dependência:** Terraform concluído.
+  - **Módulo Afetado:** `infra/kubernetes/core/`.
+
+---
+
+## 🌐 [FRENTE 3] GOVERNANÇA DE APIS (APIGEE & STITCH FRONTEND)
+
+- [ ] **Tarefa: Proxy de Borda para Identity no Apigee**
+  - **Critério de Aceite:** Endpoints de Login/KYC protegidos por Spike Arrest e VerifyOAuthV2.
+  - **Dependência:** Módulo Identity rodando em GKE ou Cloud Run.
+  - **Módulo Afetado:** `config/apigee/proxies/identity/`.
+
+- [ ] **Tarefa: Substituição de Mock Data nas 320+ Telas**
+  - **Critério de Aceite:** Chamadas `fetch` no frontend apontando para o Gateway Apigee com dados reais do Hub.
+  - **Dependência:** Deploy do API Hub.
+  - **Módulo Afetado:** `apps/all-in-one/src/pages/`.
+
+---
+
+## 🔐 [FRENTE 4] SEGURANÇA E GERENCIAMENTO DE SEGREDOS (SECRET MANAGER)
+
+- [ ] **Tarefa: Centralização de Segredos no Cloud Secret Manager**
+  - **Critério de Aceite:** Nenhuma variável de ambiente sensível (DSNs, API Keys) injetada manualmente; uso de Secret Manager.
+  - **Dependência:** Configuração de Workload Identity no GKE.
+  - **Módulo Afetado:** `infra/ci-cd/`, `shared/runtime.py`.
+
+- [ ] **Tarefa: Cifragem de Documentos Privados (Jobs/CTPS)**
+  - **Critério de Aceite:** PDFs da CTPS Digital cifrados com chaves do KMS/Secret Manager antes do storage.
+  - **Dependência:** Módulo Jobs funcional.
+  - **Módulo Afetado:** `modules/jobs/`.
+
+---
+
+## 📄 [FRENTE 5] VALIDAÇÃO DE NEGÓCIO E DOCUMENTOS (JOBS & CTPS DIGITAL)
+
+- [ ] **Tarefa: Homologação do Verificador de CTPS Digital**
+  - **Critério de Aceite:** Integração com o provedor oficial (ou adapter de alta fidelidade) para validação de procedência do PDF.
+  - **Dependência:** Roadmap Fase 5.
+  - **Módulo Afetado:** `modules/jobs/integration_adapters.py`.
+
+- [ ] **Tarefa: Fluxo Completo de Recrutamento B2B**
+  - **Critério de Aceite:** Triagem, agendamento de entrevista e logs de acesso auditáveis operacionais.
+  - **Dependência:** UI de Jobs finalizada.
+  - **Módulo Afetado:** `apps/all-in-one/src/pages/jobs/`.
+
+---
+
+## 🔄 REGRAS DE ATUALIZAÇÃO
+1. **Conclusão:** Alterne `[ ]` para `[X]` e adicione a data da conclusão.
+2. **Priorização:** Itens no topo de cada frente são bloqueadores imediatos.
+3. **Persistência:** Commitar este arquivo após cada atualização significativa de estado.

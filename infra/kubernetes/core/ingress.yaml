@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: all-in-one-ingress
+  namespace: all-in-one
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "all-in-one-ip"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /identity
+        pathType: Prefix
+        backend:
+          service:
+            name: identity
+            port:
+              number: 80
+      - path: /gateway
+        pathType: Prefix
+        backend:
+          service:
+            name: api-hub
+            port:
+              number: 80
