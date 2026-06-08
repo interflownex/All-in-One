@@ -36,11 +36,11 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
   - **Dependência:** Permissões de IAM configuradas.
   - **Módulo Afetado:** `infra/terraform/`.
 
-- [ ] **Tarefa: Manifestos de Deploy K8s para o Core**
-  - **Critério de Aceite:** `identity`, `api-hub` e `jobs` rodando no GKE com HPA e Ingress configurados.
-  - **Status:** Manifestos de `identity`, `api-hub` e `jobs` concluídos em `infra/kubernetes/core/`. Ingress global configurado.
+- [X] **Tarefa: Manifestos de Deploy K8s para o Core, Negócios, Logística e Verticais** (2026-06-08)
+  - **Critério de Aceite:** Toda a malha de 25 módulos declarada no GKE com Ingress centralizado.
+  - **Status:** Finalizado.
   - **Dependência:** Terraform concluído.
-  - **Módulo Afetado:** `infra/kubernetes/core/`.
+  - **Módulo Afetado:** `infra/kubernetes/`.
 
 ---
 

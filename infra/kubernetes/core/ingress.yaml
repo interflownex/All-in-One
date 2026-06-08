@@ -59,3 +59,24 @@ spec:
             name: tms
             port:
               number: 80
+      - path: /erp
+        pathType: Prefix
+        backend:
+          service:
+            name: erp
+            port:
+              number: 80
+      - path: /health
+        pathType: Prefix
+        backend:
+          service:
+            name: health
+            port:
+              number: 80
+      - path: /legal
+        pathType: Prefix
+        backend:
+          service:
+            name: legal
+            port:
+              number: 80
