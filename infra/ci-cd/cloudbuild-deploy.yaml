@@ -2,19 +2,19 @@ steps:
   # --- FASE 1: INFRAESTRUTURA (TERRAFORM) ---
   
   # 1.1 Terraform Init
-  - name: 'hashicorp/terraform:1.6.0'
+  - name: 'hashicorp/terraform:1.8.5'
     id: 'tf-init'
     args: ['init']
     dir: 'infra/terraform'
 
   # 1.2 Terraform Plan
-  - name: 'hashicorp/terraform:1.6.0'
+  - name: 'hashicorp/terraform:1.8.5'
     id: 'tf-plan'
     args: ['plan', '-out=tfplan']
     dir: 'infra/terraform'
 
   # 1.3 Terraform Apply
-  - name: 'hashicorp/terraform:1.6.0'
+  - name: 'hashicorp/terraform:1.8.5'
     id: 'tf-apply'
     args: ['apply', '-auto-approve', 'tfplan']
     dir: 'infra/terraform'
