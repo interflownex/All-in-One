@@ -1,5 +1,31 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-06-08 Build e Push de Imagens Docker para GCP
+
+### Concluído neste ciclo
+
+- Realizado diagnóstico e ativação completa de recursos no Google Cloud para o projeto `all-in-one-498012`.
+- Habilitadas 12 APIs críticas (AlloyDB, Vertex AI, GKE, Cloud Run, Artifact Registry, etc.) via `scripts/google_cloud_control.py`.
+- Configurado o pipeline de CI/CD para Google Cloud Build com manifestos em `infra/ci-cd/`:
+  - `cloudbuild-core.yaml`: Trio essencial (Identity, API Hub, Jobs).
+  - `cloudbuild-full.yaml`: 10 módulos principais de negócios e operações.
+  - `cloudbuild-all.yaml`: Build massivo de todos os 27 componentes (módulos e workers).
+- Iniciado o build total (ID `eb8a5547-16ab-4ee4-919e-a4b62212921a`) usando máquinas de alta performance `E2_HIGHCPU_32` no Google Cloud.
+- Criado script `scripts/generate_full_cloudbuild.py` para geração dinâmica do manifesto de build total baseado nos Dockerfiles existentes.
+- Sincronização Git realizada com sucesso, persistindo as novas configurações de infraestrutura.
+
+### Estado Operacional
+
+- **Infraestrutura:** Google Artifact Registry pronto para receber imagens em `us-central1`.
+- **Build:** Em andamento na nuvem (status `WORKING`).
+- **Git:** Alinhado com `origin/main` e `fork/main`.
+
+### Próximos Passos Naturais
+
+- Validar a conclusão do build total e a presença das imagens no Artifact Registry.
+- Iniciar o planejamento de deploy no Google Kubernetes Engine (GKE) usando os manifestos em `infra/kubernetes`.
+- Configurar o provisionamento do AlloyDB para suporte a dados em escala de produção.
+
 ## STATUS OPERACIONAL - 2026-06-06 Suporte, Disputa e Metrics CRM/BI
 
 ### Concluido neste ciclo
