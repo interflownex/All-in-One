@@ -38,7 +38,7 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
 
 - [ ] **Tarefa: Manifestos de Deploy K8s para o Core**
   - **Critério de Aceite:** `identity`, `api-hub` e `jobs` rodando no GKE com HPA e Ingress configurados.
-  - **Status:** Manifestos de `identity` e Ingress global criados em `infra/kubernetes/core/`.
+  - **Status:** Manifestos de `identity`, `api-hub` e `jobs` concluídos em `infra/kubernetes/core/`. Ingress global configurado.
   - **Dependência:** Terraform concluído.
   - **Módulo Afetado:** `infra/kubernetes/core/`.
 
