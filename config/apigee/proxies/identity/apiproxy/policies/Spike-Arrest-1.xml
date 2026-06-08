@@ -1,0 +1,4 @@
+<SpikeArrest async="false" continueOnError="false" enabled="true" name="Spike-Arrest-1">
+    <DisplayName>Spike Arrest-1</DisplayName>
+    <Rate>30ps</Rate>
+</SpikeArrest>

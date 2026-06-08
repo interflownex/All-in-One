@@ -46,10 +46,17 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
 
 ## 🌐 [FRENTE 3] GOVERNANÇA DE APIS (APIGEE & STITCH FRONTEND)
 
-- [ ] **Tarefa: Proxy de Borda para Identity no Apigee**
+- [X] **Tarefa: Proxy de Borda para Identity no Apigee** (2026-06-08)
   - **Critério de Aceite:** Endpoints de Login/KYC protegidos por Spike Arrest e VerifyOAuthV2.
+  - **Status:** Proxy Bundle base criado em `config/apigee/proxies/identity/`.
   - **Dependência:** Módulo Identity rodando em GKE ou Cloud Run.
   - **Módulo Afetado:** `config/apigee/proxies/identity/`.
+
+- [ ] **Tarefa: Manifestos de Deploy K8s para Negócios**
+  - **Critério de Aceite:** `finance` e `marketplace` rodando no GKE.
+  - **Status:** Manifestos de `finance` e `marketplace` criados em `infra/kubernetes/business/`.
+  - **Dependência:** Terraform concluído.
+  - **Módulo Afetado:** `infra/kubernetes/business/`.
 
 - [ ] **Tarefa: Substituição de Mock Data nas 320+ Telas**
   - **Critério de Aceite:** Chamadas `fetch` no frontend apontando para o Gateway Apigee com dados reais do Hub.
