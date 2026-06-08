@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ai-core.yaml
+  - api-hub.yaml
+  - bi.yaml
+  - bpm.yaml
+  - business.yaml
+  - crm.yaml
+  - delivery.yaml
+  - document.yaml
+  - erp.yaml
+  - finance.yaml
+  - health.yaml
+  - hr.yaml
+  - identity.yaml
+  - jobs.yaml
+  - legal.yaml
+  - marketplace.yaml
+  - mobility.yaml
+  - permissions.yaml
+  - property.yaml
+  - riders.yaml
+  - services.yaml
+  - stock.yaml
+  - tms.yaml
+  - vision.yaml
+  - wms.yaml
+  - outbox-dispatcher.yaml
+  - retention-worker.yaml
+  - platform.yaml
+  - retention-alerting.yaml

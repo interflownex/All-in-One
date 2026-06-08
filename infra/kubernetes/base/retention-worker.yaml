@@ -1,0 +1,27 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: retention-worker
+  namespace: all-in-one
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        metadata:
+          labels: {app: retention-worker}
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: retention-worker
+              image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/retention-worker:latest
+              command: ["python", "-m", "workers.retention_worker.main"]
+              args: ["--postgres", "--job", "retention_review_daily", "--dry-run"]
+              envFrom:
+                - configMapRef: {name: platform-config}
+                - secretRef: {name: platform-secrets-placeholder}

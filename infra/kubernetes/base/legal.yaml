@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: legal
+  namespace: all-in-one
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: legal}
+  template:
+    metadata:
+      labels: {app: legal}
+    spec:
+      containers:
+        - name: legal
+          image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/legal:latest
+          ports: [{containerPort: 8000}]
+          readinessProbe: {httpGet: {path: /health, port: 8000}}
+          envFrom:
+            - configMapRef: {name: platform-config}
+            - secretRef: {name: platform-secrets-placeholder}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: legal
+  namespace: all-in-one
+spec:
+  selector: {app: legal}
+  ports: [{port: 80, targetPort: 8000}]
