@@ -1,0 +1,67 @@
+steps:
+  # --- FASE 1: INFRAESTRUTURA (TERRAFORM) ---
+  
+  # 1.1 Terraform Init
+  - name: 'hashicorp/terraform:1.6.0'
+    id: 'tf-init'
+    args: ['init']
+    dir: 'infra/terraform'
+
+  # 1.2 Terraform Plan
+  - name: 'hashicorp/terraform:1.6.0'
+    id: 'tf-plan'
+    args: ['plan', '-out=tfplan']
+    dir: 'infra/terraform'
+
+  # 1.3 Terraform Apply
+  - name: 'hashicorp/terraform:1.6.0'
+    id: 'tf-apply'
+    args: ['apply', '-auto-approve', 'tfplan']
+    dir: 'infra/terraform'
+
+  # --- FASE 2: ORQUESTRAÇÃO (KUBERNETES) ---
+
+  # 2.1 Obter credenciais do GKE (Garantindo que o cluster foi criado no passo anterior)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'gke-auth'
+    entrypoint: 'bash'
+    args:
+    - '-c'
+    - |
+      gcloud container clusters get-credentials all-in-one-gke --region us-central1 --project all-in-one-498012
+
+  # 2.2 Aplicar Configurações de Base (Namespace, Ingress, Secrets)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'k8s-base'
+    entrypoint: 'bash'
+    args:
+    - '-c'
+    - |
+      kubectl apply -f infra/kubernetes/core/ingress.yaml
+      # Opcional: Criar namespace se não existir
+      kubectl create namespace all-in-one --dry-run=client -o yaml | kubectl apply -f -
+
+  # 2.3 Deploy do Core
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-core'
+    entrypoint: 'bash'
+    args:
+    - '-c'
+    - |
+      kubectl apply -R -f infra/kubernetes/core/
+
+  # 2.4 Deploy de Negócios e Logística
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-apps'
+    entrypoint: 'bash'
+    args:
+    - '-c'
+    - |
+      kubectl apply -R -f infra/kubernetes/business/
+      kubectl apply -R -f infra/kubernetes/logistics/
+      kubectl apply -R -f infra/kubernetes/verticals/
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  env:
+    - 'GOOGLE_CLOUD_PROJECT=all-in-one-498012'
