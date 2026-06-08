@@ -30,11 +30,16 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
   - **Dependência:** Conclusão do build `eb8a5547-16ab-4ee4-919e-a4b62212921a`.
   - **Módulo Afetado:** `scripts/check_artifact_registry.py`.
 
-- [ ] **Tarefa: Provisionamento de Infraestrutura via Terraform**
-  - **Critério de Aceite:** Cluster GKE, AlloyDB e Redis (Memorystore) ativos na GCP via `.tf`.
-  - **Status:** Manifestos de AlloyDB, Redis e VPC criados em `infra/terraform/`.
-  - **Dependência:** Permissões de IAM configuradas.
-  - **Módulo Afetado:** `infra/terraform/`.
+- [X] **Tarefa: Configuração de Segredos Reais** (2026-06-08)
+  - **Critério de Aceite:** DSNs e chaves JWT/Documentos disponíveis no Cloud Secret Manager.
+  - **Status:** Finalizado via `scripts/setup_cloud_secrets.py`.
+  - **Módulo Afetado:** `scripts/setup_cloud_secrets.py`.
+
+- [ ] **Tarefa: Terraform Apply (Execução via Cloud Build)**
+  - **Critério de Aceite:** Cluster GKE, AlloyDB e Redis ativos e acessíveis.
+  - **Status:** Manifesto de automação criado em `infra/ci-cd/cloudbuild-infra.yaml`. Pronto para disparo remoto.
+  - **Dependência:** Permissões de IAM para o Cloud Build service account.
+  - **Módulo Afetado:** `infra/ci-cd/`.
 
 - [X] **Tarefa: Manifestos de Deploy K8s para o Core, Negócios, Logística e Verticais** (2026-06-08)
   - **Critério de Aceite:** Toda a malha de 25 módulos declarada no GKE com Ingress centralizado.

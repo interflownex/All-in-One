@@ -1,0 +1,20 @@
+steps:
+  # 1. Terraform Init
+  - name: 'hashicorp/terraform:1.6.0'
+    args: ['init']
+    dir: 'infra/terraform'
+
+  # 2. Terraform Plan
+  - name: 'hashicorp/terraform:1.6.0'
+    args: ['plan', '-out=tfplan']
+    dir: 'infra/terraform'
+
+  # 3. Terraform Apply (Auto-approve para automação)
+  - name: 'hashicorp/terraform:1.6.0'
+    args: ['apply', '-auto-approve', 'tfplan']
+    dir: 'infra/terraform'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  env:
+    - 'GOOGLE_CLOUD_PROJECT=all-in-one-498012'
