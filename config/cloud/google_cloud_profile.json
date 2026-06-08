@@ -2,8 +2,11 @@
   "version": "2026-06-06",
   "enabled": true,
   "project_environment_variable": "GOOGLE_CLOUD_PROJECT",
-  "default_region": "us-central1",
-  "default_zone": "us-central1-a",
+  "default_region": "southamerica-east1",
+  "default_zone": "southamerica-east1-a",
+  "authoritative_project": "all-in-one-498012",
+  "authoritative_inventory": "config/cloud/google_cloud_inventory.json",
+  "authority_mode": "remote_state_is_authoritative",
   "required_apis": [
     "aiplatform.googleapis.com",
     "alloydb.googleapis.com",
@@ -25,6 +28,8 @@
   "safety": {
     "requires_authenticated_gcloud": true,
     "requires_explicit_project": true,
+    "requires_import_before_change": true,
+    "preserve_existing_remote_resources": true,
     "allow_delete": false,
     "allow_billing_change": false,
     "allow_policy_bypass": false,

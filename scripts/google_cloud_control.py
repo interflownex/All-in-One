@@ -13,6 +13,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_PATH = ROOT / "config" / "cloud" / "google_cloud_profile.json"
 WINDOWS_GCLOUD = Path("/mnt/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud")
+LINUX_GCLOUD = Path.home() / "google-cloud-sdk" / "bin" / "gcloud"
 
 
 def load_profile() -> dict[str, Any]:
@@ -23,6 +24,8 @@ def find_gcloud() -> str:
     discovered = shutil.which("gcloud")
     if discovered:
         return discovered
+    if LINUX_GCLOUD.is_file():
+        return str(LINUX_GCLOUD)
     if WINDOWS_GCLOUD.is_file():
         return str(WINDOWS_GCLOUD)
     raise RuntimeError("Google Cloud SDK nao encontrado.")

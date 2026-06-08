@@ -92,5 +92,12 @@
     "policy": "config/autonomy/stitch_mcp_policy.json",
     "workflow": ".github/workflows/stitch-sync.yml",
     "remote_secret": "STITCH_API_KEY"
+  },
+  "cloud_authority": {
+    "project_id": "all-in-one-498012",
+    "profile": "config/cloud/google_cloud_profile.json",
+    "inventory": "config/cloud/google_cloud_inventory.json",
+    "state_source_of_truth": "google_cloud_remote",
+    "required_rule": "importar o estado remoto antes de alterar infraestrutura e preservar recursos existentes"
   }
 }

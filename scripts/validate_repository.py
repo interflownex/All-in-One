@@ -17,6 +17,7 @@ STITCH_MCP_POLICY = ROOT / "config" / "autonomy" / "stitch_mcp_policy.json"
 MULTI_AGENT_SYNC_POLICY = ROOT / "config" / "autonomy" / "multi_agent_sync_policy.json"
 GOOGLE_INTEGRATIONS_POLICY = ROOT / "config" / "autonomy" / "google_integrations_policy.json"
 GOOGLE_CLOUD_PROFILE = ROOT / "config" / "cloud" / "google_cloud_profile.json"
+GOOGLE_CLOUD_INVENTORY = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
 STITCH_SYNC_WORKFLOW = ROOT / ".github" / "workflows" / "stitch-sync.yml"
 BRAND_IDENTITY = ROOT / "config" / "branding" / "brand_identity.json"
 COMPLIANCE_MATRIX = ROOT / "config" / "compliance" / "data_classification.json"
@@ -340,6 +341,24 @@ def main() -> int:
         for forbidden in ["allow_delete", "allow_billing_change", "allow_policy_bypass"]:
             if safety.get(forbidden) is not False:
                 fail(f"Perfil Google Cloud deve manter {forbidden}=false.", errors)
+        if cloud_profile.get("authoritative_project") != "all-in-one-498012":
+            fail("Perfil Google Cloud deve apontar para o projeto autoritativo all-in-one-498012.", errors)
+        if cloud_profile.get("authority_mode") != "remote_state_is_authoritative":
+            fail("Perfil Google Cloud deve tratar o estado remoto como autoritativo.", errors)
+        if safety.get("requires_import_before_change") is not True:
+            fail("Perfil Google Cloud deve exigir importacao antes de mudancas.", errors)
+    if not GOOGLE_CLOUD_INVENTORY.is_file():
+        fail("Inventario Google Cloud autoritativo ausente.", errors)
+    else:
+        cloud_inventory = json.loads(GOOGLE_CLOUD_INVENTORY.read_text(encoding="utf-8"))
+        authority = cloud_inventory.get("authority", {})
+        security = cloud_inventory.get("security", {})
+        if authority.get("project_id") != "all-in-one-498012":
+            fail("Inventario Google Cloud deve pertencer a all-in-one-498012.", errors)
+        if authority.get("mode") != "remote_state_is_authoritative":
+            fail("Inventario Google Cloud deve declarar autoridade remota.", errors)
+        if any(security.get(flag) is not False for flag in ["secrets_included", "api_key_values_included", "service_account_private_keys_included", "kms_key_material_included"]):
+            fail("Inventario Google Cloud nao pode incluir segredos ou material criptografico.", errors)
     if not PROVIDER_MATRIX.is_file():
         fail("Matriz de provedores ausente: config/integrations/provider_matrix.json", errors)
     else:
