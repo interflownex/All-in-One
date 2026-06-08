@@ -1,0 +1,20 @@
+steps:
+  # Identity
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/identity:latest', '-f', 'modules/identity/Dockerfile', '.']
+  
+  # API Hub
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/api-hub:latest', '-f', 'modules/api_hub/Dockerfile', '.']
+
+  # Jobs
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/jobs:latest', '-f', 'modules/jobs/Dockerfile', '.']
+
+images:
+  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/identity:latest'
+  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/api-hub:latest'
+  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/jobs:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
