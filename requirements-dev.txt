@@ -13,3 +13,5 @@ uvicorn[standard]==0.34.2
 pytest-playwright
 playwright
 tenacity==9.0.0
+ruff
+mypy

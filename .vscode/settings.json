@@ -1,40 +1,55 @@
 {
-    "python.defaultInterpreterPath":  "${workspaceFolder}\\.venv\\Scripts\\python.exe",
-    "python.testing.pytestEnabled":  true,
-    "python.testing.unittestEnabled":  false,
-    "python.testing.pytestArgs":  [
-
-                                  ],
-    "python.analysis.typeCheckingMode":  "basic",
-    "files.eol":  "\n",
-    "files.trimTrailingWhitespace":  true,
-    "editor.formatOnSave":  true,
-    "yaml.validate":  true,
-    "terminal.integrated.defaultProfile.windows":  "PowerShell",
-    "terminal.integrated.env.windows":  {
-                                             "GOOGLE_INTEGRATIONS_ENABLED":  "true",
-                                             "GOOGLE_CLOUD_ENABLED":  "true",
-                                             "GOOGLE_AI_STUDIO_ENABLED":  "true",
-                                             "GOOGLE_CODE_CLI_ENABLED":  "true",
-                                             "ALLOYDB_ENABLED":  "true",
-                                             "GEMINI_CODE_ASSIST_ENABLED":  "true",
-                                             "STITCH_REMOTE_SYNC_ENABLED":  "true"
-                                         },
-    "terminal.integrated.profiles.windows":  {
-                                                 "PowerShell":  {
-                                                                    "source":  "PowerShell"
-                                                                },
-                                                 "Git Bash":  {
-                                                                  "path":  "C:\\Program Files\\Git\\bin\\bash.exe"
-                                                              }
-                                             },
-    "geminicodeassist.outlines.automaticOutlineGeneration":  true,
-    "geminicodeassist.agentYoloMode":  false,
-    "geminicodeassist.enable":  true,
-    "mdb.presetConnections":  [
-
-                              ],
-    "workbench.editor.preferHistoryBasedLanguageDetection":  true,
-    "geminicodeassist.codeLens.enable":  false,
-    "geminicodeassist.telemetry.enable":  false
+    "python.defaultInterpreterPath": ".venv/bin/python",
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestArgs": [],
+    "python.analysis.typeCheckingMode": "basic",
+    "files.eol": "\n",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports.ruff": "explicit"
+        }
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[yaml]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "yaml.validate": true,
+    "yaml.schemaStore.enable": true,
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.env.linux": {
+        "GOOGLE_INTEGRATIONS_ENABLED": "true",
+        "GOOGLE_CLOUD_ENABLED": "true",
+        "GOOGLE_AI_STUDIO_ENABLED": "true",
+        "GOOGLE_CODE_CLI_ENABLED": "true",
+        "ALLOYDB_ENABLED": "true",
+        "GEMINI_CODE_ASSIST_ENABLED": "true",
+        "STITCH_REMOTE_SYNC_ENABLED": "true"
+    },
+    "geminicodeassist.outlines.automaticOutlineGeneration": true,
+    "geminicodeassist.agentYoloMode": false,
+    "geminicodeassist.enable": true,
+    "mdb.presetConnections": [],
+    "workbench.editor.preferHistoryBasedLanguageDetection": true,
+    "geminicodeassist.codeLens.enable": false,
+    "geminicodeassist.telemetry.enable": false,
+    "ruff.importStrategy": "fromEnvironment",
+    "python.analysis.fixAll": [
+        "source.unusedImports"
+    ]
 }

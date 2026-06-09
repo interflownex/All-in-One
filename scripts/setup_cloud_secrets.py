@@ -5,7 +5,7 @@ PROJECT_ID = "all-in-one-498012"
 def create_secret(secret_id, payload):
     print(f"🏷️ Processando segredo: {secret_id}...")
     
-    # 1. Tentar criar o segredo (ignora erro se já existir)
+    # 1. Tentar criar o segredo
     create_cmd = [
         "gcloud", "secrets", "create", secret_id,
         "--replication-policy=automatic",
@@ -13,14 +13,14 @@ def create_secret(secret_id, payload):
     ]
     subprocess.run(create_cmd, capture_output=True)
 
-    # 2. Adicionar versão com o valor real
-    # Usando echo | gcloud para passar o dado via stdin
+    # 2. Adicionar versão
     add_cmd = [
         "gcloud", "secrets", "versions", "add", secret_id,
         "--data-file=-",
         "--project", PROJECT_ID
     ]
-    result = subprocess.run(add_cmd, input=payload.encode("UTF-8"), capture_output=True, text=True)
+    # Passando payload como string e usando text=True
+    result = subprocess.run(add_cmd, input=payload, capture_output=True, text=True)
     
     if result.returncode == 0:
         print(f"✅ Versão adicionada para {secret_id}")

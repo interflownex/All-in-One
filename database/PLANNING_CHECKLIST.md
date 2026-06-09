@@ -35,11 +35,14 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
   - **Status:** Finalizado via `scripts/setup_cloud_secrets.py`.
   - **Módulo Afetado:** `scripts/setup_cloud_secrets.py`.
 
-- [ ] **Tarefa: Terraform Apply (Execução via Cloud Build)**
-  - **Critério de Aceite:** Cluster GKE, AlloyDB e Redis ativos e acessíveis.
-  - **Status:** Manifesto de automação criado em `infra/ci-cd/cloudbuild-infra.yaml`. Pronto para disparo remoto.
-  - **Dependência:** Permissões de IAM para o Cloud Build service account.
-  - **Módulo Afetado:** `infra/ci-cd/`.
+- [X] **Tarefa: Bucket de Estado do Terraform** (2026-06-08)
+  - **Critério de Aceite:** Bucket `gs://all-in-one-tfstate` criado na região `us-central1`.
+  - **Status:** Finalizado.
+
+- [ ] **Tarefa: Deploy Total (Infraestrutura + Apps)**
+  - **Critério de Aceite:** Ambiente operacional na GCP com Ingress acessível.
+  - **Status:** Reiniciado em 2026-06-08 (Cloud Build ID: 52026ef6-0869-42b7-a363-228795908e2d - em execução).
+  - **Módulo Afetado:** `infra/ci-cd/cloudbuild-deploy.yaml`.
 
 - [X] **Tarefa: Manifestos de Deploy K8s para o Core, Negócios, Logística e Verticais** (2026-06-08)
   - **Critério de Aceite:** Toda a malha de 25 módulos declarada no GKE com Ingress centralizado.
