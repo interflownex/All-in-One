@@ -202,6 +202,10 @@ def main() -> int:
         if args.command == "acquire":
             result = acquire_lock(args.agent, args.activity, args.ttl_minutes)
         elif args.command == "release":
+            # Higienização mandatória de armazenamento GCP antes de liberar
+            hygiene_script = ROOT / "scripts" / "gcp_storage_hygiene.py"
+            if hygiene_script.exists():
+                subprocess.run([sys.executable, str(hygiene_script)], capture_output=True)
             release_lock(args.agent, args.force)
             result = {"released": True, "agent": args.agent}
         elif args.command == "status":

@@ -32,6 +32,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 - `config/stitch/screen_manifest.json` e `config/stitch/sync_state.json` sao o estado autoritativo para sincronia Stitch e devem ser preservados entre agentes.
 - Segredos como `STITCH_API_KEY` devem permanecer apenas em variaveis de ambiente, GitHub Actions Secrets ou cofres externos; nunca versionar segredos.
 
+## Higienizacao e Controle de Armazenamento GCP
+
+- O espaco do Google Cloud tem teto fixo de 5GB.
+- Ao iniciar os trabalhos no sistema (ativacao), o agente deve executar o script mandatorio de higienizacao: `python3 scripts/gcp_storage_hygiene.py`.
+- O script avalia a capacidade e ao cruzar 85% descarta recursos secundarios automaticamente.
+- A rotina ja esta engatilhada no multi-agente sync guard para rodar a cada termino de atividade.
+
 ## Integracoes Google ativas
 
 - Google SDK, Google AI Studio, Google Cloud, AlloyDB, Google Code CLI, Gemini CLI, Gemini Code Assist e Google Stitch estao ativos por ordem explicita do usuario.
