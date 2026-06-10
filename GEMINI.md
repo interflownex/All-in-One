@@ -40,7 +40,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 - **Tipagem Estrita:** Código Python deve buscar 100% de conformidade com `mypy --strict`.
 - **Consistência:** Seguir as regras do `.editorconfig` e `.prettierrc` em todos os commits.
 
-## Higienizacao e Controle de Armazenamento GCP
+## Padroes de Engenharia de Elite e Google Cloud
+
+- **Segredos Nativos:** O sistema utiliza `get_config()` para buscar segredos. A prioridade é: Variável de Ambiente > Google Secret Manager (`gcloud secrets`).
+- **Builds em Nuvem:** Manifestos `cloudbuild.yaml` e `cloudbuild-android.yaml` estão disponíveis para integração contínua (CI/CD) via Google Cloud Build.
+- **Observabilidade GCP:** Métricas de log (`all_in_one_errors`) e logs higienizados com `Correlation ID` são mandatórios para todos os módulos.
+- **Contração de Código:** O runtime centraliza a lógica de observabilidade, segurança e persistência, reduzindo o boilerplate nos microserviços.
+- **Higienizacao e Controle de Armazenamento GCP**
 
 - O espaco do Google Cloud tem teto fixo de 5GB.
 - Ao iniciar os trabalhos no sistema (ativacao), o agente deve executar o script mandatorio de higienizacao: `python3 scripts/gcp_storage_hygiene.py`.

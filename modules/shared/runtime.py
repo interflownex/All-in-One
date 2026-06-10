@@ -19,9 +19,45 @@ from .calculators import (
 )
 from .correlation import set_correlation_id
 from .logging_utils import setup_secure_logging, get_logger
+import subprocess
 
 setup_secure_logging()
 logger = get_logger(__name__)
+
+def _get_secret_gcloud(secret_id: str) -> str | None:
+    """Busca segredo no Google Secret Manager usando a ferramenta nativa gcloud."""
+    try:
+        result = subprocess.run(
+            ["gcloud", "secrets", "versions", "access", "latest", f"--secret={secret_id}"],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except Exception:
+        pass
+    return None
+
+def get_config(key: str, default: Any = None) -> Any:
+    """Busca configuração priorizando: Env Var > Google Secret Manager > Default."""
+    value = os.getenv(key)
+    if value:
+        return value
+    
+    secret_map = {
+        "ALL_IN_ONE_JWT_SECRET": "jwt-secret",
+        "ALL_IN_ONE_IDENTITY_POSTGRES_DSN": "identity-dsn",
+        "ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY": "document-encryption-key"
+    }
+    
+    if key in secret_map:
+        secret_value = _get_secret_gcloud(secret_map[key])
+        if secret_value:
+            os.environ[key] = secret_value  # Cache em memória para evitar chamadas gcloud repetidas
+            return secret_value
+            
+    return default
 
 from .domain_rules import (
     APPROVER_ROLES,
@@ -194,8 +230,10 @@ def _database_path(module_name: str) -> str:
 
 
 def _store_for(module_name: str) -> Any:
+    """Busca o store adequado para o módulo, priorizando Postgres se configurado."""
     env_var = f"ALL_IN_ONE_{module_name.upper()}_POSTGRES_DSN"
-    dsn = os.getenv(env_var)
+    dsn = get_config(env_var)
+    
     if dsn:
         class_name = f"{module_name.title().replace('_', '')}PostgresStore"
         module_path = f".{module_name}_postgres_store"
@@ -204,35 +242,10 @@ def _store_for(module_name: str) -> Any:
             store_class = getattr(mod, class_name)
             return store_class(dsn)
         except (ImportError, AttributeError):
-            pass
+            # Fallback para o store base se o específico não existir
+            from .postgres_store import BasePostgresStore
+            return BasePostgresStore(dsn)
 
-    if module_name == "jobs" and os.getenv("ALL_IN_ONE_JOBS_POSTGRES_DSN"):
-        from .jobs_postgres_store import JobsPostgresStore
-        return JobsPostgresStore(os.environ["ALL_IN_ONE_JOBS_POSTGRES_DSN"])
-    if module_name == "identity" and os.getenv("ALL_IN_ONE_IDENTITY_POSTGRES_DSN"):
-        from .identity_postgres_store import IdentityPostgresStore
-        return IdentityPostgresStore(os.environ["ALL_IN_ONE_IDENTITY_POSTGRES_DSN"])
-    if module_name == "finance" and os.getenv("ALL_IN_ONE_FINANCE_POSTGRES_DSN"):
-        from .finance_postgres_store import FinancePostgresStore
-        return FinancePostgresStore(os.environ["ALL_IN_ONE_FINANCE_POSTGRES_DSN"])
-    if module_name == "business" and os.getenv("ALL_IN_ONE_BUSINESS_POSTGRES_DSN"):
-        from .business_postgres_store import BusinessPostgresStore
-        return BusinessPostgresStore(os.environ["ALL_IN_ONE_BUSINESS_POSTGRES_DSN"])
-    if module_name == "marketplace" and os.getenv("ALL_IN_ONE_MARKETPLACE_POSTGRES_DSN"):
-        from .marketplace_postgres_store import MarketplacePostgresStore
-        return MarketplacePostgresStore(os.environ["ALL_IN_ONE_MARKETPLACE_POSTGRES_DSN"])
-    if module_name == "delivery" and os.getenv("ALL_IN_ONE_DELIVERY_POSTGRES_DSN"):
-        from .delivery_postgres_store import DeliveryPostgresStore
-        return DeliveryPostgresStore(os.environ["ALL_IN_ONE_DELIVERY_POSTGRES_DSN"])
-    if module_name == "services" and os.getenv("ALL_IN_ONE_SERVICES_POSTGRES_DSN"):
-        from .services_postgres_store import ServicesPostgresStore
-        return ServicesPostgresStore(os.environ["ALL_IN_ONE_SERVICES_POSTGRES_DSN"])
-    if module_name == "mobility" and os.getenv("ALL_IN_ONE_MOBILITY_POSTGRES_DSN"):
-        from .mobility_postgres_store import MobilityPostgresStore
-        return MobilityPostgresStore(os.environ["ALL_IN_ONE_MOBILITY_POSTGRES_DSN"])
-    if module_name == "api_hub" and os.getenv("ALL_IN_ONE_API_HUB_POSTGRES_DSN"):
-        from .api_hub_postgres_store import ApiHubPostgresStore
-        return ApiHubPostgresStore(os.environ["ALL_IN_ONE_API_HUB_POSTGRES_DSN"])
     return SQLiteStore(module_name, _database_path(module_name))
 
 

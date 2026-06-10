@@ -1,0 +1,9 @@
+steps:
+  - name: 'gcr.io/cloud-builders/gradle'
+    args: ['assembleDebug']
+    dir: 'apps/valley-android'
+
+artifacts:
+  objects:
+    location: 'gs://all-in-one-public-artifacts/builds'
+    paths: ['apps/valley-android/app/build/outputs/apk/debug/*.apk']

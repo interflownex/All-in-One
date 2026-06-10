@@ -29,7 +29,7 @@ except ModuleNotFoundError:
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from shared.runtime import create_module_app
+from shared.runtime import create_module_app, get_config
 from shared.security import Actor
 from shared.valley_catalog import PUBLIC_RESOURCE_TYPES, offer_sort_key, valley_facets
 
@@ -37,7 +37,7 @@ app = create_module_app("api_hub")
 
 cors_origins = [
     origin.strip()
-    for origin in os.getenv(
+    for origin in get_config(
         "ALL_IN_ONE_CORS_ORIGINS",
         "http://localhost:5173,http://localhost:5174,http://localhost:5175",
     ).split(",")
@@ -59,12 +59,12 @@ MODULES = [
 ]
 
 SERVICES = {
-    mod: os.getenv(f"{mod.upper()}_SERVICE_URL", f"http://{mod}:8000")
+    mod: get_config(f"{mod.upper()}_SERVICE_URL", f"http://{mod}:8000")
     for mod in MODULES
 }
-JWT_SECRET = os.getenv("ALL_IN_ONE_JWT_SECRET", "local-secret-key-change-in-production")
-REDIS_URL = os.getenv("ALL_IN_ONE_REDIS_URL", "redis://redis:6379/0")
-WEBHOOK_SECRET = os.getenv("ALL_IN_ONE_WEBHOOK_SECRET", "local-webhook-secret-change-in-production")
+JWT_SECRET = get_config("ALL_IN_ONE_JWT_SECRET", "local-secret-key-change-in-production")
+REDIS_URL = get_config("ALL_IN_ONE_REDIS_URL", "redis://redis:6379/0")
+WEBHOOK_SECRET = get_config("ALL_IN_ONE_WEBHOOK_SECRET", "local-webhook-secret-change-in-production")
 
 client = httpx.AsyncClient()
 redis_client = redis.from_url(REDIS_URL, decode_responses=True) if redis else None
