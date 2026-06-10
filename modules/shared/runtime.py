@@ -18,6 +18,11 @@ from .calculators import (
     mobility_fare,
 )
 from .correlation import set_correlation_id
+from .logging_utils import setup_secure_logging, get_logger
+
+setup_secure_logging()
+logger = get_logger(__name__)
+
 from .domain_rules import (
     APPROVER_ROLES,
     MODULE_ENTITIES,
@@ -278,6 +283,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     if module_name not in MODULE_ENTITIES:
         raise ValueError(f"Modulo desconhecido: {module_name}")
     app = FastAPI(title=f"All-in-One {module_name}", version=version)
+    logger.info(f"Inicializando modulo: {module_name}")
     store = _store_for(module_name)
     legacy_rule = ResourceRule()
 

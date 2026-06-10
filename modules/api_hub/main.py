@@ -360,36 +360,23 @@ async def validate_catalog_action_token(request: Request) -> dict[str, Any]:
 
 
 async def proxy_request(service_url: str, request: Request, actor_payload: dict | None = None):
-    """Proxy com injeção de contexto de ator."""
-    url = httpx.URL(path=request.url.path, query=request.url.query.encode("utf-8"))
-    target_url = f"{service_url}{url.path}"
-    if url.query:
-        target_url += f"?{url.query}"
+    """Proxy otimizado com injeção de contexto e tratamento de erros centralizado."""
+    path = request.url.path
+    query = request.url.query
+    target_url = f"{service_url}{path}" + (f"?{query}" if query else "")
 
-    headers = dict(request.headers)
-    headers.pop("host", None)
-    
+    headers = {k: v for k, v in request.headers.items() if k.lower() != "host"}
     if actor_payload:
-        headers["X-Actor-User-Id"] = actor_payload.get("sub")
-
-    req = client.build_request(
-        method=request.method,
-        url=target_url,
-        headers=headers,
-        content=await request.body()
-    )
-    
-    @retry(
-        stop=stop_after_attempt(2),
-        wait=wait_exponential(multiplier=0.5, min=1, max=3),
-        retry=retry_if_exception_type(httpx.RequestError),
-        reraise=True
-    )
-    async def _do_send():
-        return await client.send(req, stream=True)
+        headers["X-Actor-User-Id"] = actor_payload.get("sub", "")
 
     try:
-        resp = await _do_send()
+        req = client.build_request(
+            method=request.method,
+            url=target_url,
+            headers=headers,
+            content=await request.body()
+        )
+        resp = await client.send(req, stream=True)
         return StreamingResponse(
             resp.aiter_raw(),
             status_code=resp.status_code,
@@ -397,27 +384,20 @@ async def proxy_request(service_url: str, request: Request, actor_payload: dict 
             background=BackgroundTask(resp.aclose)
         )
     except httpx.RequestError as exc:
-        raise HTTPException(status_code=502, detail=f"Erro de comunicacao com microservico: {exc}")
+        raise HTTPException(status_code=502, detail=f"Erro de comunicação: {exc}")
 
-def create_proxy_route(service_name: str):
-    @app.api_route(
-        f"/{service_name}/{{path:path}}", 
-        methods=["GET", "POST", "PATCH", "DELETE", "PUT"],
-        dependencies=[Depends(rate_limiter)]
-    )
-    async def route_proxy(path: str, request: Request, actor=Depends(validate_jwt_edge)):
-        return await proxy_request(SERVICES[service_name], request, actor)
+def register_proxies():
+    """Registra rotas de proxy dinamicamente."""
+    for service_name, url in SERVICES.items():
+        @app.api_route(
+            f"/{service_name}/{{path:path}}", 
+            methods=["GET", "POST", "PATCH", "DELETE", "PUT"],
+            dependencies=[Depends(rate_limiter)]
+        )
+        async def route_proxy(path: str, request: Request, service_url=url, actor=Depends(validate_jwt_edge)):
+            return await proxy_request(service_url, request, actor)
 
-for service in SERVICES.keys():
-    if service != "identity":
-        create_proxy_route(service)
-@app.api_route(
-    "/identity/{path:path}", 
-    methods=["GET", "POST", "PATCH", "DELETE", "PUT"],
-    dependencies=[Depends(rate_limiter)]
-)
-async def identity_proxy(path: str, request: Request, actor=Depends(validate_jwt_edge)):
-    return await proxy_request(SERVICES["identity"], request, actor)
+register_proxies()
 
 @app.post("/auth/{path:path}", dependencies=[Depends(rate_limiter)])
 async def auth_proxy(path: str, request: Request):
