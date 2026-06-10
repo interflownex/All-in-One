@@ -7,6 +7,7 @@
 - Configurada a integração do PATH nos perfis de shell (`~/.bashrc` e `~/.profile`).
 - Executada a higienização mandatória de armazenamento GCP (`scripts/gcp_storage_hygiene.py`), mantendo uso abaixo de 85%.
 - Verificada a prontidão da ferramenta `agy` para desenvolvimento assistido e uso de MCPs.
+- Organizados componentes UI Neo-brutalistas (`PepitaWidget`, `CalculatorWidget`, `LedgerTransactionList`) da raiz para suas respectivas aplicações (`valley` e `valley_business`), seguindo a arquitetura modular.
 
 ### Estado Operacional
 - **Ferramentas:** Antigravity CLI 1.0.7 ativo.
