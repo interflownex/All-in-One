@@ -36,7 +36,7 @@ export default function OfferWizard({ onClose }: { onClose: () => void }) {
       
       const data = await response.json();
       
-      // Update status to published
+      
       await fetch(`${API_HUB_URL}/gateway/business/valley/catalog/offers/${data.id}/status`, {
         method: 'PUT',
         headers: {

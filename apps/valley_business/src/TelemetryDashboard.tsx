@@ -19,7 +19,7 @@ export function TelemetryDashboard() {
   const fetchMetrics = async () => {
     try {
       setLoading(true);
-      // Aqui usamos o endpoint do gateway
+      
       const res = await fetch('http://127.0.0.1:8000/gateway/telemetry/outbox');
       if (!res.ok) {
         throw new Error(`Erro HTTP: ${res.status}`);
@@ -35,7 +35,7 @@ export function TelemetryDashboard() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
     fetchMetrics();
     const interval = setInterval(fetchMetrics, 5000);
     return () => clearInterval(interval);

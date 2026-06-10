@@ -9,7 +9,7 @@ export default function CalendarWidget() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    // Mock fetch for provider time-slots
+    
     fetch(`${API_HUB_URL}/services/providers/mock-provider/time-slots?date=2026-06-10`)
       .then(res => res.json())
       .then(data => {
@@ -17,7 +17,7 @@ export default function CalendarWidget() {
         setLoading(false);
       })
       .catch(() => {
-        // Fallback mock
+        
         setSlots(["09:00", "10:00", "11:30", "14:00", "15:30"]);
         setLoading(false);
       });

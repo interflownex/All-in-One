@@ -22,7 +22,7 @@ class BillingRequest(BaseModel):
     tax_amount_brl: str
     document_type: str = "nfe"
     items: list[InvoiceItemSchema]
-    pepitas_reward: Optional[int] = None  # Gamificação Valley: 1, 10, 100
+    pepitas_reward: Optional[int] = None
 
 class CancelRequest(BaseModel):
     reason: str
@@ -46,7 +46,6 @@ async def get_billing(
     if not doc:
         raise HTTPException(status_code=404, detail="Documento fiscal não encontrado.")
 
-    # O status fiscal e autorizações já estão contidos no payload ou metadados do documento
     return doc
 
 @app.post("/erp/billing")
@@ -61,11 +60,9 @@ async def create_billing(
         payload = request.model_dump(exclude={"items"})
         items = [item.model_dump() for item in request.items]
 
-        # Validação de Gamificação Valley
         if request.pepitas_reward and request.pepitas_reward not in {1, 10, 100}:
             raise HTTPException(status_code=422, detail="Gamificação inválida. Escolha 1, 10 ou 100 Pepitas.")
 
-        # Persistência local atômica
         doc = store.create_billing_document(
             user_id=x_actor_user_id,
             company_id=x_actor_company_id,
@@ -74,7 +71,6 @@ async def create_billing(
             idempotency_key=x_idempotency_key
         )
 
-        # Conexão com Sandbox Fiscal (Fase 5)
         if os.getenv("ALL_IN_ONE_ERP_FISCAL_SANDBOX", "true").lower() == "true":
             sandbox_result = local_fiscal_document_simulator(
                 document_id=doc["id"],
@@ -101,7 +97,6 @@ async def cancel_billing(
             reason=request.reason
         )
 
-        # Conexão com Sandbox Fiscal (Fase 5) - Cancelamento
         if os.getenv("ALL_IN_ONE_ERP_FISCAL_SANDBOX", "true").lower() == "true":
             sandbox_result = local_fiscal_document_simulator(
                 document_id=document_id,

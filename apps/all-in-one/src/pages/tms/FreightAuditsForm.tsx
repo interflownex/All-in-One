@@ -6,7 +6,7 @@ const FreightAuditsForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simular submissão
+    
     setTimeout(() => setLoading(false), 1000);
   };
 

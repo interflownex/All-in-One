@@ -35,7 +35,7 @@ async def reserve_slot(provider_id: str, request: Request, body: dict):
         from fastapi import HTTPException
         raise HTTPException(status_code=400, detail="slot e customer_id obrigatorios.")
         
-    if slot in ["10:00", "14:00"]: # Mockando colisão
+    if slot in ["10:00", "14:00"]:
         from fastapi import HTTPException
         raise HTTPException(status_code=409, detail=f"O horario {slot} acabou de ser reservado por outra pessoa.")
         

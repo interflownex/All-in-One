@@ -15,7 +15,6 @@ def auth_headers():
 
 def test_cancel_billing_success(auth_headers):
     """Valida o fluxo completo de criação e cancelamento de um faturamento no ERP."""
-    # 1. Criação do faturamento (Setup do cenário)
     billing_payload = {
         "amount_brl": "250.00",
         "tax_amount_brl": "25.00",
@@ -34,7 +33,6 @@ def test_cancel_billing_success(auth_headers):
     assert create_response.status_code == 200
     doc_id = create_response.json()["id"]
 
-    # 2. Execução do Cancelamento
     cancel_reason = "Pedido duplicado pelo cliente"
     cancel_payload = {"reason": cancel_reason}
     cancel_response = client.post(f"/erp/billing/{doc_id}/cancel", json=cancel_payload, headers=auth_headers)
@@ -44,7 +42,6 @@ def test_cancel_billing_success(auth_headers):
     assert data["status"] == "cancelled"
     assert data["payload"]["cancel_reason"] == cancel_reason
 
-    # Valida integração com sandbox fiscal para cancelamento
     assert "fiscal_cancellation" in data
     assert data["fiscal_cancellation"]["status"] == "cancelled"
     assert "auth_code" in data["fiscal_cancellation"]

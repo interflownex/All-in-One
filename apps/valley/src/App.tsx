@@ -69,10 +69,10 @@ function App() {
   const [error, setError] = useState('')
   const [query, setQuery] = useState('')
 
-  // View State
+  
   const [currentView, setCurrentView] = useState<'consumer' | 'b2b' | 'tracking'>('consumer')
 
-  // Auth State
+  
   const [auth, setAuth] = useState(getStoredAuth())
   const [isLoginOpen, setIsLoginOpen] = useState(false)
 
@@ -89,7 +89,7 @@ function App() {
     business_activities: [],
   })
 
-  // Modal states
+  
   const [activeOffer, setActiveOffer] = useState<Offer | null>(null)
   const [activeIntentKey, setActiveIntentKey] = useState('')
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
@@ -204,7 +204,7 @@ function App() {
   useEffect(() => {
     const timer = window.setTimeout(fetchOffers, 0)
     return () => window.clearTimeout(timer)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   }, [selectedCategory, selectedType, selectedCompanyType, selectedCompanyCategory, selectedBusinessActivity])
 
   return (
@@ -390,7 +390,7 @@ function App() {
           setStoredAuth(token, userId)
           setAuth({ token, userId })
           setIsLoginOpen(false)
-          // Continua o fluxo automaticamente caso o usuario tenha tentado agir antes de logar
+          
           if (activeOffer) {
             if (['book', 'hire', 'request'].includes(activeOffer.consumer_action)) {
               setIsBookingOpen(true)

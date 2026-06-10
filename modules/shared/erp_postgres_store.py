@@ -24,7 +24,7 @@ class ErpMemoryStore:
         idempotency_key: str | None = None,
     ) -> dict[str, Any]:
         if idempotency_key and idempotency_key in self.idempotency:
-            return self.get_billing_detail(self.idempotency[idempotency_key])  # type: ignore[return-value]
+            return self.get_billing_detail(self.idempotency[idempotency_key])
         document_id = str(uuid4())
         document = {
             "id": document_id,
@@ -57,7 +57,7 @@ class ErpMemoryStore:
             raise ValueError("Documento fiscal não encontrado.")
         payload = {**document.get("payload", {}), "cancel_reason": reason}
         document.update({"status": "cancelled", "payload": payload, "cancelled_by": user_id})
-        return self.get_billing_detail(document_id)  # type: ignore[return-value]
+        return self.get_billing_detail(document_id)
 
 class ErpPostgresStore(BasePostgresStore):
     """
@@ -91,11 +91,9 @@ class ErpPostgresStore(BasePostgresStore):
         """
         resource_type = "fiscal_documents"
 
-        # Validação mandatória de impostos (evita NotNullViolation identificada em testes)
         if "tax_amount_brl" not in payload:
             payload["tax_amount_brl"] = "0.00"
 
-        # Executa a criação do documento e itens em uma única transação
         with self.connection() as conn:
             document = self.create(
                 resource_type=resource_type,
@@ -129,7 +127,6 @@ class ErpPostgresStore(BasePostgresStore):
         if not doc:
             return None
 
-        # Busca itens vinculados
         items = self.list("invoice_items", fiscal_document_id=document_id)
         doc["items"] = items
 

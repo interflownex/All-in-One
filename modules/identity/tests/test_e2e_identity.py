@@ -5,8 +5,6 @@ import asyncio
 import os
 from datetime import datetime
 
-# Porta do container identity no docker-compose. O teste E2E permanece opt-in
-# para nao falhar em ambientes sem compose ativo.
 BASE_URL = os.environ.get("IDENTITY_E2E_URL", "http://localhost:8101")
 
 def test_identity_e2e_flow():
@@ -28,7 +26,6 @@ async def _test_identity_e2e_flow():
     document_cpf = f"CPF-{uuid.uuid4().hex[:12]}"
 
     async with httpx.AsyncClient(base_url=BASE_URL, timeout=10.0) as client:
-        # 1. Registro de Usuário
         reg_payload = {
             "id": user_id,
             "full_name": "Test User E2E",
@@ -42,7 +39,6 @@ async def _test_identity_e2e_flow():
         assert reg_resp.status_code == 201
         print("✓ Cadastro realizado")
 
-        # 2. Login
         login_payload = {
             "email": user_email,
             "password": user_password
@@ -54,24 +50,21 @@ async def _test_identity_e2e_flow():
         token = token_data["access_token"]
         print("✓ Login realizado (JWT gerado)")
 
-        # 3. Submissão KYC
         headers = {"Authorization": f"Bearer {token}", "X-Actor-User-Id": user_id}
         kyc_payload = {
             "user_id": user_id,
-            "biometry_hash": "a"*32, # Mock hash
+            "biometry_hash": "a"*32,
             "idempotency_key": f"idemp_{uuid.uuid4().hex}"
         }
         kyc_resp = await client.post("/kyc/submit", json=kyc_payload, headers=headers)
         assert kyc_resp.status_code == 202
         print("✓ KYC submetido")
 
-        # 4. Verificação de Status KYC
         status_resp = await client.get(f"/kyc/status/{user_id}", headers=headers)
         assert status_resp.status_code == 200
         assert status_resp.json()["status"] == "PROCESSING"
         print("✓ Status KYC validado")
 
-        # 5. Configuração MFA
         mfa_setup_payload = {
             "user_id": user_id,
             "method": "totp"

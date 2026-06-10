@@ -152,7 +152,6 @@ class IdentityRegistration(BaseModel):
     lgpd_consent_at: str = Field(min_length=10, max_length=40)
 
 
-# Compatibility bodies for integrations using the initial baseline routes.
 class CreatePayload(ResourceCreate):
     status: str = Field(default="draft", max_length=40)
 
@@ -931,7 +930,6 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             )
             return assemble_resume(resume, for_recruiter=True)
 
-    # Backward-compatible baseline endpoints. New clients should use /resources/*.
 
     register_valley_routes(app, module_name, store, fetch)
 

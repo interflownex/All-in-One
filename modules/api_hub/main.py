@@ -19,12 +19,12 @@ from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_excep
 
 try:
     import redis.asyncio as redis
-except ModuleNotFoundError:  # Ambiente de teste local sem extras do gateway.
+except ModuleNotFoundError:
     redis = None
 
 try:
     import jwt
-except ModuleNotFoundError:  # Rotas sem JWT continuam carregando em testes locais.
+except ModuleNotFoundError:
     jwt = None
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -51,7 +51,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configurações
 MODULES = [
     "ai_core", "bi", "bpm", "business", "crm", "delivery", "document", "erp",
     "finance", "health", "hr", "identity", "jobs", "legal", "marketplace",
@@ -67,7 +66,6 @@ JWT_SECRET = os.getenv("ALL_IN_ONE_JWT_SECRET", "local-secret-key-change-in-prod
 REDIS_URL = os.getenv("ALL_IN_ONE_REDIS_URL", "redis://redis:6379/0")
 WEBHOOK_SECRET = os.getenv("ALL_IN_ONE_WEBHOOK_SECRET", "local-webhook-secret-change-in-production")
 
-# Clientes
 client = httpx.AsyncClient()
 redis_client = redis.from_url(REDIS_URL, decode_responses=True) if redis else None
 
@@ -300,8 +298,8 @@ async def rate_limiter(request: Request):
         return None
     ip = request.client.host
     key = f"rate_limit:{ip}"
-    limit = 100 # requisições
-    window = 60 # segundos
+    limit = 100
+    window = 60
 
     current = await redis_client.get(key)
     if current and int(current) >= limit:
@@ -371,7 +369,6 @@ async def proxy_request(service_url: str, request: Request, actor_payload: dict 
     headers = dict(request.headers)
     headers.pop("host", None)
     
-    # Injeta o X-Actor-User-Id se o JWT foi validado na borda
     if actor_payload:
         headers["X-Actor-User-Id"] = actor_payload.get("sub")
 
@@ -402,7 +399,6 @@ async def proxy_request(service_url: str, request: Request, actor_payload: dict 
     except httpx.RequestError as exc:
         raise HTTPException(status_code=502, detail=f"Erro de comunicacao com microservico: {exc}")
 
-# Roteamento Protegido Dinâmico para Módulos
 def create_proxy_route(service_name: str):
     @app.api_route(
         f"/{service_name}/{{path:path}}", 
@@ -415,7 +411,6 @@ def create_proxy_route(service_name: str):
 for service in SERVICES.keys():
     if service != "identity":
         create_proxy_route(service)
-# Roteamento Aberto (Apenas Rate Limit) - Identity
 @app.api_route(
     "/identity/{path:path}", 
     methods=["GET", "POST", "PATCH", "DELETE", "PUT"],
@@ -486,7 +481,6 @@ async def aggregate_catalog_offers(
 
     responses = await asyncio.gather(*(fetch_module(module) for module in CATALOG_SOURCE_MODULES), return_exceptions=True)
 
-    # Filter out exceptions if any uncaught exceptions leaked from tasks
     clean_responses = []
     for module, result in zip(CATALOG_SOURCE_MODULES, responses, strict=True):
         if isinstance(result, Exception):
@@ -1002,7 +996,6 @@ async def gateway_webhook_verify(request: Request):
     return {"status": "valid", "algorithm": "hmac-sha256"}
 
 
-# --- WebSockets ---
 class ConnectionManager:
     def __init__(self):
         self.active_connections: list[WebSocket] = []
@@ -1028,11 +1021,9 @@ manager = ConnectionManager()
 async def tracking_websocket(websocket: WebSocket, delivery_id: str):
     await manager.connect(websocket)
     try:
-        # Mocking initial tracking status
         await websocket.send_json({"delivery_id": delivery_id, "status": "connected", "lat": -23.5505, "lng": -46.6333})
         while True:
             data = await websocket.receive_text()
-            # Echo back as mock update
             await websocket.send_json({"delivery_id": delivery_id, "update": data, "type": "ping_ack"})
     except WebSocketDisconnect:
         manager.disconnect(websocket)
@@ -1043,7 +1034,6 @@ async def webrtc_signaling(websocket: WebSocket, session_id: str):
     try:
         while True:
             data = await websocket.receive_json()
-            # Broadcast to others (simple mock echo for signaling)
             for connection in manager.active_connections:
                 if connection != websocket:
                     await connection.send_json({"session_id": session_id, "signal": data})

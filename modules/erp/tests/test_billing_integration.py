@@ -46,7 +46,6 @@ def test_create_billing_with_items_and_sandbox(auth_headers):
     assert data["status"] == "pending"
     assert data["items_count"] == 2
 
-    # Valida integração com sandbox fiscal
     assert "fiscal_authorization" in data
     assert data["fiscal_authorization"]["status"] == "authorized"
     assert "auth_code" in data["fiscal_authorization"]

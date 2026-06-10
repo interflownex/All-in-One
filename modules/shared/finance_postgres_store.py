@@ -102,7 +102,6 @@ class FinancePostgresStore:
                 if item is None:
                     raise RuntimeError(f"Erro ao criar recurso Finance {resource_type}.")
                 
-                # Auditoria central
                 connection.execute(
                     """INSERT INTO audit.logs
                        (user_id, actor_user_id, action, module, resource_type, resource_id, after_data)
@@ -110,7 +109,6 @@ class FinancePostgresStore:
                     (user_id, actor, "create", self.module, resource_type, resource_id, Jsonb(item)),
                 )
                 
-                # Outbox para eventos
                 connection.execute(
                     """INSERT INTO audit.domain_events
                        (user_id, actor_user_id, routing_key, aggregate_type, aggregate_id, correlation_id, payload)
@@ -195,7 +193,6 @@ class FinancePostgresStore:
         idempotency_key: str
     ) -> dict[str, Any]:
         with self.transaction() as connection:
-            # 1. Verifica Idempotência
             existing = connection.execute(
                 "SELECT * FROM finance.ledger_entries WHERE idempotency_key = %s",
                 (idempotency_key,)
@@ -203,7 +200,6 @@ class FinancePostgresStore:
             if existing:
                 return {"status": "already_processed", "entry_id": str(existing["id"])}
 
-            # 2. Lock e Verificação de Saldo (Source)
             col_avail = "brl_available" if currency == "BRL" else "nex_available"
             source = connection.execute(
                 sql.SQL("SELECT * FROM finance.wallets WHERE id = %s FOR UPDATE").format(),
@@ -213,7 +209,6 @@ class FinancePostgresStore:
             if not source or source[col_avail] < amount:
                 raise ValueError("Saldo insuficiente ou carteira nao encontrada.")
 
-            # 3. Atualiza Saldos
             connection.execute(
                 sql.SQL("UPDATE finance.wallets SET {} = {} - %s, updated_at = NOW() WHERE id = %s")
                 .format(sql.Identifier(col_avail), sql.Identifier(col_avail)),
@@ -225,7 +220,6 @@ class FinancePostgresStore:
                 (amount, dest_wallet_id)
             )
 
-            # 4. Grava Ledger (Débito e Crédito)
             entry_id = str(uuid4())
             connection.execute(
                 """INSERT INTO finance.ledger_entries 
@@ -252,7 +246,6 @@ class FinancePostgresStore:
         idempotency_key: str
     ) -> dict[str, Any]:
         with self.transaction() as connection:
-            # 1. Lock e Verificação de Saldo Disponível
             wallet = connection.execute(
                 "SELECT * FROM finance.wallets WHERE id = %s AND user_id = %s FOR UPDATE",
                 (wallet_id, user_id)
@@ -261,7 +254,6 @@ class FinancePostgresStore:
             if not wallet or wallet["brl_available"] < amount:
                 raise ValueError("Saldo insuficiente para criar garantia (Escrow).")
 
-            # 2. Transfere de Available para Held
             connection.execute(
                 """UPDATE finance.wallets 
                    SET brl_available = brl_available - %s, brl_held = brl_held + %s, updated_at = NOW() 
@@ -269,7 +261,6 @@ class FinancePostgresStore:
                 (amount, amount, wallet_id)
             )
 
-            # 3. Cria o registro de Escrow
             escrow_id = str(uuid4())
             connection.execute(
                 """INSERT INTO finance.escrows 
@@ -278,7 +269,6 @@ class FinancePostgresStore:
                 (escrow_id, user_id, wallet_id, beneficiary_user_id, amount, Jsonb(release_condition), "held", actor_user_id)
             )
 
-            # 4. Ledger entry para o bloqueio
             connection.execute(
                 """INSERT INTO finance.ledger_entries 
                    (id, user_id, wallet_id, currency, amount_brl, entry_type, idempotency_key, metadata, created_by)
@@ -298,13 +288,11 @@ class FinancePostgresStore:
             if not escrow or escrow["status"] != "held":
                 raise ValueError("Escrow nao encontrado ou nao esta em estado de retenção.")
 
-            # 1. Deduz do 'held' do pagador
             connection.execute(
                 "UPDATE finance.wallets SET brl_held = brl_held - %s, updated_at = NOW() WHERE id = %s",
                 (escrow["amount_brl"], escrow["wallet_id"])
             )
 
-            # 2. Busca carteira padrão do beneficiário (simplificação)
             beneficiary_wallet = connection.execute(
                 "SELECT id FROM finance.wallets WHERE user_id = %s AND wallet_type = 'personal' LIMIT 1",
                 (escrow["beneficiary_user_id"],)
@@ -313,19 +301,16 @@ class FinancePostgresStore:
             if not beneficiary_wallet:
                 raise ValueError("Carteira do beneficiario nao encontrada.")
 
-            # 3. Adiciona ao 'available' do beneficiário
             connection.execute(
                 "UPDATE finance.wallets SET brl_available = brl_available + %s, updated_at = NOW() WHERE id = %s",
                 (escrow["amount_brl"], beneficiary_wallet["id"])
             )
 
-            # 4. Atualiza status do Escrow
             connection.execute(
                 "UPDATE finance.escrows SET status = 'released', updated_at = NOW(), updated_by = %s WHERE id = %s",
                 (actor_user_id, escrow_id)
             )
 
-            # 5. Ledger de Liquidação
             connection.execute(
                 """INSERT INTO finance.ledger_entries 
                    (id, user_id, wallet_id, currency, amount_brl, entry_type, idempotency_key, metadata, created_by)

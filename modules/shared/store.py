@@ -214,7 +214,7 @@ class SQLiteStore:
             sql += " AND user_id = ?"
             params.append(user_id)
         sql += " ORDER BY created_at DESC"
-        return [self._resource(row) for row in self.connection.execute(sql, params).fetchall()]  # type: ignore[misc]
+        return [self._resource(row) for row in self.connection.execute(sql, params).fetchall()]
 
     def update(
         self,

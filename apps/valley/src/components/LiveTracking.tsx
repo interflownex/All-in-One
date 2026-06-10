@@ -19,7 +19,7 @@ export default function LiveTracking({ deliveryId = 'del-123' }) {
     ws.onopen = () => {
       setConnected(true);
       setLogs(prev => [...prev, `[SISTEMA] Conectado ao rastreamento: ${deliveryId}`]);
-      // Ping mock para simular GPS enviando dados
+      
       intervalId = setInterval(() => {
         if(ws.readyState === WebSocket.OPEN) {
            ws.send(JSON.stringify({ 

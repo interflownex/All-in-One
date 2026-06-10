@@ -152,7 +152,6 @@ class BasePostgresStore:
         if created_at is None:
             raise RuntimeError(f"PostgreSQL nao retornou timestamp para {resource_type}.")
         
-        # Heuristica para entity_id baseada no que vimos nos stores especializados
         entity_id = row.get("company_id") or row.get("business_id") or row.get("store_id") or \
                     row.get("assigned_rider_user_id") or row.get("provider_user_id") or \
                     row.get("driver_user_id")
@@ -335,7 +334,6 @@ class BasePostgresStore:
 
     def outbox(self) -> list[dict[str, Any]]:
         routing_prefix = f"{self.module}.%"
-        # Especial para finance que usa payment.*
         if self.module == "finance": routing_prefix = "payment.%"
 
         return [dict(row) for row in self.connection.execute(
