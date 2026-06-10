@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { TelemetryDashboard } from './TelemetryDashboard'
+import CalculatorWidget from './components/CalculatorWidget'
+import LedgerTransactionList from './components/LedgerTransactionList'
 import './index.css'
 
 function App() {
@@ -78,6 +80,10 @@ function App() {
               <p className="metric-value">3.400</p>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Neste mês</p>
             </div>
+
+            <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+              <CalculatorWidget />
+            </div>
           </div>
         )}
 
@@ -105,34 +111,8 @@ function App() {
               </div>
             </div>
             
-            <div className="glass-card" style={{ gridColumn: '1 / -1' }}>
-              <h3 className="card-title">Histórico Append-Only (Ledger)</h3>
-              <div className="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Data</th>
-                      <th>Tipo</th>
-                      <th>Quantidade</th>
-                      <th>Referência</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>05/06/2026 10:30</td>
-                      <td><span className="status-badge status-active">Compra (Pix)</span></td>
-                      <td>+5.000</td>
-                      <td>TX-998273-A</td>
-                    </tr>
-                    <tr>
-                      <td>04/06/2026 15:45</td>
-                      <td><span className="status-badge" style={{ background: 'rgba(231, 76, 60, 0.15)', color: '#e74c3c' }}>Distribuição</span></td>
-                      <td>-200</td>
-                      <td>Order-4431</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div className="glass-card" style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'transparent', boxShadow: 'none', border: 'none' }}>
+              <LedgerTransactionList />
             </div>
           </div>
         )}

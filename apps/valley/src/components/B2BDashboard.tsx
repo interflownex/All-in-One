@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import CalendarWidget from './CalendarWidget';
 import OfferWizard from './OfferWizard';
+import PepitaWidget from './PepitaWidget';
 
 interface CommercialMetrics {
   orders_total: number
@@ -113,6 +114,8 @@ export default function B2BDashboard() {
             <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#0f172a', margin: '0.5rem 0' }}>{metrics.crm_records + metrics.bi_records}</p>
             <span style={{ color: '#0f172a', fontSize: '0.875rem' }}>{metrics.crm_records} CRM | {metrics.bi_records} BI</span>
           </div>
+
+          <PepitaWidget onSelect={(amount) => console.log(`Recompensa selecionada: ${amount} Pepitas`)} />
         </div>
       )}
 

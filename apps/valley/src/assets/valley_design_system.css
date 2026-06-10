@@ -1,0 +1,42 @@
+:root {
+    /* Cores Base (Extraídas da Marca) */
+    --valley-deep-purple: #120B2E;
+    /* Fundo do logo */
+    --valley-violet: #7C3AED;
+    /* Degradê da montanha */
+    --valley-lavender: #A78BFA;
+    /* Tons claros da montanha */
+    --valley-cyan: #22D3EE;
+    /* Brilho da estrela */
+
+    /* Variações Pastéis (Tons Claros para UI) */
+    --valley-surface-purple: #F5F3FF;
+    --valley-surface-blue: #ECFEFF;
+    --valley-surface-neutral: #FFFFFF;
+
+    /* Estética Neo-brutalista */
+    --valley-border: #000000;
+    --valley-border-width: 2px;
+    --valley-shadow: 4px 4px 0px 0px #000000;
+    --valley-shadow-active: 1px 1px 0px 0px #000000;
+
+    /* Status e Feedback (pt-BR) */
+    --valley-success: #10B981;
+    --valley-error: #EF4444;
+    --valley-warning: #F59E0B;
+}
+
+.neo-card {
+    background: var(--valley-surface-neutral);
+    border: var(--valley-border-width) solid var(--valley-border);
+    box-shadow: var(--valley-shadow);
+    padding: 1.5rem;
+    transition: all 0.1s ease;
+}
+
+.neo-button {
+    border: var(--valley-border-width) solid var(--valley-border);
+    box-shadow: var(--valley-shadow);
+    background: var(--valley-lavender);
+    font-weight: 800;
+}
