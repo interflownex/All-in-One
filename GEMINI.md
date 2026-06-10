@@ -32,6 +32,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 - `config/stitch/screen_manifest.json` e `config/stitch/sync_state.json` sao o estado autoritativo para sincronia Stitch e devem ser preservados entre agentes.
 - Segredos como `STITCH_API_KEY` devem permanecer apenas em variaveis de ambiente, GitHub Actions Secrets ou cofres externos; nunca versionar segredos.
 
+## Padroes de Engenharia e Qualidade
+
+- **Ferramentas de Linting/Formatação:** O projeto utiliza estritamente `Ruff` (Python), `Mypy` (Tipagem), `Prettier` (Web/Config) e `ESLint` (JS/TS).
+- **Proibição de Ferramentas Não Homologadas:** É terminantemente proibido o uso ou configuração de ferramentas como `delegua.estilizador` ou qualquer outro "estilizador" não oficial. Qualquer configuração residual dessas ferramentas deve ser removida imediatamente.
+- **Automação:** O ambiente VS Code deve estar configurado para "Format on Save" e "Fix on Save" usando as ferramentas homologadas citadas acima.
+- **Tipagem Estrita:** Código Python deve buscar 100% de conformidade com `mypy --strict`.
+- **Consistência:** Seguir as regras do `.editorconfig` e `.prettierrc` em todos os commits.
+
 ## Higienizacao e Controle de Armazenamento GCP
 
 - O espaco do Google Cloud tem teto fixo de 5GB.
