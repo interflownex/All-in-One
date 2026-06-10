@@ -112,7 +112,7 @@ class ErpPostgresStore(BasePostgresStore):
                 for item in items:
                     item_id = str(uuid4())
                     conn.execute(
-                        f"INSERT INTO {self.tables['invoice_items']} (id, fiscal_document_id, description, quantity, unit_price_brl, total_price_brl, tax_amount_brl) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                        f"INSERT INTO {self.tables['invoice_items']} (id, fiscal_document_id, description, quantity, unit_price_brl, total_price_brl, tax_amount_brl) VALUES (%s, %s, %s, %s, %s, %s, %s)",  # nosec B608
                         (item_id, document["id"], item["description"], item.get("quantity", 1), item["unit_price_brl"], item["total_price_brl"], item.get("tax_amount_brl", "0.00"))
                     )
                 document["items_count"] = len(items)

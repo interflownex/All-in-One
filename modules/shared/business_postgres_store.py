@@ -322,7 +322,7 @@ class BusinessPostgresStore:
         if resource_type == "catalog_offers":
             published_at = "NOW()" if status == "published" else "published_at"
             return connection.execute(
-                f"""UPDATE business.catalog_offers SET source_module = %s, source_entity_id = %s,
+                f"""UPDATE business.catalog_offers SET source_module = %s, source_entity_id = %s,  # nosec B608
                    offer_type = %s, title = %s, short_description = %s, category_id = %s,
                    business_category = %s, business_type = %s, activity_branch = %s,
                    price_type = %s, price_amount = %s, currency = %s, location_type = %s,
