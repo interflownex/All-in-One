@@ -1,5 +1,22 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-06-09 Instalação do Antigravity CLI
+
+### Concluído neste ciclo
+- Instalado o Antigravity CLI versão 1.0.7 no ambiente Linux/Ubuntu via script oficial.
+- Configurada a integração do PATH nos perfis de shell (`~/.bashrc` e `~/.profile`).
+- Executada a higienização mandatória de armazenamento GCP (`scripts/gcp_storage_hygiene.py`), mantendo uso abaixo de 85%.
+- Verificada a prontidão da ferramenta `agy` para desenvolvimento assistido e uso de MCPs.
+
+### Estado Operacional
+- **Ferramentas:** Antigravity CLI 1.0.7 ativo.
+- **Ambiente:** PATH configurado para `/root/.local/bin`.
+- **Git:** Sincronizado e monitorado pelo Multi-Agent Sync Guard.
+
+### Próximos Passos Naturais
+- Executar o primeiro lançamento do `agy` para configuração de Trust do Workspace.
+- Validar a conectividade dos servidores MCP listados em `.agents/antigravity.json`.
+
 ## STATUS OPERACIONAL - 2026-06-08 Build e Push de Imagens Docker para GCP
 
 ### Concluído neste ciclo

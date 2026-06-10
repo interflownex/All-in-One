@@ -30,7 +30,7 @@
     "requires_explicit_project": true,
     "requires_import_before_change": true,
     "preserve_existing_remote_resources": false,
-    "allow_delete": true,
+    "allow_delete": false,
     "allow_billing_change": false,
     "allow_policy_bypass": false,
     "secrets_outside_git": true
