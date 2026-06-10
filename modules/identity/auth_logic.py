@@ -25,15 +25,12 @@ except ModuleNotFoundError:
     CryptContext = None
 from pydantic import BaseModel, Field
 
-# Configuração de Criptografia de Senha
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], pbkdf2_sha256__rounds=120_000, deprecated="auto") if CryptContext else None
 
-# Configurações JWT
 JWT_SECRET = os.getenv("ALL_IN_ONE_JWT_SECRET", "local-secret-key-change-in-production")
 JWT_ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 1 dia
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
-# Configuração MongoDB para Telemetria
 MONGO_URL = os.getenv("ALL_IN_ONE_MONGO_URL", "mongodb://localhost:27017")
 MONGO_DB = os.getenv("MONGO_INITDB_DATABASE", "all_in_one")
 

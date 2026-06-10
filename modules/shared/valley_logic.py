@@ -24,5 +24,4 @@ def apply_essential_plan_restrictions(cnpj: str, integration_key: str) -> bool:
     """
     Bloqueia integrações externas para o Plano Essencial (CNPJ único).
     """
-    # Lógica de bloqueio mandatória conforme Governança Valley
-    return False # Bloqueado por padrão no Essencial
+    return False

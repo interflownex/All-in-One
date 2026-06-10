@@ -200,10 +200,8 @@ def _store_for(module_name: str) -> Any:
             store_class = getattr(mod, class_name)
             return store_class(dsn)
         except (ImportError, AttributeError):
-            # Fallback para os que ja foram movidos para a classe base se houver erro
             pass
 
-    # Fallbacks explicitos para os stores ja implementados
     if module_name == "jobs" and os.getenv("ALL_IN_ONE_JOBS_POSTGRES_DSN"):
         from .jobs_postgres_store import JobsPostgresStore
         return JobsPostgresStore(os.environ["ALL_IN_ONE_JOBS_POSTGRES_DSN"])

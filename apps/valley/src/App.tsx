@@ -47,7 +47,6 @@ interface CatalogActionResponse {
 
 const API_HUB_URL = import.meta.env.VITE_API_HUB_URL ?? ''
 
-// Auth utility
 function getStoredAuth() {
   const token = window.localStorage.getItem('valley.session.token')
   const userId = window.localStorage.getItem('valley.session.user-id')
@@ -422,3 +421,4 @@ function App() {
 }
 
 export default App
+p

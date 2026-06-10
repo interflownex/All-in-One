@@ -34,10 +34,9 @@ async def submit_kyc(
 ) -> Any:
     store = app.extra["store"]
     
-    # Payload para o banco de dados
     payload = {
         "biometry_hash": body.biometry_hash,
-        "doc_front_url": "pending_upload", # Em produção, aqui seria gerada uma URL pré-assinada de S3
+        "doc_front_url": "pending_upload",
         "doc_back_url": "pending_upload"
     }
     
@@ -78,7 +77,7 @@ async def get_kyc_status(user_id: UUID) -> Any:
     if not records:
         raise HTTPException(status_code=404, detail="Nenhum registro de KYC encontrado para este usuario.")
     
-    latest = records[0] # Lista ordenada por data decrescente
+    latest = records[0]
     
     return {
         "record_id": latest["id"],
@@ -90,7 +89,6 @@ async def get_kyc_status(user_id: UUID) -> Any:
 
 @app.post("/mfa/setup")
 async def setup_mfa(body: MFASetup, request: Request):
-    # Stub para configuração de MFA via SMS (Simulação Twilio)
     await telemetry.log_access(str(body.user_id), "mfa_setup_init", body.method, request.client.host)
     
     if body.method == "sms":
@@ -102,15 +100,14 @@ async def setup_mfa(body: MFASetup, request: Request):
     
     return {
         "method": body.method,
-        "secret": "JBSWY3DPEHPK3PXP", # Exemplo de segredo TOTP
+        "secret": "JBSWY3DPEHPK3PXP",
         "qr_code_url": f"otpauth://totp/AllInOne?secret=JBSWY3DPEHPK3PXP&issuer=AllInOneID",
         "status": "pending_verification"
     }
 
 @app.post("/mfa/verify")
 async def verify_mfa(body: MFAVerification, request: Request):
-    # Stub para verificação de MFA (SMS ou TOTP)
-    if body.code == "123456": # Mock de validação universal
+    if body.code == "123456":
         await telemetry.log_access(str(body.user_id), "mfa_verify", "success", request.client.host)
         return {"status": "verified"}
     
@@ -145,11 +142,9 @@ async def login(
     body: LoginRequest, 
     request: Request
 ) -> Any:
-    # O store_for("identity") retorna o IdentityPostgresStore configurado no runtime
     store = app.state.store if hasattr(app.state, "store") else None
     
-    # Busca usuário pelo e-mail (usando a lista filtrada do Store)
-    users = app.extra["store"].list("users") # O create_module_app expõe o store via closure ou extra em alguns contextos, vamos garantir acesso
+    users = app.extra["store"].list("users")
     user = next((u for u in users if u["payload"].get("email") == body.email), None)
     
     if not user:
@@ -164,7 +159,6 @@ async def login(
         await telemetry.log_access(user["id"], "login_attempt", "failed_blocked", request.client.host)
         raise HTTPException(status_code=403, detail="Conta bloqueada.")
 
-    # Gera o Token
     token_data = {
         "sub": user["id"],
         "email": user["payload"]["email"],
@@ -172,7 +166,6 @@ async def login(
     }
     access_token, expires_at = create_access_token(token_data)
     
-    # Telemetria de sucesso
     await telemetry.log_access(
         user["id"], 
         "login_success", 
@@ -193,7 +186,6 @@ async def logout(request: Request, user_id: str):
     await telemetry.log_access(user_id, "logout", "success", request.client.host)
     return {"message": "Logout registrado."}
 
-# Sobrescrevendo a lógica de criação de usuário para usar hash de senha real
 @app.post("/registrations", status_code=201)
 async def register_user_with_hash(request: Request, body: dict[str, Any] = Body(...)):
     payload = body.model_dump() if hasattr(body, "model_dump") else dict(body)
