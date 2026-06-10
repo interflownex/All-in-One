@@ -10,46 +10,18 @@
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
         "source.fixAll": "explicit",
-        "source.organizeImports": "explicit"
+        "source.organizeImports": "explicit",
+        "source.fixAll.ruff": "explicit",
+        "source.organizeImports.ruff": "explicit"
     },
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff",
-        "editor.codeActionsOnSave": {
-            "source.fixAll.ruff": "explicit",
-            "source.organizeImports.ruff": "explicit"
-        }
-    },
-    "[json]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[jsonc]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[yaml]": {
-        "editor.defaultFormatter": "redhat.vscode-yaml"
-    },
-    "yaml.validate": true,
-    "yaml.schemaStore.enable": true,
-    "terminal.integrated.defaultProfile.linux": "bash",
-    "terminal.integrated.env.linux": {
-        "GOOGLE_INTEGRATIONS_ENABLED": "true",
-        "GOOGLE_CLOUD_ENABLED": "true",
-        "GOOGLE_AI_STUDIO_ENABLED": "true",
-        "GOOGLE_CODE_CLI_ENABLED": "true",
-        "ALLOYDB_ENABLED": "true",
-        "GEMINI_CODE_ASSIST_ENABLED": "true",
-        "STITCH_REMOTE_SYNC_ENABLED": "true"
-    },
-    "geminicodeassist.outlines.automaticOutlineGeneration": true,
-    "geminicodeassist.agentYoloMode": false,
-    "geminicodeassist.enable": true,
-    "mdb.presetConnections": [],
-    "workbench.editor.preferHistoryBasedLanguageDetection": true,
-    "geminicodeassist.codeLens.enable": false,
-    "geminicodeassist.telemetry.enable": false,
-    "ruff.importStrategy": "fromEnvironment",
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.autoImportCompletions": true,
     "python.analysis.fixAll": [
         "source.unusedImports"
-    ]
+    ],
+    "ruff.importStrategy": "fromEnvironment",
+    "files.eol": "\n",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
 }
