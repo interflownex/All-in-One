@@ -115,7 +115,7 @@ export default function B2BDashboard() {
             <span style={{ color: '#0f172a', fontSize: '0.875rem' }}>{metrics.crm_records} CRM | {metrics.bi_records} BI</span>
           </div>
 
-          <PepitaWidget onSelect={(amount) => {/* Recompensa selecionada: ${amount} Pepitas */}} />
+          <PepitaWidget onSelect={(_amount) => {}} />
         </div>
       )}
 
