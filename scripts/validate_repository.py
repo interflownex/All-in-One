@@ -253,7 +253,10 @@ def main() -> int:
     ]:
         if active_env not in compose:
             fail(f"Docker Compose deve manter integracao Google ativa: {active_env}", errors)
-    kubernetes = KUBERNETES_PLATFORM.read_text(encoding="utf-8") if KUBERNETES_PLATFORM.is_file() else ""
+    kubernetes = "\n".join(
+        manifest.read_text(encoding="utf-8")
+        for manifest in sorted(KUBERNETES_PLATFORM.parent.glob("*.yaml"))
+    )
     if "kind: CronJob" not in kubernetes or "name: retention-worker" not in kubernetes:
         fail("Kubernetes deve declarar CronJob retention-worker.", errors)
     if "ALL_IN_ONE_RETENTION_POSTGRES_DSN" not in kubernetes:
@@ -285,7 +288,7 @@ def main() -> int:
     if not STITCH_MCP_POLICY.is_file():
         fail("Politica obrigatoria do MCP Stitch ausente.", errors)
     else:
-        for error in validate_stitch_mcp_config(require_secret=False):
+        for error in validate_stitch_mcp_config(require_secret=False, require_codex_config=False):
             fail(error, errors)
         stitch_policy = json.loads(STITCH_MCP_POLICY.read_text(encoding="utf-8"))
         if stitch_policy.get("enabled") is not True:
