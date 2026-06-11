@@ -186,7 +186,77 @@ function App() {
         return res.json()
       })
       .then(data => {
-        setOffers(data.data ?? [])
+        const remoteOffers = data.data ?? []
+        if (remoteOffers.length === 0) {
+          // Inserir itens de simulação se a API estiver vazia
+          setOffers([
+            {
+              offer_id: 'sim-1',
+              title: 'Hambúrguer Gourmet Valley',
+              short_description: 'Blend de 180g de carne premium, queijo canastra derretido, cebola caramelizada.',
+              price_amount: '45.90',
+              price_type: 'fixed',
+              consumer_category: 'Alimentação',
+              offer_type: 'food',
+              offer_type_label: 'Alimento',
+              source_module: 'marketplace',
+              provider_label: 'Valley Store',
+              region_label: 'São Paulo, SP',
+              distance_km: 1.2,
+              consumer_action: 'buy',
+              primary_action_label: 'Comprar Agora',
+              verified_seller: true,
+              metadata: { 
+                image_url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80',
+                video_url: 'https://www.w3schools.com/html/mov_bbb.mp4'
+              }
+            } as any,
+            {
+              offer_id: 'sim-2',
+              title: 'Monitor Gamer UltraSharp 4K',
+              short_description: 'Monitor de 32 polegadas, 144Hz, HDR1000 e tempo de resposta de 1ms.',
+              price_amount: '3499.00',
+              price_type: 'fixed',
+              consumer_category: 'Eletrônicos',
+              offer_type: 'product',
+              offer_type_label: 'Produto',
+              source_module: 'marketplace',
+              provider_label: 'Valley Store',
+              region_label: 'São Paulo, SP',
+              distance_km: 2.5,
+              consumer_action: 'buy',
+              primary_action_label: 'Comprar Agora',
+              verified_seller: true,
+              metadata: { 
+                image_url: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=800&q=80',
+                video_url: 'https://www.w3schools.com/html/movie.mp4'
+              }
+            } as any,
+            {
+              offer_id: 'sim-3',
+              title: 'Consultoria de IA Estratégica',
+              short_description: 'Implementação de agentes inteligentes e automação de processos via LLMs.',
+              price_amount: null,
+              price_type: 'quote',
+              consumer_category: 'Tecnologia',
+              offer_type: 'service',
+              offer_type_label: 'Serviço',
+              source_module: 'marketplace',
+              provider_label: 'Valley Tech',
+              region_label: 'Online',
+              distance_km: 0,
+              consumer_action: 'request',
+              primary_action_label: 'Solicitar Orçamento',
+              verified_seller: true,
+              metadata: { 
+                image_url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80',
+                video_url: 'https://www.w3schools.com/html/mov_bbb.mp4'
+              }
+            } as any
+          ])
+        } else {
+          setOffers(remoteOffers)
+        }
         setFacets(data.facets ?? {
           company_types: [],
           company_categories: [],
@@ -330,7 +400,22 @@ function App() {
         ) : (
           <div className="offers-grid">
             {offers.length > 0 ? offers.map((offer) => (
-              <article className="offer-card" key={offer.offer_id}>
+              <article className="offer-card" key={offer.offer_id} style={{ display: 'flex', flexDirection: 'column' }}>
+                <div className="media-container" style={{ position: 'relative', height: '160px', overflow: 'hidden', borderRadius: '4px', marginBottom: '12px', border: '1px solid #d4ddd8' }}>
+                  <img src={(offer as any).metadata?.image_url || 'https://via.placeholder.com/400x300?text=Sem+Imagem'} alt={offer.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  {(offer as any).metadata?.video_url && (
+                    <video 
+                      src={(offer as any).metadata?.video_url} 
+                      muted 
+                      loop 
+                      onMouseOver={(e) => e.currentTarget.play()} 
+                      onMouseOut={(e) => { e.currentTarget.pause(); e.currentTarget.currentTime = 0; }}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0, transition: 'opacity 0.3s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                      onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
+                    />
+                  )}
+                </div>
                 <div className="offer-tags">
                   <span className="badge">{offer.offer_type_label}</span>
                   <span>{offer.consumer_category}</span>
