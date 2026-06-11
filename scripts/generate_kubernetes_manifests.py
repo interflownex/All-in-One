@@ -1,9 +1,9 @@
 import os
 
 MODULES = [
-    "ai-core", "api-hub", "bi", "bpm", "business", "crm", "delivery", 
-    "document", "erp", "finance", "health", "hr", "identity", "jobs", 
-    "legal", "marketplace", "mobility", "permissions", "property", 
+    "ai-core", "api-hub", "bi", "bpm", "business", "crm", "delivery",
+    "document", "erp", "finance", "health", "hr", "identity", "jobs",
+    "legal", "marketplace", "mobility", "permissions", "property",
     "riders", "services", "stock", "tms", "vision", "wms"
 ]
 
@@ -99,14 +99,14 @@ def main():
             content = generate_deployment(worker, f"{REPO}/{worker}", replicas=cfg["replicas"])
         else:
             content = generate_cronjob(worker, f"{REPO}/{worker}", cfg["schedule"])
-        
+
         with open(f"{BASE_DIR}/{worker}.yaml", "w") as f:
             f.write(content)
         print(f"Generated {worker}.yaml")
 
     # Update kustomization.yaml if it exists, or create it
     resources = [f"{m}.yaml" for m in MODULES] + [f"{w}.yaml" for w in WORKERS.keys()] + ["platform.yaml", "retention-alerting.yaml"]
-    
+
     kustomization = f"""apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
