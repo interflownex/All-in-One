@@ -1,6 +1,8 @@
 -- Migration 023: Indices de Performance para Outbox, Auditoria e Ledger
 -- Data: 2026-06-01
 
+BEGIN;
+
 -- 1. Otimizacao do Dispatcher da Outbox (Busca por eventos prontos para envio/retry)
 ALTER TABLE audit.domain_events
     ADD COLUMN IF NOT EXISTS next_retry_at TIMESTAMPTZ;
@@ -14,8 +16,7 @@ CREATE INDEX IF NOT EXISTS idx_outbox_dispatcher_ready
 ON audit.domain_events (next_retry_at, created_at, id)
 WHERE status = 'pending' AND published_at IS NULL;
 
--- 2. Rastreabilidade Transversal (Busca por Correlation ID em logs e eventos)
-CREATE INDEX IF NOT EXISTS idx_audit_logs_correlation ON audit.logs (correlation_id);
+-- 2. Rastreabilidade Transversal (Busca por Correlation ID nos eventos)
 CREATE INDEX IF NOT EXISTS idx_audit_events_correlation ON audit.domain_events (correlation_id);
 
 -- 3. Performance de Saldo e Extrato (Finance e Gold Valley)
@@ -42,3 +43,5 @@ WHERE idempotency_key IS NOT NULL;
 
 COMMENT ON INDEX audit.idx_outbox_dispatcher_ready IS 'Acelera a selecao de eventos pendentes pelo worker outbox-dispatcher';
 COMMENT ON INDEX finance.idx_finance_ledger_wallet_lookup IS 'Otimiza o calculo de saldo derivado e listagem de extrato';
+
+COMMIT;

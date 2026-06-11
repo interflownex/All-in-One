@@ -20,6 +20,41 @@ CREATE TABLE IF NOT EXISTS marketplace.reviews (
     UNIQUE (idempotency_key)
 );
 
+-- Compatibilidade com ambientes que executaram a migration 013 antiga, na
+-- qual reviews era criada como tabela generica.
+ALTER TABLE marketplace.reviews
+    ADD COLUMN IF NOT EXISTS order_id UUID REFERENCES marketplace.orders(id),
+    ADD COLUMN IF NOT EXISTS store_id UUID REFERENCES marketplace.stores(id),
+    ADD COLUMN IF NOT EXISTS offer_id TEXT,
+    ADD COLUMN IF NOT EXISTS rating SMALLINT,
+    ADD COLUMN IF NOT EXISTS comment TEXT,
+    ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(40) NOT NULL DEFAULT 'published';
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'marketplace_reviews_order_required'
+          AND conrelid = 'marketplace.reviews'::regclass
+    ) THEN
+        ALTER TABLE marketplace.reviews
+            ADD CONSTRAINT marketplace_reviews_order_required
+            CHECK (order_id IS NOT NULL) NOT VALID;
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'marketplace_reviews_rating_range'
+          AND conrelid = 'marketplace.reviews'::regclass
+    ) THEN
+        ALTER TABLE marketplace.reviews
+            ADD CONSTRAINT marketplace_reviews_rating_range
+            CHECK (rating BETWEEN 1 AND 5) NOT VALID;
+    END IF;
+END $$;
+
+CREATE UNIQUE INDEX IF NOT EXISTS marketplace_reviews_order_user_uidx
+    ON marketplace.reviews (order_id, user_id);
+
 CREATE INDEX IF NOT EXISTS marketplace_reviews_store_created_idx
     ON marketplace.reviews (store_id, created_at DESC);
 

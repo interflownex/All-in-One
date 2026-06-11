@@ -157,7 +157,6 @@ def main() -> int:
         "compliance.retention_decisions",
         "idx_retention_candidates_status",
         "idx_outbox_dispatcher_ready",
-        "idx_audit_logs_correlation",
         "idx_finance_ledger_wallet_lookup",
         "idx_audit_events_correlation",
         "idx_finance_gold_ledger_entity_lookup",
