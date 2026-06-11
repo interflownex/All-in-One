@@ -279,16 +279,28 @@ function App() {
 
   return (
     <>
-      <header>
-        <div className="logo">Valley</div>
-        <nav>
-          <button className="btn-link" style={{ fontWeight: currentView === 'consumer' ? 'bold' : 'normal' }} onClick={() => setCurrentView('consumer')}>Ofertas</button>
-          <button className="btn-link" style={{ fontWeight: currentView === 'b2b' ? 'bold' : 'normal' }} onClick={() => setCurrentView('b2b')}>Lojista (B2B)</button>
-          <button className="btn-link" style={{ fontWeight: currentView === 'tracking' ? 'bold' : 'normal' }} onClick={() => setCurrentView('tracking')}>GPS (WebSockets)</button>
+      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 24px', background: '#120B2E', borderBottom: '2px solid #22D3EE' }}>
+        <div className="brand-group" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <img 
+            src="/assets/brand/all-in-one-logo-light-official.png" 
+            alt="All-in-One" 
+            style={{ height: '32px', width: 'auto' }} 
+          />
+          <div style={{ width: '2px', height: '24px', background: 'rgba(255,255,255,0.2)' }}></div>
+          <img 
+            src="/assets/brand/valley-logo-official.png" 
+            alt="Valley" 
+            style={{ height: '28px', width: 'auto' }} 
+          />
+        </div>
+        <nav style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <button className="btn-link" style={{ color: '#fff', fontWeight: currentView === 'consumer' ? 'bold' : 'normal' }} onClick={() => setCurrentView('consumer')}>Ofertas</button>
+          <button className="btn-link" style={{ color: '#fff', fontWeight: currentView === 'b2b' ? 'bold' : 'normal' }} onClick={() => setCurrentView('b2b')}>Lojista (B2B)</button>
+          <button className="btn-link" style={{ color: '#fff', fontWeight: currentView === 'tracking' ? 'bold' : 'normal' }} onClick={() => setCurrentView('tracking')}>GPS (WebSockets)</button>
           {auth.token ? (
             <>
-              <button className="btn-link" onClick={() => setIsOrdersOpen(true)}>Meus Pedidos</button>
-              <button className="btn-link" onClick={() => { clearStoredAuth(); setAuth({token: null, userId: null}) }}>Sair</button>
+              <button className="btn-link" style={{ color: '#fff' }} onClick={() => setIsOrdersOpen(true)}>Meus Pedidos</button>
+              <button className="btn-link" style={{ color: '#fff' }} onClick={() => { clearStoredAuth(); setAuth({token: null, userId: null}) }}>Sair</button>
             </>
           ) : (
             <button className="btn-primary" onClick={() => setIsLoginOpen(true)}>Entrar / Cadastrar</button>

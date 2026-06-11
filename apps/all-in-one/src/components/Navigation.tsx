@@ -358,8 +358,14 @@ const Navigation: React.FC = () => {
 
   return (
     <nav className="side-nav">
-      <div className="nav-header">
-        <Link to="/" className="logo">All-in-One</Link>
+      <div className="nav-header" style={{ padding: '24px 16px', borderBottom: '2px solid #17211c', marginBottom: '16px', background: '#fff' }}>
+        <Link to="/" className="logo-container" style={{ display: 'block' }}>
+          <img 
+            src="/assets/brand/all-in-one-logo-official.png" 
+            alt="All-in-One Logo" 
+            style={{ width: '100%', maxWidth: '140px', height: 'auto', display: 'block' }} 
+          />
+        </Link>
       </div>
       <div className="nav-section">
         <h3>Módulos e Telas</h3>

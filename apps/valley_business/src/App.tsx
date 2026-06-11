@@ -11,8 +11,20 @@ function App() {
     <div className="dashboard-layout">
       {/* Sidebar */}
       <aside className="sidebar">
-        <div className="sidebar-logo">
-          <span>Valley</span> Business
+        <div className="sidebar-logo" style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: '12px', borderBottom: '1px solid var(--panel-border)' }}>
+          <img 
+            src="/assets/brand/all-in-one-logo-light-official.png" 
+            alt="All-in-One" 
+            style={{ width: '100%', maxWidth: '120px', height: 'auto' }} 
+          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <img 
+              src="/assets/brand/valley-logo-official.png" 
+              alt="Valley" 
+              style={{ height: '20px', width: 'auto' }} 
+            />
+            <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--accent)' }}>Business</span>
+          </div>
         </div>
         <nav className="sidebar-nav">
           <div 

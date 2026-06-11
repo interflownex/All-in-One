@@ -304,8 +304,15 @@ const Navigation: React.FC = () => {
 
   return (
     <nav className="side-nav">
-      <div className="nav-header" style={{ background: '#126b45', color: '#fff' }}>
-        <Link to="/" className="logo" style={{ color: '#fff' }}>Valley Business</Link>
+      <div className="nav-header" style={{ padding: '24px 16px', borderBottom: '2px solid #17211c', marginBottom: '16px', background: '#126b45' }}>
+        <Link to="/" className="logo-container" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <img 
+            src="/assets/brand/all-in-one-logo-light-official.png" 
+            alt="All-in-One Logo" 
+            style={{ width: '100%', maxWidth: '120px', height: 'auto', display: 'block' }} 
+          />
+          <div style={{ color: '#fff', fontSize: '14px', fontWeight: 900, letterSpacing: '1px', textTransform: 'uppercase' }}>Business Unit</div>
+        </Link>
       </div>
       <div className="nav-section">
         <h3>Painel Administrativo</h3>

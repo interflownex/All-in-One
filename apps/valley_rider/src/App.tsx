@@ -7,9 +7,20 @@ function App() {
 
   return (
     <div className="mobile-container">
-      <header className="header">
-        <div style={{ fontWeight: 800, fontSize: '1.25rem' }}>
-          <span style={{ color: 'var(--accent-rider)' }}>V</span> Rider
+      <header className="header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', background: '#000' }}>
+        <div className="brand-group" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <img 
+            src="/assets/brand/all-in-one-logo-light-official.png" 
+            alt="All-in-One" 
+            style={{ height: '24px', width: 'auto' }} 
+          />
+          <div style={{ width: '1px', height: '16px', background: 'rgba(255,255,255,0.3)' }}></div>
+          <img 
+            src="/assets/brand/valley-logo-official.png" 
+            alt="Valley Rider" 
+            style={{ height: '20px', width: 'auto' }} 
+          />
+          <span style={{ fontSize: '12px', fontWeight: 900, color: 'var(--accent-rider)' }}>RIDER</span>
         </div>
         <div 
           className="status-toggle" 
