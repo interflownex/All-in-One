@@ -1,14 +1,21 @@
 BEGIN;
 
 -- Criar um usuário vendedor se não existir (ou usar o primeiro disponível)
-INSERT INTO identity.users (id, username, email, password_hash, full_name, status)
-VALUES ('00000000-0000-0000-0000-000000000001', 'vendedor_teste', 'vendedor@valley.com', '$2b$12$K.z8m.L.m.L.m.L.m.L.m.L.m.L.m.L.m.L.m.L.m.L.m.L.', 'Vendedor Valley', 'active')
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO identity.users (
+    id, full_name, cpf_document, birth_date, email, phone_e164, 
+    password_hash, face_hash, terms_accepted_at, lgpd_consent_at, status, liveness_score
+) VALUES (
+    '00000000-0000-0000-0000-000000000001', 'Vendedor Valley', '12345678901', '1980-01-01', 
+    'vendedor@valley.com', '+5511999999999', 'hash', 'face_vendedor', NOW(), NOW(), 'active', 0.95
+) ON CONFLICT (id) DO NOTHING;
 
 -- Criar uma empresa se não existir
-INSERT INTO business.companies (id, owner_id, name, legal_name, document_type, document_number, status)
-VALUES ('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'Valley Store', 'Valley Marketplace LTDA', 'CNPJ', '12345678000199', 'active')
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO business.companies (
+    id, user_id, cnpj, root_cnpj, legal_name, legal_representative_user_id, status
+) VALUES (
+    '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 
+    '12345678000199', '12345678', 'Valley Store', '00000000-0000-0000-0000-000000000001', 'active'
+) ON CONFLICT (id) DO NOTHING;
 
 -- 1. Hambúrguer Gourmet Valley (Alimentos)
 INSERT INTO business.catalog_offers (
