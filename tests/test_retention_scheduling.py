@@ -18,7 +18,8 @@ def test_docker_compose_schedules_retention_worker_in_safe_dry_run_mode() -> Non
 
 
 def test_kubernetes_declares_retention_cronjob_with_secret_dsn() -> None:
-    manifest = (ROOT / "infra" / "kubernetes" / "base" / "platform.yaml").read_text(encoding="utf-8")
+    base = ROOT / "infra" / "kubernetes" / "base"
+    manifest = "\n".join(path.read_text(encoding="utf-8") for path in sorted(base.glob("*.yaml")))
 
     assert "kind: CronJob" in manifest
     assert "name: retention-worker" in manifest
