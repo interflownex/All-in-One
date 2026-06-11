@@ -617,7 +617,7 @@ def render_requirements(slug: str) -> str:
             "fastapi==0.136.1\n"
             "starlette==1.0.1\n"
             "uvicorn[standard]==0.34.2\n"
-            "PyJWT==2.10.1\n"
+            "PyJWT==2.13.0\n"
             "passlib[argon2]==1.7.4\n"
             "psycopg[binary]==3.3.4\n"
             "motor==3.7.0\n"
@@ -639,7 +639,7 @@ def render_requirements(slug: str) -> str:
             "uvicorn[standard]==0.34.2\n"
             "httpx==0.28.1\n"
             "redis==5.2.1\n"
-            "PyJWT==2.10.1\n"
+            "PyJWT==2.13.0\n"
             "psycopg[binary]==3.3.4\n"
             "tenacity==9.0.0\n"
         )

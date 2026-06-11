@@ -320,13 +320,13 @@ class BusinessPostgresStore:
                 (payload.get("department"), status, metadata, actor, resource_id),
             ).fetchone()
         if resource_type == "catalog_offers":
-            published_at = "NOW()" if status == "published" else "published_at"
             return connection.execute(
-                f"""UPDATE business.catalog_offers SET source_module = %s, source_entity_id = %s,  # nosec B608
+                """UPDATE business.catalog_offers SET source_module = %s, source_entity_id = %s,
                    offer_type = %s, title = %s, short_description = %s, category_id = %s,
                    business_category = %s, business_type = %s, activity_branch = %s,
                    price_type = %s, price_amount = %s, currency = %s, location_type = %s,
-                   availability_type = %s, status = %s, metadata = %s, published_at = {published_at},
+                   availability_type = %s, status = %s, metadata = %s,
+                   published_at = CASE WHEN %s THEN NOW() ELSE published_at END,
                    updated_by = %s, updated_at = NOW() WHERE id = %s RETURNING *""",
                 (
                     payload["source_module"],
@@ -345,6 +345,7 @@ class BusinessPostgresStore:
                     payload.get("availability_type", "immediate"),
                     status,
                     metadata,
+                    status == "published",
                     actor,
                     resource_id,
                 ),

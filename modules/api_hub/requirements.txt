@@ -3,6 +3,6 @@ starlette==1.0.1
 uvicorn[standard]==0.34.2
 httpx==0.28.1
 redis==5.2.1
-PyJWT==2.10.1
+PyJWT==2.13.0
 psycopg[binary]==3.3.4
 tenacity==9.0.0
