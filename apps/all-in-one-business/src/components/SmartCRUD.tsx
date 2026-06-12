@@ -74,11 +74,12 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   }
 
   return (
-    <div className="container" style={ position: 'relative' }>
-      <div style={ position: 'fixed', bottom: '24px', right: '24px', opacity: 0.5, pointerEvents: 'none', zIndex: 100 }>
-        <img src="/assets/brand/all-in-one-logo-light-official.png" alt="Branding" style={ height: '24px', width: 'auto' } />
+    <div className="container" style={{ position: 'relative' }}>
+      <div style={{ position: 'fixed', bottom: '24px', right: '24px', opacity: 0.5, pointerEvents: 'none', zIndex: 100 }}>
+        <img src="/assets/brand/all-in-one-logo-light-official.png" alt="Branding" style={{ height: '24px', width: 'auto' }} />
       </div>
       <section className="hero">
+
         <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '12px' }}>{title}</h1>
         <p style={{ color: '#536159', fontSize: '1.1rem' }}>Gerenciamento inteligente do módulo {module.toUpperCase()}.</p>
       </section>
