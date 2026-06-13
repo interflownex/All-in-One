@@ -20,6 +20,20 @@ CREATE TABLE IF NOT EXISTS marketplace.disputes (
     idempotency_key TEXT UNIQUE
 );
 
+ALTER TABLE marketplace.disputes
+    ADD COLUMN IF NOT EXISTS order_id UUID REFERENCES marketplace.orders(id),
+    ADD COLUMN IF NOT EXISTS store_id UUID REFERENCES marketplace.stores(id),
+    ADD COLUMN IF NOT EXISTS offer_id TEXT,
+    ADD COLUMN IF NOT EXISTS case_type VARCHAR(40),
+    ADD COLUMN IF NOT EXISTS subject VARCHAR(200),
+    ADD COLUMN IF NOT EXISTS message TEXT,
+    ADD COLUMN IF NOT EXISTS desired_resolution TEXT;
+
+ALTER TABLE marketplace.disputes
+    ALTER COLUMN order_id SET NOT NULL,
+    ALTER COLUMN case_type SET NOT NULL,
+    ALTER COLUMN message SET NOT NULL;
+
 CREATE INDEX IF NOT EXISTS marketplace_disputes_order_created_idx
     ON marketplace.disputes (order_id, created_at DESC);
 
