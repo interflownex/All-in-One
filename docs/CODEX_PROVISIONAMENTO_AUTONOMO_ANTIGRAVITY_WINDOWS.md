@@ -30,9 +30,15 @@ Referencia autoritativa: origin/main
 
 Depois da substituicao, instalar e configurar o ambiente de desenvolvimento
 Windows para uso no Antigravity IDE, incluindo Git, GitHub CLI, PowerShell 7,
-Python 3.12, Node.js 22.14.0, Java 17, Docker Desktop, Google Cloud CLI,
-dependencias Python, dependencias web, variaveis locais, Docker Compose e
-validacoes do repositorio.
+Python 3.12, Node.js 22.14.0, Java 17, Docker Desktop, Android Studio,
+Terraform, Kubernetes CLI, dependencias Python, dependencias web, variaveis
+locais, Docker Compose, servidores MCP e validacoes do repositorio.
+
+O ambiente deve ser **local-first** e autossuficiente. A aplicacao, bancos,
+filas, cache, frontends, testes e build Android nao podem depender de Cloud
+Shell, Cloud Build, Cloud Run, GKE, AlloyDB ou qualquer runtime Google.
+Integracoes Google podem permanecer instaladas como opcionais, mas devem ficar
+desativadas no perfil local e nao podem bloquear o provisionamento.
 
 ## Regras inegociaveis
 
@@ -55,6 +61,11 @@ validacoes do repositorio.
     recebidas de `origin/main`.
 12. Depois do clone, todo desenvolvimento deve ocorrer em branch
     `codex/<descricao>`, nunca diretamente em `main`.
+13. O perfil local deve funcionar sem login Google, projeto Google Cloud,
+    billing, ADC ou acesso a servicos remotos.
+14. MCPs locais devem ser instalados e testados. MCPs SaaS que exijam conta,
+    token ou OAuth devem ser configurados sem segredo literal e marcados como
+    pendentes, sem bloquear o restante do ambiente.
 
 ## Estado final esperado
 
@@ -69,6 +80,8 @@ Ao concluir:
 - as dependencias devem estar instaladas;
 - as validacoes basicas devem passar;
 - o Antigravity IDE deve conseguir abrir o workspace;
+- os MCPs locais essenciais devem responder no Antigravity;
+- o projeto deve funcionar com todas as flags Google e AlloyDB desativadas;
 - nenhum segredo deve estar versionado.
 
 ## Fase 1 - Preflight e inventario
@@ -193,12 +206,20 @@ Verificar a existencia do `winget`. Quando disponivel, instalar ou atualizar:
 $Packages = @(
     "Git.Git",
     "Microsoft.PowerShell",
+    "Microsoft.WindowsTerminal",
     "Docker.DockerDesktop",
     "Python.Python.3.12",
     "GitHub.cli",
-    "Google.CloudSDK",
     "EclipseAdoptium.Temurin.17.JDK",
-    "Schniz.fnm"
+    "Schniz.fnm",
+    "Google.AndroidStudio",
+    "Google.Chrome",
+    "7zip.7zip",
+    "Hashicorp.Terraform",
+    "Kubernetes.kubectl",
+    "Helm.Helm",
+    "DBeaver.DBeaver.Community",
+    "Bruno.Bruno"
 )
 
 foreach ($Package in $Packages) {
@@ -236,8 +257,14 @@ java -version
 docker version
 docker compose version
 gh --version
-gcloud --version
+terraform version
+kubectl version --client
+helm version
 ```
+
+Se algum identificador do `winget` tiver mudado, pesquisar pelo nome com
+`winget search`, selecionar somente o editor oficial e registrar o ID
+efetivamente instalado. Google Cloud CLI nao e requisito do perfil local.
 
 Se uma alteracao de `PATH`, instalacao do WSL ou Docker exigir reinicializacao,
 o Codex deve concluir as instalacoes, registrar o ponto de retomada e continuar
@@ -328,16 +355,18 @@ POSTGRES_PASSWORD=local-development-only
 MONGO_INITDB_DATABASE=all_in_one
 RABBITMQ_DEFAULT_USER=all_in_one
 RABBITMQ_DEFAULT_PASS=local-development-only
-GOOGLE_INTEGRATIONS_ENABLED=true
-GOOGLE_CLOUD_ENABLED=true
-GOOGLE_AI_STUDIO_ENABLED=true
-GOOGLE_CODE_CLI_ENABLED=true
-GEMINI_CODE_ASSIST_ENABLED=true
-STITCH_REMOTE_SYNC_ENABLED=true
+GOOGLE_INTEGRATIONS_ENABLED=false
+GOOGLE_CLOUD_ENABLED=false
+GOOGLE_AI_STUDIO_ENABLED=false
+GOOGLE_CODE_CLI_ENABLED=false
+ALLOYDB_ENABLED=false
+ALLOYDB_DSN=
+GEMINI_CODE_ASSIST_ENABLED=false
+STITCH_REMOTE_SYNC_ENABLED=false
 ```
 
-`STITCH_API_KEY`, chaves Google e demais segredos devem permanecer vazios ate
-serem fornecidos por autenticacao legitima ou secret manager.
+Credenciais de integracoes Google e Stitch devem permanecer vazias. Nao copiar
+credenciais do ambiente remoto.
 
 Confirmar que `.env` esta ignorado:
 
@@ -379,6 +408,12 @@ github.vscode-pull-request-github
 eamodio.gitlens
 ms-vscode-remote.remote-wsl
 ms-kubernetes-tools.vscode-kubernetes-tools
+hashicorp.terraform
+vscjava.vscode-java-pack
+vscjava.vscode-gradle
+fwcd.kotlin
+humao.rest-client
+editorconfig.editorconfig
 GoogleCloudTools.datacloud
 ```
 
@@ -391,6 +426,195 @@ C:\Users\ereta\.codex\worktrees\all-in-one\.venv\Scripts\python.exe
 Se `.vscode\settings.json` apontar para `.venv/bin/python`, criar uma
 configuracao local do editor ou selecionar o interpretador pela interface. Nao
 fazer commit de uma alteracao especifica de maquina sem necessidade.
+
+### Configurar todos os servidores MCP
+
+Antigravity IDE, Antigravity 2.0 e Antigravity CLI usam a configuracao central:
+
+```text
+C:\Users\ereta\.gemini\config\mcp_config.json
+```
+
+O Codex deve criar backup do arquivo existente e fazer merge por JSON. Nao
+concatenar texto JSON e nao sobrescrever servidores preexistentes:
+
+```powershell
+$McpDirectory = Join-Path $env:USERPROFILE ".gemini\config"
+$McpConfig = Join-Path $McpDirectory "mcp_config.json"
+$McpBackup = Join-Path $McpDirectory `
+    "mcp_config.before-all-in-one-$Timestamp.json"
+
+New-Item -ItemType Directory -Force -Path $McpDirectory | Out-Null
+
+if (Test-Path $McpConfig) {
+    Copy-Item $McpConfig $McpBackup
+    try {
+        $Mcp = Get-Content $McpConfig -Raw |
+            ConvertFrom-Json -AsHashtable
+    } catch {
+        throw "mcp_config.json existente e invalido: $($_.Exception.Message)"
+    }
+} else {
+    $Mcp = @{}
+}
+
+if (-not $Mcp.ContainsKey("mcpServers")) {
+    $Mcp["mcpServers"] = @{}
+}
+```
+
+#### MCPs locais obrigatorios
+
+Instalar previamente os pacotes Node usados pelos servidores locais:
+
+```powershell
+npm install --global `
+    @playwright/mcp `
+    @modelcontextprotocol/server-filesystem
+```
+
+Configurar:
+
+```powershell
+$Mcp["mcpServers"]["filesystem-all-in-one"] = @{
+    command = "npx"
+    args = @(
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        $Target
+    )
+}
+
+$Mcp["mcpServers"]["playwright"] = @{
+    command = "npx"
+    args = @("-y", "@playwright/mcp@latest", "--headless")
+}
+
+$Mcp["mcpServers"]["context7"] = @{
+    serverUrl = "https://mcp.context7.com/mcp"
+}
+```
+
+O filesystem deve ficar restrito ao workspace. Nao conceder acesso ao perfil
+inteiro do usuario, `.ssh`, diretórios de credenciais ou backups.
+
+#### Docker MCP Toolkit e Gateway
+
+Exigir Docker Desktop `4.62` ou superior e verificar:
+
+```powershell
+docker mcp --help
+```
+
+Criar um perfil dedicado:
+
+```powershell
+$McpProfile = "all-in-one-local"
+$Profiles = docker mcp profile list 2>$null | Out-String
+
+if ($Profiles -notmatch [regex]::Escape($McpProfile)) {
+    docker mcp profile create --name $McpProfile
+}
+```
+
+Consultar o catalogo antes de adicionar servidores, pois IDs podem evoluir:
+
+```powershell
+$Catalog = docker mcp catalog server ls mcp/docker-mcp-catalog |
+    Out-String
+
+$DesiredCatalogServers = @(
+    "playwright",
+    "github-official",
+    "terraform",
+    "filesystem"
+)
+
+foreach ($ServerId in $DesiredCatalogServers) {
+    if ($Catalog -match "(?m)^\s*$([regex]::Escape($ServerId))\s") {
+        docker mcp profile server add $McpProfile `
+            --server "catalog://mcp/docker-mcp-catalog/$ServerId"
+    }
+}
+```
+
+Conectar o Gateway ao Antigravity:
+
+```powershell
+$Mcp["mcpServers"]["docker"] = @{
+    command = "docker"
+    args = @("mcp", "gateway", "run", "--profile", $McpProfile)
+}
+```
+
+Se Docker Desktop for anterior a `4.62`, atualizar antes de continuar. Nao
+substituir o Docker MCP Gateway por comandos Docker com `shell=true`.
+
+#### Terraform MCP
+
+O executavel `terraform` deve estar instalado localmente. Quando o servidor
+`terraform` existir no Docker MCP Catalog, ele deve integrar o perfil acima.
+Se nao existir, baixar somente um binario oficial do Terraform MCP Server a
+partir das releases da HashiCorp e configurá-lo por `command`/`args`.
+
+O MCP Terraform local deve iniciar em modo somente leitura/documentacao. Nao
+autorizar `apply`, destruicao, HCP Terraform ou Terraform Enterprise sem uma
+ordem separada e credenciais explicitas.
+
+#### MCPs SaaS opcionais
+
+Os servidores abaixo podem ser cadastrados, mas nao sao requisitos para o
+runtime local:
+
+```text
+cloudflare-api
+figma
+linear
+stitch
+cloudrun
+gke-oss
+```
+
+Regras:
+
+1. `cloudrun`, `gke-oss` e `stitch` devem ficar desativados no perfil local,
+   pois dependem do ambiente Google abandonado nesta configuracao.
+2. Cloudflare, Figma e Linear so podem ser ativados depois de OAuth ou token
+   legitimo fornecido externamente.
+3. Tokens nunca devem ser escritos em `mcp_config.json`.
+4. Usar variaveis como `CLOUDFLARE_API_TOKEN`, `FIGMA_ACCESS_TOKEN`,
+   `LINEAR_API_KEY` e `CONTEXT7_API_KEY`.
+5. Ausencia dessas credenciais deve resultar em `pendente`, nao em falha do
+   provisionamento local.
+
+#### Persistir e validar o JSON MCP
+
+```powershell
+$Mcp |
+    ConvertTo-Json -Depth 20 |
+    Set-Content -Encoding UTF8 $McpConfig
+
+Get-Content $McpConfig -Raw |
+    ConvertFrom-Json |
+    Out-Null
+```
+
+Reabrir o Antigravity e acessar:
+
+```text
+Agent panel > ... > MCP Servers > Manage MCP Servers > Refresh
+```
+
+Validar no minimo:
+
+- `filesystem-all-in-one`: lista apenas arquivos do workspace;
+- `playwright`: abre `http://localhost:8100/health`;
+- `docker`: lista containers do projeto pelo Gateway;
+- `context7`: consulta documentacao publica;
+- `terraform`: consulta documentacao sem executar `apply`.
+
+Nenhum MCP local pode aparecer como `Disconnected` ao final. Para cada MCP SaaS
+opcional, registrar claramente `desativado sem credencial`.
 
 ### Recuperar falha de instalacao do Google Cloud Data Agent Kit
 
@@ -575,40 +799,27 @@ Extensions > ... > Install from VSIX
 Selecionar o arquivo `%TEMP%\GoogleCloudTools.datacloud.vsix`. Esse e o unico
 passo de interface permitido nesse fallback.
 
-Depois da instalacao:
-
-```powershell
-gcloud init
-gcloud auth login
-gcloud auth application-default login
-gcloud components update
-gcloud config set project all-in-one-498012
-```
-
 O Codex deve reabrir o Antigravity, confirmar que o icone do Google Cloud Data
-Agent Kit aparece e executar o comando de login da extensao. A autenticacao
-deve usar a mesma conta usada no `gcloud`.
+Agent Kit aparece. No perfil local-first, nao autenticar a extensao nem exigir
+Google Cloud. Ela deve permanecer instalada, mas inativa.
 
-## Fase 8 - GitHub e Google Cloud
+## Fase 8 - GitHub e integracoes remotas opcionais
 
 Verificar a autenticacao:
 
 ```powershell
 gh auth status
-gcloud auth list
 ```
 
-Se necessario, iniciar os fluxos oficiais:
+Se necessario, iniciar o fluxo oficial:
 
 ```powershell
 gh auth login --web
-gcloud auth login
-gcloud auth application-default login
-gcloud config set project all-in-one-498012
 ```
 
-Esses passos podem abrir o navegador. O Codex deve aguardar a conclusao do
-login e continuar automaticamente.
+Google Cloud CLI, ADC, Cloud Build, Cloud Run e GKE nao devem ser configurados
+no perfil local. Se ja estiverem instalados, nao apagar credenciais existentes,
+mas nao usa-las nem torna-las requisito.
 
 Nunca imprimir tokens ou credenciais nos logs.
 
@@ -801,8 +1012,13 @@ Todos os itens devem ser verdadeiros:
 - [ ] o Antigravity IDE abriu o workspace correto;
 - [ ] Antigravity esta na versao 1.21.5 ou superior;
 - [ ] `GoogleCloudTools.datacloud` esta instalada e visivel;
-- [ ] GitHub e Google Cloud foram configurados ou o unico bloqueio restante e
-      uma autenticacao humana claramente informada;
+- [ ] todos os aplicativos e extensoes locais obrigatorios foram instalados;
+- [ ] `filesystem-all-in-one`, Playwright, Docker, Context7 e Terraform MCP
+      foram configurados e validados;
+- [ ] MCPs SaaS sem credencial foram mantidos desativados;
+- [ ] GitHub foi configurado ou o unico bloqueio restante e uma autenticacao
+      humana claramente informada;
+- [ ] o runtime local funciona sem Google Cloud, ADC, Cloud Build ou AlloyDB;
 - [ ] nenhuma credencial foi exposta;
 - [ ] o backup antigo permanece preservado.
 
@@ -818,7 +1034,9 @@ Ao terminar, o Codex deve responder em portugues do Brasil com:
 6. estado dos containers;
 7. caminho e SHA-256 do APK;
 8. branch atual;
-9. eventuais autenticacoes externas ainda pendentes.
+9. lista de MCPs conectados, desativados e pendentes;
+10. eventuais autenticacoes externas ainda pendentes;
+11. confirmacao de que o runtime local nao depende do ambiente Google.
 
 Falhas devem incluir o comando, a causa raiz identificada e as tentativas de
 recuperacao realizadas. Nao encerrar com uma lista generica de proximos passos

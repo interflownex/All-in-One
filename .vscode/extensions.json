@@ -15,6 +15,12 @@
         "eamodio.gitlens",
         "ms-vscode-remote.remote-wsl",
         "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "hashicorp.terraform",
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-gradle",
+        "fwcd.kotlin",
+        "humao.rest-client",
+        "editorconfig.editorconfig",
         "GoogleCloudTools.datacloud"
     ]
 }
