@@ -43,4 +43,7 @@
     "files.eol": "\n",
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
+    "geminicodeassist.outlines.automaticOutlineGeneration": true,
+    "geminicodeassist.enable": true,
+    "geminicodeassist.agentYoloMode": false
 }
