@@ -1,6 +1,5 @@
 import subprocess
 import sys
-from pathlib import Path
 
 # Configurações GCP
 PROJECT_ID = "all-in-one-498012"
@@ -18,9 +17,9 @@ ALL_MODULES = [
     "jobs", "property", "outbox-dispatcher", "retention-worker"
 ]
 
-def run_command(cmd, shell=False):
-    print(f"Executando: {' '.join(cmd) if isinstance(cmd, list) else cmd}")
-    result = subprocess.run(cmd, shell=shell, check=False)
+def run_command(cmd: list[str]) -> bool:
+    print(f"Executando: {' '.join(cmd)}")
+    result = subprocess.run(cmd, check=False)
     if result.returncode != 0:
         print(f"Erro ao executar comando. Código: {result.returncode}")
         return False
