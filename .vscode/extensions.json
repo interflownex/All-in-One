@@ -14,6 +14,7 @@
         "github.vscode-pull-request-github",
         "eamodio.gitlens",
         "ms-vscode-remote.remote-wsl",
-        "ms-kubernetes-tools.vscode-kubernetes-tools"
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "GoogleCloudTools.datacloud"
     ]
 }

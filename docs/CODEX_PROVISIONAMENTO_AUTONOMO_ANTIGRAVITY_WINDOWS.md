@@ -260,9 +260,10 @@ O Codex deve:
 2. se nao houver, baixar o instalador Windows x64 da pagina oficial;
 3. validar que o dominio de origem e `antigravity.google`;
 4. executar o instalador;
-5. nunca baixar instaladores de espelhos ou sites de terceiros;
-6. abrir o Antigravity IDE ao final;
-7. aguardar somente a autenticacao Google interativa, quando solicitada.
+5. confirmar que a versao instalada e `1.21.5` ou superior;
+6. nunca baixar instaladores de espelhos ou sites de terceiros;
+7. abrir o Antigravity IDE ao final;
+8. aguardar somente a autenticacao Google interativa, quando solicitada.
 
 ## Fase 5 - Ambiente Python
 
@@ -378,6 +379,7 @@ github.vscode-pull-request-github
 eamodio.gitlens
 ms-vscode-remote.remote-wsl
 ms-kubernetes-tools.vscode-kubernetes-tools
+GoogleCloudTools.datacloud
 ```
 
 Selecionar como interpretador:
@@ -389,6 +391,203 @@ C:\Users\ereta\.codex\worktrees\all-in-one\.venv\Scripts\python.exe
 Se `.vscode\settings.json` apontar para `.venv/bin/python`, criar uma
 configuracao local do editor ou selecionar o interpretador pela interface. Nao
 fazer commit de uma alteracao especifica de maquina sem necessidade.
+
+### Recuperar falha de instalacao do Google Cloud Data Agent Kit
+
+O nome atual da extensao e **Google Cloud Data Agent Kit**. O identificador
+oficial no Visual Studio Marketplace e:
+
+```text
+GoogleCloudTools.datacloud
+```
+
+Quando a instalacao retornar:
+
+```text
+Unexpected non-whitespace character after JSON
+```
+
+o Codex deve tratar o problema como resposta JSON concatenada ou cache de
+download corrompido. Nao deve repetir indefinidamente a mesma instalacao pela
+interface.
+
+Fechar todas as instancias do Antigravity:
+
+```powershell
+Get-Process |
+    Where-Object { $_.ProcessName -match "Antigravity" } |
+    Stop-Process -Force
+```
+
+Descobrir os diretorios existentes e remover somente caches descartaveis:
+
+```powershell
+$AntigravityRoots = @(
+    (Join-Path $env:APPDATA "Antigravity"),
+    (Join-Path $env:LOCALAPPDATA "Antigravity")
+) | Where-Object { Test-Path $_ }
+
+$DisposableCacheNames = @(
+    "Cache",
+    "CachedData",
+    "CachedExtensionVSIXs",
+    "Code Cache",
+    "GPUCache"
+)
+
+foreach ($Root in $AntigravityRoots) {
+    foreach ($CacheName in $DisposableCacheNames) {
+        $CachePath = Join-Path $Root $CacheName
+        if (Test-Path $CachePath) {
+            Remove-Item -LiteralPath $CachePath -Recurse -Force
+        }
+    }
+}
+```
+
+Nao remover:
+
+```text
+User
+User\globalStorage
+User\workspaceStorage
+state.vscdb
+gcloud
+Application Default Credentials
+```
+
+Remover somente uma instalacao incompleta da extensao:
+
+```powershell
+$ExtensionRoots = @(
+    (Join-Path $env:USERPROFILE ".antigravity\extensions"),
+    (Join-Path $env:USERPROFILE ".vscode\extensions")
+) | Where-Object { Test-Path $_ }
+
+foreach ($Root in $ExtensionRoots) {
+    Get-ChildItem $Root -Directory -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.Name -like "googlecloudtools.datacloud-*"
+        } |
+        Remove-Item -Recurse -Force
+}
+```
+
+Baixar o VSIX diretamente do endpoint oficial do Visual Studio Marketplace,
+evitando o catalogo JSON que falhou:
+
+```powershell
+$Vsix = Join-Path $env:TEMP "GoogleCloudTools.datacloud.vsix"
+$VsixUri = "https://marketplace.visualstudio.com/_apis/public/gallery/" +
+    "publishers/GoogleCloudTools/vsextensions/datacloud/latest/vspackage"
+
+Remove-Item $Vsix -Force -ErrorAction SilentlyContinue
+Invoke-WebRequest `
+    -Uri $VsixUri `
+    -OutFile $Vsix `
+    -MaximumRedirection 10 `
+    -Headers @{ "Accept" = "application/octet-stream" }
+
+if ((Get-Item $Vsix).Length -lt 100000) {
+    throw "O pacote VSIX baixado e inesperadamente pequeno."
+}
+
+# O Marketplace pode entregar o VSIX encapsulado em gzip.
+$InputStream = [System.IO.File]::OpenRead($Vsix)
+try {
+    $FirstByte = $InputStream.ReadByte()
+    $SecondByte = $InputStream.ReadByte()
+} finally {
+    $InputStream.Dispose()
+}
+
+if (($FirstByte -eq 0x1f) -and ($SecondByte -eq 0x8b)) {
+    $ExpandedVsix = "$Vsix.expanded"
+    $CompressedStream = [System.IO.File]::OpenRead($Vsix)
+    $OutputStream = [System.IO.File]::Create($ExpandedVsix)
+    $GzipStream = [System.IO.Compression.GzipStream]::new(
+        $CompressedStream,
+        [System.IO.Compression.CompressionMode]::Decompress
+    )
+
+    try {
+        $GzipStream.CopyTo($OutputStream)
+    } finally {
+        $GzipStream.Dispose()
+        $OutputStream.Dispose()
+        $CompressedStream.Dispose()
+    }
+
+    Move-Item -LiteralPath $ExpandedVsix -Destination $Vsix -Force
+}
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$Archive = [System.IO.Compression.ZipFile]::OpenRead($Vsix)
+try {
+    if (-not ($Archive.Entries.FullName -contains "extension/package.json")) {
+        throw "O arquivo baixado nao e um VSIX valido."
+    }
+} finally {
+    $Archive.Dispose()
+}
+```
+
+Localizar a CLI do Antigravity:
+
+```powershell
+$AntigravityCandidates = @(
+    (Get-Command antigravity -ErrorAction SilentlyContinue).Source,
+    (Join-Path $env:LOCALAPPDATA "Programs\Antigravity\bin\antigravity.cmd"),
+    (Join-Path $env:LOCALAPPDATA "Programs\Antigravity\Antigravity.exe")
+) | Where-Object { $_ -and (Test-Path $_) }
+
+$AntigravityCli = $AntigravityCandidates | Select-Object -First 1
+
+if (-not $AntigravityCli) {
+    throw "CLI do Antigravity nao encontrada. Atualize ou reinstale o IDE."
+}
+```
+
+Instalar o pacote local validado:
+
+```powershell
+& $AntigravityCli `
+    --install-extension $Vsix `
+    --force
+
+if ($LASTEXITCODE -ne 0) {
+    throw "Instalacao do Google Cloud Data Agent Kit falhou."
+}
+
+$InstalledExtensions = & $AntigravityCli --list-extensions
+if ($InstalledExtensions -notcontains "GoogleCloudTools.datacloud") {
+    throw "GoogleCloudTools.datacloud nao aparece na lista de extensoes."
+}
+```
+
+Se a distribuicao instalada do Antigravity nao expuser
+`--install-extension`, abrir o IDE e usar:
+
+```text
+Extensions > ... > Install from VSIX
+```
+
+Selecionar o arquivo `%TEMP%\GoogleCloudTools.datacloud.vsix`. Esse e o unico
+passo de interface permitido nesse fallback.
+
+Depois da instalacao:
+
+```powershell
+gcloud init
+gcloud auth login
+gcloud auth application-default login
+gcloud components update
+gcloud config set project all-in-one-498012
+```
+
+O Codex deve reabrir o Antigravity, confirmar que o icone do Google Cloud Data
+Agent Kit aparece e executar o comando de login da extensao. A autenticacao
+deve usar a mesma conta usada no `gcloud`.
 
 ## Fase 8 - GitHub e Google Cloud
 
@@ -600,6 +799,8 @@ Todos os itens devem ser verdadeiros:
 - [ ] o APK debug foi gerado;
 - [ ] `.env` esta ignorado pelo Git;
 - [ ] o Antigravity IDE abriu o workspace correto;
+- [ ] Antigravity esta na versao 1.21.5 ou superior;
+- [ ] `GoogleCloudTools.datacloud` esta instalada e visivel;
 - [ ] GitHub e Google Cloud foram configurados ou o unico bloqueio restante e
       uma autenticacao humana claramente informada;
 - [ ] nenhuma credencial foi exposta;
