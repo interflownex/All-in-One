@@ -1328,5 +1328,27 @@
 
 ### Git
 
-- Branch principal: `main` (trabalhando em `codex/reconciliar-envios-github`).
+- Branch principal: `main`.
 - Entrega de Super App funcional concluída com sucesso.
+
+## STATUS OPERACIONAL - 2026-06-13 Orquestração GKE e Provisionamento de Nuvem
+
+### Iniciado neste ciclo
+
+- **Sincronização Final:** Reconciliação do branch `codex/reconciliar-envios-github` concluída. Branch `main` local atualizado e sincronizado com `origin/main`.
+- **Orquestração GKE:** Iniciada a configuração e deploy dos serviços "Core" (Identity, API Hub, Jobs) no cluster `all-in-one-cluster`.
+- **Configuração de Segredos:** Preparação do arquivo `secrets.yaml` a partir do `secrets-template.yaml` para o ambiente de produção GCP.
+- **Provisionamento AlloyDB:** Revisão dos parâmetros de conexão para o banco de dados de alto desempenho.
+
+### Pendências rastreadas
+
+- Aplicar manifestos Kubernetes em `infra/kubernetes/core`.
+- Validar conectividade entre GKE e AlloyDB.
+- Configurar Ingress com TLS para os domínios de produção.
+- Implementar gates CI/CD para deploy automatizado.
+
+### Git
+
+- Branch principal: `main`.
+- Iniciando nova fase de deploy infraestrutura.
+
