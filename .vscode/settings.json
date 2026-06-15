@@ -11,6 +11,7 @@
     "ruff.importStrategy": "fromEnvironment",
     "files.eol": "\n",
     "files.insertFinalNewline": true,
+    "files.autoSave": "afterDelay",
     "files.trimTrailingWhitespace": true,
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
