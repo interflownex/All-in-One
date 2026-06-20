@@ -75,5 +75,6 @@
     "mdb.presetConnections": [],
     "workbench.editor.preferHistoryBasedLanguageDetection": true,
     "geminicodeassist.codeLens.enable": false,
-    "geminicodeassist.telemetry.enable": false
+    "geminicodeassist.telemetry.enable": false,
+    "java.configuration.updateBuildConfiguration": "automatic"
 }
