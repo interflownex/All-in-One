@@ -11,8 +11,14 @@
     "retryFetchErrors": true,
     "plan": {
       "modelRouting": true,
-      "directory": ""
-    }
+      "directory": "",
+      "enabled": true
+    },
+    "defaultApprovalMode": "auto_edit",
+    "vimMode": true,
+    "enableAutoUpdate": true,
+    "enableNotifications": false,
+    "notificationMethod": "auto"
   },
   "ui": {
     "accessibility": {
@@ -98,6 +104,39 @@
   },
   "security": {
     "toolSandboxing": true,
-    "disableYoloMode": false
+    "disableYoloMode": false,
+    "allowedExtensions": [],
+    "folderTrust": {
+      "enabled": true
+    },
+    "environmentVariableRedaction": {
+      "enabled": true
+    },
+    "enableConseca": true
+  },
+  "advanced": {
+    "autoConfigureMemory": true,
+    "ignoreLocalEnv": false
+  },
+  "experimental": {
+    "gemma": true,
+    "voiceMode": true,
+    "voice": {
+      "activationMode": "push-to-talk",
+      "backend": "gemini-live",
+      "whisperModel": "ggml-tiny.en.bin"
+    },
+    "worktrees": true,
+    "useOSC52Paste": false,
+    "directWebFetch": true,
+    "gemmaModelRouter": {
+      "enabled": true,
+      "autoStartServer": true
+    },
+    "autoMemory": true,
+    "contextManagement": true
+  },
+  "hooksConfig": {
+    "enabled": true
   }
 }
