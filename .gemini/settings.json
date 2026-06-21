@@ -1,5 +1,142 @@
 {
   "general": {
-    "preferredEditor": "antigravity"
+    "preferredEditor": "antigravity",
+    "logRagSnippets": true,
+    "topicUpdateNarration": true,
+    "sessionRetention": {
+      "enabled": true
+    },
+    "debugKeystrokeLogging": true,
+    "maxAttempts": 10,
+    "retryFetchErrors": true,
+    "plan": {
+      "modelRouting": true,
+      "directory": "",
+      "enabled": true
+    },
+    "defaultApprovalMode": "auto_edit",
+    "vimMode": true,
+    "enableAutoUpdate": true,
+    "enableNotifications": false,
+    "notificationMethod": "auto"
+  },
+  "ui": {
+    "accessibility": {
+      "screenReader": true
+    },
+    "errorVerbosity": "low",
+    "loadingPhrases": "all",
+    "showSpinner": true,
+    "incrementalRendering": true,
+    "useBackgroundColor": true,
+    "terminalBuffer": true,
+    "renderProcess": true,
+    "useAlternateBuffer": true,
+    "showUserIdentity": true,
+    "showModelInfoInChat": true,
+    "showCitations": true,
+    "showLineNumbers": true,
+    "showMemoryUsage": true,
+    "hideFooter": false,
+    "footer": {
+      "hideContextPercentage": false,
+      "hideModelInfo": false,
+      "hideSandboxStatus": false,
+      "hideCWD": false
+    },
+    "hideContextSummary": false,
+    "hideBanner": false,
+    "compactToolOutput": false,
+    "showShortcutsHint": true,
+    "escapePastedAtSymbols": true,
+    "hideTips": true,
+    "showCompatibilityWarnings": true,
+    "showHomeDirectoryWarning": true,
+    "dynamicWindowTitle": true,
+    "showStatusInTitle": true,
+    "inlineThinkingMode": "full",
+    "hideWindowTitle": false,
+    "terminalBackgroundPollingInterval": 60,
+    "autoThemeSwitching": true
+  },
+  "ide": {
+    "enabled": true
+  },
+  "output": {
+    "format": "json"
+  },
+  "billing": {
+    "overageStrategy": "always"
+  },
+  "model": {
+    "name": "",
+    "maxSessionTurns": -1,
+    "disableLoopDetection": false,
+    "skipNextSpeakerCheck": false
+  },
+  "agents": {
+    "browser": {
+      "confirmSensitiveActions": true,
+      "blockFileUploads": false
+    }
+  },
+  "context": {
+    "discoveryMaxDirs": 200,
+    "loadMemoryFromIncludeDirectories": true,
+    "fileFiltering": {
+      "respectGitIgnore": true,
+      "respectGeminiIgnore": true,
+      "enableRecursiveFileSearch": true,
+      "enableFuzzySearch": true,
+      "customIgnoreFilePaths": []
+    }
+  },
+  "tools": {
+    "sandboxAllowedPaths": [],
+    "sandboxNetworkAccess": true,
+    "shell": {
+      "enableInteractiveShell": true,
+      "showColor": true
+    },
+    "useRipgrep": true,
+    "truncateToolOutputThreshold": 40000,
+    "disableLLMCorrection": false
+  },
+  "security": {
+    "toolSandboxing": true,
+    "disableYoloMode": false,
+    "allowedExtensions": [],
+    "folderTrust": {
+      "enabled": true
+    },
+    "environmentVariableRedaction": {
+      "enabled": true
+    },
+    "enableConseca": true
+  },
+  "advanced": {
+    "autoConfigureMemory": true,
+    "ignoreLocalEnv": false
+  },
+  "experimental": {
+    "gemma": true,
+    "voiceMode": true,
+    "voice": {
+      "activationMode": "push-to-talk",
+      "backend": "gemini-live",
+      "whisperModel": "ggml-tiny.en.bin"
+    },
+    "worktrees": true,
+    "useOSC52Paste": false,
+    "directWebFetch": true,
+    "gemmaModelRouter": {
+      "enabled": true,
+      "autoStartServer": true
+    },
+    "autoMemory": true,
+    "contextManagement": true
+  },
+  "hooksConfig": {
+    "enabled": true
   }
 }
