@@ -1,12 +1,15 @@
 {
-  "version": "2026-05-29",
+  "version": "2026-06-21",
   "language": "pt-BR",
   "enabled": true,
   "scope": "workspace",
   "workspace": "C:\\Users\\ereta\\.codex\\worktrees\\all-in-one",
-  "default_remote": "fork",
+  "default_remote": "origin",
+  "fallback_remote": "fork",
   "default_branch_strategy": "current_branch",
   "required_closeout_commands": [
+    "git fetch origin main",
+    "git merge origin/main --no-edit",
     "git add -A",
     "git commit",
     "git push"
@@ -15,7 +18,8 @@
   "default_command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -Activity \"<descricao da atividade>\"",
   "rules": [
     "Executar a sincronizacao ao concluir cada atividade com alteracoes no workspace.",
-    "Usar o remoto configurado em branch.main.pushRemote ou remote.pushDefault; neste checkout o destino persistente de push e fork.",
+    "Tentar push para 'origin' primeiro; se fork estiver configurado, tentar tambem.",
+    "Sempre fazer git fetch + merge antes do push para evitar rejeicao por non-fast-forward.",
     "Nao criar commit vazio quando nao houver mudancas staged.",
     "Bloquear sincronizacao automatica se houver merge ou rebase em andamento.",
     "Usar mensagem de commit rastreavel com prefixo chore(auto-sync).",
