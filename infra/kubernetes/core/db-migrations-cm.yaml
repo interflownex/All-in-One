@@ -1,0 +1,1999 @@
+apiVersion: v1
+data:
+  001_identity_and_schemas.sql: |
+    BEGIN;
+
+    CREATE EXTENSION IF NOT EXISTS pgcrypto;
+    CREATE EXTENSION IF NOT EXISTS citext;
+
+    CREATE SCHEMA IF NOT EXISTS identity;
+    CREATE SCHEMA IF NOT EXISTS business;
+    CREATE SCHEMA IF NOT EXISTS permissions;
+    CREATE SCHEMA IF NOT EXISTS marketplace;
+    CREATE SCHEMA IF NOT EXISTS stock;
+    CREATE SCHEMA IF NOT EXISTS delivery;
+    CREATE SCHEMA IF NOT EXISTS services;
+    CREATE SCHEMA IF NOT EXISTS mobility;
+    CREATE SCHEMA IF NOT EXISTS erp;
+    CREATE SCHEMA IF NOT EXISTS wms;
+    CREATE SCHEMA IF NOT EXISTS tms;
+    CREATE SCHEMA IF NOT EXISTS crm;
+    CREATE SCHEMA IF NOT EXISTS bpm;
+    CREATE SCHEMA IF NOT EXISTS document;
+    CREATE SCHEMA IF NOT EXISTS finance;
+    CREATE SCHEMA IF NOT EXISTS billing;
+    CREATE SCHEMA IF NOT EXISTS fiscal;
+    CREATE SCHEMA IF NOT EXISTS hr;
+    CREATE SCHEMA IF NOT EXISTS health;
+    CREATE SCHEMA IF NOT EXISTS vision;
+    CREATE SCHEMA IF NOT EXISTS legal;
+    CREATE SCHEMA IF NOT EXISTS property;
+    CREATE SCHEMA IF NOT EXISTS audit;
+    CREATE SCHEMA IF NOT EXISTS compliance;
+    CREATE SCHEMA IF NOT EXISTS notifications;
+    CREATE SCHEMA IF NOT EXISTS api_hub;
+    CREATE SCHEMA IF NOT EXISTS insurance;
+    CREATE SCHEMA IF NOT EXISTS bi;
+    CREATE SCHEMA IF NOT EXISTS ai_core;
+
+    CREATE TABLE IF NOT EXISTS identity.users (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        all_in_one_id UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
+        full_name VARCHAR(200) NOT NULL,
+        cpf_document VARCHAR(32) NOT NULL UNIQUE,
+        birth_date DATE NOT NULL,
+        email CITEXT NOT NULL UNIQUE,
+        phone_e164 VARCHAR(20) NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL,
+        face_hash TEXT NOT NULL UNIQUE,
+        liveness_score NUMERIC(5, 4) NOT NULL CHECK (liveness_score BETWEEN 0 AND 1),
+        document_status VARCHAR(40) NOT NULL DEFAULT 'pending_validation',
+        kyc_status VARCHAR(40) NOT NULL DEFAULT 'pending_validation',
+        mfa_required BOOLEAN NOT NULL DEFAULT TRUE,
+        terms_accepted_at TIMESTAMPTZ NOT NULL,
+        lgpd_consent_at TIMESTAMPTZ NOT NULL,
+        default_wallet_id UUID,
+        primary_led_card_id UUID,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_validation',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID,
+        updated_by UUID,
+        CONSTRAINT users_cpf_document_format CHECK (cpf_document ~ '^[0-9A-Za-z.-]{5,32}$'),
+        CONSTRAINT users_phone_format CHECK (phone_e164 ~ '^\+[1-9][0-9]{7,14}$')
+    );
+
+    CREATE TABLE IF NOT EXISTS identity.documents (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        document_type VARCHAR(60) NOT NULL,
+        document_number_hash TEXT NOT NULL,
+        storage_key TEXT NOT NULL,
+        expires_at DATE,
+        verification_status VARCHAR(40) NOT NULL DEFAULT 'pending_review',
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        UNIQUE (user_id, document_type, document_number_hash)
+    );
+
+    CREATE TABLE IF NOT EXISTS identity.biometrics (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL UNIQUE REFERENCES identity.users(id),
+        face_hash TEXT NOT NULL UNIQUE,
+        provider_reference TEXT,
+        last_liveness_score NUMERIC(5, 4) CHECK (last_liveness_score BETWEEN 0 AND 1),
+        consent_recorded_at TIMESTAMPTZ NOT NULL,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_validation',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS identity.mfa_devices (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        method VARCHAR(30) NOT NULL CHECK (method IN ('totp', 'sms', 'email', 'passkey', 'biometric')),
+        secret_reference TEXT NOT NULL,
+        verified_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_validation',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS identity.sessions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        token_hash TEXT NOT NULL UNIQUE,
+        device_fingerprint TEXT NOT NULL,
+        ip_address INET NOT NULL,
+        user_agent TEXT,
+        expires_at TIMESTAMPTZ NOT NULL,
+        revoked_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS identity.identity_verifications (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        verification_type VARCHAR(50) NOT NULL,
+        risk_score NUMERIC(5, 4) CHECK (risk_score BETWEEN 0 AND 1),
+        reviewer_user_id UUID REFERENCES identity.users(id),
+        decision_reason TEXT,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_review',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS identity.consent_records (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        consent_type VARCHAR(60) NOT NULL,
+        policy_version VARCHAR(30) NOT NULL,
+        accepted_at TIMESTAMPTZ NOT NULL,
+        revoked_at TIMESTAMPTZ,
+        ip_address INET,
+        status VARCHAR(40) NOT NULL DEFAULT 'accepted',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS identity.duplicate_attempts (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES identity.users(id),
+        cpf_document_hash TEXT,
+        face_hash TEXT,
+        email_hash TEXT,
+        device_fingerprint TEXT,
+        ip_address INET,
+        blocked_reason TEXT NOT NULL,
+        status VARCHAR(40) NOT NULL DEFAULT 'blocked',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_identity_documents_user ON identity.documents(user_id);
+    CREATE INDEX IF NOT EXISTS idx_identity_sessions_user_active ON identity.sessions(user_id, status);
+
+    COMMIT;
+  002_business_permissions_finance.sql: |
+    BEGIN;
+
+    CREATE TABLE IF NOT EXISTS business.companies (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        parent_company_id UUID REFERENCES business.companies(id),
+        cnpj VARCHAR(18) NOT NULL UNIQUE,
+        root_cnpj VARCHAR(18) NOT NULL,
+        legal_name VARCHAR(240) NOT NULL,
+        trade_name VARCHAR(240),
+        cnae VARCHAR(20),
+        state_registration VARCHAR(40),
+        municipal_registration VARCHAR(40),
+        legal_representative_user_id UUID NOT NULL REFERENCES identity.users(id),
+        submitted_at TIMESTAMPTZ,
+        approved_at TIMESTAMPTZ,
+        approved_by UUID REFERENCES identity.users(id),
+        rejection_reason TEXT,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_validation',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        CHECK (status IN ('draft', 'pending_documents', 'pending_validation', 'under_review', 'approved', 'active', 'rejected', 'blocked', 'suspended', 'archived'))
+    );
+
+    CREATE TABLE IF NOT EXISTS business.company_documents (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID NOT NULL REFERENCES business.companies(id),
+        document_type VARCHAR(80) NOT NULL,
+        storage_key TEXT NOT NULL,
+        expires_at DATE,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_review',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS business.user_company_memberships (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID NOT NULL REFERENCES business.companies(id),
+        department VARCHAR(100),
+        cost_center VARCHAR(100),
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_invitation',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        UNIQUE (user_id, company_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS permissions.roles (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        name VARCHAR(80) NOT NULL,
+        is_system BOOLEAN NOT NULL DEFAULT FALSE,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS permissions.permissions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        module VARCHAR(60) NOT NULL,
+        action VARCHAR(40) NOT NULL,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        UNIQUE (user_id, module, action)
+    );
+
+    CREATE TABLE IF NOT EXISTS permissions.user_roles (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        role_id UUID NOT NULL REFERENCES permissions.roles(id),
+        company_id UUID REFERENCES business.companies(id),
+        valid_until TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS permissions.access_policies (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        module VARCHAR(60) NOT NULL,
+        expression JSONB NOT NULL CHECK (jsonb_typeof(expression) = 'object'),
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS permissions.approval_limits (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        role_id UUID REFERENCES permissions.roles(id),
+        limit_brl NUMERIC(18, 4),
+        requires_dual_approval BOOLEAN NOT NULL DEFAULT FALSE,
+        scope VARCHAR(60) NOT NULL,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        CHECK (limit_brl IS NULL OR limit_brl >= 0)
+    );
+
+    CREATE TABLE IF NOT EXISTS finance.wallets (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        wallet_type VARCHAR(30) NOT NULL DEFAULT 'personal',
+        brl_available NUMERIC(18, 4) NOT NULL DEFAULT 0 CHECK (brl_available >= 0),
+        brl_held NUMERIC(18, 4) NOT NULL DEFAULT 0 CHECK (brl_held >= 0),
+        nex_available NUMERIC(18, 8) NOT NULL DEFAULT 0 CHECK (nex_available >= 0),
+        nex_held NUMERIC(18, 8) NOT NULL DEFAULT 0 CHECK (nex_held >= 0),
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        UNIQUE (id, user_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS finance.ledger_entries (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        wallet_id UUID NOT NULL,
+        counterparty_user_id UUID REFERENCES identity.users(id),
+        currency VARCHAR(10) NOT NULL CHECK (currency IN ('BRL', 'NEX')),
+        amount_brl NUMERIC(18, 4),
+        amount_nex NUMERIC(18, 8),
+        entry_type VARCHAR(40) NOT NULL,
+        reference_type VARCHAR(60),
+        reference_id UUID,
+        idempotency_key TEXT NOT NULL UNIQUE,
+        status VARCHAR(40) NOT NULL DEFAULT 'posted',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        created_by UUID REFERENCES identity.users(id),
+        CONSTRAINT ledger_wallet_owner_fk FOREIGN KEY (wallet_id, user_id) REFERENCES finance.wallets(id, user_id),
+        CHECK ((currency = 'BRL' AND amount_brl IS NOT NULL AND amount_nex IS NULL) OR
+               (currency = 'NEX' AND amount_nex IS NOT NULL AND amount_brl IS NULL))
+    );
+
+    CREATE TABLE IF NOT EXISTS finance.escrows (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        wallet_id UUID NOT NULL,
+        beneficiary_user_id UUID NOT NULL REFERENCES identity.users(id),
+        amount_brl NUMERIC(18, 4) NOT NULL CHECK (amount_brl > 0),
+        release_condition JSONB NOT NULL DEFAULT '{}'::jsonb,
+        dispute_deadline TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'created',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        CONSTRAINT escrow_wallet_owner_fk FOREIGN KEY (wallet_id, user_id) REFERENCES finance.wallets(id, user_id),
+        CHECK (status IN ('created', 'authorized', 'captured', 'held', 'released', 'partially_released', 'refunded', 'disputed', 'cancelled', 'expired'))
+    );
+
+    CREATE TABLE IF NOT EXISTS identity.led_cards (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        wallet_id UUID NOT NULL,
+        card_uid_hash TEXT NOT NULL UNIQUE,
+        nfc_public_token_hash TEXT UNIQUE,
+        activated_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'issued',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        CONSTRAINT led_card_wallet_owner_fk FOREIGN KEY (wallet_id, user_id) REFERENCES finance.wallets(id, user_id),
+        UNIQUE (id, user_id)
+    );
+
+    DO $$
+    BEGIN
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint WHERE conname = 'users_default_wallet_fk'
+        ) THEN
+            ALTER TABLE identity.users
+                ADD CONSTRAINT users_default_wallet_fk
+                FOREIGN KEY (default_wallet_id, id) REFERENCES finance.wallets(id, user_id)
+                DEFERRABLE INITIALLY DEFERRED;
+        END IF;
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint WHERE conname = 'users_primary_led_card_fk'
+        ) THEN
+            ALTER TABLE identity.users
+                ADD CONSTRAINT users_primary_led_card_fk
+                FOREIGN KEY (primary_led_card_id, id) REFERENCES identity.led_cards(id, user_id)
+                DEFERRABLE INITIALLY DEFERRED;
+        END IF;
+    END $$;
+
+    CREATE INDEX IF NOT EXISTS idx_business_companies_owner ON business.companies(user_id);
+    CREATE INDEX IF NOT EXISTS idx_finance_wallets_user ON finance.wallets(user_id);
+    CREATE INDEX IF NOT EXISTS idx_finance_ledger_wallet_created ON finance.ledger_entries(wallet_id, created_at);
+
+    COMMIT;
+  003_marketplace_delivery_services_mobility.sql: |
+    BEGIN;
+
+    CREATE TABLE IF NOT EXISTS delivery.rider_profiles (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL UNIQUE REFERENCES identity.users(id),
+        wallet_id UUID NOT NULL,
+        cnh_number_hash TEXT,
+        cnh_category VARCHAR(10),
+        document_expiry DATE,
+        proof_of_life_at TIMESTAMPTZ,
+        approved_by UUID REFERENCES identity.users(id),
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_documents',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        CONSTRAINT rider_wallet_owner_fk FOREIGN KEY (wallet_id, user_id) REFERENCES finance.wallets(id, user_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS delivery.vehicles (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        rider_profile_id UUID NOT NULL REFERENCES delivery.rider_profiles(id),
+        type VARCHAR(40) NOT NULL,
+        license_plate VARCHAR(12),
+        capacity_kg NUMERIC(12, 3),
+        refrigerated BOOLEAN NOT NULL DEFAULT FALSE,
+        approved_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_review',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS marketplace.stores (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID NOT NULL REFERENCES business.companies(id),
+        name VARCHAR(200) NOT NULL,
+        published_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_validation',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS marketplace.products (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        store_id UUID NOT NULL REFERENCES marketplace.stores(id),
+        sku VARCHAR(100) NOT NULL,
+        name VARCHAR(240) NOT NULL,
+        price_brl NUMERIC(18, 4) NOT NULL CHECK (price_brl >= 0),
+        stock_quantity NUMERIC(18, 4) NOT NULL DEFAULT 0,
+        status VARCHAR(40) NOT NULL DEFAULT 'draft',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        UNIQUE (store_id, sku)
+    );
+
+    CREATE TABLE IF NOT EXISTS marketplace.orders (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        store_id UUID NOT NULL REFERENCES marketplace.stores(id),
+        escrow_id UUID REFERENCES finance.escrows(id),
+        total_brl NUMERIC(18, 4) NOT NULL CHECK (total_brl >= 0),
+        commission_brl NUMERIC(18, 4) NOT NULL DEFAULT 0 CHECK (commission_brl >= 0),
+        status VARCHAR(40) NOT NULL DEFAULT 'created',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS stock.suppliers (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID NOT NULL REFERENCES business.companies(id),
+        homologated_at TIMESTAMPTZ,
+        api_configuration JSONB NOT NULL DEFAULT '{}'::jsonb,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_validation',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS stock.catalog_products (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        supplier_id UUID NOT NULL REFERENCES stock.suppliers(id),
+        external_sku VARCHAR(120) NOT NULL,
+        cost_brl NUMERIC(18, 4) NOT NULL CHECK (cost_brl >= 0),
+        markup_percent NUMERIC(7, 4) NOT NULL DEFAULT 0 CHECK (markup_percent >= 0),
+        status VARCHAR(40) NOT NULL DEFAULT 'draft',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS delivery.delivery_requests (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        assigned_rider_user_id UUID REFERENCES identity.users(id),
+        escrow_id UUID REFERENCES finance.escrows(id),
+        service_type VARCHAR(40) NOT NULL,
+        origin JSONB NOT NULL,
+        destination JSONB NOT NULL,
+        distance_km NUMERIC(12, 3),
+        weight_kg NUMERIC(12, 3),
+        volume_m3 NUMERIC(12, 4),
+        quoted_brl NUMERIC(18, 4),
+        insurance_required BOOLEAN NOT NULL DEFAULT FALSE,
+        insurance_accepted BOOLEAN,
+        status VARCHAR(40) NOT NULL DEFAULT 'created',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS services.providers (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL UNIQUE REFERENCES identity.users(id),
+        category VARCHAR(100) NOT NULL,
+        approved_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_review',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS services.service_contracts (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        provider_user_id UUID NOT NULL REFERENCES identity.users(id),
+        escrow_id UUID NOT NULL REFERENCES finance.escrows(id),
+        visit_price_brl NUMERIC(18, 4) NOT NULL CHECK (visit_price_brl >= 0),
+        contracted_price_brl NUMERIC(18, 4),
+        evidence JSONB NOT NULL DEFAULT '[]'::jsonb,
+        status VARCHAR(40) NOT NULL DEFAULT 'created',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS mobility.rides (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        driver_user_id UUID REFERENCES identity.users(id),
+        escrow_id UUID REFERENCES finance.escrows(id),
+        origin JSONB NOT NULL,
+        destination JSONB NOT NULL,
+        fare_brl NUMERIC(18, 4) CHECK (fare_brl >= 0),
+        vehicle_type VARCHAR(40),
+        status VARCHAR(40) NOT NULL DEFAULT 'requested',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS mobility.tickets (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        route_code VARCHAR(80) NOT NULL,
+        amount_brl NUMERIC(18, 4) NOT NULL CHECK (amount_brl >= 0),
+        qr_token_hash TEXT NOT NULL UNIQUE,
+        used_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    COMMIT;
+  004_enterprise_verticals.sql: |
+    BEGIN;
+
+    CREATE TABLE IF NOT EXISTS erp.fiscal_documents (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID NOT NULL REFERENCES business.companies(id),
+        document_type VARCHAR(20) NOT NULL,
+        access_key TEXT,
+        amount_brl NUMERIC(18, 4) NOT NULL DEFAULT 0,
+        status VARCHAR(40) NOT NULL DEFAULT 'draft',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS wms.warehouses (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID NOT NULL REFERENCES business.companies(id),
+        name VARCHAR(160) NOT NULL,
+        addressing_rules JSONB NOT NULL DEFAULT '{}'::jsonb,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS wms.inventory (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        warehouse_id UUID NOT NULL REFERENCES wms.warehouses(id),
+        sku VARCHAR(120) NOT NULL,
+        bin_code VARCHAR(80) NOT NULL,
+        quantity NUMERIC(18, 4) NOT NULL DEFAULT 0,
+        lot_code VARCHAR(80),
+        expires_at DATE,
+        status VARCHAR(40) NOT NULL DEFAULT 'available',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS tms.freights (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        driver_user_id UUID REFERENCES identity.users(id),
+        freight_brl NUMERIC(18, 4) NOT NULL DEFAULT 0,
+        toll_brl NUMERIC(18, 4) NOT NULL DEFAULT 0,
+        proof_of_delivery JSONB NOT NULL DEFAULT '{}'::jsonb,
+        status VARCHAR(40) NOT NULL DEFAULT 'planned',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS crm.opportunities (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        title VARCHAR(240) NOT NULL,
+        expected_value_brl NUMERIC(18, 4),
+        stage VARCHAR(50) NOT NULL DEFAULT 'lead',
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS bpm.workflow_instances (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        process_key VARCHAR(120) NOT NULL,
+        current_task VARCHAR(120),
+        sla_due_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'running',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS document.documents (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        storage_key TEXT NOT NULL,
+        filename VARCHAR(255) NOT NULL,
+        mime_type VARCHAR(120),
+        version_number INTEGER NOT NULL DEFAULT 1,
+        retention_until DATE,
+        searchable_text TEXT,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS billing.subscriptions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        plan_code VARCHAR(80) NOT NULL,
+        recurring_brl NUMERIC(18, 4) NOT NULL DEFAULT 0,
+        next_billing_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'trial',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS fiscal.tax_documents (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        type VARCHAR(20) NOT NULL,
+        amount_brl NUMERIC(18, 4) NOT NULL DEFAULT 0,
+        authority_protocol TEXT,
+        status VARCHAR(40) NOT NULL DEFAULT 'draft',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS hr.employees (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID NOT NULL REFERENCES business.companies(id),
+        employment_type VARCHAR(40) NOT NULL,
+        position_title VARCHAR(120),
+        admission_date DATE,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS health.patients (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL UNIQUE REFERENCES identity.users(id),
+        health_identifier VARCHAR(80) UNIQUE,
+        blood_type VARCHAR(5),
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS health.appointments (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        patient_id UUID NOT NULL REFERENCES health.patients(id),
+        professional_user_id UUID NOT NULL REFERENCES identity.users(id),
+        scheduled_at TIMESTAMPTZ NOT NULL,
+        telemedicine BOOLEAN NOT NULL DEFAULT FALSE,
+        clinical_data_encrypted TEXT,
+        status VARCHAR(40) NOT NULL DEFAULT 'scheduled',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS vision.devices (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        device_fingerprint TEXT NOT NULL,
+        location_label VARCHAR(160),
+        retention_days INTEGER NOT NULL DEFAULT 7 CHECK (retention_days > 0),
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS legal.cases (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        case_number VARCHAR(120),
+        risk_brl NUMERIC(18, 4),
+        next_deadline TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS property.properties (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        address JSONB NOT NULL,
+        property_type VARCHAR(60) NOT NULL,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS insurance.policies (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        reference_type VARCHAR(50) NOT NULL,
+        reference_id UUID NOT NULL,
+        premium_brl NUMERIC(18, 4) NOT NULL,
+        insured_value_brl NUMERIC(18, 4) NOT NULL,
+        accepted_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'quoted',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS notifications.messages (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        channel VARCHAR(30) NOT NULL,
+        template_key VARCHAR(100) NOT NULL,
+        dispatched_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'queued',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS bi.dashboards (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        name VARCHAR(160) NOT NULL,
+        definition JSONB NOT NULL DEFAULT '{}'::jsonb,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS ai_core.moderation_decisions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        module VARCHAR(60) NOT NULL,
+        resource_id UUID,
+        risk_score NUMERIC(5, 4) CHECK (risk_score BETWEEN 0 AND 1),
+        reasons JSONB NOT NULL DEFAULT '[]'::jsonb,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_review',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    COMMIT;
+  005_audit_events_api_security.sql: |
+    BEGIN;
+
+    CREATE TABLE IF NOT EXISTS audit.logs (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES identity.users(id),
+        actor_user_id UUID REFERENCES identity.users(id),
+        actor_entity_id UUID REFERENCES business.companies(id),
+        action VARCHAR(100) NOT NULL,
+        module VARCHAR(80) NOT NULL,
+        resource_type VARCHAR(100) NOT NULL,
+        resource_id UUID,
+        before_data JSONB,
+        after_data JSONB,
+        ip_address INET,
+        user_agent TEXT,
+        device_fingerprint TEXT,
+        status VARCHAR(40) NOT NULL DEFAULT 'recorded',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        created_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS audit.domain_events (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES identity.users(id),
+        actor_user_id UUID REFERENCES identity.users(id),
+        entity_id UUID REFERENCES business.companies(id),
+        routing_key VARCHAR(120) NOT NULL,
+        aggregate_type VARCHAR(100) NOT NULL,
+        aggregate_id UUID NOT NULL,
+        correlation_id UUID NOT NULL DEFAULT gen_random_uuid(),
+        schema_version INTEGER NOT NULL DEFAULT 1,
+        payload JSONB NOT NULL,
+        published_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        created_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS audit.event_deliveries (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID REFERENCES identity.users(id),
+        event_id UUID NOT NULL REFERENCES audit.domain_events(id),
+        destination VARCHAR(120) NOT NULL,
+        delivery_status VARCHAR(40) NOT NULL,
+        response_metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        created_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS compliance.moderation_cases (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        module VARCHAR(60) NOT NULL,
+        resource_type VARCHAR(80) NOT NULL,
+        resource_id UUID NOT NULL,
+        matched_signals JSONB NOT NULL DEFAULT '[]'::jsonb,
+        risk_score NUMERIC(5, 4) CHECK (risk_score BETWEEN 0 AND 1),
+        reviewer_user_id UUID REFERENCES identity.users(id),
+        decision TEXT,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending_review',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS api_hub.api_clients (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        client_name VARCHAR(150) NOT NULL,
+        client_id_hash TEXT NOT NULL UNIQUE,
+        secret_reference TEXT NOT NULL,
+        scopes JSONB NOT NULL DEFAULT '[]'::jsonb,
+        rate_limit_per_minute INTEGER NOT NULL DEFAULT 60,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS api_hub.webhooks (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        target_url TEXT NOT NULL,
+        event_patterns JSONB NOT NULL DEFAULT '[]'::jsonb,
+        signing_secret_reference TEXT NOT NULL,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE OR REPLACE FUNCTION audit.reject_immutable_change()
+    RETURNS TRIGGER AS $$
+    BEGIN
+        RAISE EXCEPTION 'Append-only table %.% rejects % operations', TG_TABLE_SCHEMA, TG_TABLE_NAME, TG_OP;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    DROP TRIGGER IF EXISTS immutable_audit_logs ON audit.logs;
+    CREATE TRIGGER immutable_audit_logs
+    BEFORE UPDATE OR DELETE ON audit.logs
+    FOR EACH ROW EXECUTE FUNCTION audit.reject_immutable_change();
+
+    DROP TRIGGER IF EXISTS immutable_event_deliveries ON audit.event_deliveries;
+    CREATE TRIGGER immutable_event_deliveries
+    BEFORE UPDATE OR DELETE ON audit.event_deliveries
+    FOR EACH ROW EXECUTE FUNCTION audit.reject_immutable_change();
+
+    DROP TRIGGER IF EXISTS immutable_finance_ledger ON finance.ledger_entries;
+    CREATE TRIGGER immutable_finance_ledger
+    BEFORE UPDATE OR DELETE ON finance.ledger_entries
+    FOR EACH ROW EXECUTE FUNCTION audit.reject_immutable_change();
+
+    CREATE INDEX IF NOT EXISTS idx_audit_logs_resource ON audit.logs(module, resource_type, resource_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_domain_events_pending ON audit.domain_events(status, created_at);
+    CREATE INDEX IF NOT EXISTS idx_moderation_cases_pending ON compliance.moderation_cases(status, risk_score);
+
+    COMMIT;
+  006_jobs_recruitment_ctps.sql: |
+    BEGIN;
+
+    CREATE SCHEMA IF NOT EXISTS jobs;
+
+    CREATE TABLE IF NOT EXISTS jobs.resumes (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        headline VARCHAR(240) NOT NULL,
+        professional_summary TEXT,
+        skills JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(skills) = 'array'),
+        education JSONB NOT NULL DEFAULT '[]'::jsonb CHECK (jsonb_typeof(education) = 'array'),
+        recruiter_visibility VARCHAR(40) NOT NULL DEFAULT 'private'
+            CHECK (recruiter_visibility IN ('private', 'business_recruiters')),
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        CONSTRAINT resumes_id_user_id_unique UNIQUE (id, user_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS jobs.resume_documents (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        resume_id UUID NOT NULL REFERENCES jobs.resumes(id),
+        document_type VARCHAR(60) NOT NULL CHECK (document_type = 'ctps_digital_pdf'),
+        storage_key TEXT,
+        sha256 CHAR(64) NOT NULL,
+        page_count INTEGER CHECK (page_count > 0),
+        evidence_status VARCHAR(60) NOT NULL CHECK (evidence_status = 'validated_by_document_import'),
+        official_verification_status VARCHAR(60) NOT NULL DEFAULT 'not_verified_externally'
+            CHECK (official_verification_status IN ('not_verified_externally', 'verified_by_authorized_provider', 'rejected_by_authorized_provider')),
+        extraction_status VARCHAR(60) NOT NULL,
+        extracted_fields JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(extracted_fields) = 'object'),
+        status VARCHAR(40) NOT NULL DEFAULT 'imported',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        created_by UUID REFERENCES identity.users(id),
+        CONSTRAINT resume_document_owner_fk FOREIGN KEY (resume_id, user_id) REFERENCES jobs.resumes(id, user_id),
+        UNIQUE (resume_id, sha256)
+    );
+
+    CREATE TABLE IF NOT EXISTS jobs.employment_records (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        resume_id UUID NOT NULL,
+        source_document_id UUID REFERENCES jobs.resume_documents(id),
+        source_type VARCHAR(50) NOT NULL CHECK (source_type IN ('ctps_digital_pdf_import', 'user_declared')),
+        evidence_status VARCHAR(60) NOT NULL CHECK (evidence_status IN ('validated_by_document_import', 'self_declared_unverified')),
+        official_verification_status VARCHAR(60) NOT NULL DEFAULT 'not_verified_externally',
+        employer_name VARCHAR(240) NOT NULL,
+        employer_cnpj VARCHAR(20),
+        role_title VARCHAR(180),
+        started_on DATE NOT NULL,
+        ended_on DATE,
+        user_activity_description TEXT,
+        is_informal_activity BOOLEAN NOT NULL DEFAULT FALSE,
+        visible_to_recruiter BOOLEAN NOT NULL DEFAULT TRUE,
+        status VARCHAR(40) NOT NULL DEFAULT 'active',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        CONSTRAINT employment_resume_owner_fk FOREIGN KEY (resume_id, user_id) REFERENCES jobs.resumes(id, user_id),
+        CONSTRAINT employment_provenance_integrity CHECK (
+            (source_type = 'ctps_digital_pdf_import'
+                AND source_document_id IS NOT NULL
+                AND evidence_status = 'validated_by_document_import'
+                AND user_activity_description IS NULL
+                AND is_informal_activity = FALSE)
+            OR
+            (source_type = 'user_declared'
+                AND source_document_id IS NULL
+                AND evidence_status = 'self_declared_unverified')
+        ),
+        CHECK (ended_on IS NULL OR ended_on >= started_on)
+    );
+
+    CREATE TABLE IF NOT EXISTS jobs.job_postings (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID NOT NULL REFERENCES business.companies(id),
+        title VARCHAR(240) NOT NULL,
+        description TEXT NOT NULL,
+        requirements TEXT,
+        employment_type VARCHAR(60),
+        workplace_model VARCHAR(40),
+        salary_min_brl NUMERIC(18, 4) CHECK (salary_min_brl IS NULL OR salary_min_brl >= 0),
+        salary_max_brl NUMERIC(18, 4) CHECK (salary_max_brl IS NULL OR salary_max_brl >= salary_min_brl),
+        published_at TIMESTAMPTZ,
+        closes_at TIMESTAMPTZ,
+        status VARCHAR(40) NOT NULL DEFAULT 'draft'
+            CHECK (status IN ('draft', 'approved', 'published', 'closed', 'cancelled')),
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS jobs.applications (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        job_posting_id UUID NOT NULL REFERENCES jobs.job_postings(id),
+        resume_id UUID NOT NULL,
+        cover_letter TEXT,
+        status VARCHAR(40) NOT NULL DEFAULT 'submitted'
+            CHECK (status IN ('submitted', 'under_review', 'shortlisted', 'rejected', 'withdrawn', 'hired')),
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        CONSTRAINT application_resume_owner_fk FOREIGN KEY (resume_id, user_id) REFERENCES jobs.resumes(id, user_id),
+        UNIQUE (user_id, job_posting_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS jobs.resume_access_logs (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        resume_id UUID NOT NULL,
+        business_id UUID NOT NULL REFERENCES business.companies(id),
+        recruiter_user_id UUID NOT NULL REFERENCES identity.users(id),
+        purpose TEXT NOT NULL,
+        accessed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        status VARCHAR(40) NOT NULL DEFAULT 'recorded',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
+        created_by UUID REFERENCES identity.users(id),
+        CONSTRAINT access_log_resume_owner_fk FOREIGN KEY (resume_id, user_id) REFERENCES jobs.resumes(id, user_id)
+    );
+
+    DROP TRIGGER IF EXISTS immutable_jobs_resume_documents ON jobs.resume_documents;
+    CREATE TRIGGER immutable_jobs_resume_documents
+    BEFORE UPDATE OR DELETE ON jobs.resume_documents
+    FOR EACH ROW EXECUTE FUNCTION audit.reject_immutable_change();
+
+    DROP TRIGGER IF EXISTS immutable_jobs_resume_access_logs ON jobs.resume_access_logs;
+    CREATE TRIGGER immutable_jobs_resume_access_logs
+    BEFORE UPDATE OR DELETE ON jobs.resume_access_logs
+    FOR EACH ROW EXECUTE FUNCTION audit.reject_immutable_change();
+
+    CREATE INDEX IF NOT EXISTS idx_jobs_resumes_visible ON jobs.resumes(recruiter_visibility, status) WHERE deleted_at IS NULL;
+    CREATE INDEX IF NOT EXISTS idx_jobs_employment_resume ON jobs.employment_records(resume_id, evidence_status);
+    CREATE INDEX IF NOT EXISTS idx_jobs_postings_public ON jobs.job_postings(status, published_at) WHERE status = 'published';
+    CREATE INDEX IF NOT EXISTS idx_jobs_applications_company_flow ON jobs.applications(job_posting_id, status);
+    CREATE INDEX IF NOT EXISTS idx_jobs_resume_access_audit ON jobs.resume_access_logs(resume_id, accessed_at);
+
+    COMMIT;
+  007_jobs_runtime_private_documents.sql: |
+    BEGIN;
+
+    ALTER TABLE jobs.resumes ADD COLUMN IF NOT EXISTS idempotency_key TEXT;
+    ALTER TABLE jobs.resume_documents ADD COLUMN IF NOT EXISTS idempotency_key TEXT;
+    ALTER TABLE jobs.employment_records ADD COLUMN IF NOT EXISTS idempotency_key TEXT;
+    ALTER TABLE jobs.job_postings ADD COLUMN IF NOT EXISTS idempotency_key TEXT;
+    ALTER TABLE jobs.applications ADD COLUMN IF NOT EXISTS idempotency_key TEXT;
+    ALTER TABLE jobs.resume_access_logs ADD COLUMN IF NOT EXISTS idempotency_key TEXT;
+
+    ALTER TABLE jobs.resume_documents
+        ADD COLUMN IF NOT EXISTS storage_encryption VARCHAR(40) NOT NULL DEFAULT 'AES-256-GCM';
+
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_resumes_idempotency
+        ON jobs.resumes(idempotency_key) WHERE idempotency_key IS NOT NULL;
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_documents_idempotency
+        ON jobs.resume_documents(idempotency_key) WHERE idempotency_key IS NOT NULL;
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_employment_idempotency
+        ON jobs.employment_records(idempotency_key) WHERE idempotency_key IS NOT NULL;
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_postings_idempotency
+        ON jobs.job_postings(idempotency_key) WHERE idempotency_key IS NOT NULL;
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_applications_idempotency
+        ON jobs.applications(idempotency_key) WHERE idempotency_key IS NOT NULL;
+
+    COMMIT;
+  008_identity_idempotency.sql: |
+    BEGIN;
+
+    ALTER TABLE identity.users ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(100) UNIQUE;
+    ALTER TABLE identity.documents ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(100) UNIQUE;
+    ALTER TABLE identity.biometrics ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(100) UNIQUE;
+    ALTER TABLE identity.mfa_devices ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(100) UNIQUE;
+    ALTER TABLE identity.sessions ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(100) UNIQUE;
+    ALTER TABLE identity.identity_verifications ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(100) UNIQUE;
+    ALTER TABLE identity.consent_records ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(100) UNIQUE;
+    ALTER TABLE identity.duplicate_attempts ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(100) UNIQUE;
+
+    CREATE INDEX IF NOT EXISTS idx_identity_users_idempotency ON identity.users(idempotency_key) WHERE idempotency_key IS NOT NULL;
+    CREATE INDEX IF NOT EXISTS idx_identity_documents_idempotency ON identity.documents(idempotency_key) WHERE idempotency_key IS NOT NULL;
+
+    COMMIT;
+  009_identity_core_refinement.sql: |
+    BEGIN;
+
+    -- Extensao uuid-ossp ja pode estar habilitada pela 001 (pgcrypto), mas garantindo uuid-ossp se preferido
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+    CREATE SCHEMA IF NOT EXISTS identity_core;
+
+    -- Sincronizando identity.users para identity_core.users com campos adicionais
+    CREATE TABLE IF NOT EXISTS identity_core.users (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        global_id UUID UNIQUE NOT NULL DEFAULT uuid_generate_v4(),
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        full_name VARCHAR(255) NOT NULL,
+        document_cpf VARCHAR(14) UNIQUE,
+        mfa_enabled BOOLEAN DEFAULT FALSE,
+        mfa_secret VARCHAR(255),
+        account_status VARCHAR(50) DEFAULT 'PENDING_KYC',
+        last_login_at TIMESTAMP WITH TIME ZONE,
+        idempotency_key VARCHAR(100) UNIQUE,
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- KYC Records
+    CREATE TABLE IF NOT EXISTS identity_core.kyc_records (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        user_id UUID NOT NULL REFERENCES identity_core.users(id) ON DELETE RESTRICT,
+        biometry_hash TEXT NOT NULL,
+        doc_front_url TEXT,
+        doc_back_url TEXT,
+        verification_status VARCHAR(50) DEFAULT 'PROCESSING',
+        audited_by UUID,
+        rejection_reason TEXT,
+        verified_at TIMESTAMP WITH TIME ZONE,
+        idempotency_key VARCHAR(100) UNIQUE,
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- KYB Business Profiles
+    CREATE TABLE IF NOT EXISTS identity_core.business_profiles (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        owner_user_id UUID NOT NULL REFERENCES identity_core.users(id) ON DELETE RESTRICT,
+        legal_name VARCHAR(255) NOT NULL,
+        trade_name VARCHAR(255),
+        document_cnpj VARCHAR(18) UNIQUE NOT NULL,
+        cnae_primary VARCHAR(20),
+        business_status VARCHAR(50) DEFAULT 'PENDING_KYB',
+        idempotency_key VARCHAR(100) UNIQUE,
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- Consents LGPD
+    CREATE TABLE IF NOT EXISTS identity_core.consents (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        user_id UUID NOT NULL REFERENCES identity_core.users(id) ON DELETE CASCADE,
+        document_version VARCHAR(50) NOT NULL,
+        consent_type VARCHAR(100) NOT NULL,
+        ip_address INET,
+        user_agent TEXT,
+        accepted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        revoked_at TIMESTAMP WITH TIME ZONE,
+        idempotency_key VARCHAR(100) UNIQUE,
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb
+    );
+
+    -- Auditoria Local do Modulo (especifica conforme pedido)
+    CREATE TABLE IF NOT EXISTS identity_core.audit_logs (
+        log_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        actor_user_id UUID NOT NULL,
+        action_type VARCHAR(100) NOT NULL,
+        target_table VARCHAR(100) NOT NULL,
+        target_record_id UUID NOT NULL,
+        old_payload JSONB,
+        new_payload JSONB,
+        ip_address INET,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- Indexes
+    CREATE INDEX IF NOT EXISTS idx_users_email_core ON identity_core.users(email);
+    CREATE INDEX IF NOT EXISTS idx_users_global_id_core ON identity_core.users(global_id);
+    CREATE INDEX IF NOT EXISTS idx_audit_actor_core ON identity_core.audit_logs(actor_user_id);
+    CREATE INDEX IF NOT EXISTS idx_business_cnpj_core ON identity_core.business_profiles(document_cnpj);
+
+    COMMIT;
+  010_api_hub_refinement.sql: "BEGIN;\n\nCREATE TABLE IF NOT EXISTS api_hub.api_keys
+    (\n    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n    user_id UUID NOT NULL
+    REFERENCES identity.users(id),\n    company_id UUID REFERENCES business.companies(id),\n
+    \   client_id UUID REFERENCES api_hub.api_clients(id),\n    key_name VARCHAR(150)
+    NOT NULL,\n    key_hash TEXT NOT NULL UNIQUE,\n    key_hint VARCHAR(20) NOT NULL,\n
+    \   scopes JSONB NOT NULL DEFAULT '[]'::jsonb,\n    expires_at TIMESTAMPTZ,\n
+    \   last_used_at TIMESTAMPTZ,\n    status VARCHAR(40) NOT NULL DEFAULT 'active',\n
+    \   idempotency_key VARCHAR(120) UNIQUE,\n    metadata JSONB NOT NULL DEFAULT
+    '{}'::jsonb,\n    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),\n    updated_at
+    TIMESTAMPTZ NOT NULL DEFAULT NOW(),\n    deleted_at TIMESTAMPTZ,\n    created_by
+    UUID REFERENCES identity.users(id),\n    updated_by UUID REFERENCES identity.users(id)\n);\n\nCREATE
+    TABLE IF NOT EXISTS api_hub.integration_runs (\n    id UUID PRIMARY KEY DEFAULT
+    gen_random_uuid(),\n    user_id UUID NOT NULL REFERENCES identity.users(id),\n
+    \   company_id UUID REFERENCES business.companies(id),\n    integration_type VARCHAR(80)
+    NOT NULL,\n    provider_name VARCHAR(100) NOT NULL,\n    started_at TIMESTAMPTZ
+    NOT NULL DEFAULT NOW(),\n    ended_at TIMESTAMPTZ,\n    log_summary TEXT,\n    status
+    VARCHAR(40) NOT NULL DEFAULT 'running',\n    idempotency_key VARCHAR(120) UNIQUE,\n
+    \   metadata JSONB NOT NULL DEFAULT '{}'::jsonb,\n    created_at TIMESTAMPTZ NOT
+    NULL DEFAULT NOW(),\n    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),\n    deleted_at
+    TIMESTAMPTZ,\n    created_by UUID REFERENCES identity.users(id),\n    updated_by
+    UUID REFERENCES identity.users(id)\n);\n\n-- Adicionando idempotency_key as tabelas
+    existentes de api_hub se nao houver\nDO $$ \nBEGIN \n    IF NOT EXISTS (SELECT
+    1 FROM information_schema.columns WHERE table_schema='api_hub' AND table_name='api_clients'
+    AND column_name='idempotency_key') THEN\n        ALTER TABLE api_hub.api_clients
+    ADD COLUMN idempotency_key VARCHAR(120) UNIQUE;\n    END IF;\n    IF NOT EXISTS
+    (SELECT 1 FROM information_schema.columns WHERE table_schema='api_hub' AND table_name='webhooks'
+    AND column_name='idempotency_key') THEN\n        ALTER TABLE api_hub.webhooks
+    ADD COLUMN idempotency_key VARCHAR(120) UNIQUE;\n    END IF;\nEND $$;\n\nCOMMIT;\n"
+  011_business_idempotency.sql: |
+    BEGIN;
+
+    ALTER TABLE business.companies ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE business.company_documents ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE business.user_company_memberships ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    COMMIT;
+  012_platform_idempotency.sql: |
+    BEGIN;
+
+    -- Marketplace
+    ALTER TABLE marketplace.stores ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE marketplace.products ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE marketplace.orders ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Stock
+    ALTER TABLE stock.suppliers ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE stock.catalog_products ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Delivery
+    ALTER TABLE delivery.rider_profiles ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE delivery.vehicles ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE delivery.delivery_requests ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Services
+    ALTER TABLE services.providers ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE services.service_contracts ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Mobility
+    ALTER TABLE mobility.rides ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE mobility.tickets ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- ERP
+    ALTER TABLE erp.fiscal_documents ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- WMS
+    ALTER TABLE wms.warehouses ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE wms.inventory ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- TMS
+    ALTER TABLE tms.freights ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- CRM
+    ALTER TABLE crm.opportunities ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- BPM
+    ALTER TABLE bpm.workflow_instances ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Document
+    ALTER TABLE document.documents ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Billing (if table exists, it was created in 004 but under schema erp? No, 004 says billing.subscriptions)
+    DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='billing' AND table_name='subscriptions') THEN
+        ALTER TABLE billing.subscriptions ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    END IF; END $$;
+
+    -- Fiscal
+    DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='fiscal' AND table_name='tax_documents') THEN
+        ALTER TABLE fiscal.tax_documents ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    END IF; END $$;
+
+    -- HR
+    ALTER TABLE hr.employees ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Health
+    ALTER TABLE health.patients ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    ALTER TABLE health.appointments ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Vision
+    ALTER TABLE vision.devices ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Legal
+    ALTER TABLE legal.cases ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Property
+    ALTER TABLE property.properties ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- Insurance
+    DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='insurance' AND table_name='policies') THEN
+        ALTER TABLE insurance.policies ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    END IF; END $$;
+
+    -- Notifications
+    DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='notifications' AND table_name='messages') THEN
+        ALTER TABLE notifications.messages ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+    END IF; END $$;
+
+    -- BI
+    ALTER TABLE bi.dashboards ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    -- AI Core
+    ALTER TABLE ai_core.moderation_decisions ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120) UNIQUE;
+
+    COMMIT;
+  013_catalog_entity_backfill.sql: |
+    BEGIN;
+
+    DO $$
+    DECLARE
+        item RECORD;
+    BEGIN
+        FOR item IN
+            SELECT *
+            FROM (
+                VALUES
+                    ('business', 'branches'),
+                    ('finance', 'splits'),
+                    ('finance', 'invoices'),
+                    ('marketplace', 'carts'),
+                    ('marketplace', 'reviews'),
+                    ('marketplace', 'disputes'),
+                    ('stock', 'price_rules'),
+                    ('stock', 'supplier_orders'),
+                    ('delivery', 'quotes'),
+                    ('delivery', 'assignments'),
+                    ('delivery', 'proofs'),
+                    ('delivery', 'insurance_options'),
+                    ('riders', 'rider_profiles'),
+                    ('riders', 'rider_documents'),
+                    ('riders', 'vehicles'),
+                    ('riders', 'rider_reviews'),
+                    ('services', 'visits'),
+                    ('services', 'quotes'),
+                    ('services', 'evidence'),
+                    ('mobility', 'routes'),
+                    ('mobility', 'stops'),
+                    ('mobility', 'fare_rules'),
+                    ('erp', 'accounts'),
+                    ('erp', 'payables'),
+                    ('erp', 'receivables'),
+                    ('erp', 'cost_centers'),
+                    ('wms', 'bins'),
+                    ('wms', 'picking_waves'),
+                    ('wms', 'shipments'),
+                    ('tms', 'carriers'),
+                    ('tms', 'routes'),
+                    ('tms', 'proofs_of_delivery'),
+                    ('tms', 'freight_audits'),
+                    ('crm', 'leads'),
+                    ('crm', 'activities'),
+                    ('crm', 'campaigns'),
+                    ('bpm', 'processes'),
+                    ('bpm', 'tasks'),
+                    ('bpm', 'sla_policies'),
+                    ('document', 'folders'),
+                    ('document', 'versions'),
+                    ('document', 'retention_policies'),
+                    ('hr', 'payroll_runs'),
+                    ('hr', 'candidates'),
+                    ('hr', 'courses'),
+                    ('hr', 'occupational_records'),
+                    ('health', 'medical_records'),
+                    ('health', 'prescriptions'),
+                    ('health', 'beds'),
+                    ('vision', 'streams'),
+                    ('vision', 'recordings'),
+                    ('vision', 'motion_alerts'),
+                    ('legal', 'deadlines'),
+                    ('legal', 'hearings'),
+                    ('legal', 'legal_contracts'),
+                    ('property', 'units'),
+                    ('property', 'leases'),
+                    ('property', 'assemblies'),
+                    ('property', 'maintenance_orders'),
+                    ('bi', 'datasets'),
+                    ('bi', 'indicators'),
+                    ('bi', 'exports'),
+                    ('ai_core', 'ai_memories'),
+                    ('ai_core', 'model_runs')
+            ) AS missing(schema_name, table_name)
+        LOOP
+            EXECUTE format('CREATE SCHEMA IF NOT EXISTS %I', item.schema_name);
+            EXECUTE format(
+                'CREATE TABLE IF NOT EXISTS %I.%I (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    user_id UUID NOT NULL REFERENCES identity.users(id),
+                    company_id UUID REFERENCES business.companies(id),
+                    status VARCHAR(40) NOT NULL DEFAULT ''draft'',
+                    metadata JSONB NOT NULL DEFAULT ''{}''::jsonb CHECK (jsonb_typeof(metadata) = ''object''),
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                    deleted_at TIMESTAMPTZ,
+                    created_by UUID REFERENCES identity.users(id),
+                    updated_by UUID REFERENCES identity.users(id),
+                    idempotency_key VARCHAR(100) UNIQUE
+                )',
+                item.schema_name,
+                item.table_name
+            );
+            EXECUTE format(
+                'CREATE INDEX IF NOT EXISTS %I ON %I.%I(user_id, status, created_at)',
+                'idx_' || item.schema_name || '_' || item.table_name || '_user_status',
+                item.schema_name,
+                item.table_name
+            );
+            EXECUTE format(
+                'CREATE INDEX IF NOT EXISTS %I ON %I.%I(idempotency_key) WHERE idempotency_key IS NOT NULL',
+                'idx_' || item.schema_name || '_' || item.table_name || '_idempotency',
+                item.schema_name,
+                item.table_name
+            );
+        END LOOP;
+    END $$;
+
+    COMMIT;
+  014_valley_ecosystem.sql: |
+    BEGIN;
+
+    CREATE TABLE IF NOT EXISTS marketplace.pepita_grants (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        order_id UUID NOT NULL,
+        customer_user_id UUID NOT NULL REFERENCES identity.users(id),
+        pepitas INTEGER NOT NULL CHECK (pepitas IN (1, 10, 100)),
+        merchant_gold_ledger_id VARCHAR(120) NOT NULL,
+        status VARCHAR(40) NOT NULL DEFAULT 'posted',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        idempotency_key VARCHAR(100) UNIQUE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_marketplace_pepita_grants_customer
+        ON marketplace.pepita_grants(customer_user_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS stock.discount_quotes (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        catalog_product_id UUID,
+        selected_percent INTEGER NOT NULL CHECK (selected_percent IN (10, 20, 50)),
+        pepitas_required INTEGER NOT NULL CHECK (pepitas_required > 0),
+        status VARCHAR(40) NOT NULL DEFAULT 'quoted',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        idempotency_key VARCHAR(100) UNIQUE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_stock_discount_quotes_user
+        ON stock.discount_quotes(user_id, created_at DESC);
+
+    COMMIT;
+  015_valley_gold_ledger.sql: |
+    BEGIN;
+
+    CREATE TABLE IF NOT EXISTS finance.valley_gold_ledger_entries (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        merchant_business_id UUID NOT NULL REFERENCES business.companies(id),
+        entry_type VARCHAR(40) NOT NULL CHECK (entry_type IN ('purchase_credit', 'pepita_grant_debit', 'manual_adjustment')),
+        amount_gold_delta INTEGER NOT NULL CHECK (amount_gold_delta <> 0),
+        reference_type VARCHAR(60) NOT NULL CHECK (reference_type IN ('gold_purchase', 'pepita_grant', 'manual_adjustment')),
+        reference_id UUID,
+        status VARCHAR(40) NOT NULL DEFAULT 'posted',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(metadata) = 'object'),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        created_by UUID REFERENCES identity.users(id),
+        idempotency_key TEXT NOT NULL UNIQUE,
+        CHECK (
+            (entry_type = 'purchase_credit' AND amount_gold_delta > 0)
+            OR (entry_type = 'pepita_grant_debit' AND amount_gold_delta < 0 AND reference_id IS NOT NULL)
+            OR (entry_type = 'manual_adjustment')
+        )
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_finance_valley_gold_merchant_created
+        ON finance.valley_gold_ledger_entries(merchant_business_id, created_at DESC);
+
+    DROP TRIGGER IF EXISTS immutable_valley_gold_ledger ON finance.valley_gold_ledger_entries;
+    CREATE TRIGGER immutable_valley_gold_ledger
+    BEFORE UPDATE OR DELETE ON finance.valley_gold_ledger_entries
+    FOR EACH ROW EXECUTE FUNCTION audit.reject_immutable_change();
+
+    COMMIT;
+  016_compliance_retention_jobs.sql: |
+    BEGIN;
+
+    CREATE TABLE IF NOT EXISTS compliance.retention_candidates (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        module VARCHAR(80) NOT NULL,
+        resource_type VARCHAR(100) NOT NULL,
+        resource_id UUID NOT NULL,
+        subject_id UUID REFERENCES identity.users(id),
+        payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+        legal_hold JSONB NOT NULL DEFAULT '[]'::jsonb,
+        requested_action VARCHAR(120),
+        legal_review_approved BOOLEAN NOT NULL DEFAULT FALSE,
+        status VARCHAR(40) NOT NULL DEFAULT 'pending'
+            CHECK (status IN ('pending', 'dry_run', 'processed', 'blocked', 'failed')),
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        locked_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS compliance.retention_decisions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        candidate_id UUID NOT NULL REFERENCES compliance.retention_candidates(id),
+        module VARCHAR(80) NOT NULL,
+        resource_type VARCHAR(100) NOT NULL,
+        resource_id UUID NOT NULL,
+        job_name VARCHAR(120) NOT NULL,
+        action VARCHAR(160) NOT NULL,
+        decision_status VARCHAR(40) NOT NULL,
+        audit_event VARCHAR(120) NOT NULL,
+        evidence JSONB NOT NULL DEFAULT '{}'::jsonb,
+        payload JSONB,
+        dry_run BOOLEAN NOT NULL DEFAULT FALSE,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        created_by UUID REFERENCES identity.users(id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_retention_candidates_status
+        ON compliance.retention_candidates(status, created_at)
+        WHERE status IN ('pending', 'failed');
+
+    CREATE INDEX IF NOT EXISTS idx_retention_candidates_module
+        ON compliance.retention_candidates(module, resource_type, resource_id);
+
+    CREATE INDEX IF NOT EXISTS idx_retention_decisions_candidate
+        ON compliance.retention_decisions(candidate_id, created_at DESC);
+
+    COMMIT;
+  017_erp_invoice_items.sql: |-
+    -- Migration 017: Tabela de itens de fatura para o ERP
+    -- Data: 2026-06-01
+
+    CREATE TABLE IF NOT EXISTS erp.invoice_items (
+        id UUID PRIMARY KEY,
+        fiscal_document_id UUID NOT NULL REFERENCES erp.fiscal_documents(id) ON DELETE CASCADE,
+        description TEXT NOT NULL,
+        quantity NUMERIC(18, 4) NOT NULL DEFAULT 1,
+        unit_price_brl NUMERIC(18, 4) NOT NULL,
+        total_price_brl NUMERIC(18, 4) NOT NULL,
+        tax_amount_brl NUMERIC(18, 4) NOT NULL DEFAULT 0,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_invoice_items_document ON erp.invoice_items (fiscal_document_id);
+
+    COMMENT ON TABLE erp.invoice_items IS 'Itens detalhados vinculados a um documento fiscal no modulo ERP';
+  018_business_catalog_offers.sql: |
+    BEGIN;
+
+    CREATE TABLE IF NOT EXISTS business.catalog_offers (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        company_id UUID REFERENCES business.companies(id),
+        source_module VARCHAR(60) NOT NULL,
+        source_entity_id UUID,
+        offer_type VARCHAR(40) NOT NULL,
+        title VARCHAR(240) NOT NULL,
+        short_description TEXT,
+        category_id UUID,
+        business_category VARCHAR(120),
+        business_type VARCHAR(80),
+        activity_branch VARCHAR(120),
+        price_type VARCHAR(40) NOT NULL DEFAULT 'fixed',
+        price_amount NUMERIC(18, 4),
+        currency VARCHAR(10) NOT NULL DEFAULT 'BRL',
+        location_type VARCHAR(40) NOT NULL DEFAULT 'online',
+        availability_type VARCHAR(40) NOT NULL DEFAULT 'immediate',
+        status VARCHAR(40) NOT NULL DEFAULT 'draft',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        deleted_at TIMESTAMPTZ,
+        published_at TIMESTAMPTZ,
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        idempotency_key VARCHAR(100) UNIQUE,
+        CHECK (status IN ('draft', 'pending_review', 'published', 'paused', 'rejected', 'archived'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_business_catalog_offers_user_status ON business.catalog_offers(user_id, status, created_at);
+    CREATE INDEX IF NOT EXISTS idx_business_catalog_offers_status_published ON business.catalog_offers(status) WHERE status = 'published';
+    CREATE INDEX IF NOT EXISTS idx_business_catalog_offers_idempotency ON business.catalog_offers(idempotency_key) WHERE idempotency_key IS NOT NULL;
+
+    COMMIT;
+  019_valley_orders.sql: "BEGIN;\n\nALTER TABLE marketplace.orders \nADD COLUMN IF
+    NOT EXISTS offer_id UUID REFERENCES business.catalog_offers(id),\nADD COLUMN IF
+    NOT EXISTS company_id UUID REFERENCES business.companies(id);\n\nALTER TABLE marketplace.orders
+    ALTER COLUMN store_id DROP NOT NULL;\n\n-- In postgres, status is just a VARCHAR(40)
+    so we don't need to change constraints \n-- unless there is a specific check constraint
+    on status which there isn't in 003_marketplace.\n\nCOMMIT;\n"
+  020_valley_services_health_sprint3.sql: |
+    BEGIN;
+
+    -- For services.service_contracts
+    ALTER TABLE services.service_contracts
+    ADD COLUMN IF NOT EXISTS offer_id UUID REFERENCES business.catalog_offers(id),
+    ADD COLUMN IF NOT EXISTS company_id UUID REFERENCES business.companies(id),
+    ADD COLUMN IF NOT EXISTS scheduled_at TIMESTAMPTZ;
+
+    ALTER TABLE services.service_contracts
+    ALTER COLUMN provider_user_id DROP NOT NULL;
+
+    ALTER TABLE services.service_contracts
+    ALTER COLUMN escrow_id DROP NOT NULL;
+
+    -- For health.appointments
+    ALTER TABLE health.appointments
+    ADD COLUMN IF NOT EXISTS offer_id UUID REFERENCES business.catalog_offers(id),
+    ADD COLUMN IF NOT EXISTS company_id UUID REFERENCES business.companies(id);
+
+    ALTER TABLE health.appointments
+    ALTER COLUMN patient_id DROP NOT NULL;
+
+    ALTER TABLE health.appointments
+    ALTER COLUMN professional_user_id DROP NOT NULL;
+
+    COMMIT;
+  021_valley_reviews.sql: |
+    BEGIN;
+
+    CREATE TABLE IF NOT EXISTS marketplace.reviews (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        order_id UUID NOT NULL REFERENCES marketplace.orders(id),
+        store_id UUID REFERENCES marketplace.stores(id),
+        offer_id TEXT,
+        rating SMALLINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+        comment TEXT,
+        moderation_status VARCHAR(40) NOT NULL DEFAULT 'published',
+        status VARCHAR(40) NOT NULL DEFAULT 'published',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        idempotency_key TEXT,
+        UNIQUE (order_id, user_id),
+        UNIQUE (idempotency_key)
+    );
+
+    -- Compatibilidade com ambientes que executaram a migration 013 antiga, na
+    -- qual reviews era criada como tabela generica.
+    ALTER TABLE marketplace.reviews
+        ADD COLUMN IF NOT EXISTS order_id UUID REFERENCES marketplace.orders(id),
+        ADD COLUMN IF NOT EXISTS store_id UUID REFERENCES marketplace.stores(id),
+        ADD COLUMN IF NOT EXISTS offer_id TEXT,
+        ADD COLUMN IF NOT EXISTS rating SMALLINT,
+        ADD COLUMN IF NOT EXISTS comment TEXT,
+        ADD COLUMN IF NOT EXISTS moderation_status VARCHAR(40) NOT NULL DEFAULT 'published';
+
+    DO $$
+    BEGIN
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint
+            WHERE conname = 'marketplace_reviews_order_required'
+              AND conrelid = 'marketplace.reviews'::regclass
+        ) THEN
+            ALTER TABLE marketplace.reviews
+                ADD CONSTRAINT marketplace_reviews_order_required
+                CHECK (order_id IS NOT NULL) NOT VALID;
+        END IF;
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint
+            WHERE conname = 'marketplace_reviews_rating_range'
+              AND conrelid = 'marketplace.reviews'::regclass
+        ) THEN
+            ALTER TABLE marketplace.reviews
+                ADD CONSTRAINT marketplace_reviews_rating_range
+                CHECK (rating BETWEEN 1 AND 5) NOT VALID;
+        END IF;
+    END $$;
+
+    CREATE UNIQUE INDEX IF NOT EXISTS marketplace_reviews_order_user_uidx
+        ON marketplace.reviews (order_id, user_id);
+
+    CREATE INDEX IF NOT EXISTS marketplace_reviews_store_created_idx
+        ON marketplace.reviews (store_id, created_at DESC);
+
+    COMMIT;
+  022_marketplace_disputes_support.sql: |
+    BEGIN;
+
+    CREATE TABLE IF NOT EXISTS marketplace.disputes (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id UUID NOT NULL REFERENCES identity.users(id),
+        order_id UUID NOT NULL REFERENCES marketplace.orders(id),
+        store_id UUID REFERENCES marketplace.stores(id),
+        company_id UUID REFERENCES business.companies(id),
+        offer_id TEXT,
+        case_type VARCHAR(40) NOT NULL,
+        subject VARCHAR(200),
+        message TEXT NOT NULL,
+        desired_resolution TEXT,
+        status VARCHAR(40) NOT NULL DEFAULT 'open',
+        metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        created_by UUID REFERENCES identity.users(id),
+        updated_by UUID REFERENCES identity.users(id),
+        idempotency_key TEXT UNIQUE
+    );
+
+    -- Compatibilidade com ambientes que executaram a migration 013 antiga, na
+    -- qual disputes era criada como tabela generica.
+    ALTER TABLE marketplace.disputes
+        ADD COLUMN IF NOT EXISTS order_id UUID REFERENCES marketplace.orders(id),
+        ADD COLUMN IF NOT EXISTS store_id UUID REFERENCES marketplace.stores(id),
+        ADD COLUMN IF NOT EXISTS offer_id TEXT,
+        ADD COLUMN IF NOT EXISTS case_type VARCHAR(40),
+        ADD COLUMN IF NOT EXISTS subject VARCHAR(200),
+        ADD COLUMN IF NOT EXISTS message TEXT,
+        ADD COLUMN IF NOT EXISTS desired_resolution TEXT;
+
+    DO $$
+    BEGIN
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint
+            WHERE conname = 'marketplace_disputes_order_required'
+              AND conrelid = 'marketplace.disputes'::regclass
+        ) THEN
+            ALTER TABLE marketplace.disputes
+                ADD CONSTRAINT marketplace_disputes_order_required
+                CHECK (order_id IS NOT NULL) NOT VALID;
+        END IF;
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint
+            WHERE conname = 'marketplace_disputes_type_required'
+              AND conrelid = 'marketplace.disputes'::regclass
+        ) THEN
+            ALTER TABLE marketplace.disputes
+                ADD CONSTRAINT marketplace_disputes_type_required
+                CHECK (case_type IS NOT NULL) NOT VALID;
+        END IF;
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint
+            WHERE conname = 'marketplace_disputes_message_required'
+              AND conrelid = 'marketplace.disputes'::regclass
+        ) THEN
+            ALTER TABLE marketplace.disputes
+                ADD CONSTRAINT marketplace_disputes_message_required
+                CHECK (message IS NOT NULL) NOT VALID;
+        END IF;
+    END $$;
+
+    CREATE INDEX IF NOT EXISTS marketplace_disputes_order_created_idx
+        ON marketplace.disputes (order_id, created_at DESC);
+
+    COMMIT;
+  023_performance_indexes.sql: |
+    -- Migration 023: Indices de Performance para Outbox, Auditoria e Ledger
+    -- Data: 2026-06-01
+
+    BEGIN;
+
+    -- 1. Otimizacao do Dispatcher da Outbox (Busca por eventos prontos para envio/retry)
+    ALTER TABLE audit.domain_events
+        ADD COLUMN IF NOT EXISTS next_retry_at TIMESTAMPTZ;
+
+    UPDATE audit.domain_events
+    SET next_retry_at = (metadata->>'next_retry_at')::timestamptz
+    WHERE next_retry_at IS NULL
+      AND metadata->>'next_retry_at' IS NOT NULL;
+
+    CREATE INDEX IF NOT EXISTS idx_outbox_dispatcher_ready
+    ON audit.domain_events (next_retry_at, created_at, id)
+    WHERE status = 'pending' AND published_at IS NULL;
+
+    -- 2. Rastreabilidade Transversal (Busca por Correlation ID nos eventos)
+    CREATE INDEX IF NOT EXISTS idx_audit_events_correlation ON audit.domain_events (correlation_id);
+
+    -- 3. Performance de Saldo e Extrato (Finance e Gold Valley)
+    CREATE INDEX IF NOT EXISTS idx_finance_ledger_wallet_lookup
+    ON finance.ledger_entries (wallet_id, created_at DESC);
+
+    CREATE INDEX IF NOT EXISTS idx_finance_gold_ledger_entity_lookup
+    ON finance.valley_gold_ledger_entries (merchant_business_id, created_at DESC);
+
+    -- 4. Otimizacao de Busca em Jobs (Visibilidade de Curriculos para Recrutadores)
+    CREATE INDEX IF NOT EXISTS idx_jobs_resumes_visibility
+    ON jobs.resumes (recruiter_visibility, status);
+
+    -- 5. Otimizacao de Busca em Business (Lookup de Membros por Empresa)
+    CREATE INDEX IF NOT EXISTS idx_business_membership_lookup ON business.user_company_memberships (company_id, status);
+
+    -- 6. Idempotencia da criacao de carteiras
+    ALTER TABLE finance.wallets
+        ADD COLUMN IF NOT EXISTS idempotency_key VARCHAR(120);
+
+    CREATE UNIQUE INDEX IF NOT EXISTS finance_wallets_idempotency_uidx
+    ON finance.wallets (idempotency_key)
+    WHERE idempotency_key IS NOT NULL;
+
+    COMMENT ON INDEX audit.idx_outbox_dispatcher_ready IS 'Acelera a selecao de eventos pendentes pelo worker outbox-dispatcher';
+    COMMENT ON INDEX finance.idx_finance_ledger_wallet_lookup IS 'Otimiza o calculo de saldo derivado e listagem de extrato';
+
+    COMMIT;
+kind: ConfigMap
+metadata:
+  name: db-migrations-cm
+  namespace: all-in-one

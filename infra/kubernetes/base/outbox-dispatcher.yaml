@@ -15,8 +15,16 @@ spec:
       containers:
         - name: outbox-dispatcher
           image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/outbox-dispatcher:latest
+          imagePullPolicy: Always
           ports: [{containerPort: 8000}]
-          readinessProbe: {httpGet: {path: /health, port: 8000}}
+          readinessProbe:
+            exec:
+              command:
+                - python
+                - -m
+                - workers.outbox_dispatcher.main
+                - --metrics
+            timeoutSeconds: 5
           envFrom:
             - configMapRef: {name: platform-config}
             - secretRef: {name: platform-secrets-placeholder}

@@ -8,8 +8,18 @@ MODULES = [
 ]
 
 WORKERS = {
-    "outbox-dispatcher": {"type": "deployment", "replicas": 2},
-    "retention-worker": {"type": "cronjob", "schedule": "0 * * * *"}
+    "outbox-dispatcher": {
+        "type": "deployment",
+        "replicas": 2,
+        "readiness_mode": "exec",
+        "readiness_timeout_seconds": 5,
+        "image_pull_policy": "Always",
+    },
+    "retention-worker": {
+        "type": "cronjob",
+        "schedule": "0 * * * *",
+        "image_pull_policy": "Always",
+    },
 }
 
 PROJECT_ID = "all-in-one-498012"
@@ -18,7 +28,32 @@ NAMESPACE = "all-in-one"
 
 BASE_DIR = "infra/kubernetes/base"
 
-def generate_deployment(name, image, replicas=2, port=8000):
+def generate_deployment(
+    name,
+    image,
+    replicas=2,
+    port=8000,
+    readiness_mode="http",
+    readiness_timeout_seconds=None,
+    image_pull_policy="IfNotPresent",
+):
+    if readiness_mode == "exec":
+        readiness_probe = """\
+          readinessProbe:
+            exec:
+              command:
+                - python
+                - -m
+                - workers.outbox_dispatcher.main
+                - --metrics"""
+    else:
+        readiness_probe = f"""\
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {port}"""
+    if readiness_timeout_seconds is not None:
+        readiness_probe += f"\n            timeoutSeconds: {readiness_timeout_seconds}"
     return f"""---
 apiVersion: apps/v1
 kind: Deployment
@@ -36,8 +71,9 @@ spec:
       containers:
         - name: {name}
           image: {image}:latest
+          imagePullPolicy: {image_pull_policy}
           ports: [{{containerPort: {port}}}]
-          readinessProbe: {{httpGet: {{path: /health, port: {port}}}}}
+{readiness_probe}
           envFrom:
             - configMapRef: {{name: platform-config}}
             - secretRef: {{name: platform-secrets-placeholder}}
@@ -52,7 +88,7 @@ spec:
   ports: [{{port: 80, targetPort: {port}}}]
 """
 
-def generate_cronjob(name, image, schedule):
+def generate_cronjob(name, image, schedule, image_pull_policy="IfNotPresent"):
     return f"""---
 apiVersion: batch/v1
 kind: CronJob
@@ -75,6 +111,7 @@ spec:
           containers:
             - name: {name}
               image: {image}:latest
+              imagePullPolicy: {image_pull_policy}
               command: ["python", "-m", "workers.{name.replace('-', '_')}.main"]
               args: ["--postgres", "--job", "retention_review_daily", "--dry-run"]
               envFrom:
@@ -88,7 +125,16 @@ def main():
 
     # Generate Modules
     for module in MODULES:
-        content = generate_deployment(module, f"{REPO}/{module}")
+        if module == "outbox-dispatcher":
+            content = generate_deployment(
+                module,
+                f"{REPO}/{module}",
+                readiness_mode="exec",
+                readiness_timeout_seconds=5,
+                image_pull_policy="Always",
+            )
+        else:
+            content = generate_deployment(module, f"{REPO}/{module}")
         with open(f"{BASE_DIR}/{module}.yaml", "w") as f:
             f.write(content)
         print(f"Generated {module}.yaml")
@@ -96,9 +142,21 @@ def main():
     # Generate Workers
     for worker, cfg in WORKERS.items():
         if cfg["type"] == "deployment":
-            content = generate_deployment(worker, f"{REPO}/{worker}", replicas=cfg["replicas"])
+            content = generate_deployment(
+                worker,
+                f"{REPO}/{worker}",
+                replicas=cfg["replicas"],
+                readiness_mode=cfg.get("readiness_mode", "http"),
+                readiness_timeout_seconds=cfg.get("readiness_timeout_seconds"),
+                image_pull_policy=cfg.get("image_pull_policy", "IfNotPresent"),
+            )
         else:
-            content = generate_cronjob(worker, f"{REPO}/{worker}", cfg["schedule"])
+            content = generate_cronjob(
+                worker,
+                f"{REPO}/{worker}",
+                cfg["schedule"],
+                image_pull_policy=cfg.get("image_pull_policy", "IfNotPresent"),
+            )
 
         with open(f"{BASE_DIR}/{worker}.yaml", "w") as f:
             f.write(content)

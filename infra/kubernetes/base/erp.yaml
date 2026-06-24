@@ -15,8 +15,12 @@ spec:
       containers:
         - name: erp
           image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/erp:latest
+          imagePullPolicy: IfNotPresent
           ports: [{containerPort: 8000}]
-          readinessProbe: {httpGet: {path: /health, port: 8000}}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
           envFrom:
             - configMapRef: {name: platform-config}
             - secretRef: {name: platform-secrets-placeholder}
