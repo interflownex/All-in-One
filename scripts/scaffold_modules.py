@@ -611,11 +611,11 @@ def render_dockerfile() -> str:
 
 
 def render_requirements(slug: str) -> str:
-    shared = "fastapi==0.136.1\nstarlette==1.0.1\nuvicorn[standard]==0.34.2\npsycopg[binary]==3.3.4\n"
+    shared = "fastapi==0.136.1\nstarlette==1.3.1\nuvicorn[standard]==0.34.2\npsycopg[binary]==3.3.4\n"
     if slug == "identity":
         return (
             "fastapi==0.136.1\n"
-            "starlette==1.0.1\n"
+            "starlette==1.3.1\n"
             "uvicorn[standard]==0.34.2\n"
             "PyJWT==2.13.0\n"
             "passlib[argon2]==1.7.4\n"
@@ -625,17 +625,17 @@ def render_requirements(slug: str) -> str:
         )
     if slug == "jobs":
         return (
-            "cryptography==48.0.0\n"
+            "cryptography==48.0.1\n"
             "fastapi==0.136.1\n"
-            "pypdf==6.12.1\n"
+            "pypdf==6.13.3\n"
             "psycopg[binary]==3.3.4\n"
-            "starlette==1.0.1\n"
+            "starlette==1.3.1\n"
             "uvicorn[standard]==0.34.2\n"
         )
     if slug == "api_hub":
         return (
             "fastapi==0.136.1\n"
-            "starlette==1.0.1\n"
+            "starlette==1.3.1\n"
             "uvicorn[standard]==0.34.2\n"
             "httpx==0.28.1\n"
             "redis==5.2.1\n"
@@ -644,7 +644,7 @@ def render_requirements(slug: str) -> str:
             "tenacity==9.0.0\n"
         )
     if slug == "finance":
-        return "fastapi==0.136.1\npsycopg[binary]==3.3.4\nstarlette==1.0.1\nuvicorn[standard]==0.34.2\n"
+        return "fastapi==0.136.1\npsycopg[binary]==3.3.4\nstarlette==1.3.1\nuvicorn[standard]==0.34.2\n"
     return shared
 
 
