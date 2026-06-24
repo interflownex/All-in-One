@@ -1,5 +1,23 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-06-24 Consolidacao das pendencias Day 2 em GKE
+
+### Concluido neste ciclo
+- Lido o relatorio de pos-deploy recebido e consolidado o mapa das proximas acoes operacionais.
+- Reorganizadas as pendencias em uma ordem executavel para estabilizacao do ambiente de producao.
+
+### Estado Operacional
+- O cluster ja entra na fase de higiene seletiva e reducao de residuos historicos.
+- O Ingress publico ainda precisa de DNS proprio e terminacao HTTPS valida.
+- A automacao de CI/CD, o ajuste de frontends e a observabilidade produtiva seguem pendentes.
+
+### Proximos Passos Naturais
+- Higiene do cluster e limpeza seletiva de Pods `Failed` e `Completed`, sem remover Jobs ativos.
+- Configuracao de DNS A e certificado SSL/TLS para o Ingress publico.
+- Automacao definitiva de CI/CD com Google Cloud Build e permissao IAM correta.
+- Integracao dos frontends Valley App e Business Panel com o gateway seguro.
+- Observabilidade e alertas com Cloud Monitoring ou Grafana, incluindo metricas de fila e disponibilidade.
+
 ## STATUS OPERACIONAL - 2026-06-09 Instalação do Antigravity CLI
 
 ### Concluído neste ciclo
@@ -1351,4 +1369,3 @@
 
 - Branch principal: `main`.
 - Iniciando nova fase de deploy infraestrutura.
-
