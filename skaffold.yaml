@@ -1,0 +1,34 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: all-in-one
+build:
+  artifacts:
+    - image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/api-hub
+      context: .
+      docker:
+        dockerfile: modules/api_hub/Dockerfile
+  tagPolicy:
+    gitCommit: {}
+manifests:
+  kustomize:
+    paths:
+      - infra/kubernetes/base
+profiles:
+  - name: api-hub-debug
+    build:
+      artifacts:
+        - image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/api-hub
+          context: .
+          docker:
+            dockerfile: modules/api_hub/Dockerfile
+          sync:
+            manual:
+              - src: "modules/api_hub/**/*.py"
+                dest: .
+    manifests:
+      kustomize:
+        paths:
+          - infra/kubernetes/core/api-hub
+    deploy:
+      kubectl: {}

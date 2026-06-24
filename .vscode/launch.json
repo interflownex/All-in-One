@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Cloud Run: Run/Debug Locally (api-hub)",
+      "type": "cloudcode.cloudrun",
+      "request": "launch",
+      "build": {
+        "docker": {
+          "path": "modules/api_hub/Dockerfile"
+        }
+      },
+      "image": "api-hub",
+      "service": {
+        "name": "api-hub",
+        "containerPort": 8000,
+        "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "512Mi"
+          }
+        }
+      },
+      "target": {
+        "local": true
+      },
+      "watch": true
+    },
+    {
+      "name": "Kubernetes: Run/Debug (api-hub)",
+      "type": "cloudcode.kubernetes",
+      "request": "launch",
+      "skaffoldConfig": "${workspaceFolder}/skaffold.yaml",
+      "profile": "api-hub-debug",
+      "watch": true,
+      "cleanUp": true,
+      "portForward": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "imageRegistry": "gcr.io/all-in-one-498012"
+    }
+  ]
+}
