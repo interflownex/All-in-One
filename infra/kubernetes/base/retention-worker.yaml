@@ -20,6 +20,7 @@ spec:
           containers:
             - name: retention-worker
               image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/retention-worker:latest
+              imagePullPolicy: Always
               command: ["python", "-m", "workers.retention_worker.main"]
               args: ["--postgres", "--job", "retention_review_daily", "--dry-run"]
               envFrom:
