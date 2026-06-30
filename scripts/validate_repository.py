@@ -19,6 +19,7 @@ GOOGLE_INTEGRATIONS_POLICY = ROOT / "config" / "autonomy" / "google_integrations
 GOOGLE_CLOUD_PROFILE = ROOT / "config" / "cloud" / "google_cloud_profile.json"
 GOOGLE_CLOUD_INVENTORY = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
 STITCH_SYNC_WORKFLOW = ROOT / ".github" / "workflows" / "stitch-sync.yml"
+SECURITY_WORKFLOW = ROOT / ".github" / "workflows" / "security.yml"
 BRAND_IDENTITY = ROOT / "config" / "branding" / "brand_identity.json"
 COMPLIANCE_MATRIX = ROOT / "config" / "compliance" / "data_classification.json"
 DATA_SUBJECT_RIGHTS = ROOT / "config" / "compliance" / "data_subject_rights.json"
@@ -180,6 +181,18 @@ def main() -> int:
     ]:
         if not (ROOT / ".github" / "workflows" / workflow).is_file():
             fail(f"Workflow ausente: {workflow}", errors)
+    security_workflow = SECURITY_WORKFLOW.read_text(encoding="utf-8") if SECURITY_WORKFLOW.is_file() else ""
+    for needle in [
+        "pip-audit --local",
+        "bandit -r modules/shared scripts workers -q -ll",
+        "python -m pytest -q tests/test_security_gates.py",
+        "docker build -f modules/api_hub/Dockerfile -t all-in-one-api-hub:security .",
+        "aquasecurity/trivy-action",
+        "severity: HIGH,CRITICAL",
+        "ignore-unfixed: true",
+    ]:
+        if needle not in security_workflow:
+            fail(f"Workflow de seguranca incompleto: {needle}", errors)
     for script in [
         "check_git_sync.ps1",
         "validate_compose_health.ps1",

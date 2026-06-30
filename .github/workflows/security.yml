@@ -17,7 +17,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: docker/setup-buildx-action@v3
       - run: python -m pip install --upgrade pip==26.1.2
       - run: pip install -r requirements-dev.txt pip-audit bandit
       - run: pip-audit --local
       - run: bandit -r modules/shared scripts workers -q -ll
+      - run: python -m pytest -q tests/test_security_gates.py
+      - run: docker build -f modules/api_hub/Dockerfile -t all-in-one-api-hub:security .
+      - uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: all-in-one-api-hub:security
+          format: table
+          exit-code: "1"
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true

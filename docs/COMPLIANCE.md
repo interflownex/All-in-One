@@ -151,6 +151,10 @@ O agendamento declarativo foi adicionado em dois modos:
 - `tests/test_retention_scheduling.py` valida Compose e CronJob de retencao.
 - `tests/test_retention_alerts.py` valida cobertura, expressoes Prometheus,
   SLA de resposta, proibicao de payload sensivel e materializacao Kubernetes.
+- `.github/workflows/security.yml` agora bloqueia regressao com `pip-audit`,
+  `bandit`, smoke runtime do API Hub e scan de imagem representativa.
+- `tests/test_security_gates.py` valida a superficie publica do gateway,
+  a validacao de API key/webhook e o contrato do workflow de seguranca.
 
 ## Pendencias
 
@@ -159,4 +163,5 @@ O agendamento declarativo foi adicionado em dois modos:
 - Aplicar manifests de monitoramento no cluster real e validar disparo controlado
   dos alertas.
 - Gerar evidencias de DPIA assinadas por modulo critico.
-- Integrar scans SAST/SCA/DAST obrigatorios ao CI com severidade bloqueante.
+- Expandir a cobertura dos scans obrigatorios do CI para mais imagens e
+  jornadas de runtime.

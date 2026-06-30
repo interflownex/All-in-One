@@ -22,3 +22,7 @@ def get_correlation_id() -> str:
     if current:
         return current
     return set_correlation_id()
+
+
+def peek_correlation_id() -> str | None:
+    return _correlation_id.get()

@@ -3,6 +3,8 @@ import json
 import re
 from typing import Any
 
+from .correlation import peek_correlation_id
+
 # Padrões para higienização de dados sensíveis (PII)
 PII_PATTERNS = {
     "email": r"[\w\.-]+@[\w\.-]+\.\w+",
@@ -28,6 +30,17 @@ class SensitiveDataFilter(logging.Filter):
     def sanitize_dict(self, data: dict[str, Any]) -> dict[str, Any]:
         return json.loads(self.sanitize(json.dumps(data)))
 
+
+class CorrelationIdFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        record.correlation_id = peek_correlation_id() or "-"
+        return True
+
+
+def _attach_filter_once(handler: logging.Handler, filter_instance: logging.Filter) -> None:
+    if not any(isinstance(existing, filter_instance.__class__) for existing in handler.filters):
+        handler.addFilter(filter_instance)
+
 def setup_secure_logging(level: int = logging.INFO):
     logger = logging.getLogger()
     logger.setLevel(level)
@@ -39,8 +52,11 @@ def setup_secure_logging(level: int = logging.INFO):
             '%(asctime)s - %(name)s - %(levelname)s - [Correlation: %(correlation_id)s] - %(message)s'
         )
         handler.setFormatter(formatter)
-        handler.addFilter(SensitiveDataFilter())
         logger.addHandler(handler)
+
+    for handler in logger.handlers:
+        _attach_filter_once(handler, SensitiveDataFilter())
+        _attach_filter_once(handler, CorrelationIdFilter())
 
 def get_logger(name: str):
     return logging.getLogger(name)

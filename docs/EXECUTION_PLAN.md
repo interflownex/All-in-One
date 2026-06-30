@@ -233,7 +233,7 @@ Pendencias:
 Proximos passos naturais:
 1. Aplicar manifests de monitoramento no cluster real e validar disparo controlado dos alertas.
 2. Aplicar mutacoes finais nos stores de dominio apos homologacao de dry-run.
-3. Adicionar scans obrigatorios no CI.
+3. Expandir a cobertura dos scans obrigatorios do CI para mais imagens e jornadas.
 4. Testar restore de Postgres/Mongo.
 5. Definir SLOs e alertas.
 

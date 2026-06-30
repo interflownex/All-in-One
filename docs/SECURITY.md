@@ -28,6 +28,7 @@
 - DPIA/LGPD, politica de retencao, direitos do titular e anonimization jobs.
 - Moderacao com OCR/IA, fila humana, apelacao e auditoria.
 - Pentest, SAST/SCA, DAST, testes de permissao e plano de incidente.
+- O CI bloqueia regressao com `pip-audit`, `bandit`, o smoke runtime `tests/test_security_gates.py` e o scan de imagem representativa do API Hub via Trivy.
 
 Nenhuma chave real, prontuario, documento, biometria bruta ou dado de cartao
 deve ser persistido no repositorio.
