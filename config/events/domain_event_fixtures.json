@@ -1,0 +1,1528 @@
+{
+  "version": "2026-06-30",
+  "source_catalog": "config/module_catalog.json",
+  "source_catalog_version": "0.1.0",
+  "exchange": "all-in-one.domain",
+  "module_count": 25,
+  "event_count": 79,
+  "modules": {
+    "identity": {
+      "title": "Identity",
+      "routing_keys": [
+        "identity.user.created",
+        "identity.user.verified",
+        "identity.user.duplicate_detected"
+      ],
+      "events": [
+        {
+          "event_id": "402e7b06-61d3-5422-87fd-6c5da33a49d5",
+          "routing_key": "identity.user.created",
+          "aggregate_type": "identity.user",
+          "aggregate_id": "identity-fixture-01",
+          "entity_id": "identity-fixture-01",
+          "actor_user_id": "identity-fixture-actor",
+          "correlation_id": "55783cfc-283e-5394-af65-51cfaa0f821d",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "identity",
+            "routing_key": "identity.user.created",
+            "summary": "Fixture de evento do modulo Identity"
+          }
+        },
+        {
+          "event_id": "982f659e-bb98-527f-b5d2-69a692c040e3",
+          "routing_key": "identity.user.verified",
+          "aggregate_type": "identity.user",
+          "aggregate_id": "identity-fixture-02",
+          "entity_id": "identity-fixture-02",
+          "actor_user_id": "identity-fixture-actor",
+          "correlation_id": "374cb597-73d1-5de3-8462-52006cd58337",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "identity",
+            "routing_key": "identity.user.verified",
+            "summary": "Fixture de evento do modulo Identity"
+          }
+        },
+        {
+          "event_id": "e8fb0551-3f62-5b71-8ae3-714a9c817652",
+          "routing_key": "identity.user.duplicate_detected",
+          "aggregate_type": "identity.user",
+          "aggregate_id": "identity-fixture-03",
+          "entity_id": "identity-fixture-03",
+          "actor_user_id": "identity-fixture-actor",
+          "correlation_id": "f8bbe07c-d249-5687-ba85-f32fe9fb0621",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "identity",
+            "routing_key": "identity.user.duplicate_detected",
+            "summary": "Fixture de evento do modulo Identity"
+          }
+        }
+      ]
+    },
+    "business": {
+      "title": "Business",
+      "routing_keys": [
+        "business.company.created",
+        "business.company.submitted",
+        "business.company.approved",
+        "business.company.rejected",
+        "valley.catalog.offer.synced"
+      ],
+      "events": [
+        {
+          "event_id": "d03349c4-0a4f-5a97-ab61-de6375cf1b3d",
+          "routing_key": "business.company.created",
+          "aggregate_type": "business.company",
+          "aggregate_id": "business-fixture-01",
+          "entity_id": "business-fixture-01",
+          "actor_user_id": "business-fixture-actor",
+          "correlation_id": "f6d791aa-ee3b-521d-9d74-3000a839747e",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "business",
+            "routing_key": "business.company.created",
+            "summary": "Fixture de evento do modulo Business"
+          }
+        },
+        {
+          "event_id": "144c688a-2d1c-5344-b788-6246906266a6",
+          "routing_key": "business.company.submitted",
+          "aggregate_type": "business.company",
+          "aggregate_id": "business-fixture-02",
+          "entity_id": "business-fixture-02",
+          "actor_user_id": "business-fixture-actor",
+          "correlation_id": "f680ef87-1fcc-5fad-a7b5-29e3c947b033",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "business",
+            "routing_key": "business.company.submitted",
+            "summary": "Fixture de evento do modulo Business"
+          }
+        },
+        {
+          "event_id": "a3cee187-981c-59be-b2e4-a00ee1f81f71",
+          "routing_key": "business.company.approved",
+          "aggregate_type": "business.company",
+          "aggregate_id": "business-fixture-03",
+          "entity_id": "business-fixture-03",
+          "actor_user_id": "business-fixture-actor",
+          "correlation_id": "ea7c5fb2-9c47-51b1-baf3-4e5c2eaf7f52",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "business",
+            "routing_key": "business.company.approved",
+            "summary": "Fixture de evento do modulo Business"
+          }
+        },
+        {
+          "event_id": "301d732a-cfe0-535c-81e3-7db903f0a149",
+          "routing_key": "business.company.rejected",
+          "aggregate_type": "business.company",
+          "aggregate_id": "business-fixture-04",
+          "entity_id": "business-fixture-04",
+          "actor_user_id": "business-fixture-actor",
+          "correlation_id": "121e2755-4cb7-5d7d-aad5-3657e7ea5cbb",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "business",
+            "routing_key": "business.company.rejected",
+            "summary": "Fixture de evento do modulo Business"
+          }
+        },
+        {
+          "event_id": "2e843e94-d3aa-598f-95a5-db62a322e9f5",
+          "routing_key": "valley.catalog.offer.synced",
+          "aggregate_type": "valley.catalog.offer",
+          "aggregate_id": "business-fixture-05",
+          "entity_id": "business-fixture-05",
+          "actor_user_id": "business-fixture-actor",
+          "correlation_id": "6fee6050-55bb-5790-98f0-88417ef217ee",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "business",
+            "routing_key": "valley.catalog.offer.synced",
+            "summary": "Fixture de evento do modulo Business"
+          }
+        }
+      ]
+    },
+    "permissions": {
+      "title": "Permissions",
+      "routing_keys": [
+        "business.user.invited",
+        "business.role.assigned"
+      ],
+      "events": [
+        {
+          "event_id": "fb4fc6a5-7e79-52b5-b916-5742658f3ee6",
+          "routing_key": "business.user.invited",
+          "aggregate_type": "business.user",
+          "aggregate_id": "permissions-fixture-01",
+          "entity_id": "permissions-fixture-01",
+          "actor_user_id": "permissions-fixture-actor",
+          "correlation_id": "59e1f68f-0a0d-5794-8b2f-3daf59b079a6",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "permissions",
+            "routing_key": "business.user.invited",
+            "summary": "Fixture de evento do modulo Permissions"
+          }
+        },
+        {
+          "event_id": "4085d435-fca1-545a-adc1-4c66c08bf2aa",
+          "routing_key": "business.role.assigned",
+          "aggregate_type": "business.role",
+          "aggregate_id": "permissions-fixture-02",
+          "entity_id": "permissions-fixture-02",
+          "actor_user_id": "permissions-fixture-actor",
+          "correlation_id": "3b27eaab-d5d8-5e76-a3de-f1df3f47b850",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "permissions",
+            "routing_key": "business.role.assigned",
+            "summary": "Fixture de evento do modulo Permissions"
+          }
+        }
+      ]
+    },
+    "finance": {
+      "title": "Finance Pay Billing Fiscal",
+      "routing_keys": [
+        "payment.escrow.created",
+        "payment.escrow.released",
+        "payment.refunded",
+        "payment.split.executed",
+        "valley.gold.ledger.posted"
+      ],
+      "events": [
+        {
+          "event_id": "3bec0936-da9f-56f4-95bc-d9f56182c27b",
+          "routing_key": "payment.escrow.created",
+          "aggregate_type": "payment.escrow",
+          "aggregate_id": "finance-fixture-01",
+          "entity_id": "finance-fixture-01",
+          "actor_user_id": "finance-fixture-actor",
+          "correlation_id": "e867427b-396c-5d35-ab19-6b2488c9d796",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "finance",
+            "routing_key": "payment.escrow.created",
+            "summary": "Fixture de evento do modulo Finance Pay Billing Fiscal"
+          }
+        },
+        {
+          "event_id": "863391ce-ce90-5573-8a50-1b907e662284",
+          "routing_key": "payment.escrow.released",
+          "aggregate_type": "payment.escrow",
+          "aggregate_id": "finance-fixture-02",
+          "entity_id": "finance-fixture-02",
+          "actor_user_id": "finance-fixture-actor",
+          "correlation_id": "085421d0-8e4f-5aa8-a049-853781e848db",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "finance",
+            "routing_key": "payment.escrow.released",
+            "summary": "Fixture de evento do modulo Finance Pay Billing Fiscal"
+          }
+        },
+        {
+          "event_id": "ea666e24-2142-54ba-bc9e-08bffe17ba2c",
+          "routing_key": "payment.refunded",
+          "aggregate_type": "payment",
+          "aggregate_id": "finance-fixture-03",
+          "entity_id": "finance-fixture-03",
+          "actor_user_id": "finance-fixture-actor",
+          "correlation_id": "f4cae986-0c18-566a-a5fa-4a3308692762",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "finance",
+            "routing_key": "payment.refunded",
+            "summary": "Fixture de evento do modulo Finance Pay Billing Fiscal"
+          }
+        },
+        {
+          "event_id": "f0f5848a-be26-5a8e-9388-f7e2ab31582b",
+          "routing_key": "payment.split.executed",
+          "aggregate_type": "payment.split",
+          "aggregate_id": "finance-fixture-04",
+          "entity_id": "finance-fixture-04",
+          "actor_user_id": "finance-fixture-actor",
+          "correlation_id": "e99d5b1a-e5d9-5821-af04-e25c0b732cce",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "finance",
+            "routing_key": "payment.split.executed",
+            "summary": "Fixture de evento do modulo Finance Pay Billing Fiscal"
+          }
+        },
+        {
+          "event_id": "025a6b99-8c80-5b7b-9109-97ea514078b4",
+          "routing_key": "valley.gold.ledger.posted",
+          "aggregate_type": "valley.gold.ledger",
+          "aggregate_id": "finance-fixture-05",
+          "entity_id": "finance-fixture-05",
+          "actor_user_id": "finance-fixture-actor",
+          "correlation_id": "ca1f8e98-e603-5296-abf8-06cd3770cfe4",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "finance",
+            "routing_key": "valley.gold.ledger.posted",
+            "summary": "Fixture de evento do modulo Finance Pay Billing Fiscal"
+          }
+        }
+      ]
+    },
+    "marketplace": {
+      "title": "Marketplace",
+      "routing_keys": [
+        "marketplace.store.created",
+        "marketplace.product.created",
+        "marketplace.order.created",
+        "marketplace.order.paid",
+        "marketplace.order.delivered",
+        "marketplace.dispute.created",
+        "valley.review.created",
+        "valley.pepitas.granted"
+      ],
+      "events": [
+        {
+          "event_id": "a0add306-7ef3-5dca-bf99-cd7cab416aab",
+          "routing_key": "marketplace.store.created",
+          "aggregate_type": "marketplace.store",
+          "aggregate_id": "marketplace-fixture-01",
+          "entity_id": "marketplace-fixture-01",
+          "actor_user_id": "marketplace-fixture-actor",
+          "correlation_id": "282a5a7a-bce3-5fa2-ba42-12c422e9a272",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "marketplace",
+            "routing_key": "marketplace.store.created",
+            "summary": "Fixture de evento do modulo Marketplace"
+          }
+        },
+        {
+          "event_id": "ba62adba-b9f8-5482-bbda-08af4c3b1f2e",
+          "routing_key": "marketplace.product.created",
+          "aggregate_type": "marketplace.product",
+          "aggregate_id": "marketplace-fixture-02",
+          "entity_id": "marketplace-fixture-02",
+          "actor_user_id": "marketplace-fixture-actor",
+          "correlation_id": "c98fc9f6-bf87-5e33-ba2b-022487fcb5fb",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "marketplace",
+            "routing_key": "marketplace.product.created",
+            "summary": "Fixture de evento do modulo Marketplace"
+          }
+        },
+        {
+          "event_id": "b02b5026-4087-59b7-a67c-46284397abff",
+          "routing_key": "marketplace.order.created",
+          "aggregate_type": "marketplace.order",
+          "aggregate_id": "marketplace-fixture-03",
+          "entity_id": "marketplace-fixture-03",
+          "actor_user_id": "marketplace-fixture-actor",
+          "correlation_id": "0dd4a3e3-988d-5b6c-b301-5c9bca5aed03",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "marketplace",
+            "routing_key": "marketplace.order.created",
+            "summary": "Fixture de evento do modulo Marketplace"
+          }
+        },
+        {
+          "event_id": "540432fd-48c5-5ddb-908e-c02748e8268e",
+          "routing_key": "marketplace.order.paid",
+          "aggregate_type": "marketplace.order",
+          "aggregate_id": "marketplace-fixture-04",
+          "entity_id": "marketplace-fixture-04",
+          "actor_user_id": "marketplace-fixture-actor",
+          "correlation_id": "675b2863-a06b-5c78-a648-34a2c5a28f6b",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "marketplace",
+            "routing_key": "marketplace.order.paid",
+            "summary": "Fixture de evento do modulo Marketplace"
+          }
+        },
+        {
+          "event_id": "e107ee8e-b352-5974-a400-6f8b11fc2417",
+          "routing_key": "marketplace.order.delivered",
+          "aggregate_type": "marketplace.order",
+          "aggregate_id": "marketplace-fixture-05",
+          "entity_id": "marketplace-fixture-05",
+          "actor_user_id": "marketplace-fixture-actor",
+          "correlation_id": "967c5d61-1428-5fc6-a680-17dfdae978a7",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "marketplace",
+            "routing_key": "marketplace.order.delivered",
+            "summary": "Fixture de evento do modulo Marketplace"
+          }
+        },
+        {
+          "event_id": "f748db24-64b9-5c65-907d-b13ec11bb98f",
+          "routing_key": "marketplace.dispute.created",
+          "aggregate_type": "marketplace.dispute",
+          "aggregate_id": "marketplace-fixture-06",
+          "entity_id": "marketplace-fixture-06",
+          "actor_user_id": "marketplace-fixture-actor",
+          "correlation_id": "a640dcf8-b111-5ace-a28e-5606a33413bd",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "marketplace",
+            "routing_key": "marketplace.dispute.created",
+            "summary": "Fixture de evento do modulo Marketplace"
+          }
+        },
+        {
+          "event_id": "50d1e776-ce4f-5fee-901f-169f47bf8231",
+          "routing_key": "valley.review.created",
+          "aggregate_type": "valley.review",
+          "aggregate_id": "marketplace-fixture-07",
+          "entity_id": "marketplace-fixture-07",
+          "actor_user_id": "marketplace-fixture-actor",
+          "correlation_id": "e3b8fdc8-1dc1-5e0d-8701-613bbfa09b4a",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "marketplace",
+            "routing_key": "valley.review.created",
+            "summary": "Fixture de evento do modulo Marketplace"
+          }
+        },
+        {
+          "event_id": "a2512c4c-327d-50ac-beb8-8ebc74822e70",
+          "routing_key": "valley.pepitas.granted",
+          "aggregate_type": "valley.pepitas",
+          "aggregate_id": "marketplace-fixture-08",
+          "entity_id": "marketplace-fixture-08",
+          "actor_user_id": "marketplace-fixture-actor",
+          "correlation_id": "65b7af5d-2e42-5210-9f29-af16606ab43f",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "marketplace",
+            "routing_key": "valley.pepitas.granted",
+            "summary": "Fixture de evento do modulo Marketplace"
+          }
+        }
+      ]
+    },
+    "stock": {
+      "title": "Stock",
+      "routing_keys": [
+        "stock.product.imported",
+        "stock.order.created",
+        "valley.stock.discount.quoted"
+      ],
+      "events": [
+        {
+          "event_id": "6f75e496-75e9-51f1-a05d-5f5bcab4241d",
+          "routing_key": "stock.product.imported",
+          "aggregate_type": "stock.product",
+          "aggregate_id": "stock-fixture-01",
+          "entity_id": "stock-fixture-01",
+          "actor_user_id": "stock-fixture-actor",
+          "correlation_id": "d5c91917-b3dd-59be-81c1-37a5aafecfc8",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "stock",
+            "routing_key": "stock.product.imported",
+            "summary": "Fixture de evento do modulo Stock"
+          }
+        },
+        {
+          "event_id": "2cefc73e-7c2a-5cff-80ab-28dd9114c8c2",
+          "routing_key": "stock.order.created",
+          "aggregate_type": "stock.order",
+          "aggregate_id": "stock-fixture-02",
+          "entity_id": "stock-fixture-02",
+          "actor_user_id": "stock-fixture-actor",
+          "correlation_id": "3071e651-94da-5f12-b3dd-38f65adfba26",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "stock",
+            "routing_key": "stock.order.created",
+            "summary": "Fixture de evento do modulo Stock"
+          }
+        },
+        {
+          "event_id": "34859816-c8ce-50cf-be87-4d6816bb3ed6",
+          "routing_key": "valley.stock.discount.quoted",
+          "aggregate_type": "valley.stock.discount",
+          "aggregate_id": "stock-fixture-03",
+          "entity_id": "stock-fixture-03",
+          "actor_user_id": "stock-fixture-actor",
+          "correlation_id": "96c73b90-03ae-5a56-a03e-90a1f58a8deb",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "stock",
+            "routing_key": "valley.stock.discount.quoted",
+            "summary": "Fixture de evento do modulo Stock"
+          }
+        }
+      ]
+    },
+    "delivery": {
+      "title": "Delivery",
+      "routing_keys": [
+        "delivery.request.created",
+        "delivery.rider.assigned",
+        "delivery.picked_up",
+        "delivery.completed",
+        "delivery.cancelled"
+      ],
+      "events": [
+        {
+          "event_id": "39c8578c-197f-5611-8ab4-f9145d7123de",
+          "routing_key": "delivery.request.created",
+          "aggregate_type": "delivery.request",
+          "aggregate_id": "delivery-fixture-01",
+          "entity_id": "delivery-fixture-01",
+          "actor_user_id": "delivery-fixture-actor",
+          "correlation_id": "431d7ab6-3bfe-56f4-8714-d9a2706d39e0",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "delivery",
+            "routing_key": "delivery.request.created",
+            "summary": "Fixture de evento do modulo Delivery"
+          }
+        },
+        {
+          "event_id": "ecc18108-9d6d-547a-af33-7e0e9e1c6904",
+          "routing_key": "delivery.rider.assigned",
+          "aggregate_type": "delivery.rider",
+          "aggregate_id": "delivery-fixture-02",
+          "entity_id": "delivery-fixture-02",
+          "actor_user_id": "delivery-fixture-actor",
+          "correlation_id": "3dec0768-a118-5348-9949-ebcfe4cc5896",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "delivery",
+            "routing_key": "delivery.rider.assigned",
+            "summary": "Fixture de evento do modulo Delivery"
+          }
+        },
+        {
+          "event_id": "bd0a9eea-a425-5f75-91e8-931162c41ee3",
+          "routing_key": "delivery.picked_up",
+          "aggregate_type": "delivery",
+          "aggregate_id": "delivery-fixture-03",
+          "entity_id": "delivery-fixture-03",
+          "actor_user_id": "delivery-fixture-actor",
+          "correlation_id": "381c77d5-5e89-52f9-9907-a286cc71660b",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "delivery",
+            "routing_key": "delivery.picked_up",
+            "summary": "Fixture de evento do modulo Delivery"
+          }
+        },
+        {
+          "event_id": "a12d8c98-1e19-57c7-ac3d-c01179f46ec1",
+          "routing_key": "delivery.completed",
+          "aggregate_type": "delivery",
+          "aggregate_id": "delivery-fixture-04",
+          "entity_id": "delivery-fixture-04",
+          "actor_user_id": "delivery-fixture-actor",
+          "correlation_id": "ab39db49-96bd-5dfb-964f-cf84f14acb50",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "delivery",
+            "routing_key": "delivery.completed",
+            "summary": "Fixture de evento do modulo Delivery"
+          }
+        },
+        {
+          "event_id": "17ad435a-bcb6-5e83-afd9-1a4ea0117185",
+          "routing_key": "delivery.cancelled",
+          "aggregate_type": "delivery",
+          "aggregate_id": "delivery-fixture-05",
+          "entity_id": "delivery-fixture-05",
+          "actor_user_id": "delivery-fixture-actor",
+          "correlation_id": "a8203eda-92b9-5c06-8ddb-072c03367e9f",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "delivery",
+            "routing_key": "delivery.cancelled",
+            "summary": "Fixture de evento do modulo Delivery"
+          }
+        }
+      ]
+    },
+    "riders": {
+      "title": "Riders",
+      "routing_keys": [
+        "rider.submitted",
+        "rider.approved",
+        "rider.rejected",
+        "rider.vehicle.approved"
+      ],
+      "events": [
+        {
+          "event_id": "e24136e9-f1e9-547e-ad2d-ac02e9bd387e",
+          "routing_key": "rider.submitted",
+          "aggregate_type": "rider",
+          "aggregate_id": "riders-fixture-01",
+          "entity_id": "riders-fixture-01",
+          "actor_user_id": "riders-fixture-actor",
+          "correlation_id": "87686c66-ed0e-59ec-9eb7-89b831b5b436",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "riders",
+            "routing_key": "rider.submitted",
+            "summary": "Fixture de evento do modulo Riders"
+          }
+        },
+        {
+          "event_id": "cbbaeaa1-ecb7-5d04-9693-d05da50d9bd4",
+          "routing_key": "rider.approved",
+          "aggregate_type": "rider",
+          "aggregate_id": "riders-fixture-02",
+          "entity_id": "riders-fixture-02",
+          "actor_user_id": "riders-fixture-actor",
+          "correlation_id": "39661e77-5907-5d1f-8d62-c88bb6ec2369",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "riders",
+            "routing_key": "rider.approved",
+            "summary": "Fixture de evento do modulo Riders"
+          }
+        },
+        {
+          "event_id": "908c431a-647a-5877-b7c8-5b315a7dbda3",
+          "routing_key": "rider.rejected",
+          "aggregate_type": "rider",
+          "aggregate_id": "riders-fixture-03",
+          "entity_id": "riders-fixture-03",
+          "actor_user_id": "riders-fixture-actor",
+          "correlation_id": "5c2b20da-b538-5f92-afe5-d093c784f921",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "riders",
+            "routing_key": "rider.rejected",
+            "summary": "Fixture de evento do modulo Riders"
+          }
+        },
+        {
+          "event_id": "492a7752-fa7e-5b40-9a6c-e5c96cc26c52",
+          "routing_key": "rider.vehicle.approved",
+          "aggregate_type": "rider.vehicle",
+          "aggregate_id": "riders-fixture-04",
+          "entity_id": "riders-fixture-04",
+          "actor_user_id": "riders-fixture-actor",
+          "correlation_id": "e07fe6e3-158e-583d-8126-12b35da7d9b3",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "riders",
+            "routing_key": "rider.vehicle.approved",
+            "summary": "Fixture de evento do modulo Riders"
+          }
+        }
+      ]
+    },
+    "services": {
+      "title": "One Services",
+      "routing_keys": [
+        "services.visit.created",
+        "services.visit.completed",
+        "services.quote.created",
+        "services.contract.created",
+        "services.contract.completed"
+      ],
+      "events": [
+        {
+          "event_id": "50372c3a-f2e0-51a7-bb8e-ff53a46f39d2",
+          "routing_key": "services.visit.created",
+          "aggregate_type": "services.visit",
+          "aggregate_id": "services-fixture-01",
+          "entity_id": "services-fixture-01",
+          "actor_user_id": "services-fixture-actor",
+          "correlation_id": "9f9fd2ac-139b-50fd-8d97-cdc5e012c066",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "services",
+            "routing_key": "services.visit.created",
+            "summary": "Fixture de evento do modulo One Services"
+          }
+        },
+        {
+          "event_id": "d0e192fe-1ad6-5943-9978-da5e91bb63a7",
+          "routing_key": "services.visit.completed",
+          "aggregate_type": "services.visit",
+          "aggregate_id": "services-fixture-02",
+          "entity_id": "services-fixture-02",
+          "actor_user_id": "services-fixture-actor",
+          "correlation_id": "b9590858-48f9-58f3-9909-843f98544a9c",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "services",
+            "routing_key": "services.visit.completed",
+            "summary": "Fixture de evento do modulo One Services"
+          }
+        },
+        {
+          "event_id": "4f33b57f-cbd1-5a25-9f51-9244698a9f4c",
+          "routing_key": "services.quote.created",
+          "aggregate_type": "services.quote",
+          "aggregate_id": "services-fixture-03",
+          "entity_id": "services-fixture-03",
+          "actor_user_id": "services-fixture-actor",
+          "correlation_id": "011a8f12-6072-5641-9c2e-46b289711d01",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "services",
+            "routing_key": "services.quote.created",
+            "summary": "Fixture de evento do modulo One Services"
+          }
+        },
+        {
+          "event_id": "93ce3a9b-53d2-5854-8865-83270a90ba31",
+          "routing_key": "services.contract.created",
+          "aggregate_type": "services.contract",
+          "aggregate_id": "services-fixture-04",
+          "entity_id": "services-fixture-04",
+          "actor_user_id": "services-fixture-actor",
+          "correlation_id": "843a8b9f-bbff-5065-a3d0-fc94f7e00430",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "services",
+            "routing_key": "services.contract.created",
+            "summary": "Fixture de evento do modulo One Services"
+          }
+        },
+        {
+          "event_id": "b611560f-9ea7-52dc-ab63-fa21fe78d700",
+          "routing_key": "services.contract.completed",
+          "aggregate_type": "services.contract",
+          "aggregate_id": "services-fixture-05",
+          "entity_id": "services-fixture-05",
+          "actor_user_id": "services-fixture-actor",
+          "correlation_id": "707c2dc3-1ec4-506e-aa5c-d5b9d4d290ca",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "services",
+            "routing_key": "services.contract.completed",
+            "summary": "Fixture de evento do modulo One Services"
+          }
+        }
+      ]
+    },
+    "mobility": {
+      "title": "Mobility",
+      "routing_keys": [
+        "mobility.ride.requested",
+        "mobility.ride.accepted",
+        "mobility.ride.completed",
+        "mobility.ticket.purchased",
+        "mobility.ticket.used"
+      ],
+      "events": [
+        {
+          "event_id": "0de5db51-d4a4-5245-8eb8-070a46a36175",
+          "routing_key": "mobility.ride.requested",
+          "aggregate_type": "mobility.ride",
+          "aggregate_id": "mobility-fixture-01",
+          "entity_id": "mobility-fixture-01",
+          "actor_user_id": "mobility-fixture-actor",
+          "correlation_id": "c47bda5f-e567-5a75-8d42-7b97c5b7ba6f",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "mobility",
+            "routing_key": "mobility.ride.requested",
+            "summary": "Fixture de evento do modulo Mobility"
+          }
+        },
+        {
+          "event_id": "7a22b2d9-614a-5cf7-8de9-090de3b72f52",
+          "routing_key": "mobility.ride.accepted",
+          "aggregate_type": "mobility.ride",
+          "aggregate_id": "mobility-fixture-02",
+          "entity_id": "mobility-fixture-02",
+          "actor_user_id": "mobility-fixture-actor",
+          "correlation_id": "73916529-d17b-5dce-9ddd-b6bf9141d3ef",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "mobility",
+            "routing_key": "mobility.ride.accepted",
+            "summary": "Fixture de evento do modulo Mobility"
+          }
+        },
+        {
+          "event_id": "630a97e2-c6d5-5013-8d73-558a58e02383",
+          "routing_key": "mobility.ride.completed",
+          "aggregate_type": "mobility.ride",
+          "aggregate_id": "mobility-fixture-03",
+          "entity_id": "mobility-fixture-03",
+          "actor_user_id": "mobility-fixture-actor",
+          "correlation_id": "a768efe9-5b76-5c41-bb47-572caecab8c2",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "mobility",
+            "routing_key": "mobility.ride.completed",
+            "summary": "Fixture de evento do modulo Mobility"
+          }
+        },
+        {
+          "event_id": "75a44c31-5841-5056-bfe1-d5c133ff392c",
+          "routing_key": "mobility.ticket.purchased",
+          "aggregate_type": "mobility.ticket",
+          "aggregate_id": "mobility-fixture-04",
+          "entity_id": "mobility-fixture-04",
+          "actor_user_id": "mobility-fixture-actor",
+          "correlation_id": "1941f2f3-4e86-57b7-9a32-7d739d4e875e",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "mobility",
+            "routing_key": "mobility.ticket.purchased",
+            "summary": "Fixture de evento do modulo Mobility"
+          }
+        },
+        {
+          "event_id": "8e964f13-ee56-512b-a8cb-04cdf2cbc9bb",
+          "routing_key": "mobility.ticket.used",
+          "aggregate_type": "mobility.ticket",
+          "aggregate_id": "mobility-fixture-05",
+          "entity_id": "mobility-fixture-05",
+          "actor_user_id": "mobility-fixture-actor",
+          "correlation_id": "540a0285-4dff-583a-a69e-bbf4131b4790",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "mobility",
+            "routing_key": "mobility.ticket.used",
+            "summary": "Fixture de evento do modulo Mobility"
+          }
+        }
+      ]
+    },
+    "jobs": {
+      "title": "Jobs",
+      "routing_keys": [
+        "jobs.resume.created",
+        "jobs.resume.ctps_imported",
+        "jobs.employment.self_declared",
+        "jobs.job_posting.created",
+        "jobs.application.created",
+        "jobs.resume.viewed"
+      ],
+      "events": [
+        {
+          "event_id": "cf37f790-bc36-569e-9857-d3d23fd6cb40",
+          "routing_key": "jobs.resume.created",
+          "aggregate_type": "jobs.resume",
+          "aggregate_id": "jobs-fixture-01",
+          "entity_id": "jobs-fixture-01",
+          "actor_user_id": "jobs-fixture-actor",
+          "correlation_id": "bec1bc22-84a2-5f5b-8095-83a07ce387ec",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "jobs",
+            "routing_key": "jobs.resume.created",
+            "summary": "Fixture de evento do modulo Jobs"
+          }
+        },
+        {
+          "event_id": "6a5fb6b6-2bb0-551e-872e-62a34b1d8552",
+          "routing_key": "jobs.resume.ctps_imported",
+          "aggregate_type": "jobs.resume",
+          "aggregate_id": "jobs-fixture-02",
+          "entity_id": "jobs-fixture-02",
+          "actor_user_id": "jobs-fixture-actor",
+          "correlation_id": "e9875a44-ceec-55f9-b5aa-b5d2eeea4c7c",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "jobs",
+            "routing_key": "jobs.resume.ctps_imported",
+            "summary": "Fixture de evento do modulo Jobs"
+          }
+        },
+        {
+          "event_id": "50d3f2bd-b1a1-59d0-a7bf-2e5f8a994cbf",
+          "routing_key": "jobs.employment.self_declared",
+          "aggregate_type": "jobs.employment",
+          "aggregate_id": "jobs-fixture-03",
+          "entity_id": "jobs-fixture-03",
+          "actor_user_id": "jobs-fixture-actor",
+          "correlation_id": "324575b2-c25f-5f90-b1a2-ef34c96d0144",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "jobs",
+            "routing_key": "jobs.employment.self_declared",
+            "summary": "Fixture de evento do modulo Jobs"
+          }
+        },
+        {
+          "event_id": "6e745b19-0ba4-5b65-b56f-fbe1d546d895",
+          "routing_key": "jobs.job_posting.created",
+          "aggregate_type": "jobs.job_posting",
+          "aggregate_id": "jobs-fixture-04",
+          "entity_id": "jobs-fixture-04",
+          "actor_user_id": "jobs-fixture-actor",
+          "correlation_id": "20c9d470-8c79-5e2d-bdc6-88ec50be2589",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "jobs",
+            "routing_key": "jobs.job_posting.created",
+            "summary": "Fixture de evento do modulo Jobs"
+          }
+        },
+        {
+          "event_id": "4023ab5b-cd11-5019-89bf-46bbee9bfe18",
+          "routing_key": "jobs.application.created",
+          "aggregate_type": "jobs.application",
+          "aggregate_id": "jobs-fixture-05",
+          "entity_id": "jobs-fixture-05",
+          "actor_user_id": "jobs-fixture-actor",
+          "correlation_id": "1c34155c-5a56-50a9-ac05-ff579e1cb552",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "jobs",
+            "routing_key": "jobs.application.created",
+            "summary": "Fixture de evento do modulo Jobs"
+          }
+        },
+        {
+          "event_id": "c44168ff-27c4-567c-92f2-e823121d11e5",
+          "routing_key": "jobs.resume.viewed",
+          "aggregate_type": "jobs.resume",
+          "aggregate_id": "jobs-fixture-06",
+          "entity_id": "jobs-fixture-06",
+          "actor_user_id": "jobs-fixture-actor",
+          "correlation_id": "0f394617-cea9-522d-a5c9-f56d8f8bb5d4",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "jobs",
+            "routing_key": "jobs.resume.viewed",
+            "summary": "Fixture de evento do modulo Jobs"
+          }
+        }
+      ]
+    },
+    "erp": {
+      "title": "ERP",
+      "routing_keys": [
+        "erp.invoice.created",
+        "erp.payment.approved"
+      ],
+      "events": [
+        {
+          "event_id": "c82d4495-fbb7-518a-9697-f3ff76ccb14b",
+          "routing_key": "erp.invoice.created",
+          "aggregate_type": "erp.invoice",
+          "aggregate_id": "erp-fixture-01",
+          "entity_id": "erp-fixture-01",
+          "actor_user_id": "erp-fixture-actor",
+          "correlation_id": "b383aa66-de94-5143-a390-e121c3f77685",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "erp",
+            "routing_key": "erp.invoice.created",
+            "summary": "Fixture de evento do modulo ERP"
+          }
+        },
+        {
+          "event_id": "e5f75498-4254-571d-bf90-345f8e3cdbe5",
+          "routing_key": "erp.payment.approved",
+          "aggregate_type": "erp.payment",
+          "aggregate_id": "erp-fixture-02",
+          "entity_id": "erp-fixture-02",
+          "actor_user_id": "erp-fixture-actor",
+          "correlation_id": "9d01c13d-f81c-5e26-8049-7fe4208524b7",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "erp",
+            "routing_key": "erp.payment.approved",
+            "summary": "Fixture de evento do modulo ERP"
+          }
+        }
+      ]
+    },
+    "wms": {
+      "title": "WMS",
+      "routing_keys": [
+        "wms.inventory.received",
+        "wms.shipment.dispatched"
+      ],
+      "events": [
+        {
+          "event_id": "4bb8fb87-9138-5fd5-ba0c-5f402de336cc",
+          "routing_key": "wms.inventory.received",
+          "aggregate_type": "wms.inventory",
+          "aggregate_id": "wms-fixture-01",
+          "entity_id": "wms-fixture-01",
+          "actor_user_id": "wms-fixture-actor",
+          "correlation_id": "bcea1efb-6d93-57df-90bd-ad4b394adaf2",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "wms",
+            "routing_key": "wms.inventory.received",
+            "summary": "Fixture de evento do modulo WMS"
+          }
+        },
+        {
+          "event_id": "b2f6263c-6fab-5562-a8cd-aa6bd0a45bb3",
+          "routing_key": "wms.shipment.dispatched",
+          "aggregate_type": "wms.shipment",
+          "aggregate_id": "wms-fixture-02",
+          "entity_id": "wms-fixture-02",
+          "actor_user_id": "wms-fixture-actor",
+          "correlation_id": "801f4ed1-a262-54cb-85d8-5ca12faa4b63",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "wms",
+            "routing_key": "wms.shipment.dispatched",
+            "summary": "Fixture de evento do modulo WMS"
+          }
+        }
+      ]
+    },
+    "tms": {
+      "title": "TMS",
+      "routing_keys": [
+        "tms.freight.created",
+        "tms.delivery.proved"
+      ],
+      "events": [
+        {
+          "event_id": "c7d4595c-5791-5587-bc9d-0a496a71f378",
+          "routing_key": "tms.freight.created",
+          "aggregate_type": "tms.freight",
+          "aggregate_id": "tms-fixture-01",
+          "entity_id": "tms-fixture-01",
+          "actor_user_id": "tms-fixture-actor",
+          "correlation_id": "cdbefce5-68d5-50e6-b597-4b6a0573015c",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "tms",
+            "routing_key": "tms.freight.created",
+            "summary": "Fixture de evento do modulo TMS"
+          }
+        },
+        {
+          "event_id": "ada815b7-8008-5479-88b1-21d7c5377f01",
+          "routing_key": "tms.delivery.proved",
+          "aggregate_type": "tms.delivery",
+          "aggregate_id": "tms-fixture-02",
+          "entity_id": "tms-fixture-02",
+          "actor_user_id": "tms-fixture-actor",
+          "correlation_id": "34a74de5-1b06-5352-8f9f-a440130747ea",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "tms",
+            "routing_key": "tms.delivery.proved",
+            "summary": "Fixture de evento do modulo TMS"
+          }
+        }
+      ]
+    },
+    "crm": {
+      "title": "CRM",
+      "routing_keys": [
+        "crm.lead.created",
+        "crm.opportunity.won"
+      ],
+      "events": [
+        {
+          "event_id": "7fa08b9f-3a3d-5d73-8dde-6f520dcc3331",
+          "routing_key": "crm.lead.created",
+          "aggregate_type": "crm.lead",
+          "aggregate_id": "crm-fixture-01",
+          "entity_id": "crm-fixture-01",
+          "actor_user_id": "crm-fixture-actor",
+          "correlation_id": "54e10c16-789c-5441-af33-de25a3dfb35b",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "crm",
+            "routing_key": "crm.lead.created",
+            "summary": "Fixture de evento do modulo CRM"
+          }
+        },
+        {
+          "event_id": "27478131-0ea7-5cc7-975f-bfae785c7330",
+          "routing_key": "crm.opportunity.won",
+          "aggregate_type": "crm.opportunity",
+          "aggregate_id": "crm-fixture-02",
+          "entity_id": "crm-fixture-02",
+          "actor_user_id": "crm-fixture-actor",
+          "correlation_id": "2efa0f81-7f87-58e7-9f5d-fd2b34367821",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "crm",
+            "routing_key": "crm.opportunity.won",
+            "summary": "Fixture de evento do modulo CRM"
+          }
+        }
+      ]
+    },
+    "bpm": {
+      "title": "BPM",
+      "routing_keys": [
+        "bpm.process.started",
+        "bpm.task.completed"
+      ],
+      "events": [
+        {
+          "event_id": "2c1904b8-47e5-5742-a69e-384b6a9c0b9d",
+          "routing_key": "bpm.process.started",
+          "aggregate_type": "bpm.process",
+          "aggregate_id": "bpm-fixture-01",
+          "entity_id": "bpm-fixture-01",
+          "actor_user_id": "bpm-fixture-actor",
+          "correlation_id": "a1e98777-7724-53c1-8408-25d5f96c3b11",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "bpm",
+            "routing_key": "bpm.process.started",
+            "summary": "Fixture de evento do modulo BPM"
+          }
+        },
+        {
+          "event_id": "1b01f8cb-70cb-5f17-9252-b1fdbbb1bd53",
+          "routing_key": "bpm.task.completed",
+          "aggregate_type": "bpm.task",
+          "aggregate_id": "bpm-fixture-02",
+          "entity_id": "bpm-fixture-02",
+          "actor_user_id": "bpm-fixture-actor",
+          "correlation_id": "e14d37ad-1e41-566b-8482-4fe13b6763d7",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "bpm",
+            "routing_key": "bpm.task.completed",
+            "summary": "Fixture de evento do modulo BPM"
+          }
+        }
+      ]
+    },
+    "document": {
+      "title": "GED ECM",
+      "routing_keys": [
+        "document.uploaded",
+        "document.signed"
+      ],
+      "events": [
+        {
+          "event_id": "e614a676-be05-5992-bdf9-2d31c9ff9ba2",
+          "routing_key": "document.uploaded",
+          "aggregate_type": "document",
+          "aggregate_id": "document-fixture-01",
+          "entity_id": "document-fixture-01",
+          "actor_user_id": "document-fixture-actor",
+          "correlation_id": "041ef084-f093-543e-87f1-92f29d380eee",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "document",
+            "routing_key": "document.uploaded",
+            "summary": "Fixture de evento do modulo GED ECM"
+          }
+        },
+        {
+          "event_id": "2638f435-44f8-5344-ab59-8ff44eaae7c1",
+          "routing_key": "document.signed",
+          "aggregate_type": "document",
+          "aggregate_id": "document-fixture-02",
+          "entity_id": "document-fixture-02",
+          "actor_user_id": "document-fixture-actor",
+          "correlation_id": "534f7d0e-7d3c-584d-89b3-6e56d0cdd9ca",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "document",
+            "routing_key": "document.signed",
+            "summary": "Fixture de evento do modulo GED ECM"
+          }
+        }
+      ]
+    },
+    "hr": {
+      "title": "HR HCM ATS LMS",
+      "routing_keys": [
+        "hr.employee.created",
+        "hr.payroll.closed"
+      ],
+      "events": [
+        {
+          "event_id": "ebaa51ca-de4d-5c85-b307-b6c8fe32e929",
+          "routing_key": "hr.employee.created",
+          "aggregate_type": "hr.employee",
+          "aggregate_id": "hr-fixture-01",
+          "entity_id": "hr-fixture-01",
+          "actor_user_id": "hr-fixture-actor",
+          "correlation_id": "918d6d5f-9036-563d-bd2d-7550eac1feb2",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "hr",
+            "routing_key": "hr.employee.created",
+            "summary": "Fixture de evento do modulo HR HCM ATS LMS"
+          }
+        },
+        {
+          "event_id": "aba811b7-6f3c-59e9-85d1-afc1e79b8742",
+          "routing_key": "hr.payroll.closed",
+          "aggregate_type": "hr.payroll",
+          "aggregate_id": "hr-fixture-02",
+          "entity_id": "hr-fixture-02",
+          "actor_user_id": "hr-fixture-actor",
+          "correlation_id": "4164706d-3c4d-5ac4-b0e4-85926fb40533",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "hr",
+            "routing_key": "hr.payroll.closed",
+            "summary": "Fixture de evento do modulo HR HCM ATS LMS"
+          }
+        }
+      ]
+    },
+    "health": {
+      "title": "Health",
+      "routing_keys": [
+        "health.appointment.created",
+        "health.telemedicine.started",
+        "health.prescription.issued"
+      ],
+      "events": [
+        {
+          "event_id": "44daa679-dfba-56d7-986c-0c6fd97c7f9c",
+          "routing_key": "health.appointment.created",
+          "aggregate_type": "health.appointment",
+          "aggregate_id": "health-fixture-01",
+          "entity_id": "health-fixture-01",
+          "actor_user_id": "health-fixture-actor",
+          "correlation_id": "23518fd6-a4bd-5491-a1e4-94f667823ebe",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "health",
+            "routing_key": "health.appointment.created",
+            "summary": "Fixture de evento do modulo Health"
+          }
+        },
+        {
+          "event_id": "131b9392-0cbe-52c2-a6d5-e5f40fafb266",
+          "routing_key": "health.telemedicine.started",
+          "aggregate_type": "health.telemedicine",
+          "aggregate_id": "health-fixture-02",
+          "entity_id": "health-fixture-02",
+          "actor_user_id": "health-fixture-actor",
+          "correlation_id": "b7cadf47-c508-5f4d-93a4-2314dd953822",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "health",
+            "routing_key": "health.telemedicine.started",
+            "summary": "Fixture de evento do modulo Health"
+          }
+        },
+        {
+          "event_id": "9154f59b-13d6-5929-9494-c3ba35da7de5",
+          "routing_key": "health.prescription.issued",
+          "aggregate_type": "health.prescription",
+          "aggregate_id": "health-fixture-03",
+          "entity_id": "health-fixture-03",
+          "actor_user_id": "health-fixture-actor",
+          "correlation_id": "c60da4e5-2f9a-535b-a180-293da22dda26",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "health",
+            "routing_key": "health.prescription.issued",
+            "summary": "Fixture de evento do modulo Health"
+          }
+        }
+      ]
+    },
+    "vision": {
+      "title": "Vision",
+      "routing_keys": [
+        "vision.motion.detected",
+        "vision.incident.created"
+      ],
+      "events": [
+        {
+          "event_id": "7591e83c-4c03-5814-9cb9-07de35e5499c",
+          "routing_key": "vision.motion.detected",
+          "aggregate_type": "vision.motion",
+          "aggregate_id": "vision-fixture-01",
+          "entity_id": "vision-fixture-01",
+          "actor_user_id": "vision-fixture-actor",
+          "correlation_id": "946bc55c-96ba-5400-a69e-e1e916a85aaa",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "vision",
+            "routing_key": "vision.motion.detected",
+            "summary": "Fixture de evento do modulo Vision"
+          }
+        },
+        {
+          "event_id": "212900b5-03fb-505b-847f-6989c8edc466",
+          "routing_key": "vision.incident.created",
+          "aggregate_type": "vision.incident",
+          "aggregate_id": "vision-fixture-02",
+          "entity_id": "vision-fixture-02",
+          "actor_user_id": "vision-fixture-actor",
+          "correlation_id": "71288961-46af-52de-83a7-ab79d637e09b",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "vision",
+            "routing_key": "vision.incident.created",
+            "summary": "Fixture de evento do modulo Vision"
+          }
+        }
+      ]
+    },
+    "legal": {
+      "title": "Legal",
+      "routing_keys": [
+        "legal.case.created",
+        "legal.deadline.alerted"
+      ],
+      "events": [
+        {
+          "event_id": "784f34cc-e66b-53e8-a184-c3cdf74cb7df",
+          "routing_key": "legal.case.created",
+          "aggregate_type": "legal.case",
+          "aggregate_id": "legal-fixture-01",
+          "entity_id": "legal-fixture-01",
+          "actor_user_id": "legal-fixture-actor",
+          "correlation_id": "ad7a047c-92b4-5686-8e5a-6241967cdbfd",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "legal",
+            "routing_key": "legal.case.created",
+            "summary": "Fixture de evento do modulo Legal"
+          }
+        },
+        {
+          "event_id": "d1c49f29-2f6d-57b1-96c0-d952640d1d8f",
+          "routing_key": "legal.deadline.alerted",
+          "aggregate_type": "legal.deadline",
+          "aggregate_id": "legal-fixture-02",
+          "entity_id": "legal-fixture-02",
+          "actor_user_id": "legal-fixture-actor",
+          "correlation_id": "a09bc659-715d-575c-bd04-8048411eebfa",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "legal",
+            "routing_key": "legal.deadline.alerted",
+            "summary": "Fixture de evento do modulo Legal"
+          }
+        }
+      ]
+    },
+    "property": {
+      "title": "Property",
+      "routing_keys": [
+        "property.lease.created",
+        "property.maintenance.requested"
+      ],
+      "events": [
+        {
+          "event_id": "8d95e082-c202-5ce1-991d-33c539ca5ebc",
+          "routing_key": "property.lease.created",
+          "aggregate_type": "property.lease",
+          "aggregate_id": "property-fixture-01",
+          "entity_id": "property-fixture-01",
+          "actor_user_id": "property-fixture-actor",
+          "correlation_id": "7930e963-7eed-5297-94fb-0e21c84b013f",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "property",
+            "routing_key": "property.lease.created",
+            "summary": "Fixture de evento do modulo Property"
+          }
+        },
+        {
+          "event_id": "be939d12-2768-5a70-8362-3892507afa70",
+          "routing_key": "property.maintenance.requested",
+          "aggregate_type": "property.maintenance",
+          "aggregate_id": "property-fixture-02",
+          "entity_id": "property-fixture-02",
+          "actor_user_id": "property-fixture-actor",
+          "correlation_id": "406f296e-8add-5374-b49b-c10260accc82",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "property",
+            "routing_key": "property.maintenance.requested",
+            "summary": "Fixture de evento do modulo Property"
+          }
+        }
+      ]
+    },
+    "bi": {
+      "title": "BI",
+      "routing_keys": [
+        "bi.dataset.refreshed"
+      ],
+      "events": [
+        {
+          "event_id": "c2043f64-9f33-56c0-8376-3b91139757af",
+          "routing_key": "bi.dataset.refreshed",
+          "aggregate_type": "bi.dataset",
+          "aggregate_id": "bi-fixture-01",
+          "entity_id": "bi-fixture-01",
+          "actor_user_id": "bi-fixture-actor",
+          "correlation_id": "3481d189-3923-5a5b-982f-a248dd10747c",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "bi",
+            "routing_key": "bi.dataset.refreshed",
+            "summary": "Fixture de evento do modulo BI"
+          }
+        }
+      ]
+    },
+    "ai_core": {
+      "title": "AI Core",
+      "routing_keys": [
+        "ai.moderation.completed",
+        "ai.memory.updated"
+      ],
+      "events": [
+        {
+          "event_id": "6fbcc475-0adf-5b7f-af5f-f21854cc4ce0",
+          "routing_key": "ai.moderation.completed",
+          "aggregate_type": "ai.moderation",
+          "aggregate_id": "ai_core-fixture-01",
+          "entity_id": "ai_core-fixture-01",
+          "actor_user_id": "ai_core-fixture-actor",
+          "correlation_id": "80262934-0c23-5946-ab4e-23fa592f3a16",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "ai_core",
+            "routing_key": "ai.moderation.completed",
+            "summary": "Fixture de evento do modulo AI Core"
+          }
+        },
+        {
+          "event_id": "531b2c38-a4fb-5577-baf2-bd9044feff5e",
+          "routing_key": "ai.memory.updated",
+          "aggregate_type": "ai.memory",
+          "aggregate_id": "ai_core-fixture-02",
+          "entity_id": "ai_core-fixture-02",
+          "actor_user_id": "ai_core-fixture-actor",
+          "correlation_id": "f2a1cd5c-1bf1-5f1d-93e8-3427f54528b3",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "ai_core",
+            "routing_key": "ai.memory.updated",
+            "summary": "Fixture de evento do modulo AI Core"
+          }
+        }
+      ]
+    },
+    "api_hub": {
+      "title": "API Hub",
+      "routing_keys": [
+        "api.client.created",
+        "api.webhook.delivered"
+      ],
+      "events": [
+        {
+          "event_id": "43ffa7bb-3374-50aa-a3a8-caee59d99efe",
+          "routing_key": "api.client.created",
+          "aggregate_type": "api.client",
+          "aggregate_id": "api_hub-fixture-01",
+          "entity_id": "api_hub-fixture-01",
+          "actor_user_id": "api_hub-fixture-actor",
+          "correlation_id": "42b90b88-525b-56e0-a7b8-af3c49c92b0b",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "api_hub",
+            "routing_key": "api.client.created",
+            "summary": "Fixture de evento do modulo API Hub"
+          }
+        },
+        {
+          "event_id": "7c892eee-d77a-530f-b018-f5c2feb2814a",
+          "routing_key": "api.webhook.delivered",
+          "aggregate_type": "api.webhook",
+          "aggregate_id": "api_hub-fixture-02",
+          "entity_id": "api_hub-fixture-02",
+          "actor_user_id": "api_hub-fixture-actor",
+          "correlation_id": "316f1123-b2d4-5d53-8570-6e10197f4619",
+          "schema_version": 1,
+          "occurred_at": "2026-06-30T00:00:00Z",
+          "payload": {
+            "module": "api_hub",
+            "routing_key": "api.webhook.delivered",
+            "summary": "Fixture de evento do modulo API Hub"
+          }
+        }
+      ]
+    }
+  }
+}

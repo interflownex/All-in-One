@@ -12,7 +12,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
 | PostgreSQL estrutural | 81% | 15 migrations SQL e stores para 25 modulos, incluindo ledger Gold Valley append-only | Schema amplo existe; falta prova real por modulo. |
 | Runtime FastAPI modular | 86% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado e carregamento dinamico por DSN validado em containers | Base local estabilizada; falta ampliar testes E2E por jornada. |
-| Mensageria/outbox | 86% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos e payload seguro para eventos Valley/catalogo validados | Precisa ampliar cobertura para eventos de todos os modulos e dashboards. |
+| Mensageria/outbox | 88% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos, payload seguro e fixtures versionadas por modulo validados | Precisa ampliar cobertura para eventos de todos os modulos e dashboards reais. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
 | Docker local | 95% | Postgres, RabbitMQ, MongoDB, Redis, outbox e 13 APIs FastAPI healthy | Falta gate CI para impedir regressao de compose. |
 | Apps/frontend | 63% | 9 apps catalogados, catalogo Valley backend regionalizado, plano Stitch com 25 projetos/177 telas e jornadas contratuais locais por pytest | Ainda falta app funcional real e Playwright E2E. |
@@ -128,16 +128,23 @@ Entregas ja existentes:
 - Worker da outbox expoe metricas Prometheus text por `--metrics`, cobrindo
   pendentes, retries vencidos, publicados, falhas retryable, maior retry e idade
   do pendente mais antigo.
+- Alertas da outbox agora estao materializados em JSON versionado e em
+  `PrometheusRule`/`AlertmanagerConfig` Kubernetes para fila parada, backlog,
+  retry e idade do pendente.
+- Dashboard Grafana da outbox agora esta materializado em JSON versionado e em
+  `ConfigMap` Kubernetes para visoes de backlog, retry, publicacoes e tendencia.
+- Catalogo de fixtures de eventos de dominio materializado em
+  `config/events/domain_event_fixtures.json` a partir de
+  `config/module_catalog.json`.
 
 Pendencias:
 - Validar eventos de todos os modulos.
-- Dashboards e alertas reais de outbox parada, fila acumulada e erro de publish.
+- Consolidar dashboards Grafana para consumo operacional em cluster real.
 
 Proximos passos naturais:
-1. Criar fixtures de evento por modulo.
-2. Rodar dispatcher contra eventos reais de cada dominio.
-3. Conectar metricas Prometheus text a dashboards/alertas.
-4. Criar runbook de incidentes de fila.
+1. Rodar dispatcher contra eventos reais de cada dominio usando o catalogo de fixtures versionado.
+2. Conectar metricas Prometheus text a dashboards Grafana.
+3. Consolidar dashboards Grafana para consumo operacional em cluster real.
 
 ### Fase 4 - Jornadas E2E por app
 

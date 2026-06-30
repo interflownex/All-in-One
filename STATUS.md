@@ -1,5 +1,54 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-06-30 Fixtures de eventos por modulo
+
+### Concluido neste ciclo
+- Materializado o catalogo versionado de fixtures de eventos em `config/events/domain_event_fixtures.json`, gerado a partir de `config/module_catalog.json`.
+- Adicionado o gerador `scripts/generate_domain_event_fixtures.py` e o teste `tests/test_domain_event_fixtures.py` para travar a cobertura por modulo.
+- Alinhado o evento financeiro `valley.gold.ledger.posted` entre `config/module_catalog.json`, `docs/EVENTS.md`, `modules/finance/EVENTS.md` e `modules/finance/CONTRACT.md`.
+
+### Estado Operacional
+- Cada modulo do catalogo agora possui fixtures deterministicas e seguras para apoiar a validacao de eventos.
+- O proximo refinamento natural continua sendo rodar o dispatcher contra eventos reais de cada dominio e ampliar a validacao operacional.
+
+### Proximos Passos Naturais
+- Rodar o dispatcher contra eventos reais de cada dominio usando o catalogo de fixtures.
+- Conectar as metricas Prometheus text aos dashboards Grafana.
+- Consolidar dashboards Grafana para consumo operacional em cluster real.
+
+## STATUS OPERACIONAL - 2026-06-30 Dashboard e runbook da outbox
+
+### Concluido neste ciclo
+- Criado o contrato do dashboard Grafana da outbox em `config/observability/outbox_dashboard.json`.
+- Materializado o dashboard como `ConfigMap` em `infra/kubernetes/base/outbox-dashboard.yaml`.
+- Adicionado o teste `tests/test_outbox_dashboard.py` para travar metricas, painel e materializacao Kubernetes.
+- Documentado o runbook de incidentes da outbox em `docs/OPERATIONS.md#outbox`, com triagem por alerta, evidencias seguras e recuperacao.
+
+### Estado Operacional
+- A outbox agora possui alertas, dashboard e runbook declarativos no baseline do repositório.
+- O proximo refinamento natural continua sendo a publicacao em cluster real e o consumo via Grafana operacional.
+
+### Proximos Passos Naturais
+- Conectar o dashboard ao Grafana do cluster real.
+- Expandir a visao operacional para outros domínios prioritarios.
+- Manter os validadores de dashboard, alertas e runbook em toda entrega.
+
+## STATUS OPERACIONAL - 2026-06-30 Alertas reais de outbox
+
+### Concluido neste ciclo
+- Materializados os alertas operacionais da outbox em `config/observability/outbox_alerts.json` e `infra/kubernetes/base/outbox-alerting.yaml`.
+- Adicionado o teste `tests/test_outbox_alerts.py` para travar o contrato de backlog, retry, stall e idade do evento pendente.
+- Atualizados o gerador de manifests, o kustomize base e a documentacao operacional/compliance para o novo contrato.
+
+### Estado Operacional
+- A observabilidade da outbox agora nao depende apenas de metricas; existe tambem uma camada declarativa de alertas e roteamento.
+- O proximo refinamento natural continua sendo a entrega de dashboards Grafana e a validacao em cluster real.
+
+### Proximos Passos Naturais
+- Conectar as metricas da outbox aos dashboards Grafana.
+- Aplicar os manifests de monitoramento no cluster real quando houver acesso.
+- Expandir os alertas operacionais para outras superficies criticas.
+
 ## STATUS OPERACIONAL - 2026-06-30 Blindagem de seguranca no CI
 
 ### Concluido neste ciclo

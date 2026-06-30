@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
+import uuid
 from pathlib import Path
 
 
@@ -25,12 +27,19 @@ COMPLIANCE_MATRIX = ROOT / "config" / "compliance" / "data_classification.json"
 DATA_SUBJECT_RIGHTS = ROOT / "config" / "compliance" / "data_subject_rights.json"
 RETENTION_JOBS = ROOT / "config" / "compliance" / "retention_jobs.json"
 RETENTION_ALERTS = ROOT / "config" / "observability" / "retention_alerts.json"
+OUTBOX_ALERTS = ROOT / "config" / "observability" / "outbox_alerts.json"
+OUTBOX_DASHBOARD = ROOT / "config" / "observability" / "outbox_dashboard.json"
+DOMAIN_EVENT_FIXTURES = ROOT / "config" / "events" / "domain_event_fixtures.json"
+EVENTS_DOC = ROOT / "docs" / "EVENTS.md"
 PROVIDER_MATRIX = ROOT / "config" / "integrations" / "provider_matrix.json"
 ENV_EXAMPLE = ROOT / ".env.example"
 VSCODE_SETTINGS = ROOT / ".vscode" / "settings.json"
 VSCODE_TASKS = ROOT / ".vscode" / "tasks.json"
 DOCKER_COMPOSE = ROOT / "infra" / "docker" / "docker-compose.yml"
 KUBERNETES_PLATFORM = ROOT / "infra" / "kubernetes" / "base" / "platform.yaml"
+KUBERNETES_KUSTOMIZATION = ROOT / "infra" / "kubernetes" / "base" / "kustomization.yaml"
+KUBERNETES_OUTBOX_ALERTING = ROOT / "infra" / "kubernetes" / "base" / "outbox-alerting.yaml"
+KUBERNETES_OUTBOX_DASHBOARD = ROOT / "infra" / "kubernetes" / "base" / "outbox-dashboard.yaml"
 KUBERNETES_RETENTION_ALERTING = ROOT / "infra" / "kubernetes" / "base" / "retention-alerting.yaml"
 REQUIRED_MODULE_FILES = {
     "README.md",
@@ -93,6 +102,32 @@ REQUIRED_RETENTION_ALERTS = {
     "RetentionOldestCandidateTooOld",
     "RetentionDecisionMissing",
 }
+REQUIRED_OUTBOX_ALERTS = {
+    "OutboxPublishStalled",
+    "OutboxBacklogHigh",
+    "OutboxDueHigh",
+    "OutboxRetryFailuresHigh",
+    "OutboxOldestPendingTooOld",
+}
+REQUIRED_OUTBOX_DASHBOARD_TITLES = {
+    "Pendentes",
+    "Prontos para retry",
+    "Publicados",
+    "Falhas retryable",
+    "Maior retry observado",
+    "Idade do pendente mais antigo",
+    "Tendencia do backlog",
+    "Tendencia de publicacoes e falhas",
+}
+REQUIRED_OUTBOX_DASHBOARD_METRICS = {
+    "all_in_one_outbox_pending",
+    "all_in_one_outbox_due",
+    "all_in_one_outbox_published_total",
+    "all_in_one_outbox_failed_retryable_total",
+    "all_in_one_outbox_max_retry_count",
+    "all_in_one_outbox_oldest_pending_age_seconds",
+}
+EVENT_BULLET_PATTERN = re.compile(r"^\s*-\s*`([^`]+)`\s*$", re.MULTILINE)
 REQUIRED_MULTI_AGENT_IDS = {
     "codex_cli",
     "antigravity",
@@ -113,6 +148,10 @@ def fail(message: str, errors: list[str]) -> None:
     errors.append(message)
 
 
+def extract_event_keys(text: str) -> list[str]:
+    return EVENT_BULLET_PATTERN.findall(text)
+
+
 def main() -> int:
     errors: list[str] = []
     modules = CATALOG["modules"]
@@ -126,6 +165,18 @@ def main() -> int:
                 fail(f"Ausente: modules/{module['slug']}/{relative}", errors)
         if not (ROOT / "contracts" / f"{module['slug']}.md").is_file():
             fail(f"Contrato ausente: {module['slug']}", errors)
+        module_events_doc = base / "EVENTS.md"
+        if not module_events_doc.is_file():
+            fail(f"EVENTS.md ausente: modules/{module['slug']}/EVENTS.md", errors)
+        else:
+            module_doc_events = extract_event_keys(module_events_doc.read_text(encoding="utf-8"))
+            if module_doc_events != module.get("events", []):
+                fail(f"EVENTS.md de {module['slug']} nao bate com o catalogo de eventos.", errors)
+    events_doc = EVENTS_DOC.read_text(encoding="utf-8") if EVENTS_DOC.is_file() else ""
+    if not events_doc:
+        fail("Documento de eventos ausente: docs/EVENTS.md", errors)
+    elif "valley.gold.ledger.posted" not in events_doc:
+        fail("docs/EVENTS.md deve documentar o evento valley.gold.ledger.posted.", errors)
     for app in CATALOG["apps"]:
         if not (ROOT / "apps" / app["slug"] / "README.md").is_file():
             fail(f"App ausente: {app['slug']}", errors)
@@ -471,6 +522,16 @@ def main() -> int:
         fail("Workflow Stitch nao pode manter o job explicitamente desativado.", errors)
     if not (ROOT / "docs" / "COMPLIANCE.md").is_file():
         fail("Documento de compliance ausente: docs/COMPLIANCE.md", errors)
+    if not KUBERNETES_KUSTOMIZATION.is_file():
+        fail("Kustomization base ausente: infra/kubernetes/base/kustomization.yaml", errors)
+    else:
+        kustomization = KUBERNETES_KUSTOMIZATION.read_text(encoding="utf-8")
+        if "outbox-alerting.yaml" not in kustomization:
+            fail("Kustomization base deve incluir outbox-alerting.yaml.", errors)
+        if "outbox-dashboard.yaml" not in kustomization:
+            fail("Kustomization base deve incluir outbox-dashboard.yaml.", errors)
+        if "retention-alerting.yaml" not in kustomization:
+            fail("Kustomization base deve incluir retention-alerting.yaml.", errors)
     if not COMPLIANCE_MATRIX.is_file():
         fail(f"Matriz de dados sensiveis ausente: {COMPLIANCE_MATRIX}", errors)
     else:
@@ -522,6 +583,117 @@ def main() -> int:
         for alert_name, alert in retention_alerts.get("alerts", {}).items():
             if f"alert: {alert_name}" not in retention_alerting or alert["expr"] not in retention_alerting:
                 fail(f"PrometheusRule de retencao nao materializa alerta: {alert_name}", errors)
+    if not OUTBOX_ALERTS.is_file():
+        fail(f"Contrato de alertas da outbox ausente: {OUTBOX_ALERTS}", errors)
+    else:
+        outbox_alerts = json.loads(OUTBOX_ALERTS.read_text(encoding="utf-8"))
+        if set(outbox_alerts.get("alerts", {})) != REQUIRED_OUTBOX_ALERTS:
+            fail("Alertas da outbox devem cobrir stall, backlog, fila pronta, retry e idade.", errors)
+        if outbox_alerts.get("notification_policy", {}).get("include_sensitive_payload") is not False:
+            fail("Alertas da outbox nao podem incluir payload sensivel.", errors)
+        if outbox_alerts.get("scope") != "outbox-dispatcher":
+            fail("Alertas da outbox devem declarar scope outbox-dispatcher.", errors)
+        if outbox_alerts.get("runbook") != "docs/OPERATIONS.md#outbox":
+            fail("Alertas da outbox devem apontar para o runbook de operacao.", errors)
+        for alert_name, alert in outbox_alerts.get("alerts", {}).items():
+            if not alert.get("expr") or not alert.get("evidence") or "incident_ticket" not in alert.get("evidence", []):
+                fail(f"Alerta da outbox incompleto: {alert_name}", errors)
+        outbox_alerting = KUBERNETES_OUTBOX_ALERTING.read_text(encoding="utf-8") if KUBERNETES_OUTBOX_ALERTING.is_file() else ""
+        if "kind: PrometheusRule" not in outbox_alerting or "kind: AlertmanagerConfig" not in outbox_alerting:
+            fail("Alertas da outbox devem ter PrometheusRule e AlertmanagerConfig Kubernetes.", errors)
+        for alert_name, alert in outbox_alerts.get("alerts", {}).items():
+            if f"alert: {alert_name}" not in outbox_alerting or alert["expr"] not in outbox_alerting:
+                fail(f"PrometheusRule da outbox nao materializa alerta: {alert_name}", errors)
+    if not OUTBOX_DASHBOARD.is_file():
+        fail(f"Contrato do dashboard da outbox ausente: {OUTBOX_DASHBOARD}", errors)
+    else:
+        outbox_dashboard = json.loads(OUTBOX_DASHBOARD.read_text(encoding="utf-8"))
+        if outbox_dashboard.get("uid") != "outbox-dispatcher":
+            fail("Dashboard da outbox deve declarar uid outbox-dispatcher.", errors)
+        if outbox_dashboard.get("title") != "All-in-One - Outbox Dispatcher":
+            fail("Dashboard da outbox deve declarar o titulo oficial.", errors)
+        if set(outbox_dashboard.get("tags", [])) != {"all-in-one", "outbox", "operations"}:
+            fail("Dashboard da outbox deve declarar as tags oficiais.", errors)
+        if outbox_dashboard.get("refresh") != "30s":
+            fail("Dashboard da outbox deve atualizar a cada 30s.", errors)
+        panels = outbox_dashboard.get("panels", [])
+        if len(panels) < 8:
+            fail("Dashboard da outbox deve declarar ao menos 8 paineis.", errors)
+        panel_titles = {panel.get("title") for panel in panels}
+        if not REQUIRED_OUTBOX_DASHBOARD_TITLES.issubset(panel_titles):
+            fail("Dashboard da outbox deve cobrir os paineis esperados.", errors)
+        panel_exprs = {
+            target.get("expr")
+            for panel in panels
+            for target in panel.get("targets", [])
+            if isinstance(target, dict) and target.get("expr")
+        }
+        for metric in REQUIRED_OUTBOX_DASHBOARD_METRICS:
+            if not any(metric in expr for expr in panel_exprs):
+                fail(f"Dashboard da outbox nao referencia a metrica: {metric}", errors)
+        outbox_dashboard_manifest = KUBERNETES_OUTBOX_DASHBOARD.read_text(encoding="utf-8") if KUBERNETES_OUTBOX_DASHBOARD.is_file() else ""
+        if "kind: ConfigMap" not in outbox_dashboard_manifest or 'grafana_dashboard: "1"' not in outbox_dashboard_manifest:
+            fail("Dashboard da outbox deve materializar ConfigMap Grafana.", errors)
+        if "outbox-dispatcher-dashboard.json" not in outbox_dashboard_manifest:
+            fail("Dashboard da outbox deve expor o JSON oficial no ConfigMap.", errors)
+        if "All-in-One - Outbox Dispatcher" not in outbox_dashboard_manifest:
+            fail("ConfigMap do dashboard da outbox deve conter o titulo oficial.", errors)
+    if not DOMAIN_EVENT_FIXTURES.is_file():
+        fail(f"Catalogo de fixtures de eventos ausente: {DOMAIN_EVENT_FIXTURES}", errors)
+    else:
+        event_fixtures = json.loads(DOMAIN_EVENT_FIXTURES.read_text(encoding="utf-8"))
+        if event_fixtures.get("version") != "2026-06-30":
+            fail("Catalogo de fixtures de eventos deve manter version=2026-06-30.", errors)
+        if event_fixtures.get("source_catalog") != "config/module_catalog.json":
+            fail("Catalogo de fixtures de eventos deve apontar para config/module_catalog.json.", errors)
+        if event_fixtures.get("source_catalog_version") != CATALOG.get("version"):
+            fail("Catalogo de fixtures de eventos deve referenciar a versao atual do catalogo.", errors)
+        if event_fixtures.get("exchange") != "all-in-one.domain":
+            fail("Catalogo de fixtures de eventos deve declarar o exchange all-in-one.domain.", errors)
+        if event_fixtures.get("module_count") != len(modules):
+            fail("Catalogo de fixtures de eventos deve cobrir um fixture por modulo.", errors)
+        total_events = sum(len(module.get("events", [])) for module in modules)
+        if event_fixtures.get("event_count") != total_events:
+            fail("Catalogo de fixtures de eventos deve cobrir todos os eventos do catalogo.", errors)
+        fixtures_modules = event_fixtures.get("modules", {})
+        if set(fixtures_modules) != slugs:
+            fail("Catalogo de fixtures de eventos deve cobrir exatamente os 25 modulos do catalogo.", errors)
+        for module in modules:
+            slug = module["slug"]
+            expected_events = list(module.get("events", []))
+            fixture_module = fixtures_modules.get(slug, {})
+            if fixture_module.get("title") != module["title"]:
+                fail(f"Catalogo de fixtures de eventos deve declarar o titulo oficial de {slug}.", errors)
+            if fixture_module.get("routing_keys") != expected_events:
+                fail(f"Catalogo de fixtures de eventos deve declarar routing keys de {slug} na mesma ordem do catalogo.", errors)
+            fixture_events = fixture_module.get("events", [])
+            if [event.get("routing_key") for event in fixture_events] != expected_events:
+                fail(f"Catalogo de fixtures de eventos deve materializar as fixtures de {slug}.", errors)
+            if len(fixture_events) != len(expected_events):
+                fail(f"Catalogo de fixtures de eventos nao cobre todos os eventos de {slug}.", errors)
+            for index, event in enumerate(fixture_events, start=1):
+                expected_id = f"{slug}-fixture-{index:02d}"
+                if event.get("schema_version") != 1:
+                    fail(f"Fixture de evento invalida em {slug}: schema_version", errors)
+                if event.get("occurred_at") != "2026-06-30T00:00:00Z":
+                    fail(f"Fixture de evento invalida em {slug}: occurred_at", errors)
+                if event.get("aggregate_id") != expected_id or event.get("entity_id") != expected_id:
+                    fail(f"Fixture de evento invalida em {slug}: aggregate_id/entity_id", errors)
+                if event.get("actor_user_id") != f"{slug}-fixture-actor":
+                    fail(f"Fixture de evento invalida em {slug}: actor_user_id", errors)
+                try:
+                    uuid.UUID(str(event.get("event_id", "")))
+                    uuid.UUID(str(event.get("correlation_id", "")))
+                except (TypeError, ValueError):
+                    fail(f"Fixture de evento invalida em {slug}: ids UUID", errors)
+                payload = event.get("payload", {})
+                expected_payload = {
+                    "module": slug,
+                    "routing_key": event.get("routing_key"),
+                    "summary": f"Fixture de evento do modulo {module['title']}",
+                }
+                if payload != expected_payload:
+                    fail(f"Fixture de evento invalida em {slug}: payload seguro", errors)
 
     if errors:
         print("\nFalhas de validacao encontradas:")

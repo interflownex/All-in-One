@@ -132,10 +132,16 @@ O agendamento declarativo foi adicionado em dois modos:
   anonimizacao, descarte e legal hold por modulo.
 - `modules/shared/retention_worker.py` e `workers/retention_worker/main.py`
   executam o processamento local dos candidatos de retencao.
+- `config/observability/outbox_alerts.json` e `infra/kubernetes/base/outbox-alerting.yaml`
+  materializam os alertas operacionais da outbox sem expor payload sensivel.
+- `config/observability/outbox_dashboard.json` e `infra/kubernetes/base/outbox-dashboard.yaml`
+  materializam o dashboard operacional da outbox com metricas agregadas.
 - `database/postgres/migrations/016_compliance_retention_jobs.sql` cria a fila
   PostgreSQL de candidatos e a tabela append-by-policy de decisoes.
 - `infra/docker/docker-compose.yml` e `infra/kubernetes/base/platform.yaml`
   declaram o agendamento seguro do worker de retencao.
+- `tests/test_outbox_alerts.py` valida o contrato versionado da outbox e a
+  materializacao Kubernetes dos alertas.
 - `config/observability/retention_alerts.json` versiona alertas de falha,
   atraso, backlog, idade do candidato mais antigo e ausencia de decisoes.
 - `infra/kubernetes/base/retention-alerting.yaml` materializa esses alertas em
@@ -163,6 +169,7 @@ O agendamento declarativo foi adicionado em dois modos:
   por modulo.
 - Aplicar manifests de monitoramento no cluster real e validar disparo controlado
   dos alertas.
+- Expandir os dashboards de outbox para consumo operacional em Grafana.
 - Gerar evidencias de DPIA assinadas por modulo critico.
 - Expandir a cobertura dos scans obrigatorios do CI para mais imagens e
   jornadas de runtime.

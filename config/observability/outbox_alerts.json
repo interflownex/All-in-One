@@ -1,0 +1,60 @@
+{
+  "version": "2026-06-30",
+  "owner": "platform",
+  "scope": "outbox-dispatcher",
+  "metric_source": "kubernetes-prometheus",
+  "runbook": "docs/OPERATIONS.md#outbox",
+  "labels": {
+    "service": "outbox-dispatcher",
+    "domain": "operations",
+    "data_classification": "operational"
+  },
+  "alerts": {
+    "OutboxPublishStalled": {
+      "severity": "critical",
+      "description": "A outbox possui pendencias, mas nao publica eventos ha uma janela operacional.",
+      "expr": "all_in_one_outbox_pending > 0 and increase(all_in_one_outbox_published_total[1h]) == 0",
+      "for": "15m",
+      "response_sla_minutes": 30,
+      "evidence": ["pending_count", "published_delta", "worker_logs", "incident_ticket"]
+    },
+    "OutboxBacklogHigh": {
+      "severity": "high",
+      "description": "Backlog de eventos pendentes acima do limite operacional.",
+      "expr": "all_in_one_outbox_pending > 500",
+      "for": "30m",
+      "response_sla_minutes": 60,
+      "evidence": ["pending_count", "due_count", "oldest_pending_age_seconds", "incident_ticket"]
+    },
+    "OutboxDueHigh": {
+      "severity": "high",
+      "description": "Eventos prontos para retry acima do limite operacional.",
+      "expr": "all_in_one_outbox_due > 100",
+      "for": "15m",
+      "response_sla_minutes": 60,
+      "evidence": ["due_count", "pending_count", "retry_window", "incident_ticket"]
+    },
+    "OutboxRetryFailuresHigh": {
+      "severity": "medium",
+      "description": "Tentativas retryable falharam recentemente.",
+      "expr": "increase(all_in_one_outbox_failed_retryable_total[30m]) > 0",
+      "for": "15m",
+      "response_sla_minutes": 120,
+      "evidence": ["failed_retryable_delta", "max_retry_count", "worker_logs", "incident_ticket"]
+    },
+    "OutboxOldestPendingTooOld": {
+      "severity": "critical",
+      "description": "Evento pendente mais antigo ultrapassou uma hora.",
+      "expr": "all_in_one_outbox_oldest_pending_age_seconds > 3600",
+      "for": "10m",
+      "response_sla_minutes": 30,
+      "evidence": ["oldest_pending_age_seconds", "pending_count", "incident_ticket"]
+    }
+  },
+  "notification_policy": {
+    "critical": ["operations_oncall", "platform_oncall"],
+    "high": ["operations_oncall"],
+    "medium": ["platform_oncall"],
+    "include_sensitive_payload": false
+  }
+}

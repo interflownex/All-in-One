@@ -29,4 +29,6 @@ resources:
   - outbox-dispatcher.yaml
   - retention-worker.yaml
   - platform.yaml
+  - outbox-alerting.yaml
+  - outbox-dashboard.yaml
   - retention-alerting.yaml

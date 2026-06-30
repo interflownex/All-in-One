@@ -53,6 +53,51 @@ Metricas expostas:
 - `all_in_one_outbox_max_retry_count`: maior contador de retry observado.
 - `all_in_one_outbox_oldest_pending_age_seconds`: idade do pendente mais antigo.
 
+Alertas obrigatorios ficam versionados em
+`config/observability/outbox_alerts.json` e materializados em
+`infra/kubernetes/base/outbox-alerting.yaml`:
+
+- `OutboxPublishStalled`: pendencias existentes sem novas publicacoes na janela.
+- `OutboxBacklogHigh`: backlog de eventos pendentes acima do limite.
+- `OutboxDueHigh`: fila de retry pronta acima do limite.
+- `OutboxRetryFailuresHigh`: aumento de falhas retryable recente.
+- `OutboxOldestPendingTooOld`: evento pendente mais antigo acima de 1 hora.
+
+As notificacoes nunca devem carregar payload sensivel; as evidencias aceitas
+sao contadores, ids de eventos, logs do worker e ticket de incidente.
+
+O dashboard operacional da outbox fica versionado em
+`config/observability/outbox_dashboard.json` e materializado em
+`infra/kubernetes/base/outbox-dashboard.yaml`, com visoes de pendentes,
+retry, publicacoes e tendencia temporal.
+
+### Runbook de incidentes
+
+1. Confirmar o alerta disparado, abrir ticket e registrar `event_id`,
+   `correlation_id`, `retry_count`, `next_retry_at`, `last_error_type` e a
+   janela observada.
+2. Se `OutboxPublishStalled` ou `OutboxBacklogHigh`:
+   - verificar `outbox-dispatcher`, RabbitMQ e PostgreSQL;
+   - identificar o modulo que mais cresce no backlog;
+   - pausar o produtor afetado ate corrigir a causa raiz;
+   - nao editar payload pendente manualmente.
+3. Se `OutboxDueHigh` ou `OutboxRetryFailuresHigh`:
+   - inspecionar logs do worker e `audit.event_deliveries`;
+   - corrigir serializacao, allowlist, contrato ou dependencia externa;
+   - aguardar o proximo ciclo de retry ou reiniciar o worker somente se ele
+     estiver travado.
+4. Se `OutboxOldestPendingTooOld`:
+   - localizar o evento mais antigo e a origem;
+   - verificar bloqueio de banco, mensageria ou falta de `publisher_confirmed`;
+   - escalar o incidente quando o atraso tocar modulos regulados, financeiros
+     ou de identidade.
+5. Ao recuperar:
+   - confirmar que `all_in_one_outbox_published_total` volta a subir;
+   - verificar queda de `all_in_one_outbox_pending` e `all_in_one_outbox_due`;
+   - anexar metricas e logs ao ticket;
+   - preservar a trilha imutavel de auditoria.
+6. Nunca incluir payload sensivel nas notificacoes ou no ticket.
+
 ## Retencao LGPD
 
 O worker de retencao LGPD processa candidatos em

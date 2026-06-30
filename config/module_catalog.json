@@ -45,7 +45,7 @@
       "title": "Finance Pay Billing Fiscal",
       "description": "Wallet, ledger, Pix, split, escrow, cobranca, fiscal e conciliacao.",
       "entities": ["wallets", "ledger_entries", "escrows", "splits", "invoices"],
-      "events": ["payment.escrow.created", "payment.escrow.released", "payment.refunded", "payment.split.executed"],
+      "events": ["payment.escrow.created", "payment.escrow.released", "payment.refunded", "payment.split.executed", "valley.gold.ledger.posted"],
       "monetization": "Taxas de transacao, split, recorrencia e plano financeiro.",
       "branch": "module/finance"
     },

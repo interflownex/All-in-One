@@ -1,4 +1,6 @@
+import json
 import os
+from pathlib import Path
 
 MODULES = [
     "ai-core", "api-hub", "bi", "bpm", "business", "crm", "delivery",
@@ -27,6 +29,7 @@ REPO = f"us-central1-docker.pkg.dev/{PROJECT_ID}/all-in-one-repo"
 NAMESPACE = "all-in-one"
 
 BASE_DIR = "infra/kubernetes/base"
+OUTBOX_DASHBOARD_SOURCE = Path("config/observability/outbox_dashboard.json")
 
 def generate_deployment(
     name,
@@ -119,6 +122,26 @@ spec:
                 - secretRef: {{name: platform-secrets-placeholder}}
 """
 
+
+def generate_dashboard_configmap(name: str, dashboard_source: Path) -> str:
+    dashboard = json.loads(dashboard_source.read_text(encoding="utf-8"))
+    dashboard_json = json.dumps(dashboard, ensure_ascii=False, indent=2)
+    dashboard_yaml = "\n".join(f"    {line}" for line in dashboard_json.splitlines())
+    return f"""---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {name}
+  namespace: {NAMESPACE}
+  labels:
+    app: outbox-dispatcher
+    domain: operations
+    grafana_dashboard: "1"
+data:
+  outbox-dispatcher-dashboard.json: |-
+{dashboard_yaml}
+"""
+
 def main():
     if not os.path.exists(BASE_DIR):
         os.makedirs(BASE_DIR)
@@ -162,8 +185,12 @@ def main():
             f.write(content)
         print(f"Generated {worker}.yaml")
 
+    with open(f"{BASE_DIR}/outbox-dashboard.yaml", "w") as f:
+        f.write(generate_dashboard_configmap("outbox-dispatcher-dashboard", OUTBOX_DASHBOARD_SOURCE))
+    print("Generated outbox-dashboard.yaml")
+
     # Update kustomization.yaml if it exists, or create it
-    resources = [f"{m}.yaml" for m in MODULES] + [f"{w}.yaml" for w in WORKERS.keys()] + ["platform.yaml", "retention-alerting.yaml"]
+    resources = [f"{m}.yaml" for m in MODULES] + [f"{w}.yaml" for w in WORKERS.keys()] + ["platform.yaml", "outbox-alerting.yaml", "outbox-dashboard.yaml", "retention-alerting.yaml"]
 
     kustomization = f"""apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

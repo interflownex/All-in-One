@@ -9,6 +9,7 @@ from pathlib import Path
 
 DEFAULT_COMMANDS = (
     (sys.executable, "scripts/scaffold_modules.py", "--check"),
+    (sys.executable, "scripts/generate_domain_event_fixtures.py", "--check"),
     (sys.executable, "scripts/validate_openapi.py"),
     (sys.executable, "scripts/validate_repository.py"),
 )
