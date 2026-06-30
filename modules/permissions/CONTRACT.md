@@ -42,6 +42,9 @@
         - `business.user.invited`
 - `business.role.assigned`
 
+As criacoes de `user_roles` e `access_policies` publicam esses eventos
+respectivamente, mantendo o contrato de business-facing events do modulo.
+
         ## Regras
 
         - `user_id` e obrigatorio em todo recurso operacional e referencia `identity.users`.

@@ -444,6 +444,8 @@ def event_for_create(module: str, resource_type: str) -> str:
     explicit = {
         ("identity", "users"): "identity.user.created",
         ("business", "companies"): "business.company.created",
+        ("permissions", "user_roles"): "business.role.assigned",
+        ("permissions", "access_policies"): "business.user.invited",
         ("finance", "valley_gold_ledger_entries"): "valley.gold.ledger.posted",
         ("marketplace", "orders"): "marketplace.order.created",
         ("marketplace", "reviews"): "valley.review.created",

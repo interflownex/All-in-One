@@ -140,6 +140,7 @@ def render_contract(module: dict) -> str:
     events = "\n".join(f"- `{item}`" for item in module["events"])
     routes = "\n".join(f"- `{item}`" for item in ENDPOINTS)
     special = ""
+    post_events = ""
     if module["slug"] == "identity":
         special = "\n- `POST /registrations` cria o All-in-One ID inicial sem ator preexistente e preserva controles de duplicidade.\n"
     if module["slug"] == "jobs":
@@ -170,6 +171,11 @@ def render_contract(module: dict) -> str:
             - A transicao de publicacao emite `valley.catalog.offer.synced` com allowlist publica.
             """
         )
+    if module["slug"] == "permissions":
+        post_events = (
+            "\n\nAs criacoes de `user_roles` e `access_policies` publicam esses eventos\n"
+            "respectivamente, mantendo o contrato de business-facing events do modulo."
+        )
     return dedent(
         f"""\
         # Contrato: {module["title"]}
@@ -189,7 +195,7 @@ def render_contract(module: dict) -> str:
 
         ## Eventos
 
-        {events}
+        {events}{post_events}
 
         ## Regras
 
