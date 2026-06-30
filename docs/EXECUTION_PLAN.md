@@ -12,7 +12,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
 | PostgreSQL estrutural | 81% | 15 migrations SQL e stores para 25 modulos, incluindo ledger Gold Valley append-only | Schema amplo existe; falta prova real por modulo. |
 | Runtime FastAPI modular | 86% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado e carregamento dinamico por DSN validado em containers | Base local estabilizada; falta ampliar testes E2E por jornada. |
-| Mensageria/outbox | 89% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos, payload seguro, fixtures versionadas por modulo e matriz de dispatch validados | Precisa ampliar cobertura para eventos reais de todos os modulos e dashboards reais. |
+| Mensageria/outbox | 90% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos, payload seguro, fixtures versionadas por modulo, matriz de dispatch e eventos reais de AI Core/API Hub validados no store/sandbox | Precisa ampliar cobertura para eventos reais de todos os modulos e dashboards reais. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
 | Docker local | 95% | Postgres, RabbitMQ, MongoDB, Redis, outbox e 13 APIs FastAPI healthy | Falta gate CI para impedir regressao de compose. |
 | Apps/frontend | 63% | 9 apps catalogados, catalogo Valley backend regionalizado, plano Stitch com 25 projetos/177 telas e jornadas contratuais locais por pytest | Ainda falta app funcional real e Playwright E2E. |
@@ -110,7 +110,7 @@ Proximos passos naturais:
 
 Objetivo: garantir comunicacao assincroma confiavel e rastreavel.
 
-Status: 86%
+Status: 87%
 
 Entregas ja existentes:
 - `audit.domain_events`.
@@ -138,6 +138,10 @@ Entregas ja existentes:
   `config/module_catalog.json`.
 - Matriz de dispatch do outbox coberta em `tests/test_domain_event_dispatch_matrix.py`
   para todos os eventos versionados.
+- Eventos reais de AI Core e API Hub cobertos em
+  `tests/test_ai_core_api_hub_completed_events.py` e
+  `tests/test_integration_sandbox_adapters.py`, validando conclusao real no
+  store compartilhado e no provider sandbox.
 
 Pendencias:
 - Validar eventos reais de todos os modulos.

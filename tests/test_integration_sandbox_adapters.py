@@ -2,6 +2,7 @@ import hashlib
 
 from modules.shared.integration_sandbox import (
     ApiHubSandbox,
+    AiAgentSandbox,
     ClinicalConsentSandbox,
     CtpsSandbox,
     FiscalDocumentSandbox,
@@ -98,3 +99,14 @@ def test_maps_ctps_health_and_api_hub_sandboxes_are_deterministic() -> None:
     assert webhook.payload["signature_sha256"]
     assert "sandbox-secret" not in str(webhook.payload)
     assert api_key.status == "accepted"
+
+
+def test_ai_agent_sandbox_emits_model_run_completed() -> None:
+    sandbox = AiAgentSandbox()
+
+    result = sandbox.run_prompt("run-1", "criar um layout de dashboard", module="ai_core")
+
+    assert result.status == "completed"
+    assert result.provider_key == "ai_agent_superdesign"
+    assert result.events[0]["routing_key"] == "ai_core.model_run.completed"
+    assert "criar um layout de dashboard" not in str(result.payload)

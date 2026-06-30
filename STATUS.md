@@ -1,5 +1,20 @@
 # Status Operacional
 
+# STATUS OPERACIONAL - 2026-06-30 Eventos reais de AI Core e API Hub
+
+### Concluido neste ciclo
+- Adicionado `tests/test_ai_core_api_hub_completed_events.py`, cobrindo o ciclo `create -> approve -> complete` e validando os eventos `ai_core.model_run.completed` e `api_hub.integration_run.completed` no store compartilhado/outbox.
+- Adicionado o teste `test_ai_agent_sandbox_emits_model_run_completed` em `tests/test_integration_sandbox_adapters.py`, travando o evento do provider sandbox de IA.
+
+### Estado Operacional
+- A fase 3 ganhou cobertura real para os eventos de conclusao de AI Core e API Hub, reduzindo o gap entre provider matrix, store compartilhado e provider sandbox.
+- O proximo refinamento natural continua sendo validar os eventos reais restantes dos demais modulos criticos e consolidar os dashboards operacionais.
+
+### Proximos Passos Naturais
+- Rodar os fluxos reais restantes dos modulos sem cobertura equivalente.
+- Conectar as métricas Prometheus text aos dashboards Grafana.
+- Consolidar dashboards Grafana para consumo operacional em cluster real.
+
 ## STATUS OPERACIONAL - 2026-06-30 Matriz de dispatch da outbox
 
 ### Concluido neste ciclo
