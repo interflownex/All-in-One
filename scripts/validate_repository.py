@@ -183,10 +183,16 @@ def main() -> int:
             fail(f"Workflow ausente: {workflow}", errors)
     security_workflow = SECURITY_WORKFLOW.read_text(encoding="utf-8") if SECURITY_WORKFLOW.is_file() else ""
     for needle in [
+        "matrix:",
         "pip-audit --local",
         "bandit -r modules/shared scripts workers -q -ll",
         "python -m pytest -q tests/test_security_gates.py",
-        "docker build -f modules/api_hub/Dockerfile -t all-in-one-api-hub:security .",
+        "modules/api_hub/Dockerfile",
+        "modules/identity/Dockerfile",
+        "modules/jobs/Dockerfile",
+        "all-in-one-api-hub:security",
+        "all-in-one-identity:security",
+        "all-in-one-jobs:security",
         "aquasecurity/trivy-action",
         "severity: HIGH,CRITICAL",
         "ignore-unfixed: true",

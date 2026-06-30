@@ -18,7 +18,7 @@ apos aprovacao manual das alteracoes financeiras, de identidade ou saude.
   `main` em eventos de push e sob demanda.
 - `.github/workflows/compose-health.yml`: executa o healthcheck Docker Compose
   quando runtime, migrations, workers ou compose forem alterados.
-- `.github/workflows/security.yml`: executa `pip-audit`, `bandit`, o smoke runtime `tests/test_security_gates.py` e o scan de imagem representativa com Trivy.
+- `.github/workflows/security.yml`: executa `pip-audit`, `bandit`, o smoke runtime `tests/test_security_gates.py` e o scan de imagem com Trivy para `api_hub`, `identity` e `jobs`.
 
 ## Evidencias
 

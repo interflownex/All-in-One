@@ -6,9 +6,10 @@
 - O workflow de seguranca ganhou o gate obrigatorio de `pip-audit`, `bandit`, smoke runtime do API Hub e scan de imagem representativa com Trivy.
 - Adicionado o smoke `tests/test_security_gates.py`, cobrindo superficie publica, API key, webhook e contrato do workflow de seguranca.
 - Corrigido o logging de `correlation_id` para evitar erro de formatter durante inicializacao e manter a trilha de observabilidade limpa.
+- O scan de imagem foi expandido para os modulos `api_hub`, `identity` e `jobs`, cobrindo tres superficies representativas do runtime.
 
 ### Estado Operacional
-- A seguranca automatizada agora valida tanto analise esttica quanto comportamento dinamico minimo do gateway.
+- A seguranca automatizada agora valida tanto analise esttica quanto comportamento dinamico minimo do gateway, alem de escanear tres imagens representativas.
 - O proximo refinamento natural e ampliar a cobertura de scans para mais imagens e jornadas de runtime.
 
 ### Proximos Passos Naturais

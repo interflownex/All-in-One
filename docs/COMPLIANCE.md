@@ -152,7 +152,8 @@ O agendamento declarativo foi adicionado em dois modos:
 - `tests/test_retention_alerts.py` valida cobertura, expressoes Prometheus,
   SLA de resposta, proibicao de payload sensivel e materializacao Kubernetes.
 - `.github/workflows/security.yml` agora bloqueia regressao com `pip-audit`,
-  `bandit`, smoke runtime do API Hub e scan de imagem representativa.
+  `bandit`, smoke runtime do API Hub e scan de imagem via Trivy para
+  `api_hub`, `identity` e `jobs`.
 - `tests/test_security_gates.py` valida a superficie publica do gateway,
   a validacao de API key/webhook e o contrato do workflow de seguranca.
 

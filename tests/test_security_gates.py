@@ -100,10 +100,16 @@ def test_gateway_api_key_and_webhook_validation_are_strict() -> None:
 def test_security_workflow_runs_mandatory_scans() -> None:
     workflow = (ROOT / ".github" / "workflows" / "security.yml").read_text(encoding="utf-8")
 
+    assert "matrix:" in workflow
     assert "pip-audit --local" in workflow
     assert "bandit -r modules/shared scripts workers -q -ll" in workflow
     assert "python -m pytest -q tests/test_security_gates.py" in workflow
-    assert "docker build -f modules/api_hub/Dockerfile -t all-in-one-api-hub:security ." in workflow
+    assert "modules/api_hub/Dockerfile" in workflow
+    assert "modules/identity/Dockerfile" in workflow
+    assert "modules/jobs/Dockerfile" in workflow
+    assert "all-in-one-api-hub:security" in workflow
+    assert "all-in-one-identity:security" in workflow
+    assert "all-in-one-jobs:security" in workflow
     assert "aquasecurity/trivy-action" in workflow
     assert "severity: HIGH,CRITICAL" in workflow
     assert "ignore-unfixed: true" in workflow
