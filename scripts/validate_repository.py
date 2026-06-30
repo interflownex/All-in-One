@@ -677,6 +677,9 @@ def main() -> int:
                     fail(f"Fixture de evento invalida em {slug}: schema_version", errors)
                 if event.get("occurred_at") != "2026-06-30T00:00:00Z":
                     fail(f"Fixture de evento invalida em {slug}: occurred_at", errors)
+                expected_aggregate_type = str(event.get("routing_key", "")).rsplit(".", 1)[0]
+                if event.get("aggregate_type") != expected_aggregate_type:
+                    fail(f"Fixture de evento invalida em {slug}: aggregate_type", errors)
                 if event.get("aggregate_id") != expected_id or event.get("entity_id") != expected_id:
                     fail(f"Fixture de evento invalida em {slug}: aggregate_id/entity_id", errors)
                 if event.get("actor_user_id") != f"{slug}-fixture-actor":

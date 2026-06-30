@@ -1,5 +1,21 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-06-30 Matriz de dispatch da outbox
+
+### Concluido neste ciclo
+- Adicionada a matriz `tests/test_domain_event_dispatch_matrix.py`, cobrindo todos os eventos versionados do catálogo de fixtures.
+- Validado o envelope de publicação da outbox para todos os eventos do baseline, com payload minimizado e sem vazamento de resumo ou metadados do fixture.
+- Reforçada a validação central para exigir `aggregate_type` consistente nos fixtures de eventos.
+
+### Estado Operacional
+- A outbox agora tem cobertura de dispatch em lote para o catálogo de eventos do repositório.
+- O próximo refinamento natural continua sendo conectar essa matriz aos eventos reais emitidos em runtime e aos dashboards operacionais no cluster.
+
+### Proximos Passos Naturais
+- Rodar o dispatcher contra eventos reais de cada domínio.
+- Conectar as métricas Prometheus text aos dashboards Grafana.
+- Consolidar dashboards Grafana para consumo operacional em cluster real.
+
 ## STATUS OPERACIONAL - 2026-06-30 Fixtures de eventos por modulo
 
 ### Concluido neste ciclo
