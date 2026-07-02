@@ -7,8 +7,10 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from fastapi.testclient import TestClient
 from pypdf import PdfWriter
 import psycopg
+from psycopg.rows import dict_row
 import pytest
 
+from modules.shared.outbox_dispatcher import publication_message
 from modules.shared.runtime import create_module_app
 
 
@@ -133,3 +135,41 @@ def test_jobs_postgres_typed_store_and_private_ctps(monkeypatch: pytest.MonkeyPa
         assert connection.execute("SELECT COUNT(*) FROM jobs.resume_access_logs WHERE resume_id = %s", (resume_id,)).fetchone()[0] == 1
         assert connection.execute("SELECT COUNT(*) FROM audit.logs WHERE module = 'jobs'").fetchone()[0] >= 4
         assert connection.execute("SELECT COUNT(*) FROM audit.domain_events WHERE routing_key LIKE 'jobs.%'").fetchone()[0] >= 4
+
+    with psycopg.connect(POSTGRES_DSN, row_factory=dict_row) as connection:
+        resume_event = connection.execute(
+            """SELECT *
+               FROM audit.domain_events
+               WHERE routing_key = 'jobs.resume.ctps_imported'
+               ORDER BY created_at DESC
+               LIMIT 1"""
+        ).fetchone()
+        assert resume_event is not None
+        resume_message = publication_message(resume_event)
+        assert resume_message["routing_key"] == "jobs.resume.ctps_imported"
+        assert resume_message["payload"] == {
+            "document_type": "ctps_digital_pdf",
+            "evidence_status": "validated_by_document_import",
+            "extraction_status": "requires_manual_review",
+            "official_verification_status": "not_verified_externally",
+            "resume_id": resume_id,
+            "sha256": resume_event["payload"]["sha256"],
+        }
+        assert "storage_key" not in resume_message["payload"]
+        assert "raw_document_text" not in resume_message["payload"]
+
+        published_event = connection.execute(
+            """SELECT *
+               FROM audit.domain_events
+               WHERE routing_key = 'jobs.job_posting.published'
+               ORDER BY created_at DESC
+               LIMIT 1"""
+        ).fetchone()
+        assert published_event is not None
+        published_message = publication_message(published_event)
+        assert published_message["routing_key"] == "jobs.job_posting.published"
+        assert published_message["payload"] == {
+            "company_id": str(business_id),
+            "title": "Vaga PostgreSQL",
+        }
+        assert "decision_reason" not in published_message["payload"]

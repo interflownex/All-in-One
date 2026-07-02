@@ -16,6 +16,7 @@ from modules.shared.delivery_postgres_store import DeliveryPostgresStore
 from modules.shared.services_postgres_store import ServicesPostgresStore
 from modules.shared.mobility_postgres_store import MobilityPostgresStore
 from modules.shared.jobs_postgres_store import JobsPostgresStore
+from modules.shared.outbox_dispatcher import SAFE_PAYLOAD_FIELDS, publication_message
 
 DEFAULT_DSN = os.environ.get(
     "ALL_IN_ONE_POSTGRES_MATRIX_DSN", 
@@ -271,4 +272,18 @@ def test_audit_outbox_integration(module_name: str):
     if hasattr(store, "outbox"):
         events = store.outbox()
         # Nota: finance intercepta no outbox via routing_key LIKE payment.%
-        assert len(events) >= 0 
+        assert events
+        event = events[0]
+        message = publication_message(event)
+        expected_payload = {
+            key: payload[key]
+            for key in SAFE_PAYLOAD_FIELDS.get(event["aggregate_type"], frozenset())
+            if key in payload
+        }
+        assert message["routing_key"] == event["routing_key"]
+        assert message["aggregate_type"] == event["aggregate_type"]
+        assert message["aggregate_id"] == str(event["aggregate_id"])
+        assert message["event_id"] == str(event["id"])
+        assert message["correlation_id"] == str(event["correlation_id"])
+        assert message["occurred_at"] == event["created_at"].isoformat()
+        assert message["payload"] == expected_payload

@@ -16,6 +16,8 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
   auditavel e payload Jobs minimizado.
 - Geracao de eventos reais de criacao e transicao do recurso primario
   validada em todos os modulos catalogados com o store compartilhado.
+- Ponte do dispatcher verificada em eventos reais do Jobs e na matrix
+  PostgreSQL, reforcando o envelope minimo antes da publicacao.
 - Orquestracao Google Stitch declarativa com um projeto visual por
   microservico e telas Jobs/Business/User especializadas.
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.

@@ -5,6 +5,7 @@
 ### Concluido neste ciclo
 - Adicionado `tests/test_runtime_event_generation.py`, cobrindo o recurso primario de todos os modulos do catalogo e validando a geracao de eventos de criacao e transicao na outbox usando o store compartilhado.
 - Substituido o caminho HTTP instavel por validacao direta do store, mantendo o teste rapido e deterministico no ambiente atual.
+- Adicionadas verificacoes do `publication_message` do dispatcher sobre eventos reais na matrix PostgreSQL e no fluxo real de Jobs, incluindo o allowlist de payload minimo.
 
 ### Estado Operacional
 - A cobertura de eventos reais ficou mais ampla, agora atraves de criacao direta no runtime compartilhado para todos os modulos catalogados.
