@@ -1,5 +1,20 @@
 # Status Operacional
 
+# STATUS OPERACIONAL - 2026-06-30 Cobertura de eventos reais por modulo
+
+### Concluido neste ciclo
+- Adicionado `tests/test_runtime_event_generation.py`, cobrindo o recurso primario de todos os modulos do catalogo e validando a geracao de eventos de criacao e transicao na outbox usando o store compartilhado.
+- Substituido o caminho HTTP instavel por validacao direta do store, mantendo o teste rapido e deterministico no ambiente atual.
+
+### Estado Operacional
+- A cobertura de eventos reais ficou mais ampla, agora atraves de criacao direta no runtime compartilhado para todos os modulos catalogados.
+- O proximo refinamento natural continua sendo validar os fluxos reais restantes com despacho da outbox, dashboards e observabilidade em cluster real.
+
+### Proximos Passos Naturais
+- Rodar o dispatcher contra eventos reais de cada dominio usando o catalogo de fixtures versionado e a matriz de dispatch.
+- Conectar metricas Prometheus text a dashboards Grafana.
+- Consolidar dashboards Grafana para consumo operacional em cluster real.
+
 # STATUS OPERACIONAL - 2026-06-30 Eventos reais de AI Core e API Hub
 
 ### Concluido neste ciclo

@@ -14,6 +14,8 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
   configurada por DSN/chave secreta.
 - Dispatcher RabbitMQ da outbox PostgreSQL com publisher confirms, retry
   auditavel e payload Jobs minimizado.
+- Geracao de eventos reais de criacao e transicao do recurso primario
+  validada em todos os modulos catalogados com o store compartilhado.
 - Orquestracao Google Stitch declarativa com um projeto visual por
   microservico e telas Jobs/Business/User especializadas.
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.
