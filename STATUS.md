@@ -1,5 +1,21 @@
 # Status Operacional
 
+# STATUS OPERACIONAL - 2026-07-03 Validacao real da outbox em compose local
+
+### Concluido neste ciclo
+- Subidos `postgres`, `rabbitmq` e `migrations` via `docker compose -f infra/docker/docker-compose.yml`.
+- Validado o fluxo real da outbox e do Jobs contra o banco e o broker locais com `tests/test_outbox_rabbitmq_integration.py` e `tests/test_jobs_postgres_integration.py`, totalizando `3 passed`.
+- Confirmado que o compose local expoe `localhost:5432` e `localhost:5672`, com ambos os servicos saudaveis.
+
+### Estado Operacional
+- A ponte runtime -> dispatcher agora tem prova em modo isolado e prova real em ambiente local com PostgreSQL e RabbitMQ, reduzindo o gap entre o harness e a infra viva.
+- O proximo refinamento natural continua sendo ampliar a mesma validacao real para os demais dominios e consolidar dashboards Grafana operacionais.
+
+### Proximos Passos Naturais
+- Rodar dispatcher contra eventos reais de cada dominio usando o catalogo de fixtures versionado e a matriz de dispatch.
+- Conectar metricas Prometheus text a dashboards Grafana.
+- Consolidar dashboards Grafana para consumo operacional em cluster real.
+
 # STATUS OPERACIONAL - 2026-07-03 Dispatcher real sobre eventos do runtime
 
 ### Concluido neste ciclo

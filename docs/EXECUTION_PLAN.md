@@ -110,12 +110,12 @@ Proximos passos naturais:
 
 Objetivo: garantir comunicacao assincroma confiavel e rastreavel.
 
-Status: 92%
+Status: 93%
 
 Entregas ja existentes:
 - `audit.domain_events`.
 - Worker `outbox-dispatcher`.
-- Testes de integracao com RabbitMQ para fluxo critico.
+- Testes de integracao com RabbitMQ para fluxo critico e validacao real do Jobs/outbox em compose local.
 - Allowlist segura do dispatcher cobre eventos Valley de concessao manual de
   Pepitas e cotacao progressiva Stock sem expor ledger privado, custo ou margem.
 - Allowlist segura cobre `valley.catalog.offer.synced`, sem expor custo interno,
@@ -145,6 +145,8 @@ Entregas ja existentes:
 - Harness isolado do dispatcher validado sobre eventos reais do runtime em todo
   o catalogo de modulos, cobrindo publicacao, entrega e payload minimo sem
   depender de broker externo.
+- Validacao real do fluxo Jobs/outbox em compose local com PostgreSQL e RabbitMQ
+  saudaveis, cobrindo publicacao, entrega e persistencia de entrega no broker.
 - Eventos reais de AI Core e API Hub cobertos em
   `tests/test_ai_core_api_hub_completed_events.py` e
   `tests/test_integration_sandbox_adapters.py`, validando conclusao real no

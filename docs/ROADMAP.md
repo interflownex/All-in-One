@@ -21,6 +21,8 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
 - Harness isolado do dispatcher validado sobre eventos reais do runtime em
   todo o catalogo de modulos, com fake broker para manter o teste
   reproduzivel no ambiente atual.
+- Validacao real da outbox e do fluxo Jobs em compose local com PostgreSQL e
+  RabbitMQ saudaveis.
 - Orquestracao Google Stitch declarativa com um projeto visual por
   microservico e telas Jobs/Business/User especializadas.
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.
