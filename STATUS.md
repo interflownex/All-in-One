@@ -1,5 +1,20 @@
 # Status Operacional
 
+# STATUS OPERACIONAL - 2026-07-02 Dispatcher real sobre eventos do runtime
+
+### Concluido neste ciclo
+- Adicionado `tests/test_outbox_dispatcher_runtime_events.py`, exercitando o `publish_batch` sobre eventos reais gerados pelo runtime em `identity`, `business` e `jobs`, com fake broker e fake connection controlados pelo teste.
+- Validado o `publication_message` do dispatcher sobre uma combinacao de eventos reais de criacao e transicao, incluindo `catalog_offers`, `resumes` e `job_postings`.
+
+### Estado Operacional
+- A ponte entre runtime real e dispatcher ficou coberta em modo isolado, sem depender de banco ou broker externos para manter a validacao reproduzivel no ambiente atual.
+- O proximo refinamento natural continua sendo executar esse mesmo caminho com PostgreSQL e RabbitMQ reais quando o ambiente externo estiver disponivel.
+
+### Proximos Passos Naturais
+- Rodar o dispatcher contra eventos reais de cada dominio usando o catalogo de fixtures versionado e a matriz de dispatch.
+- Conectar metricas Prometheus text a dashboards Grafana.
+- Consolidar dashboards Grafana para consumo operacional em cluster real.
+
 # STATUS OPERACIONAL - 2026-06-30 Cobertura de eventos reais por modulo
 
 ### Concluido neste ciclo

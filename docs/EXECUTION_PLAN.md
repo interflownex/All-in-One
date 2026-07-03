@@ -110,7 +110,7 @@ Proximos passos naturais:
 
 Objetivo: garantir comunicacao assincroma confiavel e rastreavel.
 
-Status: 90%
+Status: 91%
 
 Entregas ja existentes:
 - `audit.domain_events`.
@@ -142,6 +142,9 @@ Entregas ja existentes:
   primario em todos os modulos via `tests/test_runtime_event_generation.py`.
 - Ponte do dispatcher validada sobre eventos reais no fluxo de Jobs e na matrix
   PostgreSQL, cobrindo envelope e allowlist de payload minimo.
+- Harness isolado do dispatcher validado sobre eventos reais do runtime em
+  `identity`, `business` e `jobs`, cobrindo publicacao, entrega e payload minimo
+  sem depender de broker externo.
 - Eventos reais de AI Core e API Hub cobertos em
   `tests/test_ai_core_api_hub_completed_events.py` e
   `tests/test_integration_sandbox_adapters.py`, validando conclusao real no

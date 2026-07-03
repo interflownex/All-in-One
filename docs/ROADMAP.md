@@ -18,6 +18,9 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
   validada em todos os modulos catalogados com o store compartilhado.
 - Ponte do dispatcher verificada em eventos reais do Jobs e na matrix
   PostgreSQL, reforcando o envelope minimo antes da publicacao.
+- Harness isolado do dispatcher validado sobre eventos reais do runtime em
+  `identity`, `business` e `jobs`, com fake broker para manter o teste
+  reproduzivel no ambiente atual.
 - Orquestracao Google Stitch declarativa com um projeto visual por
   microservico e telas Jobs/Business/User especializadas.
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.
