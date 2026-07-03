@@ -1,13 +1,13 @@
 # Status Operacional
 
-# STATUS OPERACIONAL - 2026-07-02 Dispatcher real sobre eventos do runtime
+# STATUS OPERACIONAL - 2026-07-03 Dispatcher real sobre eventos do runtime
 
 ### Concluido neste ciclo
-- Adicionado `tests/test_outbox_dispatcher_runtime_events.py`, exercitando o `publish_batch` sobre eventos reais gerados pelo runtime em `identity`, `business` e `jobs`, com fake broker e fake connection controlados pelo teste.
-- Validado o `publication_message` do dispatcher sobre uma combinacao de eventos reais de criacao e transicao, incluindo `catalog_offers`, `resumes` e `job_postings`.
+- Ampliado `tests/test_outbox_dispatcher_runtime_events.py` para exercitar o `publish_batch` sobre eventos reais gerados pelo runtime em todos os modulos catalogados, com fake broker e fake connection controlados pelo teste.
+- Validado o `publication_message` do dispatcher sobre uma combinacao de eventos reais de criacao e transicao do catalogo completo, cobrindo o envelope, o routing key e o payload minimo do outbox.
 
 ### Estado Operacional
-- A ponte entre runtime real e dispatcher ficou coberta em modo isolado, sem depender de banco ou broker externos para manter a validacao reproduzivel no ambiente atual.
+- A ponte entre runtime real e dispatcher agora cobre o catalogo completo em modo isolado, sem depender de banco ou broker externos para manter a validacao reproduzivel no ambiente atual.
 - O proximo refinamento natural continua sendo executar esse mesmo caminho com PostgreSQL e RabbitMQ reais quando o ambiente externo estiver disponivel.
 
 ### Proximos Passos Naturais
