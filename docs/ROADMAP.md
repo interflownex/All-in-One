@@ -23,6 +23,8 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
   reproduzivel no ambiente atual.
 - Validacao real da outbox e do fluxo Jobs em compose local com PostgreSQL e
   RabbitMQ saudaveis.
+- Ligacao entre os metrics Prometheus text do worker da outbox e o dashboard
+  Grafana versionado validada em teste automatizado.
 - Orquestracao Google Stitch declarativa com um projeto visual por
   microservico e telas Jobs/Business/User especializadas.
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.

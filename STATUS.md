@@ -1,5 +1,19 @@
 # Status Operacional
 
+# STATUS OPERACIONAL - 2026-07-03 Ligacao worker/dashboard da outbox provada
+
+### Concluido neste ciclo
+- Adicionado `tests/test_outbox_dashboard.py::test_outbox_dashboard_matches_worker_prometheus_metrics`, comparando os metrics Prometheus text exportados pelo worker da outbox com os targets do dashboard Grafana versionado.
+- Mantida a cobertura anterior do dashboard com os nomes requeridos e o manifesto Kubernetes materializado.
+
+### Estado Operacional
+- A ligação entre `prometheus_metrics(...)` do worker e o dashboard Grafana da outbox agora está provada em teste automatizado, reduzindo a dependência de validação apenas textual.
+- O próximo refinamento natural continua sendo consolidar o dashboard para consumo operacional em cluster real.
+
+### Proximos Passos Naturais
+- Rodar o dispatcher contra eventos reais de cada dominio usando o catalogo de fixtures versionado e a matriz de dispatch.
+- Consolidar dashboards Grafana para consumo operacional em cluster real.
+
 # STATUS OPERACIONAL - 2026-07-03 Validacao real da outbox em compose local
 
 ### Concluido neste ciclo

@@ -110,7 +110,7 @@ Proximos passos naturais:
 
 Objetivo: garantir comunicacao assincroma confiavel e rastreavel.
 
-Status: 93%
+Status: 94%
 
 Entregas ja existentes:
 - `audit.domain_events`.
@@ -147,6 +147,8 @@ Entregas ja existentes:
   depender de broker externo.
 - Validacao real do fluxo Jobs/outbox em compose local com PostgreSQL e RabbitMQ
   saudaveis, cobrindo publicacao, entrega e persistencia de entrega no broker.
+- Ligacao entre as metricas Prometheus text do worker da outbox e o dashboard
+  Grafana versionado validada por teste automatizado.
 - Eventos reais de AI Core e API Hub cobertos em
   `tests/test_ai_core_api_hub_completed_events.py` e
   `tests/test_integration_sandbox_adapters.py`, validando conclusao real no
@@ -158,8 +160,7 @@ Pendencias:
 
 Proximos passos naturais:
 1. Rodar dispatcher contra eventos reais de cada dominio usando o catalogo de fixtures versionado e a matriz de dispatch.
-2. Conectar metricas Prometheus text a dashboards Grafana.
-3. Consolidar dashboards Grafana para consumo operacional em cluster real.
+2. Consolidar dashboards Grafana para consumo operacional em cluster real.
 
 ### Fase 4 - Jornadas E2E por app
 

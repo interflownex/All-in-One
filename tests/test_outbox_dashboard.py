@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from modules.shared.outbox_dispatcher import OutboxMetrics, prometheus_metrics
+
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_PANEL_TITLES = {
@@ -59,6 +61,30 @@ def test_outbox_dashboard_mentions_required_metrics() -> None:
 
     for metric in REQUIRED_METRICS:
         assert any(metric in expr for expr in expressions), metric
+
+
+def test_outbox_dashboard_matches_worker_prometheus_metrics() -> None:
+    dashboard = load_dashboard()
+    dashboard_expressions = {
+        target["expr"]
+        for panel in dashboard["panels"]
+        for target in panel.get("targets", [])
+        if isinstance(target, dict) and target.get("expr")
+    }
+    worker_metrics = {
+        line.split(" ", maxsplit=1)[0]
+        for line in prometheus_metrics(OutboxMetrics()).splitlines()
+        if line.startswith("all_in_one_outbox_")
+    }
+    dashboard_metrics = {
+        metric
+        for expr in dashboard_expressions
+        for metric in worker_metrics
+        if metric in expr
+    }
+
+    assert dashboard_metrics == worker_metrics
+    assert all(any(metric in expr for metric in worker_metrics) for expr in dashboard_expressions)
 
 
 def test_outbox_dashboard_is_materialized_as_kubernetes_configmap() -> None:
