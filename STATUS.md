@@ -1,3 +1,20 @@
+# STATUS OPERACIONAL - 2026-07-04 Shell de Services All-in-One vivo validado em build e Playwright
+
+### Concluido neste ciclo
+- Scaffoldado o app `all-in-one-services` com shell Vite/React consumindo `gateway/status`, `gateway/insights/commercial`, `resources/providers`, `resources/visits`, `resources/quotes`, `resources/service_contracts`, `resources/evidence`, health de Identity/Services e a reserva de slots do runtime local.
+- Adicionado o fixture `all_in_one_services_server` em `tests/e2e/conftest.py` e a suite `tests/e2e/test_all_in_one_services_shell.py` para validar dashboard, prestadores, visitas, orcamentos, contratos, evidencias, busca e reserva de slot.
+- Validado `npm run build` em `apps/all-in-one-services`.
+- Validado `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_services_shell.py tests/e2e/test_all_in_one_business_shell.py tests/e2e/test_all_in_one_user_shell.py` com `7 passed`, sem regressao nos shells existentes.
+
+### Estado Operacional
+- O shell de Services deixou de ser apenas contrato e agora conversa com os endpoints FastAPI reais esperados pelo frontend do All-in-One.
+- O próximo refinamento natural é ampliar as jornadas mobile e homologar as integrações reais do dominio Services.
+
+### Proximos Passos Naturais
+- Expandir Playwright para jornadas mobile e filtros adicionais de Services.
+- Consolidar os demais shells ainda parciais do catálogo.
+- Seguir para integrações reais e produção/compliance quando a camada de frontend estiver fechada.
+
 # STATUS OPERACIONAL - 2026-07-04 Shell do usuario All-in-One vivo validado em build e Playwright
 
 ### Concluido neste ciclo
