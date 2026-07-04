@@ -13,6 +13,21 @@
 - Expandir jornadas Playwright para mobile e fluxos comerciais restantes.
 - Consolidar os shells ainda parciais e seguir para as integracoes reais pendentes.
 
+# STATUS OPERACIONAL - 2026-07-04 API Hub rate limit validado com webhook e API key
+
+### Concluido neste ciclo
+- Adicionado teste em `tests/test_security_gates.py` para provar que a borda do API Hub devolve `429` quando o limite por IP estoura após repetidas chamadas autenticadas.
+- Mantidas as validacoes de API key e assinatura HMAC de webhook em `tests/test_security_gates.py`.
+- Validado `./.venv/bin/python -m pytest -q tests/test_security_gates.py tests/test_api_hub_catalog_gateway.py -k 'rate_limit or api_key or webhook or refund'` com `3 passed, 15 deselected`.
+
+### Estado Operacional
+- O API Hub agora tem evidencia automatizada de API key, webhook assinado e rate limit na borda.
+- O proximo refinamento natural e seguir fechando as integracoes reais restantes com a mesma disciplina de teste.
+
+### Proximos Passos Naturais
+- Consolidar OAuth2, webhooks assinados e rate limit com provedores reais quando houver credencial valida.
+- Seguir para os demais provedores reais de Identity, Finance, Jobs e Delivery/Mobility.
+
 # STATUS OPERACIONAL - 2026-07-04 Matriz de stores PostgreSQL e outbox validados em banco real
 
 ### Concluido neste ciclo

@@ -271,7 +271,7 @@ Proximos passos naturais:
 | `services` | 73% | Prestadores, aprovacao, contrato, escrow referenciado e conclusao cobertos por pytest | Anti-burla avancado e escrow Finance real | Integrar contrato Services ao escrow Finance |
 | `mobility` | 73% | Rides, tickets, tarifa, aceite/conclusao e QR token cobertos por pytest | ETA, QR/NFC real e tarifas dinamicas | Levar jornada corrida e ticket para Playwright |
 | `jobs` | 87% | Mais maduro: CTPS/cofre/outbox/testes e jornada candidato -> vaga -> recrutador coberta por pytest | Homologacao CTPS oficial e Playwright E2E | Expandir fluxo para triagem, entrevista e notificacoes |
-| `api_hub` | 82% | API keys/webhooks, SQL refinado, rotas gateway de API key/webhook e testes de rate limit | OAuth2 real e testes de proxy com servicos vivos | Testar OAuth2 real, assinatura de webhooks de saida e rate limit com Redis real |
+| `api_hub` | 83% | API keys/webhooks, SQL refinado, rotas gateway de API key/webhook, rate limit validado e testes de rate limit | OAuth2 real e testes de proxy com servicos vivos | Testar OAuth2 real, assinatura de webhooks de saida e rate limit com Redis real |
 | `erp` | 60% | Fiscal/accounting modelado e store gerado | Fluxos contabeis reais | Tipar store ERP e testar payables/receivables |
 | `wms` | 60% | Armazem/inventario modelados | Operacao real de estoque | Tipar store WMS e testar recebimento/picking |
 | `tms` | 60% | Fretes/transportadoras modelados | Torre de controle e POD | Tipar store TMS e testar frete |

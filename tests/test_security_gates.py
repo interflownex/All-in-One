@@ -97,6 +97,48 @@ def test_gateway_api_key_and_webhook_validation_are_strict() -> None:
     assert valid_webhook.json() == {"status": "valid", "algorithm": "hmac-sha256"}
 
 
+def test_gateway_rate_limit_blocks_repeated_requests(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeRedisPipeline:
+        def __init__(self, state: dict[str, int]) -> None:
+            self._state = state
+            self._key: str | None = None
+            self._window: int | None = None
+
+        def incr(self, key: str) -> "FakeRedisPipeline":
+            self._key = key
+            return self
+
+        def expire(self, key: str, window: int) -> "FakeRedisPipeline":
+            self._key = key
+            self._window = window
+            return self
+
+        async def execute(self) -> None:
+            assert self._key is not None
+            self._state[self._key] = self._state.get(self._key, 0) + 1
+
+    class FakeRedis:
+        def __init__(self) -> None:
+            self._state: dict[str, int] = {"rate_limit:testclient": 99}
+
+        async def get(self, key: str) -> int | None:
+            return self._state.get(key)
+
+        def pipeline(self) -> FakeRedisPipeline:
+            return FakeRedisPipeline(self._state)
+
+    monkeypatch.setattr(api_hub, "redis_client", FakeRedis())
+
+    with TestClient(api_hub.app) as client:
+        first = client.get("/gateway/api-key/check", headers={"X-API-Key": "local-api-key"})
+        second = client.get("/gateway/api-key/check", headers={"X-API-Key": "local-api-key"})
+
+    assert first.status_code == 200
+    assert first.json()["status"] == "valid"
+    assert second.status_code == 429
+    assert second.json()["detail"] == "Too many requests. Tente novamente em um minuto."
+
+
 def test_security_workflow_runs_mandatory_scans() -> None:
     workflow = (ROOT / ".github" / "workflows" / "security.yml").read_text(encoding="utf-8")
 
