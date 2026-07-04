@@ -1,3 +1,28 @@
+# STATUS OPERACIONAL - 2026-07-04 Dispatcher real e observabilidade validados em PostgreSQL + RabbitMQ locais
+
+### Concluido neste ciclo
+- Subido um PostgreSQL limpo em `docker compose -p codex-observability -f infra/docker/docker-compose.yml up -d postgres migrations`, com o job de migrations concluindo em `Exited (0)` e o compose validado por `docker compose config --quiet`.
+- Subido o RabbitMQ real no mesmo compose local e validado o broker com healthcheck `healthy`, fechando a base de infraestrutura da outbox.
+- Validado `tests/test_outbox_dispatcher_runtime_events.py::test_dispatcher_publishes_real_runtime_events_with_safe_payload` com DSNs locais reais para todos os modulos do catalogo, provando o caminho runtime -> outbox com payload seguro.
+- Mantidas verdes as suites `tests/test_outbox_dashboard.py`, `tests/test_outbox_alerts.py`, `tests/test_outbox_runbook.py`, `tests/test_marketplace_support_metrics.py` e `tests/test_api_hub_catalog_gateway.py`, cobrindo dashboard, alertas, runbook e indicadores comerciais.
+- Validado `tests/test_outbox_rabbitmq_integration.py` com o broker e o banco reais do compose local, fechando a prova end-to-end da publicação da outbox.
+
+### Validacao executada
+- `./.venv/bin/python -m pytest -q tests/test_outbox_dashboard.py` -> `1 passed`.
+- `./.venv/bin/python -m pytest -q tests/test_outbox_alerts.py` -> `4 passed`.
+- `./.venv/bin/python -m pytest -q tests/test_outbox_runbook.py` -> `2 passed`.
+- `./.venv/bin/python -m pytest -q tests/test_marketplace_support_metrics.py tests/test_api_hub_catalog_gateway.py -k 'commercial or support_metrics or gateway_returns_commercial_insights'` -> `2 passed, 10 deselected`.
+- `./.venv/bin/python -m pytest -q tests/test_outbox_dispatcher_runtime_events.py::test_dispatcher_publishes_real_runtime_events_with_safe_payload` -> `1 passed in 6.21s`.
+- `ALL_IN_ONE_OUTBOX_POSTGRES_TEST_DSN='postgresql://all_in_one:local-development-only@localhost:5432/all_in_one' ALL_IN_ONE_RABBITMQ_TEST_URL='amqp://all_in_one:local-development-only@localhost:5672/%2F' ./.venv/bin/python -m pytest -q tests/test_outbox_rabbitmq_integration.py` -> `2 passed in 0.84s`.
+
+### Estado Operacional
+- A ponte runtime -> dispatcher ficou validada com eventos reais do catálogo, payload seguro, banco local limpo e broker RabbitMQ real.
+- O proximo refinamento natural e avançar para o shell frontend e os refinamentos finais de integracao e producao.
+
+### Proximos Passos Naturais
+- Concluir o shell frontend e a amarracao das jornadas Playwright.
+- Seguir para integracoes reais e fechamento de producao/compliance.
+
 # STATUS OPERACIONAL - 2026-07-04 Backend real validado em PostgreSQL limpo e populado
 
 ### Concluido neste ciclo
