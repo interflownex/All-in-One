@@ -15,7 +15,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | Mensageria/outbox | 90% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos, payload seguro, fixtures versionadas por modulo, matriz de dispatch e eventos reais de AI Core/API Hub validados no store/sandbox | Precisa ampliar cobertura para eventos reais de todos os modulos e dashboards reais. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
 | Docker local | 95% | Postgres, RabbitMQ, MongoDB, Redis, outbox e 13 APIs FastAPI healthy | Falta gate CI para impedir regressao de compose. |
-| Apps/frontend | 63% | 9 apps catalogados, catalogo Valley backend regionalizado, plano Stitch com 25 projetos/177 telas e jornadas contratuais locais por pytest | Ainda falta app funcional real e Playwright E2E. |
+| Apps/frontend | 67% | 9 apps catalogados, catalogo Valley backend regionalizado, plano Stitch com 25 projetos/177 telas, jornadas contratuais locais por pytest e shells vivos em `valley-business` e `valley-rider` integrados a endpoints FastAPI | Ainda falta fechar os demais shells, ampliar Playwright E2E e sincronizar o Stitch remoto com seguranca. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
@@ -182,20 +182,16 @@ Apps e prioridades:
   `product`, `service`, categoria amigavel e raio regional em km.
 
 Pendencias:
-- Implementar interfaces funcionais reais.
-- Ligar cada app aos endpoints FastAPI.
-- Criar Playwright E2E por jornada; as jornadas contratuais locais
-  `identity -> wallet -> marketplace order`, `business -> jobs -> candidate access`,
-  Delivery, Riders, Services, Mobility e Health ja estao cobertas por pytest.
-- Regras Valley de Pepitas, desconto Stock, idempotencia e Plano Essencial ja
-  estao cobertas por pytest contratual.
-- Sincronizar design Stitch remoto com credencial rotacionada.
+- Implementar interfaces funcionais reais nos apps que ainda estao em shell parcial.
+- Ampliar o Playwright E2E para as jornadas restantes do catalogo.
+- Consolidar a regressao desktop/mobile do trio Valley com mais estados operacionais.
+- Sincronizar design Stitch remoto com credencial rotacionada quando seguro.
 
 Proximos passos naturais:
-1. Corrigir/validar plano Stitch local.
-2. Definir shell frontend por app.
-3. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
-4. Levar as jornadas contratuais para Playwright desktop/mobile quando houver shell frontend.
+1. Corrigir/validar o plano Stitch local.
+2. Fechar os shells restantes do frontend.
+3. Consolidar as jornadas contratuais locais como base de regressao de produto.
+4. Levar as jornadas contratuais para Playwright desktop/mobile.
 5. Rodar testes E2E desktop/mobile.
 
 ### Fase 5 - Integracoes externas homologadas

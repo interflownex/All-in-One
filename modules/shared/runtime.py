@@ -7,6 +7,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from fastapi import Body, Depends, FastAPI, Header, HTTPException, Query, Response
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from .calculators import (
@@ -221,6 +222,17 @@ TRANSACTIONAL_RESOURCES = {
 _ERP_FALLBACK_STORE: Any | None = None
 
 
+def _cors_origins() -> list[str]:
+    raw_origins = get_config(
+        "ALL_IN_ONE_CORS_ORIGINS",
+        "http://localhost:5173,http://127.0.0.1:5173,"
+        "http://localhost:5174,http://127.0.0.1:5174,"
+        "http://localhost:5175,http://127.0.0.1:5175,"
+        "http://localhost:4173,http://127.0.0.1:4173",
+    )
+    return [origin.strip() for origin in str(raw_origins).split(",") if origin.strip()]
+
+
 
 def _database_path(module_name: str) -> str:
     directory = os.getenv("ALL_IN_ONE_STORAGE_DIR")
@@ -296,6 +308,15 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     if module_name not in MODULE_ENTITIES:
         raise ValueError(f"Modulo desconhecido: {module_name}")
     app = FastAPI(title=f"All-in-One {module_name}", version=version)
+    cors_origins = _cors_origins()
+    if cors_origins:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=cors_origins,
+            allow_credentials=True,
+            allow_methods=["GET", "POST", "PATCH", "DELETE", "PUT", "OPTIONS"],
+            allow_headers=["*"],
+        )
     logger.info(f"Inicializando modulo: {module_name}")
     store = _store_for(module_name)
     legacy_rule = ResourceRule()

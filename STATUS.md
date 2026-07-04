@@ -1,3 +1,23 @@
+# STATUS OPERACIONAL - 2026-07-04 Frontend Valley vivo validado em build e Playwright
+
+### Concluido neste ciclo
+- Habilitado CORS no runtime compartilhado para origins locais do Vite, permitindo que os shells Valley conversem com os endpoints FastAPI no desenvolvimento local.
+- Convertidos `valley-business` e `valley-rider` em shells vivos com consumo de `gateway/status`, `gateway/insights/commercial`, `gateway/catalog/offers`, `vacancies`, `delivery/status` e `mobility/status`.
+- Eliminada a duplicidade de textos visíveis que quebrava a unicidade dos seletores Playwright nas jornadas de catálogo e Rider.
+- Validados `npm run build` em `apps/valley_business` e `apps/valley_rider` após a integração.
+- Validados `./.venv/bin/python -m pytest -q tests/e2e/test_valley_business.py tests/e2e/test_valley_rider.py` com `3 passed`.
+- Validados `./.venv/bin/python -m pytest -q tests/test_security_gates.py` com `5 passed`.
+- Validados `./.venv/bin/python -m pytest -q tests/test_runtime_event_generation.py` com `46 passed, 4 skipped`.
+
+### Estado Operacional
+- O shell frontend do ecossistema Valley saiu do modo estático e agora consome dados reais em desenvolvimento local.
+- O próximo refinamento natural é repetir esse padrão nos demais apps web do catálogo e ampliar as jornadas Playwright desktop/mobile.
+
+### Proximos Passos Naturais
+- Expandir as jornadas Playwright para os demais fluxos do frontend.
+- Consolidar os shells dos outros apps web que ainda usam estrutura parcial.
+- Seguir para integrações reais e produção/compliance quando as etapas de frontend estiverem fechadas.
+
 # STATUS OPERACIONAL - 2026-07-04 Dispatcher real e observabilidade validados em PostgreSQL + RabbitMQ locais
 
 ### Concluido neste ciclo

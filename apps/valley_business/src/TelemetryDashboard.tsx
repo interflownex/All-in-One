@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react'
 
 interface TelemetryMetrics {
   status: string;
@@ -11,42 +11,53 @@ interface TelemetryMetrics {
   error?: string;
 }
 
-export function TelemetryDashboard() {
-  const [metrics, setMetrics] = useState<TelemetryMetrics | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const DEFAULT_API_HUB_URL = import.meta.env.VITE_API_HUB_URL ?? 'http://127.0.0.1:8100'
+
+type TelemetryDashboardProps = {
+  baseUrl?: string
+}
+
+export function TelemetryDashboard({ baseUrl = DEFAULT_API_HUB_URL }: TelemetryDashboardProps) {
+  const [metrics, setMetrics] = useState<TelemetryMetrics | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchMetrics = useCallback(async () => {
     try {
-      setLoading(true);
+      setLoading(true)
 
-      const res = await fetch('http://127.0.0.1:8000/gateway/telemetry/outbox');
+      const res = await fetch(`${baseUrl}/gateway/telemetry/outbox`)
       if (!res.ok) {
-        throw new Error(`Erro HTTP: ${res.status}`);
+        throw new Error(`Erro HTTP: ${res.status}`)
       }
-      const data = await res.json();
-      setMetrics(data);
-      setError(null);
+      const data = await res.json()
+      setMetrics(data)
+      setError(null)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : String(err));
+      setError(err instanceof Error ? err.message : String(err))
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, []);
+  }, [baseUrl])
 
   useEffect(() => {
-    const initialFetch = setTimeout(fetchMetrics, 0);
-    const interval = setInterval(fetchMetrics, 5000);
+    const initialFetch = setTimeout(fetchMetrics, 0)
+    const interval = setInterval(fetchMetrics, 5000)
     return () => {
-      clearTimeout(initialFetch);
-      clearInterval(interval);
-    };
-  }, [fetchMetrics]);
+      clearTimeout(initialFetch)
+      clearInterval(interval)
+    }
+  }, [fetchMetrics])
 
   return (
     <div className="glass-card" style={{ gridColumn: '1 / -1' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h3 className="card-title" style={{ margin: 0 }}>Monitoramento de Eventos (Outbox)</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
+        <div>
+          <h3 className="card-title" style={{ margin: 0 }}>Monitoramento de Eventos (Outbox)</h3>
+          <p style={{ margin: '0.35rem 0 0', color: 'var(--text-muted)' }}>
+            Fonte: {baseUrl}/gateway/telemetry/outbox
+          </p>
+        </div>
         <button className="btn-primary" style={{ width: 'auto', marginTop: 0 }} onClick={fetchMetrics} disabled={loading}>
           {loading ? 'Atualizando...' : 'Atualizar Agora'}
         </button>
@@ -108,5 +119,5 @@ export function TelemetryDashboard() {
         </div>
       </div>
     </div>
-  );
+  )
 }
