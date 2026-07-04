@@ -118,6 +118,10 @@ def _store_for(store_class: type[Any], dsn: str) -> Any:
     return store_class(dsn=dsn)
 
 
+def _unique_phone_e164() -> str:
+    return f"+55{uuid.uuid4().int % 10**11:011d}"
+
+
 def _seed_dependencies(dsn: str) -> dict[str, str]:
     identity_store = IdentityPostgresStore(dsn=dsn)
     seed_user_id = str(uuid.uuid4())
@@ -132,7 +136,7 @@ def _seed_dependencies(dsn: str) -> dict[str, str]:
             "cpf_document": f"{uuid.uuid4().hex[:11]}",
             "birth_date": "1990-01-01",
             "email": f"seed_{uuid.uuid4().hex[:8]}@test.com",
-            "phone_e164": "+5511999999999",
+            "phone_e164": _unique_phone_e164(),
             "password_hash": "seed-password-hash",
             "face_hash": f"seed-face-{uuid.uuid4().hex[:8]}",
             "liveness_score": 0.99,
@@ -178,7 +182,7 @@ def _create_payload(module_name: str, seeds: dict[str, str]) -> dict[str, Any]:
             "cpf_document": f"{uuid.uuid4().hex[:11]}",
             "birth_date": "1990-01-01",
             "email": f"matrix_{suffix}@test.com",
-            "phone_e164": "+5511999999999",
+            "phone_e164": _unique_phone_e164(),
             "password_hash": f"hash-{suffix}",
             "face_hash": f"face-{suffix}",
             "liveness_score": 0.99,
@@ -452,7 +456,7 @@ def test_audit_outbox_integration(module_name: str) -> None:
 
     if hasattr(store, "audit_log"):
         logs = store.audit_log()
-        assert any(log["resource_id"] == created["id"] for log in logs)
+        assert any(str(log["resource_id"]) == created["id"] for log in logs)
         assert any(log["action"] == "create" for log in logs)
 
     if hasattr(store, "outbox"):
