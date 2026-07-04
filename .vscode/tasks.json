@@ -43,22 +43,6 @@
             "problemMatcher": []
         },
         {
-            "label": "repair: loop github actions",
-            "type": "shell",
-            "command": "${config:python.defaultInterpreterPath}",
-            "args": [
-                "scripts/repair_actions_loop.py",
-                "--continuous",
-                "--interval-seconds",
-                "300"
-            ],
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            },
-            "problemMatcher": []
-        },
-        {
             "label": "validate: repository",
             "type": "shell",
             "command": "python3",

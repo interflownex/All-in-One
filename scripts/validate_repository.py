@@ -228,7 +228,6 @@ def main() -> int:
         "automerge.yml",
         "compose-health.yml",
         "git-sync.yml",
-        "repair-loop.yml",
         "stitch-sync.yml",
     ]:
         if not (ROOT / ".github" / "workflows" / workflow).is_file():
@@ -257,7 +256,6 @@ def main() -> int:
         "check_generated_artifacts.ps1",
         "check_generated_artifacts.py",
         "multi_agent_sync_guard.py",
-        "repair_actions_loop.py",
     ]:
         if not (ROOT / "scripts" / script).is_file():
             fail(f"Gate operacional ausente: {script}", errors)
@@ -302,15 +300,6 @@ def main() -> int:
             fail("Task VS Code test: pytest completo ausente.", errors)
         elif pytest_tasks[0].get("command") != "${config:python.defaultInterpreterPath}":
             fail("Task pytest deve usar ${config:python.defaultInterpreterPath}.", errors)
-        repair_tasks = [task for task in tasks.get("tasks", []) if task.get("label") == "repair: loop github actions"]
-        if not repair_tasks:
-            fail("Task VS Code repair: loop github actions ausente.", errors)
-        elif repair_tasks[0].get("command") != "${config:python.defaultInterpreterPath}":
-            fail("Task repair loop deve usar ${config:python.defaultInterpreterPath}.", errors)
-        else:
-            repair_args = repair_tasks[0].get("args", [])
-            if repair_args[:1] != ["scripts/repair_actions_loop.py"] or "--continuous" not in repair_args:
-                fail("Task repair loop deve executar scripts/repair_actions_loop.py --continuous.", errors)
     if not (ROOT / "workers" / "outbox_dispatcher" / "main.py").is_file():
         fail("Worker da outbox RabbitMQ ausente.", errors)
     for relative in ["workers/retention_worker/main.py", "modules/shared/retention_worker.py"]:
@@ -531,22 +520,6 @@ def main() -> int:
             fail(f"Workflow Stitch deve manter sincronizacao remota ativa: {active_trigger}", errors)
     if "if: ${{ false }}" in stitch_workflow:
         fail("Workflow Stitch nao pode manter o job explicitamente desativado.", errors)
-    repair_loop_workflow = (ROOT / ".github" / "workflows" / "repair-loop.yml").read_text(encoding="utf-8") if (ROOT / ".github" / "workflows" / "repair-loop.yml").is_file() else ""
-    for needle in [
-        "workflow_dispatch:",
-        "continuous:",
-        "push:",
-        "pull_request:",
-        "schedule:",
-        "contents: write",
-        "pull-requests: write",
-        "scripts/repair_actions_loop.py",
-        "--continuous",
-        "--max-cycles 1",
-        "GH_TOKEN: ${{ github.token }}",
-    ]:
-        if needle not in repair_loop_workflow:
-            fail(f"Workflow de repair loop incompleto: {needle}", errors)
     if not (ROOT / "docs" / "COMPLIANCE.md").is_file():
         fail("Documento de compliance ausente: docs/COMPLIANCE.md", errors)
     if not KUBERNETES_KUSTOMIZATION.is_file():
