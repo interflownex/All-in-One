@@ -1,3 +1,28 @@
+# STATUS OPERACIONAL - 2026-07-04 Persistencia backend e E2E do trio Valley
+
+### Concluido neste ciclo
+- Ajustado `modules/shared/postgres_store.py` para consolidar o roteamento e a leitura da outbox/metrics de `finance`, `payment` e `valley.gold` como um unico conjunto operacional.
+- Reforcado `modules/shared/finance_postgres_store.py` com idempotencia real em `create()`, leitura de `audit.logs` e leitura de `audit.domain_events` para o dominio financeiro.
+- Reescrita a matriz `tests/test_postgres_stores_matrix.py` para cobrir `identity`, `finance`, `business`, `api_hub`, `marketplace`, `delivery`, `services`, `mobility` e `jobs` com fixtures dependentes e validacao de create/get/list/update/soft_delete/idempotency.
+- Adicionado `tests/e2e/test_valley_orders_journey.py` cobrindo suporte e avaliacao no SuperApp Valley.
+- Ajustado o bootstrap de E2E em `tests/e2e/conftest.py` para servir o `dist/` existente quando disponivel, evitando dependencia obrigatoria de `npm run dev` no ambiente local.
+- Alinhados os testes E2E do trio Valley ao markup atual de B2B, Rider e SuperApp.
+
+### Validacao executada
+- `./.venv/bin/python -m pytest -q tests/e2e` -> `6 passed in 13.63s`.
+- `./.venv/bin/python -m pytest -q tests/test_postgres_stores_matrix.py` -> `27 skipped`, sem banco PostgreSQL local disponivel para o DSN de matriz.
+- `./.venv/bin/python scripts/validate_repository.py` -> repositorio validado com sucesso.
+
+### Estado Operacional
+- O frontend de validacao agora cobre 6 jornadas Playwright estaveis no workspace atual.
+- O backend de matriz ficou alinhado no codigo, mas a execucao local completa continua condicionada a um banco PostgreSQL de validacao acessivel.
+- O proximo refinamento natural segue sendo validar a matriz de stores em banco limpo/populado e continuar a consolidacao de integracoes reais e producao/compliance.
+
+### Proximos Passos Naturais
+- Subir/ligar o PostgreSQL de validacao para executar a matriz completa sem `skip`.
+- Expandir a execucao real dos eventos da outbox e dos dashboards operacionais no cluster.
+- Seguir para integracoes reais e fechos de producao/compliance quando as credenciais e ambientes estiverem disponiveis.
+
 # Status Operacional
 
 # STATUS OPERACIONAL - 2026-07-03 Ligacao worker/dashboard da outbox provada

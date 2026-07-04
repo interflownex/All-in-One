@@ -327,18 +327,26 @@ class BasePostgresStore:
             ),
         )
 
+    def _routing_prefixes(self) -> tuple[str, ...]:
+        if self.module == "finance":
+            return ("finance.%", "payment.%", "valley.gold.%")
+        return (f"{self.module}.%",)
+
     def audit_log(self) -> list[dict[str, Any]]:
         return [dict(row) for row in self.connection.execute(
             sql.SQL("SELECT * FROM audit.logs WHERE module = %s ORDER BY created_at DESC"), (self.module,)
         ).fetchall()]
 
     def outbox(self) -> list[dict[str, Any]]:
-        routing_prefix = f"{self.module}.%"
-        if self.module == "finance": routing_prefix = "payment.%"
-
-        return [dict(row) for row in self.connection.execute(
-            "SELECT * FROM audit.domain_events WHERE routing_key LIKE %s ORDER BY created_at DESC", (routing_prefix,)
-        ).fetchall()]
+        prefixes = self._routing_prefixes()
+        conditions = sql.SQL(" OR ").join(sql.SQL("routing_key LIKE %s") for _ in prefixes)
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                sql.SQL("SELECT * FROM audit.domain_events WHERE {} ORDER BY created_at DESC").format(conditions),
+                prefixes,
+            ).fetchall()
+        ]
 
     def metrics(self) -> tuple[int, int, int]:
         records = sum(
@@ -350,11 +358,11 @@ class BasePostgresStore:
         audits = self.connection.execute(
             "SELECT COUNT(*) AS count FROM audit.logs WHERE module = %s", (self.module,)
         ).fetchone()["count"]
-        
-        routing_prefix = f"{self.module}.%"
-        if self.module == "finance": routing_prefix = "payment.%"
 
+        prefixes = self._routing_prefixes()
+        conditions = sql.SQL(" OR ").join(sql.SQL("routing_key LIKE %s") for _ in prefixes)
         events = self.connection.execute(
-            "SELECT COUNT(*) AS count FROM audit.domain_events WHERE routing_key LIKE %s", (routing_prefix,)
+            sql.SQL("SELECT COUNT(*) AS count FROM audit.domain_events WHERE {}").format(conditions),
+            prefixes,
         ).fetchone()["count"]
         return records, audits, events

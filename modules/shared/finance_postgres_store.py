@@ -82,6 +82,15 @@ class FinancePostgresStore:
             }
         return payload
 
+    def find_idempotent(self, resource_type: str, key: str | None) -> dict[str, Any] | None:
+        if not key:
+            return None
+        row = self.connection.execute(
+            sql.SQL("SELECT * FROM {} WHERE idempotency_key = %s").format(self._table(resource_type)),
+            (key,),
+        ).fetchone()
+        return self._resource(resource_type, row)
+
     def create(
         self,
         resource_type: str,
@@ -94,6 +103,10 @@ class FinancePostgresStore:
         event: str,
         idempotency_key: str | None,
     ) -> dict[str, Any]:
+        previous = self.find_idempotent(resource_type, idempotency_key)
+        if previous:
+            return previous
+
         resource_id = str(uuid4())
         try:
             with self.transaction() as connection:
@@ -123,11 +136,12 @@ class FinancePostgresStore:
 
     def _insert(self, connection, resource_type, resource_id, user_id, status, payload, actor, idempotency_key):
         metadata = Jsonb({"runtime_payload": payload})
+        effective_idempotency_key = idempotency_key or str(uuid4())
         if resource_type == "wallets":
             return connection.execute(
-                """INSERT INTO finance.wallets (id, user_id, wallet_type, status, metadata, created_by)
-                   VALUES (%s, %s, %s, %s, %s, %s) RETURNING *""",
-                (resource_id, user_id, payload.get("wallet_type", "personal"), status, metadata, actor),
+                """INSERT INTO finance.wallets (id, user_id, wallet_type, status, metadata, created_by, updated_by, idempotency_key)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
+                (resource_id, user_id, payload.get("wallet_type", "personal"), status, metadata, actor, actor, effective_idempotency_key),
             ).fetchone()
         
         if resource_type == "ledger_entries":
@@ -138,7 +152,7 @@ class FinancePostgresStore:
                 (
                     resource_id, user_id, payload["wallet_id"], payload["currency"],
                     payload.get("amount_brl"), payload.get("amount_nex"), payload["entry_type"],
-                    idempotency_key or str(uuid4()), metadata, actor
+                    effective_idempotency_key, metadata, actor
                 ),
             ).fetchone()
 
@@ -159,7 +173,7 @@ class FinancePostgresStore:
                     status,
                     metadata,
                     actor,
-                    idempotency_key or str(uuid4()),
+                    effective_idempotency_key,
                 ),
             ).fetchone()
         
@@ -181,6 +195,25 @@ class FinancePostgresStore:
             (resource_id,),
         ).fetchone()
         return self._resource(resource_type, row)
+
+    def audit_log(self) -> list[dict[str, Any]]:
+        rows = self.connection.execute(
+            "SELECT * FROM audit.logs WHERE module = 'finance' ORDER BY created_at DESC"
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    def outbox(self) -> list[dict[str, Any]]:
+        rows = self.connection.execute(
+            """
+            SELECT *
+            FROM audit.domain_events
+            WHERE routing_key LIKE 'finance.%'
+               OR routing_key LIKE 'payment.%'
+               OR routing_key LIKE 'valley.gold.%'
+            ORDER BY created_at DESC
+            """
+        ).fetchall()
+        return [dict(row) for row in rows]
 
     def execute_transfer(
         self,
@@ -324,6 +357,6 @@ class FinancePostgresStore:
         count = self.connection.execute("SELECT COUNT(*) FROM finance.wallets").fetchone()["count"]
         audits = self.connection.execute("SELECT COUNT(*) FROM audit.logs WHERE module = 'finance'").fetchone()["count"]
         events = self.connection.execute(
-            "SELECT COUNT(*) FROM audit.domain_events WHERE routing_key LIKE 'payment.%' OR routing_key LIKE 'finance.%'"
+            "SELECT COUNT(*) FROM audit.domain_events WHERE routing_key LIKE 'payment.%' OR routing_key LIKE 'finance.%' OR routing_key LIKE 'valley.gold.%'"
         ).fetchone()["count"]
         return count, audits, events

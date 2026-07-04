@@ -1,6 +1,7 @@
 import re
 from playwright.sync_api import Page, expect
 
+
 def test_valley_rider_online_toggle(page: Page, rider_server: str):
     """
     Testa se o entregador consegue alternar entre Online e Offline no app Rider.
@@ -14,7 +15,7 @@ def test_valley_rider_online_toggle(page: Page, rider_server: str):
     
     # Valida presença do cabeçalho
     expect(page.locator(".header")).to_be_visible()
-    expect(page.locator("text=V Rider")).to_be_visible()
+    expect(page.get_by_alt_text("Valley Rider")).to_be_visible()
     
     # Captura o botão de status (por padrão inicializa como ONLINE no App.tsx)
     status_toggle = page.locator(".status-toggle")

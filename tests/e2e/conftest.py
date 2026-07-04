@@ -3,6 +3,7 @@ import subprocess
 import time
 import socket
 import os
+import sys
 from urllib.request import urlopen
 
 
@@ -25,7 +26,26 @@ def wait_for_http(port: int, timeout: int = 15) -> bool:
     return False
 
 
+def start_static_server(dist_directory: str) -> tuple[subprocess.Popen, str]:
+    port = free_port()
+    process = subprocess.Popen(
+        [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"],
+        cwd=dist_directory,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    if not wait_for_http(port, timeout=15):
+        process.terminate()
+        raise RuntimeError(f"Servidor estatico nao respondeu corretamente na porta {port}.")
+    return process, f"http://127.0.0.1:{port}"
+
+
 def start_vite_server(app_directory: str) -> tuple[subprocess.Popen, str]:
+    dist_directory = os.path.join(app_directory, "dist")
+    index_html = os.path.join(dist_directory, "index.html")
+    if os.path.isfile(index_html):
+        return start_static_server(dist_directory)
+
     port = free_port()
     process = subprocess.Popen(
         f"npm run dev -- --port {port} --strictPort --host 127.0.0.1",
