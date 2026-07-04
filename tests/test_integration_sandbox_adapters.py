@@ -44,6 +44,7 @@ def test_identity_verification_sandbox_hashes_sensitive_inputs() -> None:
     assert business.status == "approved"
     assert person.events[0]["routing_key"] == "identity.user.verified"
     assert business.events[0]["routing_key"] == "business.company.approved"
+    assert person.payload["liveness_score"] == "0.99"
     assert "12345678901" not in str(person.payload)
     assert "Cliente Teste" not in str(person.payload)
     assert "12345678000199" not in str(business.payload)

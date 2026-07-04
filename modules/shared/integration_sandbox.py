@@ -73,15 +73,18 @@ class IdentityVerificationSandbox:
         document: str,
         full_name: str,
         selfie_hash: str | None = None,
+        liveness_score: float | None = None,
     ) -> SandboxResult:
         status = "approved" if document and full_name and not document.endswith("0000") else "manual_review"
         score = 0.97 if status == "approved" else 0.61
+        liveness = liveness_score if liveness_score is not None else (0.99 if selfie_hash else 0.74)
         payload = {
             "user_id": user_id,
             "document_hash": _digest("document", document),
             "full_name_hash": _digest("name", full_name.casefold()),
             "selfie_hash": selfie_hash,
             "verification_score": str(score),
+            "liveness_score": str(liveness),
             "provider_environment": "sandbox",
             "manual_review_required": status != "approved",
         }

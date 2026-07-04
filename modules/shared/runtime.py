@@ -113,6 +113,7 @@ class SandboxKycPersonPayload(BaseModel):
     document: str = Field(min_length=5, max_length=40)
     full_name: str = Field(min_length=3, max_length=200)
     selfie_hash: str | None = Field(default=None, max_length=128)
+    liveness_score: float | None = Field(default=None, ge=0.0, le=1.0)
 
 
 class SandboxKybBusinessPayload(BaseModel):
@@ -597,6 +598,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
                     body.document,
                     body.full_name,
                     body.selfie_hash,
+                    body.liveness_score,
                 )
             )
 

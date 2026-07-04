@@ -13,6 +13,21 @@
 - Expandir jornadas Playwright para mobile e fluxos comerciais restantes.
 - Consolidar os shells ainda parciais e seguir para as integracoes reais pendentes.
 
+# STATUS OPERACIONAL - 2026-07-04 Identity sandbox com liveness validado
+
+### Concluido neste ciclo
+- Adicionado `liveness_score` ao sandbox de Identity em `modules/shared/integration_sandbox.py` e ao payload de KYC em `modules/shared/runtime.py`.
+- Atualizados os testes de adapter e rota para provar que o fluxo de KYC sandbox carrega `liveness_score` sem expor documentos ou selfie hashes.
+- Validado `./.venv/bin/python -m pytest -q tests/test_integration_sandbox_adapters.py tests/test_integration_sandbox_routes.py` com `7 passed, 1 warning`.
+
+### Estado Operacional
+- A trilha sandbox de Identity agora cobre KYC, KYB, MFA e liveness no nível de contrato e runtime.
+- O proximo refinamento natural e continuar a aproximacao de Identity das integracoes reais quando houver credenciais e provedor homologado.
+
+### Proximos Passos Naturais
+- Seguir para o fechamento dos provedores reais de Identity, Finance e API Hub.
+- Manter a trilha de sandbox e os gates do backend verdes a cada incremento.
+
 # STATUS OPERACIONAL - 2026-07-04 API Hub rate limit validado com webhook e API key
 
 ### Concluido neste ciclo

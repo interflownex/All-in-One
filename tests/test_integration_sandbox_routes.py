@@ -27,11 +27,17 @@ def test_identity_business_finance_sandbox_routes() -> None:
     kyc = identity.post(
         "/integrations/sandbox/kyc/person",
         headers=sandbox_headers(),
-        json={"user_id": "user-1", "document": "12345678901", "full_name": "Cliente Teste"},
+        json={
+            "user_id": "user-1",
+            "document": "12345678901",
+            "full_name": "Cliente Teste",
+            "selfie_hash": "selfie-sha256",
+        },
     )
     assert kyc.status_code == 200
     assert kyc.json()["provider_key"] == "identity_kyc_kyb"
     assert kyc.json()["status"] == "approved"
+    assert kyc.json()["payload"]["liveness_score"] == "0.99"
     assert "12345678901" not in str(kyc.json()["payload"])
 
     kyb = business.post(
