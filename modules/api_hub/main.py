@@ -102,6 +102,12 @@ class CatalogPaymentRequest(BaseModel):
     method: Literal["pix_sandbox"] = "pix_sandbox"
 
 
+class CatalogRefundRequest(BaseModel):
+    order_id: UUID
+    idempotency_key: str = Field(min_length=8, max_length=120)
+    reason: str = Field(min_length=3, max_length=300)
+
+
 class SupportCaseRequest(BaseModel):
     kind: Literal["support", "dispute"]
     subject: str | None = Field(default=None, max_length=200)
@@ -908,6 +914,52 @@ async def authorize_catalog_payment(
         "order_id": str(body.order_id),
         "provider_environment": "sandbox",
         "message": "Pagamento sandbox autorizado e protegido ate a conclusao do pedido.",
+    }
+
+
+@app.post("/gateway/payments/sandbox/refund", dependencies=[Depends(rate_limiter)])
+async def refund_catalog_payment(
+    body: CatalogRefundRequest,
+    token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
+) -> dict[str, Any]:
+    """Processa refund sandbox apos uma conclusao confirmada ou disputa validada."""
+    user_id = str(token_payload.get("sub") or "")
+    actor_headers = {"X-Actor-User-Id": user_id}
+    order = await _service_json(
+        "GET",
+        f"{SERVICES['marketplace']}/resources/orders/{body.order_id}",
+        headers=actor_headers,
+    )
+    if not isinstance(order, dict) or str(order.get("user_id") or "") != user_id:
+        raise HTTPException(status_code=403, detail="Pedido nao pertence ao consumidor autenticado.")
+    if order.get("status") not in {"paid", "delivered", "completed"}:
+        raise HTTPException(status_code=409, detail="Refund fica disponivel apos pagamento confirmado.")
+
+    payload = order.get("payload") if isinstance(order.get("payload"), dict) else {}
+    refund = await _service_json(
+        "POST",
+        f"{SERVICES['finance']}/integrations/sandbox/psp/refunds",
+        headers={
+            "X-Actor-User-Id": user_id,
+            "X-Actor-Roles": "compliance_officer",
+            "X-MFA-Verified": "true",
+        },
+        payload={
+            "payment_id": f"order:{body.order_id}",
+            "amount_brl": str(payload.get("total_brl") or "0.00"),
+            "idempotency_key": body.idempotency_key,
+            "reason": body.reason,
+        },
+    )
+    if not isinstance(refund, dict) or refund.get("status") != "refunded":
+        raise HTTPException(status_code=409, detail="Nao foi possivel concluir o refund sandbox.")
+
+    return {
+        "status": "refunded",
+        "order_id": str(body.order_id),
+        "provider_environment": "sandbox",
+        "refund_reference": refund.get("reference_id"),
+        "message": "Refund sandbox processado com sucesso.",
     }
 
 @app.get("/gateway/telemetry/outbox")

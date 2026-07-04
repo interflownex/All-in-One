@@ -1,3 +1,21 @@
+# STATUS OPERACIONAL - 2026-07-04 API Hub refund sandbox validado em gateway, contrato e testes
+
+### Concluido neste ciclo
+- Adicionado o caminho `POST /gateway/payments/sandbox/refund` em `modules/api_hub/main.py`, reaproveitando o PSP sandbox do Finance para refund auditavel.
+- Atualizado o contrato OpenAPI do API Hub com `CatalogRefundRequest` e o novo endpoint de refund sandbox.
+- Ampliada a suite `tests/test_api_hub_catalog_gateway.py` para cobrir authorize e refund via gateway financeiro.
+- Mantida a integracao do refund sandbox do Finance adicionada no ciclo anterior.
+- Validado `./.venv/bin/python -m pytest -q tests/test_integration_sandbox_adapters.py tests/test_integration_sandbox_routes.py tests/test_api_hub_catalog_gateway.py` com `19 passed`.
+
+### Estado Operacional
+- O API Hub agora orquestra o refund sandbox do Finance da mesma forma que ja orquestrava o Pix/escrow.
+- O proximo refinamento natural e ligar essa trilha a disputas, antifraude e regras reais de reversao quando o produto pedir.
+
+### Proximos Passos Naturais
+- Amarrar refund com disputa, antifraude e conciliacao quando a regra de negocio estiver fechada.
+- Seguir para outras homologacoes reais de integracoes externas.
+- Manter os gates do backend e da observabilidade verdes a cada incremento.
+
 # STATUS OPERACIONAL - 2026-07-04 Finance sandbox refund validado em adapter, rota e testes
 
 ### Concluido neste ciclo

@@ -112,4 +112,5 @@ O ecossistema All-in-One expõe uma interface unificada que consolida todos os 2
 Todas as chamadas de API do frontend devem passar pelo Apigee para garantir governança, quota e segurança:
 - **Identity:** `https://api.all-in-one.com/identity/*`
 - **API Hub:** `https://api.all-in-one.com/gateway/*`
+- **Financeiro:** `https://api.all-in-one.com/gateway/payments/sandbox/authorize` e `https://api.all-in-one.com/gateway/payments/sandbox/refund`
 - **Logística:** `https://api.all-in-one.com/{delivery|wms|tms}/*`
