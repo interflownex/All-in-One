@@ -1,3 +1,18 @@
+# STATUS OPERACIONAL - 2026-07-04 Matriz de stores PostgreSQL e outbox validados em banco real
+
+### Concluido neste ciclo
+- Aplicadas as migrations 001-015 em PostgreSQL local via `docker compose -f infra/docker/docker-compose.yml up migrations`, criando o schema `audit` e a base estrutural usada pelos stores de dominio.
+- Validado `./.venv/bin/python -m pytest -q tests/test_outbox_rabbitmq_integration.py tests/test_jobs_postgres_integration.py tests/test_postgres_stores_matrix.py` com `29 passed, 1 skipped`.
+- Confirmado que a falha anterior era apenas ausencia de schema no banco de teste, nao regressao funcional dos stores ou do dispatcher.
+
+### Estado Operacional
+- A matriz prioritária de stores PostgreSQL e o fluxo de outbox/Jobs agora estao verificados em banco real.
+- O proximo refinamento natural e ampliar essa prova para o restante dos modulos e manter a cobertura de integracao real crescendo sem quebrar o que ja esta fechado.
+
+### Proximos Passos Naturais
+- Expandir a validacao de stores para os modulos restantes do catalogo.
+- Seguir com os proximos pontos de backend e frontend ate a entrega total.
+
 # STATUS OPERACIONAL - 2026-07-04 Outbox de refund payment protegido com payload seguro
 
 ### Concluido neste ciclo

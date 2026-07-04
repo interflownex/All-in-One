@@ -10,7 +10,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | --- | ---: | --- | --- |
 | Git e sincronizacao remota | 100% | `local main`, `origin/main` e `fork/main` alinhados | Fluxo de entrega remoto esta operacional. |
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
-| PostgreSQL estrutural | 81% | 15 migrations SQL e stores para 25 modulos, incluindo ledger Gold Valley append-only | Schema amplo existe; falta prova real por modulo. |
+| PostgreSQL estrutural | 81% | 15 migrations SQL e stores para 25 modulos, incluindo ledger Gold Valley append-only, com matriz prioritária validada em banco real | Schema amplo existe; falta ampliar a prova real para todos os modulos. |
 | Runtime FastAPI modular | 86% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado e carregamento dinamico por DSN validado em containers | Base local estabilizada; falta ampliar testes E2E por jornada. |
 | Mensageria/outbox | 90% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos, payload seguro de refund, fixtures versionadas por modulo, matriz de dispatch e eventos reais de AI Core/API Hub validados no store/sandbox | Precisa ampliar cobertura para eventos reais de todos os modulos e dashboards reais. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
