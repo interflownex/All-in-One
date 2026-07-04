@@ -37,7 +37,7 @@ jobs:
       - run: bandit -r modules/shared scripts workers -q -ll
       - run: python -m pytest -q tests/test_security_gates.py
       - run: docker build -f "${{ matrix.dockerfile }}" -t "${{ matrix.image_ref }}" .
-      - uses: aquasecurity/trivy-action@0.28.0
+      - uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: ${{ matrix.image_ref }}
           format: table
