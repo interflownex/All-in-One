@@ -13,7 +13,7 @@ from psycopg.rows import dict_row
 from modules.shared.domain_rules import event_for_create, rule_for
 from modules.shared.outbox_dispatcher import OutboxDispatcher, OutboxSettings, SAFE_PAYLOAD_FIELDS, publication_message
 from modules.shared.runtime import create_module_app
-from tests.test_runtime_event_generation import (
+from all_in_one_test_support.runtime_event_generation import (
     generate_payload,
     get_evented_transition,
     get_primary_resource,
