@@ -778,7 +778,10 @@ function App() {
                     </div>
                     <div>
                       <strong>{formatMoney(visit.payload?.visit_price_brl)}</strong>
-                      <span>{visit.status ?? 'active'} • {formatDate(visit.payload?.scheduled_at)}</span>
+                      <span>
+                        {visit.status ?? 'active'} • {formatDate(visit.payload?.scheduled_at)} •{' '}
+                        {formatTime(visit.payload?.scheduled_at ?? new Date().toISOString())}
+                      </span>
                     </div>
                   </div>
                 ))}

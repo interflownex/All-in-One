@@ -256,6 +256,7 @@ def main() -> int:
         "check_generated_artifacts.ps1",
         "check_generated_artifacts.py",
         "multi_agent_sync_guard.py",
+        "repair_actions_loop.py",
     ]:
         if not (ROOT / "scripts" / script).is_file():
             fail(f"Gate operacional ausente: {script}", errors)
@@ -300,6 +301,15 @@ def main() -> int:
             fail("Task VS Code test: pytest completo ausente.", errors)
         elif pytest_tasks[0].get("command") != "${config:python.defaultInterpreterPath}":
             fail("Task pytest deve usar ${config:python.defaultInterpreterPath}.", errors)
+        repair_tasks = [task for task in tasks.get("tasks", []) if task.get("label") == "repair: loop github actions"]
+        if not repair_tasks:
+            fail("Task VS Code repair: loop github actions ausente.", errors)
+        elif repair_tasks[0].get("command") != "${config:python.defaultInterpreterPath}":
+            fail("Task repair loop deve usar ${config:python.defaultInterpreterPath}.", errors)
+        else:
+            repair_args = repair_tasks[0].get("args", [])
+            if repair_args[:1] != ["scripts/repair_actions_loop.py"] or "--continuous" not in repair_args:
+                fail("Task repair loop deve executar scripts/repair_actions_loop.py --continuous.", errors)
     if not (ROOT / "workers" / "outbox_dispatcher" / "main.py").is_file():
         fail("Worker da outbox RabbitMQ ausente.", errors)
     for relative in ["workers/retention_worker/main.py", "modules/shared/retention_worker.py"]:
