@@ -1,3 +1,18 @@
+# STATUS OPERACIONAL - 2026-07-04 Suite E2E do frontend validada com 13 jornadas
+
+### Concluido neste ciclo
+- Executado `./.venv/bin/python -m pytest -q tests/e2e` com `13 passed`, cobrindo os shells All-in-One e as jornadas Valley disponiveis no catalogo atual.
+- Confirmado que o frontend ja ultrapassou o minimo de seis jornadas E2E exigido pelo plano de conclusao total.
+- Mantida a regressao limpa das jornadas do frontend sem abrir novo escopo.
+
+### Estado Operacional
+- O frontend agora tem cobertura E2E suficiente para seguir refinando mobile, suporte/disputa, notificacoes e os demais fluxos comerciais sem depender de uma base fraca.
+- O proximo refinamento natural e consolidar os shells ainda parciais e ampliar as jornadas restantes do catalogo.
+
+### Proximos Passos Naturais
+- Expandir jornadas Playwright para mobile e fluxos comerciais restantes.
+- Consolidar os shells ainda parciais e seguir para as integracoes reais pendentes.
+
 # STATUS OPERACIONAL - 2026-07-04 Matriz de stores PostgreSQL e outbox validados em banco real
 
 ### Concluido neste ciclo
