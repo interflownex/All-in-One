@@ -1,3 +1,21 @@
+# STATUS OPERACIONAL - 2026-07-04 Shells All-in-One vivos com SmartCRUD real validado
+
+### Concluido neste ciclo
+- Corrigido o `SmartCRUD` compartilhado dos apps `all-in-one` e `all-in-one-business` para consultar os recursos reais do API Hub (`/business/resources/companies` e `/finance/resources/wallets`) com `X-Actor-User-Id` persistente.
+- Derivadas automaticamente as entidades de overview a partir do recurso correto do módulo, alinhando Business, Finance e os demais módulos que usam `entity` igual ao slug do módulo.
+- Mantidos os fallbacks de demonstração e o filtro local de busca, sem quebrar a navegação existente.
+- Validado `npm run build` em `apps/all-in-one` e `apps/all-in-one-business` após a integração.
+- Validado `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py` com `4 passed`, cobrindo os dois shells em Business e Finance.
+
+### Estado Operacional
+- Os shells principais do conjunto All-in-One já deixam de ser apenas contratos estáticos e passam a enxergar dados reais do backend via API Hub.
+- O próximo refinamento natural é ampliar esse mesmo conector para os demais módulos web que ainda estão em contrato ou com overviews incompletos.
+
+### Proximos Passos Naturais
+- Expandir o mesmo padrão para os outros apps web do catálogo All-in-One.
+- Aumentar a cobertura Playwright desktop/mobile para as jornadas restantes.
+- Manter o fechamento por etapas até a produção/compliance.
+
 # STATUS OPERACIONAL - 2026-07-04 Frontend Valley vivo validado em build e Playwright
 
 ### Concluido neste ciclo

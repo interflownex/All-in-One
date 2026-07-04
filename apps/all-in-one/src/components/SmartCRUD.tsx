@@ -7,26 +7,50 @@ interface SmartCRUDProps {
   title: string;
 }
 
-const API_HUB_URL = (import.meta as any).env?.VITE_API_HUB_URL ?? '';
+const API_HUB_URL = (import.meta as any).env?.VITE_API_HUB_URL ?? 'http://127.0.0.1:8100';
+const OVERVIEW_ENTITY_MAP: Record<string, string> = {
+  business: 'companies',
+  delivery: 'delivery_requests',
+  finance: 'wallets',
+  health: 'patients',
+  identity: 'users',
+  jobs: 'resumes',
+  marketplace: 'stores',
+  mobility: 'rides',
+  riders: 'rider_profiles',
+  services: 'service_contracts',
+};
 
 const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
+  const [actorId] = useState(() => {
+    const storageKey = `all-in-one.smartcrud.actor.${module}`;
+    const stored = window.localStorage.getItem(storageKey);
+    if (stored) return stored;
+    const generated = window.crypto?.randomUUID?.() ?? `demo-${Math.random().toString(36).slice(2, 10)}`;
+    window.localStorage.setItem(storageKey, generated);
+    return generated;
+  });
+  const resolvedEntity = entity === module ? OVERVIEW_ENTITY_MAP[module] ?? entity : entity;
 
   const fetchData = async () => {
     setLoading(true);
     setError('');
     try {
-      // Simulação de busca no API Hub (em um ambiente real chamaria o microserviço via Hub)
-      const response = await fetch(`${API_HUB_URL}/gateway/${module}/${entity}?q=${query}`);
+      const response = await fetch(`${API_HUB_URL}/${module}/resources/${resolvedEntity}`, {
+        headers: {
+          'X-Actor-User-Id': actorId,
+        },
+      });
       if (!response.ok) throw new Error('Falha ao carregar dados.');
       const result = await response.json();
       setData(result.data ?? []);
     } catch (err) {
-      // Fallback para dados fictícios se a API falhar (para demonstração)
-      console.warn(`Usando dados fictícios para ${module}/${entity}`);
+      setError(err instanceof Error ? err.message : String(err));
+      console.warn(`Usando dados fictícios para ${module}/${resolvedEntity}`);
       setData([
         { id: '1', name: `${title} Item 1`, status: 'Ativo', created_at: new Date().toISOString() },
         { id: '2', name: `${title} Item 2`, status: 'Pendente', created_at: new Date().toISOString() },
@@ -41,7 +65,16 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
     if (type === 'list') {
       fetchData();
     }
-  }, [module, entity, type, query]);
+  }, [module, resolvedEntity, type, actorId]);
+
+  const normalizedQuery = query.trim().toLowerCase();
+  const visibleData = normalizedQuery
+    ? data.filter((item: any) =>
+        [item.id, item.name, item.title, item.status, item.description]
+          .filter((value): value is string => typeof value === 'string')
+          .some(value => value.toLowerCase().includes(normalizedQuery)),
+      )
+    : data;
 
   if (type === 'form') {
     return (
@@ -97,11 +130,17 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         </div>
       </div>
 
+      {error && (
+        <div style={{ marginBottom: '20px', padding: '14px 16px', borderRadius: '8px', background: '#fff4e5', border: '1px solid #f0c36d', color: '#7a4b00' }}>
+          <strong>API Hub indisponível:</strong> {error}. Exibindo dados de demonstração.
+        </div>
+      )}
+
       {loading ? (
         <div className="loader"></div>
       ) : (
         <div className="data-grid" style={{ display: 'grid', gap: '16px' }}>
-          {data.length > 0 ? data.map((item: any) => (
+          {visibleData.length > 0 ? visibleData.map((item: any) => (
             <div key={item.id} className="data-card neo-brutalism" style={{ background: '#fff', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{item.name || item.title || `${title} #${item.id}`}</h3>
