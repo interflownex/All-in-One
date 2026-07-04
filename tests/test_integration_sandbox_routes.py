@@ -58,6 +58,22 @@ def test_identity_business_finance_sandbox_routes() -> None:
     assert escrow.status_code == 200
     assert escrow.json()["events"][0]["routing_key"] == "payment.escrow.created"
 
+    refund = finance.post(
+        "/integrations/sandbox/psp/refunds",
+        headers=sandbox_headers(),
+        json={
+            "payment_id": "pay-1",
+            "amount_brl": "99.90",
+            "idempotency_key": "refund-1",
+            "reason": "estorno solicitado",
+        },
+    )
+    assert refund.status_code == 200
+    assert refund.json()["provider_key"] == "finance_pix_psp"
+    assert refund.json()["status"] == "refunded"
+    assert refund.json()["events"][0]["routing_key"] == "payment.refunded"
+    assert "estorno solicitado" not in str(refund.json()["payload"])
+
 
 def test_logistics_jobs_health_api_hub_and_supplier_sandbox_routes() -> None:
     delivery = fresh_client_for("delivery")

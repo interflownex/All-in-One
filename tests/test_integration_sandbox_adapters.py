@@ -56,6 +56,7 @@ def test_psp_fiscal_and_supplier_sandboxes_emit_domain_events() -> None:
 
     pix = psp.authorize_pix("pay-1", "payer-1", "99.90", "idem-1")
     escrow = psp.create_escrow("escrow-1", "payer-1", "seller-1", "99.90")
+    refund = psp.refund_payment("pay-1", "99.90", "refund-idem-1", "chargeback solicitado")
     invoice = fiscal.issue_invoice("invoice-1", "nfse", "99.90", "12345678000199")
     product = supplier.import_product("supplier-1", "SKU-123", "42.10", 10)
 
@@ -63,6 +64,9 @@ def test_psp_fiscal_and_supplier_sandboxes_emit_domain_events() -> None:
     assert pix.payload["amount_brl"] == "99.9000"
     assert escrow.status == "held"
     assert escrow.events[0]["routing_key"] == "payment.escrow.created"
+    assert refund.status == "refunded"
+    assert refund.events[0]["routing_key"] == "payment.refunded"
+    assert "chargeback solicitado" not in str(refund.payload)
     assert invoice.status == "issued"
     assert invoice.events[0]["routing_key"] == "erp.invoice.created"
     assert "12345678000199" not in str(invoice.payload)

@@ -1,0 +1,61 @@
+name: Repair Actions Loop
+
+on:
+  workflow_dispatch:
+    inputs:
+      continuous:
+        description: Executa o loop continuo ate interrupcao manual.
+        required: false
+        default: false
+        type: boolean
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "17 */2 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: repair-actions-loop-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPAIR_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      REPAIR_PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+      REPAIR_CONTINUOUS: ${{ github.event_name == 'workflow_dispatch' && inputs.continuous || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Run repair loop
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(--branch "$REPAIR_BRANCH" --activity "GitHub Actions repair loop")
+          if [[ -n "${REPAIR_PR_NUMBER:-}" ]]; then
+            args+=(--pr "$REPAIR_PR_NUMBER")
+          fi
+          if [[ "$REPAIR_CONTINUOUS" == "true" ]]; then
+            args+=(--continuous --interval-seconds 300)
+          else
+            args+=(--max-cycles 1)
+          fi
+          python scripts/repair_actions_loop.py "${args[@]}"

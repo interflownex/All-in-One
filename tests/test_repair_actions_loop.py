@@ -1,11 +1,16 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from scripts.repair_actions_loop import (
     build_repair_bundle,
     current_workflow_failures,
     extract_run_id,
     latest_workflow_runs,
 )
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_extract_run_id_from_actions_url() -> None:
@@ -53,3 +58,18 @@ def test_build_repair_bundle_uses_given_python_executable() -> None:
     assert bundle[3] == ("/venv/bin/python", "scripts/validate_openapi.py")
     assert bundle[4] == ("/venv/bin/python", "scripts/validate_repository.py")
     assert bundle[5][:4] == ("/venv/bin/python", "-m", "pytest", "-q")
+
+
+def test_repair_loop_workflow_contains_pr_push_triggers() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "repair-loop.yml").read_text(encoding="utf-8")
+    for needle in [
+        "workflow_dispatch:",
+        "push:",
+        "pull_request:",
+        "schedule:",
+        "scripts/repair_actions_loop.py",
+        "GH_TOKEN: ${{ github.token }}",
+        "--continuous",
+        "--max-cycles 1",
+    ]:
+        assert needle in workflow

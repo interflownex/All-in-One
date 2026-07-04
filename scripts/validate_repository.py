@@ -228,6 +228,7 @@ def main() -> int:
         "automerge.yml",
         "compose-health.yml",
         "git-sync.yml",
+        "repair-loop.yml",
         "stitch-sync.yml",
     ]:
         if not (ROOT / ".github" / "workflows" / workflow).is_file():
@@ -530,6 +531,22 @@ def main() -> int:
             fail(f"Workflow Stitch deve manter sincronizacao remota ativa: {active_trigger}", errors)
     if "if: ${{ false }}" in stitch_workflow:
         fail("Workflow Stitch nao pode manter o job explicitamente desativado.", errors)
+    repair_loop_workflow = (ROOT / ".github" / "workflows" / "repair-loop.yml").read_text(encoding="utf-8") if (ROOT / ".github" / "workflows" / "repair-loop.yml").is_file() else ""
+    for needle in [
+        "workflow_dispatch:",
+        "continuous:",
+        "push:",
+        "pull_request:",
+        "schedule:",
+        "contents: write",
+        "pull-requests: write",
+        "scripts/repair_actions_loop.py",
+        "--continuous",
+        "--max-cycles 1",
+        "GH_TOKEN: ${{ github.token }}",
+    ]:
+        if needle not in repair_loop_workflow:
+            fail(f"Workflow de repair loop incompleto: {needle}", errors)
     if not (ROOT / "docs" / "COMPLIANCE.md").is_file():
         fail("Documento de compliance ausente: docs/COMPLIANCE.md", errors)
     if not KUBERNETES_KUSTOMIZATION.is_file():

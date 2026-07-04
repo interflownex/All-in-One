@@ -1,3 +1,21 @@
+# STATUS OPERACIONAL - 2026-07-04 Finance sandbox refund validado em adapter, rota e testes
+
+### Concluido neste ciclo
+- Adicionado o fluxo sandbox de refund do Finance em `modules/shared/integration_sandbox.py`, com `payment.refunded`, hash de idempotencia e reason sem expor texto sensivel.
+- Exposta a rota local `POST /integrations/sandbox/psp/refunds` em `modules/shared/runtime.py` para os modulos Finance e consumidores de integracao.
+- Atualizada a documentacao de integracao em `docs/INTEGRATION.md` para refletir o refund do PSP sandbox.
+- Ampliada a cobertura em `tests/test_integration_sandbox_adapters.py` e `tests/test_integration_sandbox_routes.py`.
+- Validado `./.venv/bin/python -m pytest -q tests/test_integration_sandbox_adapters.py tests/test_integration_sandbox_routes.py tests/test_integration_provider_matrix.py` com `8 passed`.
+
+### Estado Operacional
+- O sandbox Finance agora cobre autorizacao Pix, escrow, release e refund com eventos locais auditaveis.
+- O proximo refinamento natural e conectar esse refund ao gateway/orquestracao real quando a regra de negocio definitiva estiver fechada.
+
+### Proximos Passos Naturais
+- Ligar refund e disputa ao gateway/API Hub quando o fluxo real do produto exigir.
+- Seguir para outras homologacoes reais de integracoes externas.
+- Manter as validacoes do backend e da observabilidade verdes a cada incremento.
+
 # STATUS OPERACIONAL - 2026-07-04 Shell de Services All-in-One vivo validado em build e Playwright
 
 ### Concluido neste ciclo

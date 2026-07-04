@@ -29,7 +29,7 @@ Ela implementa adapters deterministicos para:
 
 - `identity_kyc_kyb`: simulador KYC/KYB com hashes de documento e eventos de
   aprovacao;
-- `finance_pix_psp`: simulador de Pix, autorizacao, escrow e release;
+- `finance_pix_psp`: simulador de Pix, autorizacao, escrow, release e refund;
 - `fiscal_nfse_nfe`: emissao fiscal sandbox com codigo de autorizacao
   deterministico;
 - `jobs_ctps_official`: preservacao de hash de PDF CTPS sem alegar verificacao
@@ -50,8 +50,9 @@ exigindo `X-Actor-Roles` com papel aceito por compliance/operacao:
 - Identity/Riders/Services: `POST /integrations/sandbox/kyc/person`;
 - Business: `POST /integrations/sandbox/kyb/business`;
 - Finance: `POST /integrations/sandbox/psp/pix/authorize`,
-  `POST /integrations/sandbox/psp/escrows` e
-  `POST /integrations/sandbox/psp/escrows/release`;
+  `POST /integrations/sandbox/psp/escrows`,
+  `POST /integrations/sandbox/psp/escrows/release` e
+  `POST /integrations/sandbox/psp/refunds`;
 - ERP: `POST /integrations/sandbox/fiscal/invoices`;
 - Jobs: `POST /integrations/sandbox/ctps/classify`;
 - Delivery/Mobility/TMS: `POST /integrations/sandbox/maps/route`;
@@ -112,4 +113,3 @@ Todas as chamadas de API do frontend devem passar pelo Apigee para garantir gove
 - **Identity:** `https://api.all-in-one.com/identity/*`
 - **API Hub:** `https://api.all-in-one.com/gateway/*`
 - **Logística:** `https://api.all-in-one.com/{delivery|wms|tms}/*`
-

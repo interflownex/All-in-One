@@ -147,6 +147,32 @@ class PspLedgerSandbox:
             (_event("payment.escrow.released", payload),),
         )
 
+    def refund_payment(
+        self,
+        payment_id: str,
+        amount_brl: str,
+        idempotency_key: str,
+        reason: str | None = None,
+    ) -> SandboxResult:
+        amount = _money(amount_brl)
+        status = "refunded" if amount > Decimal("0") else "rejected"
+        payload = {
+            "payment_id": payment_id,
+            "amount_brl": str(amount),
+            "idempotency_key_hash": _digest("refund-idempotency", idempotency_key),
+            "reason_hash": _digest("refund-reason", reason or "") if reason else None,
+            "provider_environment": "sandbox",
+        }
+        events = (_event("payment.refunded", payload),) if status == "refunded" else ()
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            status,
+            _stable_id("refund", payment_id, idempotency_key, amount),
+            payload,
+            events,
+        )
+
 
 class FiscalDocumentSandbox:
     provider_key = "fiscal_nfse_nfe"

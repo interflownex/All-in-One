@@ -140,6 +140,13 @@ class SandboxEscrowReleasePayload(BaseModel):
     amount_brl: str = Field(min_length=1, max_length=32)
 
 
+class SandboxRefundPayload(BaseModel):
+    payment_id: str = Field(min_length=3, max_length=80)
+    amount_brl: str = Field(min_length=1, max_length=32)
+    idempotency_key: str = Field(min_length=3, max_length=120)
+    reason: str | None = Field(default=None, max_length=300)
+
+
 class SandboxFiscalInvoicePayload(BaseModel):
     invoice_id: str = Field(min_length=3, max_length=80)
     document_type: str = Field(min_length=3, max_length=16)
@@ -646,6 +653,21 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         ) -> dict[str, Any]:
             _authorize_sandbox(actor)
             return _sandbox_response(PspLedgerSandbox().release_escrow(body.escrow_id, body.amount_brl))
+
+        @app.post("/integrations/sandbox/psp/refunds")
+        def sandbox_refund_payment(
+            body: SandboxRefundPayload,
+            actor: Actor = Depends(actor_from_headers),
+        ) -> dict[str, Any]:
+            _authorize_sandbox(actor)
+            return _sandbox_response(
+                PspLedgerSandbox().refund_payment(
+                    body.payment_id,
+                    body.amount_brl,
+                    body.idempotency_key,
+                    body.reason,
+                )
+            )
 
     if module_name == "erp":
         @app.post("/integrations/sandbox/fiscal/invoices")
