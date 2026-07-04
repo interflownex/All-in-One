@@ -64,6 +64,11 @@ CUSTOMIZED_ARTIFACTS = {
     # Apps Valley ja possuem estado operacional proprio alem do scaffold inicial.
     "apps/valley/README.md",
     "apps/valley/STATUS.md",
+    # Shells operacionais do ecossistema tambem mantem status manual por design.
+    "apps/all-in-one-user/STATUS.md",
+    "apps/all-in-one-business/STATUS.md",
+    "apps/valley-business/STATUS.md",
+    "apps/valley-rider/STATUS.md",
 }
 
 

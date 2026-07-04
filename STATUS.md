@@ -1,3 +1,21 @@
+# STATUS OPERACIONAL - 2026-07-04 Shell do usuario All-in-One vivo validado em build e Playwright
+
+### Concluido neste ciclo
+- Scaffoldado o app `all-in-one-user` com shell Vite/React consumindo `gateway/status`, `gateway/insights/commercial`, `gateway/catalog/offers`, `wallets`, `vacancies` e health de Identity/Delivery/Mobility.
+- Adicionado o fixture `all_in_one_user_server` em `tests/e2e/conftest.py` e a suite `tests/e2e/test_all_in_one_user_shell.py` para validar dashboard, conta, carteira, mercado, vagas e operacao.
+- Validado `npm run build` em `apps/all-in-one-user`.
+- Validado `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_user_shell.py` com `2 passed`.
+- Validado `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py tests/e2e/test_all_in_one_user_shell.py` com `6 passed`, sem regressao no shell Business.
+
+### Estado Operacional
+- O shell do usuario deixou de ser apenas contrato e agora conversa com os endpoints FastAPI reais esperados pelo frontend do All-in-One.
+- O proximo refinamento natural e ampliar as jornadas restantes do usuario, incluindo mobile, avaliacoes, suporte/disputa e notificacoes.
+
+### Proximos Passos Naturais
+- Expandir as jornadas Playwright para os fluxos restantes do frontend do usuario.
+- Consolidar os demais shells ainda parciais do catalogo.
+- Seguir para integracoes reais e producao/compliance quando a camada de frontend estiver fechada.
+
 # STATUS OPERACIONAL - 2026-07-04 Shells All-in-One vivos com SmartCRUD real validado
 
 ### Concluido neste ciclo

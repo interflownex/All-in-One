@@ -111,3 +111,13 @@ def all_in_one_server():
         pytest.fail(str(exc))
     yield url
     stop_process(process)
+
+
+@pytest.fixture(scope="session")
+def all_in_one_user_server():
+    try:
+        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-user"))
+    except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    stop_process(process)
