@@ -1,3 +1,18 @@
+# STATUS OPERACIONAL - 2026-07-04 Outbox de refund payment protegido com payload seguro
+
+### Concluido neste ciclo
+- Adicionado `payment` em `modules/shared/outbox_dispatcher.py` para publicar apenas `payment_id`, `amount_brl`, `provider_environment`, `idempotency_key_hash` e `reason_hash` nos eventos de refund.
+- Coberto `publication_message` em `tests/test_outbox_dispatcher_runtime_events.py` para garantir que `reason` cru e campos extras, como `authorization_code`, nao vazem no payload publicado.
+- Validado `python3 scripts/validate_repository.py`, `python3 scripts/validate_openapi.py` e `./.venv/bin/python -m pytest -q tests/test_outbox_dispatcher_runtime_events.py tests/test_domain_event_dispatch_matrix.py` com `81 passed, 1 skipped`.
+
+### Estado Operacional
+- O refund sandbox de Finance agora publica eventos com payload seguro no outbox.
+- O proximo refinamento natural e estender essa disciplina de observabilidade para outros eventos sensiveis de Finance e dos modulos prioritarios.
+
+### Proximos Passos Naturais
+- Expandir a cobertura de payload seguro para eventos financeiros adicionais.
+- Continuar o fechamento dos fluxos backend, frontend e integracoes reais.
+
 # STATUS OPERACIONAL - 2026-07-04 API Hub refund sandbox validado em gateway, contrato e testes
 
 ### Concluido neste ciclo

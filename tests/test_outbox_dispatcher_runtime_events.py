@@ -322,6 +322,40 @@ def test_dispatcher_publishes_real_runtime_events_with_safe_payload(monkeypatch)
         assert expected["payload"] == expected_payload
 
 
+def test_publication_message_masks_payment_refund_reason() -> None:
+    event = {
+        "id": uuid4(),
+        "routing_key": "payment.refunded",
+        "schema_version": 1,
+        "aggregate_type": "payment",
+        "aggregate_id": uuid4(),
+        "correlation_id": uuid4(),
+        "entity_id": None,
+        "payload": {
+            "payment_id": "pay-123",
+            "amount_brl": "99.9000",
+            "provider_environment": "sandbox",
+            "idempotency_key_hash": "idem-hash",
+            "reason_hash": "reason-hash",
+            "reason": "chargeback solicitado",
+            "authorization_code": "segredo-nao-publicar",
+        },
+        "created_at": datetime.now(UTC),
+    }
+
+    message = publication_message(event)
+
+    assert message["payload"] == {
+        "amount_brl": "99.9000",
+        "idempotency_key_hash": "idem-hash",
+        "payment_id": "pay-123",
+        "provider_environment": "sandbox",
+        "reason_hash": "reason-hash",
+    }
+    assert "reason" not in message["payload"]
+    assert "authorization_code" not in message["payload"]
+
+
 def _clear_audit_outbox(postgres_dsn: str) -> None:
     del postgres_dsn
 
