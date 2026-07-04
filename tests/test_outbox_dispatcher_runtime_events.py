@@ -1,8 +1,14 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
+
+import pika
+import psycopg
+import pytest
+from psycopg.rows import dict_row
 
 from modules.shared.domain_rules import event_for_create, rule_for
 from modules.shared.outbox_dispatcher import OutboxDispatcher, OutboxSettings, SAFE_PAYLOAD_FIELDS, publication_message
@@ -14,6 +20,13 @@ from tests.test_runtime_event_generation import (
     load_module_catalog,
     resolve_entity_id,
 )
+
+POSTGRES_DSN = (
+    os.getenv("ALL_IN_ONE_OUTBOX_POSTGRES_TEST_DSN")
+    or os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN")
+    or os.getenv("ALL_IN_ONE_JOBS_POSTGRES_TEST_DSN")
+)
+RABBITMQ_URL = os.getenv("ALL_IN_ONE_RABBITMQ_TEST_URL")
 
 
 class _FakeResult:
@@ -110,11 +123,25 @@ def _runtime_store(module_slug: str):
     return create_module_app(module_slug).extra["store"]
 
 
-def _find_event(store, routing_key: str) -> dict[str, object]:
+def _find_event(store, routing_key: str, resource_id: str | None = None) -> dict[str, object]:
+    if POSTGRES_DSN and resource_id is not None:
+        with psycopg.connect(POSTGRES_DSN, row_factory=dict_row) as connection:
+            event = connection.execute(
+                """SELECT *
+                   FROM audit.domain_events
+                   WHERE routing_key = %s AND aggregate_id = %s
+                   ORDER BY created_at DESC
+                   LIMIT 1""",
+                (routing_key, resource_id),
+            ).fetchone()
+            if event is not None:
+                return event
+
     for event in store.outbox():
-        if event["routing_key"] == routing_key:
+        if event["routing_key"] == routing_key and (resource_id is None or str(event.get("resource_id")) == str(resource_id)):
             return event
-    raise AssertionError(f"Evento {routing_key} nao encontrado no outbox de teste.")
+    suffix = f" e resource_id {resource_id}" if resource_id else ""
+    raise AssertionError(f"Evento {routing_key}{suffix} nao encontrado no outbox de teste.")
 
 
 def _to_dispatch_row(resource: dict[str, object], event: dict[str, object]) -> dict[str, object]:
@@ -140,8 +167,49 @@ def _to_dispatch_row(resource: dict[str, object], event: dict[str, object]) -> d
     }
 
 
+def _normalize_runtime_seed_payload(
+    module_slug: str,
+    payload: dict[str, object],
+    user_id: str,
+    anchors: dict[str, str] | None = None,
+) -> dict[str, object]:
+    normalized = dict(payload)
+    anchors = anchors or {}
+    if "email" in normalized:
+        normalized["email"] = f"seed-{user_id.replace('-', '')[:12]}@all-in-one.test"
+
+    if module_slug == "identity":
+        normalized.setdefault("cpf_document", normalized.get("document_cpf") or f"CPF-{uuid4().hex[:12]}")
+        normalized.setdefault("document_cpf", normalized["cpf_document"])
+        normalized.setdefault("birth_date", "1990-01-01")
+        normalized.setdefault("phone_e164", f"+55{str(int(user_id.replace('-', '')[:10], 16))[-10:]}")
+        normalized.setdefault("face_hash", f"face-{user_id}")
+        normalized.setdefault("liveness_score", 0.9999)
+        normalized.setdefault("terms_accepted_at", datetime.now(UTC).isoformat())
+        normalized.setdefault("lgpd_consent_at", datetime.now(UTC).isoformat())
+    elif module_slug == "business":
+        normalized["cnpj"] = f"{uuid4().int % 10**14:014d}"
+        normalized["root_cnpj"] = normalized["cnpj"][:8]
+    elif module_slug == "api_hub":
+        normalized.setdefault("client_id_hash", uuid4().hex)
+        normalized.setdefault("secret_reference", f"secret-{uuid4().hex[:8]}")
+
+    for key in list(normalized):
+        if key == "user_id" or key.endswith("_user_id"):
+            normalized[key] = user_id
+        elif key in {"company_id", "business_id", "merchant_business_id"} and anchors.get("company_id"):
+            normalized[key] = anchors["company_id"]
+        elif key == "wallet_id" and anchors.get("wallet_id"):
+            normalized[key] = anchors["wallet_id"]
+        elif key == "resume_id" and anchors.get("resume_id"):
+            normalized[key] = anchors["resume_id"]
+    return normalized
+
+
 def _seed_runtime_event_rows() -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
+    shared_user_id: str | None = None
+    anchors: dict[str, str] = {}
 
     for module in load_module_catalog()["modules"]:
         module_slug = module["slug"]
@@ -155,9 +223,13 @@ def _seed_runtime_event_rows() -> list[dict[str, object]]:
             continue
 
         store = _runtime_store(module_slug)
-        creator_user_id = str(uuid4())
-        payload = generate_payload(rule, creator_user_id)
+        creator_user_id = shared_user_id or str(uuid4())
+        payload = _normalize_runtime_seed_payload(module_slug, generate_payload(rule, creator_user_id), creator_user_id, anchors)
         entity_id = resolve_entity_id(payload)
+        if module_slug == "riders" and anchors.get("company_id"):
+            entity_id = anchors["company_id"]
+        if entity_id is None and anchors.get("company_id"):
+            entity_id = anchors["company_id"]
         expected_create_routing_key = event_for_create(module_slug, primary_resource)
         created = store.create(
             primary_resource,
@@ -170,8 +242,18 @@ def _seed_runtime_event_rows() -> list[dict[str, object]]:
             expected_create_routing_key,
             None,
         )
-        create_event = _find_event(store, expected_create_routing_key)
+        create_event = _find_event(store, expected_create_routing_key, created["id"])
         rows.append(_to_dispatch_row(created, create_event))
+        if module_slug == "identity" and shared_user_id is None:
+            shared_user_id = str(created["id"])
+        if module_slug == "business" and primary_resource == "companies":
+            anchors["company_id"] = str(created["id"])
+        elif module_slug == "finance" and primary_resource == "wallets":
+            anchors["wallet_id"] = str(created["id"])
+        elif module_slug == "marketplace" and primary_resource == "stores":
+            anchors["store_id"] = str(created["id"])
+        elif module_slug == "jobs" and primary_resource == "resumes":
+            anchors["resume_id"] = str(created["id"])
 
         evented_transition = get_evented_transition(rule)
         if not evented_transition:
@@ -186,7 +268,7 @@ def _seed_runtime_event_rows() -> list[dict[str, object]]:
             transition_name,
             transition.event,
         )
-        transition_event = _find_event(store, transition.event)
+        transition_event = _find_event(store, transition.event, updated["id"])
         rows.append(_to_dispatch_row(updated, transition_event))
 
     return sorted(rows, key=lambda row: (row["created_at"], str(row["id"])))
@@ -238,3 +320,80 @@ def test_dispatcher_publishes_real_runtime_events_with_safe_payload(monkeypatch)
             if key in row["payload"]
         }
         assert expected["payload"] == expected_payload
+
+
+def _clear_audit_outbox(postgres_dsn: str) -> None:
+    del postgres_dsn
+
+
+def _set_module_postgres_dsns(monkeypatch: pytest.MonkeyPatch, postgres_dsn: str) -> None:
+    for module in load_module_catalog()["modules"]:
+        monkeypatch.setenv(f"ALL_IN_ONE_{module['slug'].upper()}_POSTGRES_DSN", postgres_dsn)
+
+
+@pytest.mark.skipif(not POSTGRES_DSN or not RABBITMQ_URL, reason="DSNs PostgreSQL e RabbitMQ de integracao nao configuradas.")
+def test_dispatcher_publishes_real_runtime_events_for_all_modules(monkeypatch: pytest.MonkeyPatch) -> None:
+    _set_module_postgres_dsns(monkeypatch, POSTGRES_DSN)  # type: ignore[arg-type]
+    _clear_audit_outbox(POSTGRES_DSN)  # type: ignore[arg-type]
+
+    rows = _seed_runtime_event_rows()
+    assert rows, "Nenhum evento real foi gerado a partir do catalogo."
+
+    exchange = f"all-in-one.runtime.real.{uuid4()}"
+    settings = OutboxSettings(
+        postgres_dsn=POSTGRES_DSN,
+        rabbitmq_url=RABBITMQ_URL,
+        exchange=exchange,
+        batch_size=max(1000, len(rows) + 10),
+    )
+    dispatcher = OutboxDispatcher(settings)
+    rabbit = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
+    channel = rabbit.channel()
+    channel.exchange_declare(exchange=exchange, exchange_type="topic", durable=True)
+    queue = channel.queue_declare(queue="", exclusive=True).method.queue
+    channel.queue_bind(exchange=exchange, queue=queue, routing_key="#")
+
+    try:
+        summary = dispatcher.publish_batch()
+
+        assert summary.selected == len(rows)
+        assert summary.published == len(rows)
+        assert summary.failed == 0
+
+        messages: dict[str, tuple[object, dict[str, object]]] = {}
+        while True:
+            method, properties, body = channel.basic_get(queue=queue, auto_ack=True)
+            if method is None:
+                break
+            message = json.loads(body)
+            messages[message["event_id"]] = (properties, message)
+
+        assert len(messages) == len(rows)
+
+        with psycopg.connect(POSTGRES_DSN) as connection:
+            for row in rows:
+                row_id = str(row["id"])
+                properties, message = messages[row_id]
+                expected = publication_message(row)
+                assert properties.message_id == row_id
+                assert properties.correlation_id == str(row["correlation_id"])
+                assert properties.headers["schema_version"] == row["schema_version"]
+                assert message == expected
+                status = connection.execute(
+                    "SELECT status, published_at FROM audit.domain_events WHERE id = %s",
+                    (row_id,),
+                ).fetchone()
+                assert status[0] == "published"
+                assert status[1] is not None
+                assert (
+                    connection.execute(
+                        """SELECT COUNT(*)
+                           FROM audit.event_deliveries
+                           WHERE event_id = %s AND delivery_status = 'publisher_confirmed'""",
+                        (row_id,),
+                    ).fetchone()[0]
+                    == 1
+                )
+    finally:
+        dispatcher.close()
+        rabbit.close()
