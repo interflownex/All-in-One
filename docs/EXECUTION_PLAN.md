@@ -260,7 +260,7 @@ Proximos passos naturais:
 
 | Modulo | Conclusao | Estado | Pendencia principal | Proximo passo |
 | --- | ---: | --- | --- | --- |
-| `identity` | 86% | Contrato, runtime, PostgreSQL especializado, cadastro/login/KYC/MFA E2E e container healthy | KYC/KYB/liveness reais | Homologar provedor KYC/KYB e ampliar testes negativos |
+| `identity` | 86% | Contrato, runtime, PostgreSQL especializado, cadastro/login/KYC/MFA/liveness E2E e container healthy | KYC/KYB/liveness reais | Homologar provedor KYC/KYB e ampliar testes negativos |
 | `business` | 77% | Companies, memberships, idempotencia, store tipado e criacao/aprovacao de empresa coberta na jornada Jobs | Fluxo KYB real e convite operacional de usuarios | Testar convite de usuario e homologar KYB |
 | `permissions` | 64% | RBAC/ABAC modelado e store gerado | Enforcement profundo em todos endpoints | Criar matriz de permissoes e testes negativos |
 | `finance` | 74% | Wallet, ledger, escrow, store tipado e ledger Gold Valley append-only | PSP/Pix/split/fiscal reais | Conectar compra Gold a PSP/Pix e saldo derivado por ledger |

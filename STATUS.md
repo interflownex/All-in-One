@@ -1,3 +1,18 @@
+# STATUS OPERACIONAL - 2026-07-05 Identity E2E real com liveness validado
+
+### Concluido neste ciclo
+- Propagado `liveness_score` para `modules/identity/kyc_mfa_models.py` e `modules/identity/main.py`, fechando a trilha do KYC no runtime real.
+- Atualizado o E2E local de Identity em `modules/identity/tests/test_e2e_identity.py` para submeter `liveness_score` e validar a leitura no `GET /kyc/status/{user_id}`.
+- Validado o Identity real com `./.venv/bin/python -m pytest -q modules/identity/tests/test_e2e_identity.py` em `http://localhost:8101`, com `1 passed`.
+
+### Estado Operacional
+- O fluxo real de Identity agora cobre cadastro, login, KYC, MFA e liveness de ponta a ponta no runtime local.
+- O próximo refinamento natural é aproximar o provedor real de KYC/KYB/liveness quando houver credencial e homologação disponíveis.
+
+### Proximos Passos Naturais
+- Seguir para o fechamento dos provedores reais restantes de Identity, Finance e API Hub.
+- Manter a trilha de sandbox e os gates do backend verdes a cada incremento.
+
 # STATUS OPERACIONAL - 2026-07-04 Suite E2E do frontend validada com 13 jornadas
 
 ### Concluido neste ciclo

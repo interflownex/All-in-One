@@ -54,6 +54,7 @@ async def _test_identity_e2e_flow():
         kyc_payload = {
             "user_id": user_id,
             "biometry_hash": "a"*32,
+            "liveness_score": 0.99,
             "idempotency_key": f"idemp_{uuid.uuid4().hex}"
         }
         kyc_resp = await client.post("/kyc/submit", json=kyc_payload, headers=headers)
@@ -63,6 +64,7 @@ async def _test_identity_e2e_flow():
         status_resp = await client.get(f"/kyc/status/{user_id}", headers=headers)
         assert status_resp.status_code == 200
         assert status_resp.json()["status"] == "PROCESSING"
+        assert status_resp.json()["liveness_score"] == 0.99
         print("✓ Status KYC validado")
 
         mfa_setup_payload = {

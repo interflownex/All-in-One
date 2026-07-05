@@ -7,6 +7,7 @@ from uuid import UUID
 class KYCSubmission(BaseModel):
     user_id: UUID
     biometry_hash: str = Field(..., min_length=32, description="Hash da face extraído via SDK de biometria")
+    liveness_score: float | None = Field(default=None, ge=0.0, le=1.0)
     doc_front_base64: str | None = Field(default=None, description="Documento frente em Base64 para OCR")
     doc_back_base64: str | None = Field(default=None, description="Documento verso em Base64 para OCR")
     idempotency_key: str | None = Field(default=None)
@@ -16,6 +17,7 @@ class KYCStatus(BaseModel):
     user_id: UUID
     status: str
     risk_score: float | None = None
+    liveness_score: float | None = None
     reason: str | None = None
 
 class MFASetup(BaseModel):

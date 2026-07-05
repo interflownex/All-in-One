@@ -36,6 +36,7 @@ async def submit_kyc(
     
     payload = {
         "biometry_hash": body.biometry_hash,
+        "liveness_score": body.liveness_score,
         "doc_front_url": "pending_upload",
         "doc_back_url": "pending_upload"
     }
@@ -84,6 +85,7 @@ async def get_kyc_status(user_id: UUID) -> Any:
         "user_id": latest["user_id"],
         "status": latest["status"],
         "risk_score": latest["payload"].get("risk_score"),
+        "liveness_score": latest["payload"].get("liveness_score"),
         "reason": latest["payload"].get("decision_reason")
     }
 
