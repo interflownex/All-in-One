@@ -46,3 +46,6 @@ Substitua secrets por vault/KMS, incluindo
 producao sem esta chave. Armazene credenciais Stitch apenas em vault/secret e
 rotacione qualquer chave exposta em texto. Configure TLS, bancos gerenciados, backups,
 observabilidade, WAF, network policy e imagens imutaveis antes de promover.
+Exija backup/restore validado, drill de disaster recovery com RPO/RTO
+documentados, smoke pos-restore e runbook revisado antes de qualquer corte de
+trafego produtivo.

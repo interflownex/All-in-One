@@ -1,3 +1,19 @@
+# STATUS OPERACIONAL - 2026-07-05 Backup, restore e DR documentados e validados
+
+### Concluido neste ciclo
+- Adicionado o runbook `## Backup, Restore E DR` em `docs/OPERATIONS.md`, cobrindo `pg_dump`, `pg_restore`, `mongodump`, `mongorestore`, restauracao de storage, `rpo_minutes`, `rto_minutes`, drill mensal e recuperacao de desastre.
+- Reforcada a orientacao de producao em `docs/DEPLOYMENT.md` para exigir backup/restore validado, DR e smoke pos-restore antes de corte de trafego.
+- Adicionado `tests/test_operations_backup_dr.py` para manter o contrato de backup/restore/DR sempre verificavel.
+- Validado `./.venv/bin/python -m pytest -q tests/test_operations_backup_dr.py tests/test_outbox_runbook.py tests/test_compliance_matrix.py tests/test_data_subject_rights.py tests/test_retention_jobs.py tests/test_retention_worker.py tests/test_retention_scheduling.py tests/test_retention_alerts.py` com `30 passed`.
+
+### Estado Operacional
+- A operacao agora possui um runbook explicito de backup, restore e disaster recovery amarrado a teste.
+- O proximo refinamento natural e evoluir de documento/teste para evidencia real de restore drill em ambiente apropriado.
+
+### Proximos Passos Naturais
+- Executar e registrar restore drills reais de PostgreSQL, MongoDB e storage privado em homologacao.
+- Seguir para os manifests de monitoramento e demais controles de producao/compliance.
+
 # STATUS OPERACIONAL - 2026-07-05 API Hub OAuth2 client_credentials validado
 
 ### Concluido neste ciclo

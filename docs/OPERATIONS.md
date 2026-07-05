@@ -138,6 +138,40 @@ Para Kubernetes com Prometheus Operator, as regras aplicaveis ficam em
 `AlertmanagerConfig` para rotear severidade critica tambem ao plantao de
 plataforma.
 
+## Backup, Restore E DR
+
+Antes de promover qualquer mudanca sensivel para producao, execute pelo menos
+um ciclo de backup e restauracao em ambiente de homologacao ou scratch. O
+objetivo e provar que PostgreSQL, MongoDB e storage privado conseguem ser
+restaurados sem perda silenciosa de dados nem quebra de contratos.
+
+Checklist minimo:
+
+1. Gerar backup logico de PostgreSQL com `pg_dump`.
+2. Restaurar o backup em banco de teste com `pg_restore`.
+3. Gerar backup de colecoes MongoDB com `mongodump`.
+4. Restaurar o backup MongoDB com `mongorestore`.
+5. Validar um restore de storage privado ou bucket de artefatos.
+6. Medir e registrar `rpo_minutes`, `rto_minutes`, `backup_id`, `restore_id`
+   e `incident_ticket`.
+7. Executar smoke tests nas APIs criticas apos a restauracao.
+8. Registrar o resultado no runbook e manter a evidencia para auditoria.
+
+Em desastre real:
+
+1. Congelar novos deploys e abrir incidente.
+2. Verificar escopo afetado, ultimo backup consistente e ponto de recuperacao.
+3. Restaurar na ordem: banco, mensageria, storage, runtime.
+4. Validar `health`, `audit.events`, outbox e principais jornadas de negocio.
+5. Retomar o trafego somente apos smoke e aprovacao de operacao/compliance.
+
+SLOs operacionais sugeridos:
+
+- RPO maximo: 15 minutos para dados criticos.
+- RTO maximo: 60 minutos para modulos criticos e 180 minutos para demais.
+- Drill de restore: mensal, com ticket e evidencia anexada.
+- Revisao de DR: trimestral, incluindo falha de banco e falha de storage.
+
 ## Incidentes
 
 Revogue sessoes/API keys, preserve trilha imutavel, suspenda publicacao ou
