@@ -376,6 +376,42 @@ def test_gateway_refunds_completed_order_via_sandbox_psp(monkeypatch) -> None:
     assert refund_call[2]["X-MFA-Verified"] == "true"
 
 
+def test_gateway_issues_oauth2_token_and_accepts_it_for_consumer_history(monkeypatch) -> None:
+    fake_client = FakeCatalogClient()
+    monkeypatch.setattr(api_hub, "client", fake_client)
+    monkeypatch.setattr(api_hub, "redis_client", None)
+    client = TestClient(api_hub.app)
+
+    token_response = client.post(
+        "/gateway/oauth2/token",
+        json={
+            "grant_type": "client_credentials",
+            "client_id": "local-client",
+            "api_key": "local-api-key",
+            "scope": "gateway:read",
+        },
+    )
+
+    assert token_response.status_code == 200
+    token_payload = token_response.json()
+    assert token_payload["token_type"] == "bearer"
+    assert token_payload["client_id"] == "local-client"
+    assert token_payload["scope"] == "gateway:read"
+    claims = api_hub.jwt.decode(token_payload["access_token"], api_hub.JWT_SECRET, algorithms=["HS256"])
+    assert claims["client_id"] == "local-client"
+    assert claims["grant_type"] == "client_credentials"
+    assert claims["scope"] == "gateway:read"
+
+    history_response = client.get(
+        "/gateway/consumer/orders",
+        headers={"Authorization": f"Bearer {token_payload['access_token']}"},
+    )
+
+    assert history_response.status_code == 200
+    assert history_response.json()["total"] == 1
+    assert history_response.json()["partial"] is False
+
+
 def test_gateway_returns_normalized_consumer_history(monkeypatch) -> None:
     fake_client = FakeCatalogClient()
     monkeypatch.setattr(api_hub, "client", fake_client)

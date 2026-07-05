@@ -4,6 +4,7 @@ import httpx
 import hashlib
 import hmac
 import asyncio
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal
 from urllib.parse import quote
@@ -106,6 +107,13 @@ class CatalogRefundRequest(BaseModel):
     order_id: UUID
     idempotency_key: str = Field(min_length=8, max_length=120)
     reason: str = Field(min_length=3, max_length=300)
+
+
+class OAuth2TokenRequest(BaseModel):
+    grant_type: Literal["client_credentials"] = "client_credentials"
+    client_id: str = Field(min_length=3, max_length=120)
+    api_key: str = Field(min_length=8, max_length=120)
+    scope: str | None = Field(default=None, max_length=200)
 
 
 class SupportCaseRequest(BaseModel):
@@ -329,6 +337,30 @@ async def validate_api_key_edge(request: Request):
     if "*" not in scopes and "gateway:read" not in scopes:
         raise HTTPException(status_code=403, detail="API key sem escopo gateway:read.")
     return key_info
+
+
+def _issue_gateway_oauth2_token(client_id: str, scopes: set[str], grant_type: str) -> dict[str, Any]:
+    now = datetime.now(UTC)
+    expires_in = 3600
+    expires_at = now + timedelta(seconds=expires_in)
+    scope_text = " ".join(sorted(scopes))
+    token_payload = {
+        "sub": client_id,
+        "client_id": client_id,
+        "grant_type": grant_type,
+        "scope": scope_text,
+        "iat": int(now.timestamp()),
+        "exp": int(expires_at.timestamp()),
+    }
+    access_token = jwt.encode(token_payload, JWT_SECRET, algorithm="HS256") if jwt is not None else ""
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "expires_in": expires_in,
+        "scope": scope_text,
+        "client_id": client_id,
+        "grant_type": grant_type,
+    }
 
 async def validate_jwt_edge(request: Request):
     """Valida o JWT na borda para rotas protegidas."""
@@ -1008,6 +1040,34 @@ async def gateway_status():
         "rate_limit": "REDIS_IP_BASED_ENABLED",
         "routes": list(SERVICES.keys())
     }
+
+
+@app.post("/gateway/oauth2/token", dependencies=[Depends(rate_limiter)])
+async def gateway_oauth2_token(body: OAuth2TokenRequest) -> dict[str, Any]:
+    if body.grant_type != "client_credentials":
+        raise HTTPException(status_code=400, detail="Grant type OAuth2 nao suportado.")
+    if jwt is None:
+        raise HTTPException(status_code=503, detail="Validador JWT indisponivel.")
+    key_info = _configured_api_keys().get(body.api_key)
+    if key_info is None or str(key_info["client_id"]) != body.client_id:
+        raise HTTPException(status_code=401, detail="Credenciais OAuth2 invalidas.")
+
+    allowed_scopes = set(key_info["scopes"])
+    requested_scopes = {scope.strip() for scope in (body.scope or "gateway:read").split() if scope.strip()}
+    if not requested_scopes:
+        requested_scopes = {"gateway:read"}
+
+    if "*" in allowed_scopes:
+        granted_scopes = requested_scopes
+    else:
+        if not requested_scopes <= allowed_scopes:
+            raise HTTPException(status_code=403, detail="Escopos OAuth2 nao autorizados.")
+        granted_scopes = requested_scopes
+
+    if "gateway:read" not in granted_scopes and "*" not in allowed_scopes:
+        raise HTTPException(status_code=403, detail="OAuth2 precisa do escopo gateway:read.")
+
+    return _issue_gateway_oauth2_token(body.client_id, granted_scopes, body.grant_type)
 
 
 @app.get("/gateway/api-key/check", dependencies=[Depends(rate_limiter)])

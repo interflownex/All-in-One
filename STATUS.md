@@ -1,3 +1,18 @@
+# STATUS OPERACIONAL - 2026-07-05 API Hub OAuth2 client_credentials validado
+
+### Concluido neste ciclo
+- Adicionado `POST /gateway/oauth2/token` em `modules/api_hub/main.py` para emitir JWTs `client_credentials` assinados com o `JWT_SECRET` usando as API keys configuradas.
+- Ampliada a suite `tests/test_api_hub_catalog_gateway.py` para provar emissão de token OAuth2 e uso do token em `GET /gateway/consumer/orders`.
+- Validado `./.venv/bin/python -m pytest -q tests/test_api_hub_catalog_gateway.py tests/test_security_gates.py tests/test_integration_sandbox_adapters.py tests/test_integration_sandbox_routes.py modules/identity/tests/test_e2e_identity.py` com `27 passed, 1 warning`.
+
+### Estado Operacional
+- O API Hub agora possui API key, OAuth2 client_credentials, webhooks assinados, rate limit e consumo de token JWT na borda.
+- O proximo refinamento natural e ligar esse token a escopos reais/provedores externos quando houver homologacao disponivel.
+
+### Proximos Passos Naturais
+- Seguir para os provedores reais restantes de Identity, Finance, Jobs e Delivery/Mobility.
+- Manter a trilha de sandbox e os gates do backend verdes a cada incremento.
+
 # STATUS OPERACIONAL - 2026-07-05 Identity E2E real com liveness validado
 
 ### Concluido neste ciclo
