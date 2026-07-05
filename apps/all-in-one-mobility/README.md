@@ -1,7 +1,14 @@
 # all-in-one-mobility
 
-Corridas, transporte publico, tarifas, tickets, QR Code e NFC.
+Shell web vivo do ecossistema Mobility.
 
-Esta aplicacao consumira o API Hub com o mesmo All-in-One ID. O baseline
-fixa as responsabilidades e contratos; a interface e a jornada visual
-serao implementadas sobre os endpoints versionados dos modulos.
+O aplicativo consome o API Hub, o Identity baseline e os recursos do modulo
+Mobility para exibir corridas, bilhetes QR/NFC, rotas e tarifas em uma
+interface Vite/React responsiva.
+
+Rotas principais:
+- `dashboard`
+- `corridas`
+- `bilhetes`
+- `rotas`
+- `tarifas`

@@ -1,7 +1,14 @@
 # all-in-one-health
 
-Pacientes, profissionais, agenda, prontuario e telemedicina.
+Shell web vivo do ecossistema Health.
 
-Esta aplicacao consumira o API Hub com o mesmo All-in-One ID. O baseline
-fixa as responsabilidades e contratos; a interface e a jornada visual
-serao implementadas sobre os endpoints versionados dos modulos.
+O aplicativo consome o API Hub, o Identity baseline e os recursos do modulo
+Health para exibir pacientes, agenda, prontuario, prescricoes e telemedicina
+em uma interface Vite/React responsiva.
+
+Rotas principais:
+- `dashboard`
+- `pacientes`
+- `agenda`
+- `prontuario`
+- `telemedicina`

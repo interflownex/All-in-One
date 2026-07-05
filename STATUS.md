@@ -1,3 +1,19 @@
+# STATUS OPERACIONAL - 2026-07-05 Shells Health e Mobility vivos validados com 15 jornadas E2E
+
+### Concluido neste ciclo
+- Scaffoldados os shells `all-in-one-health` e `all-in-one-mobility` em Vite/React com tema e fluxos reais do dominio.
+- Adicionados os testes E2E isolados `tests/e2e/test_all_in_one_health_shell.py` e `tests/e2e/test_all_in_one_mobility_shell.py`.
+- Validados `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_health_shell.py`, `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_mobility_shell.py` e `./.venv/bin/python -m pytest -q tests/e2e`, com `15 passed`.
+- Mantidos verdes os builds locais dos dois apps novos.
+
+### Estado Operacional
+- O frontend ganhou dois shells adicionais vivos e a suite E2E geral subiu para 15 jornadas verdes.
+- O proximo refinamento natural e expandir os demais shells parciais e consolidar os fluxos de frontend restantes.
+
+### Proximos Passos Naturais
+- Consolidar os demais shells ainda parciais do frontend.
+- Seguir para as integracoes reais e, depois, producao/compliance.
+
 # STATUS OPERACIONAL - 2026-07-05 Observabilidade comercial do Marketplace com alertas validada
 
 ### Concluido neste ciclo
