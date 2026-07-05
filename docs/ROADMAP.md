@@ -28,6 +28,9 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
   RabbitMQ saudaveis.
 - Ligacao entre os metrics Prometheus text do worker da outbox e o dashboard
   Grafana versionado validada em teste automatizado.
+- Observabilidade comercial do Marketplace materializada com metricas
+  Prometheus text, dashboard Grafana e serie historica de pedidos, suporte,
+  reputacao e conversao.
 - Orquestracao Google Stitch declarativa com um projeto visual por
   microservico e telas Jobs/Business/User especializadas.
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.

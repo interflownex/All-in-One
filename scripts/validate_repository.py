@@ -29,6 +29,7 @@ RETENTION_JOBS = ROOT / "config" / "compliance" / "retention_jobs.json"
 RETENTION_ALERTS = ROOT / "config" / "observability" / "retention_alerts.json"
 OUTBOX_ALERTS = ROOT / "config" / "observability" / "outbox_alerts.json"
 OUTBOX_DASHBOARD = ROOT / "config" / "observability" / "outbox_dashboard.json"
+COMMERCIAL_DASHBOARD = ROOT / "config" / "observability" / "commercial_dashboard.json"
 DOMAIN_EVENT_FIXTURES = ROOT / "config" / "events" / "domain_event_fixtures.json"
 EVENTS_DOC = ROOT / "docs" / "EVENTS.md"
 PROVIDER_MATRIX = ROOT / "config" / "integrations" / "provider_matrix.json"
@@ -40,6 +41,7 @@ KUBERNETES_PLATFORM = ROOT / "infra" / "kubernetes" / "base" / "platform.yaml"
 KUBERNETES_KUSTOMIZATION = ROOT / "infra" / "kubernetes" / "base" / "kustomization.yaml"
 KUBERNETES_OUTBOX_ALERTING = ROOT / "infra" / "kubernetes" / "base" / "outbox-alerting.yaml"
 KUBERNETES_OUTBOX_DASHBOARD = ROOT / "infra" / "kubernetes" / "base" / "outbox-dashboard.yaml"
+KUBERNETES_COMMERCIAL_DASHBOARD = ROOT / "infra" / "kubernetes" / "base" / "commercial-dashboard.yaml"
 KUBERNETES_RETENTION_ALERTING = ROOT / "infra" / "kubernetes" / "base" / "retention-alerting.yaml"
 REQUIRED_MODULE_FILES = {
     "README.md",
@@ -126,6 +128,29 @@ REQUIRED_OUTBOX_DASHBOARD_METRICS = {
     "all_in_one_outbox_failed_retryable_total",
     "all_in_one_outbox_max_retry_count",
     "all_in_one_outbox_oldest_pending_age_seconds",
+}
+REQUIRED_COMMERCIAL_DASHBOARD_TITLES = {
+    "Pedidos totais",
+    "Pedidos pagos",
+    "Pedidos concluidos",
+    "Casos abertos",
+    "Casos resolvidos",
+    "Avaliacoes",
+    "Nota media",
+    "Conversao",
+    "Tendencia de pedidos e suporte",
+    "Tendencia de conversao e reputacao",
+}
+REQUIRED_COMMERCIAL_DASHBOARD_METRICS = {
+    "all_in_one_marketplace_orders_total",
+    "all_in_one_marketplace_orders_paid",
+    "all_in_one_marketplace_orders_completed",
+    "all_in_one_marketplace_support_cases_total",
+    "all_in_one_marketplace_support_cases_open",
+    "all_in_one_marketplace_support_cases_resolved",
+    "all_in_one_marketplace_reviews_total",
+    "all_in_one_marketplace_average_rating",
+    "all_in_one_marketplace_conversion_rate_percent",
 }
 EVENT_BULLET_PATTERN = re.compile(r"^\s*-\s*`([^`]+)`\s*$", re.MULTILINE)
 REQUIRED_MULTI_AGENT_IDS = {
@@ -638,6 +663,50 @@ def main() -> int:
             fail("Dashboard da outbox deve expor o JSON oficial no ConfigMap.", errors)
         if "All-in-One - Outbox Dispatcher" not in outbox_dashboard_manifest:
             fail("ConfigMap do dashboard da outbox deve conter o titulo oficial.", errors)
+    if not COMMERCIAL_DASHBOARD.is_file():
+        fail(f"Contrato do dashboard comercial ausente: {COMMERCIAL_DASHBOARD}", errors)
+    else:
+        commercial_dashboard = json.loads(COMMERCIAL_DASHBOARD.read_text(encoding="utf-8"))
+        if commercial_dashboard.get("uid") != "marketplace-commercial":
+            fail("Dashboard comercial deve declarar uid marketplace-commercial.", errors)
+        if commercial_dashboard.get("title") != "All-in-One - Marketplace Comercial":
+            fail("Dashboard comercial deve declarar o titulo oficial.", errors)
+        if set(commercial_dashboard.get("tags", [])) != {"all-in-one", "marketplace", "commercial"}:
+            fail("Dashboard comercial deve declarar as tags oficiais.", errors)
+        if commercial_dashboard.get("refresh") != "30s":
+            fail("Dashboard comercial deve atualizar a cada 30s.", errors)
+        if commercial_dashboard.get("time") != {"from": "now-24h", "to": "now"}:
+            fail("Dashboard comercial deve usar janela historica now-24h.", errors)
+        panels = commercial_dashboard.get("panels", [])
+        if len(panels) < 10:
+            fail("Dashboard comercial deve declarar ao menos 10 paineis.", errors)
+        panel_titles = {panel.get("title") for panel in panels}
+        if not REQUIRED_COMMERCIAL_DASHBOARD_TITLES.issubset(panel_titles):
+            fail("Dashboard comercial deve cobrir os paineis esperados.", errors)
+        if not any(panel.get("type") == "timeseries" for panel in panels):
+            fail("Dashboard comercial deve declarar pelo menos um painel timeseries.", errors)
+        panel_exprs = {
+            target.get("expr")
+            for panel in panels
+            for target in panel.get("targets", [])
+            if isinstance(target, dict) and target.get("expr")
+        }
+        for metric in REQUIRED_COMMERCIAL_DASHBOARD_METRICS:
+            if not any(metric in expr for expr in panel_exprs):
+                fail(f"Dashboard comercial nao referencia a metrica: {metric}", errors)
+        commercial_dashboard_manifest = (
+            KUBERNETES_COMMERCIAL_DASHBOARD.read_text(encoding="utf-8")
+            if KUBERNETES_COMMERCIAL_DASHBOARD.is_file()
+            else ""
+        )
+        if "kind: ConfigMap" not in commercial_dashboard_manifest or 'grafana_dashboard: "1"' not in commercial_dashboard_manifest:
+            fail("Dashboard comercial deve materializar ConfigMap Grafana.", errors)
+        if "commercial-dashboard.json" not in commercial_dashboard_manifest:
+            fail("Dashboard comercial deve expor o JSON oficial no ConfigMap.", errors)
+        if "All-in-One - Marketplace Comercial" not in commercial_dashboard_manifest:
+            fail("ConfigMap do dashboard comercial deve conter o titulo oficial.", errors)
+        if "all_in_one_marketplace_orders_total" not in commercial_dashboard_manifest:
+            fail("ConfigMap do dashboard comercial deve conter os indicadores de pedidos.", errors)
     if not DOMAIN_EVENT_FIXTURES.is_file():
         fail(f"Catalogo de fixtures de eventos ausente: {DOMAIN_EVENT_FIXTURES}", errors)
     else:

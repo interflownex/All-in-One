@@ -98,6 +98,33 @@ retry, publicacoes e tendencia temporal.
    - preservar a trilha imutavel de auditoria.
 6. Nunca incluir payload sensivel nas notificacoes ou no ticket.
 
+## Observabilidade Comercial
+
+O Marketplace expoe indicadores comerciais em `/metrics` com prefixo
+`all_in_one_marketplace_*`, permitindo que o Prometheus historize volume de
+pedidos, casos de suporte, avaliacoes, nota media e conversao. O resumo
+funcional da jornada continua disponivel em `/valley/insights/commercial` e o
+dashboard Grafana esta materializado em `config/observability/commercial_dashboard.json`
+e `infra/kubernetes/base/commercial-dashboard.yaml`.
+
+Metricas expostas:
+
+- `all_in_one_marketplace_orders_total`: total de pedidos nao removidos.
+- `all_in_one_marketplace_orders_paid`: pedidos em estados monetizados.
+- `all_in_one_marketplace_orders_completed`: pedidos concluidos.
+- `all_in_one_marketplace_support_cases_total`: casos de suporte e disputa.
+- `all_in_one_marketplace_support_cases_open`: casos ainda abertos.
+- `all_in_one_marketplace_support_cases_resolved`: casos resolvidos.
+- `all_in_one_marketplace_reviews_total`: avaliacoes publicadas.
+- `all_in_one_marketplace_average_rating`: nota media historica.
+- `all_in_one_marketplace_conversion_rate_percent`: taxa de conversao comercial.
+
+Ao investigar queda de receita ou reputação:
+
+1. Conferir `/metrics` do Marketplace e a tendência histórica no Grafana.
+2. Validar `/valley/insights/commercial` para o retrato funcional da jornada.
+3. Correlacionar pedidos, suporte e avaliações com auditoria e outbox.
+
 ## Retencao LGPD
 
 O worker de retencao LGPD processa candidatos em

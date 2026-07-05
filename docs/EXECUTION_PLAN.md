@@ -12,7 +12,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
 | PostgreSQL estrutural | 88% | 15 migrations SQL e stores para 25 modulos, incluindo ledger Gold Valley append-only, com matriz prioritária e complementar validada em banco real | Schema amplo existe e a cobertura real da matriz agora fecha o catalogo; falta manter o gate e acompanhar drifts futuros. |
 | Runtime FastAPI modular | 86% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado e carregamento dinamico por DSN validado em containers | Base local estabilizada; falta ampliar testes E2E por jornada. |
-| Mensageria/outbox | 90% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos, payload seguro de refund, fixtures versionadas por modulo, matriz de dispatch e eventos reais de AI Core/API Hub validados no store/sandbox | Precisa ampliar cobertura para eventos reais de todos os modulos e dashboards reais. |
+| Mensageria/outbox | 92% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos, payload seguro de refund, fixtures versionadas por modulo, matriz de dispatch, eventos reais de AI Core/API Hub validados no store/sandbox e dashboard comercial do Marketplace | Precisa ampliar cobertura para eventos reais de todos os modulos e dashboards reais do cluster. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
 | Docker local | 95% | Postgres, RabbitMQ, MongoDB, Redis, outbox e 13 APIs FastAPI healthy | Falta gate CI para impedir regressao de compose. |
 | Apps/frontend | 75% | 9 apps catalogados, catalogo Valley backend regionalizado, plano Stitch com 25 projetos/177 telas, jornadas contratuais locais por pytest, 13 jornadas E2E verdes em `tests/e2e` e shells vivos em `all-in-one`, `all-in-one-business`, `all-in-one-user`, `all-in-one-services`, `valley-business` e `valley-rider` integrados a endpoints FastAPI | Ainda falta fechar os demais shells, ampliar Playwright E2E e sincronizar o Stitch remoto com seguranca. |
@@ -107,7 +107,7 @@ Proximos passos naturais:
 
 Objetivo: garantir comunicacao assincroma confiavel e rastreavel.
 
-Status: 94%
+Status: 95%
 
 Entregas ja existentes:
 - `audit.domain_events`.
@@ -130,6 +130,9 @@ Entregas ja existentes:
   retry e idade do pendente.
 - Dashboard Grafana da outbox agora esta materializado em JSON versionado e em
   `ConfigMap` Kubernetes para visoes de backlog, retry, publicacoes e tendencia.
+- Dashboard Grafana comercial do Marketplace agora esta materializado em JSON
+  versionado e em `ConfigMap` Kubernetes para visoes de pedidos, suporte,
+  reputacao e conversao.
 - Catalogo de fixtures de eventos de dominio materializado em
   `config/events/domain_event_fixtures.json` a partir de
   `config/module_catalog.json`.
@@ -150,14 +153,18 @@ Entregas ja existentes:
   `tests/test_ai_core_api_hub_completed_events.py` e
   `tests/test_integration_sandbox_adapters.py`, validando conclusao real no
   store compartilhado e no provider sandbox.
+- Indicadores comerciais do Marketplace validados em `/metrics` e no dashboard
+  Grafana comercial, cobrindo pedidos, suporte, avaliações, nota media e
+  conversao.
 
 Pendencias:
 - Validar eventos reais de todos os modulos.
-- Consolidar dashboards Grafana para consumo operacional em cluster real.
+- Consolidar dashboards Grafana para consumo operacional em cluster real,
+  incluindo os indicadores comerciais.
 
 Proximos passos naturais:
 1. Rodar dispatcher contra eventos reais de cada dominio usando o catalogo de fixtures versionado e a matriz de dispatch.
-2. Consolidar dashboards Grafana para consumo operacional em cluster real.
+2. Consolidar dashboards Grafana para consumo operacional em cluster real, incluindo os indicadores comerciais.
 
 ### Fase 4 - Jornadas E2E por app
 
