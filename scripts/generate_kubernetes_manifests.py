@@ -195,7 +195,7 @@ def main():
     print("Generated commercial-dashboard.yaml")
 
     # Update kustomization.yaml if it exists, or create it
-    resources = [f"{m}.yaml" for m in MODULES] + [f"{w}.yaml" for w in WORKERS.keys()] + ["platform.yaml", "outbox-alerting.yaml", "outbox-dashboard.yaml", "commercial-dashboard.yaml", "retention-alerting.yaml"]
+    resources = [f"{m}.yaml" for m in MODULES] + [f"{w}.yaml" for w in WORKERS.keys()] + ["platform.yaml", "outbox-alerting.yaml", "outbox-dashboard.yaml", "commercial-alerting.yaml", "commercial-dashboard.yaml", "retention-alerting.yaml"]
 
     kustomization = f"""apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

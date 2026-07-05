@@ -29,8 +29,8 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
 - Ligacao entre os metrics Prometheus text do worker da outbox e o dashboard
   Grafana versionado validada em teste automatizado.
 - Observabilidade comercial do Marketplace materializada com metricas
-  Prometheus text, dashboard Grafana e serie historica de pedidos, suporte,
-  reputacao e conversao.
+  Prometheus text, dashboard Grafana, alertas e serie historica de pedidos,
+  suporte, reputacao e conversao.
 - Orquestracao Google Stitch declarativa com um projeto visual por
   microservico e telas Jobs/Business/User especializadas.
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.
@@ -41,7 +41,7 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
 ## Proximos incrementos bloqueadores para beta
 
 1. Consolidar o dispatcher real e a observabilidade operacional com eventos de
-   todos os dominios.
+   todos os dominios, dashboards e alertas.
 2. Integrar Identity/API Hub com OIDC, MFA, KMS, KYC/KYB e liveness aprovados.
 3. Integrar verificador oficial autorizado para CTPS Digital, sem alterar a
    classificacao historica dos itens autodeclarados; storage privado cifrado

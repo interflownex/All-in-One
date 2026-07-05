@@ -12,7 +12,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
 | PostgreSQL estrutural | 88% | 15 migrations SQL e stores para 25 modulos, incluindo ledger Gold Valley append-only, com matriz prioritária e complementar validada em banco real | Schema amplo existe e a cobertura real da matriz agora fecha o catalogo; falta manter o gate e acompanhar drifts futuros. |
 | Runtime FastAPI modular | 86% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado e carregamento dinamico por DSN validado em containers | Base local estabilizada; falta ampliar testes E2E por jornada. |
-| Mensageria/outbox | 92% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos, payload seguro de refund, fixtures versionadas por modulo, matriz de dispatch, eventos reais de AI Core/API Hub validados no store/sandbox e dashboard comercial do Marketplace | Precisa ampliar cobertura para eventos reais de todos os modulos e dashboards reais do cluster. |
+| Mensageria/outbox | 93% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos, payload seguro de refund, fixtures versionadas por modulo, matriz de dispatch, eventos reais de AI Core/API Hub validados no store/sandbox e dashboards comercial/operacional do Marketplace | Precisa ampliar cobertura para eventos reais de todos os modulos e consolidar dashboards e alertas reais do cluster. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
 | Docker local | 95% | Postgres, RabbitMQ, MongoDB, Redis, outbox e 13 APIs FastAPI healthy | Falta gate CI para impedir regressao de compose. |
 | Apps/frontend | 75% | 9 apps catalogados, catalogo Valley backend regionalizado, plano Stitch com 25 projetos/177 telas, jornadas contratuais locais por pytest, 13 jornadas E2E verdes em `tests/e2e` e shells vivos em `all-in-one`, `all-in-one-business`, `all-in-one-user`, `all-in-one-services`, `valley-business` e `valley-rider` integrados a endpoints FastAPI | Ainda falta fechar os demais shells, ampliar Playwright E2E e sincronizar o Stitch remoto com seguranca. |
@@ -107,7 +107,7 @@ Proximos passos naturais:
 
 Objetivo: garantir comunicacao assincroma confiavel e rastreavel.
 
-Status: 95%
+Status: 96%
 
 Entregas ja existentes:
 - `audit.domain_events`.
@@ -133,6 +133,9 @@ Entregas ja existentes:
 - Dashboard Grafana comercial do Marketplace agora esta materializado em JSON
   versionado e em `ConfigMap` Kubernetes para visoes de pedidos, suporte,
   reputacao e conversao.
+- Alertas comerciais do Marketplace agora estao materializados em JSON
+  versionado e em `PrometheusRule`/`AlertmanagerConfig` Kubernetes para
+  pedidos, conversao, suporte, reputacao e disputa.
 - Catalogo de fixtures de eventos de dominio materializado em
   `config/events/domain_event_fixtures.json` a partir de
   `config/module_catalog.json`.
@@ -160,7 +163,7 @@ Entregas ja existentes:
 Pendencias:
 - Validar eventos reais de todos os modulos.
 - Consolidar dashboards Grafana para consumo operacional em cluster real,
-  incluindo os indicadores comerciais.
+  incluindo os indicadores comerciais e seus alertas.
 
 Proximos passos naturais:
 1. Rodar dispatcher contra eventos reais de cada dominio usando o catalogo de fixtures versionado e a matriz de dispatch.

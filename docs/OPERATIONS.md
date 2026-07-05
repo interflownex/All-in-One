@@ -119,6 +119,23 @@ Metricas expostas:
 - `all_in_one_marketplace_average_rating`: nota media historica.
 - `all_in_one_marketplace_conversion_rate_percent`: taxa de conversao comercial.
 
+Alertas comerciais ficam versionados em
+`config/observability/commercial_alerts.json` e materializados em
+`infra/kubernetes/base/commercial-alerting.yaml`:
+
+- `MarketplaceOrdersPaidStalled`: pedidos existem, mas nao ha pedidos pagos.
+- `MarketplaceConversionLow`: conversao abaixo do minimo esperado.
+- `MarketplaceSupportBacklogHigh`: casos em aberto acima do limite.
+- `MarketplaceReputationLow`: nota media e avaliacao abaixo do nivel minimo.
+- `MarketplaceDisputesUnresolvedHigh`: casos crescem sem resolucao suficiente.
+
+As notificacoes usam `business-oncall` e `platform-oncall` e nunca devem
+carregar payload sensivel. O runbook de investigacao segue:
+
+1. Conferir `/metrics` e o dashboard comercial.
+2. Validar pedidos, suporte, avaliacoes e conversao em conjunto.
+3. Correlacionar a queda com o ticket e com a trilha de auditoria.
+
 Ao investigar queda de receita ou reputação:
 
 1. Conferir `/metrics` do Marketplace e a tendência histórica no Grafana.

@@ -136,6 +136,9 @@ O agendamento declarativo foi adicionado em dois modos:
   materializam os alertas operacionais da outbox sem expor payload sensivel.
 - `config/observability/outbox_dashboard.json` e `infra/kubernetes/base/outbox-dashboard.yaml`
   materializam o dashboard operacional da outbox com metricas agregadas.
+- `config/observability/commercial_alerts.json` e
+  `infra/kubernetes/base/commercial-alerting.yaml` materializam os alertas
+  comerciais do Marketplace sem expor payload sensivel.
 - `database/postgres/migrations/016_compliance_retention_jobs.sql` cria a fila
   PostgreSQL de candidatos e a tabela append-by-policy de decisoes.
 - `infra/docker/docker-compose.yml` e `infra/kubernetes/base/platform.yaml`

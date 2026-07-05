@@ -31,5 +31,6 @@ resources:
   - platform.yaml
   - outbox-alerting.yaml
   - outbox-dashboard.yaml
+  - commercial-alerting.yaml
   - commercial-dashboard.yaml
   - retention-alerting.yaml

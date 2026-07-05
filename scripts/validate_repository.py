@@ -30,6 +30,7 @@ RETENTION_ALERTS = ROOT / "config" / "observability" / "retention_alerts.json"
 OUTBOX_ALERTS = ROOT / "config" / "observability" / "outbox_alerts.json"
 OUTBOX_DASHBOARD = ROOT / "config" / "observability" / "outbox_dashboard.json"
 COMMERCIAL_DASHBOARD = ROOT / "config" / "observability" / "commercial_dashboard.json"
+COMMERCIAL_ALERTS = ROOT / "config" / "observability" / "commercial_alerts.json"
 DOMAIN_EVENT_FIXTURES = ROOT / "config" / "events" / "domain_event_fixtures.json"
 EVENTS_DOC = ROOT / "docs" / "EVENTS.md"
 PROVIDER_MATRIX = ROOT / "config" / "integrations" / "provider_matrix.json"
@@ -42,6 +43,7 @@ KUBERNETES_KUSTOMIZATION = ROOT / "infra" / "kubernetes" / "base" / "kustomizati
 KUBERNETES_OUTBOX_ALERTING = ROOT / "infra" / "kubernetes" / "base" / "outbox-alerting.yaml"
 KUBERNETES_OUTBOX_DASHBOARD = ROOT / "infra" / "kubernetes" / "base" / "outbox-dashboard.yaml"
 KUBERNETES_COMMERCIAL_DASHBOARD = ROOT / "infra" / "kubernetes" / "base" / "commercial-dashboard.yaml"
+KUBERNETES_COMMERCIAL_ALERTING = ROOT / "infra" / "kubernetes" / "base" / "commercial-alerting.yaml"
 KUBERNETES_RETENTION_ALERTING = ROOT / "infra" / "kubernetes" / "base" / "retention-alerting.yaml"
 REQUIRED_MODULE_FILES = {
     "README.md",
@@ -151,6 +153,13 @@ REQUIRED_COMMERCIAL_DASHBOARD_METRICS = {
     "all_in_one_marketplace_reviews_total",
     "all_in_one_marketplace_average_rating",
     "all_in_one_marketplace_conversion_rate_percent",
+}
+REQUIRED_COMMERCIAL_ALERTS = {
+    "MarketplaceOrdersPaidStalled",
+    "MarketplaceConversionLow",
+    "MarketplaceSupportBacklogHigh",
+    "MarketplaceReputationLow",
+    "MarketplaceDisputesUnresolvedHigh",
 }
 EVENT_BULLET_PATTERN = re.compile(r"^\s*-\s*`([^`]+)`\s*$", re.MULTILINE)
 REQUIRED_MULTI_AGENT_IDS = {
@@ -555,6 +564,10 @@ def main() -> int:
             fail("Kustomization base deve incluir outbox-alerting.yaml.", errors)
         if "outbox-dashboard.yaml" not in kustomization:
             fail("Kustomization base deve incluir outbox-dashboard.yaml.", errors)
+        if "commercial-alerting.yaml" not in kustomization:
+            fail("Kustomization base deve incluir commercial-alerting.yaml.", errors)
+        if "commercial-dashboard.yaml" not in kustomization:
+            fail("Kustomization base deve incluir commercial-dashboard.yaml.", errors)
         if "retention-alerting.yaml" not in kustomization:
             fail("Kustomization base deve incluir retention-alerting.yaml.", errors)
     if not COMPLIANCE_MATRIX.is_file():
@@ -707,6 +720,37 @@ def main() -> int:
             fail("ConfigMap do dashboard comercial deve conter o titulo oficial.", errors)
         if "all_in_one_marketplace_orders_total" not in commercial_dashboard_manifest:
             fail("ConfigMap do dashboard comercial deve conter os indicadores de pedidos.", errors)
+    if not COMMERCIAL_ALERTS.is_file():
+        fail(f"Contrato de alertas comerciais ausente: {COMMERCIAL_ALERTS}", errors)
+    else:
+        commercial_alerts = json.loads(COMMERCIAL_ALERTS.read_text(encoding="utf-8"))
+        if set(commercial_alerts.get("alerts", {})) != REQUIRED_COMMERCIAL_ALERTS:
+            fail("Alertas comerciais devem cobrir pedidos, conversao, suporte, reputacao e disputa.", errors)
+        if commercial_alerts.get("scope") != "marketplace-commercial":
+            fail("Alertas comerciais devem declarar scope marketplace-commercial.", errors)
+        if commercial_alerts.get("runbook") != "docs/OPERATIONS.md#observabilidade-comercial":
+            fail("Alertas comerciais devem apontar para o runbook de observabilidade comercial.", errors)
+        if commercial_alerts.get("notification_policy", {}).get("include_sensitive_payload") is not False:
+            fail("Alertas comerciais nao podem incluir payload sensivel.", errors)
+        for alert_name, alert in commercial_alerts.get("alerts", {}).items():
+            if not alert.get("expr") or not alert.get("evidence") or "incident_ticket" not in alert.get("evidence", []):
+                fail(f"Alerta comercial incompleto: {alert_name}", errors)
+        commercial_alerting = (
+            KUBERNETES_COMMERCIAL_ALERTING.read_text(encoding="utf-8")
+            if KUBERNETES_COMMERCIAL_ALERTING.is_file()
+            else ""
+        )
+        if "kind: PrometheusRule" not in commercial_alerting or "kind: AlertmanagerConfig" not in commercial_alerting:
+            fail("Alertas comerciais devem ter PrometheusRule e AlertmanagerConfig Kubernetes.", errors)
+        if "receiver: business-oncall" not in commercial_alerting or "receiver: platform-oncall" not in commercial_alerting:
+            fail("Alertas comerciais devem rotear para business-oncall e platform-oncall.", errors)
+        if "runbook_url: docs/OPERATIONS.md#observabilidade-comercial" not in commercial_alerting:
+            fail("PrometheusRule comercial deve apontar para o runbook de observabilidade comercial.", errors)
+        for alert_name, alert in commercial_alerts.get("alerts", {}).items():
+            if f"alert: {alert_name}" not in commercial_alerting or alert["expr"] not in commercial_alerting:
+                fail(f"PrometheusRule comercial nao materializa alerta: {alert_name}", errors)
+            if f"for: {alert['for']}" not in commercial_alerting or f"severity: {alert['severity']}" not in commercial_alerting:
+                fail(f"PrometheusRule comercial nao declara severidade e SLA de {alert_name}.", errors)
     if not DOMAIN_EVENT_FIXTURES.is_file():
         fail(f"Catalogo de fixtures de eventos ausente: {DOMAIN_EVENT_FIXTURES}", errors)
     else:

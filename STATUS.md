@@ -1,17 +1,20 @@
-# STATUS OPERACIONAL - 2026-07-05 Observabilidade comercial do Marketplace validada
+# STATUS OPERACIONAL - 2026-07-05 Observabilidade comercial do Marketplace com alertas validada
 
 ### Concluido neste ciclo
 - Expostas métricas comerciais do Marketplace em `/metrics` com prefixo `all_in_one_marketplace_*`, cobrindo pedidos, suporte, avaliações, nota media e conversao.
 - Materializado o dashboard Grafana comercial em `config/observability/commercial_dashboard.json` e `infra/kubernetes/base/commercial-dashboard.yaml`.
+- Materializados os alertas comerciais em `config/observability/commercial_alerts.json` e `infra/kubernetes/base/commercial-alerting.yaml`.
 - Adicionados `tests/test_marketplace_commercial_metrics.py` e `tests/test_commercial_dashboard.py` para manter o contrato comercial verificavel.
-- Mantidos verdes `./.venv/bin/python -m pytest -q tests/test_marketplace_commercial_metrics.py tests/test_commercial_dashboard.py` com `3 passed, 1 skipped`, `python3 scripts/validate_repository.py`, `./.venv/bin/python scripts/validate_openapi.py` e `git diff --check`.
+- Adicionados `tests/test_commercial_alerts.py` para manter o contrato de alertas verificavel.
+- Mantidos verdes `./.venv/bin/python -m pytest -q tests/test_marketplace_commercial_metrics.py tests/test_commercial_dashboard.py tests/test_commercial_alerts.py`, `python3 scripts/validate_repository.py`, `./.venv/bin/python scripts/validate_openapi.py` e `git diff --check`.
 
 ### Estado Operacional
 - A camada de observabilidade agora cobre o operacional da outbox e o comercial do Marketplace em Prometheus/Grafana.
-- O proximo refinamento natural e levar esses sinais para cluster real e consolidar os demais paineis de negocio.
+- O proximo refinamento natural e levar esses sinais, dashboards e alertas para cluster real e consolidar os demais paineis de negocio.
 
 ### Proximos Passos Naturais
 - Consolidar dashboards Grafana para consumo operacional em cluster real, incluindo indicadores comerciais.
+- Consolidar dashboards Grafana e alertas para consumo operacional em cluster real, incluindo indicadores comerciais.
 - Seguir para o frontend funcional e depois para as integracoes reais pendentes.
 
 # STATUS OPERACIONAL - 2026-07-05 Matriz completa de stores PostgreSQL validada em 25 modulos
