@@ -10,7 +10,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | --- | ---: | --- | --- |
 | Git e sincronizacao remota | 100% | `local main`, `origin/main` e `fork/main` alinhados | Fluxo de entrega remoto esta operacional. |
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
-| PostgreSQL estrutural | 81% | 15 migrations SQL e stores para 25 modulos, incluindo ledger Gold Valley append-only, com matriz prioritária validada em banco real | Schema amplo existe; falta ampliar a prova real para todos os modulos. |
+| PostgreSQL estrutural | 88% | 15 migrations SQL e stores para 25 modulos, incluindo ledger Gold Valley append-only, com matriz prioritária e complementar validada em banco real | Schema amplo existe e a cobertura real da matriz agora fecha o catalogo; falta manter o gate e acompanhar drifts futuros. |
 | Runtime FastAPI modular | 86% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado e carregamento dinamico por DSN validado em containers | Base local estabilizada; falta ampliar testes E2E por jornada. |
 | Mensageria/outbox | 90% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos, payload seguro de refund, fixtures versionadas por modulo, matriz de dispatch e eventos reais de AI Core/API Hub validados no store/sandbox | Precisa ampliar cobertura para eventos reais de todos os modulos e dashboards reais. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
@@ -71,21 +71,20 @@ Proximos passos naturais:
 
 Objetivo: trocar o contrato local por persistencia PostgreSQL real, auditavel e testada.
 
-Status: 84%
+Status: 88%
 
 Entregas ja existentes:
 - 15 migrations PostgreSQL.
 - `BasePostgresStore` compartilhado.
 - Stores especializados para `jobs`, `identity`, `finance`, `api_hub`, `business`, `marketplace`, `delivery`, `services` e `mobility`.
 - Stores gerados para os demais modulos.
+- Matriz complementar valida para os 25 modulos do catalogo em banco real.
 - Idempotencia espalhada nas principais tabelas.
 
 Pendencias:
-- Validar migrations 001-015 em banco limpo e banco ja populado.
-- Criar testes CRUD reais para cada store PostgreSQL.
-- Confirmar audit log append-only em todos os fluxos sensiveis.
-- Confirmar outbox para eventos de todos os modulos.
-- Substituir stores genericos por mapeamentos tipados nos modulos de maior risco.
+- Manter a matriz completa como gate continuo a cada alteracao de schema.
+- Confirmar audit log append-only e outbox nos fluxos sensiveis quando novos dominios forem tocados.
+- Substituir stores genericos por mapeamentos tipados nos modulos de maior risco quando surgirem novos requisitos.
 
 Prioridade de tipagem por risco:
 1. `finance`
@@ -100,11 +99,9 @@ Prioridade de tipagem por risco:
 10. Demais modulos operacionais
 
 Proximos passos naturais:
-1. Criar suite `tests/test_postgres_stores_matrix.py`.
-2. Testar create/get/list/update/soft_delete/idempotency por modulo.
-3. Testar audit/outbox por modulo.
-4. Corrigir cada store gerado que tentar gravar colunas inexistentes.
-5. Atualizar docs de DSN e operacao.
+1. Manter a matriz PostgreSQL completa como gate continuo em banco real.
+2. Avancar para eventos, RabbitMQ e observabilidade operacionais.
+3. Atualizar docs de DSN e operacao quando novos modulos ou migrations surgirem.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 

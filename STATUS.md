@@ -1,3 +1,18 @@
+# STATUS OPERACIONAL - 2026-07-05 Matriz completa de stores PostgreSQL validada em 25 modulos
+
+### Concluido neste ciclo
+- Adicionada `tests/test_postgres_stores_catalog_matrix.py` para cobrir os 16 modulos restantes do catalogo com `create/get/list/update/soft_delete/idempotency` condicional, alem de `audit/outbox`.
+- Validada a cobertura combinada de stores PostgreSQL com `./.venv/bin/python -m pytest -q tests/test_postgres_stores_matrix.py tests/test_postgres_stores_catalog_matrix.py`, com `43 passed`.
+- Mantidos verdes `python3 scripts/validate_repository.py`, `./.venv/bin/python scripts/validate_openapi.py` e `git diff --check`.
+
+### Estado Operacional
+- A matriz de stores PostgreSQL agora fecha os 25 modulos do catalogo em banco real local, incluindo os dominios que ainda dependiam de seeds especificos e de idempotencia apenas onde a coluna existe.
+- O proximo refinamento natural e manter essa matriz como gate continuo enquanto o foco avanca para eventos, observabilidade e producao/compliance.
+
+### Proximos Passos Naturais
+- Fechar eventos e observabilidade com dispatcher real, dashboards e alertas.
+- Seguir para o frontend funcional e depois para as integracoes reais pendentes.
+
 # STATUS OPERACIONAL - 2026-07-05 Backup, restore e DR documentados e validados
 
 ### Concluido neste ciclo
