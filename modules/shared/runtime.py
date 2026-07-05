@@ -438,6 +438,12 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             f'all_in_one_audit_events{{module="{module_name}"}} {audits}\n'
             f'all_in_one_domain_events{{module="{module_name}"}} {events}\n'
         )
+        commercial_metrics = getattr(store, "commercial_metrics", None)
+        if callable(commercial_metrics):
+            for metric_name, metric_value in sorted(commercial_metrics().items()):
+                if metric_value is None:
+                    continue
+                output += f'all_in_one_{module_name}_{metric_name} {metric_value}\n'
         return Response(output, media_type="text/plain; version=0.0.4")
 
     @app.get("/catalog")

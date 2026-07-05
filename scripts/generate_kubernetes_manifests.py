@@ -30,6 +30,7 @@ NAMESPACE = "all-in-one"
 
 BASE_DIR = "infra/kubernetes/base"
 OUTBOX_DASHBOARD_SOURCE = Path("config/observability/outbox_dashboard.json")
+COMMERCIAL_DASHBOARD_SOURCE = Path("config/observability/commercial_dashboard.json")
 
 def generate_deployment(
     name,
@@ -138,7 +139,7 @@ metadata:
     domain: operations
     grafana_dashboard: "1"
 data:
-  outbox-dispatcher-dashboard.json: |-
+  {name}.json: |-
 {dashboard_yaml}
 """
 
@@ -189,8 +190,12 @@ def main():
         f.write(generate_dashboard_configmap("outbox-dispatcher-dashboard", OUTBOX_DASHBOARD_SOURCE))
     print("Generated outbox-dashboard.yaml")
 
+    with open(f"{BASE_DIR}/commercial-dashboard.yaml", "w") as f:
+        f.write(generate_dashboard_configmap("commercial-dashboard", COMMERCIAL_DASHBOARD_SOURCE))
+    print("Generated commercial-dashboard.yaml")
+
     # Update kustomization.yaml if it exists, or create it
-    resources = [f"{m}.yaml" for m in MODULES] + [f"{w}.yaml" for w in WORKERS.keys()] + ["platform.yaml", "outbox-alerting.yaml", "outbox-dashboard.yaml", "retention-alerting.yaml"]
+    resources = [f"{m}.yaml" for m in MODULES] + [f"{w}.yaml" for w in WORKERS.keys()] + ["platform.yaml", "outbox-alerting.yaml", "outbox-dashboard.yaml", "commercial-dashboard.yaml", "retention-alerting.yaml"]
 
     kustomization = f"""apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
