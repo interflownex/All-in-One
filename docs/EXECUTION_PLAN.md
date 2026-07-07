@@ -85,7 +85,7 @@ Pendencias:
 - Validar migrations 001-015 em banco limpo e banco ja populado.
 - Rodar o gate opt-in `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com Docker e imagem PostgreSQL pronta.
 - Ampliar a suite `tests/test_postgres_stores_matrix.py` de cobertura estrutural total para CRUD real por modulo em banco vivo.
-- Executar a nova suite `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN PostgreSQL real para `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`, `delivery` e `mobility`.
+- Executar a nova suite `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN PostgreSQL real para `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`, `delivery`, `mobility`, `stock` e `health`.
 - Confirmar audit log append-only em todos os fluxos sensiveis.
 - Confirmar outbox para eventos de todos os modulos.
 - Eliminar usos reais remanescentes de stores genericos em fluxos PostgreSQL e manter o runtime falhando rapido quando um store tipado obrigatorio estiver ausente.

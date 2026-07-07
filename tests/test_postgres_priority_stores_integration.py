@@ -10,10 +10,12 @@ from modules.shared.api_hub_postgres_store import ApiHubPostgresStore
 from modules.shared.business_postgres_store import BusinessPostgresStore
 from modules.shared.delivery_postgres_store import DeliveryPostgresStore
 from modules.shared.finance_postgres_store import FinancePostgresStore
+from modules.shared.health_postgres_store import HealthPostgresStore
 from modules.shared.identity_postgres_store import IdentityPostgresStore
 from modules.shared.marketplace_postgres_store import MarketplacePostgresStore
 from modules.shared.mobility_postgres_store import MobilityPostgresStore
 from modules.shared.services_postgres_store import ServicesPostgresStore
+from modules.shared.stock_postgres_store import StockPostgresStore
 
 
 POSTGRES_DSN = os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN") or os.getenv("ALL_IN_ONE_BUSINESS_POSTGRES_DSN")
@@ -427,3 +429,107 @@ def test_mobility_ride_create_update_and_soft_delete() -> None:
     with psycopg.connect(POSTGRES_DSN) as connection:
         assert count_audit(connection, "mobility") >= before_audit + 3
         assert count_events(connection, "mobility") >= before_events + 2
+
+
+def test_stock_supplier_create_update_and_soft_delete() -> None:
+    owner_user_id = uuid4()
+    actor_id = uuid4()
+    nonce = uuid4().hex[:12]
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, owner_user_id, nonce)
+        seed_user(connection, actor_id, uuid4().hex[:12])
+
+    business_store = BusinessPostgresStore(POSTGRES_DSN)
+    company = business_store.create(
+        resource_type="companies",
+        user_id=str(owner_user_id),
+        entity_id=None,
+        status="active",
+        payload={
+            "cnpj": f"{uuid4().hex[:14]}",
+            "root_cnpj": uuid4().hex[:8],
+            "legal_name": f"Fornecedor Base {nonce}",
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="business.company.created",
+        idempotency_key=str(uuid4()),
+    )
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        before_audit = count_audit(connection, "stock")
+        before_events = count_events(connection, "stock")
+
+    store = StockPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="suppliers",
+        user_id=str(owner_user_id),
+        entity_id=company["id"],
+        status="pending_validation",
+        payload={},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="stock.supplier.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"api_configuration": {"mode": "sandbox"}},
+        status="homologated",
+        actor=str(actor_id),
+        action="homologate",
+        event="stock.supplier.homologated",
+    )
+    assert updated["status"] == "homologated"
+    assert updated["entity_id"] == company["id"]
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("suppliers", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "stock") >= before_audit + 3
+        assert count_events(connection, "stock") >= before_events + 2
+
+
+def test_health_patient_create_update_and_soft_delete() -> None:
+    patient_user_id = uuid4()
+    actor_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, patient_user_id, uuid4().hex[:12])
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "health")
+        before_events = count_events(connection, "health")
+
+    store = HealthPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="patients",
+        user_id=str(patient_user_id),
+        entity_id=None,
+        status="active",
+        payload={"blood_type": "O+"},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="health.patient.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"blood_type": "A+"},
+        status="reviewed",
+        actor=str(actor_id),
+        action="review",
+        event="health.patient.reviewed",
+    )
+    assert updated["status"] == "reviewed"
+    assert updated["payload"]["blood_type"] == "A+"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("patients", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "health") >= before_audit + 3
+        assert count_events(connection, "health") >= before_events + 2

@@ -1,5 +1,37 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-07 Expansao Final Da Suite Prioritaria Para 10 Modulos
+
+### Concluido neste ciclo
+
+- `tests/test_postgres_priority_stores_integration.py` foi ampliado novamente
+  para cobrir tambem `stock` e `health`, reaproveitando o `BasePostgresStore`
+  apenas onde o schema real aceita payload minimo valido.
+- A suite prioritaria agora possui 10 testes vivos prontos para DSN PostgreSQL
+  real: `finance`, `business`, `marketplace`, `services`, `identity`,
+  `api_hub`, `delivery`, `mobility`, `stock` e `health`.
+- `riders` ficou deliberadamente fora deste incremento porque suas tabelas nao
+  apareceram nas migrations SQL consultadas neste ciclo; isso evita adicionar
+  um teste especulativo e instavel.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m pytest -q tests/test_postgres_priority_stores_integration.py`: 10 testes ignorados por ausencia de DSN PostgreSQL real no ambiente atual.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Executar a suite prioritaria de 10 modulos em ambiente com DSN PostgreSQL
+  vivo para transformar a cobertura pronta em evidencia real.
+- Executar o smoke test de migrations em banco limpo com
+  `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`.
+- Identificar a origem autoritativa das tabelas `riders` antes de ampliar a
+  prova CRUD viva para esse modulo.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-07 Expansao Adicional Da Suite CRUD PostgreSQL Prioritaria
 
 ### Concluido neste ciclo
