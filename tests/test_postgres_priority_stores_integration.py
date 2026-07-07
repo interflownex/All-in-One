@@ -14,12 +14,16 @@ from modules.shared.business_postgres_store import BusinessPostgresStore
 from modules.shared.crm_postgres_store import CrmPostgresStore
 from modules.shared.delivery_postgres_store import DeliveryPostgresStore
 from modules.shared.document_postgres_store import DocumentPostgresStore
+from modules.shared.erp_postgres_store import ErpPostgresStore
 from modules.shared.finance_postgres_store import FinancePostgresStore
 from modules.shared.health_postgres_store import HealthPostgresStore
+from modules.shared.hr_postgres_store import HrPostgresStore
 from modules.shared.identity_postgres_store import IdentityPostgresStore
+from modules.shared.jobs_postgres_store import JobsPostgresStore
 from modules.shared.legal_postgres_store import LegalPostgresStore
 from modules.shared.marketplace_postgres_store import MarketplacePostgresStore
 from modules.shared.mobility_postgres_store import MobilityPostgresStore
+from modules.shared.permissions_postgres_store import PermissionsPostgresStore
 from modules.shared.property_postgres_store import PropertyPostgresStore
 from modules.shared.riders_postgres_store import RidersPostgresStore
 from modules.shared.services_postgres_store import ServicesPostgresStore
@@ -1053,3 +1057,256 @@ def test_ai_core_memory_create_update_and_soft_delete() -> None:
     with psycopg.connect(POSTGRES_DSN) as connection:
         assert count_audit(connection, "ai_core") >= before_audit + 3
         assert count_events(connection, "ai_core") >= before_events + 2
+
+
+def test_hr_employee_create_update_and_soft_delete() -> None:
+    owner_user_id = uuid4()
+    actor_id = uuid4()
+    nonce = uuid4().hex[:12]
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, owner_user_id, nonce)
+        seed_user(connection, actor_id, uuid4().hex[:12])
+
+    business_store = BusinessPostgresStore(POSTGRES_DSN)
+    company = business_store.create(
+        resource_type="companies",
+        user_id=str(owner_user_id),
+        entity_id=None,
+        status="active",
+        payload={
+            "cnpj": f"{uuid4().hex[:14]}",
+            "root_cnpj": uuid4().hex[:8],
+            "legal_name": f"Empresa RH {nonce}",
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="business.company.created",
+        idempotency_key=str(uuid4()),
+    )
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        before_audit = count_audit(connection, "hr")
+        before_events = count_events(connection, "hr")
+
+    store = HrPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="employees",
+        user_id=str(owner_user_id),
+        entity_id=company["id"],
+        status="active",
+        payload={
+            "employment_type": "clt",
+            "position_title": "Analista",
+            "admission_date": "2026-01-15",
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="hr.employee.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={
+            "employment_type": "clt",
+            "position_title": "Analista Senior",
+            "admission_date": "2026-01-15",
+        },
+        status="reviewed",
+        actor=str(actor_id),
+        action="review",
+        event="hr.employee.reviewed",
+    )
+    assert updated["status"] == "reviewed"
+    assert updated["payload"]["position_title"] == "Analista Senior"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("employees", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "hr") >= before_audit + 3
+        assert count_events(connection, "hr") >= before_events + 2
+
+
+def test_permissions_role_create_update_and_soft_delete() -> None:
+    owner_user_id = uuid4()
+    actor_id = uuid4()
+    nonce = uuid4().hex[:12]
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, owner_user_id, nonce)
+        seed_user(connection, actor_id, uuid4().hex[:12])
+
+    business_store = BusinessPostgresStore(POSTGRES_DSN)
+    company = business_store.create(
+        resource_type="companies",
+        user_id=str(owner_user_id),
+        entity_id=None,
+        status="active",
+        payload={
+            "cnpj": f"{uuid4().hex[:14]}",
+            "root_cnpj": uuid4().hex[:8],
+            "legal_name": f"Empresa Perm {nonce}",
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="business.company.created",
+        idempotency_key=str(uuid4()),
+    )
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        before_audit = count_audit(connection, "permissions")
+        before_events = count_events(connection, "permissions")
+
+    store = PermissionsPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="roles",
+        user_id=str(owner_user_id),
+        entity_id=company["id"],
+        status="active",
+        payload={"name": "finance.approver", "is_system": False},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="permissions.role.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"name": "finance.approver.senior", "is_system": False},
+        status="reviewed",
+        actor=str(actor_id),
+        action="review",
+        event="permissions.role.reviewed",
+    )
+    assert updated["status"] == "reviewed"
+    assert updated["payload"]["name"] == "finance.approver.senior"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("roles", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "permissions") >= before_audit + 3
+        assert count_events(connection, "permissions") >= before_events + 2
+
+
+def test_jobs_resume_create_update_and_soft_delete() -> None:
+    candidate_user_id = uuid4()
+    actor_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, candidate_user_id, uuid4().hex[:12])
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "jobs")
+        before_events = count_events(connection, "jobs")
+
+    store = JobsPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="resumes",
+        user_id=str(candidate_user_id),
+        entity_id=None,
+        status="active",
+        payload={
+            "headline": "Pessoa candidata",
+            "professional_summary": "Perfil com experiencia em operacoes.",
+            "skills": ["python", "sql"],
+            "education": [{"degree": "Tecnologo"}],
+            "recruiter_visibility": "business_recruiters",
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="jobs.resume.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={
+            "headline": "Pessoa candidata senior",
+            "professional_summary": "Perfil atualizado.",
+            "skills": ["python", "sql", "etl"],
+            "education": [{"degree": "Tecnologo"}],
+            "recruiter_visibility": "business_recruiters",
+        },
+        status="reviewed",
+        actor=str(actor_id),
+        action="review",
+        event="jobs.resume.reviewed",
+    )
+    assert updated["status"] == "reviewed"
+    assert updated["payload"]["headline"] == "Pessoa candidata senior"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("resumes", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "jobs") >= before_audit + 3
+        assert count_events(connection, "jobs") >= before_events + 2
+
+
+def test_erp_billing_create_detail_and_cancel() -> None:
+    owner_user_id = uuid4()
+    actor_id = uuid4()
+    nonce = uuid4().hex[:12]
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, owner_user_id, nonce)
+        seed_user(connection, actor_id, uuid4().hex[:12])
+
+    business_store = BusinessPostgresStore(POSTGRES_DSN)
+    company = business_store.create(
+        resource_type="companies",
+        user_id=str(owner_user_id),
+        entity_id=None,
+        status="active",
+        payload={
+            "cnpj": f"{uuid4().hex[:14]}",
+            "root_cnpj": uuid4().hex[:8],
+            "legal_name": f"Empresa ERP {nonce}",
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="business.company.created",
+        idempotency_key=str(uuid4()),
+    )
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        before_audit = count_audit(connection, "erp")
+        before_events = count_events(connection, "erp")
+
+    store = ErpPostgresStore(POSTGRES_DSN)
+    created = store.create_billing_document(
+        user_id=str(actor_id),
+        company_id=company["id"],
+        payload={
+            "document_type": "nfe",
+            "amount_brl": "150.00",
+            "tax_amount_brl": "15.00",
+            "document_number": f"NF-{nonce}",
+        },
+        items=[
+            {
+                "description": "Servico de teste",
+                "quantity": "1",
+                "unit_price_brl": "150.00",
+                "total_price_brl": "150.00",
+                "tax_amount_brl": "15.00",
+            }
+        ],
+        idempotency_key=str(uuid4()),
+    )
+    detailed = store.get_billing_detail(created["id"])
+
+    assert detailed is not None
+    assert detailed["id"] == created["id"]
+    assert detailed["items_count"] == 1
+    assert detailed["items"][0]["description"] == "Servico de teste"
+
+    cancelled = store.cancel_billing_document(created["id"], str(actor_id), "cancelamento de teste")
+    assert cancelled["status"] == "cancelled"
+    assert cancelled["payload"]["cancel_reason"] == "cancelamento de teste"
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "erp") >= before_audit + 2
+        assert count_events(connection, "erp") >= before_events + 2

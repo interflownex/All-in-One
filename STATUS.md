@@ -1,5 +1,44 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-07 Cobertura PostgreSQL Pronta Para 25 Modulos
+
+### Concluido neste ciclo
+
+- `tests/test_postgres_priority_stores_integration.py` foi ampliado para cobrir
+  os quatro modulos restantes fora da suite anterior: `hr`, `permissions`,
+  `jobs` e `erp`, levando a cobertura pronta para 25 modulos.
+- `modules/shared/erp_postgres_store.py` foi corrigido para voltar a operar em
+  conformidade com `BasePostgresStore`, incluindo criacao de faturamento com
+  itens, consulta detalhada, cancelamento auditavel e busca por
+  `correlation_id`.
+- A suite viva pronta para DSN PostgreSQL real agora cobre todos os modulos com
+  store PostgreSQL tipado da plataforma:
+  `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`,
+  `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`,
+  `property`, `wms`, `tms`, `crm`, `bpm`, `document`, `bi`, `ai_core`, `hr`,
+  `permissions`, `jobs` e `erp`.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m pytest -q tests/test_postgres_priority_stores_integration.py`: 25 testes ignorados por ausencia de DSN PostgreSQL real no ambiente atual.
+- `python3 -m py_compile modules/shared/erp_postgres_store.py tests/test_postgres_priority_stores_integration.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Executar a suite viva agora com os 25 modulos em ambiente com DSN PostgreSQL
+  real para converter a cobertura pronta em evidencia operacional.
+- Executar o smoke test de migrations em banco limpo com
+  `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`.
+- Validar migrations `001-015` em banco limpo e em banco previamente
+  populado.
+- Confirmar `audit.logs` append-only e `audit.domain_events` em ambiente real
+  para os fluxos sensiveis.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-07 Expansao Da Suite Prioritaria Para 21 Modulos
 
 ### Concluido neste ciclo

@@ -10,7 +10,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | --- | ---: | --- | --- |
 | Git e sincronizacao remota | 100% | `local main`, `origin/main` e `fork/main` alinhados | Fluxo de entrega remoto esta operacional. |
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
-| PostgreSQL estrutural | 86% | 15 migrations SQL, stores para 25 modulos e suite de matriz estrutural para todos os adapters PostgreSQL | Schema amplo existe; falta ampliar a prova CRUD real por modulo em banco vivo. |
+| PostgreSQL estrutural | 90% | 15 migrations SQL, stores para 25 modulos, suite de matriz estrutural para todos os adapters PostgreSQL e suite viva preparada para os 25 modulos tipados | Schema amplo existe; falta converter a cobertura pronta em evidencia real de banco vivo. |
 | Runtime FastAPI modular | 88% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado, carregamento dinamico por DSN validado em containers e resolucao obrigatoria de store tipado para modulos conhecidos | Base local estabilizada; falta ampliar testes E2E por jornada. |
 | Mensageria/outbox | 86% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos e payload seguro para eventos Valley/catalogo validados | Precisa ampliar cobertura para eventos de todos os modulos e dashboards. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
@@ -72,7 +72,7 @@ Proximos passos naturais:
 
 Objetivo: trocar o contrato local por persistencia PostgreSQL real, auditavel e testada.
 
-Status: 86%
+Status: 90%
 
 Entregas ja existentes:
 - 15 migrations PostgreSQL.
@@ -85,7 +85,7 @@ Pendencias:
 - Validar migrations 001-015 em banco limpo e banco ja populado.
 - Rodar o gate opt-in `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com Docker e imagem PostgreSQL pronta.
 - Ampliar a suite `tests/test_postgres_stores_matrix.py` de cobertura estrutural total para CRUD real por modulo em banco vivo.
-- Executar a nova suite `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN PostgreSQL real para `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`, `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`, `property`, `wms`, `tms`, `crm`, `bpm`, `document`, `bi` e `ai_core`.
+- Executar a nova suite `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN PostgreSQL real para `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`, `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`, `property`, `wms`, `tms`, `crm`, `bpm`, `document`, `bi`, `ai_core`, `hr`, `permissions`, `jobs` e `erp`.
 - Confirmar audit log append-only em todos os fluxos sensiveis.
 - Confirmar outbox para eventos de todos os modulos.
 - Eliminar usos reais remanescentes de stores genericos em fluxos PostgreSQL e manter o runtime falhando rapido quando um store tipado obrigatorio estiver ausente.
@@ -104,8 +104,8 @@ Prioridade de tipagem por risco:
 
 Proximos passos naturais:
 1. Rodar `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com imagem PostgreSQL pronta.
-2. Rodar `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN real para obter prova CRUD viva adicional nos 21 stores prioritarios.
-3. Rodar `tests/test_postgres_stores_matrix.py` contra banco vivo para os modulos prioritarios e expandir payloads/fixtures de `erp`, `hr`, `jobs` e `permissions`.
+2. Rodar `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN real para obter prova CRUD viva adicional nos 25 stores tipados.
+3. Rodar `tests/test_postgres_stores_matrix.py` contra banco vivo para confirmar a matriz completa com payloads/fixtures reais onde ainda houver variacao contratual.
 4. Testar create/get/list/update/soft_delete/idempotency por modulo.
 5. Testar audit/outbox por modulo.
 6. Corrigir cada store gerado que tentar gravar colunas inexistentes.

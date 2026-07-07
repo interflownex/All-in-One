@@ -90,33 +90,52 @@ class ErpPostgresStore(BasePostgresStore):
         Utiliza o correlation_id indexado para permitir conciliação futura.
         """
         resource_type = "fiscal_documents"
+        event = "erp.invoice.created"
+        materialized_payload = dict(payload)
+        materialized_payload.setdefault("tax_amount_brl", "0.00")
 
-        if "tax_amount_brl" not in payload:
-            payload["tax_amount_brl"] = "0.00"
+        previous = self.find_idempotent(resource_type, idempotency_key)
+        if previous:
+            return self.get_billing_detail(previous["id"]) or previous
 
-        with self.connection() as conn:
-            document = self.create(
-                resource_type=resource_type,
-                user_id=user_id,
-                entity_id=company_id,
-                status="pending",
-                payload=payload,
-                actor=user_id,
-                unique_fields=["document_number", "company_id"] if "document_number" in payload else None,
-                event_type="erp.invoice.created",
-                idempotency_key=idempotency_key,
-                connection=conn
+        resource_id = str(uuid4())
+        with self.transaction() as conn:
+            row = self._insert(
+                conn,
+                resource_type,
+                resource_id,
+                user_id,
+                company_id,
+                "pending",
+                materialized_payload,
+                user_id,
+                idempotency_key,
             )
+            document = self._resource(resource_type, row)
+            if document is None:
+                raise RuntimeError("PostgreSQL nao retornou documento fiscal criado.")
 
-            if items:
-                for item in items:
-                    item_id = str(uuid4())
-                    conn.execute(
-                        f"INSERT INTO {self.tables['invoice_items']} (id, fiscal_document_id, description, quantity, unit_price_brl, total_price_brl, tax_amount_brl) VALUES (%s, %s, %s, %s, %s, %s, %s)",  # nosec B608
-                        (item_id, document["id"], item["description"], item.get("quantity", 1), item["unit_price_brl"], item["total_price_brl"], item.get("tax_amount_brl", "0.00"))
-                    )
-                document["items_count"] = len(items)
+            for item in items or []:
+                item_id = str(uuid4())
+                conn.execute(
+                    f"""INSERT INTO {self.tables['invoice_items']}
+                        (id, fiscal_document_id, description, quantity, unit_price_brl, total_price_brl, tax_amount_brl)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)""",  # nosec B608
+                    (
+                        item_id,
+                        document["id"],
+                        item["description"],
+                        item.get("quantity", 1),
+                        item["unit_price_brl"],
+                        item["total_price_brl"],
+                        item.get("tax_amount_brl", "0.00"),
+                    ),
+                )
 
+            document["items_count"] = len(items or [])
+            document["items"] = self._fetch_invoice_items(conn, document["id"])
+            self._audit(conn, user_id, "create", resource_type, document["id"], None, document, user_id, company_id)
+            self._event(conn, event, user_id, document)
             return document
 
     def get_billing_detail(self, document_id: str) -> dict[str, Any] | None:
@@ -127,8 +146,10 @@ class ErpPostgresStore(BasePostgresStore):
         if not doc:
             return None
 
-        items = self.list("invoice_items", fiscal_document_id=document_id)
+        with self.transaction() as conn:
+            items = self._fetch_invoice_items(conn, document_id)
         doc["items"] = items
+        doc["items_count"] = len(items)
 
         return doc
 
@@ -146,16 +167,55 @@ class ErpPostgresStore(BasePostgresStore):
         if not doc:
             raise ValueError("Documento fiscal não encontrado.")
 
-        return self.update(
-            resource=doc,
-            payload={"cancel_reason": reason},
+        updated = self.update(
+            item=doc,
+            payload={**doc["payload"], "cancel_reason": reason},
             status="cancelled",
             actor=user_id,
-            event_type="erp.invoice.cancelled"
+            action="cancel",
+            event="erp.invoice.cancelled",
         )
+        refreshed = self.get_billing_detail(updated["id"])
+        return refreshed or updated
 
     def get_billing_by_correlation(self, correlation_id: str) -> list[dict[str, Any]]:
         """
         Recupera documentos fiscais usando o índice idx_audit_events_correlation da migration 016.
         """
-        return self.list("fiscal_documents", correlation_id=correlation_id)
+        rows = self.connection.execute(
+            """SELECT aggregate_id
+               FROM audit.domain_events
+               WHERE aggregate_type = 'fiscal_documents' AND correlation_id = %s
+               ORDER BY created_at DESC""",
+            (correlation_id,),
+        ).fetchall()
+        documents: list[dict[str, Any]] = []
+        for row in rows:
+            doc = self.get_billing_detail(str(row["aggregate_id"]))
+            if doc is not None:
+                documents.append(doc)
+        return documents
+
+    def _fetch_invoice_items(self, connection: Connection, document_id: str) -> list[dict[str, Any]]:
+        rows = connection.execute(
+            f"""SELECT id, fiscal_document_id, description, quantity, unit_price_brl, total_price_brl,
+                       tax_amount_brl, created_at, updated_at
+                FROM {self.tables['invoice_items']}
+                WHERE fiscal_document_id = %s
+                ORDER BY created_at ASC""",  # nosec B608
+            (document_id,),
+        ).fetchall()
+        return [
+            {
+                "id": str(row["id"]),
+                "fiscal_document_id": str(row["fiscal_document_id"]),
+                "description": row["description"],
+                "quantity": str(row["quantity"]),
+                "unit_price_brl": str(row["unit_price_brl"]),
+                "total_price_brl": str(row["total_price_brl"]),
+                "tax_amount_brl": str(row["tax_amount_brl"]),
+                "created_at": row["created_at"].isoformat(),
+                "updated_at": row["updated_at"].isoformat(),
+            }
+            for row in rows
+        ]
