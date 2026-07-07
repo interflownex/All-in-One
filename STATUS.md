@@ -1,5 +1,37 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-07 Expansao Adicional Da Suite CRUD PostgreSQL Prioritaria
+
+### Concluido neste ciclo
+
+- `tests/test_postgres_priority_stores_integration.py` foi ampliado para cobrir
+  tambem os stores tipados de `identity`, `api_hub`, `delivery` e `mobility`,
+  alem dos modulos ja incluidos (`finance`, `business`, `marketplace` e
+  `services`).
+- A suite agora possui 8 testes de integracao vivos prontos para exercitar
+  create/get/list/update/soft_delete e crescimento de `audit.logs` /
+  `audit.domain_events` quando um DSN PostgreSQL real estiver disponivel.
+- O helper de contagem de eventos foi ajustado para respeitar o padrao especial
+  de routing keys do `api_hub`.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m pytest -q tests/test_postgres_priority_stores_integration.py`: 8 testes ignorados por ausencia de DSN PostgreSQL real no ambiente atual.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Executar a suite ampliada em ambiente com DSN PostgreSQL vivo para
+  transformar a cobertura pronta em evidencia real para os 8 modulos.
+- Executar o smoke test de migrations em banco limpo com
+  `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`.
+- Avancar a prova CRUD viva para os modulos prioritarios restantes fora dessa
+  suite.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-07 Expansao Da Prova CRUD PostgreSQL Prioritaria
 
 ### Concluido neste ciclo

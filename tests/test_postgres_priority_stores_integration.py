@@ -6,9 +6,13 @@ from uuid import UUID, uuid4
 import psycopg
 import pytest
 
+from modules.shared.api_hub_postgres_store import ApiHubPostgresStore
 from modules.shared.business_postgres_store import BusinessPostgresStore
+from modules.shared.delivery_postgres_store import DeliveryPostgresStore
 from modules.shared.finance_postgres_store import FinancePostgresStore
+from modules.shared.identity_postgres_store import IdentityPostgresStore
 from modules.shared.marketplace_postgres_store import MarketplacePostgresStore
+from modules.shared.mobility_postgres_store import MobilityPostgresStore
 from modules.shared.services_postgres_store import ServicesPostgresStore
 
 
@@ -42,6 +46,9 @@ def count_audit(connection: psycopg.Connection, module_name: str) -> int:
 def count_events(connection: psycopg.Connection, module_name: str) -> int:
     if module_name == "finance":
         query = "SELECT COUNT(*) FROM audit.domain_events WHERE routing_key LIKE 'payment.%' OR routing_key LIKE 'finance.%'"
+        return int(connection.execute(query).fetchone()[0])
+    if module_name == "api_hub":
+        query = "SELECT COUNT(*) FROM audit.domain_events WHERE routing_key LIKE 'api.%' OR routing_key LIKE 'api_hub.%'"
         return int(connection.execute(query).fetchone()[0])
     return int(
         connection.execute(
@@ -220,3 +227,203 @@ def test_services_provider_create_update_and_soft_delete() -> None:
     with psycopg.connect(POSTGRES_DSN) as connection:
         assert count_audit(connection, "services") >= before_audit + 3
         assert count_events(connection, "services") >= before_events + 2
+
+
+def test_identity_user_create_update_and_soft_delete() -> None:
+    nonce = uuid4().hex[:12]
+    user_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        before_audit = count_audit(connection, "identity")
+        before_events = count_events(connection, "identity")
+
+    store = IdentityPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="users",
+        user_id=str(user_id),
+        entity_id=None,
+        status="active",
+        payload={
+            "id": str(user_id),
+            "full_name": f"Usuario {nonce}",
+            "cpf_document": f"CPF-{nonce}",
+            "birth_date": "1990-01-01",
+            "email": f"{nonce}@example.test",
+            "phone_e164": "+5511999999999",
+            "password_hash": f"hash-{nonce}",
+            "face_hash": f"face-{nonce}",
+            "liveness_score": "0.99",
+            "terms_accepted_at": "2026-01-01T00:00:00+00:00",
+            "lgpd_consent_at": "2026-01-01T00:00:00+00:00",
+        },
+        actor=str(user_id),
+        unique_fields=(),
+        event="identity.user.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"full_name": f"Usuario {nonce} Atualizado"},
+        status="verified",
+        actor=str(user_id),
+        action="verify",
+        event="identity.user.verified",
+    )
+    assert updated["status"] == "verified"
+    assert updated["payload"]["full_name"] == f"Usuario {nonce} Atualizado"
+
+    store.soft_delete(updated, str(user_id))
+    deleted = store.get("users", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "identity") >= before_audit + 3
+        assert count_events(connection, "identity") >= before_events + 2
+
+
+def test_api_hub_client_create_update_and_soft_delete() -> None:
+    user_id = uuid4()
+    actor_id = uuid4()
+    nonce = uuid4().hex[:12]
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, user_id, nonce)
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "api_hub")
+        before_events = count_events(connection, "api_hub")
+
+    store = ApiHubPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="api_clients",
+        user_id=str(user_id),
+        entity_id=None,
+        status="active",
+        payload={
+            "client_name": f"Client {nonce}",
+            "client_id_hash": f"cid-{uuid4().hex}",
+            "secret_reference": f"secret://{uuid4().hex}",
+            "scopes": ["catalog:read"],
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="api_hub.client.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"client_name": f"Client {nonce} v2", "scopes": ["catalog:read", "orders:write"]},
+        status="rotated",
+        actor=str(actor_id),
+        action="rotate",
+        event="api_hub.client.rotated",
+    )
+    assert updated["status"] == "rotated"
+    assert updated["payload"]["client_name"] == f"Client {nonce} v2"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("api_clients", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "api_hub") >= before_audit + 3
+        assert count_events(connection, "api_hub") >= before_events + 2
+
+
+def test_delivery_request_create_update_and_soft_delete() -> None:
+    customer_user_id = uuid4()
+    actor_id = uuid4()
+    rider_user_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, customer_user_id, uuid4().hex[:12])
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        seed_user(connection, rider_user_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "delivery")
+        before_events = count_events(connection, "delivery")
+
+    store = DeliveryPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="delivery_requests",
+        user_id=str(customer_user_id),
+        entity_id=None,
+        status="quoted",
+        payload={
+            "service_type": "delivery",
+            "origin": {"lat": -23.55, "lng": -46.63},
+            "destination": {"lat": -23.56, "lng": -46.64},
+            "distance_km": "4.2",
+            "quoted_brl": "19.90",
+            "insurance_required": False,
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="delivery.request.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"assigned_rider_user_id": str(rider_user_id)},
+        status="assigned",
+        actor=str(actor_id),
+        action="assign",
+        event="delivery.request.assigned",
+    )
+    assert updated["status"] == "assigned"
+    assert updated["payload"]["assigned_rider_user_id"] == str(rider_user_id)
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("delivery_requests", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "delivery") >= before_audit + 3
+        assert count_events(connection, "delivery") >= before_events + 2
+
+
+def test_mobility_ride_create_update_and_soft_delete() -> None:
+    passenger_user_id = uuid4()
+    actor_id = uuid4()
+    driver_user_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, passenger_user_id, uuid4().hex[:12])
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        seed_user(connection, driver_user_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "mobility")
+        before_events = count_events(connection, "mobility")
+
+    store = MobilityPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="rides",
+        user_id=str(passenger_user_id),
+        entity_id=None,
+        status="requested",
+        payload={
+            "origin": {"lat": -23.55, "lng": -46.63},
+            "destination": {"lat": -23.54, "lng": -46.62},
+            "fare_brl": "27.40",
+            "vehicle_type": "car",
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="mobility.ride.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"driver_user_id": str(driver_user_id)},
+        status="accepted",
+        actor=str(actor_id),
+        action="accept",
+        event="mobility.ride.accepted",
+    )
+    assert updated["status"] == "accepted"
+    assert updated["payload"]["driver_user_id"] == str(driver_user_id)
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("rides", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "mobility") >= before_audit + 3
+        assert count_events(connection, "mobility") >= before_events + 2
