@@ -1,146 +1,182 @@
+import importlib
+import inspect
 import os
 import sys
 import uuid
-from pathlib import Path
-import pytest
 from datetime import UTC, datetime
+from pathlib import Path
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from modules.shared.identity_postgres_store import IdentityPostgresStore
-from modules.shared.finance_postgres_store import FinancePostgresStore
-from modules.shared.business_postgres_store import BusinessPostgresStore
-from modules.shared.api_hub_postgres_store import ApiHubPostgresStore
-from modules.shared.marketplace_postgres_store import MarketplacePostgresStore
-from modules.shared.delivery_postgres_store import DeliveryPostgresStore
-from modules.shared.services_postgres_store import ServicesPostgresStore
-from modules.shared.mobility_postgres_store import MobilityPostgresStore
-from modules.shared.jobs_postgres_store import JobsPostgresStore
-
+ROOT = Path(__file__).resolve().parents[1]
+STORE_MODULES_DIR = ROOT / "modules" / "shared"
 DEFAULT_DSN = os.environ.get(
-    "ALL_IN_ONE_POSTGRES_MATRIX_DSN", 
-    "postgresql://all_in_one:local-development-only@localhost:5432/all_in_one?connect_timeout=3"
+    "ALL_IN_ONE_POSTGRES_MATRIX_DSN",
+    "postgresql://all_in_one:local-development-only@localhost:5432/all_in_one?connect_timeout=3",
 )
 
-# Configuration mapping for each module to its specialized store, primary resource, and required payload
-MODULES_CONFIG = {
+RUNTIME_PAYLOADS = {
     "identity": {
-        "class": IdentityPostgresStore, 
-        "resource": "users",
-        "payload": {
-            "full_name": "Matrix Tester",
-            "cpf_document": f"{uuid.uuid4().hex[:11]}",
-            "birth_date": "1990-01-01",
-            "email": f"matrix_{uuid.uuid4().hex[:8]}@test.com",
-            "phone_e164": "+5511999999999",
-            "password_hash": "hash123",
-            "face_hash": "face123",
-            "liveness_score": "0.99",
-            "terms_accepted_at": datetime.now(UTC).isoformat(),
-            "lgpd_consent_at": datetime.now(UTC).isoformat()
-        }
+        "full_name": "Matrix Tester",
+        "cpf_document": f"{uuid.uuid4().hex[:11]}",
+        "birth_date": "1990-01-01",
+        "email": f"matrix_{uuid.uuid4().hex[:8]}@test.com",
+        "phone_e164": "+5511999999999",
+        "password_hash": "hash123",
+        "face_hash": "face123",
+        "liveness_score": "0.99",
+        "terms_accepted_at": datetime.now(UTC).isoformat(),
+        "lgpd_consent_at": datetime.now(UTC).isoformat(),
     },
     "finance": {
-        "class": FinancePostgresStore, 
-        "resource": "wallets",
-        "payload": {
-            "wallet_type": "personal",
-            "brl_available": 1000,
-            "nex_available": 500
-        }
+        "wallet_type": "personal",
+        "brl_available": 1000,
+        "nex_available": 500,
     },
     "business": {
-        "class": BusinessPostgresStore, 
-        "resource": "companies",
-        "payload": {
-            "name": "Matrix Corp",
-            "cnpj": f"{uuid.uuid4().hex[:14]}",
-            "business_segment": "technology"
-        }
+        "name": "Matrix Corp",
+        "cnpj": f"{uuid.uuid4().hex[:14]}",
+        "business_segment": "technology",
     },
     "api_hub": {
-        "class": ApiHubPostgresStore, 
-        "resource": "apps",
-        "payload": {
-            "app_name": "Matrix App",
-            "description": "Integration Test App",
-            "webhook_url": "https://example.com/webhook"
-        }
+        "app_name": "Matrix App",
+        "description": "Integration Test App",
+        "webhook_url": "https://example.com/webhook",
     },
     "marketplace": {
-        "class": MarketplacePostgresStore, 
-        "resource": "stores",
-        "payload": {
-            "name": "Matrix Store",
-            "description": "Store for tests",
-            "currency": "BRL"
-        }
+        "name": "Matrix Store",
+        "description": "Store for tests",
+        "currency": "BRL",
     },
     "delivery": {
-        "class": DeliveryPostgresStore, 
-        "resource": "shipments",
-        "payload": {
-            "origin_address": "Rua Teste 1",
-            "destination_address": "Rua Teste 2",
-            "weight": "1.5"
-        }
+        "pickup_address": "Rua Teste 1",
+        "dropoff_address": "Rua Teste 2",
+        "distance_km": "1.5",
     },
     "services": {
-        "class": ServicesPostgresStore, 
-        "resource": "service_orders",
-        "payload": {
-            "service_type": "maintenance",
-            "description": "Matrix test service"
-        }
+        "display_name": "Matrix Provider",
+        "service_category": "maintenance",
+        "contact_phone": "+5511999999999",
     },
     "mobility": {
-        "class": MobilityPostgresStore, 
-        "resource": "rides",
-        "payload": {
-            "pickup_location": "-23.55,-46.63",
-            "dropoff_location": "-23.56,-46.64"
-        }
+        "origin_label": "Paulista",
+        "destination_label": "Pinheiros",
+        "fare_brl": "24.90",
     },
     "jobs": {
-        "class": JobsPostgresStore, 
-        "resource": "candidates",
-        "payload": {
-            "first_name": "Neo",
-            "last_name": "Matrix",
-            "skills": ["python", "pytest"]
-        }
+        "first_name": "Neo",
+        "last_name": "Matrix",
+        "skills": ["python", "pytest"],
     },
 }
 
-@pytest.mark.parametrize("module_name", list(MODULES_CONFIG.keys()))
-def test_postgres_store_matrix_initialization(module_name: str):
-    """
-    Testa a inicialização e o estado CRUD básico esperado para
-    os modulos prioritários definidos no EXECUTION_PLAN.md (Fase 2).
-    """
-    config = MODULES_CONFIG[module_name]
-    store_class = config["class"]
-    resource_type = config["resource"]
-    payload = config["payload"].copy()
-    
+PRIORITY_MODULES = {
+    "finance",
+    "identity",
+    "business",
+    "api_hub",
+    "marketplace",
+    "delivery",
+    "services",
+    "mobility",
+    "jobs",
+}
+
+
+def _iter_postgres_store_classes() -> list[type]:
+    classes: list[type] = []
+    for path in sorted(STORE_MODULES_DIR.glob("*_postgres_store.py")):
+        module_name = f"modules.shared.{path.stem}"
+        module = importlib.import_module(module_name)
+        for _, candidate in inspect.getmembers(module, inspect.isclass):
+            if not candidate.__module__.endswith(path.stem):
+                continue
+            if not candidate.__name__.endswith("PostgresStore"):
+                continue
+            if getattr(candidate, "module", None) is None:
+                continue
+            classes.append(candidate)
+    return classes
+
+
+def _tables_for(store_class: type) -> dict[str, str]:
+    table_map = getattr(store_class, "tables", None)
+    if isinstance(table_map, dict):
+        return table_map
+    module = importlib.import_module(store_class.__module__)
+    table_map = getattr(module, "TABLES", None)
+    if isinstance(table_map, dict):
+        return table_map
+    raise AssertionError(f"{store_class.__name__} nao declara tables/TABLES.")
+
+
+STORE_CLASSES = _iter_postgres_store_classes()
+STORE_CLASS_BY_MODULE = {store_class.module: store_class for store_class in STORE_CLASSES}
+MODULES_CONFIG = {
+    module_name: {
+        "class": store_class,
+        "resource": next(iter(_tables_for(store_class))),
+        "payload": RUNTIME_PAYLOADS.get(module_name, {}),
+        "runtime_ready": module_name in RUNTIME_PAYLOADS,
+    }
+    for module_name, store_class in STORE_CLASS_BY_MODULE.items()
+}
+
+
+def _dsn_for(module_name: str) -> str:
     dsn = os.environ.get(f"ALL_IN_ONE_{module_name.upper()}_POSTGRES_DSN") or DEFAULT_DSN
     if "connect_timeout" not in dsn:
         dsn += "&connect_timeout=3" if "?" in dsn else "?connect_timeout=3"
-    
+    return dsn
+
+
+def _connect_store(module_name: str):
+    store_class = MODULES_CONFIG[module_name]["class"]
     try:
-        store = store_class(dsn=dsn)
-    except Exception as e:
-        pytest.skip(f"Banco de dados nao disponivel para {module_name}: {e}")
+        return store_class(dsn=_dsn_for(module_name))
+    except Exception as exc:
+        pytest.skip(f"Banco de dados nao disponivel para {module_name}: {exc}")
+
+
+@pytest.mark.parametrize("store_class", STORE_CLASSES, ids=lambda cls: cls.module)
+def test_postgres_store_declares_structural_contract(store_class: type) -> None:
+    tables = _tables_for(store_class)
+    assert getattr(store_class, "module", None)
+    assert getattr(store_class, "backend", None)
+    assert isinstance(tables, dict)
+    assert tables
+    assert all("." in table_name for table_name in tables.values())
+
+
+def test_postgres_store_matrix_covers_all_workspace_store_modules() -> None:
+    discovered_modules = {store_class.module for store_class in STORE_CLASSES}
+    assert len(discovered_modules) == 25
+    assert set(MODULES_CONFIG) == discovered_modules
+
+
+def test_postgres_store_matrix_marks_priority_modules_for_runtime_validation() -> None:
+    ready_modules = {name for name, config in MODULES_CONFIG.items() if config["runtime_ready"]}
+    assert PRIORITY_MODULES.issubset(ready_modules)
+
+
+@pytest.mark.parametrize(
+    "module_name",
+    sorted(name for name, config in MODULES_CONFIG.items() if config["runtime_ready"]),
+)
+def test_postgres_store_matrix_initialization(module_name: str) -> None:
+    config = MODULES_CONFIG[module_name]
+    resource_type = config["resource"]
+    payload = dict(config["payload"])
+    store = _connect_store(module_name)
 
     user_id = str(uuid.uuid4())
     actor_id = str(uuid.uuid4())
     entity_id = str(uuid.uuid4())
     idempotency_key = str(uuid.uuid4())
-    
-    # Adiciona ID ao payload para casos onde ele não gera automaticamente
     payload["id"] = str(uuid.uuid4())
 
-    # 1. CREATE
     created = store.create(
         resource_type=resource_type,
         user_id=user_id,
@@ -152,52 +188,42 @@ def test_postgres_store_matrix_initialization(module_name: str):
         event=f"{module_name}.{resource_type}.created",
         idempotency_key=idempotency_key,
     )
-    
+
     assert created is not None
     assert created["id"] is not None
     assert created["status"] == "active"
     assert created["user_id"] == user_id
 
-    # 2. GET
     fetched = store.get(resource_type=resource_type, resource_id=created["id"])
     assert fetched is not None
     assert fetched["id"] == created["id"]
 
-    # 3. LIST
     listed = store.list(resource_type=resource_type, user_id=user_id)
-    assert len(listed) >= 1
+    assert listed
     assert any(item["id"] == created["id"] for item in listed)
 
-    # 4. UPDATE (não aplicável a todos os modulos da mesma forma, mas testamos soft_delete se suportado)
-    if hasattr(store, "soft_deletable") and resource_type in getattr(store, "soft_deletable", []):
+    if resource_type in getattr(store, "soft_deletable", frozenset()):
         store.soft_delete(item=fetched, actor=actor_id)
         deleted = store.get(resource_type=resource_type, resource_id=created["id"])
-        assert deleted is None  # Deveria estar oculto após soft_delete
+        assert deleted is None
 
-@pytest.mark.parametrize("module_name", list(MODULES_CONFIG.keys()))
-def test_store_idempotency_behavior(module_name: str):
+
+@pytest.mark.parametrize(
+    "module_name",
+    sorted(name for name, config in MODULES_CONFIG.items() if config["runtime_ready"]),
+)
+def test_store_idempotency_behavior(module_name: str) -> None:
     config = MODULES_CONFIG[module_name]
-    store_class = config["class"]
     resource_type = config["resource"]
-    payload = config["payload"].copy()
-    
-    dsn = os.environ.get(f"ALL_IN_ONE_{module_name.upper()}_POSTGRES_DSN") or DEFAULT_DSN
-    if "connect_timeout" not in dsn:
-        dsn += "&connect_timeout=3" if "?" in dsn else "?connect_timeout=3"
-    
-    try:
-        store = store_class(dsn=dsn)
-    except Exception as e:
-        pytest.skip(f"Banco de dados nao disponivel para {module_name}: {e}")
+    payload = dict(config["payload"])
+    store = _connect_store(module_name)
 
     user_id = str(uuid.uuid4())
     actor_id = str(uuid.uuid4())
     entity_id = str(uuid.uuid4())
     idempotency_key = str(uuid.uuid4())
-    
     payload["id"] = str(uuid.uuid4())
 
-    # Primeira chamada
     created_1 = store.create(
         resource_type=resource_type,
         user_id=user_id,
@@ -209,8 +235,6 @@ def test_store_idempotency_behavior(module_name: str):
         event=f"{module_name}.{resource_type}.created",
         idempotency_key=idempotency_key,
     )
-    
-    # Segunda chamada com a mesma idempotency_key
     created_2 = store.create(
         resource_type=resource_type,
         user_id=user_id,
@@ -222,34 +246,26 @@ def test_store_idempotency_behavior(module_name: str):
         event=f"{module_name}.{resource_type}.created",
         idempotency_key=idempotency_key,
     )
-    
-    # Devem retornar exatamente o mesmo registro original
+
     assert created_1["id"] == created_2["id"]
 
-@pytest.mark.parametrize("module_name", list(MODULES_CONFIG.keys()))
-def test_audit_outbox_integration(module_name: str):
+
+@pytest.mark.parametrize(
+    "module_name",
+    sorted(name for name, config in MODULES_CONFIG.items() if config["runtime_ready"]),
+)
+def test_audit_outbox_integration(module_name: str) -> None:
     config = MODULES_CONFIG[module_name]
-    store_class = config["class"]
     resource_type = config["resource"]
-    payload = config["payload"].copy()
-    
-    dsn = os.environ.get(f"ALL_IN_ONE_{module_name.upper()}_POSTGRES_DSN") or DEFAULT_DSN
-    if "connect_timeout" not in dsn:
-        dsn += "&connect_timeout=3" if "?" in dsn else "?connect_timeout=3"
-    
-    try:
-        store = store_class(dsn=dsn)
-    except Exception as e:
-        pytest.skip(f"Banco de dados nao disponivel para {module_name}: {e}")
+    payload = dict(config["payload"])
+    store = _connect_store(module_name)
 
     user_id = str(uuid.uuid4())
     actor_id = str(uuid.uuid4())
     entity_id = str(uuid.uuid4())
     idempotency_key = str(uuid.uuid4())
-    
     payload["id"] = str(uuid.uuid4())
 
-    # Executa criação
     created = store.create(
         resource_type=resource_type,
         user_id=user_id,
@@ -262,13 +278,10 @@ def test_audit_outbox_integration(module_name: str):
         idempotency_key=idempotency_key,
     )
 
-    # Valida Audit Log (se implementado pela subclasse)
     if hasattr(store, "audit_log"):
         logs = store.audit_log()
         assert any(log["resource_id"] == created["id"] for log in logs)
-        
-    # Valida Outbox Domain Events (se implementado pela subclasse)
+
     if hasattr(store, "outbox"):
         events = store.outbox()
-        # Nota: finance intercepta no outbox via routing_key LIKE payment.%
-        assert len(events) >= 0 
+        assert len(events) >= 0

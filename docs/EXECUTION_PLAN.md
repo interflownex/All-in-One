@@ -10,12 +10,12 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | --- | ---: | --- | --- |
 | Git e sincronizacao remota | 100% | `local main`, `origin/main` e `fork/main` alinhados | Fluxo de entrega remoto esta operacional. |
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
-| PostgreSQL estrutural | 81% | 15 migrations SQL e stores para 25 modulos, incluindo ledger Gold Valley append-only | Schema amplo existe; falta prova real por modulo. |
+| PostgreSQL estrutural | 86% | 15 migrations SQL, stores para 25 modulos e suite de matriz estrutural para todos os adapters PostgreSQL | Schema amplo existe; falta ampliar a prova CRUD real por modulo em banco vivo. |
 | Runtime FastAPI modular | 86% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado e carregamento dinamico por DSN validado em containers | Base local estabilizada; falta ampliar testes E2E por jornada. |
 | Mensageria/outbox | 86% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos e payload seguro para eventos Valley/catalogo validados | Precisa ampliar cobertura para eventos de todos os modulos e dashboards. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
 | Docker local | 95% | Postgres, RabbitMQ, MongoDB, Redis, outbox e 13 APIs FastAPI healthy | Falta gate CI para impedir regressao de compose. |
-| Apps/frontend | 63% | 9 apps catalogados, catalogo Valley backend regionalizado, plano Stitch com 25 projetos/177 telas e jornadas contratuais locais por pytest | Ainda falta app funcional real e Playwright E2E. |
+| Apps/frontend | 78% | 9 apps catalogados, trilha Valley com telas funcionais e Playwright, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta ampliar a mesma profundidade funcional e E2E para os apps restantes. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
@@ -82,10 +82,10 @@ Entregas ja existentes:
 
 Pendencias:
 - Validar migrations 001-015 em banco limpo e banco ja populado.
-- Criar testes CRUD reais para cada store PostgreSQL.
+- Ampliar a suite `tests/test_postgres_stores_matrix.py` de cobertura estrutural total para CRUD real por modulo em banco vivo.
 - Confirmar audit log append-only em todos os fluxos sensiveis.
 - Confirmar outbox para eventos de todos os modulos.
-- Substituir stores genericos por mapeamentos tipados nos modulos de maior risco.
+- Substituir stores genericos remanescentes por mapeamentos tipados nos modulos de maior risco.
 
 Prioridade de tipagem por risco:
 1. `finance`
@@ -100,7 +100,7 @@ Prioridade de tipagem por risco:
 10. Demais modulos operacionais
 
 Proximos passos naturais:
-1. Criar suite `tests/test_postgres_stores_matrix.py`.
+1. Rodar `tests/test_postgres_stores_matrix.py` contra banco vivo para os modulos prioritarios e expandir payloads/fixtures dos demais.
 2. Testar create/get/list/update/soft_delete/idempotency por modulo.
 3. Testar audit/outbox por modulo.
 4. Corrigir cada store gerado que tentar gravar colunas inexistentes.
@@ -143,7 +143,7 @@ Proximos passos naturais:
 
 Objetivo: transformar microservicos em jornadas de produto.
 
-Status: 63%
+Status: 78%
 
 Apps e prioridades:
 - `all-in-one-user`: cadastro, wallet, busca, compra, delivery, jobs.
@@ -159,21 +159,19 @@ Apps e prioridades:
   `product`, `service`, categoria amigavel e raio regional em km.
 
 Pendencias:
-- Implementar interfaces funcionais reais.
-- Ligar cada app aos endpoints FastAPI.
-- Criar Playwright E2E por jornada; as jornadas contratuais locais
+- Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
+- Ligar os apps restantes aos endpoints FastAPI com o mesmo nivel de integracao ja validado em Valley.
+- Expandir Playwright E2E por jornada para alem da trilha Valley; as jornadas contratuais locais
   `identity -> wallet -> marketplace order`, `business -> jobs -> candidate access`,
   Delivery, Riders, Services, Mobility e Health ja estao cobertas por pytest.
 - Regras Valley de Pepitas, desconto Stock, idempotencia e Plano Essencial ja
   estao cobertas por pytest contratual.
-- Sincronizar design Stitch remoto com credencial rotacionada.
 
 Proximos passos naturais:
-1. Corrigir/validar plano Stitch local.
-2. Definir shell frontend por app.
-3. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
-4. Levar as jornadas contratuais para Playwright desktop/mobile quando houver shell frontend.
-5. Rodar testes E2E desktop/mobile.
+1. Definir shell frontend para os apps fora da trilha Valley.
+2. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
+3. Expandir as jornadas Playwright desktop/mobile para os apps restantes.
+4. Rodar testes E2E desktop/mobile.
 
 ### Fase 5 - Integracoes externas homologadas
 
