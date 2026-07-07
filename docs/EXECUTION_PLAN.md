@@ -72,7 +72,7 @@ Proximos passos naturais:
 
 Objetivo: trocar o contrato local por persistencia PostgreSQL real, auditavel e testada.
 
-Status: 84%
+Status: 86%
 
 Entregas ja existentes:
 - 15 migrations PostgreSQL.
@@ -85,7 +85,7 @@ Pendencias:
 - Validar migrations 001-015 em banco limpo e banco ja populado.
 - Rodar o gate opt-in `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com Docker e imagem PostgreSQL pronta.
 - Ampliar a suite `tests/test_postgres_stores_matrix.py` de cobertura estrutural total para CRUD real por modulo em banco vivo.
-- Executar a nova suite `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN PostgreSQL real para `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`, `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`, `property` e `wms`.
+- Executar a nova suite `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN PostgreSQL real para `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`, `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`, `property`, `wms`, `tms`, `crm`, `bpm`, `document`, `bi` e `ai_core`.
 - Confirmar audit log append-only em todos os fluxos sensiveis.
 - Confirmar outbox para eventos de todos os modulos.
 - Eliminar usos reais remanescentes de stores genericos em fluxos PostgreSQL e manter o runtime falhando rapido quando um store tipado obrigatorio estiver ausente.
@@ -104,8 +104,8 @@ Prioridade de tipagem por risco:
 
 Proximos passos naturais:
 1. Rodar `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com imagem PostgreSQL pronta.
-2. Rodar `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN real para obter prova CRUD viva adicional nos stores prioritarios.
-3. Rodar `tests/test_postgres_stores_matrix.py` contra banco vivo para os modulos prioritarios e expandir payloads/fixtures dos demais.
+2. Rodar `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN real para obter prova CRUD viva adicional nos 21 stores prioritarios.
+3. Rodar `tests/test_postgres_stores_matrix.py` contra banco vivo para os modulos prioritarios e expandir payloads/fixtures de `erp`, `hr`, `jobs` e `permissions`.
 4. Testar create/get/list/update/soft_delete/idempotency por modulo.
 5. Testar audit/outbox por modulo.
 6. Corrigir cada store gerado que tentar gravar colunas inexistentes.

@@ -7,8 +7,13 @@ import psycopg
 import pytest
 
 from modules.shared.api_hub_postgres_store import ApiHubPostgresStore
+from modules.shared.ai_core_postgres_store import AiCorePostgresStore
+from modules.shared.bi_postgres_store import BiPostgresStore
+from modules.shared.bpm_postgres_store import BpmPostgresStore
 from modules.shared.business_postgres_store import BusinessPostgresStore
+from modules.shared.crm_postgres_store import CrmPostgresStore
 from modules.shared.delivery_postgres_store import DeliveryPostgresStore
+from modules.shared.document_postgres_store import DocumentPostgresStore
 from modules.shared.finance_postgres_store import FinancePostgresStore
 from modules.shared.health_postgres_store import HealthPostgresStore
 from modules.shared.identity_postgres_store import IdentityPostgresStore
@@ -19,6 +24,7 @@ from modules.shared.property_postgres_store import PropertyPostgresStore
 from modules.shared.riders_postgres_store import RidersPostgresStore
 from modules.shared.services_postgres_store import ServicesPostgresStore
 from modules.shared.stock_postgres_store import StockPostgresStore
+from modules.shared.tms_postgres_store import TmsPostgresStore
 from modules.shared.vision_postgres_store import VisionPostgresStore
 from modules.shared.wms_postgres_store import WmsPostgresStore
 
@@ -794,3 +800,256 @@ def test_wms_warehouse_create_update_and_soft_delete() -> None:
     with psycopg.connect(POSTGRES_DSN) as connection:
         assert count_audit(connection, "wms") >= before_audit + 3
         assert count_events(connection, "wms") >= before_events + 2
+
+
+def test_tms_carrier_create_update_and_soft_delete() -> None:
+    user_id = uuid4()
+    actor_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, user_id, uuid4().hex[:12])
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "tms")
+        before_events = count_events(connection, "tms")
+
+    store = TmsPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="carriers",
+        user_id=str(user_id),
+        entity_id=None,
+        status="draft",
+        payload={"name": "Transportadora Base", "coverage": ["sp", "rj"]},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="tms.carrier.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"name": "Transportadora Prime", "coverage": ["sp", "rj", "mg"]},
+        status="approved",
+        actor=str(actor_id),
+        action="approve",
+        event="tms.carrier.approved",
+    )
+    assert updated["status"] == "approved"
+    assert updated["payload"]["name"] == "Transportadora Prime"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("carriers", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "tms") >= before_audit + 3
+        assert count_events(connection, "tms") >= before_events + 2
+
+
+def test_crm_lead_create_update_and_soft_delete() -> None:
+    user_id = uuid4()
+    actor_id = uuid4()
+    nonce = uuid4().hex[:12]
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, user_id, nonce)
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "crm")
+        before_events = count_events(connection, "crm")
+
+    store = CrmPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="leads",
+        user_id=str(user_id),
+        entity_id=None,
+        status="new",
+        payload={"name": f"Lead {nonce}", "source": "landing-page"},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="crm.lead.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"name": f"Lead {nonce}", "source": "partner", "score": 85},
+        status="qualified",
+        actor=str(actor_id),
+        action="qualify",
+        event="crm.lead.qualified",
+    )
+    assert updated["status"] == "qualified"
+    assert updated["payload"]["score"] == 85
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("leads", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "crm") >= before_audit + 3
+        assert count_events(connection, "crm") >= before_events + 2
+
+
+def test_bpm_process_create_update_and_soft_delete() -> None:
+    user_id = uuid4()
+    actor_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, user_id, uuid4().hex[:12])
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "bpm")
+        before_events = count_events(connection, "bpm")
+
+    store = BpmPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="processes",
+        user_id=str(user_id),
+        entity_id=None,
+        status="draft",
+        payload={"name": "Onboarding PJ", "version": 1},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="bpm.process.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"name": "Onboarding PJ", "version": 2, "published": True},
+        status="published",
+        actor=str(actor_id),
+        action="publish",
+        event="bpm.process.published",
+    )
+    assert updated["status"] == "published"
+    assert updated["payload"]["version"] == 2
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("processes", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "bpm") >= before_audit + 3
+        assert count_events(connection, "bpm") >= before_events + 2
+
+
+def test_document_folder_create_update_and_soft_delete() -> None:
+    user_id = uuid4()
+    actor_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, user_id, uuid4().hex[:12])
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "document")
+        before_events = count_events(connection, "document")
+
+    store = DocumentPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="folders",
+        user_id=str(user_id),
+        entity_id=None,
+        status="active",
+        payload={"name": "Contratos 2026", "classification": "restricted"},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="document.folder.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"name": "Contratos 2026", "classification": "confidential"},
+        status="reviewed",
+        actor=str(actor_id),
+        action="review",
+        event="document.folder.reviewed",
+    )
+    assert updated["status"] == "reviewed"
+    assert updated["payload"]["classification"] == "confidential"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("folders", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "document") >= before_audit + 3
+        assert count_events(connection, "document") >= before_events + 2
+
+
+def test_bi_dataset_create_update_and_soft_delete() -> None:
+    user_id = uuid4()
+    actor_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, user_id, uuid4().hex[:12])
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "bi")
+        before_events = count_events(connection, "bi")
+
+    store = BiPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="datasets",
+        user_id=str(user_id),
+        entity_id=None,
+        status="draft",
+        payload={"name": "Receita Consolidada", "refresh_mode": "daily"},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="bi.dataset.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"name": "Receita Consolidada", "refresh_mode": "hourly"},
+        status="published",
+        actor=str(actor_id),
+        action="publish",
+        event="bi.dataset.published",
+    )
+    assert updated["status"] == "published"
+    assert updated["payload"]["refresh_mode"] == "hourly"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("datasets", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "bi") >= before_audit + 3
+        assert count_events(connection, "bi") >= before_events + 2
+
+
+def test_ai_core_memory_create_update_and_soft_delete() -> None:
+    user_id = uuid4()
+    actor_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, user_id, uuid4().hex[:12])
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "ai_core")
+        before_events = count_events(connection, "ai_core")
+
+    store = AiCorePostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="ai_memories",
+        user_id=str(user_id),
+        entity_id=None,
+        status="draft",
+        payload={"memory_key": f"mk-{uuid4().hex[:8]}", "summary": "Memoria inicial"},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="ai_core.memory.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"memory_key": created["payload"]["memory_key"], "summary": "Memoria consolidada"},
+        status="indexed",
+        actor=str(actor_id),
+        action="index",
+        event="ai_core.memory.indexed",
+    )
+    assert updated["status"] == "indexed"
+    assert updated["payload"]["summary"] == "Memoria consolidada"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("ai_memories", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "ai_core") >= before_audit + 3
+        assert count_events(connection, "ai_core") >= before_events + 2

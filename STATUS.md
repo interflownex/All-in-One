@@ -1,5 +1,40 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-07 Expansao Da Suite Prioritaria Para 21 Modulos
+
+### Concluido neste ciclo
+
+- `tests/test_postgres_priority_stores_integration.py` foi ampliado para cobrir
+  mais seis modulos genericos com contrato SQL explicito na migration
+  `013_catalog_entity_backfill.sql`: `tms`, `crm`, `bpm`, `document`, `bi` e
+  `ai_core`.
+- A suite prioritaria pronta para DSN PostgreSQL vivo agora cobre 21 modulos:
+  `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`,
+  `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`,
+  `property`, `wms`, `tms`, `crm`, `bpm`, `document`, `bi` e `ai_core`.
+- Os novos testes seguem o mesmo contrato vivo de create/get/update/delete
+  logico, auditoria append-only e emissao de eventos, sem assumir colunas fora
+  do shape generico materializado pelas migrations.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m pytest -q tests/test_postgres_priority_stores_integration.py`: 21 testes ignorados por ausencia de DSN PostgreSQL real no ambiente atual.
+- `python3 -m py_compile tests/test_postgres_priority_stores_integration.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Executar a suite prioritaria agora com 21 modulos em ambiente com DSN
+  PostgreSQL vivo para converter a cobertura pronta em evidencia real.
+- Executar o smoke test de migrations em banco limpo com
+  `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`.
+- Expandir a prova CRUD viva para os fluxos restantes fora da suite
+  prioritaria, com foco em `erp`, `hr`, `jobs`, `permissions` e refinamentos
+  adicionais de cenarios dependentes.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-07 Expansao Da Suite Prioritaria Para 15 Modulos
 
 ### Concluido neste ciclo
