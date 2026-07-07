@@ -219,6 +219,7 @@ TRANSACTIONAL_RESOURCES = {
 }
 
 _ERP_FALLBACK_STORE: Any | None = None
+_TYPED_POSTGRES_MODULES = frozenset(MODULE_ENTITIES)
 
 
 
@@ -241,8 +242,12 @@ def _store_for(module_name: str) -> Any:
             mod = importlib.import_module(module_path, package=__package__ or "shared")
             store_class = getattr(mod, class_name)
             return store_class(dsn)
-        except (ImportError, AttributeError):
-            # Fallback para o store base se o específico não existir
+        except (ImportError, AttributeError) as exc:
+            if module_name in _TYPED_POSTGRES_MODULES:
+                raise RuntimeError(
+                    f"Store PostgreSQL tipado obrigatorio ausente para o modulo {module_name}: {class_name}"
+                ) from exc
+            # Fallback para o store base apenas fora da matriz tipada conhecida
             from .postgres_store import BasePostgresStore
             return BasePostgresStore(dsn)
 

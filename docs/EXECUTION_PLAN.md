@@ -11,7 +11,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | Git e sincronizacao remota | 100% | `local main`, `origin/main` e `fork/main` alinhados | Fluxo de entrega remoto esta operacional. |
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
 | PostgreSQL estrutural | 86% | 15 migrations SQL, stores para 25 modulos e suite de matriz estrutural para todos os adapters PostgreSQL | Schema amplo existe; falta ampliar a prova CRUD real por modulo em banco vivo. |
-| Runtime FastAPI modular | 86% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado e carregamento dinamico por DSN validado em containers | Base local estabilizada; falta ampliar testes E2E por jornada. |
+| Runtime FastAPI modular | 88% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado, carregamento dinamico por DSN validado em containers e resolucao obrigatoria de store tipado para modulos conhecidos | Base local estabilizada; falta ampliar testes E2E por jornada. |
 | Mensageria/outbox | 86% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos e payload seguro para eventos Valley/catalogo validados | Precisa ampliar cobertura para eventos de todos os modulos e dashboards. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
 | Docker local | 95% | Postgres, RabbitMQ, MongoDB, Redis, outbox e 13 APIs FastAPI healthy | Falta gate CI para impedir regressao de compose. |
@@ -85,7 +85,7 @@ Pendencias:
 - Ampliar a suite `tests/test_postgres_stores_matrix.py` de cobertura estrutural total para CRUD real por modulo em banco vivo.
 - Confirmar audit log append-only em todos os fluxos sensiveis.
 - Confirmar outbox para eventos de todos os modulos.
-- Substituir stores genericos remanescentes por mapeamentos tipados nos modulos de maior risco.
+- Eliminar usos reais remanescentes de stores genericos em fluxos PostgreSQL e manter o runtime falhando rapido quando um store tipado obrigatorio estiver ausente.
 
 Prioridade de tipagem por risco:
 1. `finance`

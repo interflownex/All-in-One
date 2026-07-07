@@ -1,5 +1,35 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-07 Runtime Tipado Obrigatorio Para PostgreSQL
+
+### Concluido neste ciclo
+
+- `modules/shared/runtime.py` foi endurecido para recusar fallback silencioso
+  para `BasePostgresStore` quando um modulo conhecido da plataforma possui DSN
+  PostgreSQL configurado, mas o store tipado obrigatorio esta ausente.
+- Criada a suite `tests/test_runtime_postgres_store_resolution.py` para validar
+  a resolucao de stores tipados nos 25 modulos conhecidos, o fallback generico
+  apenas fora da matriz tipada e o comportamento especial de `ERP` sem DSN.
+- A garantia nova reduz risco de regressao silenciosa na Fase 2, onde um modulo
+  poderia aparentar estar em PostgreSQL tipado enquanto caia para o store base.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m pytest -q tests/test_runtime_postgres_store_resolution.py tests/test_postgres_stores_matrix.py`: 55 testes aprovados, 27 ignorados.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Rodar a matriz PostgreSQL em banco vivo para transformar a cobertura de
+  resolucao/estrutura em prova CRUD real para todos os 25 modulos.
+- Expandir payloads e fixtures de runtime dos adapters ainda fora da validacao
+  CRUD automatizada.
+- Ampliar E2E dos apps fora da trilha Valley.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-07 Saneamento Do Plano E Cobertura Estrutural PostgreSQL
 
 ### Concluido neste ciclo
