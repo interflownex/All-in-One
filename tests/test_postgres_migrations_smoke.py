@@ -52,6 +52,8 @@ REQUIRED_TABLES = {
     "business.companies",
     "finance.wallets",
     "finance.valley_gold_ledger_entries",
+    "delivery.rider_documents",
+    "delivery.rider_reviews",
     "marketplace.orders",
     "business.catalog_offers",
     "jobs.resumes",

@@ -144,6 +144,8 @@ def main() -> int:
     for needle in [
         "identity.users",
         "finance.wallets",
+        "delivery.rider_documents",
+        "delivery.rider_reviews",
         "NUMERIC(18, 4)",
         "NUMERIC(18, 8)",
         "reject_immutable_change",

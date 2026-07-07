@@ -11,10 +11,10 @@ class RidersPostgresStore(BasePostgresStore):
     module = "riders"
     backend = "postgres_riders_typed_store"
     tables = {
-        "rider_profiles": "riders.rider_profiles",
-        "rider_documents": "riders.rider_documents",
-        "vehicles": "riders.vehicles",
-        "rider_reviews": "riders.rider_reviews",
+        "rider_profiles": "delivery.rider_profiles",
+        "rider_documents": "delivery.rider_documents",
+        "vehicles": "delivery.vehicles",
+        "rider_reviews": "delivery.rider_reviews",
     }
     soft_deletable = frozenset(['rider_profiles', 'rider_documents', 'vehicles', 'rider_reviews'])
 

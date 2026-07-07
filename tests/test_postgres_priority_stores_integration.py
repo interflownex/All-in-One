@@ -14,6 +14,7 @@ from modules.shared.health_postgres_store import HealthPostgresStore
 from modules.shared.identity_postgres_store import IdentityPostgresStore
 from modules.shared.marketplace_postgres_store import MarketplacePostgresStore
 from modules.shared.mobility_postgres_store import MobilityPostgresStore
+from modules.shared.riders_postgres_store import RidersPostgresStore
 from modules.shared.services_postgres_store import ServicesPostgresStore
 from modules.shared.stock_postgres_store import StockPostgresStore
 
@@ -533,3 +534,62 @@ def test_health_patient_create_update_and_soft_delete() -> None:
     with psycopg.connect(POSTGRES_DSN) as connection:
         assert count_audit(connection, "health") >= before_audit + 3
         assert count_events(connection, "health") >= before_events + 2
+
+
+def test_riders_profile_create_update_and_soft_delete() -> None:
+    rider_user_id = uuid4()
+    actor_id = uuid4()
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, rider_user_id, uuid4().hex[:12])
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "riders")
+        before_events = count_events(connection, "riders")
+
+    finance_store = FinancePostgresStore(POSTGRES_DSN)
+    wallet = finance_store.create(
+        resource_type="wallets",
+        user_id=str(rider_user_id),
+        entity_id=None,
+        status="active",
+        payload={"wallet_type": "personal"},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="finance.wallet.created",
+        idempotency_key=str(uuid4()),
+    )
+
+    store = RidersPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="rider_profiles",
+        user_id=str(rider_user_id),
+        entity_id=None,
+        status="pending_documents",
+        payload={
+            "wallet_id": wallet["id"],
+            "cnh_number_hash": f"cnh-{uuid4().hex[:10]}",
+            "cnh_category": "AB",
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="rider.submitted",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"cnh_category": "A"},
+        status="approved",
+        actor=str(actor_id),
+        action="approve",
+        event="rider.approved",
+    )
+    assert updated["status"] == "approved"
+    assert updated["payload"]["cnh_category"] == "A"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("rider_profiles", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "riders") >= before_audit + 3
+        assert count_events(connection, "riders") >= before_events + 2

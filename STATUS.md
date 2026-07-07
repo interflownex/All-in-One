@@ -1,5 +1,42 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-07 Alinhamento Do Schema PostgreSQL De Riders
+
+### Concluido neste ciclo
+
+- Corrigido `modules/shared/riders_postgres_store.py` para usar o schema
+  autoritativo `delivery.*` em vez de `riders.*`, alinhando o adapter ao
+  contrato versionado e ao conjunto de migrations.
+- Criada a migration
+  `database/postgres/migrations/024_riders_delivery_schema_alignment.sql` com
+  as tabelas faltantes `delivery.rider_documents` e `delivery.rider_reviews`,
+  incluindo FKs, `idempotency_key` e índices por perfil.
+- `tests/test_runtime_postgres_store_resolution.py` passou a verificar
+  explicitamente o mapeamento do store de `riders` para `delivery.*`.
+- `tests/test_postgres_priority_stores_integration.py` ganhou o teste de
+  integração vivo de `riders`, elevando a suíte prioritária preparada para 11
+  módulos quando houver DSN PostgreSQL real.
+- `scripts/validate_repository.py` e `tests/test_postgres_migrations_smoke.py`
+  agora exigem a presença das novas tabelas de `riders`.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m pytest -q tests/test_runtime_postgres_store_resolution.py tests/test_postgres_priority_stores_integration.py`: 29 testes aprovados, 11 ignorados.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Executar a suíte prioritária agora com 11 módulos em ambiente com DSN
+  PostgreSQL vivo para converter a cobertura pronta em evidência real.
+- Executar o smoke test de migrations em banco limpo com
+  `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`.
+- Continuar a expansão da prova CRUD viva para os módulos restantes fora da
+  suíte prioritária.
+
+### Git
+
+- Incremento em validação final antes da sincronização automática.
+
 ## STATUS OPERACIONAL - 2026-07-07 Expansao Final Da Suite Prioritaria Para 10 Modulos
 
 ### Concluido neste ciclo

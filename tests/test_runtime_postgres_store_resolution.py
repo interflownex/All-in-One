@@ -5,6 +5,7 @@ import types
 import pytest
 
 from modules.shared import runtime
+from modules.shared.riders_postgres_store import RidersPostgresStore
 
 
 class DummyConnection:
@@ -69,3 +70,12 @@ def test_get_erp_store_uses_memory_store_without_dsn(monkeypatch: pytest.MonkeyP
     store = runtime.get_erp_store()
 
     assert store.__class__.__name__ == "ErpMemoryStore"
+
+
+def test_riders_postgres_store_uses_delivery_schema_tables() -> None:
+    assert RidersPostgresStore.tables == {
+        "rider_profiles": "delivery.rider_profiles",
+        "rider_documents": "delivery.rider_documents",
+        "vehicles": "delivery.vehicles",
+        "rider_reviews": "delivery.rider_reviews",
+    }
