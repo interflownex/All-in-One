@@ -61,6 +61,7 @@ Entregas ja existentes:
 Pendencias:
 - Reduzir tempo de rebuild dos containers Python.
 - Acompanhar primeira execucao do workflow `compose-health.yml` no GitHub.
+- Executar o smoke test opt-in de banco limpo para migrations PostgreSQL em ambiente com imagem/base disponivel.
 
 Proximos passos naturais:
 1. Executar compose em banco limpo e validar migrations 001-015.
@@ -82,6 +83,7 @@ Entregas ja existentes:
 
 Pendencias:
 - Validar migrations 001-015 em banco limpo e banco ja populado.
+- Rodar o gate opt-in `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com Docker e imagem PostgreSQL pronta.
 - Ampliar a suite `tests/test_postgres_stores_matrix.py` de cobertura estrutural total para CRUD real por modulo em banco vivo.
 - Confirmar audit log append-only em todos os fluxos sensiveis.
 - Confirmar outbox para eventos de todos os modulos.
@@ -100,11 +102,12 @@ Prioridade de tipagem por risco:
 10. Demais modulos operacionais
 
 Proximos passos naturais:
-1. Rodar `tests/test_postgres_stores_matrix.py` contra banco vivo para os modulos prioritarios e expandir payloads/fixtures dos demais.
-2. Testar create/get/list/update/soft_delete/idempotency por modulo.
-3. Testar audit/outbox por modulo.
-4. Corrigir cada store gerado que tentar gravar colunas inexistentes.
-5. Atualizar docs de DSN e operacao.
+1. Rodar `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com imagem PostgreSQL pronta.
+2. Rodar `tests/test_postgres_stores_matrix.py` contra banco vivo para os modulos prioritarios e expandir payloads/fixtures dos demais.
+3. Testar create/get/list/update/soft_delete/idempotency por modulo.
+4. Testar audit/outbox por modulo.
+5. Corrigir cada store gerado que tentar gravar colunas inexistentes.
+6. Atualizar docs de DSN e operacao.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 

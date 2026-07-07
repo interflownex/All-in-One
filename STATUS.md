@@ -1,5 +1,36 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-07 Gate Opt-In Para Migrations PostgreSQL Em Banco Limpo
+
+### Concluido neste ciclo
+
+- Criado `tests/test_postgres_migrations_smoke.py` para subir um PostgreSQL
+  efemero via Docker, aplicar todas as migrations SQL do repositório em banco
+  limpo e validar schemas, tabelas centrais, índices obrigatórios e a proteção
+  append-only de `audit.logs`.
+- O teste foi deixado como gate opt-in por `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`,
+  evitando custo alto de pull/boot de imagem PostgreSQL na suíte padrão.
+- A execução padrão do gate foi validada: sem a flag, o teste fica barato e
+  explícito, registrando `skip` em vez de travar a pipeline local.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m pytest -q tests/test_postgres_migrations_smoke.py`: 1 teste ignorado por gate opt-in, comportamento esperado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Executar o smoke test com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente
+  com imagem PostgreSQL pronta para obter a primeira evidência viva de banco
+  limpo sem custo de bootstrap.
+- Rodar a matriz PostgreSQL em banco vivo para ampliar a prova CRUD real por
+  módulo.
+- Ampliar E2E dos apps fora da trilha Valley.
+
+### Git
+
+- Incremento em validação final antes da sincronização automática.
+
 ## STATUS OPERACIONAL - 2026-07-07 Runtime Tipado Obrigatorio Para PostgreSQL
 
 ### Concluido neste ciclo
