@@ -5,6 +5,7 @@ import socket
 import subprocess
 import time
 import uuid
+import json
 from pathlib import Path
 
 import psycopg
@@ -85,6 +86,45 @@ def _wait_for_postgres(dsn: str, timeout_seconds: int = 45) -> None:
     raise RuntimeError("PostgreSQL efemero nao ficou pronto no tempo esperado.")
 
 
+def _inspect_container_state(container_name: str) -> dict[str, object] | None:
+    result = subprocess.run(
+        ["docker", "inspect", container_name, "--format", "{{json .State}}"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0 or not result.stdout.strip():
+        return None
+    try:
+        return json.loads(result.stdout.strip())
+    except json.JSONDecodeError:
+        return {"raw": result.stdout.strip()}
+
+
+def _wait_for_container_running(container_name: str, timeout_seconds: int = 20) -> dict[str, object]:
+    deadline = time.time() + timeout_seconds
+    last_state: dict[str, object] | None = None
+    while time.time() < deadline:
+        state = _inspect_container_state(container_name)
+        if state is not None:
+            last_state = state
+            if state.get("Running") is True and state.get("Status") == "running":
+                return state
+        time.sleep(1)
+    raise RuntimeError(f"Container PostgreSQL efemero nao entrou em estado running: {last_state}")
+
+
+def _docker_logs(container_name: str) -> str:
+    result = subprocess.run(
+        ["docker", "logs", "--tail", "200", container_name],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    material = (result.stdout or "") + (result.stderr or "")
+    return material.strip()
+
+
 def _apply_all_migrations(dsn: str) -> None:
     with psycopg.connect(dsn, autocommit=True) as connection:
         for migration_path in sorted(MIGRATIONS_DIR.glob("*.sql")):
@@ -102,32 +142,43 @@ def test_postgres_migrations_apply_cleanly_on_fresh_database() -> None:
     port = _free_port()
     dsn = f"postgresql://all_in_one:local-development-only@127.0.0.1:{port}/all_in_one"
 
-    run_result = subprocess.run(
-        [
-            "docker",
-            "run",
-            "--rm",
-            "-d",
-            "--name",
-            container_name,
-            "-e",
-            "POSTGRES_DB=all_in_one",
-            "-e",
-            "POSTGRES_USER=all_in_one",
-            "-e",
-            "POSTGRES_PASSWORD=local-development-only",
-            "-p",
-            f"127.0.0.1:{port}:5432",
-            POSTGRES_IMAGE,
-        ],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    try:
+        run_result = subprocess.run(
+            [
+                "docker",
+                "run",
+                "--rm",
+                "-d",
+                "--name",
+                container_name,
+                "-e",
+                "POSTGRES_DB=all_in_one",
+                "-e",
+                "POSTGRES_USER=all_in_one",
+                "-e",
+                "POSTGRES_PASSWORD=local-development-only",
+                "-p",
+                f"127.0.0.1:{port}:5432",
+                POSTGRES_IMAGE,
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=30,
+        )
+    except subprocess.TimeoutExpired:
+        pytest.skip("Docker demorou demais para responder ao iniciar o PostgreSQL efemero.")
     if run_result.returncode != 0:
         pytest.skip(f"Nao foi possivel iniciar container PostgreSQL efemero: {run_result.stderr.strip()}")
 
     try:
+        try:
+            _wait_for_container_running(container_name)
+        except RuntimeError as exc:
+            logs = _docker_logs(container_name)
+            detail = f"{exc}; logs={logs[:400]}" if logs else str(exc)
+            pytest.skip(f"Docker nao deixou o container PostgreSQL efemero operacional: {detail}")
+
         _wait_for_postgres(dsn)
         _apply_all_migrations(dsn)
 

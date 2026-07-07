@@ -1,5 +1,41 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-07 Smoke PostgreSQL Opt-In Endurecido
+
+### Concluido neste ciclo
+
+- `tests/test_postgres_migrations_smoke.py` foi endurecido para detectar e
+  abortar rapidamente anomalias do daemon Docker ao subir PostgreSQL efemero,
+  em vez de deixar a suite travada sem diagnostico.
+- O smoke agora valida o tempo de resposta do `docker run`, espera explicitamente
+  o estado `running` do contêiner e reporta `skip` controlado quando o host nao
+  consegue deixar o PostgreSQL efemero operacional.
+- Foi confirmada uma limitacao ambiental neste host: o opt-in nao chegou a
+  executar migrations porque o Docker demorou demais para responder ao iniciar
+  `postgres:16` efemero.
+
+### Validacoes executadas
+
+- `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1 ./.venv/bin/python -m pytest -q tests/test_postgres_migrations_smoke.py`: 1 teste ignorado em 30.73s.
+- `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1 ./.venv/bin/python -m pytest -q -rs tests/test_postgres_migrations_smoke.py`: `SKIPPED` com motivo `Docker demorou demais para responder ao iniciar o PostgreSQL efemero.`
+- `python3 -m py_compile tests/test_postgres_migrations_smoke.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Executar o smoke test opt-in em host/daemon Docker que consiga iniciar
+  `postgres:16` efemero sem timeout de 30s.
+- Executar a suite viva dos 25 modulos com DSN PostgreSQL real assim que o
+  ambiente disponibilizar banco funcional.
+- Validar migrations `001-015` em banco limpo e em banco previamente
+  populado.
+- Confirmar `audit.logs` append-only e `audit.domain_events` em ambiente real
+  para os fluxos sensiveis.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-07 Cobertura PostgreSQL Pronta Para 25 Modulos
 
 ### Concluido neste ciclo

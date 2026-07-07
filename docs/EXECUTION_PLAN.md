@@ -111,6 +111,12 @@ Proximos passos naturais:
 6. Corrigir cada store gerado que tentar gravar colunas inexistentes.
 7. Atualizar docs de DSN e operacao.
 
+Nota operacional atual:
+- O smoke opt-in ja esta endurecido para falhar rapido quando o host nao consegue
+  iniciar `postgres:16` efemero; neste host especifico o resultado observado foi
+  `SKIPPED` por timeout do Docker ao iniciar o contêiner, entao a pendencia
+  restante depende de um daemon/host com PostgreSQL efemero funcional.
+
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 
 Objetivo: garantir comunicacao assincroma confiavel e rastreavel.
