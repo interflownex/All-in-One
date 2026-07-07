@@ -1,5 +1,34 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-07 Expansao Da Prova CRUD PostgreSQL Prioritaria
+
+### Concluido neste ciclo
+
+- Criada `tests/test_postgres_priority_stores_integration.py` para ampliar a
+  prova CRUD real em PostgreSQL alem de `jobs`, cobrindo os stores tipados de
+  `finance`, `business`, `marketplace` e `services`.
+- A nova suite valida, quando um DSN vivo estiver disponivel, criacao, leitura,
+  listagem, atualizacao ou soft delete, alem de crescimento de `audit.logs` e
+  `audit.domain_events` nesses modulos prioritarios.
+- O padrao reaproveita o seed real de `identity.users` e a criacao de empresa
+  base para encadear dependencias legitimas entre Business e Marketplace.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m pytest -q tests/test_postgres_priority_stores_integration.py`: 4 testes ignorados por ausencia de DSN PostgreSQL real no ambiente atual.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Executar a suite nova em ambiente com `ALL_IN_ONE_POSTGRES_MATRIX_DSN` ou DSN
+  equivalente disponivel para transformar a cobertura em evidencia viva.
+- Executar o smoke test de migrations em banco limpo com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`.
+- Ampliar a prova CRUD viva para `delivery`, `mobility`, `identity` e `api_hub`.
+
+### Git
+
+- Incremento em validação final antes da sincronização automática.
+
 ## STATUS OPERACIONAL - 2026-07-07 Gate Opt-In Para Migrations PostgreSQL Em Banco Limpo
 
 ### Concluido neste ciclo
