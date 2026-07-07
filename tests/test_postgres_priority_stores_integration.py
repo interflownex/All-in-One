@@ -12,11 +12,15 @@ from modules.shared.delivery_postgres_store import DeliveryPostgresStore
 from modules.shared.finance_postgres_store import FinancePostgresStore
 from modules.shared.health_postgres_store import HealthPostgresStore
 from modules.shared.identity_postgres_store import IdentityPostgresStore
+from modules.shared.legal_postgres_store import LegalPostgresStore
 from modules.shared.marketplace_postgres_store import MarketplacePostgresStore
 from modules.shared.mobility_postgres_store import MobilityPostgresStore
+from modules.shared.property_postgres_store import PropertyPostgresStore
 from modules.shared.riders_postgres_store import RidersPostgresStore
 from modules.shared.services_postgres_store import ServicesPostgresStore
 from modules.shared.stock_postgres_store import StockPostgresStore
+from modules.shared.vision_postgres_store import VisionPostgresStore
+from modules.shared.wms_postgres_store import WmsPostgresStore
 
 
 POSTGRES_DSN = os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN") or os.getenv("ALL_IN_ONE_BUSINESS_POSTGRES_DSN")
@@ -593,3 +597,200 @@ def test_riders_profile_create_update_and_soft_delete() -> None:
     with psycopg.connect(POSTGRES_DSN) as connection:
         assert count_audit(connection, "riders") >= before_audit + 3
         assert count_events(connection, "riders") >= before_events + 2
+
+
+def test_vision_device_create_update_and_soft_delete() -> None:
+    user_id = uuid4()
+    actor_id = uuid4()
+    nonce = uuid4().hex[:12]
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, user_id, nonce)
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "vision")
+        before_events = count_events(connection, "vision")
+
+    store = VisionPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="devices",
+        user_id=str(user_id),
+        entity_id=None,
+        status="active",
+        payload={"device_fingerprint": f"dev-{nonce}"},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="vision.device.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"device_fingerprint": f"dev-{nonce}", "location_label": "Portaria"},
+        status="reviewed",
+        actor=str(actor_id),
+        action="review",
+        event="vision.device.reviewed",
+    )
+    assert updated["status"] == "reviewed"
+    assert updated["payload"]["location_label"] == "Portaria"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("devices", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "vision") >= before_audit + 3
+        assert count_events(connection, "vision") >= before_events + 2
+
+
+def test_legal_case_create_update_and_soft_delete() -> None:
+    user_id = uuid4()
+    actor_id = uuid4()
+    nonce = uuid4().hex[:12]
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, user_id, nonce)
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "legal")
+        before_events = count_events(connection, "legal")
+
+    store = LegalPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="cases",
+        user_id=str(user_id),
+        entity_id=None,
+        status="active",
+        payload={"case_number": f"CASE-{nonce}"},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="legal.case.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"case_number": f"CASE-{nonce}", "risk_brl": "1000.00"},
+        status="triaged",
+        actor=str(actor_id),
+        action="triage",
+        event="legal.case.triaged",
+    )
+    assert updated["status"] == "triaged"
+    assert updated["payload"]["risk_brl"] == "1000.00"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("cases", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "legal") >= before_audit + 3
+        assert count_events(connection, "legal") >= before_events + 2
+
+
+def test_property_create_update_and_soft_delete() -> None:
+    owner_user_id = uuid4()
+    actor_id = uuid4()
+    nonce = uuid4().hex[:12]
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, owner_user_id, nonce)
+        seed_user(connection, actor_id, uuid4().hex[:12])
+        before_audit = count_audit(connection, "property")
+        before_events = count_events(connection, "property")
+
+    store = PropertyPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="properties",
+        user_id=str(owner_user_id),
+        entity_id=None,
+        status="active",
+        payload={
+            "address": {"city": "Sao Paulo", "street": "Rua Um"},
+            "property_type": "house",
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="property.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={
+            "address": {"city": "Sao Paulo", "street": "Rua Dois"},
+            "property_type": "apartment",
+        },
+        status="reviewed",
+        actor=str(actor_id),
+        action="review",
+        event="property.reviewed",
+    )
+    assert updated["status"] == "reviewed"
+    assert updated["payload"]["property_type"] == "apartment"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("properties", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "property") >= before_audit + 3
+        assert count_events(connection, "property") >= before_events + 2
+
+
+def test_wms_warehouse_create_update_and_soft_delete() -> None:
+    owner_user_id = uuid4()
+    actor_id = uuid4()
+    nonce = uuid4().hex[:12]
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        seed_user(connection, owner_user_id, nonce)
+        seed_user(connection, actor_id, uuid4().hex[:12])
+
+    business_store = BusinessPostgresStore(POSTGRES_DSN)
+    company = business_store.create(
+        resource_type="companies",
+        user_id=str(owner_user_id),
+        entity_id=None,
+        status="active",
+        payload={
+            "cnpj": f"{uuid4().hex[:14]}",
+            "root_cnpj": uuid4().hex[:8],
+            "legal_name": f"Armazem Base {nonce}",
+        },
+        actor=str(actor_id),
+        unique_fields=(),
+        event="business.company.created",
+        idempotency_key=str(uuid4()),
+    )
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        before_audit = count_audit(connection, "wms")
+        before_events = count_events(connection, "wms")
+
+    store = WmsPostgresStore(POSTGRES_DSN)
+    created = store.create(
+        resource_type="warehouses",
+        user_id=str(owner_user_id),
+        entity_id=company["id"],
+        status="active",
+        payload={"name": "CD Principal"},
+        actor=str(actor_id),
+        unique_fields=(),
+        event="wms.warehouse.created",
+        idempotency_key=str(uuid4()),
+    )
+    updated = store.update(
+        created,
+        payload={"name": "CD Principal 2", "addressing_rules": {"bin_format": "A-01"}},
+        status="reviewed",
+        actor=str(actor_id),
+        action="review",
+        event="wms.warehouse.reviewed",
+    )
+    assert updated["status"] == "reviewed"
+    assert updated["payload"]["name"] == "CD Principal 2"
+
+    store.soft_delete(updated, str(actor_id))
+    deleted = store.get("warehouses", created["id"])
+    assert deleted is None
+
+    with psycopg.connect(POSTGRES_DSN) as connection:
+        assert count_audit(connection, "wms") >= before_audit + 3
+        assert count_events(connection, "wms") >= before_events + 2

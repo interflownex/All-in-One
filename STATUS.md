@@ -1,5 +1,39 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-07 Expansao Da Suite Prioritaria Para 15 Modulos
+
+### Concluido neste ciclo
+
+- `tests/test_postgres_priority_stores_integration.py` foi ampliado para cobrir
+  mais quatro modulos genericos com schema claro e payload minimo viavel:
+  `vision`, `legal`, `property` e `wms`.
+- A suite prioritaria pronta para DSN PostgreSQL vivo agora cobre 15 modulos:
+  `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`,
+  `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`,
+  `property` e `wms`.
+- A ampliacao foi feita sem forcar schema especulativo; os recursos escolhidos
+  existem em migrations versionadas e aceitam create/update/delete logico com
+  payload minimo claro.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m pytest -q tests/test_postgres_priority_stores_integration.py`: 15 testes ignorados por ausencia de DSN PostgreSQL real no ambiente atual.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Executar a suite prioritaria agora com 15 modulos em ambiente com DSN
+  PostgreSQL vivo para converter a cobertura pronta em evidencia real.
+- Executar o smoke test de migrations em banco limpo com
+  `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`.
+- Expandir a prova CRUD viva para os modulos restantes fora da suite
+  prioritaria, como `tms`, `crm`, `bpm`, `document`, `bi`, `ai_core` e
+  eventual refinamento de `erp`.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-07 Alinhamento Do Schema PostgreSQL De Riders
 
 ### Concluido neste ciclo
