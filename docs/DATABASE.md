@@ -33,6 +33,22 @@ mesmo durante o cadastro.
 de entrega e preservada separadamente.
 Correcoes financeiras devem ser novos lancamentos compensatorios.
 
+## Homologacao Por DSN
+
+O gate `tests/test_postgres_migrations_smoke.py` cobre banco limpo quando o host
+consegue iniciar PostgreSQL efemero via Docker. Para ambientes onde o banco ja
+existe ou o Docker local nao consegue subir `postgres:16`, use
+`scripts/validate_postgres_real_dsn.py` com `ALL_IN_ONE_POSTGRES_MATRIX_DSN`.
+
+O script pode aplicar migrations, repetir a aplicacao para provar idempotencia
+em banco ja populado, conferir schemas/tabelas/indices/triggers e executar
+`--write-checks` para criar evidencias em `audit.logs`/`audit.domain_events` e
+confirmar rejeicao de `UPDATE` em `audit.logs`.
+
+Com o DSN validado, a prova CRUD/outbox dos stores tipados fica em
+`tests/test_postgres_priority_stores_integration.py`, cobrindo os 25 modulos
+PostgreSQL da plataforma.
+
 ## Jobs E Procedencia Documental
 
 - `jobs.resumes` pertence ao usuario e define se o curriculo pode ser

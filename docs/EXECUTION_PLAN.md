@@ -82,7 +82,8 @@ Entregas ja existentes:
 - Idempotencia espalhada nas principais tabelas.
 
 Pendencias:
-- Validar migrations 001-015 em banco limpo e banco ja populado.
+- Validar migrations 001-015 em banco limpo e banco ja populado via smoke
+  efemero ou `scripts/validate_postgres_real_dsn.py` com DSN real.
 - Rodar o gate opt-in `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com Docker e imagem PostgreSQL pronta.
 - Ampliar a suite `tests/test_postgres_stores_matrix.py` de cobertura estrutural total para CRUD real por modulo em banco vivo.
 - Executar a nova suite `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN PostgreSQL real para `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`, `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`, `property`, `wms`, `tms`, `crm`, `bpm`, `document`, `bi`, `ai_core`, `hr`, `permissions`, `jobs` e `erp`.
@@ -103,19 +104,22 @@ Prioridade de tipagem por risco:
 10. Demais modulos operacionais
 
 Proximos passos naturais:
-1. Rodar `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com imagem PostgreSQL pronta.
-2. Rodar `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN real para obter prova CRUD viva adicional nos 25 stores tipados.
-3. Rodar `tests/test_postgres_stores_matrix.py` contra banco vivo para confirmar a matriz completa com payloads/fixtures reais onde ainda houver variacao contratual.
-4. Testar create/get/list/update/soft_delete/idempotency por modulo.
-5. Testar audit/outbox por modulo.
-6. Corrigir cada store gerado que tentar gravar colunas inexistentes.
-7. Atualizar docs de DSN e operacao.
+1. Rodar `scripts/validate_postgres_real_dsn.py --apply-migrations --repeat-migrations --write-checks` com `ALL_IN_ONE_POSTGRES_MATRIX_DSN` apontando para PostgreSQL real.
+2. Rodar `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com imagem PostgreSQL pronta, quando o daemon Docker local estiver estavel.
+3. Rodar `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN real para obter prova CRUD viva adicional nos 25 stores tipados.
+4. Rodar `tests/test_postgres_stores_matrix.py` contra banco vivo para confirmar a matriz completa com payloads/fixtures reais onde ainda houver variacao contratual.
+5. Testar create/get/list/update/soft_delete/idempotency por modulo.
+6. Testar audit/outbox por modulo.
+7. Corrigir cada store gerado que tentar gravar colunas inexistentes.
 
 Nota operacional atual:
 - O smoke opt-in ja esta endurecido para falhar rapido quando o host nao consegue
   iniciar `postgres:16` efemero; neste host especifico o resultado observado foi
   `SKIPPED` por timeout do Docker ao iniciar o contêiner, entao a pendencia
   restante depende de um daemon/host com PostgreSQL efemero funcional.
+- Para nao depender apenas desse daemon, `scripts/validate_postgres_real_dsn.py`
+  agora valida banco real por DSN, aplica/reaplica migrations quando solicitado
+  e confirma evidencias append-only/outbox com `--write-checks`.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 

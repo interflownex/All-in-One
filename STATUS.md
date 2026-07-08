@@ -1,5 +1,43 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-08 Validacao PostgreSQL Real Por DSN
+
+### Concluido neste ciclo
+
+- Criado `scripts/validate_postgres_real_dsn.py` para validar PostgreSQL real por
+  `ALL_IN_ONE_POSTGRES_MATRIX_DSN` ou `--dsn`, sem depender de Docker efemero.
+- O novo validador cobre aplicacao opcional de migrations, reaplicacao para
+  idempotencia em banco ja populado, schemas/tabelas/indices/triggers criticos
+  e `--write-checks` para evidencias em `audit.logs`/`audit.domain_events` com
+  rejeicao de `UPDATE` em `audit.logs`.
+- `docs/OPERATIONS.md` e `docs/DATABASE.md` agora documentam o fluxo de banco
+  real por DSN, incluindo os comandos para banco limpo, banco populado e suite
+  viva dos 25 stores tipados.
+- `scripts/validate_stitch_mcp_config.py` foi otimizado para nao varrer todos
+  os artefatos de frontend ao procurar segredo Stitch; a busca agora fica
+  restrita aos caminhos operacionais/versionados relevantes e o validador geral
+  voltou a responder rapidamente.
+
+### Validacoes executadas
+
+- `python3 -m py_compile scripts/validate_stitch_mcp_config.py scripts/validate_postgres_real_dsn.py`: aprovado.
+- `./.venv/bin/python scripts/validate_postgres_real_dsn.py`: falha esperada com codigo 2 e mensagem para informar `--dsn` ou `ALL_IN_ONE_POSTGRES_MATRIX_DSN`.
+- `python3 scripts/validate_stitch_mcp_config.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_migrations_smoke.py tests/test_postgres_priority_stores_integration.py`: 26 testes ignorados por gates/ausencia de DSN real.
+
+### Pendencias rastreadas
+
+- Executar `scripts/validate_postgres_real_dsn.py --apply-migrations --repeat-migrations --write-checks` em ambiente com DSN PostgreSQL real.
+- Executar a suite viva dos 25 modulos com `ALL_IN_ONE_POSTGRES_MATRIX_DSN`
+  apontando para banco real validado.
+- Quando houver daemon Docker estavel, executar tambem o smoke efemero
+  `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-07 Smoke PostgreSQL Opt-In Endurecido
 
 ### Concluido neste ciclo

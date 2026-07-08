@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tomllib
@@ -24,6 +25,19 @@ SECRET_ASSIGNMENT_PATTERNS = (
     re.compile(r"(?im)^\s*STITCH_API_KEY\s*=\s*['\"]?[^'\"\s#][^'\"\n#]*"),
     re.compile(r"(?im)X-Goog-Api-Key\s*[:=]\s*(?!\$\{STITCH_API_KEY\}|STITCH_API_KEY\b)['\"]?[A-Za-z0-9_\-]{12,}"),
 )
+SECRET_SCAN_PATHS = [
+    ".agents",
+    ".env.example",
+    ".github",
+    ".vscode",
+    "AGENTS.md",
+    "GEMINI.md",
+    "README.md",
+    "config",
+    "docs",
+    "infra",
+    "scripts",
+]
 
 
 def load_policy(policy_path: Path = POLICY_PATH) -> dict[str, Any]:
@@ -96,21 +110,76 @@ def validate_codex_config(config: dict[str, Any], config_path: Path) -> list[str
     return errors
 
 
-def tracked_files(root: Path = ROOT) -> list[Path]:
+def untracked_files(root: Path = ROOT) -> list[Path]:
     result = subprocess.run(
-        ["git", "ls-files", "--cached", "--others", "--exclude-standard"],
+        ["git", "ls-files", "--others", "--exclude-standard"],
         cwd=root,
         check=True,
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        timeout=10,
     )
     return [root / line for line in result.stdout.splitlines() if line]
 
 
+def stitch_secret_candidate_files(root: Path = ROOT) -> list[Path]:
+    if shutil.which("rg"):
+        result = subprocess.run(
+            [
+                "rg",
+                "-l",
+                "-F",
+                "-e",
+                "STITCH_API_KEY",
+                "-e",
+                EXPECTED_HEADER,
+                "--glob",
+                "!.git/**",
+                "--glob",
+                "!.venv/**",
+                "--glob",
+                "!node_modules/**",
+                *SECRET_SCAN_PATHS,
+            ],
+            cwd=root,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            timeout=10,
+        )
+        if result.returncode not in (0, 1):
+            raise RuntimeError(result.stderr.strip() or "Falha ao buscar candidatos a segredo Stitch.")
+        return [root / line for line in result.stdout.splitlines() if line]
+
+    result = subprocess.run(
+        ["git", "grep", "-Il", "-e", "STITCH_API_KEY", "-e", EXPECTED_HEADER, "--"],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+        timeout=10,
+    )
+    if result.returncode not in (0, 1):
+        raise RuntimeError(result.stderr.strip() or "Falha ao buscar candidatos a segredo Stitch.")
+    candidates = {root / line for line in result.stdout.splitlines() if line}
+    for path in untracked_files(root):
+        if path in candidates or not path.is_file():
+            continue
+        try:
+            content = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        if "STITCH_API_KEY" in content or EXPECTED_HEADER in content:
+            candidates.add(path)
+    return sorted(candidates)
+
+
 def validate_no_versioned_secret(root: Path = ROOT) -> list[str]:
     errors: list[str] = []
-    for path in tracked_files(root):
+    for path in stitch_secret_candidate_files(root):
         if not path.is_file():
             continue
         try:

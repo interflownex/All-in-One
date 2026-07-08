@@ -24,6 +24,50 @@ apos aprovacao manual das alteracoes financeiras, de identidade ou saude.
 Auditoria critica e ledger sao append-only. Eventos devem manter
 `correlation_id`; logs de aplicacao nao devem expor dados sensiveis.
 
+## Validacao PostgreSQL Real
+
+Quando o host local nao conseguir subir `postgres:16` efemero para o smoke
+opt-in, use um PostgreSQL real ja provisionado por DSN. O validador abaixo nao
+depende de Docker e cobre schemas, tabelas criticas, indices, triggers
+append-only e, com flag explicita, evidencias de escrita em `audit.logs` e
+`audit.domain_events`.
+
+Validacao estrutural sem escrita:
+
+```bash
+ALL_IN_ONE_POSTGRES_MATRIX_DSN="postgresql://..." \
+  ./.venv/bin/python scripts/validate_postgres_real_dsn.py
+```
+
+Banco limpo com migrations:
+
+```bash
+ALL_IN_ONE_POSTGRES_MATRIX_DSN="postgresql://..." \
+  ./.venv/bin/python scripts/validate_postgres_real_dsn.py --apply-migrations
+```
+
+Banco ja populado ou validacao de idempotencia:
+
+```bash
+ALL_IN_ONE_POSTGRES_MATRIX_DSN="postgresql://..." \
+  ./.venv/bin/python scripts/validate_postgres_real_dsn.py --apply-migrations --repeat-migrations
+```
+
+Homologacao com evidencias append-only/outbox:
+
+```bash
+ALL_IN_ONE_POSTGRES_MATRIX_DSN="postgresql://..." \
+  ./.venv/bin/python scripts/validate_postgres_real_dsn.py \
+    --apply-migrations --repeat-migrations --write-checks
+```
+
+Depois de um banco real validado, execute a suite viva dos 25 stores tipados:
+
+```bash
+ALL_IN_ONE_POSTGRES_MATRIX_DSN="postgresql://..." \
+  ./.venv/bin/python -m pytest -q tests/test_postgres_priority_stores_integration.py
+```
+
 ## Outbox
 
 O dispatcher publica eventos `pending` e registra cada tentativa em
