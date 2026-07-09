@@ -72,7 +72,7 @@ Proximos passos naturais:
 
 Objetivo: trocar o contrato local por persistencia PostgreSQL real, auditavel e testada.
 
-Status: 90%
+Status: 93%
 
 Entregas ja existentes:
 - 15 migrations PostgreSQL.
@@ -82,13 +82,16 @@ Entregas ja existentes:
 - Idempotencia espalhada nas principais tabelas.
 
 Pendencias:
-- Validar migrations 001-015 em banco limpo e banco ja populado via smoke
-  efemero ou `scripts/validate_postgres_real_dsn.py` com DSN real.
+- Validar migrations 001-015 em banco limpo e banco ja populado fora do GitHub
+  Actions via smoke efemero ou `scripts/validate_postgres_real_dsn.py` com DSN
+  real de homologacao.
 - Rodar o gate opt-in `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com Docker e imagem PostgreSQL pronta.
 - Evoluir o CRUD amplo de `tests/test_postgres_stores_matrix.py` para fixtures
   completas por modulo; a cobertura estrutural e a existencia das tabelas contra
   schema vivo ja rodam no workflow `Database`.
-- Executar a nova suite `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN PostgreSQL real para `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`, `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`, `property`, `wms`, `tms`, `crm`, `bpm`, `document`, `bi`, `ai_core`, `hr`, `permissions`, `jobs` e `erp`.
+- Replicar a suite `tests/test_postgres_priority_stores_integration.py` fora do
+  GitHub Actions, em DSN PostgreSQL real de homologacao, para os 25 stores ja
+  validados no workflow `Database`.
 - Confirmar audit/outbox append-only em todos os fluxos sensiveis; `audit.logs`
   e `audit.event_deliveries` ja sao verificados pelo validador DSN com
   `--write-checks`.
@@ -150,6 +153,9 @@ Nota operacional atual:
 - `Database #136` revelou `Exercise Identity PostgreSQL store` como primeiro
   modulo quebrado; a suite foi corrigida para gerar `phone_e164` unico e nao
   colidir com o usuario criado pelo validador DSN.
+- `Database #137` concluiu com sucesso no GitHub Actions, validando migrations,
+  contrato DSN, os 25 stores tipados, matriz PostgreSQL viva, Jobs PostgreSQL e
+  outbox RabbitMQ no PostgreSQL de servico do CI.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 
