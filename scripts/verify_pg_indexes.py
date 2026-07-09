@@ -6,7 +6,6 @@ POSTGRES_DSN = os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN")
 
 REQUIRED_INDEXES = [
     "idx_outbox_dispatcher_ready",
-    "idx_audit_logs_correlation",
     "idx_audit_events_correlation",
     "idx_finance_ledger_wallet_lookup",
     "idx_finance_gold_ledger_entity_lookup",

@@ -1,5 +1,47 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-09 Correcao Do Workflow Database DSN
+
+### Concluido neste ciclo
+
+- A API publica do GitHub Actions confirmou que o workflow `Database #132`, no
+  commit `c277352`, concluiu com falha no passo
+  `Validate PostgreSQL real contract by DSN`.
+- `scripts/validate_postgres_real_dsn.py` foi realinhado ao schema real de
+  retencao criado pelas migrations: `compliance.retention_candidates` e
+  `compliance.retention_decisions`, em vez da tabela inexistente
+  `compliance.retention_jobs`.
+- `scripts/verify_pg_indexes.py` deixou de exigir
+  `idx_audit_logs_correlation`, que nao existe porque o `correlation_id`
+  PostgreSQL auditavel fica em `audit.domain_events`.
+- `.github/workflows/database.yml` passou a conferir os seis triggers
+  append-only criticos e a executar `tests/test_postgres_contract_static.py`
+  antes do validador DSN vivo.
+- Criado `tests/test_postgres_contract_static.py` para impedir drift entre
+  constantes do contrato PostgreSQL, indices obrigatorios e migrations.
+- `scripts/validate_stitch_mcp_config.py` ganhou fallback controlado quando
+  `rg` ou `git grep` excedem timeout, preservando a verificacao de segredos nos
+  caminhos operacionais sem derrubar `scripts/validate_repository.py`.
+
+### Validacoes executadas
+
+- Checagem estatica local entre contrato DSN, indices obrigatorios e migrations:
+  nenhuma tabela, trigger ou indice ausente.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_validate_stitch_mcp_config.py tests/test_postgres_contract_static.py`: 8 aprovados.
+- `python3 -m py_compile scripts/validate_postgres_real_dsn.py scripts/verify_pg_indexes.py scripts/validate_stitch_mcp_config.py tests/test_postgres_migrations_smoke.py tests/test_postgres_contract_static.py`: aprovado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_migrations_smoke.py tests/test_postgres_stores_matrix.py tests/test_postgres_priority_stores_integration.py tests/test_postgres_contract_static.py`: 30 aprovados, 54 ignorados por ausencia de DSN local/smoke opt-in.
+
+### Pendencias rastreadas
+
+- Observar a proxima execucao do workflow `Database` apos o novo commit para
+  confirmar que o passo DSN avancou ou expor a proxima falha real.
+- Reexecutar `scripts/validate_postgres_real_dsn.py --apply-migrations --repeat-migrations --write-checks` contra DSN real quando houver ambiente disponivel fora do CI.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-09 Triggers Append-Only PostgreSQL
 
 ### Concluido neste ciclo

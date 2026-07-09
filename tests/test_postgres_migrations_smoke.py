@@ -61,7 +61,8 @@ REQUIRED_TABLES = {
     "audit.logs",
     "audit.domain_events",
     "audit.event_deliveries",
-    "compliance.retention_jobs",
+    "compliance.retention_candidates",
+    "compliance.retention_decisions",
 }
 
 REQUIRED_TRIGGERS = {

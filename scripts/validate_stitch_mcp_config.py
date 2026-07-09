@@ -38,6 +38,7 @@ SECRET_SCAN_PATHS = [
     "infra",
     "scripts",
 ]
+SECRET_SCAN_EXCLUDED_DIRS = {".git", ".venv", "node_modules", "__pycache__"}
 
 
 def load_policy(policy_path: Path = POLICY_PATH) -> dict[str, Any]:
@@ -124,24 +125,59 @@ def untracked_files(root: Path = ROOT) -> list[Path]:
 
 
 def stitch_secret_candidate_files(root: Path = ROOT) -> list[Path]:
+    def fallback_candidates() -> list[Path]:
+        candidates: set[Path] = set()
+        for relative in SECRET_SCAN_PATHS:
+            path = root / relative
+            paths = path.rglob("*") if path.is_dir() else [path]
+            for candidate in paths:
+                if any(part in SECRET_SCAN_EXCLUDED_DIRS for part in candidate.relative_to(root).parts):
+                    continue
+                if not candidate.is_file():
+                    continue
+                try:
+                    content = candidate.read_text(encoding="utf-8")
+                except (OSError, UnicodeDecodeError):
+                    continue
+                if "STITCH_API_KEY" in content or EXPECTED_HEADER in content:
+                    candidates.add(candidate)
+        return sorted(candidates)
+
     if shutil.which("rg"):
+        try:
+            result = subprocess.run(
+                [
+                    "rg",
+                    "-l",
+                    "-F",
+                    "-e",
+                    "STITCH_API_KEY",
+                    "-e",
+                    EXPECTED_HEADER,
+                    "--glob",
+                    "!.git/**",
+                    "--glob",
+                    "!.venv/**",
+                    "--glob",
+                    "!node_modules/**",
+                    *SECRET_SCAN_PATHS,
+                ],
+                cwd=root,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+                timeout=10,
+            )
+        except subprocess.TimeoutExpired:
+            return fallback_candidates()
+        if result.returncode not in (0, 1):
+            raise RuntimeError(result.stderr.strip() or "Falha ao buscar candidatos a segredo Stitch.")
+        return [root / line for line in result.stdout.splitlines() if line]
+
+    try:
         result = subprocess.run(
-            [
-                "rg",
-                "-l",
-                "-F",
-                "-e",
-                "STITCH_API_KEY",
-                "-e",
-                EXPECTED_HEADER,
-                "--glob",
-                "!.git/**",
-                "--glob",
-                "!.venv/**",
-                "--glob",
-                "!node_modules/**",
-                *SECRET_SCAN_PATHS,
-            ],
+            ["git", "grep", "-Il", "-e", "STITCH_API_KEY", "-e", EXPECTED_HEADER, "--"],
             cwd=root,
             text=True,
             stdout=subprocess.PIPE,
@@ -149,19 +185,8 @@ def stitch_secret_candidate_files(root: Path = ROOT) -> list[Path]:
             check=False,
             timeout=10,
         )
-        if result.returncode not in (0, 1):
-            raise RuntimeError(result.stderr.strip() or "Falha ao buscar candidatos a segredo Stitch.")
-        return [root / line for line in result.stdout.splitlines() if line]
-
-    result = subprocess.run(
-        ["git", "grep", "-Il", "-e", "STITCH_API_KEY", "-e", EXPECTED_HEADER, "--"],
-        cwd=root,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-        timeout=10,
-    )
+    except subprocess.TimeoutExpired:
+        return fallback_candidates()
     if result.returncode not in (0, 1):
         raise RuntimeError(result.stderr.strip() or "Falha ao buscar candidatos a segredo Stitch.")
     candidates = {root / line for line in result.stdout.splitlines() if line}

@@ -131,6 +131,11 @@ Nota operacional atual:
 - O mesmo workflow agora executa a matriz PostgreSQL contra o schema vivo,
   validando que os 25 adapters apontam para tabelas existentes apos migrations;
   o CRUD amplo da matriz permanece opt-in ate receber fixtures completas.
+- A falha publica do workflow `Database #132` no passo DSN foi reduzida no
+  repositorio: o contrato agora exige as tabelas reais de retencao
+  `compliance.retention_candidates`/`compliance.retention_decisions` e apenas
+  indices declarados nas migrations; a proxima execucao deve confirmar se ha
+  nova falha viva a tratar.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 
