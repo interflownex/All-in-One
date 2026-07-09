@@ -1,5 +1,37 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-09 Correcao De Alteracoes Externas Fora Do Plano
+
+### Concluido neste ciclo
+
+- Removida a configuracao local de WSL debug adicionada fora do plano em
+  `.vscode/settings.json`, preservando as configuracoes versionadas exigidas
+  pelo validador do repositorio.
+- Removido `all-in-one.code-workspace`, criado por fluxo externo e sem papel no
+  plano operacional atual.
+- Removidos os arquivos locais `.autopilot.json` e
+  `.cursor/rules/after_each_chat.mdc`, que introduziam automacao local fora da
+  politica multiagente versionada.
+- `.gitignore` foi realinhado para nao institucionalizar essas configuracoes
+  locais fora do contrato versionado.
+
+### Validacoes executadas
+
+- `python3 -m json.tool .vscode/settings.json`: aprovado.
+- `python3 scripts/validate_stitch_mcp_config.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Seguir observando a execucao do workflow `Database` para confirmar a prova
+  PostgreSQL real em CI.
+- Manter alteracoes locais futuras restritas ao plano operacional ativo ou
+  explicitamente registradas em `STATUS.md`.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-09 Validacao PostgreSQL Real Integrada Ao CI
 
 ### Concluido neste ciclo
