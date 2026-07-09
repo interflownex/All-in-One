@@ -71,8 +71,8 @@ REQUIRED_TABLES = {
 
 REQUIRED_TRIGGERS = {
     "immutable_audit_logs",
-    "immutable_finance_ledger_entries",
-    "immutable_finance_gold_ledger_entries",
+    "immutable_finance_ledger",
+    "immutable_valley_gold_ledger",
     "immutable_jobs_resume_documents",
     "immutable_jobs_resume_access_logs",
 }

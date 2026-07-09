@@ -1,5 +1,46 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-09 Validacao PostgreSQL Real Integrada Ao CI
+
+### Concluido neste ciclo
+
+- `.github/workflows/database.yml` passou a aceitar `workflow_dispatch` e a
+  acionar o gate quando `scripts/validate_postgres_real_dsn.py` ou a suite viva
+  PostgreSQL forem alterados.
+- O workflow `Database` agora executa
+  `scripts/validate_postgres_real_dsn.py --repeat-migrations --write-checks`
+  contra o PostgreSQL de servico do GitHub Actions, cobrindo banco ja populado,
+  triggers, indices, schemas, tabelas criticas, append-only e outbox.
+- O mesmo workflow agora roda
+  `tests/test_postgres_priority_stores_integration.py` com
+  `ALL_IN_ONE_POSTGRES_MATRIX_DSN` apontando para o PostgreSQL real do job,
+  levando a prova viva dos 25 stores tipados para o CI.
+- `scripts/validate_postgres_real_dsn.py` foi alinhado aos nomes reais dos
+  triggers versionados: `immutable_finance_ledger` e
+  `immutable_valley_gold_ledger`.
+
+### Validacoes executadas
+
+- Leitura estrutural de `.github/workflows/database.yml` via `yaml.safe_load`: workflow `Database` carregado e etapas novas localizadas.
+- `python3 -m py_compile scripts/validate_postgres_real_dsn.py`: aprovado.
+- `./.venv/bin/python scripts/validate_postgres_real_dsn.py`: falha esperada com codigo 2 por ausencia de DSN no ambiente local.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_migrations_smoke.py tests/test_postgres_priority_stores_integration.py`: 26 testes ignorados por gates/ausencia de DSN real local.
+
+### Pendencias rastreadas
+
+- Observar a proxima execucao do workflow `Database` no GitHub Actions para
+  confirmar as migrations reaplicadas, `--write-checks` e a suite viva dos 25
+  stores contra PostgreSQL de servico.
+- Executar o mesmo validador contra DSN externo/homologacao quando houver banco
+  provisionado fora do CI.
+- Manter o smoke efemero local como gate complementar quando o daemon Docker
+  deste host voltar a iniciar `postgres:16` sem timeout.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-08 Validacao PostgreSQL Real Por DSN
 
 ### Concluido neste ciclo

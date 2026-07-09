@@ -120,6 +120,9 @@ Nota operacional atual:
 - Para nao depender apenas desse daemon, `scripts/validate_postgres_real_dsn.py`
   agora valida banco real por DSN, aplica/reaplica migrations quando solicitado
   e confirma evidencias append-only/outbox com `--write-checks`.
+- O workflow `Database` tambem executa esse validador contra PostgreSQL de
+  servico do GitHub Actions e roda a suite viva dos 25 stores tipados com
+  `ALL_IN_ONE_POSTGRES_MATRIX_DSN`.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 
