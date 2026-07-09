@@ -85,7 +85,9 @@ Pendencias:
 - Validar migrations 001-015 em banco limpo e banco ja populado via smoke
   efemero ou `scripts/validate_postgres_real_dsn.py` com DSN real.
 - Rodar o gate opt-in `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com Docker e imagem PostgreSQL pronta.
-- Ampliar a suite `tests/test_postgres_stores_matrix.py` de cobertura estrutural total para CRUD real por modulo em banco vivo.
+- Evoluir o CRUD amplo de `tests/test_postgres_stores_matrix.py` para fixtures
+  completas por modulo; a cobertura estrutural e a existencia das tabelas contra
+  schema vivo ja rodam no workflow `Database`.
 - Executar a nova suite `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN PostgreSQL real para `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`, `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`, `property`, `wms`, `tms`, `crm`, `bpm`, `document`, `bi`, `ai_core`, `hr`, `permissions`, `jobs` e `erp`.
 - Confirmar audit log append-only em todos os fluxos sensiveis.
 - Confirmar outbox para eventos de todos os modulos.
@@ -107,7 +109,8 @@ Proximos passos naturais:
 1. Rodar `scripts/validate_postgres_real_dsn.py --apply-migrations --repeat-migrations --write-checks` com `ALL_IN_ONE_POSTGRES_MATRIX_DSN` apontando para PostgreSQL real.
 2. Rodar `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com imagem PostgreSQL pronta, quando o daemon Docker local estiver estavel.
 3. Rodar `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN real para obter prova CRUD viva adicional nos 25 stores tipados.
-4. Rodar `tests/test_postgres_stores_matrix.py` contra banco vivo para confirmar a matriz completa com payloads/fixtures reais onde ainda houver variacao contratual.
+4. Evoluir `tests/test_postgres_stores_matrix.py` com fixtures completas antes
+   de habilitar `ALL_IN_ONE_ENABLE_POSTGRES_MATRIX_CRUD=1` no CI.
 5. Testar create/get/list/update/soft_delete/idempotency por modulo.
 6. Testar audit/outbox por modulo.
 7. Corrigir cada store gerado que tentar gravar colunas inexistentes.
@@ -123,6 +126,9 @@ Nota operacional atual:
 - O workflow `Database` tambem executa esse validador contra PostgreSQL de
   servico do GitHub Actions e roda a suite viva dos 25 stores tipados com
   `ALL_IN_ONE_POSTGRES_MATRIX_DSN`.
+- O mesmo workflow agora executa a matriz PostgreSQL contra o schema vivo,
+  validando que os 25 adapters apontam para tabelas existentes apos migrations;
+  o CRUD amplo da matriz permanece opt-in ate receber fixtures completas.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 

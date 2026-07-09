@@ -1,5 +1,38 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-09 Matriz PostgreSQL Viva No CI
+
+### Concluido neste ciclo
+
+- `tests/test_postgres_stores_matrix.py` ganhou o teste
+  `test_postgres_store_matrix_tables_exist_in_live_database`, que valida contra
+  um PostgreSQL real que todos os adapters tipados apontam para tabelas
+  existentes no schema migrado.
+- O CRUD amplo legado da matriz agora exige
+  `ALL_IN_ONE_ENABLE_POSTGRES_MATRIX_CRUD=1`, evitando falso negativo por
+  payloads genericos/FKs nao semeadas enquanto a suite prioritaria de 25
+  modulos cobre os fluxos vivos com fixtures explicitas.
+- O workflow `Database` agora executa `tests/test_postgres_stores_matrix.py`
+  com `ALL_IN_ONE_POSTGRES_MATRIX_DSN` apontando para o PostgreSQL de servico do
+  GitHub Actions.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_stores_matrix.py`: 27 aprovados, 28 ignorados por ausencia de DSN local/CRUD amplo opt-in.
+- Leitura estrutural de `.github/workflows/database.yml` via `yaml.safe_load`: etapa `Validate PostgreSQL store matrix against live schema` localizada.
+- `python3 -m py_compile tests/test_postgres_stores_matrix.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Observar a proxima execucao do workflow `Database` para confirmar a matriz
+  contra schema vivo no PostgreSQL de servico.
+- Evoluir o CRUD amplo de `tests/test_postgres_stores_matrix.py` com fixtures
+  completas antes de ativar `ALL_IN_ONE_ENABLE_POSTGRES_MATRIX_CRUD=1` no CI.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-09 Correcao De Alteracoes Externas Fora Do Plano
 
 ### Concluido neste ciclo

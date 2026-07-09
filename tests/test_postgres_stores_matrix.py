@@ -6,6 +6,7 @@ import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 
+import psycopg
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -16,6 +17,7 @@ DEFAULT_DSN = os.environ.get(
     "ALL_IN_ONE_POSTGRES_MATRIX_DSN",
     "postgresql://all_in_one:local-development-only@localhost:5432/all_in_one?connect_timeout=3",
 )
+CRUD_MATRIX_ENABLED = os.environ.get("ALL_IN_ONE_ENABLE_POSTGRES_MATRIX_CRUD") == "1"
 
 RUNTIME_PAYLOADS = {
     "identity": {
@@ -140,6 +142,13 @@ def _connect_store(module_name: str):
         pytest.skip(f"Banco de dados nao disponivel para {module_name}: {exc}")
 
 
+def _connect_live_database():
+    try:
+        return psycopg.connect(_dsn_for("matrix"))
+    except Exception as exc:
+        pytest.skip(f"Banco de dados nao disponivel para matriz PostgreSQL viva: {exc}")
+
+
 @pytest.mark.parametrize("store_class", STORE_CLASSES, ids=lambda cls: cls.module)
 def test_postgres_store_declares_structural_contract(store_class: type) -> None:
     tables = _tables_for(store_class)
@@ -161,6 +170,30 @@ def test_postgres_store_matrix_marks_priority_modules_for_runtime_validation() -
     assert PRIORITY_MODULES.issubset(ready_modules)
 
 
+def test_postgres_store_matrix_tables_exist_in_live_database() -> None:
+    expected_tables = {
+        table_name
+        for store_class in STORE_CLASSES
+        for table_name in _tables_for(store_class).values()
+    }
+    with _connect_live_database() as connection:
+        rows = connection.execute(
+            """
+            SELECT table_schema || '.' || table_name
+            FROM information_schema.tables
+            WHERE table_schema || '.' || table_name = ANY(%s)
+            """,
+            (sorted(expected_tables),),
+        ).fetchall()
+    found_tables = {row[0] for row in rows}
+
+    assert found_tables == expected_tables
+
+
+@pytest.mark.skipif(
+    not CRUD_MATRIX_ENABLED,
+    reason="CRUD amplo da matriz PostgreSQL exige ALL_IN_ONE_ENABLE_POSTGRES_MATRIX_CRUD=1.",
+)
 @pytest.mark.parametrize(
     "module_name",
     sorted(name for name, config in MODULES_CONFIG.items() if config["runtime_ready"]),
@@ -208,6 +241,10 @@ def test_postgres_store_matrix_initialization(module_name: str) -> None:
         assert deleted is None
 
 
+@pytest.mark.skipif(
+    not CRUD_MATRIX_ENABLED,
+    reason="CRUD amplo da matriz PostgreSQL exige ALL_IN_ONE_ENABLE_POSTGRES_MATRIX_CRUD=1.",
+)
 @pytest.mark.parametrize(
     "module_name",
     sorted(name for name, config in MODULES_CONFIG.items() if config["runtime_ready"]),
@@ -250,6 +287,10 @@ def test_store_idempotency_behavior(module_name: str) -> None:
     assert created_1["id"] == created_2["id"]
 
 
+@pytest.mark.skipif(
+    not CRUD_MATRIX_ENABLED,
+    reason="CRUD amplo da matriz PostgreSQL exige ALL_IN_ONE_ENABLE_POSTGRES_MATRIX_CRUD=1.",
+)
 @pytest.mark.parametrize(
     "module_name",
     sorted(name for name, config in MODULES_CONFIG.items() if config["runtime_ready"]),
