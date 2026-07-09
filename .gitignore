@@ -22,3 +22,5 @@ htmlcov/
 node_modules/
 dist/
 tmp/
+.autopilot.json
+.cursor/rules/after_each_chat.mdc
