@@ -140,6 +140,10 @@ Nota operacional atual:
   a proxima falha em `Exercise all typed PostgreSQL stores`; a primeira correcao
   aplicada foi reconhecer `rider.%` como alias historico de outbox do modulo
   `riders`.
+- A execucao publica `Database #134` manteve o contrato DSN verde e indicou que
+  a falha segue na suite viva dos stores; foi corrigido o uso indevido de IDs de
+  usuarios operacionais como `actor_entity_id` de auditoria em services,
+  delivery e mobility.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 

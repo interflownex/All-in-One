@@ -59,7 +59,7 @@ class MobilityPostgresStore:
             "module": self.module,
             "resource_type": resource_type,
             "user_id": str(row["user_id"]),
-            "entity_id": str(row.get("driver_user_id")) if row.get("driver_user_id") else None,
+            "entity_id": None,
             "status": row["status"],
             "payload": self._payload(row),
             "created_by": str(row["created_by"]) if row.get("created_by") else str(row["user_id"]),

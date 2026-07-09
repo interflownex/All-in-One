@@ -1,5 +1,38 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-09 Auditoria PostgreSQL De Stores Vivos
+
+### Concluido neste ciclo
+
+- A execucao publica `Database #134`, no commit `f0668b3`, manteve verdes os
+  passos `Validate PostgreSQL real contract by DSN` e
+  `Validate PostgreSQL contract constants against migrations`, mas ainda falhou
+  em `Exercise all typed PostgreSQL stores`.
+- Corrigido o mapeamento de `entity_id` em `BasePostgresStore`,
+  `ServicesPostgresStore`, `DeliveryPostgresStore` e `MobilityPostgresStore`
+  para nao tratar `provider_user_id`, `assigned_rider_user_id` ou
+  `driver_user_id` como entidade empresarial de auditoria.
+- `tests/test_postgres_contract_static.py` ganhou cobertura comportamental para
+  impedir que esses IDs operacionais voltem a alimentar
+  `audit.logs.actor_entity_id`, que referencia `business.companies`.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_contract_static.py tests/test_postgres_priority_stores_integration.py`: 6 aprovados, 25 ignorados por ausencia de DSN local.
+- `python3 -m py_compile modules/shared/postgres_store.py modules/shared/services_postgres_store.py modules/shared/delivery_postgres_store.py modules/shared/mobility_postgres_store.py tests/test_postgres_contract_static.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Observar a proxima execucao do workflow `Database` apos o novo commit para
+  confirmar se a suite viva dos stores avancou ou expor a proxima falha real.
+- Reproduzir `tests/test_postgres_priority_stores_integration.py` com DSN real
+  quando houver PostgreSQL local/homologacao disponivel.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-09 Correcao Do Workflow Database DSN
 
 ### Concluido neste ciclo

@@ -152,9 +152,7 @@ class BasePostgresStore:
         if created_at is None:
             raise RuntimeError(f"PostgreSQL nao retornou timestamp para {resource_type}.")
         
-        entity_id = row.get("company_id") or row.get("business_id") or row.get("store_id") or \
-                    row.get("assigned_rider_user_id") or row.get("provider_user_id") or \
-                    row.get("driver_user_id")
+        entity_id = row.get("company_id") or row.get("business_id") or row.get("store_id") or row.get("warehouse_id")
         
         if resource_type == "companies":
             entity_id = row["id"]
