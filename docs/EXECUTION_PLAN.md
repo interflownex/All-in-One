@@ -147,6 +147,9 @@ Nota operacional atual:
 - Como `Database #135` ainda falhou no step agregado de stores sem traceback
   publico, o workflow foi dividido em steps por store prioritario para expor o
   proximo modulo quebrado via API publica do GitHub Actions.
+- `Database #136` revelou `Exercise Identity PostgreSQL store` como primeiro
+  modulo quebrado; a suite foi corrigida para gerar `phone_e164` unico e nao
+  colidir com o usuario criado pelo validador DSN.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 

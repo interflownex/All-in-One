@@ -4,6 +4,13 @@
 
 ### Concluido neste ciclo
 
+- A execucao publica `Database #136` revelou a falha exata:
+  `Exercise Identity PostgreSQL store`.
+- `tests/test_postgres_priority_stores_integration.py` deixou de usar o telefone
+  fixo `+5511999999999` no teste Identity, evitando colisao com o usuario criado
+  previamente por `scripts/validate_postgres_real_dsn.py --write-checks`.
+- `tests/test_postgres_contract_static.py` passou a cobrir que o telefone gerado
+  pela suite Identity nao colide com o telefone reservado pelo validador DSN.
 - Como `Database #135` continuou falhando no step agregado
   `Exercise all typed PostgreSQL stores` sem traceback publico, o workflow
   `Database` foi dividido em 25 steps nomeados, um por teste/store prioritario,
@@ -22,8 +29,9 @@
 
 ### Validacoes executadas
 
-- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_contract_static.py tests/test_postgres_priority_stores_integration.py`: 6 aprovados, 25 ignorados por ausencia de DSN local.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_contract_static.py tests/test_postgres_priority_stores_integration.py`: 7 aprovados, 25 ignorados por ausencia de DSN local.
 - `python3 -m py_compile modules/shared/postgres_store.py modules/shared/services_postgres_store.py modules/shared/delivery_postgres_store.py modules/shared/mobility_postgres_store.py tests/test_postgres_contract_static.py`: aprovado.
+- `python3 -m py_compile tests/test_postgres_priority_stores_integration.py tests/test_postgres_contract_static.py`: aprovado.
 - `python3 scripts/validate_repository.py`: aprovado.
 - Leitura estrutural de `.github/workflows/database.yml`: 25 steps
   PostgreSQL prioritarios localizados e todos apontam para funcoes existentes em

@@ -40,6 +40,10 @@ EVENT_PREFIX_ALIASES = {
 }
 
 
+def phone_from_nonce(nonce: str) -> str:
+    return f"+55119{str(int(nonce[:7], 16)).zfill(8)[-8:]}"
+
+
 def seed_user(connection: psycopg.Connection, user_id: UUID, nonce: str) -> None:
     connection.execute(
         """INSERT INTO identity.users
@@ -52,7 +56,7 @@ def seed_user(connection: psycopg.Connection, user_id: UUID, nonce: str) -> None
             f"Usuario {nonce}",
             f"CPF-{nonce}",
             f"{nonce}@example.test",
-            f"+55119{str(int(nonce[:7], 16)).zfill(8)[-8:]}",
+            phone_from_nonce(nonce),
             f"hash-{nonce}",
             f"face-{nonce}",
         ),
@@ -275,7 +279,7 @@ def test_identity_user_create_update_and_soft_delete() -> None:
             "cpf_document": f"CPF-{nonce}",
             "birth_date": "1990-01-01",
             "email": f"{nonce}@example.test",
-            "phone_e164": "+5511999999999",
+            "phone_e164": phone_from_nonce(nonce),
             "password_hash": f"hash-{nonce}",
             "face_hash": f"face-{nonce}",
             "liveness_score": "0.99",

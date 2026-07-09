@@ -9,7 +9,7 @@ from modules.shared.mobility_postgres_store import MobilityPostgresStore
 from modules.shared.services_postgres_store import ServicesPostgresStore
 from scripts.validate_postgres_real_dsn import REQUIRED_TABLES, REQUIRED_TRIGGERS
 from scripts.verify_pg_indexes import REQUIRED_INDEXES
-from tests.test_postgres_priority_stores_integration import EVENT_PREFIX_ALIASES
+from tests.test_postgres_priority_stores_integration import EVENT_PREFIX_ALIASES, phone_from_nonce
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -101,3 +101,7 @@ def test_operational_user_references_do_not_become_audit_entity_ids() -> None:
     assert services._resource("providers", {**common_row, "provider_user_id": common_row["user_id"]})["entity_id"] is None
     assert delivery._resource("delivery_requests", {**common_row, "assigned_rider_user_id": common_row["user_id"]})["entity_id"] is None
     assert mobility._resource("rides", {**common_row, "driver_user_id": common_row["user_id"]})["entity_id"] is None
+
+
+def test_identity_priority_store_phone_does_not_collide_with_dsn_validator() -> None:
+    assert phone_from_nonce("abcdef123456") != "+5511999999999"
