@@ -144,6 +144,9 @@ Nota operacional atual:
   a falha segue na suite viva dos stores; foi corrigido o uso indevido de IDs de
   usuarios operacionais como `actor_entity_id` de auditoria em services,
   delivery e mobility.
+- Como `Database #135` ainda falhou no step agregado de stores sem traceback
+  publico, o workflow foi dividido em steps por store prioritario para expor o
+  proximo modulo quebrado via API publica do GitHub Actions.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 

@@ -4,6 +4,10 @@
 
 ### Concluido neste ciclo
 
+- Como `Database #135` continuou falhando no step agregado
+  `Exercise all typed PostgreSQL stores` sem traceback publico, o workflow
+  `Database` foi dividido em 25 steps nomeados, um por teste/store prioritario,
+  para que a API publica passe a revelar o modulo exato da proxima falha.
 - A execucao publica `Database #134`, no commit `f0668b3`, manteve verdes os
   passos `Validate PostgreSQL real contract by DSN` e
   `Validate PostgreSQL contract constants against migrations`, mas ainda falhou
@@ -21,6 +25,9 @@
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_contract_static.py tests/test_postgres_priority_stores_integration.py`: 6 aprovados, 25 ignorados por ausencia de DSN local.
 - `python3 -m py_compile modules/shared/postgres_store.py modules/shared/services_postgres_store.py modules/shared/delivery_postgres_store.py modules/shared/mobility_postgres_store.py tests/test_postgres_contract_static.py`: aprovado.
 - `python3 scripts/validate_repository.py`: aprovado.
+- Leitura estrutural de `.github/workflows/database.yml`: 25 steps
+  PostgreSQL prioritarios localizados e todos apontam para funcoes existentes em
+  `tests/test_postgres_priority_stores_integration.py`.
 
 ### Pendencias rastreadas
 
