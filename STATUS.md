@@ -4,6 +4,14 @@
 
 ### Concluido neste ciclo
 
+- A execucao seguinte, `Database #133`, confirmou que
+  `Validate PostgreSQL real contract by DSN` passou e a falha avancou para
+  `Exercise all typed PostgreSQL stores`.
+- `tests/test_postgres_priority_stores_integration.py` agora reconhece o alias
+  de outbox `rider.%` para o modulo `riders`, evitando falso negativo quando os
+  stores emitem eventos historicos no singular.
+- `tests/test_postgres_contract_static.py` passou a documentar esse alias para
+  evitar drift silencioso entre nomes de modulo e routing keys existentes.
 - A API publica do GitHub Actions confirmou que o workflow `Database #132`, no
   commit `c277352`, concluiu com falha no passo
   `Validate PostgreSQL real contract by DSN`.
@@ -29,6 +37,7 @@
   nenhuma tabela, trigger ou indice ausente.
 - `python3 scripts/validate_repository.py`: aprovado.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_validate_stitch_mcp_config.py tests/test_postgres_contract_static.py`: 8 aprovados.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_contract_static.py tests/test_postgres_priority_stores_integration.py`: 4 aprovados, 25 ignorados por ausencia de DSN local.
 - `python3 -m py_compile scripts/validate_postgres_real_dsn.py scripts/verify_pg_indexes.py scripts/validate_stitch_mcp_config.py tests/test_postgres_migrations_smoke.py tests/test_postgres_contract_static.py`: aprovado.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_migrations_smoke.py tests/test_postgres_stores_matrix.py tests/test_postgres_priority_stores_integration.py tests/test_postgres_contract_static.py`: 30 aprovados, 54 ignorados por ausencia de DSN local/smoke opt-in.
 

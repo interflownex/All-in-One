@@ -5,6 +5,7 @@ from pathlib import Path
 
 from scripts.validate_postgres_real_dsn import REQUIRED_TABLES, REQUIRED_TRIGGERS
 from scripts.verify_pg_indexes import REQUIRED_INDEXES
+from tests.test_postgres_priority_stores_integration import EVENT_PREFIX_ALIASES
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,3 +52,7 @@ def test_postgres_contract_required_indexes_exist_in_migrations() -> None:
     ]
 
     assert missing == []
+
+
+def test_postgres_priority_store_event_prefix_aliases_are_documented() -> None:
+    assert EVENT_PREFIX_ALIASES["riders"] == ("rider.%", "riders.%")

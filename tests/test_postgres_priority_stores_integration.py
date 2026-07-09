@@ -35,6 +35,9 @@ from modules.shared.wms_postgres_store import WmsPostgresStore
 
 POSTGRES_DSN = os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN") or os.getenv("ALL_IN_ONE_BUSINESS_POSTGRES_DSN")
 pytestmark = pytest.mark.skipif(not POSTGRES_DSN, reason="DSN PostgreSQL real nao configurada para testes de integracao.")
+EVENT_PREFIX_ALIASES = {
+    "riders": ("rider.%", "riders.%"),
+}
 
 
 def seed_user(connection: psycopg.Connection, user_id: UUID, nonce: str) -> None:
@@ -67,6 +70,12 @@ def count_events(connection: psycopg.Connection, module_name: str) -> int:
     if module_name == "api_hub":
         query = "SELECT COUNT(*) FROM audit.domain_events WHERE routing_key LIKE 'api.%' OR routing_key LIKE 'api_hub.%'"
         return int(connection.execute(query).fetchone()[0])
+    if module_name in EVENT_PREFIX_ALIASES:
+        prefixes = EVENT_PREFIX_ALIASES[module_name]
+        query = "SELECT COUNT(*) FROM audit.domain_events WHERE " + " OR ".join(
+            "routing_key LIKE %s" for _ in prefixes
+        )
+        return int(connection.execute(query, prefixes).fetchone()[0])
     return int(
         connection.execute(
             "SELECT COUNT(*) FROM audit.domain_events WHERE routing_key LIKE %s",

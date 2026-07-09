@@ -136,6 +136,10 @@ Nota operacional atual:
   `compliance.retention_candidates`/`compliance.retention_decisions` e apenas
   indices declarados nas migrations; a proxima execucao deve confirmar se ha
   nova falha viva a tratar.
+- A execucao publica `Database #133` confirmou o avanco do passo DSN e revelou
+  a proxima falha em `Exercise all typed PostgreSQL stores`; a primeira correcao
+  aplicada foi reconhecer `rider.%` como alias historico de outbox do modulo
+  `riders`.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 
