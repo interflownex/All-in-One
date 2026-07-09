@@ -60,7 +60,17 @@ REQUIRED_TABLES = {
     "jobs.resumes",
     "audit.logs",
     "audit.domain_events",
+    "audit.event_deliveries",
     "compliance.retention_jobs",
+}
+
+REQUIRED_TRIGGERS = {
+    "immutable_audit_logs",
+    "immutable_event_deliveries",
+    "immutable_finance_ledger",
+    "immutable_valley_gold_ledger",
+    "immutable_jobs_resume_documents",
+    "immutable_jobs_resume_access_logs",
 }
 
 
@@ -214,10 +224,14 @@ def test_postgres_migrations_apply_cleanly_on_fresh_database() -> None:
             }
             assert indexes == set(REQUIRED_INDEXES)
 
-            trigger_count = connection.execute(
-                "SELECT COUNT(*) FROM pg_trigger WHERE tgname = 'immutable_audit_logs' AND NOT tgisinternal"
-            ).fetchone()[0]
-            assert trigger_count == 1
+            triggers = {
+                row[0]
+                for row in connection.execute(
+                    "SELECT tgname FROM pg_trigger WHERE tgname = ANY(%s) AND NOT tgisinternal",
+                    (sorted(REQUIRED_TRIGGERS),),
+                ).fetchall()
+            }
+            assert triggers == REQUIRED_TRIGGERS
 
             actor_id = uuid.uuid4()
             connection.execute(

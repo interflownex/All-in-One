@@ -71,6 +71,7 @@ REQUIRED_TABLES = {
 
 REQUIRED_TRIGGERS = {
     "immutable_audit_logs",
+    "immutable_event_deliveries",
     "immutable_finance_ledger",
     "immutable_valley_gold_ledger",
     "immutable_jobs_resume_documents",
@@ -129,6 +130,7 @@ def _run_write_checks(connection: psycopg.Connection) -> dict[str, Any]:
     actor_id = uuid.uuid4()
     resource_id = uuid.uuid4()
     event_id = uuid.uuid4()
+    delivery_id = uuid.uuid4()
     log_id = uuid.uuid4()
 
     connection.execute(
@@ -164,20 +166,41 @@ def _run_write_checks(connection: psycopg.Connection) -> dict[str, Any]:
         """,
         (event_id, actor_id, actor_id, resource_id, Jsonb({"source": "validate_postgres_real_dsn"}), actor_id),
     )
+    connection.execute(
+        """
+        INSERT INTO audit.event_deliveries
+            (id, user_id, event_id, destination, delivery_status, response_metadata, created_by)
+        VALUES (%s, %s, %s, 'postgres-real-dsn-validator', 'pending', %s, %s)
+        """,
+        (delivery_id, actor_id, event_id, Jsonb({"source": "validate_postgres_real_dsn"}), actor_id),
+    )
     connection.commit()
 
-    append_only_rejected_update = False
+    audit_logs_rejected_update = False
     try:
         connection.execute("UPDATE audit.logs SET status = 'tampered' WHERE id = %s", (log_id,))
         connection.commit()
     except psycopg.Error:
-        append_only_rejected_update = True
+        audit_logs_rejected_update = True
+        connection.rollback()
+
+    event_deliveries_rejected_update = False
+    try:
+        connection.execute(
+            "UPDATE audit.event_deliveries SET delivery_status = 'tampered' WHERE id = %s",
+            (delivery_id,),
+        )
+        connection.commit()
+    except psycopg.Error:
+        event_deliveries_rejected_update = True
         connection.rollback()
 
     return {
         "audit_log_id": str(log_id),
         "domain_event_id": str(event_id),
-        "append_only_rejected_update": append_only_rejected_update,
+        "event_delivery_id": str(delivery_id),
+        "audit_logs_rejected_update": audit_logs_rejected_update,
+        "event_deliveries_rejected_update": event_deliveries_rejected_update,
     }
 
 
@@ -216,7 +239,13 @@ def validate(args: argparse.Namespace) -> int:
         *result["missing_triggers"],
     ]
     write_checks = result.get("write_checks") or {}
-    ok = not missing and (not args.write_checks or write_checks.get("append_only_rejected_update") is True)
+    ok = not missing and (
+        not args.write_checks
+        or (
+            write_checks.get("audit_logs_rejected_update") is True
+            and write_checks.get("event_deliveries_rejected_update") is True
+        )
+    )
     print(json.dumps({"ok": ok, **result}, indent=2, sort_keys=True))
     return 0 if ok else 1
 
@@ -239,7 +268,7 @@ def main() -> int:
     parser.add_argument(
         "--write-checks",
         action="store_true",
-        help="Insere evidencias em identity/audit/outbox e confirma que audit.logs rejeita UPDATE.",
+        help="Insere evidencias em identity/audit/outbox e confirma que tabelas append-only rejeitam UPDATE.",
     )
     return validate(parser.parse_args())
 

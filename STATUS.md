@@ -1,5 +1,33 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-09 Triggers Append-Only PostgreSQL
+
+### Concluido neste ciclo
+
+- `scripts/validate_postgres_real_dsn.py` agora exige o trigger
+  `immutable_event_deliveries` junto dos demais triggers append-only criticos.
+- O modo `--write-checks` passou a inserir uma entrega real em
+  `audit.event_deliveries` e confirmar que `audit.logs` e
+  `audit.event_deliveries` rejeitam `UPDATE`.
+- `tests/test_postgres_migrations_smoke.py` agora valida a presenca de todos os
+  triggers append-only criticos no PostgreSQL efemero, em vez de conferir apenas
+  `immutable_audit_logs`.
+
+### Validacoes executadas
+
+- `python3 -m py_compile scripts/validate_postgres_real_dsn.py tests/test_postgres_migrations_smoke.py`: aprovado.
+- `./.venv/bin/python scripts/validate_postgres_real_dsn.py`: falha controlada com codigo 2 quando nenhum DSN e informado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_postgres_migrations_smoke.py tests/test_postgres_stores_matrix.py tests/test_postgres_priority_stores_integration.py`: 27 aprovados, 54 ignorados por ausencia de DSN local/smoke opt-in.
+
+### Pendencias rastreadas
+
+- Reexecutar `scripts/validate_postgres_real_dsn.py --apply-migrations --repeat-migrations --write-checks` contra DSN real para obter evidencia viva dos triggers.
+- Confirmar audit/outbox por modulo quando houver fixtures completas e DSN de homologacao.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-09 Matriz PostgreSQL Viva No CI
 
 ### Concluido neste ciclo

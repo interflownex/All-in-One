@@ -89,7 +89,9 @@ Pendencias:
   completas por modulo; a cobertura estrutural e a existencia das tabelas contra
   schema vivo ja rodam no workflow `Database`.
 - Executar a nova suite `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN PostgreSQL real para `finance`, `business`, `marketplace`, `services`, `identity`, `api_hub`, `delivery`, `mobility`, `stock`, `health`, `riders`, `vision`, `legal`, `property`, `wms`, `tms`, `crm`, `bpm`, `document`, `bi`, `ai_core`, `hr`, `permissions`, `jobs` e `erp`.
-- Confirmar audit log append-only em todos os fluxos sensiveis.
+- Confirmar audit/outbox append-only em todos os fluxos sensiveis; `audit.logs`
+  e `audit.event_deliveries` ja sao verificados pelo validador DSN com
+  `--write-checks`.
 - Confirmar outbox para eventos de todos os modulos.
 - Eliminar usos reais remanescentes de stores genericos em fluxos PostgreSQL e manter o runtime falhando rapido quando um store tipado obrigatorio estiver ausente.
 
