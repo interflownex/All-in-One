@@ -14,7 +14,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | Runtime FastAPI modular | 88% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado, carregamento dinamico por DSN validado em containers e resolucao obrigatoria de store tipado para modulos conhecidos | Base local estabilizada; falta ampliar testes E2E por jornada. |
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
-| Docker local | 95% | Postgres, RabbitMQ, MongoDB, Redis, outbox e 13 APIs FastAPI healthy | Falta gate CI para impedir regressao de compose. |
+| Docker local | 96% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy e gate CI Linux com validacao HTTP real | Falta reduzir tempo de rebuild e acompanhar execucoes do gate em ambiente remoto. |
 | Apps/frontend | 78% | 9 apps catalogados, trilha Valley com telas funcionais e Playwright, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta ampliar a mesma profundidade funcional e E2E para os apps restantes. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
@@ -57,14 +57,20 @@ Entregas ja existentes:
 - `depends_on` padronizado para aguardar migrations em modulos PostgreSQL.
 - `ALL_IN_ONE_*_POSTGRES_DSN` injetado no compose para stores PostgreSQL tipados.
 - `/health` validado em `localhost:8100` a `localhost:8112` com stores PostgreSQL.
+- Gate CI Linux `compose-health.yml` executa
+  `scripts/validate_compose_health.py`, validando `docker compose config`,
+  subida do ambiente e `/health` com `status=ok` nas 13 APIs FastAPI
+  principais.
 
 Pendencias:
 - Reduzir tempo de rebuild dos containers Python.
-- Acompanhar primeira execucao do workflow `compose-health.yml` no GitHub.
+- Acompanhar execucoes do workflow `compose-health.yml` no GitHub em ambiente
+  remoto apos mudancas de runtime/compose.
 - Executar o smoke test opt-in de banco limpo para migrations PostgreSQL em ambiente com imagem/base disponivel.
 
 Proximos passos naturais:
-1. Executar compose em banco limpo e validar migrations 001-015.
+1. Observar o gate `compose-health.yml` apos pushes que alterem runtime,
+   migrations, workers ou compose.
 2. Otimizar Dockerfiles com cache de dependencias.
 3. Registrar evidencias por execucao em `STATUS.md`.
 
@@ -352,7 +358,7 @@ Sequencia recomendada:
 1. Criar teste matriz de stores PostgreSQL.
 2. Corrigir stores gerados que falharem contra Postgres.
 3. Rodar migrations e testes em ambiente limpo.
-4. Implementar gate CI de compose/healthcheck.
+4. Manter gate CI de compose/healthcheck com validacao HTTP real.
 5. Testar OAuth2 real, webhooks de saida e rate limit Redis no API Hub.
 6. Implementar jornada E2E `business -> jobs -> candidate access`. Concluido em 2026-05-30.
 7. Expandir jornadas E2E para delivery, riders, services, health e mobility. Concluido em 2026-05-31.

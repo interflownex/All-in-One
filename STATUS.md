@@ -1,5 +1,39 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-10 Gate CI Docker Compose
+
+### Concluido neste ciclo
+
+- Criado `scripts/validate_compose_health.py` para validar Docker Compose em
+  CI/Linux sem depender de PowerShell.
+- O gate Python executa `docker compose config --quiet`, sobe o ambiente,
+  consulta `/health` das 13 APIs FastAPI principais ate timeout e falha
+  explicitamente se algum servico nao retornar `status=ok`.
+- `.github/workflows/compose-health.yml` deixou de apenas subir o compose e
+  aguardar `sleep`; agora chama o validador Python com `--down-after`.
+- `scripts/validate_repository.py`, `docs/OPERATIONS.md` e
+  `docs/EXECUTION_PLAN.md` foram alinhados para exigir e documentar o gate
+  Linux real.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_compose_health_gate.py`: 4 aprovados.
+- `python3 -m py_compile scripts/validate_compose_health.py tests/test_compose_health_gate.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `docker compose -f infra/docker/docker-compose.yml config --quiet`: aprovado.
+
+### Pendencias rastreadas
+
+- Acompanhar execucoes reais do workflow `compose-health.yml` no GitHub apos
+  pushes que alterem runtime, compose, migrations ou workers.
+- Reduzir tempo de rebuild dos containers Python.
+- Smoke opt-in de migrations PostgreSQL em banco limpo segue dependente de host
+  com Docker/imagem PostgreSQL funcional.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-10 Contratos Downstream Outbox
 
 ### Concluido neste ciclo

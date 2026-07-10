@@ -185,6 +185,7 @@ def main() -> int:
     for script in [
         "check_git_sync.ps1",
         "validate_compose_health.ps1",
+        "validate_compose_health.py",
         "check_generated_artifacts.ps1",
         "check_generated_artifacts.py",
         "multi_agent_sync_guard.py",
