@@ -36,6 +36,8 @@ Entregas esperadas:
 - Executar `git add`, `git commit` e `git push` ao concluir cada atividade.
 - Atualizar `STATUS.md` e este plano quando a realidade mudar.
 - Selecionar automaticamente a opcao `2` em prompts interativos durante este processo.
+- Gate Git Sync Linux `scripts/check_git_sync.py` cobre o workflow remoto sem
+  depender de PowerShell Core no runner.
 
 Pendencias:
 - Executar o gate de divergencia em ambiente com PowerShell Core disponivel e
@@ -43,7 +45,8 @@ Pendencias:
 - Gate Python/CI de artefatos gerados entregue; manter execucao em todo fechamento.
 
 Proximos passos naturais:
-1. Rodar `scripts/check_git_sync.ps1` no fechamento de cada incremento.
+1. Rodar `scripts/check_git_sync.py` ou `scripts/check_git_sync.ps1` no
+   fechamento de cada incremento.
 2. Corrigir credenciais locais de push para `origin` ou `fork`.
 3. Manter `scripts/check_generated_artifacts.py` no CI e nos fechamentos locais Linux.
 

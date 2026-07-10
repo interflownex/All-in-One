@@ -184,6 +184,7 @@ def main() -> int:
             fail(f"Workflow ausente: {workflow}", errors)
     for script in [
         "check_git_sync.ps1",
+        "check_git_sync.py",
         "validate_compose_health.ps1",
         "validate_compose_health.py",
         "check_generated_artifacts.ps1",

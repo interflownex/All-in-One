@@ -8,15 +8,16 @@ apos aprovacao manual das alteracoes financeiras, de identidade ou saude.
 
 ## Gates automatizados
 
-- `scripts/check_git_sync.ps1`: valida merge/rebase em andamento, arvore local e
-  divergencia entre a branch local e os remotos configurados.
+- `scripts/check_git_sync.ps1` e `scripts/check_git_sync.py`: validam
+  merge/rebase em andamento, arvore local e divergencia entre a branch local e
+  os remotos configurados; a versao Python e usada no CI Linux.
 - `scripts/validate_compose_health.ps1` e `scripts/validate_compose_health.py`:
   validam `docker compose config`, sobem o ambiente local e confirmam `/health`
   nas 13 APIs FastAPI principais; a versao Python e usada no CI Linux.
 - `scripts/check_generated_artifacts.ps1` e `scripts/check_generated_artifacts.py`: executam scaffold/validadores e falham
   se algum artefato gerado alterar a arvore de trabalho sem commit; a versao Python cobre CI/Linux sem PowerShell.
 - `.github/workflows/git-sync.yml`: executa a verificacao de sincronizacao da
-  `main` em eventos de push e sob demanda.
+  `main` em eventos de push e sob demanda usando o gate Python.
 - `.github/workflows/compose-health.yml`: executa o healthcheck Docker Compose
   no CI e falha se alguma API principal nao retornar `/health` com `status=ok`.
 

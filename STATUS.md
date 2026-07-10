@@ -1,5 +1,36 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-10 Git Sync Linux CI
+
+### Concluido neste ciclo
+
+- Criado `scripts/check_git_sync.py` como equivalente Linux do gate
+  `scripts/check_git_sync.ps1`.
+- `.github/workflows/git-sync.yml` passou a usar o gate Python, evitando falha
+  do runner por fragilidade PowerShell no GitHub Actions.
+- O gate Python valida merge/rebase em andamento, arvore local, remotos
+  verificaveis, `fetch`, referencia remota e divergencia `behind/ahead`.
+- `docs/OPERATIONS.md`, `docs/EXECUTION_PLAN.md` e
+  `scripts/validate_repository.py` foram atualizados para documentar e exigir a
+  versao Python.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_git_sync_gate.py tests/test_compose_health_gate.py tests/test_postgres_contract_static.py modules/api_hub/tests/test_gateway_security.py::test_rate_limiter_blocks_after_limit`: 15 aprovados.
+- `./.venv/bin/python -m bandit -r modules/shared scripts workers -q -ll`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `docker compose -f infra/docker/docker-compose.yml config --quiet`: aprovado.
+- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 354 aprovados, 58 ignorados.
+
+### Pendencias rastreadas
+
+- Observar o proximo workflow `Git Sync` apos push para confirmar o gate Python
+  verde no GitHub Actions.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-10 Correcao CI Pos Gate Compose
 
 ### Concluido neste ciclo
@@ -20,7 +51,7 @@
 - `./.venv/bin/python -m bandit -r modules/shared scripts workers -q -ll`: aprovado.
 - `python3 -m py_compile modules/api_hub/main.py scripts/validate_compose_health.py tests/test_compose_health_gate.py tests/test_postgres_contract_static.py`: aprovado.
 - `python3 scripts/validate_repository.py`: aprovado.
-- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 351 aprovados, 58 ignorados.
+- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 354 aprovados, 58 ignorados.
 
 ### Pendencias rastreadas
 

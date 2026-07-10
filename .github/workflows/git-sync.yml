@@ -13,5 +13,4 @@ jobs:
         with:
           fetch-depth: 0
       - name: Validate main branch sync
-        shell: pwsh
-        run: ./scripts/check_git_sync.ps1 -Branch main -Remotes origin -AllowDirty
+        run: python3 scripts/check_git_sync.py --branch main --remotes origin --allow-dirty
