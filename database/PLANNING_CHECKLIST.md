@@ -4,11 +4,11 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
 
 ---
 
-## 🏗️ [FRENTE 1] PERSISTÊNCIA DE DADOS (ALLOYDB & MONGODB)
+## 🏗️ [FRENTE 1] PERSISTÊNCIA DE DADOS (POSTGRESQL LOCAL AGORA, ALLOYDB DEPOIS, MONGODB DE APOIO)
 
-- [ ] **Tarefa: Migração de Stores SQLite para PostgreSQL (AlloyDB)**
-  - **Critério de Aceite:** Todos os 25 módulos utilizando `BasePostgresStore` com sucesso em ambiente de staging.
-  - **Dependência:** Provisionamento do cluster AlloyDB via Terraform.
+- [ ] **Tarefa: Migração de Stores SQLite para PostgreSQL local compativel com AlloyDB**
+  - **Critério de Aceite:** Todos os 25 módulos utilizando `BasePostgresStore` com sucesso em ambiente local/homologação sem dependência obrigatória de Google Cloud.
+  - **Dependência:** Docker Compose local, DSNs PostgreSQL e manutenção de compatibilidade futura com AlloyDB via mesmas migrations e contratos.
   - **Módulo Afetado:** `modules/*/store.py`, `infra/terraform`.
 
 - [ ] **Tarefa: Tipagem Forte de Stores Prioritários (Risco 1-5)**

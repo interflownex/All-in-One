@@ -10,8 +10,6 @@
     "redhat.vscode-yaml",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "github.vscode-github-actions",
-    "ms-kubernetes-tools.vscode-kubernetes-tools",
-    "googlecloudtools.cloudcode"
+    "github.vscode-github-actions"
   ]
 }

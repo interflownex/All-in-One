@@ -16,8 +16,13 @@
    `STITCH_API_KEY` apenas no ambiente local/CI.
 Para o agente de IA Superdesign, configure `OPENROUTER_API_KEY` no seu ambiente local
 e aponte a URL base para `https://openrouter.ai/api/v1`.
-   As integracoes Google estao ativas. Defina `GOOGLE_CLOUD_PROJECT` e autentique
-   legitimamente o SDK antes de diagnosticar ou reativar recursos:
+   O estado padrao do workspace e `local-first`, sem custo obrigatorio e sem
+   dependencia operacional de Google Cloud, AlloyDB ou Stitch remoto.
+   Preserve os nomes de variaveis e manifests atuais para que a migracao futura
+   para a plataforma Google exija somente reativacao de flags, segredos e DSNs.
+   Quando houver verba e contexto para retomar a plataforma Google, reative as
+   flags no ambiente e autentique legitimamente o SDK antes de diagnosticar ou
+   reativar recursos:
 
    ```bash
    python3 scripts/google_cloud_control.py status

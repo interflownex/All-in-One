@@ -24,8 +24,20 @@ import subprocess
 setup_secure_logging()
 logger = get_logger(__name__)
 
+
+def _flag_enabled(name: str) -> bool:
+    value = os.getenv(name, "")
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _google_secret_fallback_enabled() -> bool:
+    return _flag_enabled("GOOGLE_INTEGRATIONS_ENABLED") and _flag_enabled("GOOGLE_CLOUD_ENABLED")
+
+
 def _get_secret_gcloud(secret_id: str) -> str | None:
     """Busca segredo no Google Secret Manager usando a ferramenta nativa gcloud."""
+    if not _google_secret_fallback_enabled():
+        return None
     try:
         result = subprocess.run(
             ["gcloud", "secrets", "versions", "access", "latest", f"--secret={secret_id}"],
@@ -40,7 +52,7 @@ def _get_secret_gcloud(secret_id: str) -> str | None:
     return None
 
 def get_config(key: str, default: Any = None) -> Any:
-    """Busca configuração priorizando: Env Var > Google Secret Manager > Default."""
+    """Busca configuracao priorizando: Env Var > Google Secret Manager opt-in > Default."""
     value = os.getenv(key)
     if value:
         return value

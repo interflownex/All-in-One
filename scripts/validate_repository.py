@@ -244,17 +244,17 @@ def main() -> int:
     if "deletion_worker_daily --dry-run" not in compose:
         fail("Docker Compose deve manter descarte LGPD em dry-run ate homologacao por modulo.", errors)
     for active_env in [
-        'GOOGLE_INTEGRATIONS_ENABLED: "${GOOGLE_INTEGRATIONS_ENABLED:-true}"',
-        'GOOGLE_CLOUD_ENABLED: "${GOOGLE_CLOUD_ENABLED:-true}"',
-        'GOOGLE_AI_STUDIO_ENABLED: "${GOOGLE_AI_STUDIO_ENABLED:-true}"',
-        'GOOGLE_CODE_CLI_ENABLED: "${GOOGLE_CODE_CLI_ENABLED:-true}"',
-        'ALLOYDB_ENABLED: "${ALLOYDB_ENABLED:-true}"',
+        'GOOGLE_INTEGRATIONS_ENABLED: "${GOOGLE_INTEGRATIONS_ENABLED:-false}"',
+        'GOOGLE_CLOUD_ENABLED: "${GOOGLE_CLOUD_ENABLED:-false}"',
+        'GOOGLE_AI_STUDIO_ENABLED: "${GOOGLE_AI_STUDIO_ENABLED:-false}"',
+        'GOOGLE_CODE_CLI_ENABLED: "${GOOGLE_CODE_CLI_ENABLED:-false}"',
+        'ALLOYDB_ENABLED: "${ALLOYDB_ENABLED:-false}"',
         'ALLOYDB_DSN: "${ALLOYDB_DSN:-}"',
         'GEMINI_CODE_ASSIST_ENABLED: "true"',
-        'STITCH_REMOTE_SYNC_ENABLED: "${STITCH_REMOTE_SYNC_ENABLED:-true}"',
+        'STITCH_REMOTE_SYNC_ENABLED: "${STITCH_REMOTE_SYNC_ENABLED:-false}"',
     ]:
         if active_env not in compose:
-            fail(f"Docker Compose deve manter integracao Google ativa: {active_env}", errors)
+            fail(f"Docker Compose deve manter o contrato local-first com coordenada futura Google: {active_env}", errors)
     kubernetes = "\n".join(
         manifest.read_text(encoding="utf-8")
         for manifest in sorted(KUBERNETES_PLATFORM.parent.glob("*.yaml"))
@@ -301,8 +301,8 @@ def main() -> int:
         fail("Politica obrigatoria de integracoes Google ausente.", errors)
     else:
         google_policy = json.loads(GOOGLE_INTEGRATIONS_POLICY.read_text(encoding="utf-8"))
-        if google_policy.get("enabled") is not True:
-            fail("Politica Google deve permanecer enabled=true.", errors)
+        if google_policy.get("enabled") is not False:
+            fail("Politica Google deve refletir o modo local-first com enabled=false.", errors)
         if google_policy.get("reactivated_at") != "2026-06-06":
             fail("Politica Google deve registrar a reativacao de 2026-06-06.", errors)
         expected_integrations = {
@@ -326,12 +326,12 @@ def main() -> int:
             "ALLOYDB_ENABLED"
         ]
         for variable in active_variables:
-            if runtime.get(variable) != "true":
-                fail(f"Politica Google deve manter {variable}=true.", errors)
+            if runtime.get(variable) != "false":
+                fail(f"Politica Google deve manter {variable}=false no modo local-first.", errors)
         if runtime.get("GEMINI_CODE_ASSIST_ENABLED") != "true":
             fail("Politica Google deve manter GEMINI_CODE_ASSIST_ENABLED=true no Antigravity/editor.", errors)
-        if runtime.get("STITCH_REMOTE_SYNC_ENABLED") != "true":
-            fail("Politica Google deve manter STITCH_REMOTE_SYNC_ENABLED=true.", errors)
+        if runtime.get("STITCH_REMOTE_SYNC_ENABLED") != "false":
+            fail("Politica Google deve manter STITCH_REMOTE_SYNC_ENABLED=false no modo local-first.", errors)
     if not GOOGLE_CLOUD_PROFILE.is_file():
         fail("Perfil Google Cloud ativo ausente: config/cloud/google_cloud_profile.json", errors)
     else:

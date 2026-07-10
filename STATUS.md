@@ -1,5 +1,43 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-10 Modo Local First Sem Custo Obrigatorio
+
+### Concluido neste ciclo
+
+- O contrato operacional do workspace foi realinhado para `local-first`, com
+  `GOOGLE_INTEGRATIONS_ENABLED=false`, `GOOGLE_CLOUD_ENABLED=false`,
+  `GOOGLE_AI_STUDIO_ENABLED=false`, `GOOGLE_CODE_CLI_ENABLED=false`,
+  `ALLOYDB_ENABLED=false` e `STITCH_REMOTE_SYNC_ENABLED=false` por padrao em
+  `.env.example`, `infra/docker/docker-compose.yml` e `.vscode/settings.json`.
+- `modules/shared/runtime.py` passou a respeitar esse modo local-first antes de
+  tentar fallback por `gcloud`, evitando dependencia operacional de Google
+  Secret Manager quando o workspace estiver explicitamente em modo local.
+- O planejamento versionado agora deixa explicita a coordenada futura:
+  PostgreSQL local/self-managed agora, com migracao futura para Google/AlloyDB
+  preservando migrations, DSNs PostgreSQL, manifests e contratos para
+  manutencao minima.
+- `.vscode/extensions.json` foi enxugado para o conjunto minimo util ao fluxo
+  atual, sem recomendacoes ligadas a Cloud Code ou Kubernetes remoto.
+
+### Validacoes executadas
+
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_runtime_postgres_store_resolution.py`: aprovado.
+
+### Pendencias rastreadas
+
+- A retomada da plataforma Google permanece documentada e pode ser reativada
+  futuramente por flags, segredos e DSNs, sem troca de banco nem reescrita de
+  migrations.
+- O host atual continua sem `powershell`/`pwsh`, entao o script oficial de
+  sincronizacao Git PowerShell segue indisponivel localmente apesar de o fluxo
+  Git manual continuar funcional.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-10 Higiene Do Workspace VS Code
 
 ### Concluido neste ciclo

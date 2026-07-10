@@ -79,3 +79,23 @@ def test_riders_postgres_store_uses_delivery_schema_tables() -> None:
         "vehicles": "delivery.vehicles",
         "rider_reviews": "delivery.rider_reviews",
     }
+
+
+def test_get_config_skips_gcloud_fallback_when_google_mode_is_disabled(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY", raising=False)
+    monkeypatch.setenv("GOOGLE_INTEGRATIONS_ENABLED", "false")
+    monkeypatch.setenv("GOOGLE_CLOUD_ENABLED", "false")
+
+    called = False
+
+    def fake_run(*args, **kwargs):
+        nonlocal called
+        called = True
+        raise AssertionError("gcloud nao deve ser chamado em modo local-first")
+
+    monkeypatch.setattr(runtime.subprocess, "run", fake_run)
+
+    assert runtime.get_config("ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY", "local-default") == "local-default"
+    assert called is False

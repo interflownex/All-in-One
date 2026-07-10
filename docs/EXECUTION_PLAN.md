@@ -4,6 +4,10 @@ Data-base: 2026-05-29
 Branch operacional: `main`  
 Meta: transformar o MVP backend/data atual em beta operacional validado, com infraestrutura estavel, PostgreSQL real por modulo, jornadas E2E e integracoes externas homologadas.
 
+Coordenada operacional atual:
+- Executar em modo `local-first`, sem custo obrigatorio de Google Cloud neste momento.
+- Manter compatibilidade com futura migracao para Google/AlloyDB preservando migrations, DSNs PostgreSQL, manifests e contratos ja versionados.
+
 ## 1. Estado consolidado
 
 | Area | Conclusao | Evidencia atual | Leitura operacional |
@@ -51,6 +55,7 @@ Status: 100%
 
 Entregas ja existentes:
 - `postgres`, `rabbitmq`, `mongodb` e `redis` sobem.
+- Flags Google/AlloyDB/Stitch remoto podem permanecer desativadas sem bloquear a operacao local obrigatoria.
 - Migrations rodam via servico `migrations`.
 - 13 microservicos FastAPI sobem no compose com healthcheck HTTP.
 - `api-hub`, `identity`, `finance`, `jobs` e `outbox-dispatcher` permanecem ativos.
@@ -77,6 +82,9 @@ Proximos passos naturais:
 ### Fase 2 - Banco de dados e stores PostgreSQL
 
 Objetivo: trocar o contrato local por persistencia PostgreSQL real, auditavel e testada.
+
+Diretriz de menor manutencao:
+- O banco operacional atual deve ser PostgreSQL local/self-managed, usando os mesmos contratos e migrations preparados para futura migracao a AlloyDB.
 
 Status: 93%
 
