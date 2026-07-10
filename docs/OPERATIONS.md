@@ -140,3 +140,12 @@ plataforma.
 
 Revogue sessoes/API keys, preserve trilha imutavel, suspenda publicacao ou
 pagamento afetado, notifique compliance e registre decisao e recuperacao.
+
+## Excecao Cloudflare Tunnel
+
+Quando houver autorizacao explicita para publicar o endpoint local
+`http://localhost:58578/stream` por HTTPS publico, use
+`scripts/setup_cloudflare_stream_tunnel.ps1` com os parametros descritos em
+`docs/CLOUDFLARE_TUNNEL_STREAM.md`. O fluxo instala `cloudflared` como servico
+Windows persistente, mata `code-tunnel.exe` se estiver ativo e limita a
+publicacao ao caminho `/stream`.
