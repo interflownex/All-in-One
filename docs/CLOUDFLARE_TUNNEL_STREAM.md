@@ -33,6 +33,17 @@ powershell -NoProfile -ExecutionPolicy Bypass `
   -Hostname stream.seu-dominio.com
 ```
 
+Para publicar o `api_hub` inteiro, sem limitar ao caminho `/stream`:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File scripts\setup_cloudflare_stream_tunnel.ps1 `
+  -Hostname stream.seu-dominio.com `
+  -OriginUrl http://127.0.0.1:8100 `
+  -PublishAllPaths `
+  -SkipOriginCheck
+```
+
 Se preferir, rode sem `-Hostname` e o script pergunta na hora:
 
 ```powershell

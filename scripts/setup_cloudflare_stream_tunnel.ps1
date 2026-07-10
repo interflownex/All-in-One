@@ -4,7 +4,8 @@ param(
     [string]$TunnelName = "",
     [string]$OriginUrl = "",
     [string]$PublicPathRegex = "",
-    [switch]$SkipOriginCheck
+    [switch]$SkipOriginCheck,
+    [switch]$PublishAllPaths
 )
 
 $ErrorActionPreference = "Stop"
@@ -93,16 +94,22 @@ $TunnelName = Merge-ConfigValue $TunnelName $config "tunnelName" "all-in-one-str
 $OriginUrl = Merge-ConfigValue $OriginUrl $config "originUrl" "http://localhost:58578"
 $PublicPathRegex = Merge-ConfigValue $PublicPathRegex $config "publicPathRegex" "^/stream$"
 
+if ($PublishAllPaths) {
+    $PublicPathRegex = ""
+}
+
 if ([string]::IsNullOrWhiteSpace($Hostname)) {
     throw "Informe -Hostname ou preencha o campo 'hostname' em $ConfigPath."
 }
 
 if (-not $SkipOriginCheck) {
     try {
-        $originProbe = Invoke-WebRequest -Uri "$OriginUrl/stream" -Method Get -UseBasicParsing -TimeoutSec 10
-        Write-Host "Origin local respondeu com status $($originProbe.StatusCode): $OriginUrl/stream"
+        $probeSuffix = if ([string]::IsNullOrWhiteSpace($PublicPathRegex)) { "/health" } else { "/stream" }
+        $originProbe = Invoke-WebRequest -Uri "$OriginUrl$probeSuffix" -Method Get -UseBasicParsing -TimeoutSec 10
+        Write-Host "Origin local respondeu com status $($originProbe.StatusCode): $OriginUrl$probeSuffix"
     } catch {
-        throw "A origin local nao respondeu em $OriginUrl/stream. Suba o servico antes de publicar no Cloudflare ou use -SkipOriginCheck."
+        $expectedPath = if ([string]::IsNullOrWhiteSpace($PublicPathRegex)) { "$OriginUrl/health" } else { "$OriginUrl/stream" }
+        throw "A origin local nao respondeu em $expectedPath. Suba o servico antes de publicar no Cloudflare ou use -SkipOriginCheck."
     }
 }
 
@@ -186,6 +193,11 @@ if (-not (Test-Path $userCredentialsPath)) {
 
 Copy-Item -Path $userCredentialsPath -Destination $systemCredentialsPath -Force
 
+$ingressPathLine = ""
+if (-not [string]::IsNullOrWhiteSpace($PublicPathRegex)) {
+    $ingressPathLine = "    path: $PublicPathRegex`r`n"
+}
+
 $configContent = @"
 tunnel: $tunnelId
 credentials-file: $systemCredentialsPath
@@ -193,8 +205,7 @@ logfile: $cloudflaredLog
 
 ingress:
   - hostname: $Hostname
-    path: $PublicPathRegex
-    service: $OriginUrl
+$ingressPathLine    service: $OriginUrl
   - service: http_status:404
 "@
 
@@ -247,7 +258,12 @@ $service.Refresh()
 
 Write-Host ""
 Write-Host "Tunnel Cloudflare configurado com persistencia no servico do Windows."
-Write-Host "Hostname publico: https://$Hostname/stream"
-Write-Host "Origin local: $OriginUrl/stream"
+if ([string]::IsNullOrWhiteSpace($PublicPathRegex)) {
+    Write-Host "Hostname publico: https://$Hostname"
+    Write-Host "Origin local: $OriginUrl"
+} else {
+    Write-Host "Hostname publico: https://$Hostname/stream"
+    Write-Host "Origin local: $OriginUrl/stream"
+}
 Write-Host "Tunnel name: $TunnelName"
 Write-Host "Tunnel id: $tunnelId"
