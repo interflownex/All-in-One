@@ -23,20 +23,29 @@ Cloudflare e manter a exposicao de forma persistente no Windows.
 - Permissao para autenticar o `cloudflared` na conta correta.
 - O servico local respondendo em `http://localhost:58578/stream`.
 
-## Configuracao
+## Execucao
 
-1. Copie o arquivo de exemplo:
+Forma mais simples, em um comando:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File scripts\run_cloudflare_stream_tunnel.ps1 `
+  -Hostname stream.seu-dominio.com
+```
+
+Se preferir, rode sem `-Hostname` e o script pergunta na hora:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File scripts\run_cloudflare_stream_tunnel.ps1
+```
+
+Forma por arquivo de configuracao:
 
 ```powershell
 Copy-Item config\integrations\cloudflare_stream_tunnel.example.json `
   config\integrations\cloudflare_stream_tunnel.json
-```
 
-2. Ajuste o campo `hostname` para o subdominio publico desejado.
-
-## Execucao
-
-```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File scripts\setup_cloudflare_stream_tunnel.ps1 `
   -ConfigPath config\integrations\cloudflare_stream_tunnel.json
