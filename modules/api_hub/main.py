@@ -308,6 +308,8 @@ async def rate_limiter(request: Request):
 
         pipe = redis_client.pipeline()
         await pipe.incr(key).expire(key, window).execute()
+    except HTTPException:
+        raise
     except Exception:
         # Em ambiente local sem Redis, o gateway continua operando sem rate limit.
         return None

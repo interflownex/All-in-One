@@ -57,7 +57,9 @@ def run_checked(args: list[str]) -> None:
 
 def is_healthy(probe: ServiceProbe, timeout_seconds: float) -> bool:
     try:
-        with urllib.request.urlopen(probe.url, timeout=timeout_seconds) as response:
+        # B310: URLs sao montadas exclusivamente a partir de portas localhost
+        # declaradas em SERVICE_PROBES; nao ha entrada externa do usuario aqui.
+        with urllib.request.urlopen(probe.url, timeout=timeout_seconds) as response:  # nosec B310
             body = response.read().decode("utf-8", errors="replace")
             if not 200 <= response.status < 300:
                 return False

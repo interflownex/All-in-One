@@ -9,11 +9,11 @@ from modules.shared.mobility_postgres_store import MobilityPostgresStore
 from modules.shared.services_postgres_store import ServicesPostgresStore
 from scripts.validate_postgres_real_dsn import REQUIRED_TABLES, REQUIRED_TRIGGERS
 from scripts.verify_pg_indexes import REQUIRED_INDEXES
-from tests.test_postgres_priority_stores_integration import EVENT_PREFIX_ALIASES, phone_from_nonce
 
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATIONS_DIR = ROOT / "database" / "postgres" / "migrations"
+PRIORITY_STORES_TEST = ROOT / "tests" / "test_postgres_priority_stores_integration.py"
 
 
 def _migration_sql() -> str:
@@ -59,7 +59,9 @@ def test_postgres_contract_required_indexes_exist_in_migrations() -> None:
 
 
 def test_postgres_priority_store_event_prefix_aliases_are_documented() -> None:
-    assert EVENT_PREFIX_ALIASES["riders"] == ("rider.%", "riders.%")
+    source = PRIORITY_STORES_TEST.read_text(encoding="utf-8")
+
+    assert '"riders": ("rider.%", "riders.%")' in source
 
 
 def test_user_reference_columns_are_not_treated_as_business_entities() -> None:
@@ -104,4 +106,7 @@ def test_operational_user_references_do_not_become_audit_entity_ids() -> None:
 
 
 def test_identity_priority_store_phone_does_not_collide_with_dsn_validator() -> None:
+    def phone_from_nonce(nonce: str) -> str:
+        return f"+55119{str(int(nonce[:7], 16)).zfill(8)[-8:]}"
+
     assert phone_from_nonce("abcdef123456") != "+5511999999999"

@@ -1,5 +1,36 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-10 Correcao CI Pos Gate Compose
+
+### Concluido neste ciclo
+
+- Corrigido `tests/test_postgres_contract_static.py` para nao importar outro
+  arquivo de teste como pacote `tests.*`, evitando falha de coleta no CI com
+  import mode isolado.
+- `scripts/validate_compose_health.py` recebeu justificativa `nosec B310`
+  restrita ao uso de URLs localhost montadas a partir de portas fixas,
+  eliminando a falha do Bandit sem relaxar o gate de seguranca.
+- `modules/api_hub/main.py` voltou a propagar `HTTPException(429)` no rate
+  limiter; a tolerancia a Redis indisponivel permanece, mas bloqueios reais nao
+  sao mais engolidos pelo fallback local.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py::test_rate_limiter_blocks_after_limit tests/test_postgres_contract_static.py tests/test_compose_health_gate.py`: 12 aprovados.
+- `./.venv/bin/python -m bandit -r modules/shared scripts workers -q -ll`: aprovado.
+- `python3 -m py_compile modules/api_hub/main.py scripts/validate_compose_health.py tests/test_compose_health_gate.py tests/test_postgres_contract_static.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 351 aprovados, 58 ignorados.
+
+### Pendencias rastreadas
+
+- Observar os novos workflows do proximo push em `main` para confirmar CI,
+  Security, Git Sync e Compose Health verdes no GitHub Actions.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-10 Modo Local First Sem Custo Obrigatorio
 
 ### Concluido neste ciclo
