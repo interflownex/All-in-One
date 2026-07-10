@@ -201,13 +201,22 @@ ingress:
 Set-Content -Path $systemConfigPath -Value $configContent -Encoding ASCII
 
 Write-Host "Criando/atualizando DNS publico para $Hostname."
-$routeOutput = & $cloudflaredExe tunnel route dns $TunnelName $Hostname 2>&1
-if ($LASTEXITCODE -ne 0) {
-    $routeText = ($routeOutput | Out-String)
-    if ($routeText -notmatch "already exists") {
+$previousErrorActionPreference = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
+$routeOutput = & $cloudflaredExe tunnel route dns $TunnelName $Hostname 2>&1 | ForEach-Object { "$_" }
+$routeExitCode = $LASTEXITCODE
+$ErrorActionPreference = $previousErrorActionPreference
+$routeText = ($routeOutput | Out-String).Trim()
+
+if ($routeExitCode -ne 0) {
+    if ($routeText -notmatch "already exists" -and $routeText -notmatch "already configured") {
         throw "Falha ao criar rota DNS para $Hostname.`n$routeText"
     }
     Write-Warning "A rota DNS ja existia para $Hostname; mantendo configuracao."
+} elseif ($routeText -match "already configured") {
+    Write-Warning "A rota DNS ja estava configurada para $Hostname; mantendo configuracao."
+} elseif (-not [string]::IsNullOrWhiteSpace($routeText)) {
+    Write-Host $routeText
 }
 
 Invoke-Cloudflared $cloudflaredExe @("--config", $systemConfigPath, "tunnel", "ingress", "validate") | Out-Host
