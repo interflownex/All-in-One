@@ -34,7 +34,10 @@ def test_compose_health_gate_tracks_primary_fastapi_services() -> None:
 def test_compose_health_workflow_runs_python_gate_instead_of_sleep_only() -> None:
     workflow = (ROOT / ".github/workflows/compose-health.yml").read_text(encoding="utf-8")
 
-    assert "python3 scripts/validate_compose_health.py --down-after --timeout-seconds 300" in workflow
+    assert (
+        "python3 scripts/validate_compose_health.py --down-after --timeout-seconds 600 "
+        "--probe-timeout-seconds 1"
+    ) in workflow
     assert "sleep 30" not in workflow
     assert "docker compose -f infra/docker/docker-compose.yml up --build -d" not in workflow
 

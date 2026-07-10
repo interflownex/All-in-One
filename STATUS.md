@@ -1,5 +1,36 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-10 Estabilizacao Compose Health CI
+
+### Concluido neste ciclo
+
+- O workflow `compose-health.yml` passou a executar o validador com
+  `--timeout-seconds 600` e `--probe-timeout-seconds 1`, dando mais janela para
+  boot real dos containers e mais ciclos de checagem HTTP.
+- `scripts/validate_compose_health.py` agora imprime `docker compose ps` e
+  `docker compose logs --tail 80` dos servicos pendentes quando o health HTTP
+  nao fecha, tornando a proxima falha remota diagnosticavel pelo log do Actions.
+- A falha continua sendo falha: o gate nao foi relaxado para aceitar servicos
+  sem `/health` com `status=ok`.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_compose_health_gate.py tests/test_git_sync_gate.py`: 7 aprovados.
+- `python3 -m py_compile scripts/validate_compose_health.py tests/test_compose_health_gate.py scripts/check_git_sync.py tests/test_git_sync_gate.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `docker compose -f infra/docker/docker-compose.yml config --quiet`: aprovado.
+- `./.venv/bin/python -m bandit -r modules/shared scripts workers -q -ll`: aprovado.
+- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 354 aprovados, 58 ignorados.
+
+### Pendencias rastreadas
+
+- Observar o proximo `Docker Compose Health Gate` no GitHub Actions e, se ainda
+  falhar, usar os logs de servicos pendentes agora emitidos pelo gate.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-10 Git Sync Linux CI
 
 ### Concluido neste ciclo

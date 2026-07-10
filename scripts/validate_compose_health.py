@@ -89,6 +89,12 @@ def wait_for_health(timeout_seconds: int, probe_timeout_seconds: float) -> set[s
     return pending
 
 
+def print_compose_diagnostics(compose: list[str], pending: set[str]) -> None:
+    subprocess.run([*compose, "ps"], cwd=ROOT, check=False)
+    if pending:
+        subprocess.run([*compose, "logs", "--tail", "80", *sorted(pending)], cwd=ROOT, check=False)
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--compose-file", default=str(DEFAULT_COMPOSE_FILE))
@@ -118,7 +124,7 @@ def main(argv: list[str] | None = None) -> int:
         run_checked(up_args)
         pending = wait_for_health(args.timeout_seconds, args.probe_timeout_seconds)
         if pending:
-            subprocess.run([*compose, "ps"], cwd=ROOT, check=False)
+            print_compose_diagnostics(compose, pending)
             print(
                 "Servicos sem health HTTP dentro de "
                 f"{args.timeout_seconds} segundo(s): {', '.join(sorted(pending))}",
