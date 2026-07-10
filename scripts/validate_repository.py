@@ -18,6 +18,7 @@ MULTI_AGENT_SYNC_POLICY = ROOT / "config" / "autonomy" / "multi_agent_sync_polic
 GOOGLE_INTEGRATIONS_POLICY = ROOT / "config" / "autonomy" / "google_integrations_policy.json"
 GOOGLE_CLOUD_PROFILE = ROOT / "config" / "cloud" / "google_cloud_profile.json"
 GOOGLE_CLOUD_INVENTORY = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
+MONGODB_CONTRACT = ROOT / "config" / "database" / "mongodb_contract.json"
 STITCH_SYNC_WORKFLOW = ROOT / ".github" / "workflows" / "stitch-sync.yml"
 BRAND_IDENTITY = ROOT / "config" / "branding" / "brand_identity.json"
 COMPLIANCE_MATRIX = ROOT / "config" / "compliance" / "data_classification.json"
@@ -169,6 +170,14 @@ def main() -> int:
     ]:
         if needle not in migrations:
             fail(f"Controle SQL ausente: {needle}", errors)
+    if not MONGODB_CONTRACT.is_file():
+        fail("Contrato MongoDB/NoSQL ausente: config/database/mongodb_contract.json", errors)
+    else:
+        mongodb_contract = json.loads(MONGODB_CONTRACT.read_text(encoding="utf-8"))
+        collections = mongodb_contract.get("collections", {})
+        for collection in ["ai_memory", "social_videos", "influencer_metrics", "telemetry_logs"]:
+            if collection not in collections:
+                fail(f"Contrato MongoDB deve declarar colecao {collection}.", errors)
     for workflow in [
         "ci.yml",
         "security.yml",

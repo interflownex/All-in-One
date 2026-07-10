@@ -1,5 +1,39 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-10 Contrato MongoDB NoSQL
+
+### Concluido neste ciclo
+
+- Criado `config/database/mongodb_contract.json` com contrato versionado para
+  `ai_memory`, `social_videos`, `influencer_metrics` e `telemetry_logs`.
+- O contrato registra campos obrigatorios, finalidade, campos sensiveis,
+  indices de usuario, indice geoespacial, unicidade por periodo e TTL de
+  retencao.
+- Criado `tests/test_mongodb_contract.py` para impedir drift entre o contrato
+  NoSQL e `database/mongodb/init/001_ai_social_telemetry.js`.
+- `scripts/validate_repository.py` agora exige o contrato MongoDB/NoSQL.
+- `docs/DATABASE.md` e `docs/EXECUTION_PLAN.md` foram atualizados para separar
+  validacao estatica ja coberta de validacao viva em MongoDB real.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_mongodb_contract.py`: 4 aprovados.
+- `python3 -m json.tool config/database/mongodb_contract.json`: aprovado.
+- `python3 -m py_compile tests/test_mongodb_contract.py scripts/validate_repository.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `./.venv/bin/python -m bandit -r modules/shared scripts workers -q -ll`: aprovado.
+- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 360 aprovados, 58 ignorados.
+
+### Pendencias rastreadas
+
+- Executar validacao viva do script de inicializacao em MongoDB real/compose.
+- Conectar uso operacional dos modulos de IA/social/telemetria ao contrato NoSQL
+  quando esses fluxos deixarem o modo estrutural.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-10 Higiene Do Contexto Docker
 
 ### Concluido neste ciclo

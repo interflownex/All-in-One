@@ -76,6 +76,12 @@ Consumidores devem aplicar deduplicacao por `event_id`, pois a garantia e
 
 ## MongoDB
 
-`database/mongodb/init/001_ai_social_telemetry.js` valida `ai_memory`,
-`social_videos`, `influencer_metrics` e `telemetry_logs`, com indices de
-usuario, geoespacial e expiracao por retencao.
+`config/database/mongodb_contract.json` documenta o contrato NoSQL para memoria
+IA consentida, social e telemetria. `database/mongodb/init/001_ai_social_telemetry.js`
+implementa esse contrato criando `ai_memory`, `social_videos`,
+`influencer_metrics` e `telemetry_logs` com validadores JSON Schema, indices de
+usuario, geoespacial, unicidade por periodo e expiracao TTL por retencao.
+
+`tests/test_mongodb_contract.py` impede drift entre o contrato versionado e o
+script de inicializacao. A validacao viva em MongoDB real continua dependente de
+ambiente com `mongodb` executando.
