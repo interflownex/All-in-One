@@ -1,0 +1,49 @@
+# Controle de build: manter o contexto Docker pequeno e estavel.
+.git
+.github
+.agents
+.codex
+.cursor
+.gemini
+.pytest_cache
+.pytest_tmp
+.ruff_cache
+.mypy_cache
+.superdesign
+.venv
+.vs
+.vscode
+__pycache__
+**/__pycache__
+*.py[cod]
+.env
+.env.*
+!.env.example
+
+# Dependencias e artefatos gerados localmente.
+node_modules
+dist
+build
+tmp
+htmlcov
+coverage.xml
+.coverage
+config/cache
+config/logs
+config/*.sqlite3
+config/codex.toml
+config/secret_key
+status_validacao_repositorio.md
+
+# Testes, apps e documentacao nao entram nos Dockerfiles de runtime.
+tests
+apps
+desktop
+docs
+reports
+
+# Relatorios e midias locais grandes preservados no repositorio, mas fora do build.
+*.pdf
+relatorio_completo.md
+ALL_IN_ONE_LOGO_OFICIAL_1x1.png
+LOGO VALLEY.png

@@ -1,5 +1,40 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-10 Higiene Do Contexto Docker
+
+### Concluido neste ciclo
+
+- Criado `.dockerignore` na raiz para reduzir o contexto usado pelos Dockerfiles
+  que fazem build a partir de `context: ../..`.
+- O contexto Docker deixa de enviar `.git`, `.venv`, caches, `node_modules`,
+  testes, apps, docs, relatorios, PDFs e arquivos `.env*` locais, preservando
+  `.env.example`.
+- `scripts/validate_repository.py` agora exige `.dockerignore` e entradas
+  minimas para impedir regressao de contexto pesado.
+- `tests/test_docker_context_hygiene.py` cobre a allowlist negativa esperada e
+  confirma que o Compose usa a raiz do repo como contexto, onde `.dockerignore`
+  se aplica.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_docker_context_hygiene.py tests/test_compose_health_gate.py`: 6 aprovados.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `./.venv/bin/python -m bandit -r modules/shared scripts workers -q -ll`: aprovado.
+- `docker compose -f infra/docker/docker-compose.yml config --quiet`: aprovado.
+- Estimativa local de contexto: `477881750` bytes totais para `6422682`
+  bytes incluidos, reducao aproximada de `98.7%`.
+- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 356 aprovados, 58 ignorados.
+
+### Pendencias rastreadas
+
+- Medir o impacto do contexto reduzido no `Docker Compose Health Gate` remoto.
+- Se o build remoto continuar lento, otimizar os Dockerfiles por cache de
+  dependencias e/ou imagens base compartilhadas.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-10 Estabilizacao Compose Health CI
 
 ### Concluido neste ciclo

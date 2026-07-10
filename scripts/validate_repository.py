@@ -199,6 +199,14 @@ def main() -> int:
         pytest_ini = (ROOT / "pytest.ini").read_text(encoding="utf-8")
         if "--import-mode=importlib" not in pytest_ini or "--basetemp=.pytest_tmp" not in pytest_ini:
             fail("pytest.ini deve centralizar importlib e basetemp local .pytest_tmp.", errors)
+    dockerignore_path = ROOT / ".dockerignore"
+    if not dockerignore_path.is_file():
+        fail(".dockerignore ausente; builds Docker devem excluir caches, .venv e artefatos locais pesados.", errors)
+    else:
+        dockerignore = dockerignore_path.read_text(encoding="utf-8")
+        for ignored_path in [".git", ".venv", ".pytest_cache", ".pytest_tmp", "node_modules", "tests", "apps"]:
+            if ignored_path not in dockerignore:
+                fail(f".dockerignore deve excluir {ignored_path} do contexto Docker.", errors)
     if not VSCODE_SETTINGS.is_file():
         fail("Configuracao VS Code ausente: .vscode/settings.json", errors)
     else:

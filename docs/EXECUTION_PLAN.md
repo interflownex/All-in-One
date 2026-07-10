@@ -18,7 +18,7 @@ Coordenada operacional atual:
 | Runtime FastAPI modular | 88% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado, carregamento dinamico por DSN validado em containers e resolucao obrigatoria de store tipado para modulos conhecidos | Base local estabilizada; falta ampliar testes E2E por jornada. |
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
-| Docker local | 96% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy e gate CI Linux com validacao HTTP real | Falta reduzir tempo de rebuild e acompanhar execucoes do gate em ambiente remoto. |
+| Docker local | 97% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real e contexto Docker higienizado por `.dockerignore` | Falta medir rebuild remoto e acompanhar execucoes do gate em ambiente remoto. |
 | Apps/frontend | 78% | 9 apps catalogados, trilha Valley com telas funcionais e Playwright, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta ampliar a mesma profundidade funcional e E2E para os apps restantes. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
@@ -69,9 +69,13 @@ Entregas ja existentes:
   `scripts/validate_compose_health.py`, validando `docker compose config`,
   subida do ambiente e `/health` com `status=ok` nas 13 APIs FastAPI
   principais.
+- `.dockerignore` reduz o contexto de build removendo `.git`, `.venv`, caches,
+  testes, apps, docs, relatorios, PDFs, node_modules e arquivos `.env*`
+  sensiveis, preservando `.env.example`.
 
 Pendencias:
-- Reduzir tempo de rebuild dos containers Python.
+- Medir tempo de rebuild dos containers Python no runner remoto apos reducao do
+  contexto Docker.
 - Acompanhar execucoes do workflow `compose-health.yml` no GitHub em ambiente
   remoto apos mudancas de runtime/compose.
 - Executar o smoke test opt-in de banco limpo para migrations PostgreSQL em ambiente com imagem/base disponivel.
@@ -79,7 +83,8 @@ Pendencias:
 Proximos passos naturais:
 1. Observar o gate `compose-health.yml` apos pushes que alterem runtime,
    migrations, workers ou compose.
-2. Otimizar Dockerfiles com cache de dependencias.
+2. Otimizar Dockerfiles com cache de dependencias se a medicao remota ainda
+   indicar gargalo.
 3. Registrar evidencias por execucao em `STATUS.md`.
 
 ### Fase 2 - Banco de dados e stores PostgreSQL
