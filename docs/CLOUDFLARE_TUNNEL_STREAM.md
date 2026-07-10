@@ -40,6 +40,16 @@ powershell -NoProfile -ExecutionPolicy Bypass `
   -File scripts\run_cloudflare_stream_tunnel.ps1
 ```
 
+Se o servico local ainda nao estiver respondendo em `localhost:58578/stream`,
+mas voce quiser publicar o tunnel mesmo assim e ajustar a origin depois:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass `
+  -File scripts\run_cloudflare_stream_tunnel.ps1 `
+  -Hostname stream.seu-dominio.com `
+  -SkipOriginCheck
+```
+
 Forma por arquivo de configuracao:
 
 ```powershell

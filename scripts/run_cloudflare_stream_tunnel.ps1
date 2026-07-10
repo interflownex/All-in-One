@@ -1,5 +1,6 @@
 param(
-    [string]$Hostname = ""
+    [string]$Hostname = "",
+    [switch]$SkipOriginCheck
 )
 
 $ErrorActionPreference = "Stop"
@@ -17,7 +18,8 @@ $scriptPath = Join-Path $PSScriptRoot "setup_cloudflare_stream_tunnel.ps1"
 & $scriptPath `
     -Hostname $Hostname `
     -TunnelName "all-in-one-stream" `
-    -OriginUrl "http://localhost:58578"
+    -OriginUrl "http://localhost:58578" `
+    -SkipOriginCheck:$SkipOriginCheck
 
 if ($LASTEXITCODE -ne 0) {
     throw "Falha na configuracao automatica do Cloudflare Tunnel."
