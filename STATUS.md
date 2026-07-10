@@ -1,5 +1,41 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-10 Higiene Do Workspace VS Code
+
+### Concluido neste ciclo
+
+- `.vscode/extensions.json` foi enxugado para manter apenas recomendacoes
+  diretamente ligadas ao stack versionado do repositorio: Python, Ruff, MyPy,
+  Docker, PowerShell, YAML, ESLint, Prettier, GitHub Actions,
+  Kubernetes e Cloud Code.
+- Foram removidas as recomendacoes opcionais de conveniencia pessoal
+  `github.vscode-pull-request-github`, `eamodio.gitlens`,
+  `ms-vscode-remote.remote-wsl` e `openai.chatgpt`, reduzindo ruido no
+  onboarding do workspace sem afetar os gates obrigatorios.
+- A auditoria do workspace nao encontrou referencias a `SQL Server`, `mssql`,
+  `sqlserver`, `pyodbc` ou `pymssql` no codigo versionado, entao nao havia
+  dependencia ativa desse banco para remover do plano atual.
+
+### Validacoes executadas
+
+- `rg -n -i "sql server|mssql|sqlserver|pyodbc|pymssql|sqlcmd|azure sql|microsoft sql" .`: nenhum resultado no repositorio.
+- `./.venv/bin/python -c "import importlib.util; print(importlib.util.find_spec('pyodbc'))"`: `None`.
+- `./.venv/bin/python -c "import importlib.util; print(importlib.util.find_spec('pymssql'))"`: `None`.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Acompanhar execucoes reais do workflow `compose-health.yml` no GitHub apos
+  pushes que alterem runtime, compose, migrations ou workers.
+- Reduzir tempo de rebuild dos containers Python.
+- Smoke opt-in de migrations PostgreSQL em banco limpo segue dependente de host
+  com Docker/imagem PostgreSQL funcional.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-10 Gate CI Docker Compose
 
 ### Concluido neste ciclo

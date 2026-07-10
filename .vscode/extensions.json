@@ -11,11 +11,7 @@
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
     "github.vscode-github-actions",
-    "github.vscode-pull-request-github",
-    "eamodio.gitlens",
-    "ms-vscode-remote.remote-wsl",
     "ms-kubernetes-tools.vscode-kubernetes-tools",
-    "googlecloudtools.cloudcode",
-    "openai.chatgpt"
+    "googlecloudtools.cloudcode"
   ]
 }
