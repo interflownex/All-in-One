@@ -286,6 +286,155 @@ def test_retention_decision_publication_uses_safe_payload() -> None:
     assert "raw_before" not in message["payload"]
 
 
+def test_core_business_publication_uses_minimal_safe_payload() -> None:
+    message = publication_message(
+        {
+            "id": uuid4(),
+            "routing_key": "business.company.created",
+            "schema_version": 1,
+            "aggregate_type": "companies",
+            "aggregate_id": uuid4(),
+            "correlation_id": uuid4(),
+            "entity_id": uuid4(),
+            "created_at": datetime.now(timezone.utc),
+            "payload": {
+                "legal_name": "Empresa Publicavel",
+                "cnpj": "must-not-publish",
+                "root_cnpj": "must-not-publish",
+                "kyb_notes": "private",
+            },
+        }
+    )
+
+    assert message["payload"] == {"legal_name": "Empresa Publicavel"}
+
+
+def test_core_finance_publication_omits_balances_and_user_identifiers() -> None:
+    message = publication_message(
+        {
+            "id": uuid4(),
+            "routing_key": "finance.wallet.created",
+            "schema_version": 1,
+            "aggregate_type": "wallets",
+            "aggregate_id": uuid4(),
+            "correlation_id": uuid4(),
+            "entity_id": None,
+            "created_at": datetime.now(timezone.utc),
+            "payload": {
+                "wallet_type": "personal",
+                "brl_available": "999.99",
+                "nex_available": "100",
+                "user_id": "must-not-publish",
+            },
+        }
+    )
+
+    assert message["payload"] == {"wallet_type": "personal"}
+
+
+def test_core_api_hub_publication_omits_secret_material() -> None:
+    message = publication_message(
+        {
+            "id": uuid4(),
+            "routing_key": "api_hub.client.created",
+            "schema_version": 1,
+            "aggregate_type": "api_clients",
+            "aggregate_id": uuid4(),
+            "correlation_id": uuid4(),
+            "entity_id": None,
+            "created_at": datetime.now(timezone.utc),
+            "payload": {
+                "client_name": "Integracao Parceiro",
+                "scopes": ["catalog:read"],
+                "client_id_hash": "must-not-publish",
+                "secret_reference": "must-not-publish",
+            },
+        }
+    )
+
+    assert message["payload"] == {"client_name": "Integracao Parceiro", "scopes": ["catalog:read"]}
+
+
+def test_core_logistics_publication_omits_location_payloads() -> None:
+    delivery_message = publication_message(
+        {
+            "id": uuid4(),
+            "routing_key": "delivery.request.created",
+            "schema_version": 1,
+            "aggregate_type": "delivery_requests",
+            "aggregate_id": uuid4(),
+            "correlation_id": uuid4(),
+            "entity_id": None,
+            "created_at": datetime.now(timezone.utc),
+            "payload": {
+                "service_type": "delivery",
+                "insurance_required": False,
+                "origin": {"lat": -23.55, "lng": -46.63},
+                "destination": {"lat": -23.56, "lng": -46.64},
+                "quoted_brl": "19.90",
+            },
+        }
+    )
+    ride_message = publication_message(
+        {
+            "id": uuid4(),
+            "routing_key": "mobility.ride.created",
+            "schema_version": 1,
+            "aggregate_type": "rides",
+            "aggregate_id": uuid4(),
+            "correlation_id": uuid4(),
+            "entity_id": None,
+            "created_at": datetime.now(timezone.utc),
+            "payload": {
+                "vehicle_type": "car",
+                "origin": {"lat": -23.55, "lng": -46.63},
+                "destination": {"lat": -23.56, "lng": -46.64},
+                "fare_brl": "27.40",
+            },
+        }
+    )
+
+    assert delivery_message["payload"] == {"insurance_required": False, "service_type": "delivery"}
+    assert ride_message["payload"] == {"vehicle_type": "car"}
+
+
+def test_core_operations_publication_uses_safe_payloads() -> None:
+    warehouse_message = publication_message(
+        {
+            "id": uuid4(),
+            "routing_key": "wms.warehouse.created",
+            "schema_version": 1,
+            "aggregate_type": "warehouses",
+            "aggregate_id": uuid4(),
+            "correlation_id": uuid4(),
+            "entity_id": uuid4(),
+            "created_at": datetime.now(timezone.utc),
+            "payload": {"name": "CD Principal", "addressing_rules": {"private": True}},
+        }
+    )
+    fiscal_message = publication_message(
+        {
+            "id": uuid4(),
+            "routing_key": "erp.invoice.created",
+            "schema_version": 1,
+            "aggregate_type": "fiscal_documents",
+            "aggregate_id": uuid4(),
+            "correlation_id": uuid4(),
+            "entity_id": uuid4(),
+            "created_at": datetime.now(timezone.utc),
+            "payload": {
+                "document_type": "nfe",
+                "amount_brl": "150.00",
+                "tax_amount_brl": "15.00",
+                "document_number": "NF-private",
+            },
+        }
+    )
+
+    assert warehouse_message["payload"] == {"name": "CD Principal"}
+    assert fiscal_message["payload"] == {"document_type": "nfe"}
+
+
 def test_retry_observation_uses_exponential_backoff_with_cap() -> None:
     settings = OutboxSettings(
         postgres_dsn="postgresql://example",

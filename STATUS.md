@@ -1,5 +1,40 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-10 Contratos Downstream Outbox
+
+### Concluido neste ciclo
+
+- A allowlist segura do dispatcher foi ampliada para cobrir dominios
+  operacionais centrais alem de Valley, catalogo, Jobs e retencao.
+- Eventos de `companies`, `wallets`, `api_clients`, `delivery_requests`,
+  `rides`, `warehouses`, `providers`, `roles`, `datasets`, `processes`,
+  `carriers`, `fiscal_documents` e dominios correlatos agora publicam apenas
+  campos minimos explicitamente permitidos.
+- Contratos unitarios impedem vazamento de CPF/CNPJ, saldos, IDs de usuario,
+  hashes, referencias de segredo, origem/destino, enderecos, regras internas,
+  valores fiscais e payload bruto.
+- `docs/EVENTS.md` e `docs/EXECUTION_PLAN.md` documentam que consumidores
+  downstream devem depender apenas dos campos allowlistados e deduplicar por
+  `event_id`.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_outbox_dispatcher_unit.py tests/test_outbox_alerts.py`: 22 aprovados.
+- `python3 -m py_compile modules/shared/outbox_dispatcher.py tests/test_outbox_dispatcher_unit.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Conectar consumidores downstream reais e validar comportamento ponta a ponta
+  por dominio.
+- Aplicar os alertas e importar o dashboard no ambiente Kubernetes/observabilidade real.
+- Payloads de dominios sensiveis que exigirem novos campos continuam pendentes
+  de contrato explicito e autorizacao de dados antes de entrar na allowlist.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-10 Observabilidade Outbox
 
 ### Concluido neste ciclo

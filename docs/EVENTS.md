@@ -30,6 +30,20 @@ Cada falha atualiza `retry_count`, `retry_delay_seconds`, `next_retry_at`,
 `audit.event_deliveries`. Eventos com `next_retry_at` futuro nao sao
 selecionados pelo dispatcher ate a janela vencer.
 
+## Contratos de payload downstream
+
+O dispatcher publica payloads por allowlist em
+`modules/shared/outbox_dispatcher.py`. Alem dos fluxos Jobs, Valley, catalogo e
+retencao, os contratos seguros cobrem dominios operacionais centrais como
+`companies`, `wallets`, `api_clients`, `delivery_requests`, `rides`,
+`warehouses`, `providers`, `roles`, `datasets`, `processes`, `carriers` e
+`fiscal_documents`.
+
+Campos sensiveis como CPF/CNPJ, saldos, hashes, referencias de segredo,
+localizacao, enderecos, prontuario, dados legais privados, documento fiscal e
+payload bruto continuam fora da mensagem publicada. Consumidores devem depender
+apenas dos campos allowlistados e deduplicar por `event_id`.
+
 Configuracoes:
 
 - `ALL_IN_ONE_OUTBOX_RETRY_BASE_SECONDS`: atraso inicial em segundos; padrao `5`.

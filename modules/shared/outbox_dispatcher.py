@@ -14,6 +14,17 @@ from psycopg.types.json import Jsonb
 
 
 SAFE_PAYLOAD_FIELDS: dict[str, frozenset[str]] = {
+    "api_clients": frozenset({"client_name", "scopes"}),
+    "carriers": frozenset({"coverage", "name"}),
+    "companies": frozenset({"legal_name"}),
+    "datasets": frozenset({"name", "refresh_mode"}),
+    "delivery_requests": frozenset({"insurance_required", "service_type"}),
+    "fiscal_documents": frozenset({"document_type"}),
+    "folders": frozenset({"classification"}),
+    "processes": frozenset({"name", "published", "version"}),
+    "providers": frozenset({"category"}),
+    "rides": frozenset({"vehicle_type"}),
+    "roles": frozenset({"is_system", "name"}),
     "resumes": frozenset({"recruiter_visibility"}),
     "resume_documents": frozenset(
         {
@@ -39,6 +50,9 @@ SAFE_PAYLOAD_FIELDS: dict[str, frozenset[str]] = {
     "job_postings": frozenset({"company_id", "title", "employment_type", "workplace_model"}),
     "applications": frozenset({"job_posting_id", "resume_id"}),
     "resume_access_logs": frozenset({"resume_id", "business_id"}),
+    "stores": frozenset({"name"}),
+    "wallets": frozenset({"wallet_type"}),
+    "warehouses": frozenset({"name"}),
     "valley_gold_ledger_entries": frozenset(
         {
             "merchant_business_id",

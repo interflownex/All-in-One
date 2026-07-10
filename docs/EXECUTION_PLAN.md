@@ -12,7 +12,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
 | PostgreSQL estrutural | 90% | 15 migrations SQL, stores para 25 modulos, suite de matriz estrutural para todos os adapters PostgreSQL e suite viva preparada para os 25 modulos tipados | Schema amplo existe; falta converter a cobertura pronta em evidencia real de banco vivo. |
 | Runtime FastAPI modular | 88% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado, carregamento dinamico por DSN validado em containers e resolucao obrigatoria de store tipado para modulos conhecidos | Base local estabilizada; falta ampliar testes E2E por jornada. |
-| Mensageria/outbox | 90% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo validados | Falta aplicar observabilidade no cluster real e ampliar consumidores downstream. |
+| Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
 | Docker local | 95% | Postgres, RabbitMQ, MongoDB, Redis, outbox e 13 APIs FastAPI healthy | Falta gate CI para impedir regressao de compose. |
 | Apps/frontend | 78% | 9 apps catalogados, trilha Valley com telas funcionais e Playwright, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta ampliar a mesma profundidade funcional e E2E para os apps restantes. |
@@ -161,7 +161,7 @@ Nota operacional atual:
 
 Objetivo: garantir comunicacao assincroma confiavel e rastreavel.
 
-Status: 90%
+Status: 91%
 
 Entregas ja existentes:
 - `audit.domain_events`.
@@ -185,16 +185,23 @@ Entregas ja existentes:
   pelo worker.
 - `Database #137` validou emissao de audit/outbox nos 25 stores PostgreSQL
   prioritarios e despacho RabbitMQ em PostgreSQL de servico do CI.
+- Contratos seguros de payload downstream cobrem dominios operacionais centrais
+  fora de Valley, catalogo, Jobs e retencao, incluindo empresas, carteiras,
+  API clients, logistica, mobilidade, warehouses, provedores, RBAC, datasets,
+  processos, carriers e documentos fiscais, sempre por allowlist.
 
 Pendencias:
 - Aplicar `infra/kubernetes/base/outbox-alerting.yaml` e importar
   `config/observability/outbox_dashboard.json` no cluster/ferramenta real.
-- Ampliar consumidores downstream e testes de contrato para payloads publicados
-  fora dos fluxos Valley, catalogo, Jobs e retencao.
+- Conectar consumidores downstream reais e validar comportamento ponta a ponta
+  por dominio.
+- Ampliar contratos apenas para dominios sensiveis que exigirem autorizacao
+  explicita, mantendo CPF/CNPJ, saldos, hashes, segredos, localizacao,
+  enderecos, prontuario e payload bruto fora das mensagens.
 
 Proximos passos naturais:
 1. Aplicar alertas e dashboard no ambiente Kubernetes/observabilidade real.
-2. Criar fixtures de consumidor para payloads publicados por dominio.
+2. Criar fixtures de consumidor reais para payloads publicados por dominio.
 3. Rodar dispatcher contra consumidores reais de cada dominio.
 4. Criar runbook de incidentes de fila.
 
