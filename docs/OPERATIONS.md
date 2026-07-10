@@ -96,6 +96,17 @@ Metricas expostas:
 - `all_in_one_outbox_max_retry_count`: maior contador de retry observado.
 - `all_in_one_outbox_oldest_pending_age_seconds`: idade do pendente mais antigo.
 
+Alertas Kubernetes/Prometheus ficam em
+`infra/kubernetes/base/outbox-alerting.yaml` e cobrem backlog alto, evento
+pendente antigo, crescimento de falhas retryable e ausencia de publicacoes
+confirmadas quando ha eventos prontos para entrega. A politica versionada em
+`config/observability/outbox_alerts.json` exige evidencias operacionais sem
+incluir payload sensivel.
+
+O dashboard versionado em `config/observability/outbox_dashboard.json` cobre os
+mesmos sinais exportados pelo worker para importacao em Grafana ou ferramenta
+compativel com PromQL.
+
 ## Retencao LGPD
 
 O worker de retencao LGPD processa candidatos em

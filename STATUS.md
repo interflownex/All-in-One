@@ -1,5 +1,38 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-10 Observabilidade Outbox
+
+### Concluido neste ciclo
+
+- Criado `config/observability/outbox_alerts.json` com politica versionada para
+  alertas de backlog, pendente antigo, falhas retryable e ausencia de entregas
+  confirmadas.
+- Criado `infra/kubernetes/base/outbox-alerting.yaml` com `PrometheusRule` e
+  `AlertmanagerConfig` para o `outbox-dispatcher`, incluido em
+  `infra/kubernetes/base/kustomization.yaml`.
+- Criado `config/observability/outbox_dashboard.json` com dashboard versionado
+  para os seis sinais Prometheus exportados pelo worker da outbox.
+- `docs/OPERATIONS.md` e `docs/EXECUTION_PLAN.md` foram atualizados para trocar
+  a pendencia de criar dashboard/alertas por aplicacao em ambiente real.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -s -q tests/test_outbox_alerts.py tests/test_retention_alerts.py tests/test_outbox_dispatcher_unit.py`: 21 aprovados.
+- `python3 -m json.tool config/observability/outbox_alerts.json`: aprovado.
+- `python3 -m json.tool config/observability/outbox_dashboard.json`: aprovado.
+- `python3 -m py_compile tests/test_outbox_alerts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Aplicar os alertas e importar o dashboard no ambiente Kubernetes/observabilidade real.
+- Ampliar consumidores downstream e testes de contrato para payloads publicados
+  fora dos fluxos Valley, catalogo, Jobs e retencao.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-09 Database CI Verde
 
 ### Concluido neste ciclo

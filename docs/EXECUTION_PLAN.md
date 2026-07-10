@@ -12,7 +12,7 @@ Meta: transformar o MVP backend/data atual em beta operacional validado, com inf
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
 | PostgreSQL estrutural | 90% | 15 migrations SQL, stores para 25 modulos, suite de matriz estrutural para todos os adapters PostgreSQL e suite viva preparada para os 25 modulos tipados | Schema amplo existe; falta converter a cobertura pronta em evidencia real de banco vivo. |
 | Runtime FastAPI modular | 88% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado, carregamento dinamico por DSN validado em containers e resolucao obrigatoria de store tipado para modulos conhecidos | Base local estabilizada; falta ampliar testes E2E por jornada. |
-| Mensageria/outbox | 86% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel e metricas Prometheus text, testes criticos e payload seguro para eventos Valley/catalogo validados | Precisa ampliar cobertura para eventos de todos os modulos e dashboards. |
+| Mensageria/outbox | 90% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo validados | Falta aplicar observabilidade no cluster real e ampliar consumidores downstream. |
 | MongoDB/NoSQL | 55% | Script inicial para AI/social/telemetria | Precisa validacao de colecoes, indices e uso real. |
 | Docker local | 95% | Postgres, RabbitMQ, MongoDB, Redis, outbox e 13 APIs FastAPI healthy | Falta gate CI para impedir regressao de compose. |
 | Apps/frontend | 78% | 9 apps catalogados, trilha Valley com telas funcionais e Playwright, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta ampliar a mesma profundidade funcional e E2E para os apps restantes. |
@@ -161,7 +161,7 @@ Nota operacional atual:
 
 Objetivo: garantir comunicacao assincroma confiavel e rastreavel.
 
-Status: 86%
+Status: 90%
 
 Entregas ja existentes:
 - `audit.domain_events`.
@@ -179,15 +179,23 @@ Entregas ja existentes:
 - Worker da outbox expoe metricas Prometheus text por `--metrics`, cobrindo
   pendentes, retries vencidos, publicados, falhas retryable, maior retry e idade
   do pendente mais antigo.
+- Alertas Prometheus/Alertmanager versionados cobrem backlog alto, pendente
+  antigo, falhas retryable e ausencia de publicacoes confirmadas.
+- Dashboard versionado da outbox cobre todos os sinais Prometheus exportados
+  pelo worker.
+- `Database #137` validou emissao de audit/outbox nos 25 stores PostgreSQL
+  prioritarios e despacho RabbitMQ em PostgreSQL de servico do CI.
 
 Pendencias:
-- Validar eventos de todos os modulos.
-- Dashboards e alertas reais de outbox parada, fila acumulada e erro de publish.
+- Aplicar `infra/kubernetes/base/outbox-alerting.yaml` e importar
+  `config/observability/outbox_dashboard.json` no cluster/ferramenta real.
+- Ampliar consumidores downstream e testes de contrato para payloads publicados
+  fora dos fluxos Valley, catalogo, Jobs e retencao.
 
 Proximos passos naturais:
-1. Criar fixtures de evento por modulo.
-2. Rodar dispatcher contra eventos reais de cada dominio.
-3. Conectar metricas Prometheus text a dashboards/alertas.
+1. Aplicar alertas e dashboard no ambiente Kubernetes/observabilidade real.
+2. Criar fixtures de consumidor para payloads publicados por dominio.
+3. Rodar dispatcher contra consumidores reais de cada dominio.
 4. Criar runbook de incidentes de fila.
 
 ### Fase 4 - Jornadas E2E por app

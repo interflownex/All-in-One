@@ -1,0 +1,55 @@
+{
+  "version": "2026-07-10",
+  "owner": "platform",
+  "scope": "outbox-dispatcher",
+  "dashboard": {
+    "title": "All-in-One Outbox Dispatcher",
+    "uid": "all-in-one-outbox-dispatcher",
+    "tags": ["all-in-one", "outbox", "rabbitmq", "postgresql"],
+    "timezone": "browser",
+    "refresh": "30s",
+    "panels": [
+      {
+        "title": "Eventos pendentes",
+        "type": "stat",
+        "expr": "all_in_one_outbox_pending",
+        "unit": "short",
+        "thresholds": {"warning": 500, "critical": 1000}
+      },
+      {
+        "title": "Eventos prontos para entrega",
+        "type": "stat",
+        "expr": "all_in_one_outbox_due",
+        "unit": "short",
+        "thresholds": {"warning": 100, "critical": 500}
+      },
+      {
+        "title": "Publicacoes confirmadas",
+        "type": "timeseries",
+        "expr": "increase(all_in_one_outbox_published_total[5m])",
+        "unit": "ops"
+      },
+      {
+        "title": "Falhas retryable",
+        "type": "timeseries",
+        "expr": "increase(all_in_one_outbox_failed_retryable_total[5m])",
+        "unit": "ops",
+        "thresholds": {"warning": 1, "critical": 10}
+      },
+      {
+        "title": "Maior contador de retry",
+        "type": "stat",
+        "expr": "all_in_one_outbox_max_retry_count",
+        "unit": "short",
+        "thresholds": {"warning": 3, "critical": 5}
+      },
+      {
+        "title": "Idade do pendente mais antigo",
+        "type": "stat",
+        "expr": "all_in_one_outbox_oldest_pending_age_seconds",
+        "unit": "seconds",
+        "thresholds": {"warning": 900, "critical": 1800}
+      }
+    ]
+  }
+}

@@ -27,6 +27,7 @@ resources:
   - vision.yaml
   - wms.yaml
   - outbox-dispatcher.yaml
+  - outbox-alerting.yaml
   - retention-worker.yaml
   - platform.yaml
   - retention-alerting.yaml
