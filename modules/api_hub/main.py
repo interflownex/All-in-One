@@ -301,12 +301,16 @@ async def rate_limiter(request: Request):
     limit = 100
     window = 60
 
-    current = await redis_client.get(key)
-    if current and int(current) >= limit:
-        raise HTTPException(status_code=429, detail="Too many requests. Tente novamente em um minuto.")
-    
-    pipe = redis_client.pipeline()
-    await pipe.incr(key).expire(key, window).execute()
+    try:
+        current = await redis_client.get(key)
+        if current and int(current) >= limit:
+            raise HTTPException(status_code=429, detail="Too many requests. Tente novamente em um minuto.")
+
+        pipe = redis_client.pipeline()
+        await pipe.incr(key).expire(key, window).execute()
+    except Exception:
+        # Em ambiente local sem Redis, o gateway continua operando sem rate limit.
+        return None
 
 
 async def validate_api_key_edge(request: Request):
