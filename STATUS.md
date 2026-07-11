@@ -1,5 +1,36 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-11 Timeout Interno Do Compose Health
+
+### Concluido neste ciclo
+
+- `scripts/validate_compose_health.py` passou a aplicar timeout explicito aos
+  subprocessos `docker compose config` e `docker compose up`.
+- `.github/workflows/compose-health.yml` chama o gate com
+  `--command-timeout-seconds 300`, evitando que a etapa `Validate compose
+  services and HTTP healthchecks` fique presa antes do loop de health HTTP.
+- `tests/test_compose_health_gate.py` cobre que os comandos Docker recebem
+  timeout e que o workflow usa o novo parametro.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_compose_health_gate.py tests/test_git_sync_gate.py`: 8 aprovados.
+- `python3 -m py_compile scripts/validate_compose_health.py tests/test_compose_health_gate.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `docker compose -f infra/docker/docker-compose.yml config --quiet`: aprovado.
+- `./.venv/bin/python -m bandit -r modules/shared scripts workers -q -ll`: aprovado.
+- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 365 aprovados, 58 ignorados.
+
+### Pendencias rastreadas
+
+- Observar a proxima execucao remota do `Docker Compose Health Gate`; se o build
+  exceder 300 segundos, o workflow deve falhar com erro explicito em vez de
+  permanecer em progresso.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-11 Timeout Do Compose Health CI
 
 ### Concluido neste ciclo

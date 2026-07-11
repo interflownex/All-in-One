@@ -36,7 +36,7 @@ def test_compose_health_workflow_runs_python_gate_instead_of_sleep_only() -> Non
 
     assert "timeout-minutes: 20" in workflow
     assert (
-        "python3 scripts/validate_compose_health.py --down-after --timeout-seconds 600 "
+        "python3 scripts/validate_compose_health.py --down-after --command-timeout-seconds 300 --timeout-seconds 600 "
         "--probe-timeout-seconds 1"
     ) in workflow
     assert "sleep 30" not in workflow
@@ -58,6 +58,20 @@ def test_compose_health_gate_reports_pending_services(monkeypatch) -> None:
     assert "api-hub" in pending
     assert "identity" in pending
     assert attempts == []
+
+
+def test_compose_health_gate_times_out_docker_commands(monkeypatch) -> None:
+    calls: list[tuple[list[str], int]] = []
+
+    def fake_run(args, cwd, check, timeout):
+        calls.append((args, timeout))
+        return subprocess.CompletedProcess(args=args, returncode=0)
+
+    monkeypatch.setattr(validate_compose_health.subprocess, "run", fake_run)
+
+    validate_compose_health.run_checked(["docker", "compose", "config", "--quiet"], timeout_seconds=123)
+
+    assert calls == [(["docker", "compose", "config", "--quiet"], 123)]
 
 
 def test_compose_health_gate_compiles() -> None:

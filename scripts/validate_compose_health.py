@@ -45,14 +45,17 @@ SERVICE_PROBES: tuple[ServiceProbe, ...] = (
 )
 
 
-def run_checked(args: list[str]) -> None:
+def run_checked(args: list[str], timeout_seconds: int) -> None:
     try:
-        subprocess.run(args, cwd=ROOT, check=True)
+        subprocess.run(args, cwd=ROOT, check=True, timeout=timeout_seconds)
     except FileNotFoundError as exc:
         raise RuntimeError(f"Comando nao encontrado: {args[0]}") from exc
     except subprocess.CalledProcessError as exc:
         joined = " ".join(args)
         raise RuntimeError(f"{joined} falhou com codigo {exc.returncode}") from exc
+    except subprocess.TimeoutExpired as exc:
+        joined = " ".join(args)
+        raise RuntimeError(f"{joined} excedeu {timeout_seconds} segundo(s)") from exc
 
 
 def is_healthy(probe: ServiceProbe, timeout_seconds: float) -> bool:
@@ -100,6 +103,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--compose-file", default=str(DEFAULT_COMPOSE_FILE))
     parser.add_argument("--timeout-seconds", type=int, default=240)
     parser.add_argument("--probe-timeout-seconds", type=float, default=3.0)
+    parser.add_argument("--command-timeout-seconds", type=int, default=300)
     parser.add_argument("--skip-build", action="store_true")
     parser.add_argument("--down-after", action="store_true")
     return parser.parse_args(argv)
@@ -120,8 +124,8 @@ def main(argv: list[str] | None = None) -> int:
         up_args.append("--build")
 
     try:
-        run_checked([*compose, "config", "--quiet"])
-        run_checked(up_args)
+        run_checked([*compose, "config", "--quiet"], timeout_seconds=args.command_timeout_seconds)
+        run_checked(up_args, timeout_seconds=args.command_timeout_seconds)
         pending = wait_for_health(args.timeout_seconds, args.probe_timeout_seconds)
         if pending:
             print_compose_diagnostics(compose, pending)
