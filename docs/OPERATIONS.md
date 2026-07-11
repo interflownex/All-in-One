@@ -109,6 +109,63 @@ O dashboard versionado em `config/observability/outbox_dashboard.json` cobre os
 mesmos sinais exportados pelo worker para importacao em Grafana ou ferramenta
 compativel com PromQL.
 
+### Runbook de incidentes da outbox
+
+Escopo: use este runbook para os alertas `OutboxBacklogHigh`,
+`OutboxOldestPendingTooOld`, `OutboxRetryableFailuresHigh` e
+`OutboxDueWithoutDeliveries`. O objetivo e restaurar publicacao at-least-once
+sem perder a trilha imutavel de `audit.domain_events` e
+`audit.event_deliveries`.
+
+Classificacao inicial:
+
+- `critical`: `OutboxOldestPendingTooOld`, evento pendente mais antigo acima do
+  SLA de 30 minutos ou impacto em fluxo financeiro, identidade, saude,
+  trabalho ou compliance.
+- `high`: backlog acima do limite ou crescimento de falhas retryable em 15
+  minutos.
+- `medium`: eventos vencidos existem, mas nao ha entregas confirmadas recentes.
+
+Triagem nos primeiros 10 minutos:
+
+- Abrir ticket de incidente e registrar horario, alerta, ambiente, commit e
+  dashboard usado.
+- Coletar apenas contadores e hashes: `pending_count`, `due_count`,
+  `oldest_pending_age_seconds`, `failed_retryable_delta`, `published_delta`,
+  `event_selector_hash`, `last_error_type` e logs do dispatcher sem payload.
+- Confirmar se RabbitMQ aceita conexao, se o exchange
+  `all-in-one.domain` existe e se o worker `outbox-dispatcher` esta em loop.
+- Verificar se `next_retry_at` esta vencido para eventos pendentes e se
+  `retry_count` cresce de forma compativel com o backoff configurado.
+
+Mitigacao segura:
+
+- Reiniciar apenas o worker `outbox-dispatcher` quando houver suspeita de pod,
+  conexao AMQP ou deploy preso; nao alterar eventos manualmente.
+- Se RabbitMQ estiver indisponivel, manter eventos como `pending`, preservar
+  tentativas `failed_retryable` e escalar infraestrutura de fila.
+- Se o erro for payload rejeitado por consumidor, pausar o consumidor afetado,
+  manter a outbox ativa para outros dominios e abrir correcao de contrato.
+- Nao publicar mensagens manualmente fora do dispatcher sem aprovacao de
+  plataforma e registro no ticket; consumidores devem deduplicar por `event_id`.
+
+Validacao de recuperacao:
+
+- `all_in_one_outbox_due` volta a `0` ou cai de forma sustentada.
+- `increase(all_in_one_outbox_published_total[15m]) > 0` apos a mitigacao.
+- `all_in_one_outbox_oldest_pending_age_seconds` fica abaixo de `1800`.
+- Novas tentativas aparecem em `audit.event_deliveries` sem violar
+  append-only.
+
+Encerramento:
+
+- Registrar causa raiz, janela de impacto, dominios afetados, graficos antes e
+  depois, hashes dos eventos amostrados e decisao de follow-up.
+- Se houve dados sensiveis ou fluxo regulado afetado, acionar compliance antes
+  de encerrar.
+- Criar tarefa de prevencao quando a causa for contrato de payload, capacidade
+  da fila, credencial, deploy ou consumidor downstream.
+
 ## Retencao LGPD
 
 O worker de retencao LGPD processa candidatos em

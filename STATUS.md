@@ -1,5 +1,39 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-11 Runbook De Incidentes Outbox
+
+### Concluido neste ciclo
+
+- `docs/OPERATIONS.md#outbox` passou a ter runbook acionavel para
+  `OutboxBacklogHigh`, `OutboxOldestPendingTooOld`,
+  `OutboxRetryableFailuresHigh` e `OutboxDueWithoutDeliveries`.
+- O runbook define classificacao inicial, triagem em 10 minutos, mitigacao
+  segura, validacao de recuperacao e encerramento com evidencias permitidas.
+- A orientacao preserva a fronteira de dados sensiveis: coletar contadores,
+  hashes, tipos de erro e logs sem payload; nao alterar eventos manualmente.
+- Criado `tests/test_outbox_runbook.py` para garantir que os alertas apontem
+  para runbook acionavel e que a deduplicacao por `event_id` continue
+  documentada.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_outbox_runbook.py tests/test_outbox_alerts.py`: 8 aprovados.
+- `python3 -m py_compile tests/test_outbox_runbook.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `./.venv/bin/python -m bandit -r modules/shared scripts workers -q -ll`: aprovado.
+- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 364 aprovados, 58 ignorados.
+
+### Pendencias rastreadas
+
+- Aplicar `infra/kubernetes/base/outbox-alerting.yaml` e importar
+  `config/observability/outbox_dashboard.json` em ambiente real.
+- Rodar o runbook em simulado operacional quando houver cluster/observabilidade
+  disponiveis.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-11 Higiene De Scripts Windows
 
 ### Concluido neste ciclo

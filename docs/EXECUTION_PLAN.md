@@ -205,6 +205,9 @@ Entregas ja existentes:
   antigo, falhas retryable e ausencia de publicacoes confirmadas.
 - Dashboard versionado da outbox cobre todos os sinais Prometheus exportados
   pelo worker.
+- Runbook de incidentes da outbox em `docs/OPERATIONS.md#outbox` cobre triagem,
+  mitigacao, recuperacao e encerramento dos alertas versionados sem expor
+  payload sensivel.
 - `Database #137` validou emissao de audit/outbox nos 25 stores PostgreSQL
   prioritarios e despacho RabbitMQ em PostgreSQL de servico do CI.
 - Contratos seguros de payload downstream cobrem dominios operacionais centrais
@@ -225,7 +228,7 @@ Proximos passos naturais:
 1. Aplicar alertas e dashboard no ambiente Kubernetes/observabilidade real.
 2. Criar fixtures de consumidor reais para payloads publicados por dominio.
 3. Rodar dispatcher contra consumidores reais de cada dominio.
-4. Criar runbook de incidentes de fila.
+4. Exercitar o runbook de incidentes de fila em simulado operacional.
 
 ### Fase 4 - Jornadas E2E por app
 
