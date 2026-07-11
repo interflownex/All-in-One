@@ -19,7 +19,7 @@ Coordenada operacional atual:
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
 | Docker local | 97% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real e contexto Docker higienizado por `.dockerignore` | Falta medir rebuild remoto e acompanhar execucoes do gate em ambiente remoto. |
-| Apps/frontend | 78% | 9 apps catalogados, trilha Valley com telas funcionais e Playwright, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta ampliar a mesma profundidade funcional e E2E para os apps restantes. |
+| Apps/frontend | 79% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React nomeados, trilha Valley com telas funcionais e Playwright, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta criar shells React dos apps restantes e ampliar Playwright fora da trilha Valley. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
@@ -240,7 +240,7 @@ Proximos passos naturais:
 
 Objetivo: transformar microservicos em jornadas de produto.
 
-Status: 78%
+Status: 79%
 
 Apps e prioridades:
 - `all-in-one-user`: cadastro, wallet, busca, compra, delivery, jobs.
@@ -254,6 +254,13 @@ Apps e prioridades:
 - `valley-rider`: entregador/corridas vinculadas ao ecossistema Valley.
 - Catalogo Valley backend agrupa ofertas em linguagem simples por `food`,
   `product`, `service`, categoria amigavel e raio regional em km.
+- `config/apps/frontend_journeys.json` fixa o contrato versionado dos 9 apps
+  prioritarios, mapeando diretorio canonico, shell React atual, pacote NPM,
+  modulos de API Hub, evidencias pytest/Playwright e proximo E2E esperado.
+- Shells React existentes agora usam nomes de pacote persistentes:
+  `@all-in-one/user-shell`, `@all-in-one/business-shell`,
+  `@all-in-one/valley`, `@all-in-one/valley-business` e
+  `@all-in-one/valley-rider`.
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
@@ -265,7 +272,8 @@ Pendencias:
   estao cobertas por pytest contratual.
 
 Proximos passos naturais:
-1. Definir shell frontend para os apps fora da trilha Valley.
+1. Criar shells React dedicados para `all-in-one-riders`,
+   `all-in-one-services`, `all-in-one-health` e `all-in-one-mobility`.
 2. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
 3. Expandir as jornadas Playwright desktop/mobile para os apps restantes.
 4. Rodar testes E2E desktop/mobile.

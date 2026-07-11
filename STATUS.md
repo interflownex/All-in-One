@@ -1,5 +1,42 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-11 Contrato Frontend Da Fase 4
+
+### Concluido neste ciclo
+
+- Criado `config/apps/frontend_journeys.json` como contrato versionado dos 9
+  apps prioritarios da Fase 4, com diretório canonico, shell React atual,
+  pacote NPM, persona, jornada prioritaria, modulos de API Hub, evidencias
+  pytest/Playwright e proximo E2E esperado.
+- Normalizados os nomes dos pacotes React existentes para
+  `@all-in-one/user-shell`, `@all-in-one/business-shell`,
+  `@all-in-one/valley`, `@all-in-one/valley-business` e
+  `@all-in-one/valley-rider`, incluindo `package-lock.json`.
+- Substituidos READMEs template do Vite em `apps/valley`,
+  `apps/valley_business` e `apps/valley_rider` por contratos operacionais dos
+  shells reais.
+- Criado `tests/test_frontend_journeys_contract.py` para bloquear drift entre o
+  plano da Fase 4, os diretorios de apps, os pacotes React e as evidencias de
+  regressao existentes.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py`: 15 aprovados.
+- `python3 -m json.tool` nos contratos `config/apps/frontend_journeys.json` e `package*.json` tocados: aprovado.
+- `python3 -m py_compile tests/test_frontend_journeys_contract.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Criar shells React dedicados para `all-in-one-riders`,
+  `all-in-one-services`, `all-in-one-health` e `all-in-one-mobility`.
+- Expandir Playwright desktop/mobile para os apps fora da trilha Valley usando
+  `config/apps/frontend_journeys.json` como fila autoritativa.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-11 Encerramento Persistente De Ponte VALLEY Externa
 
 ### Concluido neste ciclo
