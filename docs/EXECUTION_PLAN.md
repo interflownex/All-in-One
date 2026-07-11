@@ -19,7 +19,7 @@ Coordenada operacional atual:
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
 | Docker local | 97% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real e contexto Docker higienizado por `.dockerignore` | Falta medir rebuild remoto e acompanhar execucoes do gate em ambiente remoto. |
-| Apps/frontend | 81% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta conectar endpoints vivos nos shells fora Valley e ampliar Playwright fora da trilha Valley. |
+| Apps/frontend | 82% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta ampliar Playwright fora da trilha Valley e trocar fallbacks por cenarios E2E com API Hub vivo. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
@@ -240,7 +240,7 @@ Proximos passos naturais:
 
 Objetivo: transformar microservicos em jornadas de produto.
 
-Status: 81%
+Status: 82%
 
 Apps e prioridades:
 - `all-in-one-user`: cadastro, wallet, busca, compra, delivery, jobs.
@@ -265,10 +265,16 @@ Apps e prioridades:
   `all-in-one-mobility` agora tambem possuem shells React/Vite dedicados,
   com jornada prioritaria, contratos API Hub visiveis, package name proprio e
   base para Playwright desktop/mobile.
+- Esses quatro shells usam `VITE_API_HUB_URL`, proxy Vite local e rotas vivas
+  do API Hub como `/riders/resources/rider_profiles`,
+  `/services/resources/providers`, `/health/resources/patients` e
+  `/mobility/resources/rides`, preservando fallback visual quando o hub nao
+  estiver rodando.
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
-- Ligar os apps restantes aos endpoints FastAPI com o mesmo nivel de integracao ja validado em Valley.
+- Trocar os fallbacks visuais dos shells fora Valley por cenarios Playwright
+  com API Hub vivo e fixtures de backend.
 - Expandir Playwright E2E por jornada para alem da trilha Valley; as jornadas contratuais locais
   `identity -> wallet -> marketplace order`, `business -> jobs -> candidate access`,
   Delivery, Riders, Services, Mobility e Health ja estao cobertas por pytest.
@@ -276,11 +282,11 @@ Pendencias:
   estao cobertas por pytest contratual.
 
 Proximos passos naturais:
-1. Conectar os shells `all-in-one-riders`, `all-in-one-services`,
-   `all-in-one-health` e `all-in-one-mobility` aos endpoints vivos do API Hub.
+1. Criar Playwright desktop/mobile para `all-in-one-riders`,
+   `all-in-one-services`, `all-in-one-health` e `all-in-one-mobility`.
 2. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
-3. Expandir as jornadas Playwright desktop/mobile para os apps restantes.
-4. Rodar testes E2E desktop/mobile.
+3. Rodar testes E2E desktop/mobile com API Hub vivo ou rotas interceptadas.
+4. Registrar evidencias por app em `STATUS.md`.
 
 ### Fase 5 - Integracoes externas homologadas
 

@@ -1,5 +1,44 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-11 Conexao API Hub Nos Shells Fora Valley
+
+### Concluido neste ciclo
+
+- `all-in-one-riders`, `all-in-one-services`, `all-in-one-health` e
+  `all-in-one-mobility` agora consultam rotas proxy reais do API Hub usando
+  `VITE_API_HUB_URL`.
+- Cada shell preserva fallback visual quando o API Hub nao esta rodando, mas
+  tenta buscar registros em rotas como `/riders/resources/rider_profiles`,
+  `/services/resources/providers`, `/health/resources/patients` e
+  `/mobility/resources/rides`.
+- Os quatro `vite.config.ts` ganharam proxies locais para os modulos usados em
+  cada jornada, apontando para `http://localhost:8100`.
+- `config/apps/frontend_journeys.json` marca os quatro shells como
+  `api_hub_connected_shell`, e `tests/test_frontend_journeys_contract.py`
+  verifica `VITE_API_HUB_URL`, `fetch`, rotas declaradas e proxies Vite.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py`: 16 aprovados.
+- `python3 -m json.tool` em `config/apps/frontend_journeys.json` e nos
+  `package.json` dos quatro shells conectados: aprovado.
+- `python3 -m py_compile tests/test_frontend_journeys_contract.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `git diff --check`: aprovado.
+- Build NPM dos quatro shells nao foi executado neste checkout porque os
+  diretorios ainda nao possuem `node_modules` locais instalados.
+
+### Pendencias rastreadas
+
+- Criar Playwright desktop/mobile para os quatro shells fora Valley usando API
+  Hub vivo ou interceptacao de rotas.
+- Substituir fallback visual por estado de carregamento/testes E2E completos
+  quando houver fixtures de backend por app.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-11 Shells React Dedicados Fora Valley
 
 ### Concluido neste ciclo

@@ -37,8 +37,8 @@
       "persona": "Entregador e motorista parceiro",
       "priority_journey": "candidatura -> documento -> veiculo -> entrega/corrida -> ganhos",
       "api_modules": ["riders", "delivery", "mobility", "finance", "identity"],
-      "api_hub_routes": ["/gateway/riders", "/gateway/delivery", "/gateway/mobility", "/gateway/finance"],
-      "shell_status": "journey_react_shell",
+      "api_hub_routes": ["/riders/resources/rider_profiles", "/riders/resources/vehicles", "/delivery/resources/delivery_requests", "/mobility/resources/rides"],
+      "shell_status": "api_hub_connected_shell",
       "coverage": ["pytest:operational_journeys"],
       "next_e2e": "Levar candidatura -> aprovacao -> entrega para Playwright desktop/mobile."
     },
@@ -50,8 +50,8 @@
       "persona": "Prestador de servicos",
       "priority_journey": "prestador -> visita -> orcamento -> contrato -> evidencia",
       "api_modules": ["services", "finance", "identity", "document"],
-      "api_hub_routes": ["/gateway/services", "/gateway/finance", "/gateway/document"],
-      "shell_status": "journey_react_shell",
+      "api_hub_routes": ["/services/resources/providers", "/services/resources/service_contracts", "/finance/resources/escrows", "/document/resources/documents"],
+      "shell_status": "api_hub_connected_shell",
       "coverage": ["pytest:operational_journeys"],
       "next_e2e": "Levar visita -> orcamento -> contrato -> evidencia para Playwright desktop/mobile."
     },
@@ -63,8 +63,8 @@
       "persona": "Paciente e profissional de saude",
       "priority_journey": "paciente -> agenda -> prontuario -> consulta",
       "api_modules": ["health", "identity", "document"],
-      "api_hub_routes": ["/gateway/health", "/gateway/identity", "/gateway/document"],
-      "shell_status": "journey_react_shell",
+      "api_hub_routes": ["/health/resources/patients", "/health/resources/appointments", "/identity/resources/consent_records", "/document/resources/documents"],
+      "shell_status": "api_hub_connected_shell",
       "coverage": ["pytest:operational_journeys"],
       "next_e2e": "Levar consentimento -> agenda -> consulta para Playwright desktop/mobile."
     },
@@ -76,8 +76,8 @@
       "persona": "Passageiro e operador de mobilidade",
       "priority_journey": "corrida -> ticket -> QR/NFC -> historico",
       "api_modules": ["mobility", "riders", "finance", "identity"],
-      "api_hub_routes": ["/gateway/mobility", "/gateway/riders", "/gateway/finance"],
-      "shell_status": "journey_react_shell",
+      "api_hub_routes": ["/mobility/resources/rides", "/mobility/resources/tickets", "/riders/resources/rider_profiles", "/finance/resources/wallets"],
+      "shell_status": "api_hub_connected_shell",
       "coverage": ["pytest:operational_journeys"],
       "next_e2e": "Levar corrida -> ticket -> validacao QR/NFC para Playwright desktop/mobile."
     },

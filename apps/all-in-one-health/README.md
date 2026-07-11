@@ -8,7 +8,9 @@ consulta.
 ## Contrato operacional
 
 - Pacote: `@all-in-one/health-shell`.
-- Fonte de API futura: `VITE_API_HUB_URL`.
-- Endpoints planejados: `/gateway/health`, `/gateway/identity` e
-  `/gateway/document`.
+- Fonte de API: `VITE_API_HUB_URL`.
+- Endpoints conectados via API Hub: `/health/resources/patients`,
+  `/health/resources/appointments`, `/identity/resources/consent_records` e
+  `/document/resources/documents`.
+- Fallback local preserva a tela quando o API Hub nao estiver rodando.
 - Evidencia versionada: `config/apps/frontend_journeys.json`.

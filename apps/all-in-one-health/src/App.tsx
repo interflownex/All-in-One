@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 const journey = [
   'Consentimento LGPD',
   'Paciente e profissional',
@@ -6,9 +8,69 @@ const journey = [
   'Consulta e retorno',
 ]
 
-const endpoints = ['/gateway/health', '/gateway/identity', '/gateway/document']
+const API_HUB_URL = import.meta.env.VITE_API_HUB_URL ?? ''
+
+const endpoints = [
+  { label: 'Pacientes', path: '/health/resources/patients', fallback: '2 pacientes protegidos' },
+  { label: 'Agendas', path: '/health/resources/appointments', fallback: '3 consultas previstas' },
+  { label: 'Consentimentos', path: '/identity/resources/consent_records', fallback: '1 consentimento pendente' },
+  { label: 'Documentos', path: '/document/resources/documents', fallback: '2 documentos clinicos' },
+]
+
+type ApiCard = {
+  label: string
+  path: string
+  status: 'online' | 'fallback'
+  summary: string
+}
+
+async function fetchEndpoint(path: string) {
+  if (!API_HUB_URL) throw new Error('VITE_API_HUB_URL ausente')
+  const response = await fetch(`${API_HUB_URL}${path}?limit=3`)
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  const payload = await response.json()
+  return Array.isArray(payload?.data) ? payload.data : []
+}
 
 function App() {
+  const [cards, setCards] = useState<ApiCard[]>(
+    endpoints.map(endpoint => ({
+      label: endpoint.label,
+      path: endpoint.path,
+      status: 'fallback',
+      summary: endpoint.fallback,
+    })),
+  )
+
+  useEffect(() => {
+    let active = true
+    Promise.all(
+      endpoints.map(async endpoint => {
+        try {
+          const data = await fetchEndpoint(endpoint.path)
+          return {
+            label: endpoint.label,
+            path: endpoint.path,
+            status: 'online' as const,
+            summary: `${data.length} registro(s) retornado(s) pelo API Hub`,
+          }
+        } catch {
+          return {
+            label: endpoint.label,
+            path: endpoint.path,
+            status: 'fallback' as const,
+            summary: endpoint.fallback,
+          }
+        }
+      }),
+    ).then(nextCards => {
+      if (active) setCards(nextCards)
+    })
+    return () => {
+      active = false
+    }
+  }, [])
+
   return (
     <main className="shell">
       <section className="hero">
@@ -25,9 +87,16 @@ function App() {
       </section>
 
       <section className="panel">
-        <h2>Contratos API Hub</h2>
-        <div className="chips">
-          {endpoints.map(endpoint => <code key={endpoint}>{endpoint}</code>)}
+        <h2>Conexao API Hub</h2>
+        <div className="api-grid">
+          {cards.map(card => (
+            <article className="api-card" key={card.path}>
+              <strong>{card.label}</strong>
+              <code>{card.path}</code>
+              <span className={card.status}>{card.status === 'online' ? 'online' : 'fallback'}</span>
+              <p>{card.summary}</p>
+            </article>
+          ))}
         </div>
       </section>
     </main>

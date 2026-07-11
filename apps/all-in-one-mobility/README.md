@@ -8,7 +8,9 @@ historico.
 ## Contrato operacional
 
 - Pacote: `@all-in-one/mobility-shell`.
-- Fonte de API futura: `VITE_API_HUB_URL`.
-- Endpoints planejados: `/gateway/mobility`, `/gateway/riders` e
-  `/gateway/finance`.
+- Fonte de API: `VITE_API_HUB_URL`.
+- Endpoints conectados via API Hub: `/mobility/resources/rides`,
+  `/mobility/resources/tickets`, `/riders/resources/rider_profiles` e
+  `/finance/resources/wallets`.
+- Fallback local preserva a tela quando o API Hub nao estiver rodando.
 - Evidencia versionada: `config/apps/frontend_journeys.json`.

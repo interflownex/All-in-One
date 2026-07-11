@@ -65,10 +65,18 @@ h1 {
   color: #d6d0c6;
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
+.api-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 12px;
+}
+
+.api-card {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  padding: 16px;
 }
 
 code {
@@ -76,6 +84,27 @@ code {
   background: #ffc257;
   color: #111318;
   padding: 10px 14px;
+  white-space: normal;
+}
+
+.online,
+.fallback {
+  width: fit-content;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.online {
+  background: #d9f7e4;
+  color: #145c32;
+}
+
+.fallback {
+  background: #fff1c2;
+  color: #795100;
 }
 
 @media (max-width: 720px) {

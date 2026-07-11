@@ -70,10 +70,37 @@ def test_frontend_shell_package_names_match_contract() -> None:
         assert lock["name"] == package_name, app["slug"]
         assert lock["packages"][""]["name"] == package_name, app["slug"]
         assert app["shell_status"] in {
+            "api_hub_connected_shell",
             "generated_react_shell",
             "functional_react_shell",
             "journey_react_shell",
         }, app["slug"]
+
+
+def test_phase_4_shells_are_wired_to_declared_api_hub_routes() -> None:
+    connected_shells = {
+        "all-in-one-riders",
+        "all-in-one-services",
+        "all-in-one-health",
+        "all-in-one-mobility",
+    }
+
+    for app in load_contract()["apps"]:
+        if app["slug"] not in connected_shells:
+            continue
+
+        shell_dir = ROOT / app["shell_dir"]
+        app_source = (shell_dir / "src" / "App.tsx").read_text(encoding="utf-8")
+        vite_config = (shell_dir / "vite.config.ts").read_text(encoding="utf-8")
+
+        assert app["shell_status"] == "api_hub_connected_shell", app["slug"]
+        assert "VITE_API_HUB_URL" in app_source, app["slug"]
+        assert "fetch(" in app_source, app["slug"]
+
+        for route in app["api_hub_routes"]:
+            assert route in app_source, f"{app['slug']} nao usa {route}"
+            proxy_prefix = "/" + route.strip("/").split("/", 1)[0]
+            assert proxy_prefix in vite_config, f"{app['slug']} sem proxy {proxy_prefix}"
 
 
 def test_frontend_contract_links_to_existing_e2e_and_pytest_evidence() -> None:
