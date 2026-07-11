@@ -41,7 +41,7 @@ $images | ForEach-Object {
     $module = ($local -split "/")[-1] -replace ":latest", ""
     $cleanName = $module -replace "all-in-one-", ""
     $remote = "andersoninterflow/all-in-one-${cleanName}"
-    
+
     docker tag "$local" "$remote:latest" 2>$null
     if ($?) {
         Write-Host "   ✅ $module" -ForegroundColor Green
@@ -57,9 +57,9 @@ $images | ForEach-Object {
     $module = ($_ -split "/")[-1] -replace ":latest", ""
     $cleanName = $module -replace "all-in-one-", ""
     $remote = "andersoninterflow/all-in-one-${cleanName}:latest"
-    
+
     Write-Host "   📤 all-in-one-$module..." -ForegroundColor Cyan -NoNewline
-    
+
     $output = docker push "$remote" 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Host " ✅" -ForegroundColor Green
@@ -77,3 +77,12 @@ Write-Host ("="*60) -ForegroundColor Cyan
 Write-Host "✅ Imagens processadas: $pushCount" -ForegroundColor Green
 Write-Host "🔗 Repositório: https://hub.docker.com/u/andersoninterflow" -ForegroundColor Blue
 Write-Host "`n"
+
+# Etapa 5: Sincronizar com Git
+Write-Host "🔄 Etapa 5: Sincronizando com o repositorio Git..." -ForegroundColor Yellow
+$activity = "chore(docker): tag and push images to Docker Hub ($pushCount pushed)"
+try {
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "scripts/git_auto_sync.ps1" -Activity $activity
+} catch {
+    Write-Host "   ⚠️  Falha na sincronizacao automatica com o Git. Execute manualmente se necessario." -ForegroundColor Yellow
+}

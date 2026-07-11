@@ -1,5 +1,36 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-11 Higiene De Scripts Windows
+
+### Concluido neste ciclo
+
+- A alteracao local em `scripts/setup_cloudflare_stream_tunnel.ps1` foi
+  realinhada ao contrato documentado: o servico Cloudflared volta a ser marcado
+  como `StartupType Automatic`, reiniciado de forma previsivel e finaliza
+  imprimindo hostname, origin, tunnel name e tunnel id.
+- A alteracao local em `scripts/docker_complete_pipeline.ps1` foi preservada
+  como etapa 5, executando `scripts/git_auto_sync.ps1` apos tag/push das imagens
+  Docker para manter a politica de sincronizacao automatica.
+- Criado `tests/test_windows_script_contracts.py` para impedir regressao desses
+  contratos operacionais em scripts PowerShell usados no Windows.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_windows_script_contracts.py tests/test_mongodb_contract.py tests/test_docker_context_hygiene.py`: 8 aprovados.
+- `python3 -m py_compile tests/test_windows_script_contracts.py tests/test_mongodb_contract.py scripts/validate_repository.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `./.venv/bin/python -m bandit -r modules/shared scripts workers -q -ll`: aprovado.
+- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 362 aprovados, 58 ignorados.
+
+### Pendencias rastreadas
+
+- Validacao funcional desses scripts permanece dependente de ambiente Windows
+  com Docker Desktop, PowerShell e Cloudflared instalados.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-10 Contrato MongoDB NoSQL
 
 ### Concluido neste ciclo
