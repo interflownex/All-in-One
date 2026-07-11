@@ -32,54 +32,54 @@
     {
       "slug": "all-in-one-riders",
       "app_dir": "apps/all-in-one-riders",
-      "shell_dir": null,
-      "package_name": null,
+      "shell_dir": "apps/all-in-one-riders",
+      "package_name": "@all-in-one/riders-shell",
       "persona": "Entregador e motorista parceiro",
       "priority_journey": "candidatura -> documento -> veiculo -> entrega/corrida -> ganhos",
       "api_modules": ["riders", "delivery", "mobility", "finance", "identity"],
       "api_hub_routes": ["/gateway/riders", "/gateway/delivery", "/gateway/mobility", "/gateway/finance"],
-      "shell_status": "contract_defined",
+      "shell_status": "journey_react_shell",
       "coverage": ["pytest:operational_journeys"],
-      "next_e2e": "Criar shell React e levar candidatura -> aprovacao -> entrega para Playwright."
+      "next_e2e": "Levar candidatura -> aprovacao -> entrega para Playwright desktop/mobile."
     },
     {
       "slug": "all-in-one-services",
       "app_dir": "apps/all-in-one-services",
-      "shell_dir": null,
-      "package_name": null,
+      "shell_dir": "apps/all-in-one-services",
+      "package_name": "@all-in-one/services-shell",
       "persona": "Prestador de servicos",
       "priority_journey": "prestador -> visita -> orcamento -> contrato -> evidencia",
       "api_modules": ["services", "finance", "identity", "document"],
       "api_hub_routes": ["/gateway/services", "/gateway/finance", "/gateway/document"],
-      "shell_status": "contract_defined",
+      "shell_status": "journey_react_shell",
       "coverage": ["pytest:operational_journeys"],
-      "next_e2e": "Criar shell React e levar visita -> orcamento -> contrato -> evidencia para Playwright."
+      "next_e2e": "Levar visita -> orcamento -> contrato -> evidencia para Playwright desktop/mobile."
     },
     {
       "slug": "all-in-one-health",
       "app_dir": "apps/all-in-one-health",
-      "shell_dir": null,
-      "package_name": null,
+      "shell_dir": "apps/all-in-one-health",
+      "package_name": "@all-in-one/health-shell",
       "persona": "Paciente e profissional de saude",
       "priority_journey": "paciente -> agenda -> prontuario -> consulta",
       "api_modules": ["health", "identity", "document"],
       "api_hub_routes": ["/gateway/health", "/gateway/identity", "/gateway/document"],
-      "shell_status": "contract_defined",
+      "shell_status": "journey_react_shell",
       "coverage": ["pytest:operational_journeys"],
-      "next_e2e": "Criar shell React e levar consentimento -> agenda -> consulta para Playwright."
+      "next_e2e": "Levar consentimento -> agenda -> consulta para Playwright desktop/mobile."
     },
     {
       "slug": "all-in-one-mobility",
       "app_dir": "apps/all-in-one-mobility",
-      "shell_dir": null,
-      "package_name": null,
+      "shell_dir": "apps/all-in-one-mobility",
+      "package_name": "@all-in-one/mobility-shell",
       "persona": "Passageiro e operador de mobilidade",
       "priority_journey": "corrida -> ticket -> QR/NFC -> historico",
       "api_modules": ["mobility", "riders", "finance", "identity"],
       "api_hub_routes": ["/gateway/mobility", "/gateway/riders", "/gateway/finance"],
-      "shell_status": "contract_defined",
+      "shell_status": "journey_react_shell",
       "coverage": ["pytest:operational_journeys"],
-      "next_e2e": "Criar shell React e levar corrida -> ticket -> validacao QR/NFC para Playwright."
+      "next_e2e": "Levar corrida -> ticket -> validacao QR/NFC para Playwright desktop/mobile."
     },
     {
       "slug": "valley",

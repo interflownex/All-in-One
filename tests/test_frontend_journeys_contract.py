@@ -52,15 +52,16 @@ def test_frontend_shell_package_names_match_contract() -> None:
     for app in load_contract()["apps"]:
         shell_dir = app["shell_dir"]
         package_name = app["package_name"]
-        if shell_dir is None:
-            assert package_name is None, app["slug"]
-            assert app["shell_status"] == "contract_defined", app["slug"]
-            continue
-
         package_json = ROOT / shell_dir / "package.json"
         package_lock = ROOT / shell_dir / "package-lock.json"
+        app_entry = ROOT / shell_dir / "src" / "App.tsx"
+        eslint_config = ROOT / shell_dir / "eslint.config.js"
+        html_entry = ROOT / shell_dir / "index.html"
         assert package_json.is_file(), app["slug"]
         assert package_lock.is_file(), app["slug"]
+        assert app_entry.is_file(), app["slug"]
+        assert eslint_config.is_file(), app["slug"]
+        assert html_entry.is_file(), app["slug"]
 
         package = json.loads(package_json.read_text(encoding="utf-8"))
         lock = json.loads(package_lock.read_text(encoding="utf-8"))
@@ -68,7 +69,11 @@ def test_frontend_shell_package_names_match_contract() -> None:
         assert package["name"] == package_name, app["slug"]
         assert lock["name"] == package_name, app["slug"]
         assert lock["packages"][""]["name"] == package_name, app["slug"]
-        assert app["shell_status"] in {"generated_react_shell", "functional_react_shell"}, app["slug"]
+        assert app["shell_status"] in {
+            "generated_react_shell",
+            "functional_react_shell",
+            "journey_react_shell",
+        }, app["slug"]
 
 
 def test_frontend_contract_links_to_existing_e2e_and_pytest_evidence() -> None:

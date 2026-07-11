@@ -1,0 +1,85 @@
+:root {
+  color: #f5f1e9;
+  background: #111318;
+  font-family: "Aptos", "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+.shell {
+  min-height: 100vh;
+  padding: 48px;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(255, 194, 87, 0.26), transparent 24rem),
+    radial-gradient(circle at 90% 10%, rgba(78, 132, 255, 0.22), transparent 22rem),
+    #111318;
+}
+
+.hero {
+  max-width: 940px;
+}
+
+.eyebrow {
+  color: #ffc257;
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(2.25rem, 5vw, 5.4rem);
+  line-height: 0.96;
+  margin: 0;
+}
+
+.hero p:not(.eyebrow) {
+  max-width: 690px;
+  color: #d6d0c6;
+  font-size: 1.14rem;
+  line-height: 1.65;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin: 42px 0;
+}
+
+.cards article,
+.panel {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 24px;
+}
+
+.cards h2 {
+  color: #ffc257;
+}
+
+.cards p {
+  color: #d6d0c6;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+code {
+  border-radius: 999px;
+  background: #ffc257;
+  color: #111318;
+  padding: 10px 14px;
+}
+
+@media (max-width: 720px) {
+  .shell {
+    padding: 28px 18px;
+  }
+}

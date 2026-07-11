@@ -2,6 +2,13 @@
 
 Pacientes, profissionais, agenda, prontuario e telemedicina.
 
-Esta aplicacao consumira o API Hub com o mesmo All-in-One ID. O baseline
-fixa as responsabilidades e contratos; a interface e a jornada visual
-serao implementadas sobre os endpoints versionados dos modulos.
+Shell React/Vite dedicado para a jornada paciente -> agenda -> prontuario ->
+consulta.
+
+## Contrato operacional
+
+- Pacote: `@all-in-one/health-shell`.
+- Fonte de API futura: `VITE_API_HUB_URL`.
+- Endpoints planejados: `/gateway/health`, `/gateway/identity` e
+  `/gateway/document`.
+- Evidencia versionada: `config/apps/frontend_journeys.json`.

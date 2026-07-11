@@ -2,6 +2,13 @@
 
 Candidatura, veiculos, entregas, corridas, ganhos e ocorrencias.
 
-Esta aplicacao consumira o API Hub com o mesmo All-in-One ID. O baseline
-fixa as responsabilidades e contratos; a interface e a jornada visual
-serao implementadas sobre os endpoints versionados dos modulos.
+Shell React/Vite dedicado para a jornada candidatura -> documento -> veiculo
+-> entrega/corrida -> ganhos.
+
+## Contrato operacional
+
+- Pacote: `@all-in-one/riders-shell`.
+- Fonte de API futura: `VITE_API_HUB_URL`.
+- Endpoints planejados: `/gateway/riders`, `/gateway/delivery`,
+  `/gateway/mobility` e `/gateway/finance`.
+- Evidencia versionada: `config/apps/frontend_journeys.json`.

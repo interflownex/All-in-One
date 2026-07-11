@@ -1,5 +1,40 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-11 Shells React Dedicados Fora Valley
+
+### Concluido neste ciclo
+
+- Criados shells React/Vite dedicados para `all-in-one-riders`,
+  `all-in-one-services`, `all-in-one-health` e `all-in-one-mobility`.
+- Cada shell agora possui `package.json`, `package-lock.json`, `index.html`,
+  `eslint.config.js`, `tsconfig`, `vite.config.ts`, `src/App.tsx` e
+  `src/index.css`, com jornada prioritaria e contratos API Hub visiveis.
+- `config/apps/frontend_journeys.json` foi atualizado para remover
+  `shell_dir: null` dos quatro apps e apontar para pacotes persistentes:
+  `@all-in-one/riders-shell`, `@all-in-one/services-shell`,
+  `@all-in-one/health-shell` e `@all-in-one/mobility-shell`.
+- `tests/test_frontend_journeys_contract.py` agora exige entrada HTML,
+  `eslint.config.js` e `src/App.tsx` para todos os 9 shells priorizados da
+  Fase 4.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py`: 15 aprovados.
+- `python3 -m json.tool` em `config/apps/frontend_journeys.json` e nos
+  `package*.json` dos quatro shells novos: aprovado.
+- `python3 -m py_compile tests/test_frontend_journeys_contract.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Conectar os quatro shells novos aos endpoints vivos do API Hub.
+- Expandir Playwright desktop/mobile fora da trilha Valley usando o contrato
+  `config/apps/frontend_journeys.json` como fila autoritativa.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-11 Contrato Frontend Da Fase 4
 
 ### Concluido neste ciclo

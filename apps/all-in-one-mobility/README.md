@@ -2,6 +2,13 @@
 
 Corridas, transporte publico, tarifas, tickets, QR Code e NFC.
 
-Esta aplicacao consumira o API Hub com o mesmo All-in-One ID. O baseline
-fixa as responsabilidades e contratos; a interface e a jornada visual
-serao implementadas sobre os endpoints versionados dos modulos.
+Shell React/Vite dedicado para a jornada corrida -> ticket -> QR/NFC ->
+historico.
+
+## Contrato operacional
+
+- Pacote: `@all-in-one/mobility-shell`.
+- Fonte de API futura: `VITE_API_HUB_URL`.
+- Endpoints planejados: `/gateway/mobility`, `/gateway/riders` e
+  `/gateway/finance`.
+- Evidencia versionada: `config/apps/frontend_journeys.json`.
