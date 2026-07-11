@@ -1,5 +1,35 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-11 Timeout Do Compose Health CI
+
+### Concluido neste ciclo
+
+- `.github/workflows/compose-health.yml` recebeu `timeout-minutes: 20` no job
+  `compose-health`.
+- O timeout do job fica acima da janela do validador
+  `scripts/validate_compose_health.py --timeout-seconds 600`, mas impede que o
+  workflow fique preso indefinidamente em setup/build/down do Docker Compose.
+- `tests/test_compose_health_gate.py` passou a cobrir a existencia do timeout
+  junto com a chamada ao gate Python.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_compose_health_gate.py tests/test_git_sync_gate.py`: 7 aprovados.
+- `python3 -m py_compile tests/test_compose_health_gate.py scripts/validate_compose_health.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `docker compose -f infra/docker/docker-compose.yml config --quiet`: aprovado.
+- `./.venv/bin/python -m bandit -r modules/shared scripts workers -q -ll`: aprovado.
+- `./.venv/bin/python -m pytest -q --ignore=tests/e2e`: 364 aprovados, 58 ignorados.
+
+### Pendencias rastreadas
+
+- Observar a proxima execucao remota do `Docker Compose Health Gate`; se falhar,
+  usar os logs emitidos pelo gate para corrigir o servico pendente.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-11 Runbook De Incidentes Outbox
 
 ### Concluido neste ciclo

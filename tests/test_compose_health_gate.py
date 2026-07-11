@@ -34,6 +34,7 @@ def test_compose_health_gate_tracks_primary_fastapi_services() -> None:
 def test_compose_health_workflow_runs_python_gate_instead_of_sleep_only() -> None:
     workflow = (ROOT / ".github/workflows/compose-health.yml").read_text(encoding="utf-8")
 
+    assert "timeout-minutes: 20" in workflow
     assert (
         "python3 scripts/validate_compose_health.py --down-after --timeout-seconds 600 "
         "--probe-timeout-seconds 1"
