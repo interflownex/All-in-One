@@ -178,6 +178,12 @@ Nota operacional atual:
 - `Database #137` concluiu com sucesso no GitHub Actions, validando migrations,
   contrato DSN, os 25 stores tipados, matriz PostgreSQL viva, Jobs PostgreSQL e
   outbox RabbitMQ no PostgreSQL de servico do CI.
+- O traceback de Telegram em
+  `C:\Users\ereta\.codex\worktrees\VALLEY\scripts\valley_communication_bridge.py`
+  pertence a fluxo externo VALLEY e nao e requisito deste plano; a contenção
+  persistente fica em `scripts/stop_conflicting_valley_runtime.ps1`, que
+  desabilita a tarefa `ValleyCommunicationBridge` e encerra o processo
+  `valley_communication_bridge.py` quando necessario.
 
 ### Fase 3 - Eventos, RabbitMQ e observabilidade
 

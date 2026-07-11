@@ -19,6 +19,7 @@ function Write-Step {
 function Get-TargetProcesses {
     $patterns = @(
         '*\scripts\serve_valley_admin.py*',
+        '*\scripts\valley_communication_bridge.py*',
         '*\scripts\start_valley_admin_public.ps1*',
         '*\scripts\start_valley_localhost_run_public.ps1*',
         '*\scripts\ensure_valley_product_public.ps1*'

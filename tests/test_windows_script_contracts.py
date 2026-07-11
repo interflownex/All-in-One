@@ -21,3 +21,11 @@ def test_docker_complete_pipeline_runs_git_auto_sync_after_push() -> None:
     assert "Etapa 5: Sincronizando com o repositorio Git" in script
     assert "scripts/git_auto_sync.ps1" in script
     assert "chore(docker): tag and push images to Docker Hub" in script
+
+
+def test_stop_conflicting_valley_runtime_disables_communication_bridge() -> None:
+    script = (ROOT / "scripts" / "stop_conflicting_valley_runtime.ps1").read_text(encoding="utf-8")
+
+    assert "'ValleyCommunicationBridge'" in script
+    assert r"*\scripts\valley_communication_bridge.py*" in script
+    assert "Runtime conflitante do VALLEY desligado de forma persistente." in script

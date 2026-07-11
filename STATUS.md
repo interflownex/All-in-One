@@ -1,5 +1,36 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-11 Encerramento Persistente De Ponte VALLEY Externa
+
+### Concluido neste ciclo
+
+- O traceback `ssl.SSLEOFError` veio de
+  `C:\Users\ereta\.codex\worktrees\VALLEY\scripts\valley_communication_bridge.py`
+  ao tentar entregar mensagem no Telegram; essa ponte pertence a outro fluxo e
+  nao e requisito para o plano atual do `all-in-one`.
+- `scripts/stop_conflicting_valley_runtime.ps1` agora tambem encerra processos
+  ativos de `valley_communication_bridge.py`, alem de desabilitar a tarefa
+  agendada `ValleyCommunicationBridge`.
+- `tests/test_windows_script_contracts.py` bloqueia regressao desse contrato de
+  desligamento persistente.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_windows_script_contracts.py`: 3 aprovados.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Se o alerta reaparecer no Windows, executar
+  `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/stop_conflicting_valley_runtime.ps1`
+  em PowerShell administrativo no checkout Windows do `all-in-one`.
+- Nao reabrir o envio Telegram/VALLEY como pendencia do plano `all-in-one`,
+  salvo ordem explicita para operar o worktree `VALLEY`.
+
+### Git
+
+- Incremento em sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-11 Timeout Interno Do Compose Health
 
 ### Concluido neste ciclo
