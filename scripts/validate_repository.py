@@ -18,6 +18,7 @@ MULTI_AGENT_SYNC_POLICY = ROOT / "config" / "autonomy" / "multi_agent_sync_polic
 GOOGLE_INTEGRATIONS_POLICY = ROOT / "config" / "autonomy" / "google_integrations_policy.json"
 GOOGLE_CLOUD_PROFILE = ROOT / "config" / "cloud" / "google_cloud_profile.json"
 GOOGLE_CLOUD_INVENTORY = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
+APIGEE_API_HUB_PLAN = ROOT / "config" / "cloud" / "apigee_api_hub_plan.json"
 MONGODB_CONTRACT = ROOT / "config" / "database" / "mongodb_contract.json"
 STITCH_SYNC_WORKFLOW = ROOT / ".github" / "workflows" / "stitch-sync.yml"
 BRAND_IDENTITY = ROOT / "config" / "branding" / "brand_identity.json"
@@ -357,7 +358,14 @@ def main() -> int:
         if cloud_profile.get("enabled") is not True:
             fail("Perfil Google Cloud deve permanecer enabled=true.", errors)
         required_apis = set(cloud_profile.get("required_apis", []))
-        for required_api in {"aiplatform.googleapis.com", "alloydb.googleapis.com", "run.googleapis.com"}:
+        for required_api in {
+            "aiplatform.googleapis.com",
+            "alloydb.googleapis.com",
+            "apigee.googleapis.com",
+            "apihub.googleapis.com",
+            "cloudkms.googleapis.com",
+            "run.googleapis.com",
+        }:
             if required_api not in required_apis:
                 fail(f"Perfil Google Cloud deve habilitar {required_api}.", errors)
         safety = cloud_profile.get("safety", {})
@@ -382,6 +390,36 @@ def main() -> int:
             fail("Inventario Google Cloud deve declarar autoridade remota.", errors)
         if any(security.get(flag) is not False for flag in ["secrets_included", "api_key_values_included", "service_account_private_keys_included", "kms_key_material_included"]):
             fail("Inventario Google Cloud nao pode incluir segredos ou material criptografico.", errors)
+    if not APIGEE_API_HUB_PLAN.is_file():
+        fail("Plano Apigee API Hub ausente: config/cloud/apigee_api_hub_plan.json", errors)
+    else:
+        api_hub_plan = json.loads(APIGEE_API_HUB_PLAN.read_text(encoding="utf-8"))
+        host_project = api_hub_plan.get("host_project", {})
+        encryption = api_hub_plan.get("encryption", {})
+        service_identity = api_hub_plan.get("service_identity", {})
+        safety = api_hub_plan.get("safety", {})
+        if api_hub_plan.get("authority_mode") != "remote_state_is_authoritative":
+            fail("Plano Apigee API Hub deve respeitar estado remoto autoritativo.", errors)
+        if host_project.get("project_id") != "all-in-one-498012" or host_project.get("project_number") != "864981916504":
+            fail("Plano Apigee API Hub deve apontar para o projeto host all-in-one-498012/864981916504.", errors)
+        if api_hub_plan.get("location", {}).get("api_hub_location") != "southamerica-west1":
+            fail("Plano Apigee API Hub deve preservar a location southamerica-west1 do inventario.", errors)
+        if encryption.get("mode") != "customer_managed_encryption_key":
+            fail("Plano Apigee API Hub deve declarar CMEK para criptografia.", errors)
+        if encryption.get("secret_material_in_git") is not False or encryption.get("kms_key_resource_required_before_apply") is not True:
+            fail("Plano Apigee API Hub deve proibir material KMS no Git e exigir chave antes do apply.", errors)
+        if service_identity.get("email") != "service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com":
+            fail("Plano Apigee API Hub deve registrar a service identity informada.", errors)
+        expected_roles = {
+            "roles/cloudkms.cryptoKeyEncrypterDecrypter",
+            "roles/apihub.admin",
+            "roles/apihub.runtimeProjectServiceAgent",
+        }
+        if {grant.get("role") for grant in api_hub_plan.get("iam_grants", [])} != expected_roles:
+            fail("Plano Apigee API Hub deve declarar exatamente os roles IAM esperados.", errors)
+        for forbidden in ["allow_delete", "allow_billing_change", "allow_policy_bypass"]:
+            if safety.get(forbidden) is not False:
+                fail(f"Plano Apigee API Hub deve manter {forbidden}=false.", errors)
     if not PROVIDER_MATRIX.is_file():
         fail("Matriz de provedores ausente: config/integrations/provider_matrix.json", errors)
     else:

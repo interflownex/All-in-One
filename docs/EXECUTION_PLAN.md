@@ -19,7 +19,7 @@ Coordenada operacional atual:
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
 | Docker local | 98% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real, contexto Docker higienizado por `.dockerignore` e Docker DX persistente em `config/autonomy/docker_dx_policy.json` + `.env.docker-dx` | Falta validar Compose vivo neste host quando Docker Compose/Buildx responderem e acompanhar execucoes do gate em ambiente remoto. |
-| Apps/frontend | 91% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` e `all-in-one-business` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo e acoes reais Services/Mobility/Riders/Health, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta aprofundar interfaces funcionais reais e levar User/Business para API Hub vivo. |
+| Apps/frontend | 92% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` e `all-in-one-business` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo e acoes reais Services/Mobility/Riders/Health/Business, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta aprofundar interfaces funcionais reais e ampliar candidatura Jobs do consumidor para API Hub vivo. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
@@ -328,13 +328,17 @@ Apps e prioridades:
   `tests/e2e/test_all_in_one_business_shell.py`, percorrendo Companies, Catalog
   Offers, Job Postings, Applications e Resume Access Logs com rotas
   `/gateway/...` interceptadas.
+- `all-in-one-business` tambem possui cobertura Playwright viva no mesmo
+  arquivo, subindo API Hub e modulos FastAPI reais para Business e Jobs, com
+  acoes reais de aprovacao de empresa (`approved`), publicacao de vaga
+  (`published`) e registro auditavel de acesso a curriculo no frontend.
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
 - Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
   e acao real.
-- Levar `all-in-one-business` para API Hub vivo e acoes reais de empresa,
-  publicacao de vaga e acesso auditavel a curriculo.
+- Ampliar telas Business para acoes reais de ERP/relatorios e operacoes de
+  dominio alem de Jobs.
 - As jornadas contratuais locais `identity -> wallet -> marketplace order`,
   `business -> jobs -> candidate access`, Delivery, Riders, Services, Mobility e
   Health ja estao cobertas por pytest.
@@ -342,9 +346,10 @@ Pendencias:
   estao cobertas por pytest contratual.
 
 Proximos passos naturais:
-1. Evoluir `all-in-one-business` para API Hub vivo e acoes reais.
-2. Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
+1. Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
    e acao real.
+2. Ampliar telas Business para acoes reais de ERP/relatorios e operacoes de
+   dominio alem de Jobs.
 3. Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.
 4. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
 5. Registrar evidencias por app em `STATUS.md`.
@@ -380,12 +385,21 @@ Entregas ja existentes:
   Health, API Hub, Stock, Riders e Services.
 - Teste `tests/test_integration_sandbox_routes.py` valida autorizacao e contratos
   HTTP desses endpoints.
+- Plano persistente `config/cloud/apigee_api_hub_plan.json` registra o inicio do
+  fluxo Apigee/API Hub no Google Cloud: projeto host `all-in-one-498012`,
+  service identity `service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com`,
+  location `southamerica-west1`, CMEK obrigatorio antes de apply e grants IAM
+  esperados para KMS/API Hub.
 
 Proximos passos naturais:
-1. Conectar respostas sandbox a recursos reais/auditaveis dos modulos prioritarios.
-2. Separar sandbox/homologacao/producao.
-3. Implementar adapters por provider real com testes de contrato.
-4. Registrar evidencias de homologacao.
+1. Selecionar a chave KMS real do API Hub e aplicar, com `gcloud` autenticado,
+   a service identity e os grants IAM do plano Apigee/API Hub.
+2. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
+   host.
+3. Conectar respostas sandbox a recursos reais/auditaveis dos modulos prioritarios.
+4. Separar sandbox/homologacao/producao.
+5. Implementar adapters por provider real com testes de contrato.
+6. Registrar evidencias de homologacao.
 
 ### Fase 6 - Seguranca, compliance e producao
 

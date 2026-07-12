@@ -1,0 +1,78 @@
+{
+  "version": "2026-07-12",
+  "language": "pt-BR",
+  "provider": "google_cloud",
+  "product": "apigee_api_hub",
+  "status": "desired_state_registered",
+  "authority_mode": "remote_state_is_authoritative",
+  "source": {
+    "requested_flow": "APIs > Location > Register host project > Encryption > Service identity",
+    "official_docs": [
+      "https://docs.cloud.google.com/apigee/docs/apihub/provision",
+      "https://docs.cloud.google.com/apigee/docs/apihub/provision-cli",
+      "https://docs.cloud.google.com/iam/docs/roles-permissions/cloudkms"
+    ]
+  },
+  "host_project": {
+    "project_id": "all-in-one-498012",
+    "project_number": "864981916504",
+    "register_host_project": true
+  },
+  "location": {
+    "api_hub_location": "southamerica-west1",
+    "default_google_cloud_region": "southamerica-east1",
+    "note": "Inventario autoritativo ja registra uma ApiHubInstance ativa em southamerica-west1."
+  },
+  "encryption": {
+    "mode": "customer_managed_encryption_key",
+    "kms_key_resource": null,
+    "kms_key_resource_required_before_apply": true,
+    "allowed_inventory_keys": [
+      "projects/all-in-one-498012/locations/southamerica-east1/keyRings/Github/cryptoKeys/Software",
+      "projects/all-in-one-498012/locations/southamerica-east1/keyRings/Github/cryptoKeys/gitHub"
+    ],
+    "secret_material_in_git": false
+  },
+  "service_identity": {
+    "email": "service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com",
+    "service": "apihub.googleapis.com",
+    "create_if_missing_command": "gcloud beta services identity create --service=apihub.googleapis.com --project=all-in-one-498012"
+  },
+  "iam_grants": [
+    {
+      "role": "roles/cloudkms.cryptoKeyEncrypterDecrypter",
+      "resource_type": "cloudkms.googleapis.com/CryptoKey",
+      "resource": "${encryption.kms_key_resource}",
+      "principal": "serviceAccount:service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com",
+      "purpose": "Permitir que o API hub criptografe e descriptografe dados com a chave KMS selecionada."
+    },
+    {
+      "role": "roles/apihub.admin",
+      "resource_type": "cloudresourcemanager.googleapis.com/Project",
+      "resource": "projects/all-in-one-498012",
+      "principal": "serviceAccount:service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com",
+      "purpose": "Permitir administracao do API hub no projeto host conforme fluxo de service identity."
+    },
+    {
+      "role": "roles/apihub.runtimeProjectServiceAgent",
+      "resource_type": "cloudresourcemanager.googleapis.com/Project",
+      "resource": "projects/all-in-one-498012",
+      "principal": "serviceAccount:service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com",
+      "purpose": "Permitir ao runtime project service agent operar chamadas necessarias do API hub."
+    }
+  ],
+  "apigee_import": {
+    "enabled": true,
+    "host_project_import_allowed": true,
+    "purpose": "Permitir importacao automatica dos proxies da Apigee do projeto host para o API hub."
+  },
+  "safety": {
+    "requires_authenticated_gcloud": true,
+    "requires_explicit_project": true,
+    "requires_import_before_change": true,
+    "allow_delete": false,
+    "allow_billing_change": false,
+    "allow_policy_bypass": false,
+    "do_not_store_credentials": true
+  }
+}

@@ -70,3 +70,24 @@ def test_all_in_one_business_shell_keeps_mobile_jobs_access_reachable(
     expect(page.locator("h1")).to_contain_text("Resume Access Logs")
     expect(page.get_by_text("Acesso Curriculo Playwright")).to_be_visible(timeout=10000)
     expect(page.get_by_placeholder("Buscar em Resume Access Logs...")).to_be_visible()
+
+
+def test_all_in_one_business_shell_runs_live_api_hub_actions(
+    page: Page, all_in_one_business_live_server: str
+) -> None:
+    page.goto(f"{all_in_one_business_live_server}/business/companies", wait_until="domcontentloaded")
+    expect(page.get_by_text("Empresa Business Playwright")).to_be_visible(timeout=10000)
+    page.get_by_role("button", name="Aprovar empresa").click()
+    expect(page.get_by_text("Empresa aprovada no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_live_server}/jobs/jobpostings", wait_until="domcontentloaded")
+    expect(page.get_by_text("Vaga Playwright")).to_be_visible(timeout=10000)
+    page.get_by_role("button", name="Publicar vaga").click()
+    expect(page.get_by_text("Vaga publicada no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("published")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_live_server}/jobs/resumeaccesslogs", wait_until="domcontentloaded")
+    page.get_by_role("button", name="Registrar acesso a currículo").click()
+    expect(page.get_by_text("Acesso a curriculo registrado no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("triagem para vaga publicada via Business shell")).to_be_visible(timeout=10000)

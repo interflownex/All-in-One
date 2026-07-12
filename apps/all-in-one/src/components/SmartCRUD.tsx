@@ -106,7 +106,12 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
           }),
         });
         if (!response.ok) {
-          throw new Error(`Pagamento sandbox retornou HTTP ${response.status}.`);
+          const detail = await response.json().catch(() => null);
+          throw new Error(
+            detail?.detail
+              ? `Pagamento sandbox retornou HTTP ${response.status}: ${detail.detail}`
+              : `Pagamento sandbox retornou HTTP ${response.status}.`,
+          );
         }
         const paid = await response.json();
         setData((items) =>

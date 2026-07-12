@@ -70,6 +70,7 @@ def test_frontend_shell_package_names_match_contract() -> None:
         assert lock["name"] == package_name, app["slug"]
         assert lock["packages"][""]["name"] == package_name, app["slug"]
         assert app["shell_status"] in {
+            "api_hub_live_actions",
             "api_hub_connected_shell",
             "generated_react_shell",
             "functional_react_shell",

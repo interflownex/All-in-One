@@ -81,6 +81,7 @@ def start_python_http_server(
     server_url = f"http://127.0.0.1:{port}"
     process_env = os.environ.copy()
     process_env.update(env)
+    startup_timeout = int(process_env.get("FASTAPI_START_TIMEOUT_SECONDS", "120"))
     process = subprocess.Popen(
         [
             sys.executable,
@@ -97,9 +98,9 @@ def start_python_http_server(
         stderr=subprocess.DEVNULL,
         env=process_env,
     )
-    if not wait_for_url(f"{server_url}{health_path}", timeout=60):
+    if not wait_for_url(f"{server_url}{health_path}", timeout=startup_timeout):
         process.terminate()
-        raise RuntimeError(f"Servidor FastAPI nao respondeu corretamente em {server_url}.")
+        raise RuntimeError(f"Servidor FastAPI nao respondeu corretamente em {server_url} em {startup_timeout}s.")
     return process, server_url
 
 
@@ -157,11 +158,32 @@ PHASE4_ROUTE_PAYLOADS = {
         "total_brl": "99.90",
         "items": [{"sku": "SKU-PHASE4", "quantity": 1, "unit_brl": "99.90"}],
     },
+    ("business", "companies"): {
+        "cnpj": "12345678000195",
+        "root_cnpj": "12345678",
+        "legal_name": "Empresa Business Playwright",
+        "legal_representative_user_id": PHASE4_ACTOR_ID,
+    },
+    ("business", "catalog_offers"): {
+        "title": "Oferta Business Playwright",
+        "offer_type": "subscription",
+        "consumer_category": "professional",
+        "company_type": "recruiter",
+        "company_category": "jobs",
+        "business_activity_id": "activity-phase4-jobs",
+        "source_module": "jobs",
+        "source_resource_type": "job_postings",
+        "price_brl": "199.90",
+    },
     ("jobs", "job_postings"): {
         "company_id": PHASE4_BUSINESS_ID,
         "company_status": "active",
         "title": "Vaga Playwright",
-        "description": "Jornada viva do shell User",
+        "description": "Jornada viva compartilhada dos shells User e Business",
+    },
+    ("jobs", "resumes"): {
+        "headline": "Curriculo Business Playwright",
+        "recruiter_visibility": "business_recruiters",
     },
     ("jobs", "applications"): {
         "resume_id": "33333333-3333-4333-8333-333333333333",
@@ -347,6 +369,27 @@ def all_in_one_business_shell_server():
         pytest.fail(str(exc))
     yield url
     stop_process(process)
+
+
+@pytest.fixture(scope="session")
+def all_in_one_business_live_server(tmp_path_factory):
+    routes = [
+        "/business/resources/companies",
+        "/business/resources/catalog_offers",
+        "/jobs/resources/job_postings",
+        "/jobs/resources/resumes",
+    ]
+    try:
+        processes, url = start_phase4_live_stack(
+            os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-business"),
+            routes,
+            tmp_path_factory.mktemp("phase4-business-live"),
+        )
+    except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    for process in reversed(processes):
+        stop_process(process)
 
 
 @pytest.fixture(scope="session")

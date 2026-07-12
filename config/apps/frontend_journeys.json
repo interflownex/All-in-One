@@ -25,9 +25,9 @@
       "priority_journey": "empresa -> aprovacao -> usuarios -> jobs -> ERP -> relatorios",
       "api_modules": ["business", "identity", "permissions", "jobs", "erp", "wms", "tms", "crm", "bi"],
       "api_hub_routes": ["/gateway/business", "/gateway/jobs", "/gateway/erp", "/gateway/bi"],
-      "shell_status": "journey_react_shell",
+      "shell_status": "api_hub_live_actions",
       "coverage": ["playwright:all_in_one_business_shell", "pytest:business_jobs_journey"],
-      "next_e2e": "Ampliar business -> jobs -> candidate access para API Hub vivo e acoes reais."
+      "next_e2e": "Ampliar telas Business para ERP, relatorios e operacoes reais alem de Jobs."
     },
     {
       "slug": "all-in-one-riders",

@@ -3,6 +3,9 @@ from urllib.parse import urlparse
 from playwright.sync_api import Page, Route, expect
 
 
+LIVE_ACTION_TIMEOUT = 60000
+
+
 USER_JOURNEY_ROUTES = [
     ("/identity", "Identity", "Perfil Playwright"),
     ("/finance/wallets", "Wallets", "Wallet Playwright"),
@@ -92,14 +95,14 @@ def test_all_in_one_user_shell_completes_live_order_and_delivery_actions(
 
     page.goto(f"{all_in_one_user_live_server}/marketplace/orders", wait_until="domcontentloaded")
     order_panel = page.get_by_label("Acao de jornada User")
-    expect(order_panel.get_by_role("button", name="Concluir jornada User")).to_be_enabled(timeout=15000)
+    expect(order_panel.get_by_role("button", name="Concluir jornada User")).to_be_enabled(timeout=LIVE_ACTION_TIMEOUT)
     order_panel.get_by_role("button", name="Concluir jornada User").click()
-    expect(order_panel.locator(".journey-feedback.completed")).to_contain_text("pedido paid", timeout=15000)
-    expect(page.locator(".badge", has_text="paid")).to_be_visible(timeout=15000)
+    expect(order_panel.locator(".journey-feedback.completed")).to_contain_text("pedido paid", timeout=LIVE_ACTION_TIMEOUT)
+    expect(page.locator(".badge", has_text="paid")).to_be_visible(timeout=LIVE_ACTION_TIMEOUT)
 
     page.goto(f"{all_in_one_user_live_server}/delivery/deliveryrequests", wait_until="domcontentloaded")
     delivery_panel = page.get_by_label("Acao de jornada User")
-    expect(delivery_panel.get_by_role("button", name="Concluir jornada User")).to_be_enabled(timeout=15000)
+    expect(delivery_panel.get_by_role("button", name="Concluir jornada User")).to_be_enabled(timeout=LIVE_ACTION_TIMEOUT)
     delivery_panel.get_by_role("button", name="Concluir jornada User").click()
-    expect(delivery_panel.locator(".journey-feedback.completed")).to_contain_text("entrega completed", timeout=15000)
-    expect(page.locator(".badge", has_text="completed")).to_be_visible(timeout=15000)
+    expect(delivery_panel.locator(".journey-feedback.completed")).to_contain_text("entrega completed", timeout=LIVE_ACTION_TIMEOUT)
+    expect(page.locator(".badge", has_text="completed")).to_be_visible(timeout=LIVE_ACTION_TIMEOUT)

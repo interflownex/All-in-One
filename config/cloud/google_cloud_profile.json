@@ -10,8 +10,11 @@
   "required_apis": [
     "aiplatform.googleapis.com",
     "alloydb.googleapis.com",
+    "apigee.googleapis.com",
+    "apihub.googleapis.com",
     "artifactregistry.googleapis.com",
     "cloudbuild.googleapis.com",
+    "cloudkms.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "compute.googleapis.com",
     "container.googleapis.com",

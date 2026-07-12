@@ -1,5 +1,82 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-12 Apigee API Hub
+
+### Concluido neste ciclo
+
+- Registrado o plano persistente `config/cloud/apigee_api_hub_plan.json` para o
+  fluxo Apigee/API Hub informado: APIs, location, projeto host, encryption/CMEK
+  e service identity.
+- O plano fixa o projeto host `all-in-one-498012`, numero `864981916504`,
+  location `southamerica-west1` e a service identity
+  `service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com`.
+- Declarados os grants IAM esperados sem armazenar segredos:
+  `roles/cloudkms.cryptoKeyEncrypterDecrypter`,
+  `roles/apihub.admin` e `roles/apihub.runtimeProjectServiceAgent`.
+- `config/cloud/google_cloud_profile.json` agora declara explicitamente
+  `apigee.googleapis.com`, `apihub.googleapis.com` e `cloudkms.googleapis.com`
+  como APIs requeridas do perfil Google Cloud.
+- `scripts/validate_repository.py` passou a validar o plano Apigee/API Hub,
+  proibindo material KMS no Git, exigindo importacao antes de mudancas e
+  preservando o estado remoto autoritativo.
+
+### Pendencias rastreadas
+
+- Selecionar/preencher a chave KMS real em ambiente seguro antes de qualquer
+  apply remoto; o campo `kms_key_resource` permanece `null` de proposito.
+- Executar os comandos `gcloud` de service identity/IAM somente com credenciais
+  legitimas, projeto explicito e confirmacao de que o estado remoto atual foi
+  importado.
+- Validar importacao automatica dos proxies Apigee apos IAM aplicado.
+
+### Git
+
+- Incremento Apigee/API Hub em validacao final antes da sincronizacao
+  automatica.
+
+## STATUS OPERACIONAL - 2026-07-12 Business API Hub Vivo
+
+### Concluido neste ciclo
+
+- `all-in-one-business` passou a usar API Hub vivo quando `VITE_API_HUB_TOKEN`
+  esta presente, preservando o fallback legado `/gateway/...` para telas
+  genericas e testes interceptados.
+- `SmartCRUD` agora resolve aliases reais como `catalog_offers`,
+  `job_postings`, `resume_access_logs` e `resumes`, normaliza colecoes do API
+  Hub e exibe campos de payload como `legal_name`, `title`, `headline` e
+  `purpose`.
+- A jornada viva Business executa acoes reais no frontend: aprovacao de empresa
+  (`approved`), publicacao de vaga (`published`) e registro auditavel de acesso
+  a curriculo (`resume_access_logs`).
+- `tests/e2e/conftest.py` ganhou fixture `all_in_one_business_live_server`,
+  semeando Business/Jobs reais via API Hub, e o timeout FastAPI passou a ser
+  configuravel por `FASTAPI_START_TIMEOUT_SECONDS` com padrao 120s para modulos
+  mais pesados.
+
+### Validacoes executadas
+
+- `npm run build` em `apps/all-in-one-business`: aprovado.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py`:
+  3 aprovados, incluindo API Hub vivo com empresa aprovada, vaga publicada e
+  acesso a curriculo registrado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_business_jobs_journey.py`:
+  7 aprovados.
+- `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`:
+  aprovado.
+- `git diff --check`: aprovado.
+
+### Pendencias rastreadas
+
+- Ampliar telas Business para acoes reais de ERP/relatorios e operacoes de
+  dominio alem de Jobs.
+- Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
+  e acao real.
+
+### Git
+
+- Incremento Business/API Hub vivo em validacao final antes da sincronizacao
+  automatica.
+
 ## STATUS OPERACIONAL - 2026-07-12 User API Hub Vivo
 
 ### Concluido neste ciclo
@@ -26,8 +103,8 @@
 
 - Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
   e acao real.
-- Levar `all-in-one-business` para API Hub vivo e acoes reais de empresa,
-  publicacao de vaga e acesso auditavel a curriculo.
+- Ampliar telas Business para acoes reais de ERP/relatorios e operacoes de
+  dominio alem de Jobs.
 
 ### Git
 
