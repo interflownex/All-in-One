@@ -341,6 +341,9 @@ def test_gateway_authorizes_pix_sandbox_using_server_side_order_data(monkeypatch
     escrow_call = next(call for call in fake_client.posts if call[0].endswith("/psp/escrows"))
     assert escrow_call[1]["beneficiary_id"] == "seller-1"
     assert fake_client.posts[-1][0].endswith("/actions/pay")
+    pay_payload = fake_client.posts[-1][1]
+    assert "Pix" not in pay_payload["reason"]
+    assert "pix" not in pay_payload["payload"]["payment_provider"]
 
 
 def test_gateway_returns_normalized_consumer_history(monkeypatch) -> None:

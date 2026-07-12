@@ -938,9 +938,9 @@ async def authorize_catalog_payment(
         f"{SERVICES['marketplace']}/resources/orders/{body.order_id}/actions/pay",
         headers=actor_headers,
         payload={
-            "reason": "Pix sandbox autorizado e valor protegido em escrow.",
+            "reason": "Pagamento sandbox autorizado e valor protegido em escrow.",
             "payload": {
-                "payment_provider": "finance_pix_psp",
+                "payment_provider": "finance_psp_sandbox",
                 "provider_environment": "sandbox",
                 "payment_reference": pix.get("reference_id"),
                 "escrow_reference": escrow.get("reference_id"),
