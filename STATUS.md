@@ -70,6 +70,14 @@
 - O build estrito do shell compartilhado tambem foi saneado: rotas geradas de
   TMS, Document e Delivery voltaram a apontar para seus componentes proprios, e
   `SmartCRUD` passou a renderizar estado de erro observavel.
+- `all-in-one-business` avancou de `generated_react_shell` para
+  `journey_react_shell`: o shell dedicado agora tem Playwright inicial da
+  jornada Business -> Jobs -> candidate access, percorrendo Companies, Catalog
+  Offers, Job Postings, Applications e Resume Access Logs com rotas
+  `/gateway/...` interceptadas.
+- `config/apps/frontend_journeys.json` passou a declarar
+  `playwright:all_in_one_business_shell` como evidencia do app
+  `all-in-one-business`.
 
 ### Validacoes executadas
 
@@ -83,8 +91,10 @@
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 6 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py modules/api_hub/tests/test_gateway_security.py`: 24 aprovados.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_user_shell.py`: 2 aprovados.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py`: 2 aprovados.
 - `npm run build` em `apps/all-in-one`: aprovado.
-- `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_user_shell.py tests/e2e/conftest.py tests/test_frontend_journeys_contract.py`: aprovado.
+- `npm run build` em `apps/all-in-one-business`: aprovado.
+- `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_user_shell.py tests/e2e/test_all_in_one_business_shell.py tests/e2e/conftest.py tests/test_frontend_journeys_contract.py`: aprovado.
 - `python3 -m json.tool config/apps/frontend_journeys.json`: aprovado.
 - `python3 scripts/validate_repository.py`: aprovado.
 - `git diff --check`: aprovado.
@@ -95,6 +105,8 @@
   trilha Valley.
 - Levar `all-in-one-user` para API Hub vivo e acoes reais de cadastro, wallet,
   pedido, entrega e candidatura.
+- Levar `all-in-one-business` para API Hub vivo e acoes reais de empresa,
+  publicacao de vaga e acesso auditavel a curriculo.
 
 ### Git
 

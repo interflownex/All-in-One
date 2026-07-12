@@ -19,7 +19,7 @@ Coordenada operacional atual:
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
 | Docker local | 97% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real e contexto Docker higienizado por `.dockerignore` | Falta medir rebuild remoto e acompanhar execucoes do gate em ambiente remoto. |
-| Apps/frontend | 90% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo e acoes reais Services/Mobility/Riders/Health, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta aprofundar interfaces funcionais reais e levar User/Business para API Hub vivo. |
+| Apps/frontend | 91% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` e `all-in-one-business` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo e acoes reais Services/Mobility/Riders/Health, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta aprofundar interfaces funcionais reais e levar User/Business para API Hub vivo. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
@@ -240,7 +240,7 @@ Proximos passos naturais:
 
 Objetivo: transformar microservicos em jornadas de produto.
 
-Status: 90%
+Status: 91%
 
 Apps e prioridades:
 - `all-in-one-user`: cadastro, wallet, busca, compra, delivery, jobs.
@@ -306,13 +306,17 @@ Apps e prioridades:
   `tests/e2e/test_all_in_one_user_shell.py`, percorrendo o shell compartilhado
   `apps/all-in-one` pela jornada Identity, Wallet, Marketplace Orders, Delivery
   e Jobs com rotas `/gateway/...` interceptadas.
+- `all-in-one-business` agora possui Playwright inicial desktop/mobile em
+  `tests/e2e/test_all_in_one_business_shell.py`, percorrendo Companies, Catalog
+  Offers, Job Postings, Applications e Resume Access Logs com rotas
+  `/gateway/...` interceptadas.
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
 - Levar `all-in-one-user` para API Hub vivo e acoes reais de cadastro, wallet,
   pedido, entrega e candidatura.
-- Levar `all-in-one-business` para Playwright desktop/mobile e depois API Hub
-  vivo na jornada business -> jobs -> candidate access.
+- Levar `all-in-one-business` para API Hub vivo e acoes reais de empresa,
+  publicacao de vaga e acesso auditavel a curriculo.
 - As jornadas contratuais locais `identity -> wallet -> marketplace order`,
   `business -> jobs -> candidate access`, Delivery, Riders, Services, Mobility e
   Health ja estao cobertas por pytest.
@@ -320,8 +324,8 @@ Pendencias:
   estao cobertas por pytest contratual.
 
 Proximos passos naturais:
-1. Levar `all-in-one-business` para Playwright desktop/mobile.
-2. Evoluir `all-in-one-user` para API Hub vivo e acoes reais.
+1. Evoluir `all-in-one-user` para API Hub vivo e acoes reais.
+2. Evoluir `all-in-one-business` para API Hub vivo e acoes reais.
 3. Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.
 4. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
 5. Registrar evidencias por app em `STATUS.md`.

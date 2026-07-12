@@ -310,6 +310,19 @@ def all_in_one_user_server():
 
 
 @pytest.fixture(scope="session")
+def all_in_one_business_shell_server():
+    try:
+        process, url = start_vite_server(
+            os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-business"),
+            {"VITE_API_HUB_URL": "{server_url}"},
+        )
+    except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    stop_process(process)
+
+
+@pytest.fixture(scope="session")
 def all_in_one_riders_server():
     try:
         process, url = start_vite_server(

@@ -25,9 +25,9 @@
       "priority_journey": "empresa -> aprovacao -> usuarios -> jobs -> ERP -> relatorios",
       "api_modules": ["business", "identity", "permissions", "jobs", "erp", "wms", "tms", "crm", "bi"],
       "api_hub_routes": ["/gateway/business", "/gateway/jobs", "/gateway/erp", "/gateway/bi"],
-      "shell_status": "generated_react_shell",
-      "coverage": ["pytest:business_jobs_journey"],
-      "next_e2e": "Levar business -> jobs -> candidate access para Playwright desktop/mobile."
+      "shell_status": "journey_react_shell",
+      "coverage": ["playwright:all_in_one_business_shell", "pytest:business_jobs_journey"],
+      "next_e2e": "Ampliar business -> jobs -> candidate access para API Hub vivo e acoes reais."
     },
     {
       "slug": "all-in-one-riders",

@@ -97,6 +97,12 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         </div>
       </div>
 
+      {error ? (
+        <div className="notice" role="status">
+          {error}
+        </div>
+      ) : null}
+
       {loading ? (
         <div className="loader"></div>
       ) : (
