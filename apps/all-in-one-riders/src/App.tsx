@@ -8,6 +8,7 @@ const steps = [
 ]
 
 const API_HUB_URL = import.meta.env.VITE_API_HUB_URL ?? ''
+const API_HUB_TOKEN = import.meta.env.VITE_API_HUB_TOKEN ?? ''
 
 const endpoints = [
   { label: 'Perfis', path: '/riders/resources/rider_profiles', fallback: '2 candidatos em triagem' },
@@ -25,9 +26,12 @@ type ApiCard = {
 
 async function fetchEndpoint(path: string) {
   if (!API_HUB_URL) throw new Error('VITE_API_HUB_URL ausente')
-  const response = await fetch(`${API_HUB_URL}${path}?limit=3`)
+  const response = await fetch(`${API_HUB_URL}${path}?limit=3`, {
+    headers: API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {},
+  })
   if (!response.ok) throw new Error(`HTTP ${response.status}`)
   const payload = await response.json()
+  if (Array.isArray(payload)) return payload
   return Array.isArray(payload?.data) ? payload.data : []
 }
 

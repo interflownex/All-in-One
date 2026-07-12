@@ -9,11 +9,12 @@ const journey = [
 ]
 
 const API_HUB_URL = import.meta.env.VITE_API_HUB_URL ?? ''
+const API_HUB_TOKEN = import.meta.env.VITE_API_HUB_TOKEN ?? ''
 
 const endpoints = [
   { label: 'Pacientes', path: '/health/resources/patients', fallback: '2 pacientes protegidos' },
   { label: 'Agendas', path: '/health/resources/appointments', fallback: '3 consultas previstas' },
-  { label: 'Consentimentos', path: '/identity/resources/consent_records', fallback: '1 consentimento pendente' },
+  { label: 'Consentimentos', path: '/identity/resources/consents', fallback: '1 consentimento pendente' },
   { label: 'Documentos', path: '/document/resources/documents', fallback: '2 documentos clinicos' },
 ]
 
@@ -26,9 +27,12 @@ type ApiCard = {
 
 async function fetchEndpoint(path: string) {
   if (!API_HUB_URL) throw new Error('VITE_API_HUB_URL ausente')
-  const response = await fetch(`${API_HUB_URL}${path}?limit=3`)
+  const response = await fetch(`${API_HUB_URL}${path}?limit=3`, {
+    headers: API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {},
+  })
   if (!response.ok) throw new Error(`HTTP ${response.status}`)
   const payload = await response.json()
+  if (Array.isArray(payload)) return payload
   return Array.isArray(payload?.data) ? payload.data : []
 }
 

@@ -107,3 +107,25 @@ def test_rate_limiter_blocks_after_limit(monkeypatch):
         assert exc.status_code == 429
     else:
         raise AssertionError("rate_limiter deveria bloquear quando limite estiver esgotado")
+
+
+def test_health_module_proxy_paths_still_require_jwt(monkeypatch):
+    module = _load_api_hub(monkeypatch)
+    token = module.jwt.encode({"sub": "11111111-1111-4111-8111-111111111111"}, module.JWT_SECRET, algorithm="HS256")
+
+    async def receive():
+        return {"type": "http.request", "body": b"", "more_body": False}
+
+    public_health = Request({"type": "http", "method": "GET", "path": "/health", "headers": []}, receive)
+    module_health = Request(
+        {
+            "type": "http",
+            "method": "GET",
+            "path": "/health/resources/patients",
+            "headers": [(b"authorization", f"Bearer {token}".encode())],
+        },
+        receive,
+    )
+
+    assert asyncio.run(module.validate_jwt_edge(public_health)) is None
+    assert asyncio.run(module.validate_jwt_edge(module_health))["sub"] == "11111111-1111-4111-8111-111111111111"

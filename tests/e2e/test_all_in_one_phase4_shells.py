@@ -36,7 +36,7 @@ PHASE4_SHELLS = [
         [
             "/health/resources/patients",
             "/health/resources/appointments",
-            "/identity/resources/consent_records",
+            "/identity/resources/consents",
             "/document/resources/documents",
         ],
         id="health",
@@ -52,6 +52,34 @@ PHASE4_SHELLS = [
             "/finance/resources/wallets",
         ],
         id="mobility",
+    ),
+]
+
+
+PHASE4_LIVE_SHELLS = [
+    pytest.param(
+        "all_in_one_riders_live_server",
+        "All-in-One Riders",
+        "Candidatura",
+        id="riders-live-api-hub",
+    ),
+    pytest.param(
+        "all_in_one_services_live_server",
+        "All-in-One Services",
+        "Prestador aprovado",
+        id="services-live-api-hub",
+    ),
+    pytest.param(
+        "all_in_one_health_live_server",
+        "All-in-One Health",
+        "Consentimento LGPD",
+        id="health-live-api-hub",
+    ),
+    pytest.param(
+        "all_in_one_mobility_live_server",
+        "All-in-One Mobility",
+        "Corrida",
+        id="mobility-live-api-hub",
     ),
 ]
 
@@ -122,3 +150,21 @@ def test_phase4_shells_keep_mobile_journey_visible(
     expect(page.locator(".eyebrow")).to_contain_text(title)
     _expect_journey_marker(page, journey_marker)
     expect(page.locator(".panel")).to_be_visible()
+
+
+@pytest.mark.parametrize("server_fixture,title,journey_marker", PHASE4_LIVE_SHELLS)
+def test_phase4_shells_load_live_api_hub_fixtures(
+    page: Page,
+    request: pytest.FixtureRequest,
+    server_fixture: str,
+    title: str,
+    journey_marker: str,
+) -> None:
+    server_url = request.getfixturevalue(server_fixture)
+
+    page.goto(server_url, wait_until="domcontentloaded")
+
+    expect(page.locator(".eyebrow")).to_contain_text(title)
+    _expect_journey_marker(page, journey_marker)
+    expect(page.locator(".online")).to_have_count(4, timeout=15000)
+    expect(page.get_by_text("1 registro(s) retornado(s) pelo API Hub").first).to_be_visible()

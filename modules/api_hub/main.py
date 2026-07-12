@@ -332,7 +332,7 @@ async def validate_api_key_edge(request: Request):
 
 async def validate_jwt_edge(request: Request):
     """Valida o JWT na borda para rotas protegidas."""
-    if request.url.path.startswith(("/auth/", "/registrations", "/health", "/gateway")):
+    if request.url.path == "/health" or request.url.path.startswith(("/auth/", "/registrations", "/gateway")):
         return None
     
     auth_header = request.headers.get("Authorization")
@@ -365,9 +365,16 @@ async def validate_catalog_action_token(request: Request) -> dict[str, Any]:
         raise HTTPException(status_code=401, detail="Sessao invalida.")
 
 
-async def proxy_request(service_url: str, request: Request, actor_payload: dict | None = None):
+async def proxy_request(
+    service_url: str,
+    request: Request,
+    actor_payload: dict | None = None,
+    target_path: str | None = None,
+):
     """Proxy otimizado com injeção de contexto e tratamento de erros centralizado."""
-    path = request.url.path
+    path = target_path or request.url.path
+    if not path.startswith("/"):
+        path = f"/{path}"
     query = request.url.query
     target_url = f"{service_url}{path}" + (f"?{query}" if query else "")
 
@@ -401,7 +408,7 @@ def register_proxies():
             dependencies=[Depends(rate_limiter)]
         )
         async def route_proxy(path: str, request: Request, service_url=url, actor=Depends(validate_jwt_edge)):
-            return await proxy_request(service_url, request, actor)
+            return await proxy_request(service_url, request, actor, f"/{path}")
 
 register_proxies()
 

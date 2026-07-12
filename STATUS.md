@@ -21,12 +21,22 @@
 - `tests/e2e/conftest.py` inicia esses quatro shells com `VITE_API_HUB_URL`
   apontando para o proprio Vite efemero, permitindo que o Playwright intercepte
   as rotas do API Hub sem exigir backend vivo local.
+- Os quatro shells agora aceitam `VITE_API_HUB_TOKEN` e consomem tanto respostas
+  `{data: [...]}` quanto listas cruas retornadas pelo proxy vivo do API Hub.
+- A cobertura Playwright foi expandida para subir API Hub e modulos FastAPI reais
+  em portas efemeras, semear fixtures SQLite e validar os quatro shells sem
+  interceptacao de rede.
+- O proxy do API Hub passou a remover o prefixo do modulo ao encaminhar
+  `/riders/resources/...` para `/resources/...`, e a excecao publica de
+  `/health` deixou de cobrir indevidamente `/health/resources/...`.
 
 ### Validacoes executadas
 
-- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 8 aprovados.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 12 aprovados, incluindo 4 cenarios com API Hub vivo.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k live_api_hub`: 4 aprovados.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 5 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py`: 17 aprovados.
-- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest --collect-only -q tests/e2e/test_all_in_one_phase4_shells.py`: 8 testes coletados.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest --collect-only -q tests/e2e/test_all_in_one_phase4_shells.py`: 12 testes coletados.
 - `python3 -m py_compile tests/e2e/test_all_in_one_phase4_shells.py tests/e2e/conftest.py tests/test_frontend_journeys_contract.py`: aprovado.
 - `python3 -m json.tool config/apps/frontend_journeys.json`: aprovado.
 - `python3 scripts/validate_repository.py`: aprovado.
@@ -34,10 +44,10 @@
 
 ### Pendencias rastreadas
 
-- Evoluir os E2E de rotas interceptadas para API Hub vivo com fixtures reais de
-  backend.
 - Ampliar as interfaces funcionais reais para alem dos shells iniciais fora da
   trilha Valley.
+- Expandir Playwright E2E por jornada para alem da leitura inicial dos quatro
+  shells fora Valley.
 
 ### Git
 
