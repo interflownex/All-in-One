@@ -116,6 +116,27 @@ def test_phase_4_shells_have_playwright_coverage_declared() -> None:
             assert "playwright:all_in_one_phase4_shells" in app["coverage"], app["slug"]
 
 
+def test_phase_4_live_shells_do_not_keep_obsolete_next_steps() -> None:
+    connected_shells = {
+        "all-in-one-riders",
+        "all-in-one-services",
+        "all-in-one-health",
+        "all-in-one-mobility",
+    }
+    obsolete_fragments = (
+        "evoluir para API Hub vivo",
+        "ambiente com dependencias Node",
+    )
+
+    for app in load_contract()["apps"]:
+        if app["slug"] not in connected_shells:
+            continue
+
+        assert app["next_e2e"].startswith("Ampliar interface funcional"), app["slug"]
+        for fragment in obsolete_fragments:
+            assert fragment not in app["next_e2e"], app["slug"]
+
+
 def test_frontend_contract_links_to_existing_e2e_and_pytest_evidence() -> None:
     e2e_tests = {path.stem.removeprefix("test_") for path in (ROOT / "tests" / "e2e").glob("test_*.py")}
     pytest_tests = {path.stem.removeprefix("test_") for path in (ROOT / "tests").glob("test_*.py")}

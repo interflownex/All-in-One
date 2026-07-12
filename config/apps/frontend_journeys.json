@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-07-11",
+  "updated_at": "2026-07-12",
   "source": "docs/EXECUTION_PLAN.md#fase-4---jornadas-e2e-por-app",
   "apps": [
     {
@@ -40,7 +40,7 @@
       "api_hub_routes": ["/riders/resources/rider_profiles", "/riders/resources/vehicles", "/delivery/resources/delivery_requests", "/mobility/resources/rides"],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
-      "next_e2e": "Executar Playwright desktop/mobile em ambiente com dependencias Node e evoluir para API Hub vivo."
+      "next_e2e": "Ampliar interface funcional para ganhos, documentos e eventos de entrega/corrida apos ativacao viva."
     },
     {
       "slug": "all-in-one-services",
@@ -53,7 +53,7 @@
       "api_hub_routes": ["/services/resources/providers", "/services/resources/service_contracts", "/finance/resources/escrows", "/document/resources/documents"],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
-      "next_e2e": "Executar Playwright desktop/mobile em ambiente com dependencias Node e evoluir para API Hub vivo."
+      "next_e2e": "Ampliar interface funcional para visita, orcamento e evidencia anexada apos contrato vivo."
     },
     {
       "slug": "all-in-one-health",
@@ -66,7 +66,7 @@
       "api_hub_routes": ["/health/resources/patients", "/health/resources/appointments", "/identity/resources/consents", "/document/resources/documents"],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
-      "next_e2e": "Executar Playwright desktop/mobile em ambiente com dependencias Node e evoluir para API Hub vivo."
+      "next_e2e": "Ampliar interface funcional para consentimento, prontuario e teleconsulta apos consulta viva."
     },
     {
       "slug": "all-in-one-mobility",
@@ -79,7 +79,7 @@
       "api_hub_routes": ["/mobility/resources/rides", "/mobility/resources/tickets", "/riders/resources/rider_profiles", "/finance/resources/wallets"],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
-      "next_e2e": "Executar Playwright desktop/mobile em ambiente com dependencias Node e evoluir para API Hub vivo."
+      "next_e2e": "Ampliar interface funcional para historico, rota e ganhos apos corrida e ticket vivos."
     },
     {
       "slug": "valley",

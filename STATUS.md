@@ -56,6 +56,11 @@
   status `completed` no frontend.
 - `apps/all-in-one-health/src/vite-env.d.ts` foi adicionado para permitir build
   TypeScript/Vite estrito do shell Health.
+- `config/apps/frontend_journeys.json` foi reconciliado em 2026-07-12 para
+  remover o proximo passo obsoleto de evoluir os quatro shells para API Hub vivo;
+  o contrato agora aponta para ampliar interfaces funcionais por dominio.
+- `tests/test_frontend_journeys_contract.py` ganhou trava anti-drift para impedir
+  que shells ja cobertos por Playwright vivo voltem a listar esse passo obsoleto.
 
 ### Validacoes executadas
 
@@ -67,7 +72,7 @@
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k health_shell_approves_and_completes_live_appointment`: 1 aprovado.
 - `npm run build` em `apps/all-in-one-health`: aprovado.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 6 aprovados.
-- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py modules/api_hub/tests/test_gateway_security.py`: 23 aprovados.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py modules/api_hub/tests/test_gateway_security.py`: 24 aprovados.
 - `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_phase4_shells.py tests/e2e/conftest.py modules/api_hub/main.py modules/api_hub/tests/test_gateway_security.py tests/test_frontend_journeys_contract.py`: aprovado.
 - `python3 -m json.tool config/apps/frontend_journeys.json`: aprovado.
 - `python3 scripts/validate_repository.py`: aprovado.

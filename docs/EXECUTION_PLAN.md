@@ -298,6 +298,10 @@ Apps e prioridades:
   consulta retornada pelo API Hub, validada por Playwright contra modulos
   FastAPI reais e fixtures SQLite, mantendo aprovacao clinica com MFA e
   prontuario protegido.
+- `config/apps/frontend_journeys.json` foi reconciliado em 2026-07-12 para que
+  os quatro shells ja cobertos por Playwright vivo apontem seus proximos E2E
+  para aprofundamento funcional por dominio, nao mais para "evoluir para API Hub
+  vivo".
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
