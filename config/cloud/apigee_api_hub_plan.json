@@ -3,7 +3,7 @@
   "language": "pt-BR",
   "provider": "google_cloud",
   "product": "apigee_api_hub",
-  "status": "desired_state_registered",
+  "status": "kms_selected_apply_scripted_remote_pending",
   "authority_mode": "remote_state_is_authoritative",
   "source": {
     "requested_flow": "APIs > Location > Register host project > Encryption > Service identity",
@@ -25,8 +25,8 @@
   },
   "encryption": {
     "mode": "customer_managed_encryption_key",
-    "kms_key_resource": null,
-    "kms_key_resource_required_before_apply": true,
+    "kms_key_resource": "projects/all-in-one-498012/locations/southamerica-east1/keyRings/Github/cryptoKeys/Software",
+    "kms_key_resource_required_before_apply": false,
     "allowed_inventory_keys": [
       "projects/all-in-one-498012/locations/southamerica-east1/keyRings/Github/cryptoKeys/Software",
       "projects/all-in-one-498012/locations/southamerica-east1/keyRings/Github/cryptoKeys/gitHub"

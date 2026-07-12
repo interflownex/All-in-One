@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROFILE_PATH = ROOT / "config" / "cloud" / "google_cloud_profile.json"
 WINDOWS_GCLOUD = Path("/mnt/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud")
 LINUX_GCLOUD = Path.home() / "google-cloud-sdk" / "bin" / "gcloud"
+DEFAULT_GCLOUD_TIMEOUT_SECONDS = 20
 
 
 def load_profile() -> dict[str, Any]:
@@ -32,13 +33,20 @@ def find_gcloud() -> str:
 
 
 def run_gcloud(*args: str, check: bool = True) -> str:
-    result = subprocess.run(
-        [find_gcloud(), *args],
-        check=False,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
+    timeout = int(os.getenv("GCLOUD_TIMEOUT_SECONDS", str(DEFAULT_GCLOUD_TIMEOUT_SECONDS)))
+    try:
+        result = subprocess.run(
+            [find_gcloud(), *args],
+            check=False,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired as exc:
+        if not check:
+            return ""
+        raise RuntimeError(f"gcloud excedeu {timeout}s ao executar: {' '.join(args)}") from exc
     if check and result.returncode:
         detail = result.stderr.strip() or result.stdout.strip()
         raise RuntimeError(detail or f"gcloud retornou codigo {result.returncode}.")
@@ -71,8 +79,20 @@ def resource_list(command: list[str], project: str) -> list[dict[str, Any]]:
 
 
 def status(project: str) -> dict[str, Any]:
+    authenticated = bool(active_account())
+    if not authenticated:
+        return {
+            "authenticated": False,
+            "project": project or None,
+            "warning": "gcloud sem conta ativa responsiva dentro do timeout.",
+            "compute_terminated": [],
+            "cloud_sql_stopped": [],
+            "alloydb_clusters": [],
+            "cloud_run_services": [],
+            "gke_clusters": [],
+        }
     return {
-        "authenticated": bool(active_account()),
+        "authenticated": authenticated,
         "project": project or None,
         "compute_terminated": resource_list(
             ["compute", "instances", "list", "--filter=status=TERMINATED"],

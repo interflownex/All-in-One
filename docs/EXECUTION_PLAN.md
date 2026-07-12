@@ -390,10 +390,17 @@ Entregas ja existentes:
   service identity `service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com`,
   location `southamerica-west1`, CMEK obrigatorio antes de apply e grants IAM
   esperados para KMS/API Hub.
+- A chave KMS `projects/all-in-one-498012/locations/southamerica-east1/keyRings/Github/cryptoKeys/Software`
+  foi selecionada no plano Apigee/API Hub por estar `ENABLED` no inventario
+  autoritativo, e `scripts/configure_apigee_api_hub.py` materializa a verificacao
+  e o apply idempotente da service identity/IAM com timeout anti-travamento.
+- `scripts/google_cloud_control.py` tambem respeita `GCLOUD_TIMEOUT_SECONDS` e
+  nao bloqueia mais a rodada quando `gcloud auth list` nao responde.
 
 Proximos passos naturais:
-1. Selecionar a chave KMS real do API Hub e aplicar, com `gcloud` autenticado,
-   a service identity e os grants IAM do plano Apigee/API Hub.
+1. Executar `python3 scripts/configure_apigee_api_hub.py --apply` com `gcloud`
+   autenticado e responsivo para aplicar a service identity e os grants IAM do
+   plano Apigee/API Hub.
 2. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
    host.
 3. Conectar respostas sandbox a recursos reais/auditaveis dos modulos prioritarios.

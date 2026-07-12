@@ -406,8 +406,13 @@ def main() -> int:
             fail("Plano Apigee API Hub deve preservar a location southamerica-west1 do inventario.", errors)
         if encryption.get("mode") != "customer_managed_encryption_key":
             fail("Plano Apigee API Hub deve declarar CMEK para criptografia.", errors)
-        if encryption.get("secret_material_in_git") is not False or encryption.get("kms_key_resource_required_before_apply") is not True:
-            fail("Plano Apigee API Hub deve proibir material KMS no Git e exigir chave antes do apply.", errors)
+        kms_key = encryption.get("kms_key_resource")
+        if not kms_key:
+            fail("Plano Apigee API Hub deve declarar a chave KMS selecionada.", errors)
+        if kms_key not in set(encryption.get("allowed_inventory_keys", [])):
+            fail("Plano Apigee API Hub deve usar uma chave KMS permitida pelo inventario.", errors)
+        if encryption.get("secret_material_in_git") is not False:
+            fail("Plano Apigee API Hub deve proibir material KMS no Git.", errors)
         if service_identity.get("email") != "service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com":
             fail("Plano Apigee API Hub deve registrar a service identity informada.", errors)
         expected_roles = {

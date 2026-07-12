@@ -2,6 +2,20 @@
 
 ## STATUS OPERACIONAL - 2026-07-12 Apigee API Hub
 
+### Incremento posterior
+
+- Selecionada de forma persistente a chave KMS inventariada e habilitada
+  `projects/all-in-one-498012/locations/southamerica-east1/keyRings/Github/cryptoKeys/Software`
+  para o plano Apigee/API Hub.
+- Criado `scripts/configure_apigee_api_hub.py`, com `--check`,
+  `--print-commands`, `--print-status` e `--apply`, sempre com timeout para
+  impedir travamento do fluxo quando o Google Cloud SDK nao responder.
+- `scripts/google_cloud_control.py` passou a respeitar `GCLOUD_TIMEOUT_SECONDS`
+  e a retornar status controlado quando a conta ativa do `gcloud` nao responde,
+  sem tentar listar recursos adicionais.
+- Tentativa de `python3 scripts/configure_apigee_api_hub.py --apply --timeout 8`
+  nao aplicou IAM remoto porque todos os comandos `gcloud` excederam 8s.
+
 ### Concluido neste ciclo
 
 - Registrado o plano persistente `config/cloud/apigee_api_hub_plan.json` para o
@@ -22,11 +36,9 @@
 
 ### Pendencias rastreadas
 
-- Selecionar/preencher a chave KMS real em ambiente seguro antes de qualquer
-  apply remoto; o campo `kms_key_resource` permanece `null` de proposito.
-- Executar os comandos `gcloud` de service identity/IAM somente com credenciais
-  legitimas, projeto explicito e confirmacao de que o estado remoto atual foi
-  importado.
+- Executar novamente `python3 scripts/configure_apigee_api_hub.py --apply` com
+  `gcloud` autenticado e responsivo para criar/verificar a service identity e
+  aplicar os grants IAM.
 - Validar importacao automatica dos proxies Apigee apos IAM aplicado.
 
 ### Git
