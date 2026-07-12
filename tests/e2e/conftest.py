@@ -14,6 +14,7 @@ import jwt
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PHASE4_ACTOR_ID = "11111111-1111-4111-8111-111111111111"
+PHASE4_BUSINESS_ID = "22222222-2222-4222-8222-222222222222"
 PHASE4_JWT_SECRET = "phase4-live-e2e-secret-with-32-bytes-minimum"
 
 
@@ -108,6 +109,12 @@ def stop_process(process: subprocess.Popen) -> None:
 
 
 PHASE4_ROUTE_PAYLOADS = {
+    ("identity", "users"): {
+        "full_name": "Perfil Playwright",
+        "email": "phase4-user@example.test",
+        "password_hash": "phase4-live-password-hash",
+        "document_cpf": "CPF-PHASE4",
+    },
     ("riders", "rider_profiles"): {
         "cnh_number_hash": "phase4-cnh-hash",
         "cnh_category": "AB",
@@ -142,6 +149,21 @@ PHASE4_ROUTE_PAYLOADS = {
         "amount_brl": "120.00",
     },
     ("finance", "wallets"): {"wallet_type": "consumer", "label": "Wallet Playwright"},
+    ("marketplace", "orders"): {
+        "store_id": "store-phase4-user",
+        "total_brl": "99.90",
+        "items": [{"sku": "SKU-PHASE4", "quantity": 1, "unit_brl": "99.90"}],
+    },
+    ("jobs", "job_postings"): {
+        "company_id": PHASE4_BUSINESS_ID,
+        "company_status": "active",
+        "title": "Vaga Playwright",
+        "description": "Jornada viva do shell User",
+    },
+    ("jobs", "applications"): {
+        "resume_id": "33333333-3333-4333-8333-333333333333",
+        "job_posting_id": "44444444-4444-4444-8444-444444444444",
+    },
     ("document", "documents"): {"storage_key": "phase4/doc.pdf", "filename": "doc.pdf"},
     ("health", "patients"): {"health_identifier": "patient-phase4", "name": "Paciente Playwright"},
     ("health", "appointments"): {"scheduled_at": "2026-07-12T12:00:00Z", "care_line": "Consulta"},
@@ -212,9 +234,11 @@ def start_phase4_live_stack(
     token = jwt.encode(
         {
             "sub": PHASE4_ACTOR_ID,
-            "roles": ["compliance_officer", "auditor"],
-            "scopes": ["riders:approve", "health:approve"],
+            "roles": ["compliance_officer", "auditor", "owner", "recruiter"],
+            "scopes": ["riders:approve", "health:approve", "jobs:manage", "jobs:resumes:read"],
             "mfa_verified": True,
+            "business_id": PHASE4_BUSINESS_ID,
+            "business_status": "active",
         },
         PHASE4_JWT_SECRET,
         algorithm="HS256",
@@ -320,6 +344,28 @@ def all_in_one_business_shell_server():
         pytest.fail(str(exc))
     yield url
     stop_process(process)
+
+
+@pytest.fixture(scope="session")
+def all_in_one_user_live_server(tmp_path_factory):
+    routes = [
+        "/identity/resources/users",
+        "/finance/resources/wallets",
+        "/marketplace/resources/orders",
+        "/delivery/resources/delivery_requests",
+        "/jobs/resources/job_postings",
+    ]
+    try:
+        processes, url = start_phase4_live_stack(
+            os.path.join(os.path.dirname(__file__), "../../apps/all-in-one"),
+            routes,
+            tmp_path_factory.mktemp("phase4-user-live"),
+        )
+    except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    for process in reversed(processes):
+        stop_process(process)
 
 
 @pytest.fixture(scope="session")

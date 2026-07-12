@@ -8,25 +8,65 @@ interface SmartCRUDProps {
 }
 
 const API_HUB_URL = (import.meta as any).env?.VITE_API_HUB_URL ?? '';
+const API_HUB_TOKEN = (import.meta as any).env?.VITE_API_HUB_TOKEN ?? '';
+
+const LIVE_RESOURCE_ALIASES: Record<string, string> = {
+  'identity:identity': 'users',
+  'delivery:deliveryrequests': 'delivery_requests',
+  'jobs:jobpostings': 'job_postings',
+};
+
+const liveResourceFor = (module: string, entity: string) =>
+  LIVE_RESOURCE_ALIASES[`${module}:${entity}`] ?? entity;
+
+const apiHeaders = () => (API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {});
+
+const normalizeData = (result: unknown): any[] => {
+  if (Array.isArray(result)) return result;
+  if (result && typeof result === 'object' && Array.isArray((result as any).data)) {
+    return (result as any).data;
+  }
+  return [];
+};
+
+const displayNameFor = (item: any, title: string) =>
+  item.name ||
+  item.title ||
+  item.payload?.name ||
+  item.payload?.full_name ||
+  item.payload?.label ||
+  item.payload?.title ||
+  item.payload?.service_type ||
+  item.payload?.store_id ||
+  `${title} #${item.id}`;
 
 const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
+  const [actionFeedback, setActionFeedback] = useState('');
+  const [actionState, setActionState] = useState<'idle' | 'running' | 'completed' | 'failed'>('idle');
+
+  const resourceType = liveResourceFor(module, entity);
+  const liveResourcePath = `/${module}/resources/${resourceType}`;
+  const isLiveApiHub = Boolean(API_HUB_TOKEN);
 
   const fetchData = async () => {
     setLoading(true);
     setError('');
     try {
-      // Simulação de busca no API Hub (em um ambiente real chamaria o microserviço via Hub)
-      const response = await fetch(`${API_HUB_URL}/gateway/${module}/${entity}?q=${query}`);
+      const endpoint = isLiveApiHub
+        ? `${API_HUB_URL}${liveResourcePath}?limit=3`
+        : `${API_HUB_URL}/gateway/${module}/${entity}?q=${query}`;
+      const response = await fetch(endpoint, { headers: apiHeaders() });
       if (!response.ok) throw new Error('Falha ao carregar dados.');
       const result = await response.json();
-      setData(result.data ?? []);
+      setData(normalizeData(result));
     } catch (err) {
       // Fallback para dados fictícios se a API falhar (para demonstração)
       console.warn(`Usando dados fictícios para ${module}/${entity}`);
+      setError(isLiveApiHub ? 'API Hub vivo indisponivel para esta lista.' : '');
       setData([
         { id: '1', name: `${title} Item 1`, status: 'Ativo', created_at: new Date().toISOString() },
         { id: '2', name: `${title} Item 2`, status: 'Pendente', created_at: new Date().toISOString() },
@@ -36,6 +76,62 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
       setLoading(false);
     }
   };
+
+  const transitionResource = async (resourceId: string, action: string, reason: string) => {
+    const response = await fetch(`${API_HUB_URL}${liveResourcePath}/${resourceId}/actions/${action}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...apiHeaders() },
+      body: JSON.stringify({ reason }),
+    });
+    if (!response.ok) {
+      throw new Error(`Acao ${action} retornou HTTP ${response.status}.`);
+    }
+    return response.json();
+  };
+
+  const runJourneyAction = async () => {
+    const resource = data[0];
+    if (!resource?.id) return;
+
+    setActionState('running');
+    setActionFeedback('Executando acao real via API Hub...');
+    try {
+      if (module === 'marketplace' && resourceType === 'orders') {
+        const response = await fetch(`${API_HUB_URL}/gateway/payments/sandbox/authorize`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...apiHeaders() },
+          body: JSON.stringify({
+            order_id: resource.id,
+            idempotency_key: `user-shell-payment-${resource.id}`,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error(`Pagamento sandbox retornou HTTP ${response.status}.`);
+        }
+        const paid = await response.json();
+        setData((items) =>
+          items.map((item) => (item.id === resource.id ? { ...item, status: paid.status ?? 'paid' } : item)),
+        );
+        setActionFeedback('Jornada concluida: pedido paid via API Hub vivo.');
+      } else if (module === 'delivery' && resourceType === 'delivery_requests') {
+        await transitionResource(resource.id, 'assign', 'entregador atribuido pelo shell User');
+        await transitionResource(resource.id, 'pickup', 'pedido coletado pelo shell User');
+        const completed = await transitionResource(resource.id, 'complete', 'entrega concluida pelo shell User');
+        setData((items) => items.map((item) => (item.id === completed.id ? completed : item)));
+        setActionFeedback('Jornada concluida: entrega completed via API Hub vivo.');
+      }
+      setActionState('completed');
+    } catch (err) {
+      setActionState('failed');
+      setActionFeedback(err instanceof Error ? err.message : 'Falha ao executar acao real.');
+    }
+  };
+
+  const canRunJourneyAction =
+    isLiveApiHub &&
+    data.length > 0 &&
+    ((module === 'marketplace' && resourceType === 'orders') ||
+      (module === 'delivery' && resourceType === 'delivery_requests'));
 
   useEffect(() => {
     if (type === 'list') {
@@ -103,6 +199,20 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         </div>
       ) : null}
 
+      {canRunJourneyAction ? (
+        <section className="action-panel neo-brutalism" aria-label="Acao de jornada User" style={{ background: '#fff', padding: '20px', marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 900, marginBottom: '12px' }}>Acao real API Hub</h2>
+          <button className="btn-primary" type="button" onClick={runJourneyAction} disabled={actionState === 'running'} style={{ padding: '10px 20px' }}>
+            Concluir jornada User
+          </button>
+          {actionFeedback ? (
+            <p className={`journey-feedback ${actionState}`} style={{ marginTop: '12px', fontWeight: 800 }}>
+              {actionFeedback}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
+
       {loading ? (
         <div className="loader"></div>
       ) : (
@@ -110,7 +220,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
           {data.length > 0 ? data.map((item: any) => (
             <div key={item.id} className="data-card neo-brutalism" style={{ background: '#fff', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{item.name || item.title || `${title} #${item.id}`}</h3>
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{displayNameFor(item, title)}</h3>
                 <p style={{ fontSize: '0.9rem', color: '#536159' }}>ID: {item.id} | Criado em: {new Date(item.created_at).toLocaleDateString()}</p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>

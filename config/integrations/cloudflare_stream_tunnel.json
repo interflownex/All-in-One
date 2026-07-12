@@ -1,0 +1,6 @@
+{
+  "hostname": "stream.seu-dominio.com",
+  "tunnelName": "all-in-one-stream",
+  "originUrl": "http://127.0.0.1:8107",
+  "publicPathRegex": "^/stream$"
+}
