@@ -213,3 +213,16 @@ def test_riders_shell_approves_and_activates_live_profile(page: Page, request: p
 
     expect(action_panel.locator("dd", has_text="active")).to_be_visible(timeout=15000)
     expect(action_panel.locator(".journey-feedback.completed")).to_contain_text("Jornada concluida")
+
+
+def test_health_shell_approves_and_completes_live_appointment(page: Page, request: pytest.FixtureRequest) -> None:
+    server_url = request.getfixturevalue("all_in_one_health_live_server")
+
+    page.goto(server_url, wait_until="domcontentloaded")
+
+    action_panel = page.get_by_label("Acao de jornada Health")
+    expect(action_panel.get_by_text("draft")).to_be_visible(timeout=15000)
+    action_panel.get_by_role("button", name="Concluir jornada Health").click()
+
+    expect(action_panel.locator("dd", has_text="completed")).to_be_visible(timeout=15000)
+    expect(action_panel.locator(".journey-feedback.completed")).to_contain_text("Jornada concluida")

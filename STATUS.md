@@ -48,19 +48,27 @@
   simulando submissao documental, aprovacao compliance/MFA e ativacao operacional.
 - O Playwright vivo agora tambem clica em `Concluir jornada Riders` e confirma
   status `active` no frontend.
+- `all-in-one-health` ganhou uma acao executavel de jornada: o shell usa a
+  consulta retornada pelo API Hub vivo para acionar `approve` e `complete`,
+  simulando aprovacao clinica com MFA e atendimento concluido com prontuario
+  protegido.
+- O Playwright vivo agora tambem clica em `Concluir jornada Health` e confirma
+  status `completed` no frontend.
+- `apps/all-in-one-health/src/vite-env.d.ts` foi adicionado para permitir build
+  TypeScript/Vite estrito do shell Health.
 
 ### Validacoes executadas
 
-- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 15 aprovados, incluindo 4 cenarios com API Hub vivo e acoes de jornada Services/Mobility/Riders.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 16 aprovados, incluindo 4 cenarios com API Hub vivo e acoes de jornada Services/Mobility/Riders/Health.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k live_api_hub`: 4 aprovados.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k services_shell_completes_live_contract_journey`: 1 aprovado.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k mobility_shell_completes_live_ride_and_ticket_journey`: 1 aprovado.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k riders_shell_approves_and_activates_live_profile`: 1 aprovado.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k health_shell_approves_and_completes_live_appointment`: 1 aprovado.
+- `npm run build` em `apps/all-in-one-health`: aprovado.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 6 aprovados.
-- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 5 aprovados.
-- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py`: 17 aprovados.
-- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest --collect-only -q tests/e2e/test_all_in_one_phase4_shells.py`: 12 testes coletados.
-- `python3 -m py_compile tests/e2e/test_all_in_one_phase4_shells.py tests/e2e/conftest.py tests/test_frontend_journeys_contract.py`: aprovado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py modules/api_hub/tests/test_gateway_security.py`: 23 aprovados.
+- `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_phase4_shells.py tests/e2e/conftest.py modules/api_hub/main.py modules/api_hub/tests/test_gateway_security.py tests/test_frontend_journeys_contract.py`: aprovado.
 - `python3 -m json.tool config/apps/frontend_journeys.json`: aprovado.
 - `python3 scripts/validate_repository.py`: aprovado.
 - `git diff --check`: aprovado.
@@ -69,8 +77,6 @@
 
 - Ampliar as interfaces funcionais reais para alem dos shells iniciais fora da
   trilha Valley.
-- Expandir Playwright E2E por jornada para Health, repetindo o padrao vivo ja
-  aplicado em Services, Mobility e Riders.
 
 ### Git
 

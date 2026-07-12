@@ -25,15 +25,38 @@ type ApiCard = {
   summary: string
 }
 
-async function fetchEndpoint(path: string) {
+type ApiResource = {
+  id: string
+  status?: string
+  payload?: Record<string, unknown>
+}
+
+type JourneyState = 'idle' | 'running' | 'completed' | 'failed'
+
+const apiHeaders = (): Record<string, string> => (API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {})
+
+async function fetchEndpoint(path: string): Promise<ApiResource[]> {
   if (!API_HUB_URL) throw new Error('VITE_API_HUB_URL ausente')
   const response = await fetch(`${API_HUB_URL}${path}?limit=3`, {
-    headers: API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {},
+    headers: apiHeaders(),
   })
   if (!response.ok) throw new Error(`HTTP ${response.status}`)
   const payload = await response.json()
   if (Array.isArray(payload)) return payload
   return Array.isArray(payload?.data) ? payload.data : []
+}
+
+async function transitionAppointment(appointmentId: string, action: 'approve' | 'complete', reason: string) {
+  const response = await fetch(`${API_HUB_URL}/health/resources/appointments/${appointmentId}/actions/${action}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...apiHeaders(),
+    },
+    body: JSON.stringify({ reason }),
+  })
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  return response.json() as Promise<ApiResource>
 }
 
 function App() {
@@ -45,6 +68,9 @@ function App() {
       summary: endpoint.fallback,
     })),
   )
+  const [appointment, setAppointment] = useState<ApiResource | null>(null)
+  const [journeyState, setJourneyState] = useState<JourneyState>('idle')
+  const [journeyMessage, setJourneyMessage] = useState('Pronto para aprovar consulta e registrar atendimento concluido.')
 
   useEffect(() => {
     let active = true
@@ -52,6 +78,9 @@ function App() {
       endpoints.map(async endpoint => {
         try {
           const data = await fetchEndpoint(endpoint.path)
+          if (endpoint.path.endsWith('/appointments') && data[0]) {
+            setAppointment(data[0])
+          }
           return {
             label: endpoint.label,
             path: endpoint.path,
@@ -74,6 +103,27 @@ function App() {
       active = false
     }
   }, [])
+
+  async function completeHealthJourney() {
+    if (!appointment?.id) {
+      setJourneyState('failed')
+      setJourneyMessage('Nenhuma consulta retornada pelo API Hub para executar a jornada.')
+      return
+    }
+    setJourneyState('running')
+    setJourneyMessage('Aprovando consulta com contexto clinico e MFA...')
+    try {
+      const approved = await transitionAppointment(appointment.id, 'approve', 'consulta autorizada pelo Playwright')
+      setAppointment(approved)
+      const completed = await transitionAppointment(appointment.id, 'complete', 'atendimento concluido com prontuario protegido')
+      setAppointment(completed)
+      setJourneyState('completed')
+      setJourneyMessage('Jornada concluida: consulta completed com governanca clinica registrada.')
+    } catch {
+      setJourneyState('failed')
+      setJourneyMessage('Nao foi possivel concluir a jornada Health pelo API Hub.')
+    }
+  }
 
   return (
     <main className="shell">
@@ -102,6 +152,31 @@ function App() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="action-panel" aria-label="Acao de jornada Health">
+        <div>
+          <p className="eyebrow">Jornada executavel</p>
+          <h2>Aprovar consulta e concluir atendimento</h2>
+          <p>
+            Usa a primeira agenda retornada pelo API Hub para validar aprovacao
+            clinica com MFA e conclusao do atendimento sem expor dado sensivel.
+          </p>
+        </div>
+        <dl>
+          <div>
+            <dt>Consulta</dt>
+            <dd>{appointment?.id ? appointment.id.slice(0, 8) : 'aguardando API Hub'}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>{appointment?.status ?? 'fallback'}</dd>
+          </div>
+        </dl>
+        <button type="button" onClick={completeHealthJourney} disabled={journeyState === 'running'}>
+          {journeyState === 'running' ? 'Executando...' : 'Concluir jornada Health'}
+        </button>
+        <p className={`journey-feedback ${journeyState}`}>{journeyMessage}</p>
       </section>
     </main>
   )

@@ -19,7 +19,7 @@ Coordenada operacional atual:
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
 | Docker local | 97% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real e contexto Docker higienizado por `.dockerignore` | Falta medir rebuild remoto e acompanhar execucoes do gate em ambiente remoto. |
-| Apps/frontend | 88% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo e acoes reais Services/Mobility/Riders, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta replicar acao de jornada para Health e aprofundar interfaces funcionais reais. |
+| Apps/frontend | 89% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo e acoes reais Services/Mobility/Riders/Health, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta aprofundar interfaces funcionais reais fora dos shells iniciais. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
@@ -240,7 +240,7 @@ Proximos passos naturais:
 
 Objetivo: transformar microservicos em jornadas de produto.
 
-Status: 88%
+Status: 89%
 
 Apps e prioridades:
 - `all-in-one-user`: cadastro, wallet, busca, compra, delivery, jobs.
@@ -294,20 +294,23 @@ Apps e prioridades:
   ativar perfil de rider retornado pelo API Hub; o gateway tambem propaga claims
   JWT de roles/scopes/MFA para headers internos `X-Actor-*`, mantendo a regra de
   aprovacao compliance auditavel.
+- `all-in-one-health` agora possui acao viva no shell para aprovar e concluir
+  consulta retornada pelo API Hub, validada por Playwright contra modulos
+  FastAPI reais e fixtures SQLite, mantendo aprovacao clinica com MFA e
+  prontuario protegido.
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
-- Expandir Playwright E2E por jornada para Health; as jornadas contratuais locais
-  `identity -> wallet -> marketplace order`, `business -> jobs -> candidate access`,
-  Delivery, Riders, Services, Mobility e Health ja estao cobertas por pytest.
+- As jornadas contratuais locais `identity -> wallet -> marketplace order`,
+  `business -> jobs -> candidate access`, Delivery, Riders, Services, Mobility e
+  Health ja estao cobertas por pytest.
 - Regras Valley de Pepitas, desconto Stock, idempotencia e Plano Essencial ja
   estao cobertas por pytest contratual.
 
 Proximos passos naturais:
-1. Replicar acao de jornada viva para Health.
-2. Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.
-3. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
-4. Registrar evidencias por app em `STATUS.md`.
+1. Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.
+2. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
+3. Registrar evidencias por app em `STATUS.md`.
 
 ### Fase 5 - Integracoes externas homologadas
 
