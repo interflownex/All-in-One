@@ -25,19 +25,24 @@ def wait_for_http(port: int, timeout: int = 15) -> bool:
     return False
 
 
-def start_vite_server(app_directory: str) -> tuple[subprocess.Popen, str]:
+def start_vite_server(app_directory: str, env: dict[str, str] | None = None) -> tuple[subprocess.Popen, str]:
     port = free_port()
+    server_url = f"http://127.0.0.1:{port}"
+    process_env = os.environ.copy()
+    if env:
+        process_env.update({key: value.format(server_url=server_url) for key, value in env.items()})
     process = subprocess.Popen(
         f"npm run dev -- --port {port} --strictPort --host 127.0.0.1",
         cwd=app_directory,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         shell=True,
+        env=process_env,
     )
     if not wait_for_http(port, timeout=60):
         process.terminate()
         raise RuntimeError(f"Vite nao respondeu corretamente na porta {port}.")
-    return process, f"http://127.0.0.1:{port}"
+    return process, server_url
 
 
 def stop_process(process: subprocess.Popen) -> None:
@@ -77,7 +82,10 @@ def superapp_server():
 @pytest.fixture(scope="session")
 def all_in_one_riders_server():
     try:
-        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-riders"))
+        process, url = start_vite_server(
+            os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-riders"),
+            {"VITE_API_HUB_URL": "{server_url}"},
+        )
     except RuntimeError as exc:
         pytest.fail(str(exc))
     yield url
@@ -86,7 +94,10 @@ def all_in_one_riders_server():
 @pytest.fixture(scope="session")
 def all_in_one_services_server():
     try:
-        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-services"))
+        process, url = start_vite_server(
+            os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-services"),
+            {"VITE_API_HUB_URL": "{server_url}"},
+        )
     except RuntimeError as exc:
         pytest.fail(str(exc))
     yield url
@@ -95,7 +106,10 @@ def all_in_one_services_server():
 @pytest.fixture(scope="session")
 def all_in_one_health_server():
     try:
-        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-health"))
+        process, url = start_vite_server(
+            os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-health"),
+            {"VITE_API_HUB_URL": "{server_url}"},
+        )
     except RuntimeError as exc:
         pytest.fail(str(exc))
     yield url
@@ -104,7 +118,10 @@ def all_in_one_health_server():
 @pytest.fixture(scope="session")
 def all_in_one_mobility_server():
     try:
-        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-mobility"))
+        process, url = start_vite_server(
+            os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-mobility"),
+            {"VITE_API_HUB_URL": "{server_url}"},
+        )
     except RuntimeError as exc:
         pytest.fail(str(exc))
     yield url

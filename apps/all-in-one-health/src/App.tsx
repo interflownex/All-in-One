@@ -77,8 +77,8 @@ function App() {
         <p className="eyebrow">All-in-One Health</p>
         <h1>Saude operacional com consentimento, agenda e prontuario protegido.</h1>
         <p>
-          Shell dedicado para validar a jornada paciente -> agenda -> prontuario
-          -> consulta antes de conectar telemedicina e provedores reais.
+          Shell dedicado para validar a jornada paciente, agenda, prontuario
+          e consulta antes de conectar telemedicina e provedores reais.
         </p>
       </section>
 

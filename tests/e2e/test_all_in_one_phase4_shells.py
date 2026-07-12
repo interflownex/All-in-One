@@ -78,6 +78,11 @@ def _wire_routes(page: Page, routes: list[str]) -> None:
         page.route(f"**{route}**", _serve_collection)
 
 
+def _expect_journey_marker(page: Page, journey_marker: str) -> None:
+    journey = page.get_by_label("Jornada prioritaria")
+    expect(journey.get_by_text(journey_marker, exact=True)).to_be_visible()
+
+
 @pytest.mark.parametrize("server_fixture,title,journey_marker,routes", PHASE4_SHELLS)
 def test_phase4_shells_load_api_hub_data(
     page: Page,
@@ -94,7 +99,7 @@ def test_phase4_shells_load_api_hub_data(
 
     expect(page.locator("h1")).to_be_visible()
     expect(page.locator(".eyebrow")).to_contain_text(title)
-    expect(page.get_by_text(journey_marker, exact=False)).to_be_visible()
+    _expect_journey_marker(page, journey_marker)
     expect(page.locator(".online")).to_have_count(len(routes), timeout=10000)
     expect(page.get_by_text("registro(s) retornado(s) pelo API Hub").first).to_be_visible()
 
@@ -115,5 +120,5 @@ def test_phase4_shells_keep_mobile_journey_visible(
     page.goto(server_url, wait_until="domcontentloaded")
 
     expect(page.locator(".eyebrow")).to_contain_text(title)
-    expect(page.get_by_text(journey_marker, exact=False)).to_be_visible()
+    _expect_journey_marker(page, journey_marker)
     expect(page.locator(".panel")).to_be_visible()

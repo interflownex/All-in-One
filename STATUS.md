@@ -4,6 +4,9 @@
 
 ### Concluido neste ciclo
 
+- Instaladas e materializadas as dependencias Node dos quatro shells fora Valley
+  via `npm install --ignore-scripts --no-audit --no-fund`, atualizando os
+  `package-lock.json` correspondentes.
 - Criado `tests/e2e/test_all_in_one_phase4_shells.py` cobrindo
   `all-in-one-riders`, `all-in-one-services`, `all-in-one-health` e
   `all-in-one-mobility`.
@@ -15,25 +18,26 @@
 - `config/apps/frontend_journeys.json` agora declara
   `playwright:all_in_one_phase4_shells` na cobertura dos quatro apps, e
   `tests/test_frontend_journeys_contract.py` bloqueia regressao desse vinculo.
+- `tests/e2e/conftest.py` inicia esses quatro shells com `VITE_API_HUB_URL`
+  apontando para o proprio Vite efemero, permitindo que o Playwright intercepte
+  as rotas do API Hub sem exigir backend vivo local.
 
 ### Validacoes executadas
 
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 8 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py`: 17 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest --collect-only -q tests/e2e/test_all_in_one_phase4_shells.py`: 8 testes coletados.
 - `python3 -m py_compile tests/e2e/test_all_in_one_phase4_shells.py tests/e2e/conftest.py tests/test_frontend_journeys_contract.py`: aprovado.
 - `python3 -m json.tool config/apps/frontend_journeys.json`: aprovado.
 - `python3 scripts/validate_repository.py`: aprovado.
 - `git diff --check`: aprovado.
-- A suite Playwright nova ainda nao foi executada de ponta a ponta neste
-  checkout porque os quatro shells fora Valley nao possuem `node_modules`
-  instalados localmente.
 
 ### Pendencias rastreadas
 
-- Executar a suite Playwright nova em ambiente com `node_modules` instalados nos
-  quatro shells fora Valley.
 - Evoluir os E2E de rotas interceptadas para API Hub vivo com fixtures reais de
   backend.
+- Ampliar as interfaces funcionais reais para alem dos shells iniciais fora da
+  trilha Valley.
 
 ### Git
 
