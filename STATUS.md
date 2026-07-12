@@ -29,11 +29,18 @@
 - O proxy do API Hub passou a remover o prefixo do modulo ao encaminhar
   `/riders/resources/...` para `/resources/...`, e a excecao publica de
   `/health` deixou de cobrir indevidamente `/health/resources/...`.
+- `all-in-one-services` ganhou uma acao executavel de jornada: o shell usa o
+  contrato retornado pelo API Hub vivo para acionar `accept` e `complete`,
+  simulando aceite, escrow retido e evidencia auditavel.
+- `tests/e2e/test_all_in_one_phase4_shells.py` agora valida tambem a jornada
+  Services viva, clicando em `Concluir jornada Services` e confirmando status
+  `completed` no frontend.
 
 ### Validacoes executadas
 
-- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 12 aprovados, incluindo 4 cenarios com API Hub vivo.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 13 aprovados, incluindo 4 cenarios com API Hub vivo e a acao de jornada Services.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k live_api_hub`: 4 aprovados.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k services_shell_completes_live_contract_journey`: 1 aprovado.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 5 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py`: 17 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest --collect-only -q tests/e2e/test_all_in_one_phase4_shells.py`: 12 testes coletados.
@@ -46,8 +53,8 @@
 
 - Ampliar as interfaces funcionais reais para alem dos shells iniciais fora da
   trilha Valley.
-- Expandir Playwright E2E por jornada para alem da leitura inicial dos quatro
-  shells fora Valley.
+- Expandir Playwright E2E por jornada para Riders, Health e Mobility, repetindo
+  o padrao vivo ja aplicado em Services.
 
 ### Git
 

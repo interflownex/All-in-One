@@ -111,6 +111,10 @@ def _expect_journey_marker(page: Page, journey_marker: str) -> None:
     expect(journey.get_by_text(journey_marker, exact=True)).to_be_visible()
 
 
+def _expect_shell_title(page: Page, title: str) -> None:
+    expect(page.locator(".hero .eyebrow")).to_contain_text(title)
+
+
 @pytest.mark.parametrize("server_fixture,title,journey_marker,routes", PHASE4_SHELLS)
 def test_phase4_shells_load_api_hub_data(
     page: Page,
@@ -126,7 +130,7 @@ def test_phase4_shells_load_api_hub_data(
     page.goto(server_url, wait_until="domcontentloaded")
 
     expect(page.locator("h1")).to_be_visible()
-    expect(page.locator(".eyebrow")).to_contain_text(title)
+    _expect_shell_title(page, title)
     _expect_journey_marker(page, journey_marker)
     expect(page.locator(".online")).to_have_count(len(routes), timeout=10000)
     expect(page.get_by_text("registro(s) retornado(s) pelo API Hub").first).to_be_visible()
@@ -147,7 +151,7 @@ def test_phase4_shells_keep_mobile_journey_visible(
 
     page.goto(server_url, wait_until="domcontentloaded")
 
-    expect(page.locator(".eyebrow")).to_contain_text(title)
+    _expect_shell_title(page, title)
     _expect_journey_marker(page, journey_marker)
     expect(page.locator(".panel")).to_be_visible()
 
@@ -164,7 +168,20 @@ def test_phase4_shells_load_live_api_hub_fixtures(
 
     page.goto(server_url, wait_until="domcontentloaded")
 
-    expect(page.locator(".eyebrow")).to_contain_text(title)
+    _expect_shell_title(page, title)
     _expect_journey_marker(page, journey_marker)
     expect(page.locator(".online")).to_have_count(4, timeout=15000)
     expect(page.get_by_text("1 registro(s) retornado(s) pelo API Hub").first).to_be_visible()
+
+
+def test_services_shell_completes_live_contract_journey(page: Page, request: pytest.FixtureRequest) -> None:
+    server_url = request.getfixturevalue("all_in_one_services_live_server")
+
+    page.goto(server_url, wait_until="domcontentloaded")
+
+    action_panel = page.get_by_label("Acao de jornada Services")
+    expect(action_panel.get_by_text("draft")).to_be_visible(timeout=15000)
+    action_panel.get_by_role("button", name="Concluir jornada Services").click()
+
+    expect(action_panel.locator("dd", has_text="completed")).to_be_visible(timeout=15000)
+    expect(action_panel.locator(".journey-feedback.completed")).to_contain_text("Jornada concluida")
