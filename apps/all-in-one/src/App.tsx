@@ -1,5 +1,5 @@
 
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import './index.css';
@@ -587,12 +587,12 @@ function App() {
               <Route path="/legal/hearings" element={LegalHearingsList ? <LegalHearingsList /> : <div>Carregando...</div>} />
               <Route path="/legal/cases-form" element={LegalCasesForm ? <LegalCasesForm /> : <div>Carregando...</div>} />
               <Route path="/tms/freights" element={TmsFreightsList ? <TmsFreightsList /> : <div>Carregando...</div>} />
-              <Route path="/tms/routes-form" element={MobilityRoutesForm ? <MobilityRoutesForm /> : <div>Carregando...</div>} />
+              <Route path="/tms/routes-form" element={TmsRoutesForm ? <TmsRoutesForm /> : <div>Carregando...</div>} />
               <Route path="/tms/tmspermissions" element={TmsTmsPermissions ? <TmsTmsPermissions /> : <div>Carregando...</div>} />
               <Route path="/tms/freightaudits" element={TmsFreightAuditsList ? <TmsFreightAuditsList /> : <div>Carregando...</div>} />
               <Route path="/tms/proofsofdelivery" element={TmsProofsOfDeliveryList ? <TmsProofsOfDeliveryList /> : <div>Carregando...</div>} />
               <Route path="/tms/tms" element={TmsTmsOverview ? <TmsTmsOverview /> : <div>Carregando...</div>} />
-              <Route path="/tms/routes" element={MobilityRoutesList ? <MobilityRoutesList /> : <div>Carregando...</div>} />
+              <Route path="/tms/routes" element={TmsRoutesList ? <TmsRoutesList /> : <div>Carregando...</div>} />
               <Route path="/tms/freights-form" element={TmsFreightsForm ? <TmsFreightsForm /> : <div>Carregando...</div>} />
               <Route path="/tms/proofsofdelivery-form" element={TmsProofsOfDeliveryForm ? <TmsProofsOfDeliveryForm /> : <div>Carregando...</div>} />
               <Route path="/tms/carriers" element={TmsCarriersList ? <TmsCarriersList /> : <div>Carregando...</div>} />
@@ -600,14 +600,14 @@ function App() {
               <Route path="/tms/freightaudits-form" element={TmsFreightAuditsForm ? <TmsFreightAuditsForm /> : <div>Carregando...</div>} />
               <Route path="/document/folders" element={DocumentFoldersList ? <DocumentFoldersList /> : <div>Carregando...</div>} />
               <Route path="/document/versions-form" element={DocumentVersionsForm ? <DocumentVersionsForm /> : <div>Carregando...</div>} />
-              <Route path="/document/documents-form" element={IdentityDocumentsForm ? <IdentityDocumentsForm /> : <div>Carregando...</div>} />
+              <Route path="/document/documents-form" element={DocumentDocumentsForm ? <DocumentDocumentsForm /> : <div>Carregando...</div>} />
               <Route path="/document/documentpermissions" element={DocumentDocumentPermissions ? <DocumentDocumentPermissions /> : <div>Carregando...</div>} />
               <Route path="/document/document" element={DocumentDocumentOverview ? <DocumentDocumentOverview /> : <div>Carregando...</div>} />
               <Route path="/document/retentionpolicies-form" element={DocumentRetentionPoliciesForm ? <DocumentRetentionPoliciesForm /> : <div>Carregando...</div>} />
               <Route path="/document/folders-form" element={DocumentFoldersForm ? <DocumentFoldersForm /> : <div>Carregando...</div>} />
               <Route path="/document/retentionpolicies" element={DocumentRetentionPoliciesList ? <DocumentRetentionPoliciesList /> : <div>Carregando...</div>} />
               <Route path="/document/versions" element={DocumentVersionsList ? <DocumentVersionsList /> : <div>Carregando...</div>} />
-              <Route path="/document/documents" element={IdentityDocumentsList ? <IdentityDocumentsList /> : <div>Carregando...</div>} />
+              <Route path="/document/documents" element={DocumentDocumentsList ? <DocumentDocumentsList /> : <div>Carregando...</div>} />
               <Route path="/services/providers" element={ServicesProvidersList ? <ServicesProvidersList /> : <div>Carregando...</div>} />
               <Route path="/services/servicespermissions" element={ServicesServicesPermissions ? <ServicesServicesPermissions /> : <div>Carregando...</div>} />
               <Route path="/services/providers-form" element={ServicesProvidersForm ? <ServicesProvidersForm /> : <div>Carregando...</div>} />
@@ -638,11 +638,11 @@ function App() {
               <Route path="/delivery/assignments" element={DeliveryAssignmentsList ? <DeliveryAssignmentsList /> : <div>Carregando...</div>} />
               <Route path="/delivery/delivery" element={DeliveryDeliveryOverview ? <DeliveryDeliveryOverview /> : <div>Carregando...</div>} />
               <Route path="/delivery/proofs" element={DeliveryProofsList ? <DeliveryProofsList /> : <div>Carregando...</div>} />
-              <Route path="/delivery/quotes" element={ServicesQuotesList ? <ServicesQuotesList /> : <div>Carregando...</div>} />
+              <Route path="/delivery/quotes" element={DeliveryQuotesList ? <DeliveryQuotesList /> : <div>Carregando...</div>} />
               <Route path="/delivery/insuranceoptions-form" element={DeliveryInsuranceOptionsForm ? <DeliveryInsuranceOptionsForm /> : <div>Carregando...</div>} />
               <Route path="/delivery/deliverypermissions" element={DeliveryDeliveryPermissions ? <DeliveryDeliveryPermissions /> : <div>Carregando...</div>} />
               <Route path="/delivery/deliveryrequests-form" element={DeliveryDeliveryRequestsForm ? <DeliveryDeliveryRequestsForm /> : <div>Carregando...</div>} />
-              <Route path="/delivery/quotes-form" element={ServicesQuotesForm ? <ServicesQuotesForm /> : <div>Carregando...</div>} />
+              <Route path="/delivery/quotes-form" element={DeliveryQuotesForm ? <DeliveryQuotesForm /> : <div>Carregando...</div>} />
               <Route path="/delivery/assignments-form" element={DeliveryAssignmentsForm ? <DeliveryAssignmentsForm /> : <div>Carregando...</div>} />
               <Route path="/property/assemblies" element={PropertyAssembliesList ? <PropertyAssembliesList /> : <div>Carregando...</div>} />
               <Route path="/property/properties" element={PropertyPropertiesList ? <PropertyPropertiesList /> : <div>Carregando...</div>} />

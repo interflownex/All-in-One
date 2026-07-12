@@ -61,6 +61,15 @@
   o contrato agora aponta para ampliar interfaces funcionais por dominio.
 - `tests/test_frontend_journeys_contract.py` ganhou trava anti-drift para impedir
   que shells ja cobertos por Playwright vivo voltem a listar esse passo obsoleto.
+- `all-in-one-user` avancou de `generated_react_shell` para
+  `journey_react_shell`: o shell compartilhado `apps/all-in-one` agora tem
+  Playwright inicial da jornada consumidor, percorrendo Identity, Wallet,
+  Marketplace Orders, Delivery e Jobs com rotas `/gateway/...` interceptadas.
+- `config/apps/frontend_journeys.json` passou a declarar
+  `playwright:all_in_one_user_shell` como evidencia do app `all-in-one-user`.
+- O build estrito do shell compartilhado tambem foi saneado: rotas geradas de
+  TMS, Document e Delivery voltaram a apontar para seus componentes proprios, e
+  `SmartCRUD` passou a renderizar estado de erro observavel.
 
 ### Validacoes executadas
 
@@ -73,7 +82,9 @@
 - `npm run build` em `apps/all-in-one-health`: aprovado.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 6 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py modules/api_hub/tests/test_gateway_security.py`: 24 aprovados.
-- `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_phase4_shells.py tests/e2e/conftest.py modules/api_hub/main.py modules/api_hub/tests/test_gateway_security.py tests/test_frontend_journeys_contract.py`: aprovado.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_user_shell.py`: 2 aprovados.
+- `npm run build` em `apps/all-in-one`: aprovado.
+- `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_user_shell.py tests/e2e/conftest.py tests/test_frontend_journeys_contract.py`: aprovado.
 - `python3 -m json.tool config/apps/frontend_journeys.json`: aprovado.
 - `python3 scripts/validate_repository.py`: aprovado.
 - `git diff --check`: aprovado.
@@ -82,6 +93,8 @@
 
 - Ampliar as interfaces funcionais reais para alem dos shells iniciais fora da
   trilha Valley.
+- Levar `all-in-one-user` para API Hub vivo e acoes reais de cadastro, wallet,
+  pedido, entrega e candidatura.
 
 ### Git
 

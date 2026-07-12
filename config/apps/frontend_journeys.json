@@ -12,9 +12,9 @@
       "priority_journey": "cadastro -> wallet -> busca -> compra -> delivery -> jobs",
       "api_modules": ["identity", "finance", "marketplace", "delivery", "mobility", "health", "jobs"],
       "api_hub_routes": ["/gateway/identity", "/gateway/finance", "/gateway/catalog", "/gateway/jobs"],
-      "shell_status": "generated_react_shell",
-      "coverage": ["pytest:user_marketplace_journey", "pytest:operational_journeys"],
-      "next_e2e": "Levar identity -> wallet -> marketplace order para Playwright desktop/mobile."
+      "shell_status": "journey_react_shell",
+      "coverage": ["playwright:all_in_one_user_shell", "pytest:user_marketplace_journey", "pytest:operational_journeys"],
+      "next_e2e": "Ampliar identity -> wallet -> marketplace order para API Hub vivo e acoes reais."
     },
     {
       "slug": "all-in-one-business",
