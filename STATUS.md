@@ -35,12 +35,18 @@
 - `tests/e2e/test_all_in_one_phase4_shells.py` agora valida tambem a jornada
   Services viva, clicando em `Concluir jornada Services` e confirmando status
   `completed` no frontend.
+- `all-in-one-mobility` ganhou uma acao executavel de jornada: o shell usa a
+  corrida e o ticket retornados pelo API Hub vivo para acionar `accept`,
+  `complete` e `use`, simulando corrida concluida e ticket QR/NFC validado.
+- O Playwright vivo agora tambem clica em `Concluir jornada Mobility` e confirma
+  `completed` para a corrida e `used` para o ticket.
 
 ### Validacoes executadas
 
-- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 13 aprovados, incluindo 4 cenarios com API Hub vivo e a acao de jornada Services.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 14 aprovados, incluindo 4 cenarios com API Hub vivo e acoes de jornada Services/Mobility.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k live_api_hub`: 4 aprovados.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k services_shell_completes_live_contract_journey`: 1 aprovado.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k mobility_shell_completes_live_ride_and_ticket_journey`: 1 aprovado.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 5 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py`: 17 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest --collect-only -q tests/e2e/test_all_in_one_phase4_shells.py`: 12 testes coletados.
@@ -53,8 +59,8 @@
 
 - Ampliar as interfaces funcionais reais para alem dos shells iniciais fora da
   trilha Valley.
-- Expandir Playwright E2E por jornada para Riders, Health e Mobility, repetindo
-  o padrao vivo ja aplicado em Services.
+- Expandir Playwright E2E por jornada para Riders e Health, repetindo
+  o padrao vivo ja aplicado em Services e Mobility.
 
 ### Git
 

@@ -185,3 +185,18 @@ def test_services_shell_completes_live_contract_journey(page: Page, request: pyt
 
     expect(action_panel.locator("dd", has_text="completed")).to_be_visible(timeout=15000)
     expect(action_panel.locator(".journey-feedback.completed")).to_contain_text("Jornada concluida")
+
+
+def test_mobility_shell_completes_live_ride_and_ticket_journey(page: Page, request: pytest.FixtureRequest) -> None:
+    server_url = request.getfixturevalue("all_in_one_mobility_live_server")
+
+    page.goto(server_url, wait_until="domcontentloaded")
+
+    action_panel = page.get_by_label("Acao de jornada Mobility")
+    expect(action_panel.get_by_text("requested")).to_be_visible(timeout=15000)
+    expect(action_panel.get_by_text("active")).to_be_visible(timeout=15000)
+    action_panel.get_by_role("button", name="Concluir jornada Mobility").click()
+
+    expect(action_panel.locator("dd", has_text="completed")).to_be_visible(timeout=15000)
+    expect(action_panel.locator("dd", has_text="used")).to_be_visible(timeout=15000)
+    expect(action_panel.locator(".journey-feedback.completed")).to_contain_text("Jornada concluida")

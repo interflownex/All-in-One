@@ -24,15 +24,38 @@ type ApiCard = {
   summary: string
 }
 
-async function fetchEndpoint(path: string) {
+type ApiResource = {
+  id: string
+  status?: string
+  payload?: Record<string, unknown>
+}
+
+type JourneyState = 'idle' | 'running' | 'completed' | 'failed'
+
+const apiHeaders = () => (API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {})
+
+async function fetchEndpoint(path: string): Promise<ApiResource[]> {
   if (!API_HUB_URL) throw new Error('VITE_API_HUB_URL ausente')
   const response = await fetch(`${API_HUB_URL}${path}?limit=3`, {
-    headers: API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {},
+    headers: apiHeaders(),
   })
   if (!response.ok) throw new Error(`HTTP ${response.status}`)
   const payload = await response.json()
   if (Array.isArray(payload)) return payload
   return Array.isArray(payload?.data) ? payload.data : []
+}
+
+async function transitionResource(path: string, resourceId: string, action: string, reason: string, payload = {}) {
+  const response = await fetch(`${API_HUB_URL}${path}/${resourceId}/actions/${action}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...apiHeaders(),
+    },
+    body: JSON.stringify({ reason, payload }),
+  })
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  return response.json() as Promise<ApiResource>
 }
 
 function App() {
@@ -44,6 +67,10 @@ function App() {
       summary: endpoint.fallback,
     })),
   )
+  const [ride, setRide] = useState<ApiResource | null>(null)
+  const [ticket, setTicket] = useState<ApiResource | null>(null)
+  const [journeyState, setJourneyState] = useState<JourneyState>('idle')
+  const [journeyMessage, setJourneyMessage] = useState('Pronto para aceitar corrida, concluir trajeto e usar ticket QR/NFC.')
 
   useEffect(() => {
     let active = true
@@ -51,6 +78,12 @@ function App() {
       endpoints.map(async endpoint => {
         try {
           const data = await fetchEndpoint(endpoint.path)
+          if (endpoint.path.endsWith('/rides') && data[0]) {
+            setRide(data[0])
+          }
+          if (endpoint.path.endsWith('/tickets') && data[0]) {
+            setTicket(data[0])
+          }
           return {
             label: endpoint.label,
             path: endpoint.path,
@@ -73,6 +106,31 @@ function App() {
       active = false
     }
   }, [])
+
+  async function completeMobilityJourney() {
+    if (!ride?.id || !ticket?.id) {
+      setJourneyState('failed')
+      setJourneyMessage('Corrida ou ticket ausente no API Hub para executar a jornada.')
+      return
+    }
+    setJourneyState('running')
+    setJourneyMessage('Aceitando corrida e validando embarque...')
+    try {
+      const acceptedRide = await transitionResource('/mobility/resources/rides', ride.id, 'accept', 'motorista aceitou corrida')
+      setRide(acceptedRide)
+      const completedRide = await transitionResource('/mobility/resources/rides', ride.id, 'complete', 'corrida concluida com rota validada')
+      setRide(completedRide)
+      const usedTicket = await transitionResource('/mobility/resources/tickets', ticket.id, 'use', 'ticket validado por QR NFC', {
+        validation_mode: 'qr_nfc',
+      })
+      setTicket(usedTicket)
+      setJourneyState('completed')
+      setJourneyMessage('Jornada concluida: corrida completed e ticket used.')
+    } catch {
+      setJourneyState('failed')
+      setJourneyMessage('Nao foi possivel concluir a jornada Mobility pelo API Hub.')
+    }
+  }
 
   return (
     <main className="shell">
@@ -106,6 +164,31 @@ function App() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="action-panel" aria-label="Acao de jornada Mobility">
+        <div>
+          <p className="eyebrow">Jornada executavel</p>
+          <h2>Concluir corrida e validar ticket</h2>
+          <p>
+            Usa a corrida e o ticket retornados pelo API Hub para simular aceite,
+            conclusao de trajeto e validacao QR/NFC.
+          </p>
+        </div>
+        <dl>
+          <div>
+            <dt>Corrida</dt>
+            <dd>{ride?.status ?? 'fallback'}</dd>
+          </div>
+          <div>
+            <dt>Ticket</dt>
+            <dd>{ticket?.status ?? 'fallback'}</dd>
+          </div>
+        </dl>
+        <button type="button" onClick={completeMobilityJourney} disabled={journeyState === 'running'}>
+          {journeyState === 'running' ? 'Executando...' : 'Concluir jornada Mobility'}
+        </button>
+        <p className={`journey-feedback ${journeyState}`}>{journeyMessage}</p>
       </section>
     </main>
   )
