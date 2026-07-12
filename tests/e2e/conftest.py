@@ -73,3 +73,39 @@ def superapp_server():
         pytest.fail(str(exc))
     yield url
     stop_process(process)
+
+@pytest.fixture(scope="session")
+def all_in_one_riders_server():
+    try:
+        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-riders"))
+    except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    stop_process(process)
+
+@pytest.fixture(scope="session")
+def all_in_one_services_server():
+    try:
+        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-services"))
+    except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    stop_process(process)
+
+@pytest.fixture(scope="session")
+def all_in_one_health_server():
+    try:
+        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-health"))
+    except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    stop_process(process)
+
+@pytest.fixture(scope="session")
+def all_in_one_mobility_server():
+    try:
+        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-mobility"))
+    except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    stop_process(process)

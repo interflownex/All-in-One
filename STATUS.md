@@ -1,5 +1,44 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-12 Playwright Dos Shells Fora Valley
+
+### Concluido neste ciclo
+
+- Criado `tests/e2e/test_all_in_one_phase4_shells.py` cobrindo
+  `all-in-one-riders`, `all-in-one-services`, `all-in-one-health` e
+  `all-in-one-mobility`.
+- A suite adicionada valida carregamento desktop com rotas API Hub interceptadas,
+  estado `online`, marcadores da jornada prioritaria e preservacao da jornada
+  em viewport mobile.
+- `tests/e2e/conftest.py` ganhou fixtures de servidor Vite para os quatro
+  shells fora Valley.
+- `config/apps/frontend_journeys.json` agora declara
+  `playwright:all_in_one_phase4_shells` na cobertura dos quatro apps, e
+  `tests/test_frontend_journeys_contract.py` bloqueia regressao desse vinculo.
+
+### Validacoes executadas
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py`: 17 aprovados.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest --collect-only -q tests/e2e/test_all_in_one_phase4_shells.py`: 8 testes coletados.
+- `python3 -m py_compile tests/e2e/test_all_in_one_phase4_shells.py tests/e2e/conftest.py tests/test_frontend_journeys_contract.py`: aprovado.
+- `python3 -m json.tool config/apps/frontend_journeys.json`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `git diff --check`: aprovado.
+- A suite Playwright nova ainda nao foi executada de ponta a ponta neste
+  checkout porque os quatro shells fora Valley nao possuem `node_modules`
+  instalados localmente.
+
+### Pendencias rastreadas
+
+- Executar a suite Playwright nova em ambiente com `node_modules` instalados nos
+  quatro shells fora Valley.
+- Evoluir os E2E de rotas interceptadas para API Hub vivo com fixtures reais de
+  backend.
+
+### Git
+
+- Incremento em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-11 Conexao API Hub Nos Shells Fora Valley
 
 ### Concluido neste ciclo

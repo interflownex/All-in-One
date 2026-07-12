@@ -39,8 +39,8 @@
       "api_modules": ["riders", "delivery", "mobility", "finance", "identity"],
       "api_hub_routes": ["/riders/resources/rider_profiles", "/riders/resources/vehicles", "/delivery/resources/delivery_requests", "/mobility/resources/rides"],
       "shell_status": "api_hub_connected_shell",
-      "coverage": ["pytest:operational_journeys"],
-      "next_e2e": "Levar candidatura -> aprovacao -> entrega para Playwright desktop/mobile."
+      "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
+      "next_e2e": "Executar Playwright desktop/mobile em ambiente com dependencias Node e evoluir para API Hub vivo."
     },
     {
       "slug": "all-in-one-services",
@@ -52,8 +52,8 @@
       "api_modules": ["services", "finance", "identity", "document"],
       "api_hub_routes": ["/services/resources/providers", "/services/resources/service_contracts", "/finance/resources/escrows", "/document/resources/documents"],
       "shell_status": "api_hub_connected_shell",
-      "coverage": ["pytest:operational_journeys"],
-      "next_e2e": "Levar visita -> orcamento -> contrato -> evidencia para Playwright desktop/mobile."
+      "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
+      "next_e2e": "Executar Playwright desktop/mobile em ambiente com dependencias Node e evoluir para API Hub vivo."
     },
     {
       "slug": "all-in-one-health",
@@ -65,8 +65,8 @@
       "api_modules": ["health", "identity", "document"],
       "api_hub_routes": ["/health/resources/patients", "/health/resources/appointments", "/identity/resources/consent_records", "/document/resources/documents"],
       "shell_status": "api_hub_connected_shell",
-      "coverage": ["pytest:operational_journeys"],
-      "next_e2e": "Levar consentimento -> agenda -> consulta para Playwright desktop/mobile."
+      "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
+      "next_e2e": "Executar Playwright desktop/mobile em ambiente com dependencias Node e evoluir para API Hub vivo."
     },
     {
       "slug": "all-in-one-mobility",
@@ -78,8 +78,8 @@
       "api_modules": ["mobility", "riders", "finance", "identity"],
       "api_hub_routes": ["/mobility/resources/rides", "/mobility/resources/tickets", "/riders/resources/rider_profiles", "/finance/resources/wallets"],
       "shell_status": "api_hub_connected_shell",
-      "coverage": ["pytest:operational_journeys"],
-      "next_e2e": "Levar corrida -> ticket -> validacao QR/NFC para Playwright desktop/mobile."
+      "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
+      "next_e2e": "Executar Playwright desktop/mobile em ambiente com dependencias Node e evoluir para API Hub vivo."
     },
     {
       "slug": "valley",
