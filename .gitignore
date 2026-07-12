@@ -14,6 +14,7 @@ status_validacao_repositorio.md
 .env
 .env.*
 !.env.example
+!.env.docker-dx
 coverage.xml
 .coverage
 htmlcov/

@@ -1,5 +1,43 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-12 Docker DX Persistente
+
+### Concluido neste ciclo
+
+- Criada a politica versionada `config/autonomy/docker_dx_policy.json` para
+  fixar Docker DX do workspace: compose oficial, `.env.docker-dx`, BuildKit,
+  Buildx/Compose obrigatorios quando disponiveis, higiene de contexto e regra
+  contra socket Docker world-writable.
+- Criado `scripts/configure_docker_dx.py`, idempotente e seguro contra travas
+  de daemon: `--check` valida estaticamente, `--print-status` detecta Docker,
+  Compose, Buildx e `docker mcp` com timeout curto, sem bloquear a rodada.
+- Materializado `.env.docker-dx` versionado com defaults locais sem segredos:
+  BuildKit ativo, projeto Compose `all-in-one-dx`, Google/AlloyDB/Stitch remoto
+  desligados por padrao local e Gemini Code Assist preservado.
+- `.gitignore` recebeu excecao explicita para versionar `.env.docker-dx`,
+  mantendo `.env` e demais `.env.*` protegidos.
+- Criado `tests/test_docker_dx_policy.py` para bloquear drift da politica,
+  defaults sem segredo, alinhamento com `.dockerignore` e comportamento
+  anti-travamento da sondagem Docker.
+
+### Validacoes executadas
+
+- `python3 scripts/configure_docker_dx.py --check`: aprovado.
+- `python3 scripts/configure_docker_dx.py --print-status`: aprovado; `docker`
+  existe, mas `compose`, `buildx` e `docker mcp` nao responderam dentro do
+  timeout curto neste ambiente.
+
+### Pendencias rastreadas
+
+- Rodar validacao viva de Compose quando o daemon Docker/Compose/Buildx estiver
+  responsivo neste host.
+- Se `docker mcp` ficar disponivel, integrar a entrada MCP `docker` conforme a
+  politica versionada, sem bloquear o runtime quando ausente.
+
+### Git
+
+- Incremento Docker DX em validacao final antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-12 Playwright Dos Shells Fora Valley
 
 ### Concluido neste ciclo
