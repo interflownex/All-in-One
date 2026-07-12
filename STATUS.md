@@ -40,13 +40,23 @@
   `complete` e `use`, simulando corrida concluida e ticket QR/NFC validado.
 - O Playwright vivo agora tambem clica em `Concluir jornada Mobility` e confirma
   `completed` para a corrida e `used` para o ticket.
+- O API Hub agora propaga claims JWT de `roles`, `scopes` e `mfa_verified` para
+  headers internos `X-Actor-*`, permitindo transicoes auditadas sem expor esses
+  headers diretamente ao frontend.
+- `all-in-one-riders` ganhou uma acao executavel de jornada: o shell usa o perfil
+  retornado pelo API Hub vivo para acionar `submit`, `approve` e `activate`,
+  simulando submissao documental, aprovacao compliance/MFA e ativacao operacional.
+- O Playwright vivo agora tambem clica em `Concluir jornada Riders` e confirma
+  status `active` no frontend.
 
 ### Validacoes executadas
 
-- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 14 aprovados, incluindo 4 cenarios com API Hub vivo e acoes de jornada Services/Mobility.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py`: 15 aprovados, incluindo 4 cenarios com API Hub vivo e acoes de jornada Services/Mobility/Riders.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k live_api_hub`: 4 aprovados.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k services_shell_completes_live_contract_journey`: 1 aprovado.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k mobility_shell_completes_live_ride_and_ticket_journey`: 1 aprovado.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py -k riders_shell_approves_and_activates_live_profile`: 1 aprovado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 6 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 5 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py`: 17 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest --collect-only -q tests/e2e/test_all_in_one_phase4_shells.py`: 12 testes coletados.
@@ -59,8 +69,8 @@
 
 - Ampliar as interfaces funcionais reais para alem dos shells iniciais fora da
   trilha Valley.
-- Expandir Playwright E2E por jornada para Riders e Health, repetindo
-  o padrao vivo ja aplicado em Services e Mobility.
+- Expandir Playwright E2E por jornada para Health, repetindo o padrao vivo ja
+  aplicado em Services, Mobility e Riders.
 
 ### Git
 

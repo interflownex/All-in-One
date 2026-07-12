@@ -365,6 +365,26 @@ async def validate_catalog_action_token(request: Request) -> dict[str, Any]:
         raise HTTPException(status_code=401, detail="Sessao invalida.")
 
 
+def _claim_as_csv(payload: dict[str, Any], key: str) -> str | None:
+    value = payload.get(key)
+    if value is None:
+        return None
+    if isinstance(value, str):
+        return value
+    if isinstance(value, (list, tuple, set)):
+        return ",".join(str(item) for item in value if str(item).strip())
+    return str(value)
+
+
+def _claim_as_bool_header(payload: dict[str, Any], key: str) -> str | None:
+    value = payload.get(key)
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return str(value).strip().casefold()
+
+
 async def proxy_request(
     service_url: str,
     request: Request,
@@ -381,6 +401,17 @@ async def proxy_request(
     headers = {k: v for k, v in request.headers.items() if k.lower() != "host"}
     if actor_payload:
         headers["X-Actor-User-Id"] = actor_payload.get("sub", "")
+        claim_headers = {
+            "X-Actor-Roles": _claim_as_csv(actor_payload, "roles"),
+            "X-Actor-Scopes": _claim_as_csv(actor_payload, "scopes"),
+            "X-MFA-Verified": _claim_as_bool_header(actor_payload, "mfa_verified"),
+            "X-Business-Id": _claim_as_csv(actor_payload, "business_id"),
+            "X-Business-Status": _claim_as_csv(actor_payload, "business_status"),
+            "X-Business-Plan": _claim_as_csv(actor_payload, "business_plan"),
+            "X-Business-CNPJ": _claim_as_csv(actor_payload, "business_cnpj"),
+            "X-Valley-Master-Account": _claim_as_bool_header(actor_payload, "valley_master_account"),
+        }
+        headers.update({key: value for key, value in claim_headers.items() if value})
 
     try:
         req = client.build_request(

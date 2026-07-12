@@ -200,3 +200,16 @@ def test_mobility_shell_completes_live_ride_and_ticket_journey(page: Page, reque
     expect(action_panel.locator("dd", has_text="completed")).to_be_visible(timeout=15000)
     expect(action_panel.locator("dd", has_text="used")).to_be_visible(timeout=15000)
     expect(action_panel.locator(".journey-feedback.completed")).to_contain_text("Jornada concluida")
+
+
+def test_riders_shell_approves_and_activates_live_profile(page: Page, request: pytest.FixtureRequest) -> None:
+    server_url = request.getfixturevalue("all_in_one_riders_live_server")
+
+    page.goto(server_url, wait_until="domcontentloaded")
+
+    action_panel = page.get_by_label("Acao de jornada Riders")
+    expect(action_panel.get_by_text("pending_documents")).to_be_visible(timeout=15000)
+    action_panel.get_by_role("button", name="Concluir jornada Riders").click()
+
+    expect(action_panel.locator("dd", has_text="active")).to_be_visible(timeout=15000)
+    expect(action_panel.locator(".journey-feedback.completed")).to_contain_text("Jornada concluida")

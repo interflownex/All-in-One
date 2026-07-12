@@ -6,7 +6,7 @@ import time
 import socket
 import os
 from pathlib import Path
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 import jwt
@@ -163,19 +163,31 @@ def _route_to_resource(route: str) -> tuple[str, str]:
 
 
 def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) -> None:
-    request = Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json", **headers},
-        method="POST",
-    )
-    try:
-        with urlopen(request, timeout=10) as response:
-            if response.status not in {200, 201}:
-                raise RuntimeError(f"POST {url} retornou HTTP {response.status}.")
-    except HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"POST {url} retornou HTTP {exc.code}: {detail}") from exc
+    last_error: Exception | None = None
+    for attempt in range(1, 4):
+        request = Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json", **headers},
+            method="POST",
+        )
+        try:
+            with urlopen(request, timeout=10) as response:
+                if response.status not in {200, 201}:
+                    raise RuntimeError(f"POST {url} retornou HTTP {response.status}.")
+                return
+        except HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")
+            if exc.code < 500 or attempt == 3:
+                raise RuntimeError(f"POST {url} retornou HTTP {exc.code}: {detail}") from exc
+            last_error = RuntimeError(f"POST {url} retornou HTTP {exc.code}: {detail}")
+        except URLError as exc:
+            if attempt == 3:
+                raise RuntimeError(f"POST {url} falhou: {exc}") from exc
+            last_error = exc
+        time.sleep(0.5 * attempt)
+    if last_error:
+        raise RuntimeError(f"POST {url} falhou: {last_error}") from last_error
 
 
 def _seed_phase4_resources(api_hub_url: str, routes: list[str], token: str) -> None:
@@ -197,7 +209,16 @@ def start_phase4_live_stack(
 ) -> tuple[list[subprocess.Popen], str]:
     api_port = free_port()
     api_hub_url = f"http://127.0.0.1:{api_port}"
-    token = jwt.encode({"sub": PHASE4_ACTOR_ID}, PHASE4_JWT_SECRET, algorithm="HS256")
+    token = jwt.encode(
+        {
+            "sub": PHASE4_ACTOR_ID,
+            "roles": ["compliance_officer", "auditor"],
+            "scopes": ["riders:approve", "health:approve"],
+            "mfa_verified": True,
+        },
+        PHASE4_JWT_SECRET,
+        algorithm="HS256",
+    )
     processes: list[subprocess.Popen] = []
     module_urls: dict[str, str] = {}
 

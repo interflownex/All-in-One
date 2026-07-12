@@ -24,15 +24,38 @@ type ApiCard = {
   summary: string
 }
 
-async function fetchEndpoint(path: string) {
+type ApiResource = {
+  id: string
+  status?: string
+  payload?: Record<string, unknown>
+}
+
+type JourneyState = 'idle' | 'running' | 'completed' | 'failed'
+
+const apiHeaders = () => (API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {})
+
+async function fetchEndpoint(path: string): Promise<ApiResource[]> {
   if (!API_HUB_URL) throw new Error('VITE_API_HUB_URL ausente')
   const response = await fetch(`${API_HUB_URL}${path}?limit=3`, {
-    headers: API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {},
+    headers: apiHeaders(),
   })
   if (!response.ok) throw new Error(`HTTP ${response.status}`)
   const payload = await response.json()
   if (Array.isArray(payload)) return payload
   return Array.isArray(payload?.data) ? payload.data : []
+}
+
+async function transitionRiderProfile(profileId: string, action: 'submit' | 'approve' | 'activate', reason: string) {
+  const response = await fetch(`${API_HUB_URL}/riders/resources/rider_profiles/${profileId}/actions/${action}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...apiHeaders(),
+    },
+    body: JSON.stringify({ reason }),
+  })
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  return response.json() as Promise<ApiResource>
 }
 
 function App() {
@@ -44,6 +67,9 @@ function App() {
       summary: endpoint.fallback,
     })),
   )
+  const [profile, setProfile] = useState<ApiResource | null>(null)
+  const [journeyState, setJourneyState] = useState<JourneyState>('idle')
+  const [journeyMessage, setJourneyMessage] = useState('Pronto para submeter documentos, aprovar cadastro e ativar rider.')
 
   useEffect(() => {
     let active = true
@@ -51,6 +77,9 @@ function App() {
       endpoints.map(async endpoint => {
         try {
           const data = await fetchEndpoint(endpoint.path)
+          if (endpoint.path.endsWith('/rider_profiles') && data[0]) {
+            setProfile(data[0])
+          }
           return {
             label: endpoint.label,
             path: endpoint.path,
@@ -73,6 +102,29 @@ function App() {
       active = false
     }
   }, [])
+
+  async function completeRiderJourney() {
+    if (!profile?.id) {
+      setJourneyState('failed')
+      setJourneyMessage('Nenhum perfil retornado pelo API Hub para executar a jornada.')
+      return
+    }
+    setJourneyState('running')
+    setJourneyMessage('Submetendo documentos do rider...')
+    try {
+      const submitted = await transitionRiderProfile(profile.id, 'submit', 'documentos enviados pelo Playwright')
+      setProfile(submitted)
+      const approved = await transitionRiderProfile(profile.id, 'approve', 'compliance aprovou cadastro com MFA')
+      setProfile(approved)
+      const active = await transitionRiderProfile(profile.id, 'activate', 'rider liberado para operacao')
+      setProfile(active)
+      setJourneyState('completed')
+      setJourneyMessage('Jornada concluida: rider active e pronto para operacao.')
+    } catch {
+      setJourneyState('failed')
+      setJourneyMessage('Nao foi possivel concluir a jornada Riders pelo API Hub.')
+    }
+  }
 
   return (
     <main className="shell">
@@ -108,6 +160,31 @@ function App() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="action-panel" aria-label="Acao de jornada Riders">
+        <div>
+          <p className="eyebrow">Jornada executavel</p>
+          <h2>Submeter, aprovar e ativar rider</h2>
+          <p>
+            Usa o perfil retornado pelo API Hub para validar documentos, aprovar
+            com contexto compliance/MFA e liberar a operacao.
+          </p>
+        </div>
+        <dl>
+          <div>
+            <dt>Perfil</dt>
+            <dd>{profile?.id ? profile.id.slice(0, 8) : 'aguardando API Hub'}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>{profile?.status ?? 'fallback'}</dd>
+          </div>
+        </dl>
+        <button type="button" onClick={completeRiderJourney} disabled={journeyState === 'running'}>
+          {journeyState === 'running' ? 'Executando...' : 'Concluir jornada Riders'}
+        </button>
+        <p className={`journey-feedback ${journeyState}`}>{journeyMessage}</p>
       </section>
     </main>
   )

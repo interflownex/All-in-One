@@ -129,3 +129,51 @@ def test_health_module_proxy_paths_still_require_jwt(monkeypatch):
 
     assert asyncio.run(module.validate_jwt_edge(public_health)) is None
     assert asyncio.run(module.validate_jwt_edge(module_health))["sub"] == "11111111-1111-4111-8111-111111111111"
+
+
+def test_proxy_maps_jwt_claims_to_actor_headers(monkeypatch):
+    module = _load_api_hub(monkeypatch)
+    captured: dict[str, str] = {}
+
+    class FakeResponse:
+        status_code = 200
+        headers: dict[str, str] = {}
+
+        async def aiter_raw(self):
+            yield b"{}"
+
+        async def aclose(self):
+            return None
+
+    class FakeClient:
+        def build_request(self, *, method, url, headers, content):
+            captured.update(headers)
+            return SimpleNamespace(method=method, url=url, headers=headers, content=content)
+
+        async def send(self, req, stream):
+            return FakeResponse()
+
+    async def receive():
+        return {"type": "http.request", "body": b"", "more_body": False}
+
+    request = Request({"type": "http", "method": "POST", "path": "/riders/resources/rider_profiles", "headers": []}, receive)
+    monkeypatch.setattr(module, "client", FakeClient())
+
+    asyncio.run(
+        module.proxy_request(
+            "http://riders:8000",
+            request,
+            {
+                "sub": "11111111-1111-4111-8111-111111111111",
+                "roles": ["compliance_officer", "auditor"],
+                "scopes": ["riders:approve"],
+                "mfa_verified": True,
+            },
+            "/resources/rider_profiles",
+        )
+    )
+
+    assert captured["X-Actor-User-Id"] == "11111111-1111-4111-8111-111111111111"
+    assert captured["X-Actor-Roles"] == "compliance_officer,auditor"
+    assert captured["X-Actor-Scopes"] == "riders:approve"
+    assert captured["X-MFA-Verified"] == "true"
