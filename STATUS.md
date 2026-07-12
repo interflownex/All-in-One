@@ -1,5 +1,39 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-12 User API Hub Vivo
+
+### Concluido neste ciclo
+
+- Corrigido o fluxo vivo de pagamento sandbox do User: o API Hub deixou de
+  persistir `Pix/pix` em `reason` e `payment_provider` do payload protegido de
+  Marketplace Orders, evitando bloqueio legitimo da politica anti-burla.
+- `tests/test_api_hub_catalog_gateway.py` ganhou regressao para garantir que o
+  payload interno de `actions/pay` nao volte a carregar termo bloqueado.
+- `tests/e2e/conftest.py` passou a aguardar Vite por timeout configuravel
+  (`VITE_START_TIMEOUT_SECONDS`, padrao 120s) e a falhar cedo se o processo
+  morrer, reduzindo flake no bootstrap da stack viva.
+- `all-in-one-user` agora declara que a pendencia ampla de API Hub vivo foi
+  reduzida: Identity, Wallet, Marketplace Orders, Delivery e Jobs carregam via
+  API Hub vivo, com acoes reais de pedido pago e entrega concluida; ainda falta
+  candidatura Jobs real do consumidor.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m pytest -q tests/test_api_hub_catalog_gateway.py::test_gateway_authorizes_pix_sandbox_using_server_side_order_data`: 1 aprovado.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_user_shell.py`: 3 aprovados, incluindo API Hub vivo com pedido `paid` e entrega `completed`.
+
+### Pendencias rastreadas
+
+- Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
+  e acao real.
+- Levar `all-in-one-business` para API Hub vivo e acoes reais de empresa,
+  publicacao de vaga e acesso auditavel a curriculo.
+
+### Git
+
+- Incremento User/API Hub vivo em validacao final antes da sincronizacao
+  automatica.
+
 ## STATUS OPERACIONAL - 2026-07-12 Docker DX Persistente
 
 ### Concluido neste ciclo
@@ -128,7 +162,7 @@
 - `npm run build` em `apps/all-in-one-health`: aprovado.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q modules/api_hub/tests/test_gateway_security.py`: 6 aprovados.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_stitch_orchestrator.py tests/test_branding_assets.py modules/api_hub/tests/test_gateway_security.py`: 24 aprovados.
-- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_user_shell.py`: 2 aprovados.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_user_shell.py`: 3 aprovados, incluindo API Hub vivo com pedido `paid` e entrega `completed`.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py`: 2 aprovados.
 - `npm run build` em `apps/all-in-one`: aprovado.
 - `npm run build` em `apps/all-in-one-business`: aprovado.
@@ -141,8 +175,8 @@
 
 - Ampliar as interfaces funcionais reais para alem dos shells iniciais fora da
   trilha Valley.
-- Levar `all-in-one-user` para API Hub vivo e acoes reais de cadastro, wallet,
-  pedido, entrega e candidatura.
+- Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
+  e acao real.
 - Levar `all-in-one-business` para API Hub vivo e acoes reais de empresa,
   publicacao de vaga e acesso auditavel a curriculo.
 

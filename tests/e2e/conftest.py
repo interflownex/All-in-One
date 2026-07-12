@@ -24,10 +24,12 @@ def free_port() -> int:
         return int(server.getsockname()[1])
 
 
-def wait_for_http(port: int, timeout: int = 15) -> bool:
+def wait_for_http(port: int, timeout: int = 15, process: subprocess.Popen | None = None) -> bool:
     """Wait until the expected Vite server returns a valid HTTP response."""
     start_time = time.time()
     while time.time() - start_time <= timeout:
+        if process is not None and process.poll() is not None:
+            return False
         try:
             with urlopen(f"http://127.0.0.1:{port}", timeout=2) as response:
                 if response.status == 200 and b'<div id="root">' in response.read():
@@ -53,6 +55,7 @@ def start_vite_server(app_directory: str, env: dict[str, str] | None = None) -> 
     port = free_port()
     server_url = f"http://127.0.0.1:{port}"
     process_env = os.environ.copy()
+    startup_timeout = int(process_env.get("VITE_START_TIMEOUT_SECONDS", "120"))
     if env:
         process_env.update({key: value.format(server_url=server_url) for key, value in env.items()})
     process = subprocess.Popen(
@@ -63,9 +66,9 @@ def start_vite_server(app_directory: str, env: dict[str, str] | None = None) -> 
         shell=True,
         env=process_env,
     )
-    if not wait_for_http(port, timeout=60):
+    if not wait_for_http(port, timeout=startup_timeout, process=process):
         process.terminate()
-        raise RuntimeError(f"Vite nao respondeu corretamente na porta {port}.")
+        raise RuntimeError(f"Vite nao respondeu corretamente na porta {port} em {startup_timeout}s.")
     return process, server_url
 
 

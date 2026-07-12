@@ -317,6 +317,13 @@ Apps e prioridades:
   `tests/e2e/test_all_in_one_user_shell.py`, percorrendo o shell compartilhado
   `apps/all-in-one` pela jornada Identity, Wallet, Marketplace Orders, Delivery
   e Jobs com rotas `/gateway/...` interceptadas.
+- `all-in-one-user` tambem possui cobertura Playwright viva no mesmo arquivo,
+  subindo API Hub e modulos FastAPI reais para Identity, Wallet, Marketplace
+  Orders, Delivery e Jobs, com acoes reais de pagamento sandbox (`paid`) e
+  entrega (`completed`) no frontend.
+- O gateway de pagamento sandbox deixou de persistir metadados internos com o
+  termo `pix` no payload protegido de pedido, preservando a politica anti-burla
+  do Marketplace enquanto permite o fluxo server-side de pagamento.
 - `all-in-one-business` agora possui Playwright inicial desktop/mobile em
   `tests/e2e/test_all_in_one_business_shell.py`, percorrendo Companies, Catalog
   Offers, Job Postings, Applications e Resume Access Logs com rotas
@@ -324,8 +331,8 @@ Apps e prioridades:
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
-- Levar `all-in-one-user` para API Hub vivo e acoes reais de cadastro, wallet,
-  pedido, entrega e candidatura.
+- Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
+  e acao real.
 - Levar `all-in-one-business` para API Hub vivo e acoes reais de empresa,
   publicacao de vaga e acesso auditavel a curriculo.
 - As jornadas contratuais locais `identity -> wallet -> marketplace order`,
@@ -335,8 +342,9 @@ Pendencias:
   estao cobertas por pytest contratual.
 
 Proximos passos naturais:
-1. Evoluir `all-in-one-user` para API Hub vivo e acoes reais.
-2. Evoluir `all-in-one-business` para API Hub vivo e acoes reais.
+1. Evoluir `all-in-one-business` para API Hub vivo e acoes reais.
+2. Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
+   e acao real.
 3. Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.
 4. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
 5. Registrar evidencias por app em `STATUS.md`.
