@@ -9,7 +9,7 @@ on:
 jobs:
   compose-health:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -17,4 +17,4 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Validate compose services and HTTP healthchecks
-        run: python3 scripts/validate_compose_health.py --down-after --command-timeout-seconds 300 --timeout-seconds 600 --probe-timeout-seconds 1
+        run: python3 scripts/validate_compose_health.py --env-file .env.docker-dx --project-name all-in-one-dx --require-free-ports --down-after --command-timeout-seconds 900 --timeout-seconds 600 --probe-timeout-seconds 1

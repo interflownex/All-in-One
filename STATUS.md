@@ -23,14 +23,35 @@
   ausentes e avancou ate build dos servicos, mas excedeu 300s antes dos
   healthchecks; a proxima tentativa precisa de timeout de build maior ou cache
   aquecido.
+- O workflow `compose-health.yml` e a politica Docker DX foram alinhados para
+  `--command-timeout-seconds 900` com `timeout-minutes: 30`, evitando que o gate
+  remoto repita o limite antigo de 300s observado neste host.
+- `scripts/validate_compose_health.py` agora aceita `--env-file` e
+  `--project-name`, e o gate Docker DX usa explicitamente `.env.docker-dx` +
+  `all-in-one-dx` para nao colidir com projetos Compose locais de outros fluxos.
+- `--skip-build` do validador agora passa `--no-build` ao Docker Compose; antes,
+  imagens ausentes ainda disparavam build implicito e mascaravam o smoke rapido.
+- O gate Docker DX agora usa `--require-free-ports` para falhar rapido quando
+  portas publicadas ja estiverem ocupadas por outro projeto Compose, em vez de
+  gastar minutos no `up`.
+- O primeiro boot frio isolado revelou Postgres unhealthy antes do fim do
+  `initdb`; logs mostraram o banco ficando healthy apos cerca de 80s. O
+  healthcheck do Postgres no Compose agora possui `start_period: 120s` para
+  evitar falso negativo em inicializacao limpa.
+- Gate Compose vivo concluido neste host com banco limpo e projeto isolado:
+  `python3 scripts/validate_compose_health.py --env-file .env.docker-dx
+  --project-name all-in-one-dx --require-free-ports --down-after
+  --command-timeout-seconds 900 --timeout-seconds 600
+  --probe-timeout-seconds 1` retornou `Docker Compose validado: 13 APIs FastAPI
+  healthy.`
 
 ### Pendencias rastreadas
 
 - Reconfigurar ou recriar o remoto `fork` se ele voltar a ser exigido para
   escrita alternativa.
-- Executar gate Compose vivo completo com timeout de build ampliado, PowerShell
-  Core no Windows, `gcloud` autenticado/responsivo e homologacoes externas
-  Apigee/KYB/provedores.
+- Acompanhar o workflow remoto `compose-health.yml` apos o push desta correcao.
+- Executar PowerShell Core no Windows, `gcloud` autenticado/responsivo e
+  homologacoes externas Apigee/KYB/provedores.
 
 ### Git
 

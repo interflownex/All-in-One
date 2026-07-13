@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import socket
 import subprocess
 import sys
 import time
@@ -16,6 +17,29 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_COMPOSE_FILE = Path("infra/docker/docker-compose.yml")
+REQUIRED_HOST_PORTS = (
+    5432,
+    5672,
+    6379,
+    8100,
+    8101,
+    8102,
+    8103,
+    8104,
+    8105,
+    8106,
+    8107,
+    8108,
+    8109,
+    8110,
+    8111,
+    8112,
+    8113,
+    8114,
+    8115,
+    15672,
+    27017,
+)
 
 
 @dataclass(frozen=True)
@@ -92,6 +116,16 @@ def wait_for_health(timeout_seconds: int, probe_timeout_seconds: float) -> set[s
     return pending
 
 
+def bound_ports(ports: tuple[int, ...] = REQUIRED_HOST_PORTS) -> list[int]:
+    occupied: list[int] = []
+    for port in ports:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.settimeout(0.2)
+            if sock.connect_ex(("127.0.0.1", port)) == 0:
+                occupied.append(port)
+    return occupied
+
+
 def print_compose_diagnostics(compose: list[str], pending: set[str]) -> None:
     subprocess.run([*compose, "ps"], cwd=ROOT, check=False)
     if pending:
@@ -101,11 +135,14 @@ def print_compose_diagnostics(compose: list[str], pending: set[str]) -> None:
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--compose-file", default=str(DEFAULT_COMPOSE_FILE))
+    parser.add_argument("--env-file", default=None)
+    parser.add_argument("--project-name", default=None)
     parser.add_argument("--timeout-seconds", type=int, default=240)
     parser.add_argument("--probe-timeout-seconds", type=float, default=3.0)
     parser.add_argument("--command-timeout-seconds", type=int, default=300)
     parser.add_argument("--skip-build", action="store_true")
     parser.add_argument("--down-after", action="store_true")
+    parser.add_argument("--require-free-ports", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -118,12 +155,34 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Arquivo compose nao encontrado: {compose_file}", file=sys.stderr)
         return 2
 
-    compose = ["docker", "compose", "-f", str(compose_file)]
+    compose = ["docker", "compose"]
+    if args.env_file:
+        env_file = Path(args.env_file)
+        if not env_file.is_absolute():
+            env_file = ROOT / env_file
+        if not env_file.is_file():
+            print(f"Arquivo env do compose nao encontrado: {env_file}", file=sys.stderr)
+            return 2
+        compose.extend(["--env-file", str(env_file)])
+    if args.project_name:
+        compose.extend(["--project-name", args.project_name])
+    compose.extend(["-f", str(compose_file)])
     up_args = [*compose, "up", "-d"]
-    if not args.skip_build:
+    if args.skip_build:
+        up_args.append("--no-build")
+    else:
         up_args.append("--build")
 
     try:
+        if args.require_free_ports:
+            occupied = bound_ports()
+            if occupied:
+                print(
+                    "Portas publicadas pelo Compose ja estao em uso antes do gate: "
+                    f"{', '.join(str(port) for port in occupied)}",
+                    file=sys.stderr,
+                )
+                return 1
         run_checked([*compose, "config", "--quiet"], timeout_seconds=args.command_timeout_seconds)
         run_checked(up_args, timeout_seconds=args.command_timeout_seconds)
         pending = wait_for_health(args.timeout_seconds, args.probe_timeout_seconds)

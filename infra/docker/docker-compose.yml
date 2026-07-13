@@ -44,6 +44,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
+      start_period: 120s
       retries: 12
     networks: [platform]
 

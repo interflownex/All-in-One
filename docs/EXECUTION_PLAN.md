@@ -18,7 +18,7 @@ Coordenada operacional atual:
 | Runtime FastAPI modular | 88% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado, carregamento dinamico por DSN validado em containers e resolucao obrigatoria de store tipado para modulos conhecidos | Base local estabilizada; falta ampliar testes E2E por jornada. |
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
-| Docker local | 98% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real, contexto Docker higienizado por `.dockerignore`, Docker DX persistente em `config/autonomy/docker_dx_policy.json` + `.env.docker-dx` e reparo sem sudo para plugins Compose/Buildx em `~/.docker/cli-plugins` | Compose/Buildx ja respondem neste host; gate vivo avancou ate build, mas excedeu 300s em `pip install`/layers dos servicos antes dos healthchecks. |
+| Docker local | 100% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real, contexto Docker higienizado por `.dockerignore`, Docker DX persistente em `config/autonomy/docker_dx_policy.json` + `.env.docker-dx`, reparo sem sudo para plugins Compose/Buildx em `~/.docker/cli-plugins` e gate vivo `all-in-one-dx` validado neste host com 13 APIs healthy | Frente Docker local fechada; manter observacao do workflow remoto e regressao a cada mudanca de runtime/compose. |
 | Apps/frontend | 100% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` e `all-in-one-business` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo, User Jobs com busca/notificacoes/pos-candidatura, pos-corrida Mobility, filtros/auditoria Business, self-management API Hub para API clients/keys/webhooks/integration runs e acoes reais Services/Mobility/Riders/Health/Business/ERP/BI/WMS/TMS/CRM/BPM/Document/HR/Legal/Property/Vision/AI Core, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Frente local concluida; proximas evidencias dependem de provedores/ambiente externos. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
@@ -88,12 +88,14 @@ Entregas ja existentes:
   `docker mcp version`, `python3 scripts/configure_docker_dx.py --check` e
   `docker compose --env-file .env.docker-dx -f infra/docker/docker-compose.yml
   config --quiet` responderam com sucesso apos o reparo.
+- O gate vivo
+  `python3 scripts/validate_compose_health.py --env-file .env.docker-dx
+  --project-name all-in-one-dx --require-free-ports --down-after
+  --command-timeout-seconds 900 --timeout-seconds 600
+  --probe-timeout-seconds 1` passou neste host com banco limpo, migrations e 13
+  APIs FastAPI healthy.
 
 Pendencias:
-- Executar `python3 scripts/validate_compose_health.py --down-after
-  --command-timeout-seconds 900 --timeout-seconds 600 --probe-timeout-seconds 1`
-  neste host ou no runner remoto para permitir o primeiro build completo; a
-  tentativa com 300s excedeu o limite durante build antes dos healthchecks.
 - Medir tempo de rebuild dos containers Python no runner remoto apos reducao do
   contexto Docker.
 - Acompanhar execucoes do workflow `compose-health.yml` no GitHub em ambiente
@@ -104,8 +106,7 @@ Proximos passos naturais:
 1. Observar o gate `compose-health.yml` apos pushes que alterem runtime,
    migrations, workers ou compose.
 2. Rodar `python3 scripts/configure_docker_dx.py --print-status` e a validacao
-   Compose viva com timeout de build ampliado quando Docker Desktop/Engine
-   estiver responsivo no host.
+   Compose viva como regressao antes de alteracoes de runtime/compose.
 3. Otimizar Dockerfiles com cache de dependencias se a medicao remota ainda
    indicar gargalo.
 4. Registrar evidencias por execucao em `STATUS.md`.

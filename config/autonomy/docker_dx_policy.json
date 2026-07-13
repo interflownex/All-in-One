@@ -34,7 +34,7 @@
   },
   "compose": {
     "project_name": "all-in-one-dx",
-    "health_gate": "python3 scripts/validate_compose_health.py --down-after --command-timeout-seconds 300 --timeout-seconds 600 --probe-timeout-seconds 1",
+    "health_gate": "python3 scripts/validate_compose_health.py --env-file .env.docker-dx --project-name all-in-one-dx --require-free-ports --down-after --command-timeout-seconds 900 --timeout-seconds 600 --probe-timeout-seconds 1",
     "up": "docker compose --env-file .env.docker-dx -f infra/docker/docker-compose.yml up -d --build",
     "down": "docker compose --env-file .env.docker-dx -f infra/docker/docker-compose.yml down --remove-orphans",
     "logs": "docker compose --env-file .env.docker-dx -f infra/docker/docker-compose.yml logs --tail 120"
@@ -67,7 +67,7 @@
       "docker version",
       "docker compose version",
       "docker buildx version",
-      "python3 scripts/validate_compose_health.py --down-after --command-timeout-seconds 300 --timeout-seconds 600 --probe-timeout-seconds 1"
+      "python3 scripts/validate_compose_health.py --env-file .env.docker-dx --project-name all-in-one-dx --require-free-ports --down-after --command-timeout-seconds 900 --timeout-seconds 600 --probe-timeout-seconds 1"
     ]
   }
 }
