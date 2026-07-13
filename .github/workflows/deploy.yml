@@ -1,0 +1,52 @@
+name: Deploy to GKE (Cloud Build/GitOps)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIP }}
+          service_account: ${{ secrets.GCP_SA_EMAIL }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: all-in-one-498012
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "latest"
+
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER }} --zone ${{ secrets.GKE_ZONE }} --project=all-in-one-498012
+
+      - name: Create Kubernetes secrets from Secret Manager
+        run: |
+          kubectl delete secret all-in-one-secrets --namespace=all-in-one --ignore-not-found=true
+          DB_PASS=$(gcloud secrets versions access latest --secret=DATABASE_PASSWORD --project=all-in-one-498012)
+          JWT=$(gcloud secrets versions access latest --secret=JWT_SECRET --project=all-in-one-498012)
+          SENTRY=$(gcloud secrets versions access latest --secret=SENTRY_DSN --project=all-in-one-498012)
+          kubectl create secret generic all-in-one-secrets --namespace=all-in-one \
+            --from-literal=DATABASE_PASSWORD="$DB_PASS" \
+            --from-literal=JWT_SECRET="$JWT" \
+            --from-literal=SENTRY_DSN="$SENTRY" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Apply kustomize manifests
+        run: |
+          kubectl apply -k infra/kubernetes

@@ -19,7 +19,16 @@ const LIVE_RESOURCE_ALIASES: Record<string, string> = {
 const liveResourceFor = (module: string, entity: string) =>
   LIVE_RESOURCE_ALIASES[`${module}:${entity}`] ?? entity;
 
-const apiHeaders = () => (API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {});
+const apiHeaders = (): Record<string, string> => (API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {});
+
+const actorIdFromToken = () => {
+  try {
+    const payload = JSON.parse(atob(API_HUB_TOKEN.split('.')[1] ?? ''));
+    return payload.sub ?? '';
+  } catch {
+    return '';
+  }
+};
 
 const normalizeData = (result: unknown): any[] => {
   if (Array.isArray(result)) return result;
@@ -89,6 +98,21 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
     return response.json();
   };
 
+  const createLiveResource = async (path: string, payload: Record<string, unknown>) => {
+    const actorId = actorIdFromToken();
+    if (!actorId) throw new Error('Token sem usuario autenticado para executar a jornada.');
+    const response = await fetch(`${API_HUB_URL}${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...apiHeaders() },
+      body: JSON.stringify({ user_id: actorId, payload }),
+    });
+    if (!response.ok) {
+      const detail = await response.json().catch(() => null);
+      throw new Error(detail?.detail ? `Criacao retornou HTTP ${response.status}: ${detail.detail}` : `Criacao retornou HTTP ${response.status}.`);
+    }
+    return response.json();
+  };
+
   const runJourneyAction = async () => {
     const resource = data[0];
     if (!resource?.id) return;
@@ -124,6 +148,21 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         const completed = await transitionResource(resource.id, 'complete', 'entrega concluida pelo shell User');
         setData((items) => items.map((item) => (item.id === completed.id ? completed : item)));
         setActionFeedback('Jornada concluida: entrega completed via API Hub vivo.');
+      } else if (module === 'jobs' && resourceType === 'job_postings') {
+        const resume = await createLiveResource('/jobs/resources/resumes', {
+          headline: 'Curriculo Playwright candidato',
+          recruiter_visibility: 'business_recruiters',
+        });
+        const application = await createLiveResource('/jobs/resources/applications', {
+          job_posting_id: resource.id,
+          resume_id: resume.id,
+        });
+        setData((items) =>
+          items.map((item) =>
+            item.id === resource.id ? { ...item, status: application.status ?? 'submitted' } : item,
+          ),
+        );
+        setActionFeedback('Jornada concluida: candidatura submitted via API Hub vivo.');
       }
       setActionState('completed');
     } catch (err) {
@@ -136,7 +175,8 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
     isLiveApiHub &&
     data.length > 0 &&
     ((module === 'marketplace' && resourceType === 'orders') ||
-      (module === 'delivery' && resourceType === 'delivery_requests'));
+      (module === 'delivery' && resourceType === 'delivery_requests') ||
+      (module === 'jobs' && resourceType === 'job_postings'));
 
   useEffect(() => {
     if (type === 'list') {

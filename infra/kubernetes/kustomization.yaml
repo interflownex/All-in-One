@@ -1,0 +1,5 @@
+resources:
+  - configmap-build.yaml
+  - secret-runtime.yaml
+  - deployment.yaml
+  - service.yaml

@@ -106,3 +106,17 @@ def test_all_in_one_user_shell_completes_live_order_and_delivery_actions(
     delivery_panel.get_by_role("button", name="Concluir jornada User").click()
     expect(delivery_panel.locator(".journey-feedback.completed")).to_contain_text("entrega completed", timeout=LIVE_ACTION_TIMEOUT)
     expect(page.locator(".badge", has_text="completed")).to_be_visible(timeout=LIVE_ACTION_TIMEOUT)
+
+
+def test_all_in_one_user_shell_submits_live_job_application(
+    page: Page, all_in_one_user_jobs_live_server: str
+) -> None:
+    page.goto(f"{all_in_one_user_jobs_live_server}/jobs/jobpostings", wait_until="domcontentloaded")
+    expect(page.locator("h1")).to_contain_text("Job Postings")
+    expect(page.get_by_text("Vaga Playwright")).to_be_visible(timeout=15000)
+
+    jobs_panel = page.get_by_label("Acao de jornada User")
+    expect(jobs_panel.get_by_role("button", name="Concluir jornada User")).to_be_enabled(timeout=LIVE_ACTION_TIMEOUT)
+    jobs_panel.get_by_role("button", name="Concluir jornada User").click()
+    expect(jobs_panel.locator(".journey-feedback.completed")).to_contain_text("candidatura submitted", timeout=LIVE_ACTION_TIMEOUT)
+    expect(page.locator(".badge", has_text="submitted")).to_be_visible(timeout=LIVE_ACTION_TIMEOUT)

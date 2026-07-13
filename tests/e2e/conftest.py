@@ -39,9 +39,11 @@ def wait_for_http(port: int, timeout: int = 15, process: subprocess.Popen | None
     return False
 
 
-def wait_for_url(url: str, timeout: int = 15) -> bool:
+def wait_for_url(url: str, timeout: int = 15, process: subprocess.Popen | None = None) -> bool:
     start_time = time.time()
     while time.time() - start_time <= timeout:
+        if process is not None and process.poll() is not None:
+            return False
         try:
             with urlopen(url, timeout=2) as response:
                 if response.status == 200:
@@ -98,7 +100,7 @@ def start_python_http_server(
         stderr=subprocess.DEVNULL,
         env=process_env,
     )
-    if not wait_for_url(f"{server_url}{health_path}", timeout=startup_timeout):
+    if not wait_for_url(f"{server_url}{health_path}", timeout=startup_timeout, process=process):
         process.terminate()
         raise RuntimeError(f"Servidor FastAPI nao respondeu corretamente em {server_url} em {startup_timeout}s.")
     return process, server_url
@@ -209,7 +211,7 @@ def _route_to_resource(route: str) -> tuple[str, str]:
     return module_name, resource_type
 
 
-def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) -> None:
+def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) -> dict[str, object]:
     last_error: Exception | None = None
     for attempt in range(1, 4):
         request = Request(
@@ -222,7 +224,7 @@ def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) ->
             with urlopen(request, timeout=10) as response:
                 if response.status not in {200, 201}:
                     raise RuntimeError(f"POST {url} retornou HTTP {response.status}.")
-                return
+                return json.loads(response.read().decode("utf-8"))
         except HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")
             if exc.code < 500 or attempt == 3:
@@ -235,24 +237,28 @@ def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) ->
         time.sleep(0.5 * attempt)
     if last_error:
         raise RuntimeError(f"POST {url} falhou: {last_error}") from last_error
+    raise RuntimeError(f"POST {url} falhou sem detalhe.")
 
 
-def _seed_phase4_resources(api_hub_url: str, routes: list[str], token: str) -> None:
+def _seed_phase4_resources(api_hub_url: str, routes: list[str], token: str) -> dict[tuple[str, str], dict[str, object]]:
     headers = {"Authorization": f"Bearer {token}"}
+    created: dict[tuple[str, str], dict[str, object]] = {}
     for index, route in enumerate(routes, start=1):
         module_name, resource_type = _route_to_resource(route)
         payload = PHASE4_ROUTE_PAYLOADS[(module_name, resource_type)]
-        _post_json(
+        created[(module_name, resource_type)] = _post_json(
             f"{api_hub_url}/{module_name}/resources/{resource_type}",
             {"user_id": PHASE4_ACTOR_ID, "payload": payload},
             {**headers, "X-Idempotency-Key": f"phase4-{module_name}-{resource_type}-{index}"},
         )
+    return created
 
 
 def start_phase4_live_stack(
     app_directory: str,
     routes: list[str],
     storage_dir: Path,
+    publish_job_postings: bool = False,
 ) -> tuple[list[subprocess.Popen], str]:
     api_port = free_port()
     api_hub_url = f"http://127.0.0.1:{api_port}"
@@ -310,7 +316,15 @@ def start_phase4_live_stack(
             api_env,
         )
         processes.append(api_process)
-        _seed_phase4_resources(api_hub_url, routes, token)
+        created = _seed_phase4_resources(api_hub_url, routes, token)
+        if publish_job_postings and ("jobs", "job_postings") in created:
+            headers = {"Authorization": f"Bearer {token}"}
+            job = created[("jobs", "job_postings")]
+            _post_json(
+                f"{api_hub_url}/jobs/resources/job_postings/{job['id']}/actions/publish",
+                {"reason": "vaga publicada para candidatura viva do shell User"},
+                {**headers, "X-Idempotency-Key": f"phase4-jobs-job-postings-publish-{job['id']}"},
+            )
         return processes, vite_url
     except Exception:
         for process in reversed(processes):
@@ -406,6 +420,24 @@ def all_in_one_user_live_server(tmp_path_factory):
             os.path.join(os.path.dirname(__file__), "../../apps/all-in-one"),
             routes,
             tmp_path_factory.mktemp("phase4-user-live"),
+            publish_job_postings=True,
+        )
+    except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    for process in reversed(processes):
+        stop_process(process)
+
+
+@pytest.fixture(scope="session")
+def all_in_one_user_jobs_live_server(tmp_path_factory):
+    routes = ["/jobs/resources/job_postings"]
+    try:
+        processes, url = start_phase4_live_stack(
+            os.path.join(os.path.dirname(__file__), "../../apps/all-in-one"),
+            routes,
+            tmp_path_factory.mktemp("phase4-user-jobs-live"),
+            publish_job_postings=True,
         )
     except RuntimeError as exc:
         pytest.fail(str(exc))

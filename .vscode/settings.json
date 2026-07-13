@@ -1,5 +1,12 @@
 {
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+    "powershell.powerShellAdditionalExePaths": [
+        "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+    ],
+    "cloudcode.gcloudSdkPath": "/usr/bin/gcloud",
+    "cloudcode.project": "all-in-one-498012",
+    "cloudcode.cloudBuild.enable": true,
+    "cloudcode.skaffold.path": "skaffold",
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
     "python.testing.pytestArgs": [],
@@ -76,5 +83,6 @@
     "workbench.editor.preferHistoryBasedLanguageDetection": true,
     "geminicodeassist.codeLens.enable": false,
     "geminicodeassist.telemetry.enable": false,
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "github.copilot.chat.agentDebugLog.fileLogging.enabled": true
 }

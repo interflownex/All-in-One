@@ -1,0 +1,16 @@
+---
+# Template de KVM (informativo - não aplicado diretamente ao Kubernetes)
+# Este arquivo serve como um modelo para configurar KVMs no Apigee,
+# que são preenchidos com segredos do Google Secret Manager.
+apigee:
+  org: all-in-one-498012
+  env: prod
+  kvms:
+    - name: jwt-secrets
+      entries:
+        - name: JWT_SECRET
+          valueFrom: secretManager://projects/all-in-one-498012/secrets/JWT_SECRET
+        - name: DATABASE_PASSWORD
+          valueFrom: secretManager://projects/all-in-one-498012/secrets/DATABASE_PASSWORD
+        - name: SENTRY_DSN
+          valueFrom: secretManager://projects/all-in-one-498012/secrets/SENTRY_DSN
