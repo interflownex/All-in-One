@@ -1,5 +1,35 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 Higiene Cloud Build Segura
+
+### Concluido neste ciclo
+
+- Investigado erro de download dos artefatos
+  `gs://all-in-one-498012_cloudbuild/source/*.tgz` reportado como
+  `Error: [object ArrayBuffer]`.
+- Identificada causa local provavel: `scripts/gcp_storage_hygiene.py` removia
+  todos os pacotes fonte `source/*.tgz` quando o uso de armazenamento cruzava
+  85%, e o guardiao multiagente executa essa higiene ao liberar atividades.
+- A higiene GCP agora preserva pacotes fonte recentes do Cloud Build e remove
+  apenas itens fora da janela de retencao, mantendo auditoria e reexecucao de
+  builds sem abrir mao do teto de 5GB.
+- `GEMINI.md` registra a regra persistente para proximos agentes: nao apagar em
+  massa `source/*.tgz`; respeitar `CLOUDBUILD_SOURCE_RETENTION_DAYS` e
+  `CLOUDBUILD_SOURCE_KEEP_RECENT`.
+
+### Pendencias rastreadas
+
+- Os objetos ja apagados do bucket nao podem ser restaurados localmente; se o
+  historico desses builds antigos for indispensavel, sera necessario reenviar
+  fonte/reexecutar builds a partir do commit correspondente.
+- O SDK Google montado do Windows no WSL nao respondeu dentro de 20s para
+  `config list`, `auth list` e `storage objects describe`, entao a verificacao
+  remota dos objetos ficou bloqueada pelo ambiente.
+
+### Git
+
+- Correcao em validacao local antes da sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-13 API Hub Admin Completo Vivo
 
 ### Concluido neste ciclo

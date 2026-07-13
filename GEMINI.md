@@ -51,6 +51,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 - O espaco do Google Cloud tem teto fixo de 5GB.
 - Ao iniciar os trabalhos no sistema (ativacao), o agente deve executar o script mandatorio de higienizacao: `python3 scripts/gcp_storage_hygiene.py`.
 - O script avalia a capacidade e ao cruzar 85% descarta recursos secundarios automaticamente.
+- Pacotes fonte do Cloud Build em `gs://all-in-one-498012_cloudbuild/source/*.tgz` nao devem ser removidos em massa: preservar itens recentes e a janela minima de auditoria definida por `CLOUDBUILD_SOURCE_RETENTION_DAYS` e `CLOUDBUILD_SOURCE_KEEP_RECENT`.
 - A rotina ja esta engatilhada no multi-agente sync guard para rodar a cada termino de atividade.
 
 ## Integracoes Google ativas
