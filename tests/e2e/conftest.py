@@ -57,9 +57,9 @@ def start_vite_server(app_directory: str, env: dict[str, str] | None = None) -> 
     port = free_port()
     server_url = f"http://127.0.0.1:{port}"
     process_env = os.environ.copy()
-    startup_timeout = int(process_env.get("VITE_START_TIMEOUT_SECONDS", "120"))
     if env:
         process_env.update({key: value.format(server_url=server_url) for key, value in env.items()})
+    startup_timeout = int(process_env.get("VITE_START_TIMEOUT_SECONDS", "120"))
     process = subprocess.Popen(
         f"npm run dev -- --port {port} --strictPort --host 127.0.0.1",
         cwd=app_directory,
@@ -297,6 +297,7 @@ def start_phase4_live_stack(
             {
                 "VITE_API_HUB_URL": api_hub_url,
                 "VITE_API_HUB_TOKEN": token,
+                "VITE_START_TIMEOUT_SECONDS": "240",
             },
         )
         processes.append(vite_process)

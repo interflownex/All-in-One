@@ -112,7 +112,7 @@ def test_all_in_one_user_shell_submits_live_job_application(
     page: Page, all_in_one_user_jobs_live_server: str
 ) -> None:
     page.goto(f"{all_in_one_user_jobs_live_server}/jobs/jobpostings", wait_until="domcontentloaded")
-    expect(page.locator("h1")).to_contain_text("Job Postings")
+    expect(page.locator("h1")).to_contain_text("Job Postings", timeout=LIVE_ACTION_TIMEOUT)
     expect(page.get_by_text("Vaga Playwright")).to_be_visible(timeout=15000)
 
     jobs_panel = page.get_by_label("Acao de jornada User")

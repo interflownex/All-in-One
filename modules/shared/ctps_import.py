@@ -5,9 +5,6 @@ from io import BytesIO
 import re
 from typing import Any
 
-from pypdf import PdfReader
-
-
 CPF_PATTERN = re.compile(r"\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b")
 CNPJ_PATTERN = re.compile(r"\b\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}\b")
 DATE_PATTERN = re.compile(r"\b\d{2}/\d{2}/\d{4}\b")
@@ -73,6 +70,8 @@ def extract_ctps_pdf(contents: bytes) -> dict[str, Any]:
     if not contents.startswith(b"%PDF"):
         raise ValueError("Arquivo enviado nao e PDF.")
     try:
+        from pypdf import PdfReader
+
         reader = PdfReader(BytesIO(contents))
         if reader.is_encrypted:
             raise ValueError("PDF protegido por senha nao pode ser importado.")

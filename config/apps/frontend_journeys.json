@@ -12,9 +12,9 @@
       "priority_journey": "cadastro -> wallet -> busca -> compra -> delivery -> jobs",
       "api_modules": ["identity", "finance", "marketplace", "delivery", "mobility", "health", "jobs"],
       "api_hub_routes": ["/gateway/identity", "/gateway/finance", "/gateway/catalog", "/gateway/jobs"],
-      "shell_status": "journey_react_shell",
+      "shell_status": "api_hub_live_actions",
       "coverage": ["playwright:all_in_one_user_shell", "pytest:user_marketplace_journey", "pytest:operational_journeys"],
-      "next_e2e": "Ampliar candidatura Jobs do consumidor para API Hub vivo e acao real."
+      "next_e2e": "Ampliar interface funcional do consumidor para busca, notificacoes e pos-candidatura Jobs."
     },
     {
       "slug": "all-in-one-business",

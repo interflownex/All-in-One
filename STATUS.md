@@ -1,5 +1,44 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-12 User Jobs API Hub Vivo
+
+### Concluido neste ciclo
+
+- `all-in-one-user` passou a executar candidatura Jobs real via API Hub vivo:
+  a tela `Jobs > Job Postings` cria um curriculo do candidato autenticado e em
+  seguida cria a candidatura para a vaga publicada, retornando status
+  `submitted`.
+- `tests/e2e/conftest.py` agora publica a vaga semeada quando a fixture viva
+  precisa testar candidatura, e ganhou fixture focada
+  `all_in_one_user_jobs_live_server` para evitar travar em jornadas nao
+  relacionadas.
+- O bootstrap Vite vivo agora respeita `VITE_START_TIMEOUT_SECONDS` vindo do
+  ambiente da fixture, permitindo shells grandes como `all-in-one` sem cortar a
+  inicializacao cedo demais.
+- `modules/shared/ctps_import.py` deixou de importar `pypdf` no carregamento do
+  modulo; o import ficou preguiçoso dentro de `extract_ctps_pdf`, evitando que
+  jornadas Jobs comuns travem em discovery de binario PDF (`jbig2dec`).
+
+### Validacoes executadas
+
+- `npm run build` em `apps/all-in-one`: aprovado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_business_jobs_journey.py`:
+  1 aprovado.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_user_shell.py::test_all_in_one_user_shell_submits_live_job_application`:
+  1 aprovado, com candidatura `submitted` via API Hub vivo.
+
+### Pendencias rastreadas
+
+- Ampliar interface funcional do consumidor para busca, notificacoes e
+  pos-candidatura Jobs.
+- Ampliar telas Business para acoes reais de ERP/relatorios e operacoes de
+  dominio alem de Jobs.
+
+### Git
+
+- Incremento User Jobs/API Hub vivo em validacao final antes da sincronizacao
+  automatica.
+
 ## STATUS OPERACIONAL - 2026-07-12 Apigee API Hub
 
 ### Incremento posterior
@@ -81,8 +120,8 @@
 
 - Ampliar telas Business para acoes reais de ERP/relatorios e operacoes de
   dominio alem de Jobs.
-- Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
-  e acao real.
+- Ampliar interface funcional do consumidor para busca, notificacoes e
+  pos-candidatura Jobs.
 
 ### Git
 
@@ -103,8 +142,8 @@
   morrer, reduzindo flake no bootstrap da stack viva.
 - `all-in-one-user` agora declara que a pendencia ampla de API Hub vivo foi
   reduzida: Identity, Wallet, Marketplace Orders, Delivery e Jobs carregam via
-  API Hub vivo, com acoes reais de pedido pago e entrega concluida; ainda falta
-  candidatura Jobs real do consumidor.
+  API Hub vivo, com acoes reais de pedido pago, entrega concluida e candidatura
+  Jobs `submitted`.
 
 ### Validacoes executadas
 
@@ -113,8 +152,8 @@
 
 ### Pendencias rastreadas
 
-- Ampliar candidatura Jobs do consumidor em `all-in-one-user` para API Hub vivo
-  e acao real.
+- Ampliar interface funcional do consumidor para busca, notificacoes e
+  pos-candidatura Jobs.
 - Ampliar telas Business para acoes reais de ERP/relatorios e operacoes de
   dominio alem de Jobs.
 
