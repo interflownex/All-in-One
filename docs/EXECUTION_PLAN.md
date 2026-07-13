@@ -19,7 +19,7 @@ Coordenada operacional atual:
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
 | Docker local | 98% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real, contexto Docker higienizado por `.dockerignore` e Docker DX persistente em `config/autonomy/docker_dx_policy.json` + `.env.docker-dx` | Falta validar Compose vivo neste host quando Docker Compose/Buildx responderem e acompanhar execucoes do gate em ambiente remoto. |
-| Apps/frontend | 95% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` e `all-in-one-business` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo e acoes reais Services/Mobility/Riders/Health/Business/User Jobs/ERP/BI/WMS/TMS/CRM/BPM/Document/HR, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta aprofundar interfaces funcionais reais de consumidor, Business Legal/Property/Vision/AI Core/API Hub e apps fora da trilha Valley. |
+| Apps/frontend | 96% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` e `all-in-one-business` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo e acoes reais Services/Mobility/Riders/Health/Business/User Jobs/ERP/BI/WMS/TMS/CRM/BPM/Document/HR/Legal/Property/Vision/AI Core, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta aprofundar interfaces funcionais reais de consumidor, apps fora da trilha Valley, pos-acoes/auditoria Business e API Hub admin/self-management. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
@@ -347,13 +347,20 @@ Apps e prioridades:
   Playwright semeia `bpm/processes`, `document/documents` e `hr/employees`, e o
   frontend aprova fluxos BPM, documentos e registros HR por `actions/approve`
   contra modulos FastAPI reais.
+- `all-in-one-business` tambem cobre Legal/Property/Vision/AI Core vivos
+  no API Hub: a fixture Playwright semeia `legal/cases`,
+  `property/properties`, `vision/devices` e `ai_core/moderation_decisions`, e o
+  frontend aprova esses registros por
+  `actions/approve` contra modulos FastAPI reais.
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
 - Ampliar interface funcional do consumidor para busca, notificacoes e
   pos-candidatura Jobs.
-- Ampliar telas Business para Legal, Property, Vision, AI Core e API Hub alem de
-  Jobs/ERP/BI/WMS/TMS/CRM/BPM/Document/HR.
+- Aprofundar pos-acoes, filtros e auditoria Business agora que os dominios
+  principais ja possuem API Hub vivo.
+- Retomar API Hub admin/self-management em entrega isolada, apos estabilizar
+  autenticacao obrigatoria para recursos internos do proprio API Hub.
 - As jornadas contratuais locais `identity -> wallet -> marketplace order`,
   `business -> jobs -> candidate access`, Delivery, Riders, Services, Mobility e
   Health ja estao cobertas por pytest.
@@ -361,13 +368,13 @@ Pendencias:
   estao cobertas por pytest contratual.
 
 Proximos passos naturais:
-1. Ampliar telas Business para Legal, Property, Vision, AI Core e API Hub alem
-   de Jobs/ERP/BI/WMS/TMS/CRM/BPM/Document/HR.
-2. Ampliar interface funcional do consumidor para busca, notificacoes e
+1. Ampliar interface funcional do consumidor para busca, notificacoes e
    pos-candidatura Jobs.
-3. Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.
-4. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
-5. Registrar evidencias por app em `STATUS.md`.
+2. Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.
+3. Aprofundar pos-acoes, filtros e auditoria Business.
+4. Retomar API Hub admin/self-management com autenticacao dedicada.
+5. Consolidar as 7 jornadas contratuais locais como base de regressao de produto.
+6. Registrar evidencias por app em `STATUS.md`.
 
 ### Fase 5 - Integracoes externas homologadas
 

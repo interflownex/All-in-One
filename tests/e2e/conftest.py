@@ -16,6 +16,22 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 PHASE4_ACTOR_ID = "11111111-1111-4111-8111-111111111111"
 PHASE4_BUSINESS_ID = "22222222-2222-4222-8222-222222222222"
 PHASE4_JWT_SECRET = "phase4-live-e2e-secret-with-32-bytes-minimum"
+PHASE4_HTTP_TIMEOUT_SECONDS = 60
+PLAYWRIGHT_LAUNCH_TIMEOUT_MS = 300_000
+
+
+@pytest.fixture(scope="session")
+def browser_type_launch_args(pytestconfig):
+    launch_options = {"timeout": PLAYWRIGHT_LAUNCH_TIMEOUT_MS}
+    if pytestconfig.getoption("--headed"):
+        launch_options["headless"] = False
+    browser_channel = pytestconfig.getoption("--browser-channel")
+    if browser_channel:
+        launch_options["channel"] = browser_channel
+    slowmo = pytestconfig.getoption("--slowmo")
+    if slowmo:
+        launch_options["slow_mo"] = slowmo
+    return launch_options
 
 
 def free_port() -> int:
@@ -224,6 +240,25 @@ PHASE4_ROUTE_PAYLOADS = {
         "employment_type": "clt",
         "name": "Colaborador HR Playwright",
     },
+    ("legal", "cases"): {
+        "case_number": "LEGAL-PLAYWRIGHT-001",
+        "title": "Caso Legal Playwright",
+        "risk_brl": "700.00",
+    },
+    ("property", "properties"): {
+        "address": "Rua Playwright, 100",
+        "property_type": "commercial",
+        "name": "Imovel Property Playwright",
+    },
+    ("vision", "devices"): {
+        "device_fingerprint": "vision-device-playwright",
+        "name": "Camera Vision Playwright",
+    },
+    ("ai_core", "moderation_decisions"): {
+        "module": "business",
+        "risk_score": "0.21",
+        "title": "Decisao AI Core Playwright",
+    },
     ("health", "patients"): {"health_identifier": "patient-phase4", "name": "Paciente Playwright"},
     ("health", "appointments"): {"scheduled_at": "2026-07-12T12:00:00Z", "care_line": "Consulta"},
     ("identity", "consents"): {
@@ -253,7 +288,7 @@ def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) ->
             method="POST",
         )
         try:
-            with urlopen(request, timeout=10) as response:
+            with urlopen(request, timeout=PHASE4_HTTP_TIMEOUT_SECONDS) as response:
                 if response.status not in {200, 201}:
                     raise RuntimeError(f"POST {url} retornou HTTP {response.status}.")
                 return json.loads(response.read().decode("utf-8"))
@@ -265,6 +300,10 @@ def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) ->
         except URLError as exc:
             if attempt == 3:
                 raise RuntimeError(f"POST {url} falhou: {exc}") from exc
+            last_error = exc
+        except TimeoutError as exc:
+            if attempt == 3:
+                raise RuntimeError(f"POST {url} excedeu {PHASE4_HTTP_TIMEOUT_SECONDS}s.") from exc
             last_error = exc
         time.sleep(0.5 * attempt)
     if last_error:
@@ -278,10 +317,12 @@ def _seed_phase4_resources(api_hub_url: str, routes: list[str], token: str) -> d
     for index, route in enumerate(routes, start=1):
         module_name, resource_type = _route_to_resource(route)
         payload = PHASE4_ROUTE_PAYLOADS[(module_name, resource_type)]
+        target_path = f"/{module_name}/resources/{resource_type}"
+        request_headers = {**headers, "X-Idempotency-Key": f"phase4-{module_name}-{resource_type}-{index}"}
         created[(module_name, resource_type)] = _post_json(
-            f"{api_hub_url}/{module_name}/resources/{resource_type}",
+            f"{api_hub_url}{target_path}",
             {"user_id": PHASE4_ACTOR_ID, "payload": payload},
-            {**headers, "X-Idempotency-Key": f"phase4-{module_name}-{resource_type}-{index}"},
+            request_headers,
         )
     return created
 
@@ -317,6 +358,7 @@ def start_phase4_live_stack(
                 {
                     "ALL_IN_ONE_STORAGE_DIR": str(storage_dir / "modules"),
                     "ALL_IN_ONE_ENV": "test",
+                    "FASTAPI_START_TIMEOUT_SECONDS": "240",
                     "GOOGLE_INTEGRATIONS_ENABLED": "false",
                     "GOOGLE_CLOUD_ENABLED": "false",
                 },
@@ -339,6 +381,7 @@ def start_phase4_live_stack(
             "ALL_IN_ONE_ENV": "test",
             "ALL_IN_ONE_JWT_SECRET": PHASE4_JWT_SECRET,
             "ALL_IN_ONE_CORS_ORIGINS": vite_url,
+            "FASTAPI_START_TIMEOUT_SECONDS": "240",
             "GOOGLE_INTEGRATIONS_ENABLED": "false",
             "GOOGLE_CLOUD_ENABLED": "false",
         }
@@ -439,6 +482,27 @@ def all_in_one_business_live_server(tmp_path_factory):
             os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-business"),
             routes,
             tmp_path_factory.mktemp("phase4-business-live"),
+        )
+    except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    for process in reversed(processes):
+        stop_process(process)
+
+
+@pytest.fixture(scope="session")
+def all_in_one_business_governance_live_server(tmp_path_factory):
+    routes = [
+        "/legal/resources/cases",
+        "/property/resources/properties",
+        "/vision/resources/devices",
+        "/ai_core/resources/moderation_decisions",
+    ]
+    try:
+        processes, url = start_phase4_live_stack(
+            os.path.join(os.path.dirname(__file__), "../../apps/all-in-one-business"),
+            routes,
+            tmp_path_factory.mktemp("phase4-business-governance-live"),
         )
     except RuntimeError as exc:
         pytest.fail(str(exc))

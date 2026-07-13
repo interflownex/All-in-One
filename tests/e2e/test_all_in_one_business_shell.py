@@ -18,6 +18,7 @@ API_HUB_FIXTURES = {
     ("jobs", "applications"): "Candidatura Playwright",
     ("jobs", "resumeaccesslogs"): "Acesso Curriculo Playwright",
 }
+LIVE_API_EXPECT_TIMEOUT = 60000
 
 
 def _serve_gateway_collection(route: Route) -> None:
@@ -138,4 +139,32 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     expect(page.get_by_text("Colaborador HR Playwright")).to_be_visible(timeout=10000)
     page.get_by_role("button", name="Aprovar registro HR").click()
     expect(page.get_by_text("Registro HR aprovado no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("approved")).to_be_visible()
+
+
+def test_all_in_one_business_shell_runs_governance_live_api_hub_actions(
+    page: Page, all_in_one_business_governance_live_server: str
+) -> None:
+    page.goto(f"{all_in_one_business_governance_live_server}/legal/cases", wait_until="domcontentloaded")
+    expect(page.get_by_text("Caso Legal Playwright")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    page.get_by_role("button", name="Aprovar caso Legal").click()
+    expect(page.get_by_text("Caso Legal aprovado no API Hub vivo.")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_governance_live_server}/property/properties", wait_until="domcontentloaded")
+    expect(page.get_by_text("Imovel Property Playwright")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    page.get_by_role("button", name="Aprovar ativo Property").click()
+    expect(page.get_by_text("Ativo Property aprovado no API Hub vivo.")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_governance_live_server}/vision/devices", wait_until="domcontentloaded")
+    expect(page.get_by_text("Camera Vision Playwright")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    page.get_by_role("button", name="Aprovar dispositivo Vision").click()
+    expect(page.get_by_text("Dispositivo Vision aprovado no API Hub vivo.")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_governance_live_server}/ai_core/moderationdecisions", wait_until="domcontentloaded")
+    expect(page.get_by_text("Decisao AI Core Playwright")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    page.get_by_role("button", name="Aprovar decisão AI Core").click()
+    expect(page.get_by_text("Decisao AI Core aprovada no API Hub vivo.")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
     expect(page.get_by_text("approved")).to_be_visible()

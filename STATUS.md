@@ -1,5 +1,54 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 Business Legal/Property/Vision/AI Vivo
+
+### Concluido neste ciclo
+
+- `all-in-one-business` passou a resolver aliases reais de Legal, Property,
+  Vision e AI Core no API Hub vivo, incluindo `cases`, `properties`,
+  `devices`, `moderation_decisions`, `legal_contracts`, `leases`, `streams` e
+  `model_runs`.
+- A acao operacional viva do `SmartCRUD` agora aprova casos legais, ativos
+  imobiliarios, dispositivos Vision e decisoes AI Core por
+  `/{module}/resources/{resource}/{id}/actions/approve`.
+- `tests/e2e/conftest.py` passou a ter fixture focada
+  `all_in_one_business_governance_live_server`, semeando `legal/cases`,
+  `property/properties`, `vision/devices` e `ai_core/moderation_decisions`.
+- `tests/e2e/test_all_in_one_business_shell.py` agora percorre Jobs, ERP, BI,
+  WMS, TMS, CRM, BPM, Document, HR, Legal, Property, Vision e AI Core
+  contra API Hub e modulos FastAPI reais.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m py_compile modules/api_hub/main.py tests/e2e/conftest.py tests/e2e/test_all_in_one_business_shell.py` concluido com sucesso.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_business_jobs_journey.py`: 7 passed em 2.52s.
+- `npm run build` em `apps/all-in-one-business`: build Vite concluido com sucesso.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py::test_all_in_one_business_shell_runs_live_api_hub_actions`: 1 passed em 220.70s.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py::test_all_in_one_business_shell_runs_governance_live_api_hub_actions`: 1 passed em 150.09s.
+- `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
+  25 modulos e infraestrutura em conformidade.
+- `git diff --check`: sem erros.
+- Durante a validacao, o proxy generico do API Hub recebeu timeout explicito e
+  erro diagnosticavel para evitar `Erro de comunicacao` vazio em host lento; a
+  fixture viva tambem recebeu timeouts compativeis com stack FastAPI/Vite real.
+
+### Pendencias rastreadas
+
+- Ampliar interface funcional do consumidor para busca, notificacoes e
+  pos-candidatura Jobs.
+- Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.
+- Aprofundar pos-acoes, filtros e auditoria Business agora que os dominios
+  principais ja possuem API Hub vivo.
+- Retomar API Hub admin/self-management em entrega isolada, apos estabilizar
+  autenticacao obrigatoria para recursos internos do proprio API Hub.
+- Executar pendencias externas bloqueadas por ambiente responsivo:
+  gcloud/Apigee IAM, PowerShell/Cloudflare Tunnel e Docker Compose vivo no host.
+
+### Git
+
+- Incremento Business Legal/Property/Vision/AI vivo pronto para sincronizacao
+  Git.
+
 ## STATUS OPERACIONAL - 2026-07-13 Business BPM/Document/HR API Hub Vivo
 
 ### Concluido neste ciclo

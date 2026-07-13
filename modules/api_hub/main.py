@@ -65,8 +65,9 @@ SERVICES = {
 JWT_SECRET = get_config("ALL_IN_ONE_JWT_SECRET", "local-secret-key-change-in-production")
 REDIS_URL = get_config("ALL_IN_ONE_REDIS_URL", "redis://redis:6379/0")
 WEBHOOK_SECRET = get_config("ALL_IN_ONE_WEBHOOK_SECRET", "local-webhook-secret-change-in-production")
+PROXY_TIMEOUT_SECONDS = float(get_config("API_HUB_PROXY_TIMEOUT_SECONDS", "20"))
 
-client = httpx.AsyncClient()
+client = httpx.AsyncClient(timeout=httpx.Timeout(PROXY_TIMEOUT_SECONDS, connect=5.0))
 redis_client = redis.from_url(REDIS_URL, decode_responses=True) if redis else None
 
 CATALOG_SOURCE_MODULES = tuple(PUBLIC_RESOURCE_TYPES)
@@ -428,7 +429,8 @@ async def proxy_request(
             background=BackgroundTask(resp.aclose)
         )
     except httpx.RequestError as exc:
-        raise HTTPException(status_code=502, detail=f"Erro de comunicação: {exc}")
+        reason = str(exc) or exc.__class__.__name__
+        raise HTTPException(status_code=502, detail=f"Erro de comunicação: {reason}")
 
 def register_proxies():
     """Registra rotas de proxy dinamicamente."""

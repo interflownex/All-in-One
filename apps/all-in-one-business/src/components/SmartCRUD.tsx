@@ -38,11 +38,27 @@ const RESOURCE_ALIASES: Record<string, string> = {
   'jobs:jobpostings': 'job_postings',
   'jobs:resumeaccesslogs': 'resume_access_logs',
   'jobs:resumes': 'resumes',
+  'ai_core:aimemories': 'ai_memories',
+  'ai_core:moderationdecisions': 'moderation_decisions',
+  'ai_core:modelruns': 'model_runs',
+  'api_hub:apiclients': 'api_clients',
+  'api_hub:apikeys': 'api_keys',
+  'api_hub:integrationruns': 'integration_runs',
+  'api_hub:webhooks': 'webhooks',
   'hr:candidates': 'candidates',
   'hr:courses': 'courses',
   'hr:employees': 'employees',
   'hr:occupationalrecords': 'occupational_records',
   'hr:payrollruns': 'payroll_runs',
+  'legal:cases': 'cases',
+  'legal:deadlines': 'deadlines',
+  'legal:hearings': 'hearings',
+  'legal:legalcontracts': 'legal_contracts',
+  'property:assemblies': 'assemblies',
+  'property:leases': 'leases',
+  'property:maintenanceorders': 'maintenance_orders',
+  'property:properties': 'properties',
+  'property:units': 'units',
   'tms:carriers': 'carriers',
   'tms:freightaudits': 'freight_audits',
   'tms:freights': 'freights',
@@ -53,6 +69,10 @@ const RESOURCE_ALIASES: Record<string, string> = {
   'wms:pickingwaves': 'picking_waves',
   'wms:shipments': 'shipments',
   'wms:warehouses': 'warehouses',
+  'vision:devices': 'devices',
+  'vision:motionalerts': 'motion_alerts',
+  'vision:recordings': 'recordings',
+  'vision:streams': 'streams',
 };
 
 const liveHeaders = () => ({
@@ -75,6 +95,9 @@ const itemTitle = (item: any, fallbackTitle: string) =>
   item.payload?.title ||
   item.payload?.document_type ||
   item.payload?.filename ||
+  item.payload?.case_number ||
+  item.payload?.address ||
+  item.payload?.client_name ||
   item.payload?.headline ||
   item.payload?.purpose ||
   item.payload?.description ||
@@ -89,6 +112,11 @@ const approvalMessageForModule = (module: string) => {
   if (module === 'bpm') return 'Fluxo BPM aprovado no API Hub vivo.';
   if (module === 'document') return 'Documento operacional aprovado no API Hub vivo.';
   if (module === 'hr') return 'Registro HR aprovado no API Hub vivo.';
+  if (module === 'legal') return 'Caso Legal aprovado no API Hub vivo.';
+  if (module === 'property') return 'Ativo Property aprovado no API Hub vivo.';
+  if (module === 'vision') return 'Dispositivo Vision aprovado no API Hub vivo.';
+  if (module === 'ai_core') return 'Decisao AI Core aprovada no API Hub vivo.';
+  if (module === 'api_hub') return 'Cliente API Hub aprovado no API Hub vivo.';
   return 'Registro operacional aprovado no API Hub vivo.';
 };
 
@@ -106,6 +134,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   const [query, setQuery] = useState('');
   const resourceType = RESOURCE_ALIASES[`${module}:${entity}`];
   const liveApiEnabled = Boolean(API_HUB_URL && API_HUB_TOKEN && resourceType);
+  const resourceBasePath = `/${module}/resources/${resourceType}`;
 
   const apiHubFetch = async (path: string, init: RequestInit = {}) => {
     const response = await fetch(`${API_HUB_URL}${path}`, {
@@ -129,7 +158,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
     try {
       if (liveApiEnabled) {
         const searchParams = query ? `?q=${encodeURIComponent(query)}` : '';
-        const result = await apiHubFetch(`/${module}/resources/${resourceType}${searchParams}`);
+        const result = await apiHubFetch(`${resourceBasePath}${searchParams}`);
         setData(normalizeCollection(result));
         return;
       }
@@ -203,10 +232,12 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         return;
       }
 
-      if (['erp', 'bi', 'wms', 'tms', 'crm', 'bpm', 'document', 'hr'].includes(module)) {
+      if (
+        ['erp', 'bi', 'wms', 'tms', 'crm', 'bpm', 'document', 'hr', 'legal', 'property', 'vision', 'ai_core', 'api_hub'].includes(module)
+      ) {
         const item = data[0];
         if (!item?.id) throw new Error('Nenhum registro disponivel para aprovacao operacional.');
-        const approved = await apiHubFetch(`/${module}/resources/${resourceType}/${item.id}/actions/approve`, {
+        const approved = await apiHubFetch(`${resourceBasePath}/${item.id}/actions/approve`, {
           method: 'POST',
           body: JSON.stringify({ reason: 'Aprovacao operacional via Business shell vivo' }),
         });
@@ -243,7 +274,17 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
                         ? 'Aprovar documento'
                         : module === 'hr'
                           ? 'Aprovar registro HR'
-                          : '';
+                          : module === 'legal'
+                            ? 'Aprovar caso Legal'
+                            : module === 'property'
+                              ? 'Aprovar ativo Property'
+                              : module === 'vision'
+                                ? 'Aprovar dispositivo Vision'
+                                : module === 'ai_core'
+                                  ? 'Aprovar decisão AI Core'
+                                  : module === 'api_hub'
+                                    ? 'Aprovar cliente API Hub'
+                                    : '';
 
   if (type === 'form') {
     return (
