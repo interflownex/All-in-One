@@ -7,7 +7,8 @@
   Marketplace Orders, Delivery e Jobs com rotas `/gateway/...` interceptadas; a
   mesma suite tambem sobe API Hub e modulos FastAPI reais para validar Identity,
   Wallet, Marketplace Orders, Delivery e Jobs sem interceptacao, concluindo
-  pagamento sandbox de pedido e entrega viva no frontend.
+  pagamento sandbox de pedido, entrega viva no frontend e candidatura Jobs com
+  busca viva, notificacoes e painel pos-candidatura.
 - Dependencia: API Hub e Identity baseline ativos.
-- Pendente: ampliar candidatura Jobs do consumidor para API Hub vivo e acao
-  real.
+- Pendente: ampliar notificacoes persistidas e comunicacao com empresa apos
+  candidatura Jobs quando houver backend especifico para mensagens.

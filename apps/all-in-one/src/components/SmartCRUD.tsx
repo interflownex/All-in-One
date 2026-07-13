@@ -54,24 +54,43 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
+  const [notifications, setNotifications] = useState<string[]>([]);
+  const [postApplication, setPostApplication] = useState<any | null>(null);
   const [actionFeedback, setActionFeedback] = useState('');
   const [actionState, setActionState] = useState<'idle' | 'running' | 'completed' | 'failed'>('idle');
 
   const resourceType = liveResourceFor(module, entity);
   const liveResourcePath = `/${module}/resources/${resourceType}`;
   const isLiveApiHub = Boolean(API_HUB_TOKEN);
+  const isJobsVacancyJourney = module === 'jobs' && resourceType === 'job_postings';
+
+  const liveCollectionEndpoint = () => {
+    if (isJobsVacancyJourney) {
+      const search = query ? `?q=${encodeURIComponent(query)}` : '';
+      return `${API_HUB_URL}/jobs/vacancies${search}`;
+    }
+    return `${API_HUB_URL}${liveResourcePath}?limit=3`;
+  };
 
   const fetchData = async () => {
     setLoading(true);
     setError('');
     try {
       const endpoint = isLiveApiHub
-        ? `${API_HUB_URL}${liveResourcePath}?limit=3`
+        ? liveCollectionEndpoint()
         : `${API_HUB_URL}/gateway/${module}/${entity}?q=${query}`;
       const response = await fetch(endpoint, { headers: apiHeaders() });
       if (!response.ok) throw new Error('Falha ao carregar dados.');
       const result = await response.json();
-      setData(normalizeData(result));
+      const items = normalizeData(result);
+      setData(items);
+      if (isLiveApiHub && isJobsVacancyJourney) {
+        setNotifications([
+          `${items.length} vaga publicada encontrada na busca viva Jobs.`,
+          query ? `Busca aplicada: ${query}` : 'Busca pronta para filtrar vagas publicadas.',
+          'Notificacao Jobs: acompanhe candidatura e proximos passos nesta tela.',
+        ]);
+      }
     } catch (err) {
       // Fallback para dados fictícios se a API falhar (para demonstração)
       console.warn(`Usando dados fictícios para ${module}/${entity}`);
@@ -162,6 +181,17 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
             item.id === resource.id ? { ...item, status: application.status ?? 'submitted' } : item,
           ),
         );
+        setPostApplication({
+          applicationId: application.id,
+          resumeId: resume.id,
+          jobTitle: displayNameFor(resource, title),
+          status: application.status ?? 'submitted',
+        });
+        setNotifications([
+          'Notificacao Jobs: candidatura enviada com sucesso.',
+          `Status da candidatura: ${application.status ?? 'submitted'}.`,
+          'Proximo passo: acompanhe retorno da empresa e mantenha seu curriculo visivel.',
+        ]);
         setActionFeedback('Jornada concluida: candidatura submitted via API Hub vivo.');
       }
       setActionState('completed');
@@ -254,6 +284,32 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
             <p className={`journey-feedback ${actionState}`} style={{ marginTop: '12px', fontWeight: 800 }}>
               {actionFeedback}
             </p>
+          ) : null}
+        </section>
+      ) : null}
+
+      {isLiveApiHub && isJobsVacancyJourney ? (
+        <section
+          className="jobs-notifications neo-brutalism"
+          aria-label="Busca notificacoes e pos-candidatura Jobs"
+          style={{ background: '#fffdf3', padding: '20px', marginBottom: '24px' }}
+        >
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 900, marginBottom: '12px' }}>Busca e notificacoes Jobs</h2>
+          <ul style={{ margin: 0, paddingLeft: '20px', display: 'grid', gap: '8px' }}>
+            {notifications.length > 0 ? notifications.map((message) => (
+              <li key={message}>{message}</li>
+            )) : (
+              <li>Notificacao Jobs: use a busca para encontrar vagas publicadas.</li>
+            )}
+          </ul>
+          {postApplication ? (
+            <div className="post-application-card" style={{ marginTop: '16px', padding: '16px', border: '2px solid #17211c' }}>
+              <h3 style={{ margin: 0, fontWeight: 900 }}>Pos-candidatura Jobs</h3>
+              <p style={{ margin: '8px 0 0' }}>Vaga: {postApplication.jobTitle}</p>
+              <p style={{ margin: '4px 0 0' }}>Status: {postApplication.status}</p>
+              <p style={{ margin: '4px 0 0' }}>Candidatura: {postApplication.applicationId}</p>
+              <p style={{ margin: '4px 0 0' }}>Curriculo: {postApplication.resumeId}</p>
+            </div>
           ) : null}
         </section>
       ) : null}

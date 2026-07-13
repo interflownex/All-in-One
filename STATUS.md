@@ -1,5 +1,47 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 User Jobs Busca/Notificacoes/Pos-Candidatura Vivo
+
+### Concluido neste ciclo
+
+- `all-in-one-user` passou a usar a busca viva de vagas publicadas em
+  `/jobs/vacancies?q=...` quando a tela `Jobs > Job Postings` esta conectada ao
+  API Hub.
+- A tela de Jobs do consumidor agora exibe notificacoes funcionais de busca,
+  candidatura enviada, status da candidatura e proximo passo pos-candidatura.
+- A acao viva de candidatura continua criando curriculo e application no modulo
+  Jobs real, e agora tambem exibe painel `Pos-candidatura Jobs` com vaga,
+  status, candidatura e curriculo.
+- `tests/e2e/test_all_in_one_user_shell.py` passou a validar busca por
+  `Jornada`, notificacao de resultado, candidatura `submitted` e painel
+  pos-candidatura contra API Hub e Jobs reais.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_user_shell.py tests/e2e/conftest.py`: aprovado.
+- `npm run build` em `apps/all-in-one`: build Vite concluido com sucesso.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_user_shell.py::test_all_in_one_user_shell_submits_live_job_application`: 1 passed em 44.61s.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py`: 6 passed em 0.25s.
+- `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
+- `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
+  25 modulos e infraestrutura em conformidade.
+- `git diff --check`: sem erros.
+
+### Pendencias rastreadas
+
+- Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.
+- Aprofundar pos-acoes, filtros e auditoria Business agora que os dominios
+  principais ja possuem API Hub vivo.
+- Retomar API Hub admin/self-management em entrega isolada, apos estabilizar
+  autenticacao obrigatoria para recursos internos do proprio API Hub.
+- Executar pendencias externas bloqueadas por ambiente responsivo:
+  gcloud/Apigee IAM, PowerShell/Cloudflare Tunnel e Docker Compose vivo no host.
+
+### Git
+
+- Incremento User Jobs busca/notificacoes/pos-candidatura vivo pronto para
+  sincronizacao Git.
+
 ## STATUS OPERACIONAL - 2026-07-13 Business Legal/Property/Vision/AI Vivo
 
 ### Concluido neste ciclo

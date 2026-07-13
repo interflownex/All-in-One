@@ -14,7 +14,7 @@
       "api_hub_routes": ["/gateway/identity", "/gateway/finance", "/gateway/catalog", "/gateway/jobs"],
       "shell_status": "api_hub_live_actions",
       "coverage": ["playwright:all_in_one_user_shell", "pytest:user_marketplace_journey", "pytest:operational_journeys"],
-      "next_e2e": "Ampliar interface funcional do consumidor para busca, notificacoes e pos-candidatura Jobs."
+      "next_e2e": "Ampliar notificacoes persistidas e comunicacao com empresa apos candidatura Jobs."
     },
     {
       "slug": "all-in-one-business",
