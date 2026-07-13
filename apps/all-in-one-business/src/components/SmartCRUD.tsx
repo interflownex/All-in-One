@@ -22,10 +22,24 @@ const RESOURCE_ALIASES: Record<string, string> = {
   'erp:fiscaldocuments': 'fiscal_documents',
   'erp:payables': 'payables',
   'erp:receivables': 'receivables',
+  'crm:activities': 'activities',
+  'crm:campaigns': 'campaigns',
+  'crm:leads': 'leads',
+  'crm:opportunities': 'opportunities',
   'jobs:applications': 'applications',
   'jobs:jobpostings': 'job_postings',
   'jobs:resumeaccesslogs': 'resume_access_logs',
   'jobs:resumes': 'resumes',
+  'tms:carriers': 'carriers',
+  'tms:freightaudits': 'freight_audits',
+  'tms:freights': 'freights',
+  'tms:proofsofdelivery': 'proofs_of_delivery',
+  'tms:routes': 'routes',
+  'wms:bins': 'bins',
+  'wms:inventory': 'inventory',
+  'wms:pickingwaves': 'picking_waves',
+  'wms:shipments': 'shipments',
+  'wms:warehouses': 'warehouses',
 };
 
 const liveHeaders = () => ({
@@ -49,7 +63,17 @@ const itemTitle = (item: any, fallbackTitle: string) =>
   item.payload?.document_type ||
   item.payload?.headline ||
   item.payload?.purpose ||
+  item.payload?.description ||
   `${fallbackTitle} #${item.id}`;
+
+const approvalMessageForModule = (module: string) => {
+  if (module === 'erp') return 'Registro ERP aprovado no API Hub vivo.';
+  if (module === 'bi') return 'Relatorio BI aprovado no API Hub vivo.';
+  if (module === 'wms') return 'Operacao WMS aprovada no API Hub vivo.';
+  if (module === 'tms') return 'Operacao TMS aprovada no API Hub vivo.';
+  if (module === 'crm') return 'Oportunidade CRM aprovada no API Hub vivo.';
+  return 'Registro operacional aprovado no API Hub vivo.';
+};
 
 const itemCreatedAt = (item: any) => {
   const rawDate = item.created_at || item.createdAt;
@@ -162,19 +186,15 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         return;
       }
 
-      if (module === 'erp' || module === 'bi') {
+      if (['erp', 'bi', 'wms', 'tms', 'crm'].includes(module)) {
         const item = data[0];
         if (!item?.id) throw new Error('Nenhum registro disponivel para aprovacao operacional.');
         const approved = await apiHubFetch(`/${module}/resources/${resourceType}/${item.id}/actions/approve`, {
           method: 'POST',
-          body: JSON.stringify({ reason: 'Aprovacao operacional via Business shell ERP/BI vivo' }),
+          body: JSON.stringify({ reason: 'Aprovacao operacional via Business shell vivo' }),
         });
         setData((items) => items.map((current) => (current.id === item.id ? approved : current)));
-        setActionMessage(
-          module === 'erp'
-            ? 'Registro ERP aprovado no API Hub vivo.'
-            : 'Relatorio BI aprovado no API Hub vivo.',
-        );
+        setActionMessage(approvalMessageForModule(module));
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao executar acao viva no API Hub.');
@@ -194,7 +214,13 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
             ? 'Aprovar registro ERP'
             : module === 'bi'
               ? 'Aprovar relatório BI'
-              : '';
+              : module === 'wms'
+                ? 'Aprovar operação WMS'
+                : module === 'tms'
+                  ? 'Aprovar operação TMS'
+                  : module === 'crm'
+                    ? 'Aprovar oportunidade CRM'
+                    : '';
 
   if (type === 'form') {
     return (

@@ -19,7 +19,7 @@ Coordenada operacional atual:
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
 | Docker local | 98% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real, contexto Docker higienizado por `.dockerignore` e Docker DX persistente em `config/autonomy/docker_dx_policy.json` + `.env.docker-dx` | Falta validar Compose vivo neste host quando Docker Compose/Buildx responderem e acompanhar execucoes do gate em ambiente remoto. |
-| Apps/frontend | 93% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` e `all-in-one-business` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo e acoes reais Services/Mobility/Riders/Health/Business/User Jobs, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta aprofundar interfaces funcionais reais de consumidor, Business ERP/relatorios e apps fora da trilha Valley. |
+| Apps/frontend | 94% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` e `all-in-one-business` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo e acoes reais Services/Mobility/Riders/Health/Business/User Jobs/ERP/BI/WMS/TMS/CRM, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Falta aprofundar interfaces funcionais reais de consumidor, Business BPM/Document/HR e apps fora da trilha Valley. |
 | Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
@@ -339,13 +339,17 @@ Apps e prioridades:
   Playwright semeia `erp/fiscal_documents` e `bi/dashboards`, e o frontend
   aprova documento fiscal e dashboard BI por `actions/approve` contra modulos
   FastAPI reais.
+- `all-in-one-business` tambem cobre WMS/TMS/CRM vivos no API Hub: a fixture
+  Playwright semeia `wms/warehouses`, `tms/freights` e `crm/opportunities`, e o
+  frontend aprova operacoes de estoque, transporte e pipeline comercial por
+  `actions/approve` contra modulos FastAPI reais.
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
 - Ampliar interface funcional do consumidor para busca, notificacoes e
   pos-candidatura Jobs.
-- Ampliar telas Business para WMS, TMS, CRM e operacoes reais alem de
-  Jobs/ERP/BI.
+- Ampliar telas Business para BPM, Document, HR e operacoes reais alem de
+  Jobs/ERP/BI/WMS/TMS/CRM.
 - As jornadas contratuais locais `identity -> wallet -> marketplace order`,
   `business -> jobs -> candidate access`, Delivery, Riders, Services, Mobility e
   Health ja estao cobertas por pytest.
@@ -353,8 +357,8 @@ Pendencias:
   estao cobertas por pytest contratual.
 
 Proximos passos naturais:
-1. Ampliar telas Business para WMS, TMS, CRM e operacoes reais alem de
-   Jobs/ERP/BI.
+1. Ampliar telas Business para BPM, Document, HR e operacoes reais alem de
+   Jobs/ERP/BI/WMS/TMS/CRM.
 2. Ampliar interface funcional do consumidor para busca, notificacoes e
    pos-candidatura Jobs.
 3. Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.

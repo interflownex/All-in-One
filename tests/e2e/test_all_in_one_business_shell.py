@@ -103,3 +103,21 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     page.get_by_role("button", name="Aprovar relatório BI").click()
     expect(page.get_by_text("Relatorio BI aprovado no API Hub vivo.")).to_be_visible(timeout=10000)
     expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_live_server}/wms/warehouses", wait_until="domcontentloaded")
+    expect(page.get_by_text("CD Regional Playwright")).to_be_visible(timeout=10000)
+    page.get_by_role("button", name="Aprovar operação WMS").click()
+    expect(page.get_by_text("Operacao WMS aprovada no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_live_server}/tms/freights", wait_until="domcontentloaded")
+    expect(page.get_by_text("Frete Regional Playwright")).to_be_visible(timeout=10000)
+    page.get_by_role("button", name="Aprovar operação TMS").click()
+    expect(page.get_by_text("Operacao TMS aprovada no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_live_server}/crm/opportunities", wait_until="domcontentloaded")
+    expect(page.get_by_text("Oportunidade B2B Playwright")).to_be_visible(timeout=10000)
+    page.get_by_role("button", name="Aprovar oportunidade CRM").click()
+    expect(page.get_by_text("Oportunidade CRM aprovada no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("approved")).to_be_visible()

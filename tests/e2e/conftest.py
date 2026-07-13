@@ -200,6 +200,20 @@ PHASE4_ROUTE_PAYLOADS = {
         "name": "Dashboard Giro de Estoque Playwright",
         "definition": {"metric": "inventory_turnover", "period": "monthly"},
     },
+    ("wms", "warehouses"): {
+        "name": "CD Regional Playwright",
+        "description": "Estoque local vivo para operacao Business",
+    },
+    ("tms", "freights"): {
+        "freight_brl": "89.90",
+        "title": "Frete Regional Playwright",
+        "description": "Transporte vivo para pedido Business",
+    },
+    ("crm", "opportunities"): {
+        "title": "Oportunidade B2B Playwright",
+        "expected_value_brl": "1299.00",
+        "description": "Pipeline vivo para lojista Business",
+    },
     ("document", "documents"): {"storage_key": "phase4/doc.pdf", "filename": "doc.pdf"},
     ("health", "patients"): {"health_identifier": "patient-phase4", "name": "Paciente Playwright"},
     ("health", "appointments"): {"scheduled_at": "2026-07-12T12:00:00Z", "care_line": "Consulta"},
@@ -404,6 +418,9 @@ def all_in_one_business_live_server(tmp_path_factory):
         "/jobs/resources/resumes",
         "/erp/resources/fiscal_documents",
         "/bi/resources/dashboards",
+        "/wms/resources/warehouses",
+        "/tms/resources/freights",
+        "/crm/resources/opportunities",
     ]
     try:
         processes, url = start_phase4_live_stack(

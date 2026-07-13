@@ -1,5 +1,50 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 Business WMS/TMS/CRM API Hub Vivo
+
+### Concluido neste ciclo
+
+- `all-in-one-business` passou a resolver aliases reais de WMS, TMS e CRM no
+  API Hub vivo, incluindo `warehouses`, `inventory`, `shipments`,
+  `picking_waves`, `freights`, `proofs_of_delivery`, `freight_audits`,
+  `opportunities`, `leads`, `activities` e `campaigns`.
+- A acao operacional viva do `SmartCRUD` agora aprova registros WMS, TMS e CRM
+  por `/{module}/resources/{resource}/{id}/actions/approve`, com mensagens
+  especificas para estoque, transporte e pipeline comercial.
+- `tests/e2e/conftest.py` passou a semear `wms/warehouses`, `tms/freights` e
+  `crm/opportunities` junto da fixture `all_in_one_business_live_server`.
+- `tests/e2e/test_all_in_one_business_shell.py` agora percorre Jobs, ERP, BI,
+  WMS, TMS e CRM contra API Hub e modulos FastAPI reais.
+
+### Validacoes executadas
+
+- `npm run build` em `apps/all-in-one-business`: aprovado.
+- `./.venv/bin/python -m py_compile tests/e2e/conftest.py tests/e2e/test_all_in_one_business_shell.py`:
+  aprovado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_business_jobs_journey.py`:
+  7 aprovados.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py::test_all_in_one_business_shell_runs_live_api_hub_actions`:
+  1 aprovado em 212.86s, com acoes vivas Jobs, ERP, BI, WMS, TMS e CRM.
+- `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`:
+  aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `git diff --check`: aprovado.
+
+### Pendencias rastreadas
+
+- Ampliar interface funcional do consumidor para busca, notificacoes e
+  pos-candidatura Jobs.
+- Ampliar telas Business para BPM, Document, HR e operacoes reais alem de
+  Jobs/ERP/BI/WMS/TMS/CRM.
+- Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.
+- Executar pendencias externas bloqueadas por ambiente responsivo:
+  gcloud/Apigee IAM, PowerShell/Cloudflare Tunnel e Docker Compose vivo no host.
+
+### Git
+
+- Incremento Business WMS/TMS/CRM API Hub vivo em validacao final antes da
+  sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-13 Business ERP/BI API Hub Vivo
 
 ### Concluido neste ciclo

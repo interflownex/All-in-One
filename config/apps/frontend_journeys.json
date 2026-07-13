@@ -27,7 +27,7 @@
       "api_hub_routes": ["/gateway/business", "/gateway/jobs", "/gateway/erp", "/gateway/bi"],
       "shell_status": "api_hub_live_actions",
       "coverage": ["playwright:all_in_one_business_shell", "pytest:business_jobs_journey"],
-      "next_e2e": "Ampliar telas Business para WMS, TMS, CRM e operacoes reais alem de Jobs/ERP/BI."
+      "next_e2e": "Ampliar telas Business para BPM, Document, HR e operacoes reais alem de Jobs/ERP/BI/WMS/TMS/CRM."
     },
     {
       "slug": "all-in-one-riders",
