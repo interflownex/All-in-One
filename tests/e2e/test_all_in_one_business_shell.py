@@ -121,3 +121,21 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     page.get_by_role("button", name="Aprovar oportunidade CRM").click()
     expect(page.get_by_text("Oportunidade CRM aprovada no API Hub vivo.")).to_be_visible(timeout=10000)
     expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_live_server}/bpm/processes", wait_until="domcontentloaded")
+    expect(page.get_by_text("Fluxo BPM Playwright")).to_be_visible(timeout=10000)
+    page.get_by_role("button", name="Aprovar fluxo BPM").click()
+    expect(page.get_by_text("Fluxo BPM aprovado no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_live_server}/document/documents", wait_until="domcontentloaded")
+    expect(page.get_by_text("doc.pdf")).to_be_visible(timeout=10000)
+    page.get_by_role("button", name="Aprovar documento").click()
+    expect(page.get_by_text("Documento operacional aprovado no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_live_server}/hr/employees", wait_until="domcontentloaded")
+    expect(page.get_by_text("Colaborador HR Playwright")).to_be_visible(timeout=10000)
+    page.get_by_role("button", name="Aprovar registro HR").click()
+    expect(page.get_by_text("Registro HR aprovado no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("approved")).to_be_visible()

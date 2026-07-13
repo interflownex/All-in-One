@@ -214,7 +214,16 @@ PHASE4_ROUTE_PAYLOADS = {
         "expected_value_brl": "1299.00",
         "description": "Pipeline vivo para lojista Business",
     },
+    ("bpm", "processes"): {
+        "process_key": "onboarding-business-playwright",
+        "title": "Fluxo BPM Playwright",
+    },
     ("document", "documents"): {"storage_key": "phase4/doc.pdf", "filename": "doc.pdf"},
+    ("hr", "employees"): {
+        "company_id": PHASE4_BUSINESS_ID,
+        "employment_type": "clt",
+        "name": "Colaborador HR Playwright",
+    },
     ("health", "patients"): {"health_identifier": "patient-phase4", "name": "Paciente Playwright"},
     ("health", "appointments"): {"scheduled_at": "2026-07-12T12:00:00Z", "care_line": "Consulta"},
     ("identity", "consents"): {
@@ -421,6 +430,9 @@ def all_in_one_business_live_server(tmp_path_factory):
         "/wms/resources/warehouses",
         "/tms/resources/freights",
         "/crm/resources/opportunities",
+        "/bpm/resources/processes",
+        "/document/resources/documents",
+        "/hr/resources/employees",
     ]
     try:
         processes, url = start_phase4_live_stack(

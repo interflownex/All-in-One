@@ -11,12 +11,20 @@ const API_HUB_URL = (import.meta as any).env?.VITE_API_HUB_URL ?? '';
 const API_HUB_TOKEN = (import.meta as any).env?.VITE_API_HUB_TOKEN ?? '';
 
 const RESOURCE_ALIASES: Record<string, string> = {
+  'bpm:processes': 'processes',
+  'bpm:slapolicies': 'sla_policies',
+  'bpm:tasks': 'tasks',
+  'bpm:workflowinstances': 'workflow_instances',
   'business:catalogoffers': 'catalog_offers',
   'business:companies': 'companies',
   'bi:dashboards': 'dashboards',
   'bi:datasets': 'datasets',
   'bi:exports': 'exports',
   'bi:indicators': 'indicators',
+  'document:documents': 'documents',
+  'document:folders': 'folders',
+  'document:retentionpolicies': 'retention_policies',
+  'document:versions': 'versions',
   'erp:accounts': 'accounts',
   'erp:costcenters': 'cost_centers',
   'erp:fiscaldocuments': 'fiscal_documents',
@@ -30,6 +38,11 @@ const RESOURCE_ALIASES: Record<string, string> = {
   'jobs:jobpostings': 'job_postings',
   'jobs:resumeaccesslogs': 'resume_access_logs',
   'jobs:resumes': 'resumes',
+  'hr:candidates': 'candidates',
+  'hr:courses': 'courses',
+  'hr:employees': 'employees',
+  'hr:occupationalrecords': 'occupational_records',
+  'hr:payrollruns': 'payroll_runs',
   'tms:carriers': 'carriers',
   'tms:freightaudits': 'freight_audits',
   'tms:freights': 'freights',
@@ -61,6 +74,7 @@ const itemTitle = (item: any, fallbackTitle: string) =>
   item.payload?.legal_name ||
   item.payload?.title ||
   item.payload?.document_type ||
+  item.payload?.filename ||
   item.payload?.headline ||
   item.payload?.purpose ||
   item.payload?.description ||
@@ -72,6 +86,9 @@ const approvalMessageForModule = (module: string) => {
   if (module === 'wms') return 'Operacao WMS aprovada no API Hub vivo.';
   if (module === 'tms') return 'Operacao TMS aprovada no API Hub vivo.';
   if (module === 'crm') return 'Oportunidade CRM aprovada no API Hub vivo.';
+  if (module === 'bpm') return 'Fluxo BPM aprovado no API Hub vivo.';
+  if (module === 'document') return 'Documento operacional aprovado no API Hub vivo.';
+  if (module === 'hr') return 'Registro HR aprovado no API Hub vivo.';
   return 'Registro operacional aprovado no API Hub vivo.';
 };
 
@@ -186,7 +203,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         return;
       }
 
-      if (['erp', 'bi', 'wms', 'tms', 'crm'].includes(module)) {
+      if (['erp', 'bi', 'wms', 'tms', 'crm', 'bpm', 'document', 'hr'].includes(module)) {
         const item = data[0];
         if (!item?.id) throw new Error('Nenhum registro disponivel para aprovacao operacional.');
         const approved = await apiHubFetch(`/${module}/resources/${resourceType}/${item.id}/actions/approve`, {
@@ -218,9 +235,15 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
                 ? 'Aprovar operação WMS'
                 : module === 'tms'
                   ? 'Aprovar operação TMS'
-                  : module === 'crm'
-                    ? 'Aprovar oportunidade CRM'
-                    : '';
+                    : module === 'crm'
+                      ? 'Aprovar oportunidade CRM'
+                      : module === 'bpm'
+                        ? 'Aprovar fluxo BPM'
+                      : module === 'document'
+                        ? 'Aprovar documento'
+                        : module === 'hr'
+                          ? 'Aprovar registro HR'
+                          : '';
 
   if (type === 'form') {
     return (
