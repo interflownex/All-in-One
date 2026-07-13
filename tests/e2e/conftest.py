@@ -191,6 +191,15 @@ PHASE4_ROUTE_PAYLOADS = {
         "resume_id": "33333333-3333-4333-8333-333333333333",
         "job_posting_id": "44444444-4444-4444-8444-444444444444",
     },
+    ("erp", "fiscal_documents"): {
+        "document_type": "Relatorio de Giro Fiscal Playwright",
+        "amount_brl": "3490.75",
+        "description": "Documento ERP vivo para conciliacao Business",
+    },
+    ("bi", "dashboards"): {
+        "name": "Dashboard Giro de Estoque Playwright",
+        "definition": {"metric": "inventory_turnover", "period": "monthly"},
+    },
     ("document", "documents"): {"storage_key": "phase4/doc.pdf", "filename": "doc.pdf"},
     ("health", "patients"): {"health_identifier": "patient-phase4", "name": "Paciente Playwright"},
     ("health", "appointments"): {"scheduled_at": "2026-07-12T12:00:00Z", "care_line": "Consulta"},
@@ -393,6 +402,8 @@ def all_in_one_business_live_server(tmp_path_factory):
         "/business/resources/catalog_offers",
         "/jobs/resources/job_postings",
         "/jobs/resources/resumes",
+        "/erp/resources/fiscal_documents",
+        "/bi/resources/dashboards",
     ]
     try:
         processes, url = start_phase4_live_stack(

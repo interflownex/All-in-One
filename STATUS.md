@@ -1,5 +1,48 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 Business ERP/BI API Hub Vivo
+
+### Concluido neste ciclo
+
+- `all-in-one-business` passou a resolver aliases reais de ERP e BI no API Hub
+  vivo, incluindo `fiscal_documents`, `cost_centers`, `dashboards`,
+  `datasets`, `indicators` e `exports`.
+- A tela Business agora executa aprovacao operacional auditavel para registros
+  ERP e relatorios BI via `/{module}/resources/{resource}/{id}/actions/approve`,
+  preservando o fallback legado para telas sem token vivo.
+- `tests/e2e/conftest.py` passou a semear `erp/fiscal_documents` e
+  `bi/dashboards` junto da fixture `all_in_one_business_live_server`.
+- `tests/e2e/test_all_in_one_business_shell.py` agora percorre Jobs, ERP e BI
+  contra API Hub e modulos FastAPI reais, aprovando documento fiscal e dashboard
+  BI pelo frontend.
+
+### Validacoes executadas
+
+- `npm run build` em `apps/all-in-one-business`: aprovado.
+- `./.venv/bin/python -m py_compile modules/erp/main.py tests/e2e/conftest.py tests/e2e/test_all_in_one_business_shell.py`:
+  aprovado.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_business_jobs_journey.py`:
+  7 aprovados.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py::test_all_in_one_business_shell_runs_live_api_hub_actions`:
+  1 aprovado em 89.38s, com acoes vivas Jobs, ERP e BI.
+- `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`:
+  aprovado.
+- `git diff --check`: aprovado.
+
+### Pendencias rastreadas
+
+- Ampliar interface funcional do consumidor para busca, notificacoes e
+  pos-candidatura Jobs.
+- Ampliar telas Business para WMS, TMS, CRM e operacoes reais alem de
+  Jobs/ERP/BI.
+- Executar pendencias externas bloqueadas por ambiente responsivo:
+  gcloud/Apigee IAM, PowerShell/Cloudflare Tunnel e Docker Compose vivo no host.
+
+### Git
+
+- Incremento Business ERP/BI API Hub vivo em validacao final antes da
+  sincronizacao automatica.
+
 ## STATUS OPERACIONAL - 2026-07-12 User Jobs API Hub Vivo
 
 ### Concluido neste ciclo

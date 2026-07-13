@@ -13,6 +13,15 @@ const API_HUB_TOKEN = (import.meta as any).env?.VITE_API_HUB_TOKEN ?? '';
 const RESOURCE_ALIASES: Record<string, string> = {
   'business:catalogoffers': 'catalog_offers',
   'business:companies': 'companies',
+  'bi:dashboards': 'dashboards',
+  'bi:datasets': 'datasets',
+  'bi:exports': 'exports',
+  'bi:indicators': 'indicators',
+  'erp:accounts': 'accounts',
+  'erp:costcenters': 'cost_centers',
+  'erp:fiscaldocuments': 'fiscal_documents',
+  'erp:payables': 'payables',
+  'erp:receivables': 'receivables',
   'jobs:applications': 'applications',
   'jobs:jobpostings': 'job_postings',
   'jobs:resumeaccesslogs': 'resume_access_logs',
@@ -34,8 +43,10 @@ const normalizeCollection = (result: any): any[] => {
 const itemTitle = (item: any, fallbackTitle: string) =>
   item.name ||
   item.title ||
+  item.payload?.name ||
   item.payload?.legal_name ||
   item.payload?.title ||
+  item.payload?.document_type ||
   item.payload?.headline ||
   item.payload?.purpose ||
   `${fallbackTitle} #${item.id}`;
@@ -148,6 +159,22 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         const logs = normalizeCollection(await apiHubFetch('/jobs/resources/resume_access_logs'));
         setData(logs);
         setActionMessage('Acesso a curriculo registrado no API Hub vivo.');
+        return;
+      }
+
+      if (module === 'erp' || module === 'bi') {
+        const item = data[0];
+        if (!item?.id) throw new Error('Nenhum registro disponivel para aprovacao operacional.');
+        const approved = await apiHubFetch(`/${module}/resources/${resourceType}/${item.id}/actions/approve`, {
+          method: 'POST',
+          body: JSON.stringify({ reason: 'Aprovacao operacional via Business shell ERP/BI vivo' }),
+        });
+        setData((items) => items.map((current) => (current.id === item.id ? approved : current)));
+        setActionMessage(
+          module === 'erp'
+            ? 'Registro ERP aprovado no API Hub vivo.'
+            : 'Relatorio BI aprovado no API Hub vivo.',
+        );
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao executar acao viva no API Hub.');
@@ -163,7 +190,11 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         ? 'Publicar vaga'
         : module === 'jobs' && resourceType === 'resume_access_logs'
           ? 'Registrar acesso a currículo'
-          : '';
+          : module === 'erp'
+            ? 'Aprovar registro ERP'
+            : module === 'bi'
+              ? 'Aprovar relatório BI'
+              : '';
 
   if (type === 'form') {
     return (

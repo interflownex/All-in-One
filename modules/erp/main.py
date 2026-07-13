@@ -1,13 +1,18 @@
 from __future__ import annotations
 import os
-from fastapi import FastAPI, Header, HTTPException, Depends
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from fastapi import Header, HTTPException, Depends
 from typing import Any, Optional
 from pydantic import BaseModel
-from modules.shared.erp_postgres_store import ErpPostgresStore
-from modules.shared.runtime import get_erp_store
-from modules.shared.integration_sandbox import FiscalDocumentSandbox, local_fiscal_document_simulator
+from shared.erp_postgres_store import ErpPostgresStore
+from shared.runtime import create_module_app, get_erp_store
+from shared.integration_sandbox import FiscalDocumentSandbox, local_fiscal_document_simulator
 
-app = FastAPI(title="All-in-One ERP API")
+app = create_module_app("erp")
 
 class InvoiceItemSchema(BaseModel):
     description: str
@@ -32,10 +37,6 @@ class SandboxFiscalInvoiceRequest(BaseModel):
     document_type: str
     amount_brl: str
     issuer_document: str
-
-@app.get("/health")
-def health():
-    return {"status": "ok", "module": "erp"}
 
 @app.get("/erp/billing/{document_id}")
 async def get_billing(

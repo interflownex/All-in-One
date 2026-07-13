@@ -335,13 +335,17 @@ Apps e prioridades:
   arquivo, subindo API Hub e modulos FastAPI reais para Business e Jobs, com
   acoes reais de aprovacao de empresa (`approved`), publicacao de vaga
   (`published`) e registro auditavel de acesso a curriculo no frontend.
+- `all-in-one-business` tambem cobre ERP/BI vivos no API Hub: a fixture
+  Playwright semeia `erp/fiscal_documents` e `bi/dashboards`, e o frontend
+  aprova documento fiscal e dashboard BI por `actions/approve` contra modulos
+  FastAPI reais.
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
 - Ampliar interface funcional do consumidor para busca, notificacoes e
   pos-candidatura Jobs.
-- Ampliar telas Business para acoes reais de ERP/relatorios e operacoes de
-  dominio alem de Jobs.
+- Ampliar telas Business para WMS, TMS, CRM e operacoes reais alem de
+  Jobs/ERP/BI.
 - As jornadas contratuais locais `identity -> wallet -> marketplace order`,
   `business -> jobs -> candidate access`, Delivery, Riders, Services, Mobility e
   Health ja estao cobertas por pytest.
@@ -349,8 +353,8 @@ Pendencias:
   estao cobertas por pytest contratual.
 
 Proximos passos naturais:
-1. Ampliar telas Business para acoes reais de ERP/relatorios e operacoes de
-   dominio alem de Jobs.
+1. Ampliar telas Business para WMS, TMS, CRM e operacoes reais alem de
+   Jobs/ERP/BI.
 2. Ampliar interface funcional do consumidor para busca, notificacoes e
    pos-candidatura Jobs.
 3. Ampliar as interfaces funcionais reais dos apps fora da trilha Valley.

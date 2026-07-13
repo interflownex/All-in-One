@@ -91,3 +91,15 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     page.get_by_role("button", name="Registrar acesso a currículo").click()
     expect(page.get_by_text("Acesso a curriculo registrado no API Hub vivo.")).to_be_visible(timeout=10000)
     expect(page.get_by_text("triagem para vaga publicada via Business shell")).to_be_visible(timeout=10000)
+
+    page.goto(f"{all_in_one_business_live_server}/erp/fiscaldocuments", wait_until="domcontentloaded")
+    expect(page.get_by_text("Relatorio de Giro Fiscal Playwright")).to_be_visible(timeout=10000)
+    page.get_by_role("button", name="Aprovar registro ERP").click()
+    expect(page.get_by_text("Registro ERP aprovado no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("approved")).to_be_visible()
+
+    page.goto(f"{all_in_one_business_live_server}/bi/dashboards", wait_until="domcontentloaded")
+    expect(page.get_by_text("Dashboard Giro de Estoque Playwright")).to_be_visible(timeout=10000)
+    page.get_by_role("button", name="Aprovar relatório BI").click()
+    expect(page.get_by_text("Relatorio BI aprovado no API Hub vivo.")).to_be_visible(timeout=10000)
+    expect(page.get_by_text("approved")).to_be_visible()
