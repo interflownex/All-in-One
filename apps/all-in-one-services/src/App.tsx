@@ -33,7 +33,14 @@ type ApiResource = {
 
 type JourneyState = 'idle' | 'running' | 'completed' | 'failed'
 
-const apiHeaders = () => (API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {})
+type ServiceEvidence = {
+  provider: string
+  escrows: number
+  documents: number
+  followUp: string
+}
+
+const apiHeaders = (): Record<string, string> => (API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {})
 
 async function fetchEndpoint(path: string): Promise<ApiResource[]> {
   if (!API_HUB_URL) throw new Error('VITE_API_HUB_URL ausente')
@@ -69,6 +76,12 @@ function App() {
     })),
   )
   const [contract, setContract] = useState<ApiResource | null>(null)
+  const [evidence, setEvidence] = useState<ServiceEvidence>({
+    provider: 'Aguardando prestador do API Hub.',
+    escrows: 0,
+    documents: 0,
+    followUp: 'Aguardando conclusao do atendimento.',
+  })
   const [journeyState, setJourneyState] = useState<JourneyState>('idle')
   const [journeyMessage, setJourneyMessage] = useState('Pronto para aceitar contrato, reter escrow e anexar evidencia.')
 
@@ -80,6 +93,18 @@ function App() {
           const data = await fetchEndpoint(endpoint.path)
           if (endpoint.path.endsWith('/service_contracts') && data[0]) {
             setContract(data[0])
+          }
+          if (endpoint.path.endsWith('/providers') && data[0]) {
+            setEvidence(current => ({
+              ...current,
+              provider: String(data[0].payload?.name ?? data[0].payload?.category ?? 'Prestador validado'),
+            }))
+          }
+          if (endpoint.path.endsWith('/escrows')) {
+            setEvidence(current => ({ ...current, escrows: data.length }))
+          }
+          if (endpoint.path.endsWith('/documents')) {
+            setEvidence(current => ({ ...current, documents: data.length }))
           }
           return {
             label: endpoint.label,
@@ -119,6 +144,10 @@ function App() {
         evidence_hash: 'phase4-playwright-evidence',
       })
       setContract(completed)
+      setEvidence(current => ({
+        ...current,
+        followUp: 'Pos-atendimento criado: liberar escrow apos conferencia da evidencia e registrar satisfacao do cliente.',
+      }))
       setJourneyState('completed')
       setJourneyMessage('Jornada concluida: contrato completed com evidencia anexada.')
     } catch {
@@ -184,6 +213,35 @@ function App() {
           {journeyState === 'running' ? 'Executando...' : 'Concluir jornada Services'}
         </button>
         <p className={`journey-feedback ${journeyState}`}>{journeyMessage}</p>
+      </section>
+
+      <section className="action-panel" aria-label="Pos-atendimento Services">
+        <div>
+          <p className="eyebrow">Pos-atendimento</p>
+          <h2>Escrow, evidencia e retorno do cliente</h2>
+          <p>
+            Consolida metadados operacionais do API Hub para acompanhar a
+            liberacao financeira e a prova de execucao sem expor documentos.
+          </p>
+        </div>
+        <dl>
+          <div>
+            <dt>Prestador</dt>
+            <dd>{evidence.provider}</dd>
+          </div>
+          <div>
+            <dt>Escrow</dt>
+            <dd>{evidence.escrows > 0 ? 'Escrow operacional vinculado' : 'Escrow pendente'}</dd>
+          </div>
+          <div>
+            <dt>Evidencia</dt>
+            <dd>{evidence.documents > 0 ? 'Evidencia documental disponivel' : 'Evidencia pendente'}</dd>
+          </div>
+          <div>
+            <dt>Retorno</dt>
+            <dd>{evidence.followUp}</dd>
+          </div>
+        </dl>
       </section>
     </main>
   )

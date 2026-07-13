@@ -1,5 +1,46 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 Services Pos-Atendimento Vivo
+
+### Concluido neste ciclo
+
+- `all-in-one-services` passou a exibir painel `Pos-atendimento Services` com
+  prestador, escrow operacional, evidencia documental e retorno do cliente a
+  partir de metadados retornados pelo API Hub.
+- A jornada Services viva continua aceitando e concluindo contrato real, e agora
+  atualiza o retorno pos-atendimento para orientar liberacao de escrow,
+  conferencia de evidencia e registro de satisfacao.
+- O build estrito do shell Services foi saneado com `vite-env.d.ts` e headers
+  tipados para `fetch`, mantendo compatibilidade TypeScript/Vite.
+- `tests/e2e/test_all_in_one_phase4_shells.py` passou a validar escrow,
+  evidencia documental e retorno pos-atendimento no fluxo vivo Services.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_phase4_shells.py tests/e2e/conftest.py`: aprovado.
+- `npm run build` em `apps/all-in-one-services`: build Vite concluido com sucesso.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py::test_services_shell_completes_live_contract_journey`: 1 passed em 74.62s.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py`: 6 passed em 0.12s.
+- `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
+- `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
+  25 modulos e infraestrutura em conformidade.
+- `git diff --check`: sem erros.
+
+### Pendencias rastreadas
+
+- Ampliar interfaces funcionais reais dos demais apps fora da trilha Valley,
+  especialmente Riders e Mobility.
+- Aprofundar pos-acoes, filtros e auditoria Business agora que os dominios
+  principais ja possuem API Hub vivo.
+- Retomar API Hub admin/self-management em entrega isolada, apos estabilizar
+  autenticacao obrigatoria para recursos internos do proprio API Hub.
+- Executar pendencias externas bloqueadas por ambiente responsivo:
+  gcloud/Apigee IAM, PowerShell/Cloudflare Tunnel e Docker Compose vivo no host.
+
+### Git
+
+- Incremento Services pos-atendimento vivo pronto para sincronizacao Git.
+
 ## STATUS OPERACIONAL - 2026-07-13 Health Governanca Clinica Viva
 
 ### Concluido neste ciclo

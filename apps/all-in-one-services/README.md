@@ -12,5 +12,7 @@ contrato -> evidencia.
 - Endpoints conectados via API Hub: `/services/resources/providers`,
   `/services/resources/service_contracts`, `/finance/resources/escrows` e
   `/document/resources/documents`.
+- A interface viva mostra pos-atendimento com escrow operacional, evidencia
+  documental e retorno do cliente sem expor documentos sensiveis.
 - Fallback local preserva a tela quando o API Hub nao estiver rodando.
 - Evidencia versionada: `config/apps/frontend_journeys.json`.

@@ -53,7 +53,7 @@
       "api_hub_routes": ["/services/resources/providers", "/services/resources/service_contracts", "/finance/resources/escrows", "/document/resources/documents"],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
-      "next_e2e": "Ampliar interface funcional para visita, orcamento e evidencia anexada apos contrato vivo."
+      "next_e2e": "Ampliar interface funcional para visita, orcamento detalhado e avaliacao do cliente apos pos-atendimento vivo."
     },
     {
       "slug": "all-in-one-health",

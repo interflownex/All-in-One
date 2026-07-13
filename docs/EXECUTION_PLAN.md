@@ -298,6 +298,9 @@ Apps e prioridades:
 - `all-in-one-services` agora possui acao viva no shell para aceitar e concluir
   um contrato retornado pelo API Hub, validada por Playwright contra modulos
   FastAPI reais e fixtures SQLite.
+- `all-in-one-services` tambem cobre pos-atendimento vivo: o shell mostra
+  prestador, escrow operacional, evidencia documental e retorno do cliente
+  usando metadados do API Hub.
 - `all-in-one-mobility` agora possui acao viva no shell para aceitar/concluir
   corrida e usar ticket QR/NFC retornados pelo API Hub, tambem validada por
   Playwright contra modulos FastAPI reais e fixtures SQLite.
@@ -362,7 +365,7 @@ Apps e prioridades:
 
 Pendencias:
 - Ampliar as interfaces funcionais reais para os demais apps fora da trilha
-  Valley, especialmente Riders, Services e Mobility.
+  Valley, especialmente Riders e Mobility.
 - Aprofundar pos-acoes, filtros e auditoria Business agora que os dominios
   principais ja possuem API Hub vivo.
 - Retomar API Hub admin/self-management em entrega isolada, apos estabilizar
