@@ -1,5 +1,41 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
+
+### Concluido neste ciclo
+
+- Plano atualizado reconciliado com a evidencia Git atual: `origin/main` esta
+  operacional e alinhado, enquanto o remoto `fork` segue indisponivel neste
+  checkout.
+- A Fase 4 deixou de listar como pendencia itens que ja estavam concluídos por
+  pytest/Playwright e passou a rastrear somente homologacao externa e regressao
+  continua.
+- O status do app Business agora registra explicitamente self-management vivo do
+  API Hub para API clients, API keys, webhooks e integration runs.
+- Docker DX saneado neste host: symlinks quebrados de Compose/Buildx vindos do
+  Docker Desktop foram contornados com links de usuario em
+  `~/.docker/cli-plugins`, e o script `configure_docker_dx.py` agora repara esse
+  estado de forma idempotente e sem sudo.
+- `docker compose version`, `docker buildx version`, `docker mcp version`,
+  `python3 scripts/configure_docker_dx.py --check` e `docker compose config
+  --quiet` responderam com sucesso.
+- O gate vivo `scripts/validate_compose_health.py` deixou de falhar por plugins
+  ausentes e avancou ate build dos servicos, mas excedeu 300s antes dos
+  healthchecks; a proxima tentativa precisa de timeout de build maior ou cache
+  aquecido.
+
+### Pendencias rastreadas
+
+- Reconfigurar ou recriar o remoto `fork` se ele voltar a ser exigido para
+  escrita alternativa.
+- Executar gate Compose vivo completo com timeout de build ampliado, PowerShell
+  Core no Windows, `gcloud` autenticado/responsivo e homologacoes externas
+  Apigee/KYB/provedores.
+
+### Git
+
+- Reconciliacao documental em validacao local antes da sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-13 Higiene Cloud Build Segura
 
 ### Concluido neste ciclo

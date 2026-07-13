@@ -68,3 +68,21 @@ def test_docker_dx_capability_probe_does_not_hang(monkeypatch) -> None:
     monkeypatch.setattr(configure_docker_dx.subprocess, "run", fake_run)
 
     assert configure_docker_dx.docker_subcommand_exists("compose", "version", timeout_seconds=1) is False
+
+
+def test_docker_dx_repairs_user_plugin_links_without_sudo(tmp_path, monkeypatch) -> None:
+    system_plugins = tmp_path / "usr" / "libexec" / "docker" / "cli-plugins"
+    user_plugins = tmp_path / "home" / ".docker" / "cli-plugins"
+    system_plugins.mkdir(parents=True)
+    for plugin in ("compose", "buildx"):
+        binary = system_plugins / f"docker-{plugin}"
+        binary.write_text("#!/bin/sh\n", encoding="utf-8")
+        binary.chmod(0o755)
+
+    monkeypatch.setattr(configure_docker_dx, "SYSTEM_PLUGIN_DIRS", (system_plugins,))
+    monkeypatch.setattr(configure_docker_dx, "USER_PLUGIN_DIR", user_plugins)
+
+    assert configure_docker_dx.ensure_user_cli_plugin_links(dry_run=False) == ["compose", "buildx"]
+    assert (user_plugins / "docker-compose").resolve() == system_plugins / "docker-compose"
+    assert (user_plugins / "docker-buildx").resolve() == system_plugins / "docker-buildx"
+    assert configure_docker_dx.ensure_user_cli_plugin_links(dry_run=False) == []

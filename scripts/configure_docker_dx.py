@@ -14,6 +14,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "config" / "autonomy" / "docker_dx_policy.json"
+USER_PLUGIN_DIR = Path.home() / ".docker" / "cli-plugins"
+SYSTEM_PLUGIN_DIRS = (
+    Path("/usr/libexec/docker/cli-plugins"),
+    Path("/usr/lib/docker/cli-plugins"),
+)
+REQUIRED_CLI_PLUGINS = ("compose", "buildx")
 
 
 def load_policy() -> dict[str, object]:
@@ -46,6 +52,36 @@ def write_if_changed(path: Path, content: str, dry_run: bool) -> bool:
 
 def command_exists(command: str) -> bool:
     return shutil.which(command) is not None
+
+
+def plugin_binary(plugin: str) -> Path | None:
+    binary_name = f"docker-{plugin}"
+    for directory in SYSTEM_PLUGIN_DIRS:
+        candidate = directory / binary_name
+        if candidate.is_file() and candidate.stat().st_mode & stat.S_IXUSR:
+            return candidate
+    return None
+
+
+def ensure_user_cli_plugin_links(dry_run: bool) -> list[str]:
+    """Prioriza plugins locais validos quando symlinks do Docker Desktop quebram o CLI."""
+    changed: list[str] = []
+    for plugin in REQUIRED_CLI_PLUGINS:
+        source = plugin_binary(plugin)
+        if source is None:
+            continue
+        target = USER_PLUGIN_DIR / f"docker-{plugin}"
+        if target.is_symlink() and target.resolve(strict=False) == source:
+            continue
+        if target.exists() and not target.is_symlink():
+            continue
+        changed.append(plugin)
+        if not dry_run:
+            USER_PLUGIN_DIR.mkdir(parents=True, exist_ok=True)
+            if target.is_symlink():
+                target.unlink()
+            target.symlink_to(source)
+    return changed
 
 
 def docker_subcommand_exists(*args: str, timeout_seconds: int = 5) -> bool:
@@ -121,6 +157,7 @@ def main(argv: list[str] | None = None) -> int:
 
     env_path = ROOT / str(policy["env_file"])
     env_changed = write_if_changed(env_path, render_env(policy), dry_run=args.check or args.dry_run)
+    plugin_links_changed = ensure_user_cli_plugin_links(dry_run=args.check or args.dry_run)
 
     if args.print_status:
         status = {
@@ -130,6 +167,7 @@ def main(argv: list[str] | None = None) -> int:
             "docker_mcp": docker_subcommand_exists("mcp", "--help"),
             "env_file": str(env_path.relative_to(ROOT)),
             "env_changed": env_changed,
+            "user_plugin_links_changed": plugin_links_changed,
         }
         print(json.dumps(status, indent=2, sort_keys=True))
     elif args.check:
