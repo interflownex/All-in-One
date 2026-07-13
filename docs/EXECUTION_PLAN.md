@@ -308,6 +308,9 @@ Apps e prioridades:
   ativar perfil de rider retornado pelo API Hub; o gateway tambem propaga claims
   JWT de roles/scopes/MFA para headers internos `X-Actor-*`, mantendo a regra de
   aprovacao compliance auditavel.
+- `all-in-one-riders` tambem cobre pos-ativacao viva: o shell mostra
+  documento/veiculo, eventos de entrega/corrida e ganhos operacionais usando
+  metadados do API Hub sem expor saldo bruto.
 - `all-in-one-health` agora possui acao viva no shell para aprovar e concluir
   consulta retornada pelo API Hub, validada por Playwright contra modulos
   FastAPI reais e fixtures SQLite, mantendo aprovacao clinica com MFA e
@@ -364,8 +367,7 @@ Apps e prioridades:
   `actions/approve` contra modulos FastAPI reais.
 
 Pendencias:
-- Ampliar as interfaces funcionais reais para os demais apps fora da trilha
-  Valley, especialmente Riders e Mobility.
+- Ampliar a interface funcional real do app Mobility fora da trilha Valley.
 - Aprofundar pos-acoes, filtros e auditoria Business agora que os dominios
   principais ja possuem API Hub vivo.
 - Retomar API Hub admin/self-management em entrega isolada, apos estabilizar

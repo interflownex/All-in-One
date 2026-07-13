@@ -40,7 +40,7 @@
       "api_hub_routes": ["/riders/resources/rider_profiles", "/riders/resources/vehicles", "/delivery/resources/delivery_requests", "/mobility/resources/rides"],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
-      "next_e2e": "Ampliar interface funcional para ganhos, documentos e eventos de entrega/corrida apos ativacao viva."
+      "next_e2e": "Ampliar interface funcional para extrato financeiro e ocorrencias operacionais apos ganhos vivos."
     },
     {
       "slug": "all-in-one-services",

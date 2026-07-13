@@ -32,7 +32,14 @@ type ApiResource = {
 
 type JourneyState = 'idle' | 'running' | 'completed' | 'failed'
 
-const apiHeaders = () => (API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {})
+type RiderOperations = {
+  vehicle: string
+  deliveries: number
+  rides: number
+  earnings: string
+}
+
+const apiHeaders = (): Record<string, string> => (API_HUB_TOKEN ? { Authorization: `Bearer ${API_HUB_TOKEN}` } : {})
 
 async function fetchEndpoint(path: string): Promise<ApiResource[]> {
   if (!API_HUB_URL) throw new Error('VITE_API_HUB_URL ausente')
@@ -68,6 +75,12 @@ function App() {
     })),
   )
   const [profile, setProfile] = useState<ApiResource | null>(null)
+  const [operations, setOperations] = useState<RiderOperations>({
+    vehicle: 'Aguardando veiculo do API Hub.',
+    deliveries: 0,
+    rides: 0,
+    earnings: 'Ganhos liberados apos ativacao operacional.',
+  })
   const [journeyState, setJourneyState] = useState<JourneyState>('idle')
   const [journeyMessage, setJourneyMessage] = useState('Pronto para submeter documentos, aprovar cadastro e ativar rider.')
 
@@ -79,6 +92,18 @@ function App() {
           const data = await fetchEndpoint(endpoint.path)
           if (endpoint.path.endsWith('/rider_profiles') && data[0]) {
             setProfile(data[0])
+          }
+          if (endpoint.path.endsWith('/vehicles') && data[0]) {
+            setOperations(current => ({
+              ...current,
+              vehicle: String(data[0].payload?.plate ?? data[0].payload?.vehicle_type ?? 'Veiculo validado'),
+            }))
+          }
+          if (endpoint.path.endsWith('/delivery_requests')) {
+            setOperations(current => ({ ...current, deliveries: data.length }))
+          }
+          if (endpoint.path.endsWith('/rides')) {
+            setOperations(current => ({ ...current, rides: data.length }))
           }
           return {
             label: endpoint.label,
@@ -118,6 +143,10 @@ function App() {
       setProfile(approved)
       const active = await transitionRiderProfile(profile.id, 'activate', 'rider liberado para operacao')
       setProfile(active)
+      setOperations(current => ({
+        ...current,
+        earnings: 'Ganhos operacionais prontos: eventos de entrega/corrida podem alimentar repasse Finance.',
+      }))
       setJourneyState('completed')
       setJourneyMessage('Jornada concluida: rider active e pronto para operacao.')
     } catch {
@@ -185,6 +214,35 @@ function App() {
           {journeyState === 'running' ? 'Executando...' : 'Concluir jornada Riders'}
         </button>
         <p className={`journey-feedback ${journeyState}`}>{journeyMessage}</p>
+      </section>
+
+      <section className="action-panel" aria-label="Operacao pos-ativacao Riders">
+        <div>
+          <p className="eyebrow">Pos-ativacao</p>
+          <h2>Documentos, eventos e ganhos</h2>
+          <p>
+            Consolida veiculo, entregas, corridas e disponibilidade de ganhos
+            sem expor saldo bruto ou documento sensivel.
+          </p>
+        </div>
+        <dl>
+          <div>
+            <dt>Documento/veiculo</dt>
+            <dd>{operations.vehicle}</dd>
+          </div>
+          <div>
+            <dt>Eventos de entrega</dt>
+            <dd>{operations.deliveries > 0 ? 'Entrega disponivel para operacao' : 'Sem entrega disponivel'}</dd>
+          </div>
+          <div>
+            <dt>Eventos de corrida</dt>
+            <dd>{operations.rides > 0 ? 'Corrida disponivel para operacao' : 'Sem corrida disponivel'}</dd>
+          </div>
+          <div>
+            <dt>Ganhos</dt>
+            <dd>{operations.earnings}</dd>
+          </div>
+        </dl>
       </section>
     </main>
   )

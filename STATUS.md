@@ -1,5 +1,44 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 Riders Pos-Ativacao Vivo
+
+### Concluido neste ciclo
+
+- `all-in-one-riders` passou a exibir painel `Operacao pos-ativacao Riders`
+  com documento/veiculo, eventos de entrega, eventos de corrida e disponibilidade
+  de ganhos usando metadados retornados pelo API Hub.
+- A jornada Riders viva continua submetendo, aprovando e ativando perfil real,
+  e agora atualiza o painel de ganhos apos ativacao operacional.
+- O build estrito do shell Riders foi saneado com `vite-env.d.ts` e headers
+  tipados para `fetch`, mantendo compatibilidade TypeScript/Vite.
+- `tests/e2e/test_all_in_one_phase4_shells.py` passou a validar eventos de
+  entrega/corrida e ganhos operacionais no fluxo vivo Riders.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_phase4_shells.py tests/e2e/conftest.py`: aprovado.
+- `npm run build` em `apps/all-in-one-riders`: build Vite concluido com sucesso.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py::test_riders_shell_approves_and_activates_live_profile`: 1 passed em 72.17s.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py`: 6 passed em 0.11s.
+- `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
+- `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
+  25 modulos e infraestrutura em conformidade.
+- `git diff --check`: sem erros.
+
+### Pendencias rastreadas
+
+- Ampliar interface funcional real do app Mobility fora da trilha Valley.
+- Aprofundar pos-acoes, filtros e auditoria Business agora que os dominios
+  principais ja possuem API Hub vivo.
+- Retomar API Hub admin/self-management em entrega isolada, apos estabilizar
+  autenticacao obrigatoria para recursos internos do proprio API Hub.
+- Executar pendencias externas bloqueadas por ambiente responsivo:
+  gcloud/Apigee IAM, PowerShell/Cloudflare Tunnel e Docker Compose vivo no host.
+
+### Git
+
+- Incremento Riders pos-ativacao vivo pronto para sincronizacao Git.
+
 ## STATUS OPERACIONAL - 2026-07-13 Services Pos-Atendimento Vivo
 
 ### Concluido neste ciclo

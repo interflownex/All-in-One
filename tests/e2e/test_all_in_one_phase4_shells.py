@@ -212,12 +212,17 @@ def test_riders_shell_approves_and_activates_live_profile(page: Page, request: p
 
     page.goto(server_url, wait_until="domcontentloaded")
 
+    operations_panel = page.get_by_label("Operacao pos-ativacao Riders")
+    expect(operations_panel.get_by_text("Entrega disponivel para operacao")).to_be_visible(timeout=15000)
+    expect(operations_panel.get_by_text("Corrida disponivel para operacao")).to_be_visible(timeout=15000)
+
     action_panel = page.get_by_label("Acao de jornada Riders")
     expect(action_panel.get_by_text("pending_documents")).to_be_visible(timeout=15000)
     action_panel.get_by_role("button", name="Concluir jornada Riders").click()
 
     expect(action_panel.locator("dd", has_text="active")).to_be_visible(timeout=15000)
     expect(action_panel.locator(".journey-feedback.completed")).to_contain_text("Jornada concluida")
+    expect(operations_panel.get_by_text("Ganhos operacionais prontos")).to_be_visible(timeout=15000)
 
 
 def test_health_shell_approves_and_completes_live_appointment(page: Page, request: pytest.FixtureRequest) -> None:

@@ -12,5 +12,7 @@ Shell React/Vite dedicado para a jornada candidatura -> documento -> veiculo
 - Endpoints conectados via API Hub: `/riders/resources/rider_profiles`,
   `/riders/resources/vehicles`, `/delivery/resources/delivery_requests` e
   `/mobility/resources/rides`.
+- A interface viva mostra pos-ativacao com documento/veiculo, eventos de
+  entrega/corrida e ganhos operacionais sem expor saldo bruto.
 - Fallback local preserva a tela quando o API Hub nao estiver rodando.
 - Evidencia versionada: `config/apps/frontend_journeys.json`.
