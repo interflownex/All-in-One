@@ -9,5 +9,5 @@
   filtros de status, painel de auditoria operacional e aprovacao viva de API
   clients pelo self-management do API Hub.
 - Dependencia: API Hub e Identity baseline ativos.
-- Pendente: ampliar API Hub admin para API keys, webhooks e integration runs, e
-  aprofundar KYB real com convites operacionais.
+- Pendente: homologar KYB real, Apigee API Hub e provedores externos quando
+  ambiente responsivo e credenciais legitimas estiverem disponiveis.

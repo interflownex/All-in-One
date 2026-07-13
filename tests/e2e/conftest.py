@@ -199,6 +199,23 @@ PHASE4_ROUTE_PAYLOADS = {
         "client_id_hash": "phase4-api-client-id-hash",
         "secret_reference": "secret://phase4/api-client",
     },
+    ("api_hub", "api_keys"): {
+        "key_name": "Chave API Hub Playwright",
+        "key_hash": "phase4-api-key-hash",
+        "key_hint": "play...wright",
+        "scopes": ["gateway:read"],
+        "expires_at": "2027-07-13T00:00:00Z",
+    },
+    ("api_hub", "webhooks"): {
+        "target_url": "https://webhook.playwright.example/events",
+        "event_patterns": ["business.company.approved", "jobs.job_posting.published"],
+        "signing_secret_reference": "secret://phase4/webhook",
+    },
+    ("api_hub", "integration_runs"): {
+        "integration_type": "apigee_api_hub_sync",
+        "provider_name": "Apigee API Hub Playwright",
+        "log_summary": "Execucao administrativa viva sem credencial externa bruta.",
+    },
     ("jobs", "job_postings"): {
         "company_id": PHASE4_BUSINESS_ID,
         "company_status": "active",
@@ -323,7 +340,7 @@ def _seed_phase4_resources(api_hub_url: str, routes: list[str], token: str) -> d
     for index, route in enumerate(routes, start=1):
         module_name, resource_type = _route_to_resource(route)
         payload = PHASE4_ROUTE_PAYLOADS[(module_name, resource_type)]
-        target_path = f"/{module_name}/resources/{resource_type}"
+        target_path = f"/resources/{resource_type}" if module_name == "api_hub" else f"/{module_name}/resources/{resource_type}"
         request_headers = {**headers, "X-Idempotency-Key": f"phase4-{module_name}-{resource_type}-{index}"}
         created[(module_name, resource_type)] = _post_json(
             f"{api_hub_url}{target_path}",
@@ -358,6 +375,8 @@ def start_phase4_live_stack(
 
     try:
         for module_name in sorted({_route_to_resource(route)[0] for route in routes}):
+            if module_name == "api_hub":
+                continue
             process, module_url = start_python_http_server(
                 REPO_ROOT / "modules" / module_name,
                 free_port(),
@@ -483,6 +502,9 @@ def all_in_one_business_live_server(tmp_path_factory):
         "/document/resources/documents",
         "/hr/resources/employees",
         "/api_hub/resources/api_clients",
+        "/api_hub/resources/api_keys",
+        "/api_hub/resources/webhooks",
+        "/api_hub/resources/integration_runs",
     ]
     try:
         processes, url = start_phase4_live_stack(

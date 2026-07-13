@@ -1,12 +1,51 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 API Hub Admin Completo Vivo
+
+### Concluido neste ciclo
+
+- `SmartCRUD` passou a usar `/resources/...` para telas `api_hub`, mantendo
+  self-management no proprio API Hub e evitando proxy HTTP self-referente.
+- O API Hub agora injeta contexto `X-Actor-*` a partir do JWT para endpoints
+  nativos `/resources/...`, permitindo uso autenticado pelo frontend sem expor
+  headers internos ao usuario.
+- `api_keys`, `webhooks` e `integration_runs` ganharam regras explicitas de
+  review sensivel, alinhadas a `api_clients`.
+- A fixture viva Business semeia e valida `api_clients`, `api_keys`, `webhooks`
+  e `integration_runs` sem material sensivel bruto.
+- O Playwright vivo aprova os quatro recursos administrativos do API Hub e
+  confere a auditoria visual de cada acao.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m py_compile modules/api_hub/main.py modules/shared/domain_rules.py tests/e2e/conftest.py tests/e2e/test_all_in_one_business_shell.py`: aprovado.
+- `npm run build` em `apps/all-in-one-business`: build Vite concluido com sucesso.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py modules/api_hub/tests/test_gateway_security.py`: 12 passed em 2.53s.
+- Teste direto `fresh_client_for("api_hub")` com `Authorization` JWT nativo:
+  `api_clients`, `api_keys`, `webhooks` e `integration_runs` criados e
+  aprovados como `approved`.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py::test_all_in_one_business_shell_runs_live_api_hub_actions`: 1 passed em 215.00s.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_business_jobs_journey.py modules/api_hub/tests/test_gateway_security.py`: 13 passed em 4.44s.
+- `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
+- `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
+  25 modulos e infraestrutura em conformidade.
+- `git diff --check`: sem erros.
+
+### Pendencias rastreadas
+
+- Executar pendencias externas bloqueadas por ambiente responsivo:
+  gcloud/Apigee IAM, PowerShell/Cloudflare Tunnel e Docker Compose vivo no host.
+
+### Git
+
+- Incremento API Hub admin completo vivo pronto para sincronizacao Git.
+
 ## STATUS OPERACIONAL - 2026-07-13 API Hub Self-Management Inicial Vivo
 
 ### Concluido neste ciclo
 
-- `modules/api_hub/main.py` passou a incluir `api_hub` na matriz de servicos
-  roteaveis, com default `http://api-hub:8000`, permitindo chamadas
-  `/api_hub/resources/...` para self-management sem repetir o prefixo no destino.
+- O Business shell passou a usar os endpoints nativos `/resources/...` do API
+  Hub para self-management, evitando proxy HTTP para outro processo `api_hub`.
 - A fixture viva Business passou a semear `api_hub/api_clients` com
   `client_name`, escopos e referencias de segredo sem material sensivel bruto.
 - `SmartCRUD` passou a resolver `client_name` como titulo de cards, mantendo a

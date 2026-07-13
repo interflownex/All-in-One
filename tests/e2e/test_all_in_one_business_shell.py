@@ -160,6 +160,33 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     )
     expect(page.locator(".badge", has_text="approved")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
 
+    page.goto(f"{all_in_one_business_live_server}/api_hub/apikeys", wait_until="domcontentloaded")
+    expect(page.get_by_text("Chave API Hub Playwright")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    page.get_by_role("button", name="Aprovar cliente API Hub").click()
+    expect(page.get_by_text("Cliente API Hub aprovado no API Hub vivo.")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    expect(page.get_by_label("Auditoria operacional Business")).to_contain_text(
+        "Ultima acao auditavel: approve em api_hub/api_keys/"
+    )
+    expect(page.locator(".badge", has_text="approved")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+
+    page.goto(f"{all_in_one_business_live_server}/api_hub/webhooks", wait_until="domcontentloaded")
+    expect(page.get_by_text("https://webhook.playwright.example/events")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    page.get_by_role("button", name="Aprovar cliente API Hub").click()
+    expect(page.get_by_text("Cliente API Hub aprovado no API Hub vivo.")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    expect(page.get_by_label("Auditoria operacional Business")).to_contain_text(
+        "Ultima acao auditavel: approve em api_hub/webhooks/"
+    )
+    expect(page.locator(".badge", has_text="approved")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+
+    page.goto(f"{all_in_one_business_live_server}/api_hub/integrationruns", wait_until="domcontentloaded")
+    expect(page.get_by_text("Apigee API Hub Playwright")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    page.get_by_role("button", name="Aprovar cliente API Hub").click()
+    expect(page.get_by_text("Cliente API Hub aprovado no API Hub vivo.")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+    expect(page.get_by_label("Auditoria operacional Business")).to_contain_text(
+        "Ultima acao auditavel: approve em api_hub/integration_runs/"
+    )
+    expect(page.locator(".badge", has_text="approved")).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
+
 
 def test_all_in_one_business_shell_runs_governance_live_api_hub_actions(
     page: Page, all_in_one_business_governance_live_server: str

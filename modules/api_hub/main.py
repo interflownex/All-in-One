@@ -52,14 +52,14 @@ app.add_middleware(
 )
 
 MODULES = [
-    "ai_core", "api_hub", "bi", "bpm", "business", "crm", "delivery",
-    "document", "erp", "finance", "health", "hr", "identity", "jobs",
-    "legal", "marketplace", "mobility", "permissions", "property", "riders",
-    "services", "stock", "tms", "vision", "wms"
+    "ai_core", "bi", "bpm", "business", "crm", "delivery", "document", "erp",
+    "finance", "health", "hr", "identity", "jobs", "legal", "marketplace",
+    "mobility", "permissions", "property", "riders", "services", "stock",
+    "tms", "vision", "wms"
 ]
 
 SERVICES = {
-    mod: get_config(f"{mod.upper()}_SERVICE_URL", f"http://{'api-hub' if mod == 'api_hub' else mod}:8000")
+    mod: get_config(f"{mod.upper()}_SERVICE_URL", f"http://{mod}:8000")
     for mod in MODULES
 }
 JWT_SECRET = get_config("ALL_IN_ONE_JWT_SECRET", "local-secret-key-change-in-production")
@@ -85,6 +85,43 @@ CATALOG_QUERY_FIELDS = (
     "availability",
     "verified_only",
 )
+
+
+def _claim_header_value(value: Any) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, str):
+        return value
+    if isinstance(value, (list, tuple, set)):
+        return ",".join(str(item) for item in value if str(item).strip())
+    return str(value)
+
+
+@app.middleware("http")
+async def inject_actor_headers_for_native_resources(request: Request, call_next):
+    """Permite self-management nativo do API Hub com o mesmo JWT usado na borda."""
+    if request.url.path.startswith("/resources/") and b"x-actor-user-id" not in {name for name, _ in request.scope["headers"]}:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer ") and jwt is not None:
+            try:
+                payload = jwt.decode(auth_header.split(" ", 1)[1], JWT_SECRET, algorithms=["HS256"])
+            except jwt.InvalidTokenError:
+                payload = {}
+            actor_headers = {
+                "x-actor-user-id": _claim_header_value(payload.get("sub")),
+                "x-actor-roles": _claim_header_value(payload.get("roles")),
+                "x-actor-scopes": _claim_header_value(payload.get("scopes")),
+                "x-mfa-verified": _claim_header_value(payload.get("mfa_verified")),
+                "x-business-id": _claim_header_value(payload.get("business_id")),
+                "x-business-status": _claim_header_value(payload.get("business_status")),
+            }
+            request.scope["headers"] = [
+                *request.scope["headers"],
+                *((key.encode("latin-1"), value.encode("latin-1")) for key, value in actor_headers.items() if value),
+            ]
+    return await call_next(request)
 
 
 class CatalogActionRequest(BaseModel):

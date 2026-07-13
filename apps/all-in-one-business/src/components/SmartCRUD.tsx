@@ -98,6 +98,9 @@ const itemTitle = (item: any, fallbackTitle: string) =>
   item.title ||
   item.payload?.name ||
   item.payload?.client_name ||
+  item.payload?.key_name ||
+  item.payload?.target_url ||
+  item.payload?.provider_name ||
   item.payload?.legal_name ||
   item.payload?.title ||
   item.payload?.document_type ||
@@ -145,7 +148,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   const [auditState, setAuditState] = useState<AuditState | null>(null);
   const resourceType = RESOURCE_ALIASES[`${module}:${entity}`];
   const liveApiEnabled = Boolean(API_HUB_URL && API_HUB_TOKEN && resourceType);
-  const resourceBasePath = `/${module}/resources/${resourceType}`;
+  const resourceBasePath = module === 'api_hub' ? `/resources/${resourceType}` : `/${module}/resources/${resourceType}`;
   const filteredData = statusFilter === 'all' ? data : data.filter((item) => itemStatus(item) === statusFilter);
   const statusOptions = Array.from(new Set(data.map(itemStatus)));
   const approvedCount = data.filter((item) => ['approved', 'published', 'recorded'].includes(itemStatus(item))).length;

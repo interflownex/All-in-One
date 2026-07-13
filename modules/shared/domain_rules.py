@@ -392,6 +392,9 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
     ("bi", "dashboards"): ResourceRule(("name", "definition"), transitions=lifecycle_flow("bi.dashboard")),
     ("ai_core", "moderation_decisions"): ResourceRule(("module", "risk_score"), sensitive=True, transitions=review_flow("ai.moderation")),
     ("api_hub", "api_clients"): ResourceRule(("client_name", "scopes"), sensitive=True, transitions=review_flow("api.client")),
+    ("api_hub", "api_keys"): ResourceRule(("key_name", "key_hash", "key_hint", "scopes"), sensitive=True, transitions=review_flow("api.key")),
+    ("api_hub", "webhooks"): ResourceRule(("target_url", "event_patterns", "signing_secret_reference"), sensitive=True, transitions=review_flow("api.webhook")),
+    ("api_hub", "integration_runs"): ResourceRule(("integration_type", "provider_name"), sensitive=True, transitions=review_flow("api.integration_run")),
 }
 
 
