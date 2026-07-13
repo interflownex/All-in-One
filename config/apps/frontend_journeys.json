@@ -27,7 +27,7 @@
       "api_hub_routes": ["/gateway/business", "/gateway/jobs", "/gateway/erp", "/gateway/bi"],
       "shell_status": "api_hub_live_actions",
       "coverage": ["playwright:all_in_one_business_shell", "pytest:business_jobs_journey"],
-      "next_e2e": "Ampliar pos-acoes, filtros e auditoria Business agora que os dominios principais ja possuem API Hub vivo."
+      "next_e2e": "Ampliar interface funcional para KYB real, convites operacionais e API Hub admin dedicado."
     },
     {
       "slug": "all-in-one-riders",

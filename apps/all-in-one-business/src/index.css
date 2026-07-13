@@ -186,6 +186,40 @@ select:focus {
   font-weight: 700;
 }
 
+.metric-card,
+.audit-panel {
+  display: grid;
+  gap: 6px;
+  min-height: 64px;
+  padding: 12px;
+  color: #17211c;
+  background: #f5f7f6;
+  border: 2px solid #17211c;
+  box-shadow: 4px 4px 0 #dce3df;
+}
+
+.metric-card strong {
+  color: #126b45;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.metric-card span,
+.audit-panel small {
+  color: #536159;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.audit-panel {
+  margin-top: 16px;
+}
+
+.audit-panel p {
+  color: #35433b;
+  line-height: 1.45;
+}
+
 .filter-group label {
   width: 100%;
   color: #536159;

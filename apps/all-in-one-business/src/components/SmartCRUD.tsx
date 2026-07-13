@@ -7,6 +7,12 @@ interface SmartCRUDProps {
   title: string;
 }
 
+type AuditState = {
+  action: string;
+  resource: string;
+  status: string;
+};
+
 const API_HUB_URL = (import.meta as any).env?.VITE_API_HUB_URL ?? '';
 const API_HUB_TOKEN = (import.meta as any).env?.VITE_API_HUB_TOKEN ?? '';
 
@@ -125,6 +131,8 @@ const itemCreatedAt = (item: any) => {
   return rawDate ? new Date(rawDate).toLocaleDateString() : 'sem data';
 };
 
+const itemStatus = (item: any) => String(item.status || 'Disponível');
+
 const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -132,9 +140,16 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   const [error, setError] = useState('');
   const [actionMessage, setActionMessage] = useState('');
   const [query, setQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [auditState, setAuditState] = useState<AuditState | null>(null);
   const resourceType = RESOURCE_ALIASES[`${module}:${entity}`];
   const liveApiEnabled = Boolean(API_HUB_URL && API_HUB_TOKEN && resourceType);
   const resourceBasePath = `/${module}/resources/${resourceType}`;
+  const filteredData = statusFilter === 'all' ? data : data.filter((item) => itemStatus(item) === statusFilter);
+  const statusOptions = Array.from(new Set(data.map(itemStatus)));
+  const approvedCount = data.filter((item) => ['approved', 'published', 'recorded'].includes(itemStatus(item))).length;
+  const pendingCount = data.filter((item) => !['Ativo', 'active', 'approved', 'published', 'recorded'].includes(itemStatus(item))).length;
+  const visibleCount = filteredData.length;
 
   const apiHubFetch = async (path: string, init: RequestInit = {}) => {
     const response = await fetch(`${API_HUB_URL}${path}`, {
@@ -149,6 +164,14 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
       throw new Error(detail || `API Hub retornou HTTP ${response.status}.`);
     }
     return response.json();
+  };
+
+  const recordAudit = (action: string, item: any) => {
+    setAuditState({
+      action,
+      resource: `${module}/${resourceType}/${item.id}`,
+      status: itemStatus(item),
+    });
   };
 
   const fetchData = async () => {
@@ -203,6 +226,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
           body: JSON.stringify({ reason: 'KYB aprovado via Business shell vivo' }),
         });
         setData((items) => items.map((item) => (item.id === company.id ? approved : item)));
+        recordAudit('approve', approved);
         setActionMessage('Empresa aprovada no API Hub vivo.');
         return;
       }
@@ -215,6 +239,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
           body: JSON.stringify({ reason: 'Vaga validada pela empresa no Business shell vivo' }),
         });
         setData((items) => items.map((item) => (item.id === job.id ? published : item)));
+        recordAudit('publish', published);
         setActionMessage('Vaga publicada no API Hub vivo.');
         return;
       }
@@ -228,6 +253,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         );
         const logs = normalizeCollection(await apiHubFetch('/jobs/resources/resume_access_logs'));
         setData(logs);
+        if (logs[0]) recordAudit('record_resume_access', logs[0]);
         setActionMessage('Acesso a curriculo registrado no API Hub vivo.');
         return;
       }
@@ -242,6 +268,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
           body: JSON.stringify({ reason: 'Aprovacao operacional via Business shell vivo' }),
         });
         setData((items) => items.map((current) => (current.id === item.id ? approved : current)));
+        recordAudit('approve', approved);
         setActionMessage(approvalMessageForModule(module));
       }
     } catch (err) {
@@ -338,6 +365,29 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
           />
           <button className="btn-primary" onClick={fetchData} style={{ padding: '0 24px' }}>Pesquisar</button>
         </div>
+        <div className="business-filters" aria-label="Filtros operacionais Business">
+          <label>
+            Status operacional
+            <select
+              aria-label="Status operacional"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              <option value="all">Todos os status</option>
+              {statusOptions.map((status) => (
+                <option key={status} value={status}>{status}</option>
+              ))}
+            </select>
+          </label>
+          <div className="metric-card" aria-label="Resumo de registros Business">
+            <strong>{data.length}</strong>
+            <span>registros carregados</span>
+          </div>
+          <div className="metric-card" aria-label="Resumo filtrado Business">
+            <strong>{visibleCount}</strong>
+            <span>visiveis no filtro atual</span>
+          </div>
+        </div>
       </div>
 
       {error ? (
@@ -360,6 +410,15 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
               {actionMessage}
             </div>
           ) : null}
+          <div className="audit-panel" aria-label="Auditoria operacional Business">
+            <strong>Auditoria operacional</strong>
+            <p>
+              {auditState
+                ? `Ultima acao auditavel: ${auditState.action} em ${auditState.resource} -> ${auditState.status}`
+                : 'Nenhuma acao auditavel executada nesta tela.'}
+            </p>
+            <small>{approvedCount} aprovado/publicado/registrado(s) e {pendingCount} pendente(s) no conjunto carregado.</small>
+          </div>
         </div>
       ) : null}
 
@@ -367,7 +426,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         <div className="loader"></div>
       ) : (
         <div className="data-grid" style={{ display: 'grid', gap: '16px' }}>
-          {data.length > 0 ? data.map((item: any) => (
+          {filteredData.length > 0 ? filteredData.map((item: any) => (
             <div key={item.id} className="data-card neo-brutalism" style={{ background: '#fff', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{itemTitle(item, title)}</h3>

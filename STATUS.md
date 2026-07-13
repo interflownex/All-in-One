@@ -1,5 +1,45 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 Business Filtros Auditoria Vivo
+
+### Concluido neste ciclo
+
+- `apps/all-in-one-business/src/components/SmartCRUD.tsx` passou a exibir
+  filtros operacionais por status, metricas de registros carregados/visiveis e
+  resumo de aprovados/publicados/registrados versus pendentes.
+- As acoes vivas Business agora registram painel `Auditoria operacional
+  Business` com ultima acao, recurso, identificador e status retornado pelo API
+  Hub.
+- Os testes Playwright Business passaram a validar seletor de status, resumo
+  filtrado, painel de auditoria e badges reais de status sem ambiguidade com
+  opcoes de filtro.
+- `apps/all-in-one-business/STATUS.md`, README, plano e contrato de jornada foram
+  reconciliados para retirar pos-acoes/filtros/auditoria Business das
+  pendencias abertas.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_business_shell.py tests/e2e/conftest.py`: aprovado.
+- `npm run build` em `apps/all-in-one-business`: build Vite concluido com sucesso.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py::test_all_in_one_business_shell_runs_live_api_hub_actions`: 1 passed em 311.00s.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py::test_all_in_one_business_shell_runs_governance_live_api_hub_actions`: 1 passed em 99.28s.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_business_jobs_journey.py`: 7 passed em 0.96s.
+- `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
+- `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
+  25 modulos e infraestrutura em conformidade.
+- `git diff --check`: sem erros.
+
+### Pendencias rastreadas
+
+- Retomar API Hub admin/self-management em entrega isolada, apos estabilizar
+  autenticacao obrigatoria para recursos internos do proprio API Hub.
+- Executar pendencias externas bloqueadas por ambiente responsivo:
+  gcloud/Apigee IAM, PowerShell/Cloudflare Tunnel e Docker Compose vivo no host.
+
+### Git
+
+- Incremento Business filtros/auditoria vivo pronto para sincronizacao Git.
+
 ## STATUS OPERACIONAL - 2026-07-13 Mobility Pos-Corrida Vivo
 
 ### Concluido neste ciclo
