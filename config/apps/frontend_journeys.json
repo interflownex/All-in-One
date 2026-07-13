@@ -24,10 +24,10 @@
       "persona": "Empresa operadora",
       "priority_journey": "empresa -> aprovacao -> usuarios -> jobs -> ERP -> relatorios",
       "api_modules": ["business", "identity", "permissions", "jobs", "erp", "wms", "tms", "crm", "bi"],
-      "api_hub_routes": ["/gateway/business", "/gateway/jobs", "/gateway/erp", "/gateway/bi"],
+      "api_hub_routes": ["/gateway/business", "/gateway/jobs", "/gateway/erp", "/gateway/bi", "/api_hub/resources/api_clients"],
       "shell_status": "api_hub_live_actions",
       "coverage": ["playwright:all_in_one_business_shell", "pytest:business_jobs_journey"],
-      "next_e2e": "Ampliar interface funcional para KYB real, convites operacionais e API Hub admin dedicado."
+      "next_e2e": "Ampliar interface funcional para API keys, webhooks e integration runs no self-management do API Hub."
     },
     {
       "slug": "all-in-one-riders",

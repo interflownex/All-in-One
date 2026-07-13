@@ -97,6 +97,7 @@ const itemTitle = (item: any, fallbackTitle: string) =>
   item.name ||
   item.title ||
   item.payload?.name ||
+  item.payload?.client_name ||
   item.payload?.legal_name ||
   item.payload?.title ||
   item.payload?.document_type ||

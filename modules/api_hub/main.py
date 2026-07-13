@@ -52,14 +52,14 @@ app.add_middleware(
 )
 
 MODULES = [
-    "ai_core", "bi", "bpm", "business", "crm", "delivery", "document", "erp",
-    "finance", "health", "hr", "identity", "jobs", "legal", "marketplace",
-    "mobility", "permissions", "property", "riders", "services", "stock",
-    "tms", "vision", "wms"
+    "ai_core", "api_hub", "bi", "bpm", "business", "crm", "delivery",
+    "document", "erp", "finance", "health", "hr", "identity", "jobs",
+    "legal", "marketplace", "mobility", "permissions", "property", "riders",
+    "services", "stock", "tms", "vision", "wms"
 ]
 
 SERVICES = {
-    mod: get_config(f"{mod.upper()}_SERVICE_URL", f"http://{mod}:8000")
+    mod: get_config(f"{mod.upper()}_SERVICE_URL", f"http://{'api-hub' if mod == 'api_hub' else mod}:8000")
     for mod in MODULES
 }
 JWT_SECRET = get_config("ALL_IN_ONE_JWT_SECRET", "local-secret-key-change-in-production")

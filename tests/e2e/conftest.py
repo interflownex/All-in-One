@@ -193,6 +193,12 @@ PHASE4_ROUTE_PAYLOADS = {
         "source_resource_type": "job_postings",
         "price_brl": "199.90",
     },
+    ("api_hub", "api_clients"): {
+        "client_name": "Cliente API Hub Playwright",
+        "scopes": ["gateway:read", "jobs:manage"],
+        "client_id_hash": "phase4-api-client-id-hash",
+        "secret_reference": "secret://phase4/api-client",
+    },
     ("jobs", "job_postings"): {
         "company_id": PHASE4_BUSINESS_ID,
         "company_status": "active",
@@ -476,6 +482,7 @@ def all_in_one_business_live_server(tmp_path_factory):
         "/bpm/resources/processes",
         "/document/resources/documents",
         "/hr/resources/employees",
+        "/api_hub/resources/api_clients",
     ]
     try:
         processes, url = start_phase4_live_stack(
