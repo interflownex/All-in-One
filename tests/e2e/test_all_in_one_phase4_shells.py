@@ -220,9 +220,14 @@ def test_health_shell_approves_and_completes_live_appointment(page: Page, reques
 
     page.goto(server_url, wait_until="domcontentloaded")
 
+    governance_panel = page.get_by_label("Governanca clinica Health")
+    expect(governance_panel.get_by_text("Consentimento verificado")).to_be_visible(timeout=15000)
+    expect(governance_panel.get_by_text("Prontuario protegido disponivel")).to_be_visible(timeout=15000)
+
     action_panel = page.get_by_label("Acao de jornada Health")
     expect(action_panel.get_by_text("draft")).to_be_visible(timeout=15000)
     action_panel.get_by_role("button", name="Concluir jornada Health").click()
 
     expect(action_panel.locator("dd", has_text="completed")).to_be_visible(timeout=15000)
     expect(action_panel.locator(".journey-feedback.completed")).to_contain_text("Jornada concluida")
+    expect(governance_panel.get_by_text("Retorno pos-consulta criado")).to_be_visible(timeout=15000)

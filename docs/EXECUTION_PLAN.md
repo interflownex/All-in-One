@@ -309,6 +309,9 @@ Apps e prioridades:
   consulta retornada pelo API Hub, validada por Playwright contra modulos
   FastAPI reais e fixtures SQLite, mantendo aprovacao clinica com MFA e
   prontuario protegido.
+- `all-in-one-health` tambem cobre governanca clinica viva: o shell mostra
+  consentimento LGPD verificado, prontuario protegido e retorno pos-consulta
+  usando apenas metadados operacionais retornados pelo API Hub.
 - `config/apps/frontend_journeys.json` foi reconciliado em 2026-07-12 para que
   os quatro shells ja cobertos por Playwright vivo apontem seus proximos E2E
   para aprofundamento funcional por dominio, nao mais para "evoluir para API Hub
@@ -358,7 +361,8 @@ Apps e prioridades:
   `actions/approve` contra modulos FastAPI reais.
 
 Pendencias:
-- Ampliar as interfaces funcionais reais para os apps fora da trilha Valley.
+- Ampliar as interfaces funcionais reais para os demais apps fora da trilha
+  Valley, especialmente Riders, Services e Mobility.
 - Aprofundar pos-acoes, filtros e auditoria Business agora que os dominios
   principais ja possuem API Hub vivo.
 - Retomar API Hub admin/self-management em entrega isolada, apos estabilizar

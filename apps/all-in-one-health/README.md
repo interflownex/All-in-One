@@ -12,5 +12,7 @@ consulta.
 - Endpoints conectados via API Hub: `/health/resources/patients`,
   `/health/resources/appointments`, `/identity/resources/consents` e
   `/document/resources/documents`.
+- A interface viva mostra governanca clinica com consentimento LGPD,
+  prontuario protegido e retorno pos-consulta sem expor dado sensivel.
 - Fallback local preserva a tela quando o API Hub nao estiver rodando.
 - Evidencia versionada: `config/apps/frontend_journeys.json`.

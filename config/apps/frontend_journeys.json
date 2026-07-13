@@ -66,7 +66,7 @@
       "api_hub_routes": ["/health/resources/patients", "/health/resources/appointments", "/identity/resources/consents", "/document/resources/documents"],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
-      "next_e2e": "Ampliar interface funcional para consentimento, prontuario e teleconsulta apos consulta viva."
+      "next_e2e": "Ampliar interface funcional para teleconsulta e integracao com provedor clinico externo apos governanca local viva."
     },
     {
       "slug": "all-in-one-mobility",
