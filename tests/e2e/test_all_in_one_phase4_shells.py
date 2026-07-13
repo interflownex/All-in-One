@@ -197,6 +197,11 @@ def test_mobility_shell_completes_live_ride_and_ticket_journey(page: Page, reque
 
     page.goto(server_url, wait_until="domcontentloaded")
 
+    post_panel = page.get_by_label("Pos-corrida Mobility")
+    expect(post_panel.get_by_text("Rota viva")).to_be_visible(timeout=15000)
+    expect(post_panel.get_by_text("Ticket MOB-E2E com QR/NFC tokenizado")).to_be_visible(timeout=15000)
+    expect(post_panel.get_by_text("Wallet Playwright")).to_be_visible(timeout=15000)
+
     action_panel = page.get_by_label("Acao de jornada Mobility")
     expect(action_panel.get_by_text("requested")).to_be_visible(timeout=15000)
     expect(action_panel.get_by_text("active")).to_be_visible(timeout=15000)
@@ -205,6 +210,7 @@ def test_mobility_shell_completes_live_ride_and_ticket_journey(page: Page, reque
     expect(action_panel.locator("dd", has_text="completed")).to_be_visible(timeout=15000)
     expect(action_panel.locator("dd", has_text="used")).to_be_visible(timeout=15000)
     expect(action_panel.locator(".journey-feedback.completed")).to_contain_text("Jornada concluida")
+    expect(post_panel.get_by_text("Comprovante pos-corrida criado")).to_be_visible(timeout=15000)
 
 
 def test_riders_shell_approves_and_activates_live_profile(page: Page, request: pytest.FixtureRequest) -> None:

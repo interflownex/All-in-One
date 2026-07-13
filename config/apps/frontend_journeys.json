@@ -79,7 +79,7 @@
       "api_hub_routes": ["/mobility/resources/rides", "/mobility/resources/tickets", "/riders/resources/rider_profiles", "/finance/resources/wallets"],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
-      "next_e2e": "Ampliar interface funcional para historico, rota e ganhos apos corrida e ticket vivos."
+      "next_e2e": "Ampliar interface funcional para mapa, ETA dinamico e ocorrencias antifraude apos pos-corrida vivo."
     },
     {
       "slug": "valley",

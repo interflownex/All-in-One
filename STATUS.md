@@ -1,5 +1,44 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-13 Mobility Pos-Corrida Vivo
+
+### Concluido neste ciclo
+
+- `all-in-one-mobility` passou a exibir painel `Pos-corrida Mobility` com rota,
+  operador, ticket QR/NFC, wallet e comprovante operacional usando metadados
+  retornados pelo API Hub.
+- A jornada Mobility viva continua aceitando/concluindo corrida e usando ticket
+  real, e agora atualiza comprovante pos-corrida para suporte, auditoria
+  antifraude e conciliacao financeira sem expor token bruto.
+- O build estrito do shell Mobility foi saneado com `vite-env.d.ts` e headers
+  tipados para `fetch`, mantendo compatibilidade TypeScript/Vite.
+- `tests/e2e/test_all_in_one_phase4_shells.py` passou a validar rota, QR/NFC,
+  wallet e comprovante pos-corrida no fluxo vivo Mobility.
+
+### Validacoes executadas
+
+- `./.venv/bin/python -m py_compile tests/e2e/test_all_in_one_phase4_shells.py tests/e2e/conftest.py`: aprovado.
+- `npm run build` em `apps/all-in-one-mobility`: build Vite concluido com sucesso.
+- `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_phase4_shells.py::test_mobility_shell_completes_live_ride_and_ticket_journey`: 1 passed em 124.72s.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py`: 6 passed em 0.05s.
+- `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
+- `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
+  25 modulos e infraestrutura em conformidade.
+- `git diff --check`: sem erros.
+
+### Pendencias rastreadas
+
+- Aprofundar pos-acoes, filtros e auditoria Business agora que os dominios
+  principais ja possuem API Hub vivo.
+- Retomar API Hub admin/self-management em entrega isolada, apos estabilizar
+  autenticacao obrigatoria para recursos internos do proprio API Hub.
+- Executar pendencias externas bloqueadas por ambiente responsivo:
+  gcloud/Apigee IAM, PowerShell/Cloudflare Tunnel e Docker Compose vivo no host.
+
+### Git
+
+- Incremento Mobility pos-corrida vivo pronto para sincronizacao Git.
+
 ## STATUS OPERACIONAL - 2026-07-13 Riders Pos-Ativacao Vivo
 
 ### Concluido neste ciclo
