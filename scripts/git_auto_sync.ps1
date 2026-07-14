@@ -1,4 +1,4 @@
-git config --global --add safe.directory '/wsl.localhost/Ubuntu/home/eretazan/.codex/worktrees/1781507772-23398/all-in-one'param(
+param(
     [string]$Activity = "atividade Codex",
     [string]$Remote = "",
     [string]$Branch = "",
