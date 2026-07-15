@@ -144,6 +144,36 @@
 
 - Incremento de SLOs e alertas em validacao local antes da sincronizacao.
 
+## STATUS OPERACIONAL - 2026-07-15 Backup Restore DR
+
+### Concluido neste ciclo
+
+- Criado `config/operations/backup_restore_plan.json` com contrato de
+  backup/restore e disaster recovery para PostgreSQL, MongoDB, storage privado
+  de documentos e configuracao GitOps.
+- O plano define RPO/RTO, frequencia de backup, frequencia de teste de restore,
+  criptografia, validadores, evidencias sem payload sensivel e rollback por
+  ativo.
+- O exercicio DR trimestral ficou versionado com passos obrigatorios e criterios
+  de sucesso.
+- Criado `tests/test_backup_restore_plan.py` e ampliado
+  `scripts/validate_repository.py` para bloquear ausencia ou enfraquecimento do
+  contrato.
+- `docs/OPERATIONS.md`, `docs/COMPLIANCE.md` e `docs/EXECUTION_PLAN.md`
+  registram que a pendencia generica de plano backup/restore foi saneada
+  localmente.
+
+### Pendencias rastreadas
+
+- Executar restore real de PostgreSQL, MongoDB e storage privado em ambiente
+  isolado quando houver DSNs/buckets homologados.
+- Registrar RPO/RTO observado e evidencias sanitizadas no primeiro exercicio DR
+  trimestral.
+
+### Git
+
+- Incremento backup/restore DR em validacao local antes da sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
 
 ### Concluido neste ciclo

@@ -27,6 +27,7 @@ DATA_SUBJECT_RIGHTS = ROOT / "config" / "compliance" / "data_subject_rights.json
 RETENTION_JOBS = ROOT / "config" / "compliance" / "retention_jobs.json"
 RETENTION_ALERTS = ROOT / "config" / "observability" / "retention_alerts.json"
 SLO_CATALOG = ROOT / "config" / "observability" / "slo_catalog.json"
+BACKUP_RESTORE_PLAN = ROOT / "config" / "operations" / "backup_restore_plan.json"
 PROVIDER_MATRIX = ROOT / "config" / "integrations" / "provider_matrix.json"
 ENV_EXAMPLE = ROOT / ".env.example"
 VSCODE_SETTINGS = ROOT / ".vscode" / "settings.json"
@@ -597,6 +598,20 @@ def main() -> int:
         for slo_name, slo in slo_catalog.get("slo_targets", {}).items():
             if not slo.get("promql") or not slo.get("burn_rate_alerts") or "incident_ticket" not in slo.get("evidence", []):
                 fail(f"SLO incompleto: {slo_name}", errors)
+    if not BACKUP_RESTORE_PLAN.is_file():
+        fail(f"Plano backup/restore ausente: {BACKUP_RESTORE_PLAN}", errors)
+    else:
+        backup_plan = json.loads(BACKUP_RESTORE_PLAN.read_text(encoding="utf-8"))
+        expected_assets = {"postgres_core", "mongodb_operational", "private_documents", "gitops_configuration"}
+        if set(backup_plan.get("assets", {})) != expected_assets:
+            fail("Plano backup/restore deve cobrir PostgreSQL, MongoDB, documentos privados e GitOps.", errors)
+        if backup_plan.get("notification_policy", {}).get("include_sensitive_payload") is not False:
+            fail("Plano backup/restore nao deve permitir payload sensivel em notificacoes.", errors)
+        for asset_name, asset in backup_plan.get("assets", {}).items():
+            if not asset.get("restore_validation") or "incident_ticket" not in asset.get("evidence", []):
+                fail(f"Plano backup/restore incompleto para {asset_name}.", errors)
+        if backup_plan.get("dr_exercise", {}).get("cadence") != "quarterly":
+            fail("Exercicio DR deve ser trimestral.", errors)
 
     if errors:
         print("\nFalhas de validacao encontradas:")

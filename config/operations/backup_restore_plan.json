@@ -1,0 +1,132 @@
+{
+  "version": "2026-07-15",
+  "owner": "platform",
+  "scope": "backup_restore_disaster_recovery",
+  "default_storage_policy": "backups_criptografados_fora_do_cluster_com_kms_e_retencao_minima",
+  "notification_policy": {
+    "critical": ["platform_oncall", "compliance_oncall"],
+    "high": ["platform_oncall"],
+    "include_sensitive_payload": false
+  },
+  "assets": {
+    "postgres_core": {
+      "description": "PostgreSQL relacional para identidade, dinheiro, contratos, auditoria, outbox, jobs e stores de dominio.",
+      "data_classification": "critical",
+      "rpo_minutes": 15,
+      "rto_minutes": 60,
+      "backup_frequency": "continuous_wal_plus_daily_snapshot",
+      "restore_test_frequency": "monthly",
+      "encryption": ["KMS", "at_rest", "in_transit"],
+      "restore_validation": [
+        "migrations_aplicam_em_banco_limpo",
+        "triggers_append_only_preservados",
+        "audit.logs_e_audit.domain_events_consistentes",
+        "scripts/validate_postgres_real_dsn.py --apply-migrations --repeat-migrations --write-checks",
+        "tests/test_postgres_priority_stores_integration.py"
+      ],
+      "evidence": [
+        "backup_object_uri_hash",
+        "wal_archive_lag_seconds",
+        "restore_database_id",
+        "migration_version",
+        "audit_event_id",
+        "incident_ticket"
+      ],
+      "rollback": "promover replica restaurada somente apos validacao append-only e reconciliacao de outbox"
+    },
+    "mongodb_operational": {
+      "description": "MongoDB/NoSQL para memoria IA, social, telemetria e colecoes volumosas nao transacionais.",
+      "data_classification": "sensitive",
+      "rpo_minutes": 60,
+      "rto_minutes": 120,
+      "backup_frequency": "daily_snapshot_plus_oplog_when_available",
+      "restore_test_frequency": "quarterly",
+      "encryption": ["KMS", "at_rest", "in_transit"],
+      "restore_validation": [
+        "config/database/mongodb_contract.json_preservado",
+        "indices_e_ttl_validados",
+        "amostras_sem_payload_sensivel_em_logs",
+        "tests/test_mongodb_contract.py"
+      ],
+      "evidence": [
+        "backup_object_uri_hash",
+        "restore_cluster_id",
+        "collection_count",
+        "ttl_index_report",
+        "incident_ticket"
+      ],
+      "rollback": "manter trafego em leitura reduzida ate reconciliar colecoes restauradas"
+    },
+    "private_documents": {
+      "description": "Storage privado para CTPS, documentos, anexos sensiveis e artefatos que exigem acesso auditado.",
+      "data_classification": "critical",
+      "rpo_minutes": 60,
+      "rto_minutes": 240,
+      "backup_frequency": "daily_versioned_snapshot",
+      "restore_test_frequency": "quarterly",
+      "encryption": ["KMS", "signed_url_short_ttl", "object_versioning"],
+      "restore_validation": [
+        "somente_hashes_e_storage_keys_em_eventos",
+        "download_exclusivo_por_titular_ou_papel_autorizado",
+        "audit_event_id_para_toda_leitura",
+        "tests/test_identity_jobs_domain.py"
+      ],
+      "evidence": [
+        "object_selector_hash",
+        "restored_object_count",
+        "access_audit_event_id",
+        "kms_key_version",
+        "incident_ticket"
+      ],
+      "rollback": "desabilitar links temporarios e reemitir chaves de acesso apos restore"
+    },
+    "gitops_configuration": {
+      "description": "Repositorio Git, manifests Kubernetes, politicas, matriz de modulos e configs de observabilidade/compliance.",
+      "data_classification": "operational",
+      "rpo_minutes": 0,
+      "rto_minutes": 30,
+      "backup_frequency": "git_remote_plus_release_tags",
+      "restore_test_frequency": "monthly",
+      "encryption": ["git_provider_controls", "no_secret_values_in_git"],
+      "restore_validation": [
+        "git_status_limpo",
+        "scripts/validate_repository.py",
+        "tests/test_security_workflow_contract.py",
+        "tests/test_slo_catalog.py"
+      ],
+      "evidence": [
+        "commit_sha",
+        "release_tag",
+        "validator_output_hash",
+        "incident_ticket"
+      ],
+      "rollback": "reverter por commit assinado ou hotfix sem sobrescrever mudancas multiagente"
+    }
+  },
+  "dr_exercise": {
+    "cadence": "quarterly",
+    "minimum_scope": ["postgres_core", "mongodb_operational", "private_documents", "gitops_configuration"],
+    "required_steps": [
+      "abrir incidente_simulado",
+      "congelar_mutacoes_nao_idempotentes",
+      "restaurar_em_ambiente_isolado",
+      "executar_validacoes_do_ativo",
+      "comparar_rpo_rto_observado",
+      "registrar_evidencias_sem_payload_sensivel",
+      "documentar_acao_corretiva"
+    ],
+    "success_criteria": [
+      "rpo_observado_menor_ou_igual_ao_contratado",
+      "rto_observado_menor_ou_igual_ao_contratado",
+      "validadores_criticos_verdes",
+      "nenhum_segredo_ou_payload_sensivel_em_evidencia",
+      "plano_de_rollback_testado"
+    ]
+  },
+  "global_invariants": [
+    "restores produtivos exigem aprovacao humana e ticket de incidente",
+    "evidencias nunca incluem dumps, documentos brutos, tokens ou payload sensivel",
+    "backup sem restore testado nao conta como gate de producao atendido",
+    "outbox e auditoria append-only devem ser validados antes de liberar escrita produtiva"
+  ]
+}

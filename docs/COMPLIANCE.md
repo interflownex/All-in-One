@@ -44,7 +44,8 @@ Antes de producao ampla:
 4. Ativar vault/KMS e rotacao de chaves.
 5. Testar direitos do titular por modulo: exportacao, correcao, revogacao,
    anonimizacao e exclusao permitida.
-6. Validar backup/restore e retencao para PostgreSQL, MongoDB e storage privado.
+6. Validar backup/restore e retencao para PostgreSQL, MongoDB e storage privado
+   conforme `config/operations/backup_restore_plan.json`.
 7. Rodar pentest, SAST/SCA, DAST e testes negativos de permissao.
 
 ## Direitos Do Titular

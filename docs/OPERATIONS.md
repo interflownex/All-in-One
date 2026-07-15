@@ -26,6 +26,26 @@ apos aprovacao manual das alteracoes financeiras, de identidade ou saude.
 Auditoria critica e ledger sao append-only. Eventos devem manter
 `correlation_id`; logs de aplicacao nao devem expor dados sensiveis.
 
+## Backup, Restore E DR
+
+O contrato operacional de backup/restore fica em
+`config/operations/backup_restore_plan.json`. Ele cobre PostgreSQL, MongoDB,
+storage privado de documentos e configuracao GitOps com RPO/RTO, frequencia de
+backup, frequencia de teste de restore, validadores obrigatorios, evidencias
+aceitas e rollback por ativo.
+
+Regras obrigatorias:
+
+- Backup sem restore testado nao conta como gate de producao atendido.
+- Restore produtivo exige aprovacao humana, `incident_ticket` e ambiente
+  isolado para validacao antes de liberar escrita.
+- Evidencias nunca incluem dumps, documentos brutos, tokens, URLs assinadas ou
+  payload sensivel; use hashes, contadores, IDs auditaveis e logs sanitizados.
+- PostgreSQL restaurado deve passar migrations repetiveis, triggers
+  append-only, `audit.logs`, `audit.domain_events` e outbox antes de promover.
+- O exercicio DR trimestral deve comparar RPO/RTO observado com o contratado e
+  registrar acao corretiva quando houver desvio.
+
 ## Validacao PostgreSQL Real
 
 Quando o host local nao conseguir subir `postgres:16` efemero para o smoke
