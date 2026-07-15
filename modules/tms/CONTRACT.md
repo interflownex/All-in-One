@@ -37,10 +37,30 @@
 - `POST /audit`
 
 
+## Frete, POD e auditoria
+
+- `carriers` exige `name` e `coverage`, iniciando em `pending_review` e emitindo `tms.carrier.created`.
+- `routes` exige `origin`, `destination`, `distance_km` e `eta_minutes`, iniciando em `planned` e emitindo `tms.route.created`.
+- `freights` exige `carrier_id`, `route_id`, `freight_brl` e `scheduled_at`, iniciando em `quoted` e emitindo `tms.freight.created`.
+- A acao `approve` exige papel aprovador, MFA e emite `tms.freight.approved`; `dispatch` emite `tms.freight.dispatched`.
+- A acao `complete` exige papel aprovador, MFA e emite `tms.freight.completed`.
+- `proofs_of_delivery` exige `freight_id`, `file_sha256`, `storage_key` e `delivered_at`, e e append-only com evento `tms.delivery.proved`.
+- `freight_audits` exige `freight_id`, `audit_result` e `audited_at`; `close` exige papel aprovador, MFA e emite `tms.freight.audit_closed`.
+
+
         ## Eventos
 
-        - `tms.freight.created`
+        - `tms.carrier.created`
+- `tms.carrier.approved`
+- `tms.route.created`
+- `tms.route.activated`
+- `tms.freight.created`
+- `tms.freight.approved`
+- `tms.freight.dispatched`
+- `tms.freight.completed`
 - `tms.delivery.proved`
+- `tms.freight.audit_created`
+- `tms.freight.audit_closed`
 
         ## Regras
 

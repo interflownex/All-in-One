@@ -545,7 +545,68 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
             ),
         },
     ),
-    ("tms", "freights"): ResourceRule(("freight_brl",), monetary_fields=("freight_brl", "toll_brl"), transitions=lifecycle_flow("tms.freight")),
+    ("tms", "carriers"): ResourceRule(
+        ("name", "coverage"),
+        initial_status="pending_review",
+        transitions=review_flow("tms.carrier"),
+    ),
+    ("tms", "routes"): ResourceRule(
+        ("origin", "destination", "distance_km", "eta_minutes"),
+        initial_status="planned",
+        transitions={
+            "activate": Transition(
+                frozenset({"planned"}),
+                "active",
+                event="tms.route.activated",
+            ),
+        },
+    ),
+    ("tms", "freights"): ResourceRule(
+        ("carrier_id", "route_id", "freight_brl", "scheduled_at"),
+        initial_status="quoted",
+        monetary_fields=("freight_brl", "toll_brl"),
+        transitions={
+            "approve": Transition(
+                frozenset({"quoted"}),
+                "approved",
+                APPROVER_ROLES,
+                True,
+                "tms.freight.approved",
+            ),
+            "dispatch": Transition(
+                frozenset({"approved"}),
+                "in_transit",
+                event="tms.freight.dispatched",
+            ),
+            "complete": Transition(
+                frozenset({"in_transit"}),
+                "completed",
+                APPROVER_ROLES,
+                True,
+                "tms.freight.completed",
+            ),
+        },
+    ),
+    ("tms", "proofs_of_delivery"): ResourceRule(
+        ("freight_id", "file_sha256", "storage_key", "delivered_at"),
+        initial_status="recorded",
+        sensitive=True,
+        immutable=True,
+    ),
+    ("tms", "freight_audits"): ResourceRule(
+        ("freight_id", "audit_result", "audited_at"),
+        initial_status="reviewed",
+        sensitive=True,
+        transitions={
+            "close": Transition(
+                frozenset({"reviewed"}),
+                "closed",
+                APPROVER_ROLES,
+                True,
+                "tms.freight.audit_closed",
+            ),
+        },
+    ),
     ("crm", "opportunities"): ResourceRule(("title",), monetary_fields=("expected_value_brl",), transitions=lifecycle_flow("crm.opportunity")),
     ("bpm", "workflow_instances"): ResourceRule(
         ("process_key", "sla_policy_id", "started_at"),
@@ -979,6 +1040,11 @@ def event_for_create(module: str, resource_type: str) -> str:
         ("wms", "inventory"): "wms.inventory.received",
         ("wms", "picking_waves"): "wms.picking.created",
         ("wms", "shipments"): "wms.shipment.created",
+        ("tms", "carriers"): "tms.carrier.created",
+        ("tms", "routes"): "tms.route.created",
+        ("tms", "freights"): "tms.freight.created",
+        ("tms", "proofs_of_delivery"): "tms.delivery.proved",
+        ("tms", "freight_audits"): "tms.freight.audit_created",
         ("hr", "employees"): "hr.employee.created",
         ("hr", "payroll_runs"): "hr.payroll.opened",
         ("hr", "courses"): "hr.training.assigned",

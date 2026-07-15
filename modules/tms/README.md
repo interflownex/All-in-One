@@ -12,6 +12,9 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `carriers`, `freights`, `routes`, `proofs_of_delivery`, `freight_audits`.
 
+`freights` acompanha cotacao, despacho e conclusao; `proofs_of_delivery`
+registra POD privado; `freight_audits` fecha a auditoria logistica.
+
 ## Execucao
 
 ```bash

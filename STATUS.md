@@ -1,5 +1,35 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 TMS Freight POD
+
+### Concluido neste ciclo
+
+- `tms.carriers` passou a exigir `name` e `coverage`, iniciando em
+  `pending_review` e emitindo `tms.carrier.created`.
+- `tms.routes` passou a exigir `origin`, `destination`, `distance_km` e
+  `eta_minutes`, iniciando em `planned`.
+- `tms.freights` passou a exigir `carrier_id`, `route_id`, `freight_brl` e
+  `scheduled_at`, com aprovacao MFA, despacho e conclusao auditavel.
+- `tms.proofs_of_delivery` passou a exigir `freight_id`, `file_sha256`,
+  `storage_key` privado e `delivered_at`, como registro append-only.
+- `tms.freight_audits` passou a registrar auditoria e fechamento com papel
+  aprovador e MFA.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar frete, POD e auditoria nos contratos gerados e nas
+  jornadas vivas.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local de frete/POD em
+  jornada viva foi saneada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_tms_domain.py`: 1 teste aprovado.
+
+### Pendencias rastreadas
+
+- Permanecem externas: homologar torre de controle/POD real e ampliar
+  evidencias com transportadoras controladas.
+
 ## STATUS OPERACIONAL - 2026-07-15 WMS Receiving Picking
 
 ### Concluido neste ciclo

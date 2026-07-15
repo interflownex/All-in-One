@@ -300,9 +300,33 @@ PHASE4_ROUTE_PAYLOADS = {
         "carrier_reference": "CARRIER-PLAYWRIGHT",
     },
     ("tms", "freights"): {
+        "carrier_id": PHASE4_BUSINESS_ID,
+        "route_id": PHASE4_BUSINESS_ID,
         "freight_brl": "89.90",
+        "scheduled_at": "2026-07-15T12:00:00Z",
         "title": "Frete Regional Playwright",
         "description": "Transporte vivo para pedido Business",
+    },
+    ("tms", "carriers"): {
+        "name": "Transportadora Playwright",
+        "coverage": ["sp", "rj"],
+    },
+    ("tms", "routes"): {
+        "origin": "Sao Paulo",
+        "destination": "Rio de Janeiro",
+        "distance_km": "430",
+        "eta_minutes": "360",
+    },
+    ("tms", "proofs_of_delivery"): {
+        "freight_id": PHASE4_BUSINESS_ID,
+        "file_sha256": "7" * 64,
+        "storage_key": "vault/tms/phase4/pod.pdf",
+        "delivered_at": "2026-07-15T18:00:00Z",
+    },
+    ("tms", "freight_audits"): {
+        "freight_id": PHASE4_BUSINESS_ID,
+        "audit_result": "matched",
+        "audited_at": "2026-07-15T19:00:00Z",
     },
     ("crm", "opportunities"): {
         "title": "Oportunidade B2B Playwright",
