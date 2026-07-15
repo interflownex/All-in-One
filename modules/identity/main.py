@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from shared.domain_rules import check_payload
 from shared.runtime import create_module_app
 from auth_logic import (
     LoginRequest, 
@@ -203,6 +204,7 @@ async def register_user_with_hash(request: Request, body: dict[str, Any] = Body(
     
     store = app.extra["store"]
     rule = app.extra["rule_for"]("identity", "users")
+    check_payload(rule, payload)
     
     try:
         user = store.create(

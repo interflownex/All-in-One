@@ -48,6 +48,34 @@ def test_identity_public_registration_preserves_duplicate_controls() -> None:
     assert duplicate.status_code == 409
 
 
+def test_identity_public_registration_rejects_invalid_document_and_phone() -> None:
+    client = client_for("identity")
+    nonce = uuid4().hex
+    base_payload = {
+        "full_name": "Usuario Final Jobs",
+        "cpf_document": f"CPF-{nonce[:12]}",
+        "email": f"{nonce}@example.test",
+        "phone_e164": "+5511999999999",
+        "face_hash": f"face-{nonce}",
+        "terms_accepted_at": "2026-05-25T10:00:00Z",
+        "lgpd_consent_at": "2026-05-25T10:00:00Z",
+    }
+
+    invalid_document = client.post(
+        "/registrations",
+        json={**base_payload, "cpf_document": "!!!"},
+    )
+    assert invalid_document.status_code == 422
+    assert invalid_document.json()["detail"] == "Documento CPF/internacional invalido."
+
+    invalid_phone = client.post(
+        "/registrations",
+        json={**base_payload, "phone_e164": "11999999999"},
+    )
+    assert invalid_phone.status_code == 422
+    assert invalid_phone.json()["detail"] == "Telefone deve usar formato E.164."
+
+
 def test_ctps_text_extraction_marks_document_import_without_external_claim() -> None:
     records = parse_employment_text(
         """

@@ -1,5 +1,26 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Identity Registration Negatives
+
+### Concluido neste ciclo
+
+- A rota propria de Identity `POST /registrations` voltou a usar
+  `check_payload`, reaproveitando as validacoes comuns de documento e telefone.
+- Cadastros publicos com `cpf_document` fora do padrao contratado agora falham
+  com `422` antes de persistir usuario.
+- Cadastros publicos com `phone_e164` sem formato E.164 agora falham com `422`.
+- O controle existente de duplicidade de cadastro foi preservado.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_identity_jobs_domain.py modules/identity/tests/test_create_flow.py modules/identity/tests/test_permissions.py`:
+  9 testes aprovados.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar KYC/KYB/liveness reais e repetir as negativas
+  com dados controlados de provedor homologado.
+
 ## STATUS OPERACIONAL - 2026-07-15 Business Membership Negatives
 
 ### Concluido neste ciclo
