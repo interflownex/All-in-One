@@ -79,9 +79,11 @@ def commercial_insights(actor: Actor = Depends(actor_from_headers)) -> dict[str,
     completed_orders = [item for item in orders if item["status"] in {"delivered", "completed"}]
     resolved_cases = [item for item in disputes if item["status"] in {"resolved", "closed"}]
     open_cases = [item for item in disputes if item["status"] in {"open", "under_review"}]
+    published_reviews = [item for item in reviews if item["status"] == "published"]
+    pending_reviews = [item for item in reviews if item["status"] == "pending_review"]
     ratings = [
         int(item["payload"].get("rating"))
-        for item in reviews
+        for item in published_reviews
         if str(item["payload"].get("rating") or "").isdigit()
     ]
     average_rating = round(sum(ratings) / len(ratings), 2) if ratings else None
@@ -92,6 +94,8 @@ def commercial_insights(actor: Actor = Depends(actor_from_headers)) -> dict[str,
         "orders_paid": len(paid_orders),
         "orders_completed": len(completed_orders),
         "reviews_total": len(reviews),
+        "reviews_published": len(published_reviews),
+        "reviews_pending_moderation": len(pending_reviews),
         "average_rating": average_rating,
         "support_cases_total": len(disputes),
         "support_cases_open": len(open_cases),

@@ -1,5 +1,35 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Marketplace Review Moderation
+
+### Concluido neste ciclo
+
+- Reviews do Marketplace agora entram como `pending_review` com
+  `moderation_status=pending_review`, mantendo o bloqueio anti-burla para
+  contatos externos.
+- Acoes `publish` e `reject` foram adicionadas para reviews, exigindo papel
+  aprovador e MFA, com eventos `valley.review.published` e
+  `valley.review.rejected`.
+- O gateway de consumidor passou a informar que a avaliacao foi recebida para
+  moderacao, sem publicar automaticamente.
+- Insights comerciais do Marketplace agora separam `reviews_published` e
+  `reviews_pending_moderation`; a media de rating usa apenas reviews
+  publicadas.
+- `MarketplacePostgresStore` passou a suportar a transicao auditada de reviews,
+  preservando bloqueio de `PATCH`/`DELETE` direto em recurso append-only.
+- Catalogo, contratos e eventos gerados foram reconciliados com os eventos de
+  suporte e moderacao de review.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_valley_reviews.py tests/test_api_hub_catalog_gateway.py`:
+  13 testes aprovados.
+
+### Pendencias rastreadas
+
+- Permanecem externas/produtivas: checkout/fulfillment com provider homologado,
+  pagamento real e observabilidade/notificacoes conectadas a ambiente vivo.
+
 ## STATUS OPERACIONAL - 2026-07-15 Apigee API Hub Diagnostico Seguro
 
 ### Concluido neste ciclo

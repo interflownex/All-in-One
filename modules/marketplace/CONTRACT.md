@@ -47,7 +47,13 @@
 - `marketplace.order.paid`
 - `marketplace.order.delivered`
 - `marketplace.dispute.created`
+- `support.ticket.created`
+- `support.ticket.triaged`
+- `support.ticket.resolved`
+- `support.ticket.closed`
 - `valley.review.created`
+- `valley.review.published`
+- `valley.review.rejected`
 - `valley.pepitas.granted`
 
         ## Regras

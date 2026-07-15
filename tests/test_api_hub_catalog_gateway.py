@@ -177,7 +177,7 @@ class FakeCatalogClient:
         ):
             return FakeResponse(200, {"id": "resource-created", "status": "paid"})
         if url.endswith("marketplace:8000/resources/reviews"):
-            return FakeResponse(201, {"id": "review-created", "status": "published"})
+            return FakeResponse(201, {"id": "review-created", "status": "pending_review"})
         if url.endswith("marketplace:8000/valley/orders/00000000-0000-4000-8000-000000000002/support"):
             return FakeResponse(201, {"id": "support-created", "status": "open", "message": "Caso registrado."})
         return FakeResponse(201, {"id": "resource-created", "status": "created"})
@@ -428,12 +428,13 @@ def test_gateway_creates_review_only_for_completed_owned_order(monkeypatch) -> N
     )
 
     assert response.status_code == 201
-    assert response.json()["status"] == "published"
+    assert response.json()["status"] == "pending_review"
     review_call = fake_client.posts[-1]
     assert review_call[0].endswith("marketplace:8000/resources/reviews")
     assert review_call[2]["X-Idempotency-Key"] == "review-order-completed"
     assert review_call[1]["payload"]["rating"] == 5
     assert review_call[1]["payload"]["order_id"] == "00000000-0000-4000-8000-000000000002"
+    assert review_call[1]["payload"]["moderation_status"] == "pending_review"
 
 
 def test_gateway_rejects_review_before_order_completion(monkeypatch) -> None:

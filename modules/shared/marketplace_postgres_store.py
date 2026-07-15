@@ -279,6 +279,20 @@ class MarketplacePostgresStore:
                    WHERE id = %s RETURNING *""",
                 (status, metadata, actor, resource_id),
             ).fetchone()
+        if resource_type == "reviews":
+            return connection.execute(
+                """UPDATE marketplace.reviews
+                   SET moderation_status = %s, status = %s, metadata = %s,
+                       updated_by = %s, updated_at = NOW()
+                   WHERE id = %s RETURNING *""",
+                (
+                    payload.get("moderation_status", status),
+                    status,
+                    metadata,
+                    actor,
+                    resource_id,
+                ),
+            ).fetchone()
         if resource_type == "disputes":
             return connection.execute(
                 """UPDATE marketplace.disputes SET status = %s, metadata = %s, updated_by = %s, updated_at = NOW()

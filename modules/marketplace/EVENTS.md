@@ -8,7 +8,13 @@
 - `marketplace.order.paid`
 - `marketplace.order.delivered`
 - `marketplace.dispute.created`
+- `support.ticket.created`
+- `support.ticket.triaged`
+- `support.ticket.resolved`
+- `support.ticket.closed`
 - `valley.review.created`
+- `valley.review.published`
+- `valley.review.rejected`
 - `valley.pepitas.granted`
 
         Eventos carregam `event_id`, `occurred_at`, `actor_user_id`, `user_id`,

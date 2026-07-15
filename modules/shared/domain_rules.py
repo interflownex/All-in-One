@@ -283,9 +283,25 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
     ),
     ("marketplace", "reviews"): ResourceRule(
         ("order_id", "rating"),
-        initial_status="published",
+        initial_status="pending_review",
         protected_content=True,
         immutable=True,
+        transitions={
+            "publish": Transition(
+                frozenset({"pending_review"}),
+                "published",
+                APPROVER_ROLES,
+                True,
+                "valley.review.published",
+            ),
+            "reject": Transition(
+                frozenset({"pending_review"}),
+                "rejected",
+                APPROVER_ROLES,
+                True,
+                "valley.review.rejected",
+            ),
+        },
     ),
     ("marketplace", "disputes"): ResourceRule(
         ("order_id", "case_type", "message"),

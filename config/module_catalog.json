@@ -54,7 +54,7 @@
       "title": "Marketplace",
       "description": "Lojas locais aprovadas, estoque fisico local, catalogo, checkout, pedidos e concessao manual de Pepitas.",
       "entities": ["stores", "products", "carts", "orders", "reviews", "disputes", "pepita_grants"],
-      "events": ["marketplace.store.created", "marketplace.product.created", "marketplace.order.created", "marketplace.order.paid", "marketplace.order.delivered", "marketplace.dispute.created", "valley.review.created", "valley.pepitas.granted"],
+      "events": ["marketplace.store.created", "marketplace.product.created", "marketplace.order.created", "marketplace.order.paid", "marketplace.order.delivered", "marketplace.dispute.created", "support.ticket.created", "support.ticket.triaged", "support.ticket.resolved", "support.ticket.closed", "valley.review.created", "valley.review.published", "valley.review.rejected", "valley.pepitas.granted"],
       "monetization": "Comissao de 8 a 15 por cento, ads, destaque e assinatura.",
       "branch": "module/marketplace"
     },

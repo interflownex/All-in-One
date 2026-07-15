@@ -391,6 +391,8 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
                 raise HTTPException(status_code=403, detail="Candidatura exige curriculo do proprio usuario.")
             if posting["status"] != "published":
                 raise HTTPException(status_code=409, detail="Candidatura exige vaga publicada.")
+        if module_name == "marketplace" and resource_type == "reviews":
+            payload.setdefault("moderation_status", "pending_review")
         validate_valley_resource_policy(module_name, resource_type, payload, actor)
         if module_name == "finance" and resource_type == "valley_gold_ledger_entries":
             validate_valley_gold_ledger_payload(payload)

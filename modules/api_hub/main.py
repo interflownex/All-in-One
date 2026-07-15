@@ -738,7 +738,7 @@ async def create_consumer_review(
                 "offer_id": payload.get("offer_id") or payload.get("valley_offer_id"),
                 "rating": body.rating,
                 "comment": body.comment,
-                "moderation_status": "published",
+                "moderation_status": "pending_review",
             },
         },
     )
@@ -749,8 +749,8 @@ async def create_consumer_review(
         "order_id": str(order_id),
         "rating": body.rating,
         "comment": body.comment,
-        "status": str(review.get("status") or "published"),
-        "message": "Avaliacao publicada. Obrigado por compartilhar sua experiencia.",
+        "status": str(review.get("status") or "pending_review"),
+        "message": "Avaliacao recebida para moderacao. Obrigado por compartilhar sua experiencia.",
     }
 
 
