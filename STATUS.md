@@ -1,5 +1,28 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Stock Supplier Order Tracking
+
+### Concluido neste ciclo
+
+- `stock.supplier_orders` ganhou contrato local de criacao com
+  `supplier_id`, `catalog_product_id` e `external_order_id`.
+- O pedido fornecedor agora percorre `created -> acknowledged -> shipped ->
+  delivered`, preservando `tracking_code`, `tracking_url` e transportadora no
+  payload auditado quando enviado.
+- Eventos Stock foram detalhados para `created`, `acknowledged`, `shipped`,
+  `delivered` e `cancelled`, mantendo o tracking local visivel no outbox.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_valley_ecosystem.py tests/test_all_modules_integration.py`:
+  aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar fornecedor real e repetir o tracking com provider
+  de fornecedor homologado.
+
 ## STATUS OPERACIONAL - 2026-07-15 VS Code Cloud Code Kubeconfig
 
 ### Concluido neste ciclo

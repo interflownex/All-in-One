@@ -63,7 +63,7 @@
       "title": "Stock",
       "description": "Dropshipping Global corporativo Valley, fornecedores homologados, catalogo Stock e descontos progressivos por Pepitas.",
       "entities": ["suppliers", "catalog_products", "price_rules", "supplier_orders", "discount_quotes"],
-      "events": ["stock.product.imported", "stock.order.created", "valley.stock.discount.quoted"],
+      "events": ["stock.product.imported", "stock.supplier_order.created", "stock.supplier_order.acknowledged", "stock.supplier_order.shipped", "stock.supplier_order.delivered", "stock.supplier_order.cancelled", "valley.stock.discount.quoted"],
       "monetization": "Produtos Stock comunicam economia e valor percebido; APIs de importacao sao exclusivas da conta mestre Valley.",
       "branch": "module/stock"
     },

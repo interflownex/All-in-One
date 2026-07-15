@@ -334,6 +334,34 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
         monetary_fields=("list_price_brl",),
         transitions=catalog_offer_flow("stock.catalog_product"),
     ),
+    ("stock", "supplier_orders"): ResourceRule(
+        ("supplier_id", "catalog_product_id", "external_order_id"),
+        ("external_order_id",),
+        initial_status="created",
+        monetary_fields=("cost_brl",),
+        transitions={
+            "acknowledge": Transition(
+                frozenset({"created"}),
+                "acknowledged",
+                event="stock.supplier_order.acknowledged",
+            ),
+            "ship": Transition(
+                frozenset({"acknowledged"}),
+                "shipped",
+                event="stock.supplier_order.shipped",
+            ),
+            "deliver": Transition(
+                frozenset({"shipped"}),
+                "delivered",
+                event="stock.supplier_order.delivered",
+            ),
+            "cancel": Transition(
+                frozenset({"created", "acknowledged"}),
+                "cancelled",
+                event="stock.supplier_order.cancelled",
+            ),
+        },
+    ),
     ("marketplace", "pepita_grants"): ResourceRule(
         ("order_id", "customer_user_id", "pepitas", "merchant_gold_ledger_id"),
         initial_status="posted",
@@ -1128,6 +1156,7 @@ def event_for_create(module: str, resource_type: str) -> str:
         ("marketplace", "reviews"): "valley.review.created",
         ("marketplace", "disputes"): "support.ticket.created",
         ("marketplace", "pepita_grants"): "valley.pepitas.granted",
+        ("stock", "supplier_orders"): "stock.supplier_order.created",
         ("stock", "discount_quotes"): "valley.stock.discount.quoted",
         ("delivery", "delivery_requests"): "delivery.request.created",
         ("delivery", "proofs"): "delivery.proof.recorded",

@@ -151,6 +151,71 @@ def test_stock_global_import_is_master_only_and_discounts_hide_unavailable_tiers
     assert quote.json()["payload"]["final_price_brl"] == "100.00"
 
 
+def test_stock_supplier_order_lifecycle_records_tracking_events() -> None:
+    stock = fresh_client_for("stock")
+    operator_id = str(uuid4())
+    nonce = uuid4().hex
+    headers = actor_headers(operator_id, "valley_master", valley_master=True)
+
+    order = stock.post(
+        "/resources/supplier_orders",
+        headers={**headers, "X-Idempotency-Key": f"supplier-order-{nonce}"},
+        json={
+            "user_id": operator_id,
+            "payload": {
+                "supplier_id": "supplier-sandbox",
+                "catalog_product_id": "catalog-product-sandbox",
+                "external_order_id": f"EXT-{nonce}",
+                "cost_brl": "42.10",
+            },
+        },
+    )
+    assert order.status_code == 201
+    assert order.json()["status"] == "created"
+
+    acknowledged = stock.post(
+        f"/resources/supplier_orders/{order.json()['id']}/actions/acknowledge",
+        headers=headers,
+        json={"reason": "Pedido aceito pelo fornecedor sandbox"},
+    )
+    assert acknowledged.status_code == 200
+    assert acknowledged.json()["status"] == "acknowledged"
+
+    shipped = stock.post(
+        f"/resources/supplier_orders/{order.json()['id']}/actions/ship",
+        headers=headers,
+        json={
+            "reason": "Coleta confirmada",
+            "payload": {
+                "tracking_code": f"TRK-{nonce}",
+                "tracking_url": "https://tracking.example.test/supplier",
+                "carrier": "Fornecedor Sandbox",
+            },
+        },
+    )
+    assert shipped.status_code == 200
+    assert shipped.json()["status"] == "shipped"
+    assert shipped.json()["payload"]["tracking_code"] == f"TRK-{nonce}"
+
+    delivered = stock.post(
+        f"/resources/supplier_orders/{order.json()['id']}/actions/deliver",
+        headers=headers,
+        json={"reason": "Pedido entregue pelo fornecedor"},
+    )
+    assert delivered.status_code == 200
+    assert delivered.json()["status"] == "delivered"
+
+    outbox = stock.get("/events/outbox", headers=actor_headers(operator_id, "auditor"))
+    assert outbox.status_code == 200
+    routing_keys = {event["routing_key"] for event in outbox.json()}
+    assert {
+        "stock.supplier_order.created",
+        "stock.supplier_order.acknowledged",
+        "stock.supplier_order.shipped",
+        "stock.supplier_order.delivered",
+    } <= routing_keys
+
+
 def test_merchant_manual_pepita_grant_emits_valley_event() -> None:
     marketplace = fresh_client_for("marketplace")
     customer_id = str(uuid4())

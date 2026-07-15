@@ -40,7 +40,11 @@
         ## Eventos
 
         - `stock.product.imported`
-- `stock.order.created`
+- `stock.supplier_order.created`
+- `stock.supplier_order.acknowledged`
+- `stock.supplier_order.shipped`
+- `stock.supplier_order.delivered`
+- `stock.supplier_order.cancelled`
 - `valley.stock.discount.quoted`
 
         ## Regras
