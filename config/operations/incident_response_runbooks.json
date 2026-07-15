@@ -1,0 +1,146 @@
+{
+  "version": "2026-07-15",
+  "owner": "platform-security-compliance",
+  "scope": "incident_response_runbooks",
+  "runbook_index": "docs/OPERATIONS.md#incidentes",
+  "notification_policy": {
+    "critical": ["platform_oncall", "compliance_oncall"],
+    "high": ["platform_oncall"],
+    "medium": ["platform_oncall"],
+    "include_sensitive_payload": false
+  },
+  "global_steps": [
+    "abrir_incident_ticket",
+    "classificar_severidade_e_dominio",
+    "preservar_evidencias_sanitizadas",
+    "conter_impacto_sem_apagar_auditoria",
+    "comunicar_responsaveis",
+    "validar_recuperacao",
+    "registrar_postmortem_e_acao_corretiva"
+  ],
+  "runbooks": {
+    "security_sensitive_access": {
+      "severity": "critical",
+      "owner": "security-compliance",
+      "domains": ["identity", "finance", "jobs", "document", "health", "hr"],
+      "runbook": "docs/SECURITY.md#revisao-de-permissoes-sensiveis",
+      "trigger_signals": [
+        "acesso_sensivel_negado_repetido",
+        "auditoria_de_leitura_ausente",
+        "papel_nao_autorizado_com_acesso",
+        "payload_sensivel_em_log"
+      ],
+      "containment": [
+        "revogar_sessoes_e_api_keys_afetadas",
+        "reduzir_permissoes_para_deny_by_default",
+        "pausar_provider_port_relacionado",
+        "preservar_audit_logs_append_only"
+      ],
+      "evidence": ["actor_id_hash", "resource_selector_hash", "audit_event_id", "role_snapshot_hash", "incident_ticket"],
+      "recovery_validation": ["tests/test_sensitive_permissions_review.py", "python3 scripts/validate_repository.py"],
+      "postmortem_required": true
+    },
+    "payments_ledger_integrity": {
+      "severity": "critical",
+      "owner": "finance-platform",
+      "domains": ["finance", "marketplace", "services", "mobility"],
+      "runbook": "docs/OPERATIONS.md#incidentes",
+      "trigger_signals": [
+        "ledger_write_error_rate_alto",
+        "idempotency_collision",
+        "escrow_inconsistente",
+        "pagamento_sem_evento_outbox"
+      ],
+      "containment": [
+        "pausar_captura_e_release_de_escrow",
+        "bloquear_mutacoes_nao_idempotentes",
+        "preservar_ledger_append_only",
+        "reconciliar_outbox_antes_de_reprocessar"
+      ],
+      "evidence": ["ledger_entry_id", "idempotency_key_hash", "escrow_id", "outbox_event_id", "incident_ticket"],
+      "recovery_validation": ["tests/test_valley_gold_ledger.py", "tests/test_user_marketplace_journey.py"],
+      "postmortem_required": true
+    },
+    "outbox_delivery_failure": {
+      "severity": "high",
+      "owner": "platform",
+      "domains": ["events", "outbox-dispatcher"],
+      "runbook": "docs/OPERATIONS.md#outbox",
+      "trigger_signals": ["OutboxBacklogHigh", "OutboxOldestPendingTooOld", "OutboxRetryableFailuresHigh", "OutboxDueWithoutDeliveries"],
+      "containment": [
+        "congelar_consumidores_downstream_instaveis",
+        "preservar_audit.domain_events",
+        "reprocessar_eventos_idempotentes",
+        "verificar_rabbitmq_e_conectividade"
+      ],
+      "evidence": ["pending_count", "oldest_pending_age_seconds", "dispatcher_logs", "event_selector_hash", "incident_ticket"],
+      "recovery_validation": ["tests/test_outbox_alerts.py", "tests/test_outbox_runbook.py"],
+      "postmortem_required": false
+    },
+    "retention_lgpd_failure": {
+      "severity": "critical",
+      "owner": "compliance",
+      "domains": ["compliance", "retention-worker"],
+      "runbook": "docs/OPERATIONS.md#retencao-lgpd",
+      "trigger_signals": ["RetentionCronJobFailed", "RetentionCronJobDelayed", "RetentionBacklogHigh", "RetentionOldestCandidateTooOld", "RetentionDecisionMissing"],
+      "containment": [
+        "manter_dry_run_ate_revisao",
+        "preservar_legal_hold",
+        "bloquear_descarte_produtivo_sem_dpia",
+        "registrar_decisao_compliance"
+      ],
+      "evidence": ["candidate_selector_hash", "policy_version", "legal_hold_summary", "worker_logs", "incident_ticket"],
+      "recovery_validation": ["tests/test_retention_alerts.py", "tests/test_retention_jobs.py"],
+      "postmortem_required": true
+    },
+    "backup_restore_dr": {
+      "severity": "critical",
+      "owner": "platform",
+      "domains": ["postgres", "mongodb", "private_documents", "gitops"],
+      "runbook": "docs/OPERATIONS.md#backup-restore-e-dr",
+      "trigger_signals": [
+        "restore_test_failed",
+        "rpo_excedido",
+        "rto_excedido",
+        "backup_incompleto_ou_nao_criptografado"
+      ],
+      "containment": [
+        "congelar_mutacoes_nao_idempotentes",
+        "restaurar_em_ambiente_isolado",
+        "validar_append_only_e_outbox",
+        "promover_somente_apos_aprovacao_humana"
+      ],
+      "evidence": ["backup_object_uri_hash", "restore_database_id", "validator_output_hash", "rpo_rto_observado", "incident_ticket"],
+      "recovery_validation": ["tests/test_backup_restore_plan.py", "python3 scripts/validate_repository.py"],
+      "postmortem_required": true
+    },
+    "slo_burn_rate": {
+      "severity": "high",
+      "owner": "platform",
+      "domains": ["api_hub", "identity", "finance", "jobs"],
+      "runbook": "docs/OPERATIONS.md#slo-e-alertas",
+      "trigger_signals": [
+        "api_hub_gateway_availability",
+        "identity_auth_latency_p95",
+        "finance_ledger_write_success",
+        "jobs_document_vault_access_audit"
+      ],
+      "containment": [
+        "avaliar_rollback_deploy_recente",
+        "reduzir_trafego_de_provider_port",
+        "aumentar_capacidade_quando_saturacao",
+        "acionar_fallback_sandbox_homologacao_quando_aplicavel"
+      ],
+      "evidence": ["slo_name", "burn_rate", "window", "service_logs", "incident_ticket"],
+      "recovery_validation": ["tests/test_slo_catalog.py", "python3 scripts/validate_repository.py"],
+      "postmortem_required": false
+    }
+  },
+  "global_invariants": [
+    "nenhum runbook pode orientar apagar auditoria ou ledger",
+    "evidencias nunca incluem payload sensivel",
+    "incidentes criticos exigem postmortem",
+    "todo runbook deve apontar para documento operacional e teste de recuperacao",
+    "contencao deve preservar trilha append-only antes de reprocessamento"
+  ]
+}

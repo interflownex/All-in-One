@@ -200,6 +200,32 @@
 
 - Incremento de permissoes sensiveis em validacao local antes da sincronizacao.
 
+## STATUS OPERACIONAL - 2026-07-15 Runbooks De Incidentes
+
+### Concluido neste ciclo
+
+- Criado `config/operations/incident_response_runbooks.json` com classes de
+  incidente para acesso sensivel, pagamentos/ledger, outbox, retencao LGPD,
+  backup/restore/DR e burn rate de SLO.
+- Cada runbook define severidade, responsavel, sinais de disparo, contencao,
+  evidencias sem payload sensivel, validadores de recuperacao e postmortem para
+  incidentes criticos.
+- Criado `tests/test_incident_response_runbooks.py` para validar cobertura,
+  referencias documentais, evidencias e validadores locais.
+- `scripts/validate_repository.py`, `docs/OPERATIONS.md`,
+  `docs/COMPLIANCE.md` e `docs/EXECUTION_PLAN.md` passaram a tratar runbooks
+  como contrato operacional versionado.
+
+### Pendencias rastreadas
+
+- Exercitar o primeiro simulado operacional de incidente e anexar evidencias
+  reais sem payload sensivel.
+- Validar acionamento humano/on-call em ambiente homologado/produtivo.
+
+### Git
+
+- Incremento de runbooks de incidentes em validacao local antes da sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
 
 ### Concluido neste ciclo

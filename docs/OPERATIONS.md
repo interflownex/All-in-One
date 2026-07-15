@@ -254,6 +254,13 @@ Triagem padrao:
 
 ## Incidentes
 
+O catalogo operacional de resposta a incidentes fica em
+`config/operations/incident_response_runbooks.json`. Ele cobre acesso indevido a
+dado sensivel, integridade de pagamentos/ledger, falhas da outbox, retencao
+LGPD, backup/restore/DR e burn rate de SLO. Cada classe define severidade,
+responsavel, sinais de disparo, contencao, evidencias sanitizadas, validadores
+de recuperacao e exigencia de postmortem.
+
 Revogue sessoes/API keys, preserve trilha imutavel, suspenda publicacao ou
 pagamento afetado, notifique compliance e registre decisao e recuperacao.
 

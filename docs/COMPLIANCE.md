@@ -49,6 +49,8 @@ Antes de producao ampla:
 7. Rodar pentest, SAST/SCA, DAST e testes negativos de permissao.
 8. Revisar permissoes sensiveis conforme
    `config/security/sensitive_permissions_review.json`.
+9. Seguir resposta a incidentes por classe em
+   `config/operations/incident_response_runbooks.json`.
 
 ## Direitos Do Titular
 

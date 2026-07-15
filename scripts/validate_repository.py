@@ -28,6 +28,7 @@ RETENTION_JOBS = ROOT / "config" / "compliance" / "retention_jobs.json"
 RETENTION_ALERTS = ROOT / "config" / "observability" / "retention_alerts.json"
 SLO_CATALOG = ROOT / "config" / "observability" / "slo_catalog.json"
 BACKUP_RESTORE_PLAN = ROOT / "config" / "operations" / "backup_restore_plan.json"
+INCIDENT_RESPONSE_RUNBOOKS = ROOT / "config" / "operations" / "incident_response_runbooks.json"
 SENSITIVE_PERMISSIONS_REVIEW = ROOT / "config" / "security" / "sensitive_permissions_review.json"
 PROVIDER_MATRIX = ROOT / "config" / "integrations" / "provider_matrix.json"
 ENV_EXAMPLE = ROOT / ".env.example"
@@ -628,6 +629,27 @@ def main() -> int:
                 fail(f"Revisao de permissoes sensiveis incompleta para {module_name}.", errors)
             if "audit_event_id" not in module_review.get("required_evidence", []):
                 fail(f"Revisao de permissoes sensiveis deve exigir audit_event_id para {module_name}.", errors)
+    if not INCIDENT_RESPONSE_RUNBOOKS.is_file():
+        fail(f"Catalogo de runbooks de incidente ausente: {INCIDENT_RESPONSE_RUNBOOKS}", errors)
+    else:
+        incident_runbooks = json.loads(INCIDENT_RESPONSE_RUNBOOKS.read_text(encoding="utf-8"))
+        expected_runbooks = {
+            "security_sensitive_access",
+            "payments_ledger_integrity",
+            "outbox_delivery_failure",
+            "retention_lgpd_failure",
+            "backup_restore_dr",
+            "slo_burn_rate",
+        }
+        if set(incident_runbooks.get("runbooks", {})) != expected_runbooks:
+            fail("Catalogo de incidentes deve cobrir seguranca, pagamentos, outbox, retencao, DR e SLO.", errors)
+        if incident_runbooks.get("notification_policy", {}).get("include_sensitive_payload") is not False:
+            fail("Catalogo de incidentes nao deve permitir payload sensivel em notificacoes.", errors)
+        for runbook_name, runbook in incident_runbooks.get("runbooks", {}).items():
+            if not runbook.get("containment") or "incident_ticket" not in runbook.get("evidence", []):
+                fail(f"Runbook de incidente incompleto: {runbook_name}.", errors)
+            if runbook.get("severity") == "critical" and runbook.get("postmortem_required") is not True:
+                fail(f"Incidente critico deve exigir postmortem: {runbook_name}.", errors)
 
     if errors:
         print("\nFalhas de validacao encontradas:")
