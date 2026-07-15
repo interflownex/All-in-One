@@ -533,10 +533,10 @@ Proximos passos naturais:
 | `finance` | 74% | Wallet, ledger, escrow, store tipado e ledger Gold Valley append-only | PSP/Pix/split/fiscal reais | Conectar compra Gold a PSP/Pix e saldo derivado por ledger |
 | `marketplace` | 68% | Catalogo, pedidos e store tipado | Checkout, pagamento e fulfillment | Jornada produto -> carrinho -> pedido -> pagamento |
 | `stock` | 62% | Dropshipping e fornecedores modelados | Integracoes reais de fornecedores | Adapter inicial de fornecedor sandbox |
-| `delivery` | 73% | Entregas, riders, cotacao, atribuicao, coleta/conclusao e store tipado | Tracking real, matching e POD com arquivo | Levar jornada pedido -> cotacao -> rider -> entrega para Playwright |
+| `delivery` | 76% | Entregas, riders, cotacao, atribuicao, coleta/conclusao, store tipado e entrega `completed` coberta por Playwright vivo no shell User | Tracking real, matching e POD com arquivo | Implementar tracking/POD/antifraude em jornada viva |
 | `riders` | 68% | Candidatura, documentos, aprovacao, ativacao e veiculos cobertos por pytest | Ganhos reais e antifraude documental | Integrar ganhos Finance e validacao documental sandbox |
 | `services` | 73% | Prestadores, aprovacao, contrato, escrow referenciado e conclusao cobertos por pytest | Anti-burla avancado e escrow Finance real | Integrar contrato Services ao escrow Finance |
-| `mobility` | 73% | Rides, tickets, tarifa, aceite/conclusao e QR token cobertos por pytest | ETA, QR/NFC real e tarifas dinamicas | Levar jornada corrida e ticket para Playwright |
+| `mobility` | 76% | Rides, tickets, tarifa, aceite/conclusao, QR token e corrida/ticket cobertos por Playwright vivo no shell Mobility | ETA, QR/NFC real e tarifas dinamicas | Integrar ETA/NFC/tarifas reais em jornada viva |
 | `jobs` | 87% | Mais maduro: CTPS/cofre/outbox/testes e jornada candidato -> vaga -> recrutador coberta por pytest | Homologacao CTPS oficial e Playwright E2E | Expandir fluxo para triagem, entrevista e notificacoes |
 | `api_hub` | 82% | API keys/webhooks, SQL refinado, rotas gateway de API key/webhook e testes de rate limit | OAuth2 real e testes de proxy com servicos vivos | Testar OAuth2 real, assinatura de webhooks de saida e rate limit com Redis real |
 | `erp` | 65% | Fiscal/accounting modelado, `ErpPostgresStore` tipado e billing create/detail/cancel coberto na suite PostgreSQL prioritaria | Fluxos contabeis reais e conciliacao fiscal | Testar payables/receivables e conciliacao em DSN homologado |

@@ -83,6 +83,23 @@
 - As pendencias reais de Vision permanecem ingestao de video, IA, prova de
   stream e alerta operacional; nao criacao basica de store tipado.
 
+## STATUS OPERACIONAL - 2026-07-15 Reconciliacao Playwright Delivery Mobility
+
+### Concluido neste ciclo
+
+- Reconciliadas as linhas `delivery` e `mobility` em `docs/EXECUTION_PLAN.md`
+  para remover proximos passos obsoletos de "levar para Playwright".
+- `tests/e2e/test_all_in_one_user_shell.py` cobre Delivery vivo no shell User,
+  executando a acao de jornada e validando entrega `completed`.
+- `tests/e2e/test_all_in_one_phase4_shells.py` cobre Mobility vivo no shell
+  dedicado, executando corrida `completed` e ticket `used` com painel
+  pos-corrida.
+
+### Pendencias rastreadas
+
+- Delivery permanece pendente para tracking real, matching e POD com arquivo.
+- Mobility permanece pendente para ETA, NFC real e tarifas dinamicas.
+
 ## STATUS OPERACIONAL - 2026-07-15 Git Sync Linux Upstream
 
 ### Concluido neste ciclo
