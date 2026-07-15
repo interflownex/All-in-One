@@ -37,10 +37,23 @@
 - `POST /audit`
 
 
+## Locacao e manutencao
+
+- `leases` exige `property_id`, `tenant_user_id`, `starts_at` e `rent_amount_brl`, iniciando em `draft` e emitindo `property.lease.created`.
+- A acao `activate` move locacoes para `active`, exige papel aprovador, MFA e emite `property.lease.activated`.
+- A acao `terminate` encerra locacoes ativas com papel aprovador, MFA e emite `property.lease.terminated`.
+- `maintenance_orders` exige `property_id`, `issue_type` e `requested_at`, iniciando em `requested` e emitindo `property.maintenance.requested`.
+- A acao `schedule` agenda manutencao e emite `property.maintenance.scheduled`; `complete` exige papel aprovador, MFA e emite `property.maintenance.completed`.
+
+
         ## Eventos
 
         - `property.lease.created`
+- `property.lease.activated`
+- `property.lease.terminated`
 - `property.maintenance.requested`
+- `property.maintenance.scheduled`
+- `property.maintenance.completed`
 
         ## Regras
 

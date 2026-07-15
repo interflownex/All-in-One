@@ -1,5 +1,37 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Property Lease Maintenance
+
+### Concluido neste ciclo
+
+- `property.leases` passou a exigir `property_id`, `tenant_user_id`,
+  `starts_at` e `rent_amount_brl`, iniciando em `draft` e emitindo
+  `property.lease.created`.
+- A acao `activate` move locacoes para `active`, exige papel aprovador e MFA,
+  e emite `property.lease.activated`; `terminate` foi contratado para encerrar
+  locacoes ativas com MFA.
+- `property.maintenance_orders` passou a exigir `property_id`, `issue_type` e
+  `requested_at`, iniciando em `requested` e emitindo
+  `property.maintenance.requested`.
+- A acao `schedule` agenda manutencao com `property.maintenance.scheduled`; a
+  acao `complete` exige papel aprovador e MFA e emite
+  `property.maintenance.completed`.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar locacao/manutencao nos contratos gerados e nas
+  jornadas vivas.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local
+  `Fluxo locacao/manutencao` foi saneada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_property_domain.py`: 1 teste aprovado.
+
+### Pendencias rastreadas
+
+- Permanecem externas: homologar operacao condominial/manutencao real e
+  ampliar evidencias com prestadores controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 Legal Deadline Alert
 
 ### Concluido neste ciclo

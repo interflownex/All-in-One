@@ -207,7 +207,7 @@
       "title": "Property",
       "description": "Imoveis, unidades, locacoes, condominio, manutencao e votacao.",
       "entities": ["properties", "units", "leases", "assemblies", "maintenance_orders"],
-      "events": ["property.lease.created", "property.maintenance.requested"],
+      "events": ["property.lease.created", "property.lease.activated", "property.lease.terminated", "property.maintenance.requested", "property.maintenance.scheduled", "property.maintenance.completed"],
       "monetization": "Plano por unidade administrada e servicos.",
       "branch": "module/property"
     },

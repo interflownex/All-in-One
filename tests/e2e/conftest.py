@@ -320,6 +320,18 @@ PHASE4_ROUTE_PAYLOADS = {
         "property_type": "commercial",
         "name": "Imovel Property Playwright",
     },
+    ("property", "leases"): {
+        "property_id": PHASE4_BUSINESS_ID,
+        "tenant_user_id": PHASE4_USER_ID,
+        "starts_at": "2026-08-01",
+        "rent_amount_brl": "2500.00",
+    },
+    ("property", "maintenance_orders"): {
+        "property_id": PHASE4_BUSINESS_ID,
+        "issue_type": "plumbing",
+        "requested_at": "2026-07-15T09:00:00Z",
+        "estimated_cost_brl": "350.00",
+    },
     ("vision", "devices"): {
         "device_fingerprint": "vision-device-playwright",
         "name": "Camera Vision Playwright",

@@ -205,6 +205,17 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
+    if module["slug"] == "property":
+        special = dedent(
+            """\
+            `leases` acompanha locacoes com aluguel auditavel; `maintenance_orders`
+            registra solicitacao, agenda e conclusao de manutencao com MFA.
+            """
+        )
+        rendered = rendered.replace(
+            f"{entities}.\n\n## Execucao",
+            f"{entities}.\n\n{special}\n## Execucao",
+        )
     return rendered
 
 
@@ -337,6 +348,19 @@ def render_contract(module: dict) -> str:
             - A acao `alert` move prazos para `alerted`, exige papel aprovador, MFA e emite `legal.deadline.alerted`.
             - A acao `complete` move prazos pendentes ou alertados para `completed` e emite `legal.deadline.completed`.
             - `hearings` exige `case_id` e `scheduled_at`, iniciando em `scheduled` e emitindo `legal.hearing.scheduled`.
+            """
+        )
+    if module["slug"] == "property":
+        special += dedent(
+            """
+
+            ## Locacao e manutencao
+
+            - `leases` exige `property_id`, `tenant_user_id`, `starts_at` e `rent_amount_brl`, iniciando em `draft` e emitindo `property.lease.created`.
+            - A acao `activate` move locacoes para `active`, exige papel aprovador, MFA e emite `property.lease.activated`.
+            - A acao `terminate` encerra locacoes ativas com papel aprovador, MFA e emite `property.lease.terminated`.
+            - `maintenance_orders` exige `property_id`, `issue_type` e `requested_at`, iniciando em `requested` e emitindo `property.maintenance.requested`.
+            - A acao `schedule` agenda manutencao e emite `property.maintenance.scheduled`; `complete` exige papel aprovador, MFA e emite `property.maintenance.completed`.
             """
         )
     return dedent(

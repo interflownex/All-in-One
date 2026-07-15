@@ -12,6 +12,9 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `properties`, `units`, `leases`, `assemblies`, `maintenance_orders`.
 
+`leases` acompanha locacoes com aluguel auditavel; `maintenance_orders`
+registra solicitacao, agenda e conclusao de manutencao com MFA.
+
 ## Execucao
 
 ```bash
