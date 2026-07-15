@@ -1,6 +1,12 @@
+import json
+from pathlib import Path
 from uuid import uuid4
 
 from platform_test_support import fresh_client_for
+from modules.shared.domain_rules import MODULE_ENTITIES
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def actor_headers(user_id: str, roles: str = "merchant", *, business_id: str | None = None) -> dict[str, str]:
@@ -9,6 +15,15 @@ def actor_headers(user_id: str, roles: str = "merchant", *, business_id: str | N
         headers["X-Business-Id"] = business_id
         headers["X-Business-Status"] = "active"
     return headers
+
+
+def test_finance_catalog_declares_valley_gold_ledger_contract() -> None:
+    catalog = json.loads((ROOT / "config" / "module_catalog.json").read_text(encoding="utf-8"))
+    finance = next(module for module in catalog["modules"] if module["slug"] == "finance")
+
+    assert "valley_gold_ledger_entries" in finance["entities"]
+    assert "valley_gold_ledger_entries" in MODULE_ENTITIES["finance"]
+    assert "valley.gold.ledger.posted" in finance["events"]
 
 
 def test_valley_gold_ledger_is_append_only_idempotent_and_emits_event() -> None:

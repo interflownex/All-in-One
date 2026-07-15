@@ -1,5 +1,31 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Finance Gold Catalog Reconciliation
+
+### Concluido neste ciclo
+
+- `config/module_catalog.json` voltou a declarar
+  `finance.valley_gold_ledger_entries`, alinhando a fonte de scaffold ao
+  runtime, store PostgreSQL, contrato Finance e testes Gold existentes.
+- O evento `valley.gold.ledger.posted` passou a constar nos eventos Finance do
+  catalogo versionado.
+- `modules/finance/README.md` foi regenerado pelo scaffold com a entidade Gold
+  na lista de recursos.
+- `tests/test_valley_gold_ledger.py` ganhou regressao especifica para impedir
+  que o catalogo Finance perca o contrato Gold novamente.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_valley_gold_ledger.py tests/test_all_modules_integration.py`:
+  aprovado.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: conectar compra Gold ao PSP/Pix real e repetir o saldo
+  derivado por ledger em ambiente homologado.
+
 ## STATUS OPERACIONAL - 2026-07-15 Stock Supplier Order Tracking
 
 ### Concluido neste ciclo

@@ -10,7 +10,7 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 ## Entidades
 
-`wallets`, `ledger_entries`, `escrows`, `splits`, `invoices`.
+`wallets`, `ledger_entries`, `escrows`, `splits`, `invoices`, `valley_gold_ledger_entries`.
 
 ## Execucao
 
