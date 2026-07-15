@@ -58,10 +58,23 @@
 - `business.company.submitted`
 - `business.company.approved`
 - `business.company.rejected`
+- `business.branche.created`
+- `business.branche.submitted`
+- `business.branche.cancelled`
+- `business.branche.completed`
+- `business.company_document.created`
+- `business.company_document.submitted`
+- `business.company_document.cancelled`
+- `business.company_document.completed`
 - `business.user.invited`
 - `business.role.assigned`
 - `business.user.revoked`
+- `business.catalog_offer.created`
+- `business.catalog_offer.submitted`
+- `business.catalog_offer.cancelled`
+- `business.catalog_offer.completed`
 - `valley.catalog.offer.synced`
+- `business.catalog_offer.paused`
 
         ## Regras
 

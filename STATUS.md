@@ -1,5 +1,29 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Business Runtime Event Catalog
+
+### Concluido neste ciclo
+
+- O catalogo Business passou a declarar eventos runtime de filiais,
+  documentos empresariais e ofertas comerciais publicaveis.
+- `modules/business/CONTRACT.md`, `modules/business/EVENTS.md` e
+  `contracts/business.md` foram regenerados pelo scaffold com a superficie
+  completa de eventos Business.
+- `tests/test_business_event_catalog.py` bloqueia drift entre eventos Business
+  emitidos em criacao/transicoes e `config/module_catalog.json`.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_business_event_catalog.py modules/business/tests/test_create_flow.py`:
+  aprovado.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar KYB real e repetir evidencias de membership com
+  dados produtivos controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 ERP Fiscal Event Catalog
 
 ### Concluido neste ciclo

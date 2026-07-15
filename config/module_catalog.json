@@ -27,7 +27,7 @@
       "title": "Business",
       "description": "Matriz, filiais, documentos empresariais, aprovacao manual, memberships e ofertas comerciais publicaveis no catalogo Valley.",
       "entities": ["companies", "branches", "company_documents", "user_company_memberships", "catalog_offers"],
-      "events": ["business.company.created", "business.company.submitted", "business.company.approved", "business.company.rejected", "business.user.invited", "business.role.assigned", "business.user.revoked", "valley.catalog.offer.synced"],
+      "events": ["business.company.created", "business.company.submitted", "business.company.approved", "business.company.rejected", "business.branche.created", "business.branche.submitted", "business.branche.cancelled", "business.branche.completed", "business.company_document.created", "business.company_document.submitted", "business.company_document.cancelled", "business.company_document.completed", "business.user.invited", "business.role.assigned", "business.user.revoked", "business.catalog_offer.created", "business.catalog_offer.submitted", "business.catalog_offer.cancelled", "business.catalog_offer.completed", "valley.catalog.offer.synced", "business.catalog_offer.paused"],
       "monetization": "Planos SaaS por empresa, usuario, modulo, API e SLA.",
       "branch": "module/business"
     },
