@@ -487,7 +487,7 @@ Pendencias:
 - Aplicar mutacoes finais nos stores de dominio apos homologacao de dry-run por modulo.
 - Aplicar manifests de monitoramento no cluster real e validar disparo controlado dos alertas.
 - DPIA assinada por modulo critico.
-- Pentest e SAST/DAST.
+- Pentest e DAST contra ambiente homologado.
 - Testes de carga.
 - Backup/restore e disaster recovery.
 - Observabilidade completa.
@@ -497,9 +497,8 @@ Pendencias:
 Proximos passos naturais:
 1. Aplicar manifests de monitoramento no cluster real e validar disparo controlado dos alertas.
 2. Aplicar mutacoes finais nos stores de dominio apos homologacao de dry-run.
-3. Adicionar scans obrigatorios no CI.
-4. Testar restore de Postgres/Mongo.
-5. Definir SLOs e alertas.
+3. Testar restore de Postgres/Mongo.
+4. Definir SLOs e alertas.
 
 ## 3. Matriz por modulo
 

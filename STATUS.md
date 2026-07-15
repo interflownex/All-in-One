@@ -91,6 +91,31 @@
 
 - Incremento de auditoria sandbox em validacao local antes da sincronizacao.
 
+## STATUS OPERACIONAL - 2026-07-15 Security CI SAST/SCA
+
+### Concluido neste ciclo
+
+- `.github/workflows/security.yml` passou a executar tambem `npm audit
+  --omit=dev --audit-level=critical` para todos os apps frontend e
+  `desktop/valley-erp`, alem dos scans Python ja existentes.
+- Criado `tests/test_security_workflow_contract.py` para impedir remocao de
+  `pip-audit`, `bandit` e do audit JavaScript bloqueante.
+- `scripts/validate_repository.py` agora valida que o workflow de seguranca
+  preserva os comandos obrigatorios.
+- `docs/COMPLIANCE.md` e `docs/EXECUTION_PLAN.md` foram atualizados para trocar
+  a pendencia generica de SAST/SCA por DAST/pentest em ambiente homologado.
+
+### Pendencias rastreadas
+
+- Rodar DAST e pentest contra ambiente homologado quando houver deployment
+  responsivo e autorizacao operacional.
+- Manter tratamento de vulnerabilidades de severidade critica como bloqueio de
+  merge/release.
+
+### Git
+
+- Incremento de security CI em validacao local antes da sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
 
 ### Concluido neste ciclo

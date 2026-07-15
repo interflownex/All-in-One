@@ -21,3 +21,31 @@ jobs:
       - run: pip install -r requirements-dev.txt pip-audit bandit
       - run: pip-audit --local
       - run: bandit -r modules/shared scripts workers -q -ll
+
+  javascript-security:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - apps/all-in-one
+          - apps/all-in-one-business
+          - apps/all-in-one-health
+          - apps/all-in-one-mobility
+          - apps/all-in-one-riders
+          - apps/all-in-one-services
+          - apps/valley
+          - apps/valley_business
+          - apps/valley_rider
+          - desktop/valley-erp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: ${{ matrix.app }}/package-lock.json
+      - run: npm audit --omit=dev --audit-level=critical
+        working-directory: ${{ matrix.app }}

@@ -159,4 +159,6 @@ O agendamento declarativo foi adicionado em dois modos:
 - Aplicar manifests de monitoramento no cluster real e validar disparo controlado
   dos alertas.
 - Gerar evidencias de DPIA assinadas por modulo critico.
-- Integrar scans SAST/SCA/DAST obrigatorios ao CI com severidade bloqueante.
+- CI de seguranca obrigatorio em `.github/workflows/security.yml`: `pip-audit`
+  para SCA Python, `bandit` para SAST Python e `npm audit --omit=dev
+  --audit-level=critical` para lockfiles JavaScript dos apps/desktop.

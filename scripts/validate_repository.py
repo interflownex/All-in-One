@@ -192,6 +192,16 @@ def main() -> int:
     ]:
         if not (ROOT / ".github" / "workflows" / workflow).is_file():
             fail(f"Workflow ausente: {workflow}", errors)
+    security_workflow = ROOT / ".github" / "workflows" / "security.yml"
+    if security_workflow.is_file():
+        security_text = security_workflow.read_text(encoding="utf-8")
+        for command in [
+            "pip-audit --local",
+            "bandit -r modules/shared scripts workers -q -ll",
+            "npm audit --omit=dev --audit-level=critical",
+        ]:
+            if command not in security_text:
+                fail(f"Workflow de seguranca deve manter scan obrigatorio: {command}", errors)
     for script in [
         "check_git_sync.ps1",
         "check_git_sync.py",
