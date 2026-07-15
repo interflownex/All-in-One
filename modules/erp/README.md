@@ -12,6 +12,9 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `accounts`, `payables`, `receivables`, `cost_centers`, `fiscal_documents`.
 
+`payables` e `receivables` registram contas financeiras com centro
+de custo/conta contabil, aprovacao de pagamento e conciliacao MFA.
+
 ## Execucao
 
 ```bash

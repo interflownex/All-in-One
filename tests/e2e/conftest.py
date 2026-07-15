@@ -237,6 +237,26 @@ PHASE4_ROUTE_PAYLOADS = {
         "amount_brl": "3490.75",
         "description": "Documento ERP vivo para conciliacao Business",
     },
+    ("erp", "accounts"): {
+        "account_code": "CAIXA-PLAYWRIGHT",
+        "name": "Conta Caixa Playwright",
+    },
+    ("erp", "cost_centers"): {
+        "cost_center_code": "CC-OPS-PLAYWRIGHT",
+        "name": "Operacao Playwright",
+    },
+    ("erp", "payables"): {
+        "supplier_name": "Fornecedor Playwright",
+        "due_at": "2026-08-05",
+        "amount_brl": "890.50",
+        "cost_center_id": PHASE4_BUSINESS_ID,
+    },
+    ("erp", "receivables"): {
+        "customer_name": "Cliente Playwright",
+        "due_at": "2026-08-10",
+        "amount_brl": "1290.75",
+        "account_id": PHASE4_BUSINESS_ID,
+    },
     ("bi", "dashboards"): {
         "dataset_id": PHASE4_BUSINESS_ID,
         "name": "Dashboard Giro de Estoque Playwright",

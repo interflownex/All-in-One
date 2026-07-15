@@ -238,6 +238,17 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
+    if module["slug"] == "erp":
+        special = dedent(
+            """\
+            `payables` e `receivables` registram contas financeiras com centro
+            de custo/conta contabil, aprovacao de pagamento e conciliacao MFA.
+            """
+        )
+        rendered = rendered.replace(
+            f"{entities}.\n\n## Execucao",
+            f"{entities}.\n\n{special}\n## Execucao",
+        )
     return rendered
 
 
@@ -410,6 +421,20 @@ def render_contract(module: dict) -> str:
             - A criacao de execucao emite `ai.model_run.requested`; `complete` emite `ai.model_run.completed` e `fail` emite `ai.model_run.failed`.
             - A acao `approve_cost` exige papel aprovador, MFA e emite `ai.model_run.cost_approved`.
             - `estimated_cost_brl` e validado como valor monetario nao negativo; providers reais seguem pendentes de homologacao.
+            """
+        )
+    if module["slug"] == "erp":
+        special += dedent(
+            """
+
+            ## Contas, pagamentos e conciliacao
+
+            - `accounts` exige `account_code` e `name`, iniciando em `active` e emitindo `erp.account.created`.
+            - `cost_centers` exige `cost_center_code` e `name`, iniciando em `active` e emitindo `erp.cost_center.created`.
+            - `payables` exige `supplier_name`, `due_at`, `amount_brl` e `cost_center_id`, iniciando em `open` e emitindo `erp.payable.created`.
+            - A acao `approve_payment` exige papel aprovador, MFA e emite `erp.payment.approved`; `settle` move para `paid` com `erp.payable.paid`.
+            - `receivables` exige `customer_name`, `due_at`, `amount_brl` e `account_id`, iniciando em `issued` e emitindo `erp.receivable.created`.
+            - A acao `receive` emite `erp.receivable.received`; `reconcile` exige papel aprovador, MFA e emite `erp.receivable.reconciled`.
             """
         )
     return dedent(

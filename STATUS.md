@@ -1,5 +1,34 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 ERP Payables Receivables
+
+### Concluido neste ciclo
+
+- `erp.accounts` passou a exigir `account_code` e `name`, iniciando em
+  `active` e emitindo `erp.account.created`.
+- `erp.cost_centers` passou a exigir `cost_center_code` e `name`, iniciando em
+  `active` e emitindo `erp.cost_center.created`.
+- `erp.payables` passou a exigir `supplier_name`, `due_at`, `amount_brl` e
+  `cost_center_id`, com aprovacao de pagamento protegida por MFA e baixa
+  auditavel.
+- `erp.receivables` passou a exigir `customer_name`, `due_at`, `amount_brl` e
+  `account_id`, com recebimento e conciliacao protegida por MFA.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar contas, centros de custo, payables e receivables
+  nos contratos gerados e nas jornadas vivas.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local de
+  payables/receivables e conciliacao foi saneada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_erp_domain.py`: 1 teste aprovado.
+
+### Pendencias rastreadas
+
+- Permanecem externas: homologar integracoes contabeis/fiscais reais e
+  conciliacao bancaria produtiva controlada.
+
 ## STATUS OPERACIONAL - 2026-07-15 AI Core Provider Cost
 
 ### Concluido neste ciclo

@@ -37,10 +37,27 @@
 - `POST /audit`
 
 
+## Contas, pagamentos e conciliacao
+
+- `accounts` exige `account_code` e `name`, iniciando em `active` e emitindo `erp.account.created`.
+- `cost_centers` exige `cost_center_code` e `name`, iniciando em `active` e emitindo `erp.cost_center.created`.
+- `payables` exige `supplier_name`, `due_at`, `amount_brl` e `cost_center_id`, iniciando em `open` e emitindo `erp.payable.created`.
+- A acao `approve_payment` exige papel aprovador, MFA e emite `erp.payment.approved`; `settle` move para `paid` com `erp.payable.paid`.
+- `receivables` exige `customer_name`, `due_at`, `amount_brl` e `account_id`, iniciando em `issued` e emitindo `erp.receivable.created`.
+- A acao `receive` emite `erp.receivable.received`; `reconcile` exige papel aprovador, MFA e emite `erp.receivable.reconciled`.
+
+
         ## Eventos
 
-        - `erp.invoice.created`
+        - `erp.account.created`
+- `erp.cost_center.created`
+- `erp.payable.created`
 - `erp.payment.approved`
+- `erp.payable.paid`
+- `erp.receivable.created`
+- `erp.receivable.received`
+- `erp.receivable.reconciled`
+- `erp.invoice.created`
 
         ## Regras
 
