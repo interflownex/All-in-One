@@ -9,7 +9,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -36,6 +35,14 @@ def git_path_exists(path: str) -> bool:
 def current_branch(explicit_branch: str | None) -> str:
     if explicit_branch:
         return explicit_branch
+    upstream = git(
+        ["rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+        check=False,
+    )
+    if upstream.returncode == 0:
+        upstream_ref = upstream.stdout.strip()
+        if "/" in upstream_ref:
+            return upstream_ref.split("/", 1)[1]
     branch = git_output(["branch", "--show-current"])
     if branch:
         return branch
@@ -48,12 +55,17 @@ def current_branch(explicit_branch: str | None) -> str:
 def validate(args: argparse.Namespace) -> int:
     for state_path in ("MERGE_HEAD", "rebase-merge", "rebase-apply"):
         if git_path_exists(state_path):
-            raise RuntimeError("Verificacao bloqueada: ha merge ou rebase em andamento.")
+            raise RuntimeError(
+                "Verificacao bloqueada: ha merge ou rebase em andamento."
+            )
 
     branch = current_branch(args.branch)
     status = git_output(["status", "--porcelain"])
     if status and not args.allow_dirty:
-        raise RuntimeError("A arvore de trabalho possui alteracoes locais. Use --allow-dirty apenas para diagnostico.")
+        raise RuntimeError(
+            "A arvore de trabalho possui alteracoes locais. Use --allow-dirty "
+            "apenas para diagnostico."
+        )
 
     available_remotes = set(git_output(["remote"]).splitlines())
     checked = 0
@@ -67,7 +79,9 @@ def validate(args: argparse.Namespace) -> int:
         if not args.no_fetch:
             fetch = git(["fetch", remote, branch, "--prune"], check=False)
             if fetch.returncode != 0:
-                problems.append(f"Fetch falhou para {remote}/{branch}: {fetch.stdout.strip()}")
+                problems.append(
+                    f"Fetch falhou para {remote}/{branch}: {fetch.stdout.strip()}"
+                )
                 continue
 
         verify = git(["rev-parse", "--verify", f"{remote}/{branch}"], check=False)
@@ -75,19 +89,28 @@ def validate(args: argparse.Namespace) -> int:
             problems.append(f"Referencia remota inexistente: {remote}/{branch}.")
             continue
 
-        counts = git_output(["rev-list", "--left-right", "--count", f"{remote}/{branch}...HEAD"]).split()
+        counts = git_output(
+            ["rev-list", "--left-right", "--count", f"{remote}/{branch}...HEAD"]
+        ).split()
         behind, ahead = int(counts[0]), int(counts[1])
         checked += 1
 
         if behind > 0:
-            problems.append(f"Branch local esta {behind} commit(s) atras de {remote}/{branch}.")
+            problems.append(
+                f"Branch local esta {behind} commit(s) atras de {remote}/{branch}."
+            )
         if ahead > 0 and not args.allow_ahead:
-            problems.append(f"Branch local esta {ahead} commit(s) a frente de {remote}/{branch}.")
+            problems.append(
+                "Branch local esta "
+                f"{ahead} commit(s) a frente de {remote}/{branch}."
+            )
 
         print(f"{remote}/{branch}: behind={behind} ahead={ahead}")
 
     if checked == 0:
-        raise RuntimeError(f"Nenhum remoto verificavel encontrado para a branch {branch}.")
+        raise RuntimeError(
+            f"Nenhum remoto verificavel encontrado para a branch {branch}."
+        )
     if problems:
         raise RuntimeError("Divergencia Git detectada:\n- " + "\n- ".join(problems))
 

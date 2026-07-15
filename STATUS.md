@@ -1,5 +1,34 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Git Sync Linux Upstream
+
+### Concluido neste ciclo
+
+- Reproduzida a falha do gate `python3 scripts/check_git_sync.py`: o checkout
+  local esta na branch `worktree-sync`, mas o upstream autoritativo e
+  `origin/main`; o script tentava validar `origin/worktree-sync` e encerrava
+  com "Nenhum remoto verificavel encontrado".
+- `scripts/check_git_sync.py` agora resolve `@{u}` antes de usar o nome da
+  branch local, preservando `--branch` explicito para CI e outros usos.
+- `tests/test_git_sync_gate.py` cobre o uso sem `--branch`, garantindo que o
+  gate aceite o alinhamento atual com `origin/main`.
+
+### Evidencias
+
+- `python3 scripts/check_git_sync.py --allow-dirty --no-fetch`: valida
+  `origin/main: behind=0 ahead=0` e apenas avisa que `fork` esta ausente neste
+  checkout.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q
+  -s tests/test_git_sync_gate.py`: 4 testes aprovados.
+- `./.venv/bin/python -m ruff check scripts/check_git_sync.py
+  tests/test_git_sync_gate.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Reconfigurar o remoto `fork` apenas quando voltar a ser necessario como
+  alternativa de escrita; ate la, o fechamento operacional segue por
+  `origin/main`.
+
 ## STATUS OPERACIONAL - 2026-07-15 Google Cloud Auth/ADC Data Agent
 
 ### Concluido neste ciclo

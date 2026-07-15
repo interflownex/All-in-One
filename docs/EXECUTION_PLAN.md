@@ -38,17 +38,23 @@ Entregas esperadas:
 - Selecionar automaticamente a opcao `2` em prompts interativos durante este processo.
 - Gate Git Sync Linux `scripts/check_git_sync.py` cobre o workflow remoto sem
   depender de PowerShell Core no runner.
+- Em 2026-07-15, `scripts/check_git_sync.py` passou a resolver o branch do
+  upstream configurado antes de cair no nome da branch local; neste worktree
+  `worktree-sync -> origin/main`, o gate padrao valida `origin/main:
+  behind=0 ahead=0` e apenas avisa quando `fork` esta ausente.
 
 Pendencias:
 - Reconfigurar o remoto `fork` neste checkout ou manter fechamento operacional
   via `origin` quando `fork` estiver indisponivel.
 - Executar o gate de divergencia em ambiente com PowerShell Core disponivel e
   credenciais remotas configuradas.
-- Gate Python/CI de artefatos gerados entregue; manter execucao em todo fechamento.
+- Gate Python/CI de artefatos gerados e Git Sync Linux entregues; manter
+  execucao em todo fechamento.
 
 Proximos passos naturais:
-1. Rodar `scripts/check_git_sync.py` ou `scripts/check_git_sync.ps1` no
-   fechamento de cada incremento.
+1. Rodar `scripts/check_git_sync.py` no fechamento de cada incremento; usar
+   `scripts/check_git_sync.ps1` apenas quando PowerShell Core estiver
+   disponivel no host.
 2. Corrigir ou recriar o remoto `fork` quando ele voltar a ser necessario para
    escrita alternativa.
 3. Manter `scripts/check_generated_artifacts.py` no CI e nos fechamentos locais Linux.
