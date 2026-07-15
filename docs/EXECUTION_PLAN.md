@@ -547,7 +547,7 @@ Proximos passos naturais:
 | `document` | 62% | GED/OCR/assinatura modelados, `DocumentPostgresStore` tipado e folder create/update/soft-delete coberto na suite PostgreSQL prioritaria | Storage, OCR e assinatura reais | Implementar upload/versionamento com storage privado |
 | `hr` | 62% | HCM/ATS/LMS modelado, `HrPostgresStore` tipado e employee create/update/soft-delete coberto na suite PostgreSQL prioritaria | Folha, ponto e LMS reais | Fluxo colaborador -> folha -> treinamento |
 | `health` | 66% | Pacientes, agenda, protecao de dado sensivel e consulta cobertos por pytest | Consentimento, prontuario e telemedicina reais | Implementar consentimento auditavel e prontuario |
-| `vision` | 55% | Dispositivos/streams/alertas modelados | Ingestao de video e IA | Prova de stream e alerta |
+| `vision` | 59% | Dispositivos/streams/alertas modelados, `VisionPostgresStore` tipado e device create/update/soft-delete coberto na suite PostgreSQL prioritaria | Ingestao de video e IA | Prova de stream e alerta operacional |
 | `legal` | 59% | Casos/prazos/audiencias modelados, `LegalPostgresStore` tipado e case create/update/soft-delete coberto na suite PostgreSQL prioritaria | Integracoes tribunal/calendario | Fluxo caso -> prazo -> alerta |
 | `property` | 59% | Imoveis/unidades/locacoes modelados, `PropertyPostgresStore` tipado e property create/update/soft-delete coberto na suite PostgreSQL prioritaria | Condominio e manutencao reais | Fluxo locacao/manutencao |
 | `bi` | 59% | Datasets/dashboards modelados, `BiPostgresStore` tipado e dataset create/update/soft-delete coberto na suite PostgreSQL prioritaria | ETL e permissao analitica | Primeiro dashboard auditavel |

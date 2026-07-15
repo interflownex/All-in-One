@@ -69,6 +69,20 @@
   OCR/assinatura, folha/ponto/LMS, integracoes tribunal/calendario, ETL,
   governanca IA e provedores reais.
 
+## STATUS OPERACIONAL - 2026-07-15 Reconciliacao Vision Store Tipado
+
+### Concluido neste ciclo
+
+- Reconciliada a linha `vision` em `docs/EXECUTION_PLAN.md`: o modulo ja possui
+  `VisionPostgresStore` tipado em `modules/shared/vision_postgres_store.py`.
+- `tests/test_postgres_priority_stores_integration.py` cobre
+  `test_vision_device_create_update_and_soft_delete`, incluindo audit/outbox.
+
+### Pendencias rastreadas
+
+- As pendencias reais de Vision permanecem ingestao de video, IA, prova de
+  stream e alerta operacional; nao criacao basica de store tipado.
+
 ## STATUS OPERACIONAL - 2026-07-15 Git Sync Linux Upstream
 
 ### Concluido neste ciclo
