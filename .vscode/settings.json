@@ -84,5 +84,6 @@
     "geminicodeassist.codeLens.enable": false,
     "geminicodeassist.telemetry.enable": false,
     "java.configuration.updateBuildConfiguration": "automatic",
-    "github.copilot.chat.agentDebugLog.fileLogging.enabled": true
+    "github.copilot.chat.agentDebugLog.fileLogging.enabled": true,
+    "cloudcode.active-kubeconfig": "Default KubeConfig"
 }

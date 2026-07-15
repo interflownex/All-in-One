@@ -1,5 +1,28 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 VS Code Cloud Code Kubeconfig
+
+### Concluido neste ciclo
+
+- Removida de `.vscode/settings.json` a lista `cloudcode.kubeconfigs` que
+  registrava o proprio `.vscode/settings.json` como kubeconfig.
+- Preservado `cloudcode.active-kubeconfig` em `Default KubeConfig`, deixando o
+  Cloud Code usar um kubeconfig real/default do usuario em vez de arquivo JSON
+  do workspace.
+- `scripts/validate_repository.py` agora bloqueia regressao desse padrao para
+  evitar que VS Code/Cloud Code tente tratar configuracao do workspace como
+  kubeconfig Kubernetes.
+
+### Evidencias
+
+- `python3 -m json.tool .vscode/settings.json`: JSON valido.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Se o cluster Kubernetes real ainda precisar ser usado pelo Cloud Code,
+  selecionar um kubeconfig valido do usuario fora do workspace.
+
 ## STATUS OPERACIONAL - 2026-07-15 Permissions Identity Evidence
 
 ### Concluido neste ciclo

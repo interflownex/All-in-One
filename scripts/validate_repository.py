@@ -250,6 +250,12 @@ def main() -> int:
             fail("geminicodeassist.enable deve permanecer true no Antigravity/editor.", errors)
         if settings.get("geminicodeassist.agentYoloMode") is not False:
             fail("geminicodeassist.agentYoloMode deve permanecer false para evitar execucao destrutiva automatica.", errors)
+        invalid_kubeconfig = str(VSCODE_SETTINGS)
+        if settings.get("cloudcode.active-kubeconfig") == invalid_kubeconfig:
+            fail("cloudcode.active-kubeconfig nao pode apontar para .vscode/settings.json; use kubeconfig real fora do workspace.", errors)
+        for kubeconfig in settings.get("cloudcode.kubeconfigs") or []:
+            if kubeconfig.get("configPath") == invalid_kubeconfig:
+                fail("cloudcode.kubeconfigs nao pode registrar .vscode/settings.json como kubeconfig.", errors)
     vscode_extensions = ROOT / ".vscode" / "extensions.json"
     if not vscode_extensions.is_file():
         fail("Configuracao VS Code ausente: .vscode/extensions.json", errors)
