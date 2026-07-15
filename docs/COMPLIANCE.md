@@ -51,6 +51,8 @@ Antes de producao ampla:
    `config/security/sensitive_permissions_review.json`.
 9. Seguir resposta a incidentes por classe em
    `config/operations/incident_response_runbooks.json`.
+10. Executar testes de carga conforme
+    `config/operations/load_test_plan.json` sem capturar payload sensivel.
 
 ## Direitos Do Titular
 

@@ -226,6 +226,32 @@
 
 - Incremento de runbooks de incidentes em validacao local antes da sincronizacao.
 
+## STATUS OPERACIONAL - 2026-07-15 Plano De Carga
+
+### Concluido neste ciclo
+
+- Criado `config/operations/load_test_plan.json` com cenarios de carga para API
+  Hub, Identity, Finance, Jobs e Retention.
+- O plano define politica segura de execucao, limites globais, RPS alvo,
+  metricas obrigatorias, criterios de sucesso, evidencias sem payload sensivel
+  e gate de promocao.
+- Criado `tests/test_load_test_plan.py` e ampliado
+  `scripts/validate_repository.py` para bloquear ausencia ou enfraquecimento do
+  contrato.
+- `docs/OPERATIONS.md`, `docs/COMPLIANCE.md` e `docs/EXECUTION_PLAN.md`
+  passaram a rastrear testes de carga como contrato versionado.
+
+### Pendencias rastreadas
+
+- Executar os cenarios em ambiente de homologacao responsivo e anexar evidencias
+  reais de latencia, erro, dashboard e incidentes quando houver falha.
+- Materializar scripts k6/Locust quando o endpoint homologado e credenciais de
+  teste estiverem disponiveis.
+
+### Git
+
+- Incremento de plano de carga em validacao local antes da sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
 
 ### Concluido neste ciclo

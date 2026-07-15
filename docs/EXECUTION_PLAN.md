@@ -481,14 +481,14 @@ Proximos passos naturais:
 
 Objetivo: sair de beta tecnica para producao auditavel.
 
-Status: 63%
+Status: 64%
 
 Pendencias:
 - Aplicar mutacoes finais nos stores de dominio apos homologacao de dry-run por modulo.
 - Aplicar manifests de monitoramento no cluster real e validar disparo controlado dos alertas.
 - DPIA assinada por modulo critico.
 - Pentest e DAST contra ambiente homologado.
-- Testes de carga.
+- Executar testes de carga em homologacao com evidencias reais.
 - Executar restore real de PostgreSQL/Mongo/storage e exercicio DR trimestral.
 - Observabilidade produtiva completa aplicada no cluster real.
 - Exercitar runbooks de incidentes em simulado operacional.
@@ -505,6 +505,8 @@ Proximos passos naturais:
    `config/security/sensitive_permissions_review.json`.
 6. Exercitar o primeiro simulado de incidente usando
    `config/operations/incident_response_runbooks.json`.
+7. Executar os cenarios de carga em homologacao usando
+   `config/operations/load_test_plan.json`.
 
 ## 3. Matriz por modulo
 

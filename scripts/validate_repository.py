@@ -29,6 +29,7 @@ RETENTION_ALERTS = ROOT / "config" / "observability" / "retention_alerts.json"
 SLO_CATALOG = ROOT / "config" / "observability" / "slo_catalog.json"
 BACKUP_RESTORE_PLAN = ROOT / "config" / "operations" / "backup_restore_plan.json"
 INCIDENT_RESPONSE_RUNBOOKS = ROOT / "config" / "operations" / "incident_response_runbooks.json"
+LOAD_TEST_PLAN = ROOT / "config" / "operations" / "load_test_plan.json"
 SENSITIVE_PERMISSIONS_REVIEW = ROOT / "config" / "security" / "sensitive_permissions_review.json"
 PROVIDER_MATRIX = ROOT / "config" / "integrations" / "provider_matrix.json"
 ENV_EXAMPLE = ROOT / ".env.example"
@@ -650,6 +651,27 @@ def main() -> int:
                 fail(f"Runbook de incidente incompleto: {runbook_name}.", errors)
             if runbook.get("severity") == "critical" and runbook.get("postmortem_required") is not True:
                 fail(f"Incidente critico deve exigir postmortem: {runbook_name}.", errors)
+    if not LOAD_TEST_PLAN.is_file():
+        fail(f"Plano de testes de carga ausente: {LOAD_TEST_PLAN}", errors)
+    else:
+        load_plan = json.loads(LOAD_TEST_PLAN.read_text(encoding="utf-8"))
+        expected_scenarios = {
+            "api_hub_gateway_catalog",
+            "identity_auth_mfa",
+            "finance_escrow_ledger",
+            "jobs_resume_access",
+            "retention_worker_batch",
+        }
+        if set(load_plan.get("scenarios", {})) != expected_scenarios:
+            fail("Plano de carga deve cobrir API Hub, Identity, Finance, Jobs e Retention.", errors)
+        policy = load_plan.get("execution_policy", {})
+        if policy.get("no_real_payment_capture") is not True or policy.get("no_sensitive_payload_capture") is not True:
+            fail("Plano de carga deve bloquear captura real de pagamento e payload sensivel.", errors)
+        for scenario_name, scenario in load_plan.get("scenarios", {}).items():
+            if not scenario.get("required_metrics") or "run_id" not in scenario.get("evidence", []):
+                fail(f"Cenario de carga incompleto: {scenario_name}.", errors)
+            if "payload" in " ".join(scenario.get("evidence", [])).casefold():
+                fail(f"Cenario de carga nao deve exigir evidencia com payload: {scenario_name}.", errors)
 
     if errors:
         print("\nFalhas de validacao encontradas:")

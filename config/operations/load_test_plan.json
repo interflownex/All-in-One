@@ -1,0 +1,96 @@
+{
+  "version": "2026-07-15",
+  "owner": "platform-performance",
+  "scope": "load_and_performance_testing",
+  "default_environment": "homologacao",
+  "execution_policy": {
+    "production_requires_approval": true,
+    "no_real_payment_capture": true,
+    "no_sensitive_payload_capture": true,
+    "use_synthetic_or_sanitized_data": true,
+    "stop_on_critical_error_rate": true
+  },
+  "global_thresholds": {
+    "http_error_rate_max_percent": 1.0,
+    "p95_latency_ms_max": 800,
+    "p99_latency_ms_max": 1500,
+    "cpu_sustained_max_percent": 80,
+    "memory_sustained_max_percent": 85,
+    "duration_minutes_min": 15
+  },
+  "scenarios": {
+    "api_hub_gateway_catalog": {
+      "priority": "critical",
+      "entrypoint": "api_hub",
+      "journey": "catalog_search_offer_read_payment_sandbox",
+      "target_rps": 80,
+      "duration_minutes": 20,
+      "covered_modules": ["api_hub", "marketplace", "services", "finance"],
+      "required_metrics": ["http_requests_total", "http_request_duration_seconds", "gateway_upstream_errors_total"],
+      "success_criteria": ["p95_latency_ms <= 800", "http_error_rate_percent <= 1.0", "no_raw_payment_payload_in_logs"],
+      "evidence": ["run_id", "commit_sha", "p95_latency_ms", "error_rate_percent", "dashboard_snapshot_hash", "incident_ticket_if_failed"]
+    },
+    "identity_auth_mfa": {
+      "priority": "critical",
+      "entrypoint": "identity",
+      "journey": "registration_login_mfa_refresh",
+      "target_rps": 50,
+      "duration_minutes": 20,
+      "covered_modules": ["identity", "permissions"],
+      "required_metrics": ["http_requests_total", "http_request_duration_seconds", "auth_failures_total"],
+      "success_criteria": ["p95_latency_ms <= 500", "http_error_rate_percent <= 1.0", "no_password_or_token_in_logs"],
+      "evidence": ["run_id", "commit_sha", "auth_success_rate", "p95_latency_ms", "audit_event_id", "incident_ticket_if_failed"]
+    },
+    "finance_escrow_ledger": {
+      "priority": "critical",
+      "entrypoint": "finance",
+      "journey": "wallet_create_pix_sandbox_escrow_release",
+      "target_rps": 40,
+      "duration_minutes": 20,
+      "covered_modules": ["finance", "marketplace", "services", "mobility"],
+      "required_metrics": ["http_requests_total", "finance_ledger_writes_total", "outbox_events_pending"],
+      "success_criteria": ["ledger_write_error_rate_percent <= 0.5", "idempotency_collisions == 0", "outbox_oldest_pending_seconds <= 1800"],
+      "evidence": ["run_id", "commit_sha", "ledger_write_error_rate", "idempotency_key_hash_sample", "outbox_pending_count", "incident_ticket_if_failed"]
+    },
+    "jobs_resume_access": {
+      "priority": "high",
+      "entrypoint": "jobs",
+      "journey": "job_search_apply_recruiter_resume_access",
+      "target_rps": 35,
+      "duration_minutes": 20,
+      "covered_modules": ["jobs", "business", "document"],
+      "required_metrics": ["http_requests_total", "http_request_duration_seconds", "resume_access_audit_total"],
+      "success_criteria": ["p95_latency_ms <= 800", "resume_access_audit_missing == 0", "no_ctps_storage_key_in_logs"],
+      "evidence": ["run_id", "commit_sha", "resume_access_log_id", "p95_latency_ms", "audit_event_id", "incident_ticket_if_failed"]
+    },
+    "retention_worker_batch": {
+      "priority": "high",
+      "entrypoint": "retention-worker",
+      "journey": "retention_review_dry_run_batch",
+      "target_rps": 0,
+      "duration_minutes": 15,
+      "covered_modules": ["compliance", "audit"],
+      "required_metrics": ["retention_candidates_pending", "retention_decisions_total", "retention_worker_duration_seconds"],
+      "success_criteria": ["dry_run_only == true", "oldest_candidate_age_seconds_decreases == true", "no_sensitive_payload_in_evidence"],
+      "evidence": ["run_id", "commit_sha", "candidate_selector_hash", "decision_count_delta", "worker_logs_hash", "incident_ticket_if_failed"]
+    }
+  },
+  "tooling": {
+    "recommended": ["k6", "locust", "pytest-benchmark"],
+    "local_contract_tests": ["tests/test_load_test_plan.py", "python3 scripts/validate_repository.py"],
+    "ci_gate": "contract_only_until_homologacao_endpoint_exists"
+  },
+  "promotion_gate": [
+    "todos_os_cenarios_critical_verdes_em_homologacao",
+    "evidencias_sem_payload_sensivel",
+    "dashboard_snapshot_anexado",
+    "incidentes_criticos_fechados_com_postmortem",
+    "aprovacao_humana_para_teste_em_producao"
+  ],
+  "global_invariants": [
+    "testes de carga nao podem capturar senha, token, documento bruto, prontuario ou payload de pagamento",
+    "cenarios financeiros usam PSP sandbox e idempotency keys sinteticas",
+    "falha de threshold gera incident_ticket e bloqueia promocao",
+    "execucao em producao exige aprovacao humana e janela operacional"
+  ]
+}

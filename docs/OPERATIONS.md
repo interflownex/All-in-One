@@ -252,6 +252,18 @@ Triagem padrao:
 - Encerrar apenas apos o SLI voltar para dentro do objetivo e as evidencias
   ficarem anexadas ao ticket.
 
+## Testes De Carga
+
+O contrato de testes de carga fica em
+`config/operations/load_test_plan.json`. Ele define cenarios criticos para API
+Hub, Identity, Finance, Jobs e Retention, com duracao minima, RPS alvo,
+metricas obrigatorias, criterios de sucesso, evidencias e gates de promocao.
+
+Execucoes devem usar dados sinteticos/sanitizados, PSP sandbox, idempotency keys
+sinteticas e nunca capturar senha, token, documento bruto, prontuario ou
+payload de pagamento. Execucao em producao exige aprovacao humana, janela
+operacional e bloqueio imediato quando o erro critico exceder o limite.
+
 ## Incidentes
 
 O catalogo operacional de resposta a incidentes fica em
