@@ -12,16 +12,27 @@ INVENTORY = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
 
 
 def load_json(path: Path) -> dict[str, Any]:
-    return cast(dict[str, Any], json.loads(path.read_text(encoding="utf-8")))
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    assert isinstance(payload, dict)
+    return cast(dict[str, Any], payload)
+
+
+def json_section(payload: dict[str, Any], key: str) -> dict[str, Any]:
+    section = payload[key]
+    assert isinstance(section, dict)
+    return cast(dict[str, Any], section)
 
 
 def test_apigee_api_hub_plan_uses_enabled_kms_key_from_inventory() -> None:
     plan = load_json(PLAN)
     inventory = load_json(INVENTORY)
+    encryption = json_section(plan, "encryption")
+    kms_key_resource = encryption["kms_key_resource"]
 
     assert validate_plan(plan, inventory) == []
-    assert plan["encryption"]["kms_key_resource"].endswith("/cryptoKeys/Software")
-    assert plan["encryption"]["secret_material_in_git"] is False
+    assert isinstance(kms_key_resource, str)
+    assert kms_key_resource.endswith("/cryptoKeys/Software")
+    assert encryption["secret_material_in_git"] is False
 
 
 def test_apigee_api_hub_commands_include_expected_service_identity_and_roles() -> None:
