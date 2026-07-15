@@ -1,5 +1,30 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Commercial Observability
+
+### Concluido neste ciclo
+
+- `GET /gateway/insights/commercial` passou a expor `commercial_attention` com
+  reviews pendentes, suportes abertos, eventos CRM/BI e `signal_count` para
+  triagem operacional.
+- O gateway agora retorna `notification_policy` explicita para operacao
+  comercial, com `include_sensitive_payload=false` e allowlist de payload
+  limitada a contadores, status, runbook e correlation_id.
+- `docs/OPERATIONS.md` ganhou o runbook `Observabilidade Comercial`, alinhando
+  a API ao procedimento de notificacoes sem payload sensivel.
+- O teste de suporte/metricas foi reconciliado com a moderacao de reviews:
+  media de rating so entra apos publicacao aprovada por MFA.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_marketplace_support_metrics.py tests/test_api_hub_catalog_gateway.py tests/test_valley_reviews.py`:
+  14 testes aprovados.
+
+### Pendencias rastreadas
+
+- Permanecem externas/produtivas: conectar notificacoes reais e dashboards de
+  observabilidade ao ambiente vivo.
+
 ## STATUS OPERACIONAL - 2026-07-15 Marketplace Review Moderation
 
 ### Concluido neste ciclo

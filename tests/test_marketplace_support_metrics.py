@@ -7,6 +7,14 @@ def headers(user_id: str) -> dict[str, str]:
     return {"X-Actor-User-Id": user_id, "X-Actor-Roles": "auditor"}
 
 
+def approver_headers(user_id: str) -> dict[str, str]:
+    return {
+        "X-Actor-User-Id": user_id,
+        "X-Actor-Roles": "administrator",
+        "X-MFA-Verified": "true",
+    }
+
+
 def test_marketplace_opens_support_case_from_paid_order_and_exports_metrics() -> None:
     marketplace = fresh_client_for("marketplace")
     user_id = str(uuid4())
@@ -67,4 +75,22 @@ def test_marketplace_opens_support_case_from_paid_order_and_exports_metrics() ->
     assert payload["orders_total"] == 1
     assert payload["support_cases_total"] == 1
     assert payload["reviews_total"] == 1
-    assert payload["average_rating"] == 5.0
+    assert payload["reviews_pending_moderation"] == 1
+    assert payload["reviews_published"] == 0
+    assert payload["average_rating"] is None
+
+    published = marketplace.post(
+        f"/resources/reviews/{review.json()['id']}/actions/publish",
+        headers=approver_headers(str(uuid4())),
+        json={
+            "reason": "review validada para metricas comerciais",
+            "payload": {"moderation_status": "published"},
+        },
+    )
+    assert published.status_code == 200
+
+    insights_after = marketplace.get("/valley/insights/commercial", headers=headers(user_id))
+    assert insights_after.status_code == 200
+    assert insights_after.json()["reviews_pending_moderation"] == 0
+    assert insights_after.json()["reviews_published"] == 1
+    assert insights_after.json()["average_rating"] == 5.0

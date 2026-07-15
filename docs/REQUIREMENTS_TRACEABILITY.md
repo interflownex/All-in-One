@@ -12,7 +12,7 @@ necessarios para producao.
 | Wallet, ledger, escrow e NFC | `finance.*` e `identity.led_cards` na migration 002 |
 | Riders, Marketplace, Stock, Delivery, Services e Mobility | Migration 003 e respectivos modulos |
 | Avaliacao pos-conclusao no Valley | Migration 021, `POST /gateway/consumer/orders/{order_id}/reviews`, `ReviewModal.tsx`, eventos `valley.review.created`/`valley.review.published`/`valley.review.rejected` e E2E comercial |
-| Suporte/disputa por pedido e metricas CRM/BI | Migration 022, `POST /gateway/consumer/orders/{order_id}/support`, `SupportModal.tsx`, `GET /gateway/insights/commercial`, evento `support.ticket.created` e E2E comercial |
+| Suporte/disputa por pedido e metricas CRM/BI | Migration 022, `POST /gateway/consumer/orders/{order_id}/support`, `SupportModal.tsx`, `GET /gateway/insights/commercial`, `commercial_attention`, politica `include_sensitive_payload=false`, evento `support.ticket.created` e E2E comercial |
 | ERP, WMS, TMS, CRM, BPM, GED, HR, Health, Vision, Legal e Property | Migration 004 e modulos |
 | Auditoria, eventos, anti-burla e API Hub | Migration 005, runtime comum e documentacao |
 | Curriculo, CTPS Digital PDF, vagas e acesso Business | Migrations 006/007, `modules/jobs/`, `modules/shared/private_documents.py`, `modules/shared/jobs_postgres_store.py`, `docs/JOBS_CTSP_DIGITAL.md` |

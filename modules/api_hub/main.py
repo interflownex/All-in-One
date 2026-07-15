@@ -775,6 +775,14 @@ async def commercial_insights() -> dict[str, Any]:
         raise HTTPException(status_code=502, detail="Resumo comercial indisponivel no Marketplace.")
     if not isinstance(crm, dict) or not isinstance(bi, dict):
         raise HTTPException(status_code=502, detail="Resumo comercial indisponivel nos modulos CRM/BI.")
+    pending_reviews = int(marketplace.get("reviews_pending_moderation") or 0)
+    open_support_cases = int(marketplace.get("support_cases_open") or 0)
+    commercial_signal_count = (
+        pending_reviews
+        + open_support_cases
+        + int(crm.get("outbox_events", 0) or 0)
+        + int(bi.get("outbox_events", 0) or 0)
+    )
     return {
         **marketplace,
         "crm_records": crm.get("records", 0),
@@ -783,6 +791,19 @@ async def commercial_insights() -> dict[str, Any]:
         "bi_records": bi.get("records", 0),
         "bi_audit_events": bi.get("audit_events", 0),
         "bi_outbox_events": bi.get("outbox_events", 0),
+        "commercial_attention": {
+            "pending_reviews": pending_reviews,
+            "open_support_cases": open_support_cases,
+            "crm_outbox_events": crm.get("outbox_events", 0),
+            "bi_outbox_events": bi.get("outbox_events", 0),
+            "signal_count": commercial_signal_count,
+            "runbook": "docs/OPERATIONS.md#observabilidade-comercial",
+        },
+        "notification_policy": {
+            "channels": ["commercial_ops"],
+            "include_sensitive_payload": False,
+            "allowed_payload": ["counts", "status", "runbook", "correlation_id"],
+        },
     }
 
 

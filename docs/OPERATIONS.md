@@ -241,6 +241,17 @@ SLOs de outbox e retencao reaproveitam alertas ja materializados em
 Finance e Jobs ficam definidos como contrato de observabilidade ate o cluster
 real expor as metricas finais e receber os PrometheusRules correspondentes.
 
+## Observabilidade Comercial
+
+`GET /gateway/insights/commercial` consolida Marketplace, CRM e BI para operacao
+comercial. O bloco `commercial_attention` deve ser usado para triagem de
+reviews pendentes, suportes abertos e eventos CRM/BI aguardando consumo.
+
+As notificacoes comerciais devem usar apenas contadores, status, runbook e
+correlation_id. Payload de pedido, review, suporte, lead ou dashboard nao deve
+ser enviado em alertas, e a politica exposta pela API deve manter
+`include_sensitive_payload=false`.
+
 Triagem padrao:
 
 - Confirmar se o alerta representa erro de usuario, dependencia externa,

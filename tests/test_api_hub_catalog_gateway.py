@@ -70,6 +70,7 @@ class FakeCatalogClient:
                     "orders_paid": 1,
                     "orders_completed": 1,
                     "reviews_total": 1,
+                    "reviews_pending_moderation": 1,
                     "average_rating": 5.0,
                     "support_cases_total": 1,
                     "support_cases_open": 1,
@@ -502,3 +503,7 @@ def test_gateway_returns_commercial_insights(monkeypatch) -> None:
     assert payload["support_cases_total"] == 1
     assert payload["crm_records"] == 3
     assert payload["bi_records"] == 2
+    assert payload["commercial_attention"]["pending_reviews"] == 1
+    assert payload["commercial_attention"]["open_support_cases"] == 1
+    assert payload["commercial_attention"]["signal_count"] == 4
+    assert payload["notification_policy"]["include_sensitive_payload"] is False

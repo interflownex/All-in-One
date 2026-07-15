@@ -19,8 +19,8 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.
 - Jornada comercial Valley com oferta, compra, pagamento sandbox, historico e
   avaliacao pós-conclusao auditavel no Marketplace.
-- Suporte/disputa por pedido, reviews com moderacao basica auditavel e resumo
-  comercial para CRM/BI em tempo de demo.
+- Suporte/disputa por pedido, reviews com moderacao basica auditavel e
+  observabilidade comercial segura para CRM/BI em tempo de demo.
 
 ## Proximos incrementos bloqueadores para beta
 
@@ -33,8 +33,9 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
 4. Integrar payment provider, fiscal brasileiro e conciliacao em sandbox.
 5. Sincronizar os projetos Stitch com credencial rotacionada, implementar as
    jornadas web/mobile dos seis apps e testes E2E.
-6. Expandir notificacoes e observabilidade comercial produtiva; a moderacao
-   basica de avaliacoes e suporte/disputa ja tem fluxo local auditavel.
+6. Conectar notificacoes e dashboards comerciais ao ambiente vivo; a moderacao
+   basica, suporte/disputa e observabilidade comercial local ja tem fluxo
+   auditavel.
 
 ## Bloqueadores para producao
 
