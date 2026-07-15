@@ -38,6 +38,42 @@
 - SDK Linux do Google Cloud validado; pendencia restante limitada ao ADC
   interativo antes de aplicar Apigee/API Hub.
 
+## STATUS OPERACIONAL - 2026-07-15 Apigee API Hub Apply Parcial
+
+### Concluido neste ciclo
+
+- Durante o apply parcial, o diagnostico Google Cloud passou por
+  `data_agent_ready=true`: SDK Linux
+  `/home/eretazan/google-cloud-sdk/bin/gcloud`, conta ativa
+  `nazareteandersoncarvalho@gmail.com` e ADC `ok`.
+- Instalado componente `gcloud beta` no SDK Linux para permitir
+  `gcloud beta services identity create` em modo nao interativo.
+- `scripts/configure_apigee_api_hub.py` passou a incluir `--condition=None` nos
+  bindings IAM de projeto, evitando falha em politicas IAM com conditions.
+- Apply remoto criou/verificou a service identity
+  `service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com`.
+- Verificado no IAM do projeto que a service identity possui
+  `roles/apihub.admin` e `roles/apihub.runtimeProjectServiceAgent`.
+- Checagem posterior de 2026-07-15 voltou a indicar `data_agent_ready=false`
+  por ADC `missing_or_unresponsive`; a conta CLI segue ativa e o projeto segue
+  configurado.
+
+### Pendencias rastreadas
+
+- O grant KMS `roles/cloudkms.cryptoKeyEncrypterDecrypter` na chave
+  `projects/all-in-one-498012/locations/southamerica-east1/keyRings/Github/cryptoKeys/Software`
+  segue bloqueado por `BILLING_DISABLED` no projeto `864981916504`.
+- Apos billing legitimo ser associado/reativado, reexecutar
+  `PATH="$HOME/google-cloud-sdk/bin:$PATH" python3
+  scripts/configure_apigee_api_hub.py --apply --timeout 120`.
+- Antes de novo apply remoto, renovar ADC em terminal interativo com
+  `~/google-cloud-sdk/bin/gcloud auth application-default login`.
+
+### Git
+
+- Incremento Apigee/API Hub apply parcial em validacao local antes da
+  sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-15 Ambientes de Integracao
 
 ### Concluido neste ciclo

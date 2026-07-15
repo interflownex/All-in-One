@@ -10,11 +10,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
-
 ROOT = Path(__file__).resolve().parents[1]
 PLAN_PATH = ROOT / "config" / "cloud" / "apigee_api_hub_plan.json"
 INVENTORY_PATH = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
-WINDOWS_GCLOUD = Path("/mnt/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud")
+WINDOWS_GCLOUD = Path(
+    "/mnt/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud"
+)
 DEFAULT_TIMEOUT = 20
 
 
@@ -37,8 +38,7 @@ def run_command(command: list[str], timeout: int) -> dict[str, Any]:
             command,
             cwd=ROOT,
             text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
             timeout=timeout,
             check=False,
         )
@@ -96,6 +96,7 @@ def expected_commands(plan: dict[str, Any]) -> list[list[str]]:
             project,
             f"--member={principal}",
             "--role=roles/apihub.admin",
+            "--condition=None",
         ],
         [
             "gcloud",
@@ -104,6 +105,7 @@ def expected_commands(plan: dict[str, Any]) -> list[list[str]]:
             project,
             f"--member={principal}",
             "--role=roles/apihub.runtimeProjectServiceAgent",
+            "--condition=None",
         ],
     ]
 
@@ -114,7 +116,11 @@ def validate_plan(plan: dict[str, Any], inventory: dict[str, Any]) -> list[str]:
     project_number = plan.get("host_project", {}).get("project_number")
     kms_key = plan.get("encryption", {}).get("kms_key_resource")
     allowed_keys = set(plan.get("encryption", {}).get("allowed_inventory_keys", []))
-    resources = inventory.get("authoritative_resources", [])
+    resources = [
+        item
+        for item in inventory.get("authoritative_resources", [])
+        if isinstance(item, dict)
+    ]
     inventory_keys = {
         item.get("display_name"): item
         for item in resources
@@ -130,8 +136,13 @@ def validate_plan(plan: dict[str, Any], inventory: dict[str, Any]) -> list[str]:
     elif kms_key not in inventory_keys:
         errors.append("Chave KMS selecionada nao existe no inventario autoritativo.")
     elif inventory_keys[kms_key].get("state") != "ENABLED":
-        errors.append("Chave KMS selecionada nao esta ENABLED no inventario autoritativo.")
-    if plan.get("service_identity", {}).get("email") != "service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com":
+        errors.append(
+            "Chave KMS selecionada nao esta ENABLED no inventario autoritativo."
+        )
+    expected_service_identity = (
+        "service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com"
+    )
+    if plan.get("service_identity", {}).get("email") != expected_service_identity:
         errors.append("Service identity do API Hub diverge do projeto host.")
     if plan.get("encryption", {}).get("secret_material_in_git") is not False:
         errors.append("Plano nao pode permitir material criptografico no Git.")
@@ -143,12 +154,34 @@ def print_json(payload: dict[str, Any]) -> None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Configura/valida Apigee API Hub com KMS e IAM.")
-    parser.add_argument("--check", action="store_true", help="Valida o plano sem chamar gcloud.")
-    parser.add_argument("--print-commands", action="store_true", help="Mostra comandos gcloud esperados.")
-    parser.add_argument("--print-status", action="store_true", help="Sonda gcloud com timeout curto.")
-    parser.add_argument("--apply", action="store_true", help="Executa os comandos IAM idempotentes.")
-    parser.add_argument("--timeout", type=int, default=int(os.environ.get("GCLOUD_TIMEOUT_SECONDS", DEFAULT_TIMEOUT)))
+    parser = argparse.ArgumentParser(
+        description="Configura/valida Apigee API Hub com KMS e IAM."
+    )
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Valida o plano sem chamar gcloud.",
+    )
+    parser.add_argument(
+        "--print-commands",
+        action="store_true",
+        help="Mostra comandos gcloud esperados.",
+    )
+    parser.add_argument(
+        "--print-status",
+        action="store_true",
+        help="Sonda gcloud com timeout curto.",
+    )
+    parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Executa os comandos IAM idempotentes.",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=int(os.environ.get("GCLOUD_TIMEOUT_SECONDS", DEFAULT_TIMEOUT)),
+    )
     args = parser.parse_args()
 
     plan = load_json(PLAN_PATH)
@@ -162,25 +195,52 @@ def main() -> int:
     if args.print_commands:
         print_json({"ok": True, "commands": commands})
     if args.check:
-        print_json({"ok": True, "plan": str(PLAN_PATH), "kms_key": plan["encryption"]["kms_key_resource"]})
+        print_json(
+            {
+                "ok": True,
+                "plan": str(PLAN_PATH),
+                "kms_key": plan["encryption"]["kms_key_resource"],
+            }
+        )
     if args.print_status or args.apply:
         gcloud = find_gcloud()
         if not gcloud:
             print_json({"ok": False, "gcloud_found": False})
             return 1 if args.apply else 0
         probes = {
-            "active_account": run_command([gcloud, "auth", "list", "--filter=status:ACTIVE", "--format=value(account)"], args.timeout),
-            "project": run_command([gcloud, "config", "get-value", "project"], args.timeout),
+            "active_account": run_command(
+                [
+                    gcloud,
+                    "auth",
+                    "list",
+                    "--filter=status:ACTIVE",
+                    "--format=value(account)",
+                ],
+                args.timeout,
+            ),
+            "project": run_command(
+                [gcloud, "config", "get-value", "project"],
+                args.timeout,
+            ),
         }
         if args.print_status:
-            print_json({"ok": True, "gcloud": gcloud, "timeout_seconds": args.timeout, "probes": probes})
+            print_json(
+                {
+                    "ok": True,
+                    "gcloud": gcloud,
+                    "timeout_seconds": args.timeout,
+                    "probes": probes,
+                }
+            )
         if args.apply:
-            results = []
+            results: list[dict[str, Any]] = []
             for command in commands:
                 executable_command = [gcloud, *command[1:]]
-                results.append({"command": command, "result": run_command(executable_command, args.timeout)})
-            print_json({"ok": all(item["result"]["ok"] for item in results), "results": results})
-            return 0 if all(item["result"]["ok"] for item in results) else 1
+                result = run_command(executable_command, args.timeout)
+                results.append({"command": command, "result": result})
+            all_ok = all(bool(item["result"]["ok"]) for item in results)
+            print_json({"ok": all_ok, "results": results})
+            return 0 if all_ok else 1
     if not any([args.check, args.print_commands, args.print_status, args.apply]):
         parser.print_help()
     return 0

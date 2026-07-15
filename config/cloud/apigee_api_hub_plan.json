@@ -3,7 +3,7 @@
   "language": "pt-BR",
   "provider": "google_cloud",
   "product": "apigee_api_hub",
-  "status": "kms_selected_apply_scripted_remote_pending",
+  "status": "service_identity_and_project_iam_applied_kms_binding_billing_blocked",
   "authority_mode": "remote_state_is_authoritative",
   "source": {
     "requested_flow": "APIs > Location > Register host project > Encryption > Service identity",
@@ -36,7 +36,9 @@
   "service_identity": {
     "email": "service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com",
     "service": "apihub.googleapis.com",
-    "create_if_missing_command": "gcloud beta services identity create --service=apihub.googleapis.com --project=all-in-one-498012"
+    "create_if_missing_command": "gcloud beta services identity create --service=apihub.googleapis.com --project=all-in-one-498012",
+    "verified_unique_id": "109410521037734765648",
+    "verified_at": "2026-07-15"
   },
   "iam_grants": [
     {
@@ -74,5 +76,17 @@
     "allow_billing_change": false,
     "allow_policy_bypass": false,
     "do_not_store_credentials": true
+  },
+  "last_apply": {
+    "attempted_at": "2026-07-15",
+    "gcloud_path": "/home/eretazan/google-cloud-sdk/bin/gcloud",
+    "data_agent_ready": true,
+    "service_identity_created_or_verified": true,
+    "project_iam_roles_verified": [
+      "roles/apihub.admin",
+      "roles/apihub.runtimeProjectServiceAgent"
+    ],
+    "kms_binding_blocked_reason": "BILLING_DISABLED for project 864981916504",
+    "remaining_command": "gcloud kms keys add-iam-policy-binding Software --keyring=Github --location=southamerica-east1 --project=all-in-one-498012 --member=serviceAccount:service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com --role=roles/cloudkms.cryptoKeyEncrypterDecrypter"
   }
 }

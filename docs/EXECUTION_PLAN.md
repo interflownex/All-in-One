@@ -447,6 +447,14 @@ Entregas ja existentes:
   service identity `service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com`,
   location `southamerica-west1`, CMEK obrigatorio antes de apply e grants IAM
   esperados para KMS/API Hub.
+- Em 2026-07-15, com ADC responsivo, o apply remoto criou/verificou a service
+  identity do API Hub e aplicou no projeto os roles `roles/apihub.admin` e
+  `roles/apihub.runtimeProjectServiceAgent`. O grant KMS
+  `roles/cloudkms.cryptoKeyEncrypterDecrypter` na chave `Software` ficou
+  bloqueado por `BILLING_DISABLED` no projeto `864981916504`.
+- Checagem posterior no mesmo ciclo voltou a indicar ADC
+  `missing_or_unresponsive`; antes de novo apply remoto, renovar ADC em fluxo
+  interativo legitimo.
 - A chave KMS `projects/all-in-one-498012/locations/southamerica-east1/keyRings/Github/cryptoKeys/Software`
   foi selecionada no plano Apigee/API Hub por estar `ENABLED` no inventario
   autoritativo, e `scripts/configure_apigee_api_hub.py` materializa a verificacao
@@ -463,19 +471,17 @@ Entregas ja existentes:
   unica pendencia do Data Agent Kit ainda e ADC `missing_or_unresponsive`.
 
 Proximos passos naturais:
-1. Executar `~/google-cloud-sdk/bin/gcloud auth application-default login` em
-   terminal interativo com navegador/fluxo OAuth legitimo.
-2. Executar `~/google-cloud-sdk/bin/gcloud auth login` somente se a conta ativa
-   deixar de aparecer no diagnostico.
-3. Rodar `GCLOUD_TIMEOUT_SECONDS=20 python3 scripts/google_cloud_control.py auth
-   --project all-in-one-498012` ate `data_agent_ready=true`.
-4. Executar `python3 scripts/configure_apigee_api_hub.py --apply` com `gcloud`
-   autenticado e responsivo para aplicar a service identity e os grants IAM do
-   plano Apigee/API Hub.
-5. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
+1. Reativar/associar billing do projeto `all-in-one-498012` sem contornar
+   politica de provedor.
+2. Renovar ADC com `~/google-cloud-sdk/bin/gcloud auth application-default
+   login` em terminal interativo.
+3. Reexecutar `PATH="$HOME/google-cloud-sdk/bin:$PATH" python3
+   scripts/configure_apigee_api_hub.py --apply --timeout 120` para aplicar o
+   grant KMS restante.
+4. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
    host.
-6. Implementar adapters por provider real com testes de contrato.
-7. Registrar evidencias de homologacao.
+5. Implementar adapters por provider real com testes de contrato.
+6. Registrar evidencias de homologacao.
 
 ### Fase 6 - Seguranca, compliance e producao
 
