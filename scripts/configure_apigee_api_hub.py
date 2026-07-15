@@ -16,6 +16,7 @@ INVENTORY_PATH = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
 WINDOWS_GCLOUD = Path(
     "/mnt/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud"
 )
+LINUX_GCLOUD = Path.home() / "google-cloud-sdk" / "bin" / "gcloud"
 DEFAULT_TIMEOUT = 20
 
 
@@ -24,11 +25,18 @@ def load_json(path: Path) -> dict[str, Any]:
 
 
 def find_gcloud() -> str | None:
+    override = os.getenv("GCLOUD_BIN", "").strip()
+    if override:
+        return override
+    if LINUX_GCLOUD.exists():
+        return str(LINUX_GCLOUD)
     from_path = shutil.which("gcloud")
-    if from_path:
+    if from_path and not from_path.startswith("/mnt/c/"):
         return from_path
     if WINDOWS_GCLOUD.exists():
         return str(WINDOWS_GCLOUD)
+    if from_path:
+        return from_path
     return None
 
 
@@ -173,6 +181,11 @@ def main() -> int:
         help="Sonda gcloud com timeout curto.",
     )
     parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Alias de --print-status para diagnostico rapido.",
+    )
+    parser.add_argument(
         "--apply",
         action="store_true",
         help="Executa os comandos IAM idempotentes.",
@@ -202,6 +215,9 @@ def main() -> int:
                 "kms_key": plan["encryption"]["kms_key_resource"],
             }
         )
+    if args.status:
+        args.print_status = True
+
     if args.print_status or args.apply:
         gcloud = find_gcloud()
         if not gcloud:
@@ -218,18 +234,44 @@ def main() -> int:
                 ],
                 args.timeout,
             ),
+            "application_default_credentials": run_command(
+                [
+                    gcloud,
+                    "auth",
+                    "application-default",
+                    "print-access-token",
+                ],
+                args.timeout,
+            ),
             "project": run_command(
                 [gcloud, "config", "get-value", "project"],
                 args.timeout,
             ),
         }
+        adc_probe = probes["application_default_credentials"]
+        if adc_probe["ok"] and adc_probe["stdout"]:
+            adc_probe = {**adc_probe, "stdout": "<redacted>"}
+            probes["application_default_credentials"] = adc_probe
         if args.print_status:
             print_json(
                 {
                     "ok": True,
                     "gcloud": gcloud,
                     "timeout_seconds": args.timeout,
+                    "data_agent_ready": bool(
+                        probes["active_account"]["ok"]
+                        and adc_probe["ok"]
+                        and adc_probe["stdout"]
+                    ),
+                    "application_default_credentials": "ok"
+                    if adc_probe["ok"] and adc_probe["stdout"]
+                    else "missing_or_unresponsive",
                     "probes": probes,
+                    "required_commands": [
+                        "gcloud auth login",
+                        "gcloud auth application-default login",
+                        "gcloud config set project all-in-one-498012",
+                    ],
                 }
             )
         if args.apply:

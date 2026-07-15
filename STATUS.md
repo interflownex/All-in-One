@@ -1,5 +1,40 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Apigee API Hub Diagnostico Seguro
+
+### Concluido neste ciclo
+
+- `scripts/configure_apigee_api_hub.py` passou a aceitar `--status` como alias
+  de diagnostico rapido para `--print-status`.
+- A descoberta do `gcloud` agora respeita `GCLOUD_BIN`, prefere o SDK Linux em
+  `~/google-cloud-sdk/bin/gcloud` e evita usar o SDK Windows montado em `/mnt/c`
+  quando ha alternativa Linux responsiva.
+- O status do Apigee/API Hub agora sonda Application Default Credentials sem
+  imprimir token: quando `print-access-token` responde, o `stdout` e redigido
+  como `<redacted>`.
+- Teste de regressao cobre o alias `--status`, `data_agent_ready=true` simulado
+  e a garantia de nao vazar token ADC bruto.
+
+### Evidencias
+
+- `PATH="$HOME/google-cloud-sdk/bin:$PATH" python3 scripts/configure_apigee_api_hub.py --status --timeout 20`:
+  `gcloud=/home/eretazan/google-cloud-sdk/bin/gcloud`, conta ativa
+  `nazareteandersoncarvalho@gmail.com`, token ADC redigido e projeto gcloud
+  ainda `(unset)`.
+- `GCLOUD_TIMEOUT_SECONDS=20 ./.venv/bin/python scripts/google_cloud_control.py auth --project all-in-one-498012`:
+  CLI responsivo e conta ativa, mas ADC voltou a `missing_or_unresponsive`,
+  indicando intermitencia que ainda exige renovacao interativa antes de apply.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_apigee_api_hub_plan.py tests/test_google_cloud_control.py`:
+  6 testes aprovados.
+
+### Pendencias rastreadas
+
+- Renovar ADC em terminal interativo legitimo antes de novo apply remoto.
+- Definir o projeto no SDK Linux com `gcloud config set project
+  all-in-one-498012` se o status continuar retornando `(unset)`.
+- O grant KMS do API Hub segue dependente de billing ativo no projeto, sem
+  contorno de politica do provedor.
+
 ## STATUS OPERACIONAL - 2026-07-15 CRM Lead Opportunity
 
 ### Concluido neste ciclo

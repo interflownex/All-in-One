@@ -468,6 +468,9 @@ Entregas ja existentes:
   foi selecionada no plano Apigee/API Hub por estar `ENABLED` no inventario
   autoritativo, e `scripts/configure_apigee_api_hub.py` materializa a verificacao
   e o apply idempotente da service identity/IAM com timeout anti-travamento.
+- Em 2026-07-15, `scripts/configure_apigee_api_hub.py` foi endurecido para
+  aceitar `--status` como alias de diagnostico, preferir `GCLOUD_BIN`/SDK Linux
+  antes do SDK Windows montado e redigir o token de ADC no status.
 - `scripts/google_cloud_control.py` tambem respeita `GCLOUD_TIMEOUT_SECONDS` e
   nao bloqueia mais a rodada quando `gcloud auth list` nao responde.
 - `scripts/google_cloud_control.py auth` valida o pre-requisito do Google Cloud
@@ -475,15 +478,18 @@ Entregas ja existentes:
   sem imprimir tokens e com suporte a `GCLOUD_BIN` para evitar SDK Windows
   montado no WSL quando ele nao responder.
 - SDK Linux do Google Cloud instalado em `~/google-cloud-sdk/bin/gcloud`
-  (`Google Cloud SDK 576.0.0`) e validado no WSL. O diagnostico atual retorna
-  `cli_responsive=true` e conta ativa `nazareteandersoncarvalho@gmail.com`; a
-  unica pendencia do Data Agent Kit ainda e ADC `missing_or_unresponsive`.
+  (`Google Cloud SDK 576.0.0`) e validado no WSL. O diagnostico atual segue
+  com `cli_responsive=true` e conta ativa `nazareteandersoncarvalho@gmail.com`;
+  o ADC esta intermitente entre token redigido obtido por `configure_apigee_api_hub.py --status`
+  e `missing_or_unresponsive` no gate `google_cloud_control.py auth`, portanto
+  ainda deve ser renovado antes de apply remoto.
 
 Proximos passos naturais:
 1. Reativar/associar billing do projeto `all-in-one-498012` sem contornar
    politica de provedor.
 2. Renovar ADC com `~/google-cloud-sdk/bin/gcloud auth application-default
-   login` em terminal interativo.
+   login` em terminal interativo e definir o projeto com `gcloud config set
+   project all-in-one-498012` se `--status` mostrar `(unset)`.
 3. Reexecutar `PATH="$HOME/google-cloud-sdk/bin:$PATH" python3
    scripts/configure_apigee_api_hub.py --apply --timeout 120` para aplicar o
    grant KMS restante.

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
+from scripts import configure_apigee_api_hub
 from scripts.configure_apigee_api_hub import expected_commands, validate_plan
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,3 +63,42 @@ def test_apigee_api_hub_commands_include_expected_service_identity_and_roles() -
     ]
     assert project_bindings
     assert all("--condition=None" in command for command in project_bindings)
+
+
+def test_apigee_api_hub_status_alias_redacts_adc_token(monkeypatch, capsys) -> None:
+    def fake_run_command(command: list[str], timeout: int) -> dict[str, Any]:
+        assert timeout == 1
+        joined = " ".join(command)
+        if "application-default print-access-token" in joined:
+            stdout = "ya29.secret-token"
+        elif "auth list" in joined:
+            stdout = "operator@example.com"
+        elif "config get-value project" in joined:
+            stdout = "all-in-one-498012"
+        else:
+            stdout = ""
+        return {
+            "ok": True,
+            "timed_out": False,
+            "returncode": 0,
+            "stdout": stdout,
+            "stderr": "",
+        }
+
+    monkeypatch.setattr(
+        configure_apigee_api_hub, "find_gcloud", lambda: "/usr/bin/gcloud"
+    )
+    monkeypatch.setattr(configure_apigee_api_hub, "run_command", fake_run_command)
+    monkeypatch.setattr(
+        "sys.argv",
+        ["configure_apigee_api_hub.py", "--status", "--timeout", "1"],
+    )
+
+    assert configure_apigee_api_hub.main() == 0
+    output = capsys.readouterr().out
+    status = json.loads(output)
+
+    assert status["data_agent_ready"] is True
+    assert status["application_default_credentials"] == "ok"
+    assert status["probes"]["application_default_credentials"]["stdout"] == "<redacted>"
+    assert "ya29.secret-token" not in output
