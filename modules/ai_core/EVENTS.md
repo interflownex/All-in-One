@@ -6,6 +6,9 @@
 - `ai.memory.indexed`
 - `ai.memory.updated`
 - `ai.moderation.created`
+- `ai.moderation.submitted`
+- `ai.moderation.approved`
+- `ai.moderation.rejected`
 - `ai.moderation.completed`
 - `ai.model_run.requested`
 - `ai.model_run.completed`

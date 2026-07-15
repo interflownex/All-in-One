@@ -1,5 +1,30 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 AI Core Moderation Event Catalog
+
+### Concluido neste ciclo
+
+- O catalogo AI Core passou a declarar `ai.moderation.submitted`,
+  `ai.moderation.approved` e `ai.moderation.rejected`, eventos emitidos pelo
+  runtime de decisoes de moderacao.
+- `modules/ai_core/CONTRACT.md`, `modules/ai_core/EVENTS.md` e
+  `contracts/ai_core.md` foram regenerados pelo scaffold com a superficie de
+  eventos de moderacao completa.
+- `tests/test_ai_core_event_catalog.py` bloqueia drift entre eventos AI Core
+  emitidos em criacao/transicoes e `config/module_catalog.json`.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_ai_core_event_catalog.py tests/test_ai_core_domain.py`:
+  aprovado.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar providers IA reais, governanca de modelos e
+  custos produtivos controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 Business Runtime Event Catalog
 
 ### Concluido neste ciclo

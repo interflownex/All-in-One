@@ -557,7 +557,7 @@ Proximos passos naturais:
 | `legal` | 67% | Casos/prazos/audiencias modelados, `LegalPostgresStore` tipado, casos com tipo/abertura/risco e fluxo prazo -> alerta MFA -> conclusao coberto por pytest | Integracoes tribunal/calendario homologadas | Homologar integracoes tribunal/calendario e ampliar evidencias com prazos reais controlados |
 | `property` | 67% | Imoveis/unidades/locacoes modelados, `PropertyPostgresStore` tipado, locacao ativada com MFA e manutencao solicitada/agendada/concluida cobertas por pytest | Condominio e manutencao reais homologados | Homologar operacao condominial/manutencao real e ampliar evidencias com prestadores controlados |
 | `bi` | 68% | Datasets/dashboards modelados, `BiPostgresStore` tipado, dataset com origem/refresh, publicacao MFA, dashboard com `allowed_roles` e exportacao auditavel cobertos por pytest | ETL, permissao analitica e datasets reais homologados | Homologar fontes ETL/permissoes analiticas reais e ampliar evidencias com datasets produtivos controlados |
-| `ai_core` | 68% | Memoria/moderacao/model runs modelados, `AiCorePostgresStore` tipado, memorias indexaveis e execucao com adapter/provider/modelo/tokens/custo aprovado por MFA cobertos por pytest | Providers IA e governanca produtiva homologados | Homologar providers IA reais, governanca de modelos e custos produtivos controlados |
+| `ai_core` | 69% | Memoria/moderacao/model runs modelados, `AiCorePostgresStore` tipado, memorias indexaveis, moderacao com catalogo de eventos alinhado e execucao com adapter/provider/modelo/tokens/custo aprovado por MFA cobertos por pytest | Providers IA e governanca produtiva homologados | Homologar providers IA reais, governanca de modelos e custos produtivos controlados |
 
 ## 4. Criterios de beta
 
