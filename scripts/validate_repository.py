@@ -31,6 +31,7 @@ BACKUP_RESTORE_PLAN = ROOT / "config" / "operations" / "backup_restore_plan.json
 INCIDENT_RESPONSE_RUNBOOKS = ROOT / "config" / "operations" / "incident_response_runbooks.json"
 LOAD_TEST_PLAN = ROOT / "config" / "operations" / "load_test_plan.json"
 SENSITIVE_PERMISSIONS_REVIEW = ROOT / "config" / "security" / "sensitive_permissions_review.json"
+PERMISSIONS_ENFORCEMENT_MATRIX = ROOT / "config" / "security" / "permissions_enforcement_matrix.json"
 PROVIDER_MATRIX = ROOT / "config" / "integrations" / "provider_matrix.json"
 ENV_EXAMPLE = ROOT / ".env.example"
 VSCODE_SETTINGS = ROOT / ".vscode" / "settings.json"
@@ -630,6 +631,26 @@ def main() -> int:
                 fail(f"Revisao de permissoes sensiveis incompleta para {module_name}.", errors)
             if "audit_event_id" not in module_review.get("required_evidence", []):
                 fail(f"Revisao de permissoes sensiveis deve exigir audit_event_id para {module_name}.", errors)
+    if not PERMISSIONS_ENFORCEMENT_MATRIX.is_file():
+        fail(f"Matriz RBAC/ABAC de permissions ausente: {PERMISSIONS_ENFORCEMENT_MATRIX}", errors)
+    else:
+        permissions_matrix = json.loads(PERMISSIONS_ENFORCEMENT_MATRIX.read_text(encoding="utf-8"))
+        if permissions_matrix.get("module") != "permissions":
+            fail("Matriz RBAC/ABAC deve declarar o modulo permissions.", errors)
+        if permissions_matrix.get("deny_by_default") is not True:
+            fail("Matriz RBAC/ABAC de permissions deve exigir deny_by_default.", errors)
+        if set(permissions_matrix.get("resources", {})) != {
+            "roles",
+            "permissions",
+            "user_roles",
+            "access_policies",
+            "approval_limits",
+        }:
+            fail("Matriz RBAC/ABAC de permissions deve cobrir todos os recursos.", errors)
+        if "common_user_cannot_create_role" not in permissions_matrix.get("negative_tests", []):
+            fail("Matriz RBAC/ABAC de permissions deve registrar teste negativo de escrita.", errors)
+        if "administrator_with_mfa_can_create_approval_limit" not in permissions_matrix.get("positive_tests", []):
+            fail("Matriz RBAC/ABAC de permissions deve registrar teste positivo com MFA.", errors)
     if not INCIDENT_RESPONSE_RUNBOOKS.is_file():
         fail(f"Catalogo de runbooks de incidente ausente: {INCIDENT_RESPONSE_RUNBOOKS}", errors)
     else:

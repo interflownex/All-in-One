@@ -62,6 +62,7 @@ CUSTOMIZED_ARTIFACTS = {
     "modules/api_hub/OPENAPI.yaml",
     "modules/marketplace/OPENAPI.yaml",
     # Apps com shells vivos possuem estado operacional proprio alem do scaffold.
+    "modules/permissions/tests/test_create_flow.py",
     "apps/all-in-one-business/README.md",
     "apps/all-in-one-business/STATUS.md",
     "apps/all-in-one-health/README.md",

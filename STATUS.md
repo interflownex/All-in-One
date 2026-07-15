@@ -1,5 +1,36 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Permissions RBAC/ABAC Runtime
+
+### Concluido neste ciclo
+
+- Criada `config/security/permissions_enforcement_matrix.json` com matriz
+  RBAC/ABAC versionada para o modulo `permissions`, incluindo leitura,
+  escrita, recursos que exigem MFA e testes positivos/negativos obrigatorios.
+- `modules/shared/runtime.py` passou a aplicar enforcement especifico para
+  `permissions`: leitura exige papeis sensiveis, escrita exige
+  `owner`/`administrator`/`compliance_officer`, e `approval_limits` exige MFA.
+- `tests/test_permissions_enforcement_matrix.py` cobre usuario comum negado,
+  auditor somente-leitura, administrador escritor e `approval_limits` com MFA.
+- `modules/permissions/tests/test_create_flow.py` foi promovido para fluxo
+  customizado com papel administrativo e MFA, preservado pelo scaffold.
+- `scripts/validate_repository.py` agora exige a matriz RBAC/ABAC de
+  `permissions`.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_permissions_enforcement_matrix.py
+  modules/permissions/tests/test_create_flow.py
+  modules/permissions/tests/test_permissions.py`: 6 testes aprovados.
+- `python3 scripts/check_generated_artifacts.py`: aprovado, preservando
+  `modules/permissions/tests/test_create_flow.py` como artefato customizado.
+
+### Pendencias rastreadas
+
+- Expandir o uso da matriz de `permissions` para endpoints de dominio que ainda
+  dependem apenas do runtime generico e de regras locais por modulo.
+
 ## STATUS OPERACIONAL - 2026-07-15 Git Sync Linux Upstream
 
 ### Concluido neste ciclo

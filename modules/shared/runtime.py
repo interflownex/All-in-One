@@ -76,6 +76,7 @@ from .domain_rules import (
     MODULE_ENTITIES,
     PRIMARY_RESOURCE,
     ResourceRule,
+    SENSITIVE_ROLES,
     can_read_sensitive,
     check_payload,
     event_for_create,
@@ -232,6 +233,8 @@ TRANSACTIONAL_RESOURCES = {
 
 _ERP_FALLBACK_STORE: Any | None = None
 _TYPED_POSTGRES_MODULES = frozenset(MODULE_ENTITIES)
+PERMISSIONS_WRITE_ROLES = frozenset({"owner", "administrator", "compliance_officer"})
+PERMISSIONS_MFA_RESOURCES = frozenset({"approval_limits"})
 
 
 
@@ -280,6 +283,23 @@ def get_erp_store() -> Any:
 def _authorize_owner_or_operator(actor: Actor, user_id: UUID, action: str) -> None:
     if actor.user_id != user_id and not actor.roles.intersection(APPROVER_ROLES):
         raise HTTPException(status_code=403, detail=f"Ator nao autorizado para {action} em recurso de outro usuario.")
+
+
+def _authorize_permissions_operation(
+    module_name: str,
+    actor: Actor,
+    action: str,
+    resource_type: str | None = None,
+) -> None:
+    if module_name != "permissions":
+        return
+    read_actions = {"read", "list", "audit", "outbox"}
+    if action in read_actions:
+        demand_role(actor, SENSITIVE_ROLES, f"permissions:{action}")
+        return
+    demand_role(actor, PERMISSIONS_WRITE_ROLES, f"permissions:{action}")
+    if resource_type in PERMISSIONS_MFA_RESOURCES:
+        demand_mfa(actor, f"permissions:{resource_type}:{action}")
 
 
 def _expose(item: dict[str, Any], actor: Actor, rule: ResourceRule, module_name: str) -> dict[str, Any]:
@@ -331,6 +351,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     ) -> dict[str, Any]:
         bind_correlation_id(correlation_id)
         rule = rule_for(module_name, resource_type)
+        _authorize_permissions_operation(module_name, actor, "create", resource_type)
         _authorize_owner_or_operator(actor, body.user_id, "create")
         payload = dict(body.payload)
         if module_name == "jobs" and resource_type in {"resumes", "employment_records", "applications"} and actor.user_id != body.user_id:
@@ -470,6 +491,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         actor: Actor = Depends(actor_from_headers),
     ) -> list[dict[str, Any]]:
         rule = rule_for(module_name, resource_type)
+        _authorize_permissions_operation(module_name, actor, "list", resource_type)
         if user_id and actor.user_id != user_id and not actor.roles.intersection(APPROVER_ROLES):
             raise HTTPException(status_code=403, detail="Consulta de outro usuario nao autorizada.")
         rows = store.list(resource_type, str(user_id) if user_id else str(actor.user_id))
@@ -482,6 +504,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         actor: Actor = Depends(actor_from_headers),
     ) -> dict[str, Any]:
         rule = rule_for(module_name, resource_type)
+        _authorize_permissions_operation(module_name, actor, "read", resource_type)
         return _expose(fetch(resource_type, resource_id), actor, rule, module_name)
 
     @app.patch("/resources/{resource_type}/{resource_id}")
@@ -494,6 +517,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     ) -> dict[str, Any]:
         bind_correlation_id(x_correlation_id)
         rule = rule_for(module_name, resource_type)
+        _authorize_permissions_operation(module_name, actor, "update", resource_type)
         if rule.immutable:
             raise HTTPException(status_code=409, detail="Recurso append-only nao aceita atualizacao.")
         item = fetch(resource_type, resource_id)
@@ -513,6 +537,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     ) -> Response:
         bind_correlation_id(x_correlation_id)
         rule = rule_for(module_name, resource_type)
+        _authorize_permissions_operation(module_name, actor, "delete", resource_type)
         if rule.immutable or rule.sensitive:
             raise HTTPException(status_code=409, detail="Recurso protegido exige retencao e nao pode ser excluido.")
         item = fetch(resource_type, resource_id)
@@ -531,6 +556,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     ) -> dict[str, Any]:
         bind_correlation_id(x_correlation_id)
         rule = rule_for(module_name, resource_type)
+        _authorize_permissions_operation(module_name, actor, action, resource_type)
         transition = rule.transitions.get(action)
         if transition is None:
             raise HTTPException(status_code=422, detail=f"Acao nao suportada: {action}.")
@@ -558,11 +584,13 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
 
     @app.get("/audit/events")
     def audit_events(actor: Actor = Depends(actor_from_headers)) -> list[dict[str, Any]]:
+        _authorize_permissions_operation(module_name, actor, "audit")
         demand_role(actor, APPROVER_ROLES, "audit")
         return store.audit_log()
 
     @app.get("/events/outbox")
     def outbox(actor: Actor = Depends(actor_from_headers)) -> list[dict[str, Any]]:
+        _authorize_permissions_operation(module_name, actor, "outbox")
         demand_role(actor, APPROVER_ROLES, "outbox")
         return store.outbox()
 
@@ -970,6 +998,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
     ) -> dict[str, Any]:
         bind_correlation_id(x_correlation_id)
+        _authorize_permissions_operation(module_name, actor, "create", "records")
         _authorize_owner_or_operator(actor, body.user_id, "create")
         return store.create(
             "records",
@@ -985,6 +1014,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
 
     @app.get("/list", deprecated=True)
     def list_records(user_id: UUID | None = None, actor: Actor = Depends(actor_from_headers)) -> list[dict[str, Any]]:
+        _authorize_permissions_operation(module_name, actor, "list", "records")
         _authorize_owner_or_operator(actor, user_id or actor.user_id, "list")
         return store.list("records", str(user_id) if user_id else str(actor.user_id))
 
@@ -995,6 +1025,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
     ) -> dict[str, Any]:
         bind_correlation_id(x_correlation_id)
+        _authorize_permissions_operation(module_name, actor, "approve", "records")
         item = fetch("records", body.id)
         _authorize_owner_or_operator(actor, UUID(item["user_id"]), "approve")
         return store.update(item, item["payload"], "approved", str(actor.user_id), "approve")
@@ -1006,6 +1037,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
     ) -> dict[str, Any]:
         bind_correlation_id(x_correlation_id)
+        _authorize_permissions_operation(module_name, actor, "reject", "records")
         item = fetch("records", body.id)
         _authorize_owner_or_operator(actor, UUID(item["user_id"]), "reject")
         return store.update(item, item["payload"], "rejected", str(actor.user_id), "reject")
@@ -1022,6 +1054,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
 
     @app.get("/{resource_id}", deprecated=True)
     def get_record(resource_id: UUID, actor: Actor = Depends(actor_from_headers)) -> dict[str, Any]:
+        _authorize_permissions_operation(module_name, actor, "read", "records")
         item = fetch("records", resource_id)
         _authorize_owner_or_operator(actor, UUID(item["user_id"]), "read")
         return item
@@ -1034,6 +1067,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
     ) -> dict[str, Any]:
         bind_correlation_id(x_correlation_id)
+        _authorize_permissions_operation(module_name, actor, "update", "records")
         item = fetch("records", resource_id)
         _authorize_owner_or_operator(actor, UUID(item["user_id"]), "update")
         return store.update(
@@ -1051,6 +1085,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
     ) -> Response:
         bind_correlation_id(x_correlation_id)
+        _authorize_permissions_operation(module_name, actor, "delete", "records")
         item = fetch("records", resource_id)
         _authorize_owner_or_operator(actor, UUID(item["user_id"]), "delete")
         store.soft_delete(item, str(actor.user_id))

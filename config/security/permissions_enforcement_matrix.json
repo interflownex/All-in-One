@@ -1,0 +1,60 @@
+{
+  "version": "2026-07-15",
+  "scope": "permissions_rbac_abac_runtime_enforcement",
+  "module": "permissions",
+  "deny_by_default": true,
+  "read_roles": [
+    "owner",
+    "administrator",
+    "compliance_officer",
+    "data_protection_officer",
+    "auditor"
+  ],
+  "write_roles": [
+    "owner",
+    "administrator",
+    "compliance_officer"
+  ],
+  "mfa_required_for_resources": [
+    "approval_limits"
+  ],
+  "resources": {
+    "roles": {
+      "read": "read_roles",
+      "write": "write_roles",
+      "mfa_required_for_write": false
+    },
+    "permissions": {
+      "read": "read_roles",
+      "write": "write_roles",
+      "mfa_required_for_write": false
+    },
+    "user_roles": {
+      "read": "read_roles",
+      "write": "write_roles",
+      "mfa_required_for_write": false
+    },
+    "access_policies": {
+      "read": "read_roles",
+      "write": "write_roles",
+      "mfa_required_for_write": false
+    },
+    "approval_limits": {
+      "read": "read_roles",
+      "write": "write_roles",
+      "mfa_required_for_write": true
+    }
+  },
+  "negative_tests": [
+    "common_user_cannot_create_role",
+    "common_user_cannot_list_roles",
+    "auditor_cannot_create_role",
+    "administrator_without_mfa_cannot_create_approval_limit"
+  ],
+  "positive_tests": [
+    "administrator_can_create_role",
+    "auditor_can_list_roles",
+    "administrator_with_mfa_can_create_approval_limit"
+  ],
+  "runtime_entrypoint": "modules.shared.runtime._authorize_permissions_operation"
+}
