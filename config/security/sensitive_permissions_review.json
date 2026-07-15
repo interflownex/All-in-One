@@ -23,7 +23,7 @@
   "modules": {
     "identity": {
       "risk_level": "critical",
-      "sensitive_resources": ["users", "kyc_records", "documents", "biometrics", "identity_verifications", "consent_records"],
+      "sensitive_resources": ["users", "documents", "biometrics", "sessions", "identity_verifications", "consent_records"],
       "allowed_read_roles": ["owner", "administrator", "compliance_officer", "data_protection_officer", "auditor"],
       "denied_read_roles": ["anonymous", "recruiter", "driver", "patient", "merchant_operator"],
       "required_evidence": ["actor_id_hash", "resource_selector_hash", "identity_check", "audit_event_id", "incident_ticket_when_denied"],

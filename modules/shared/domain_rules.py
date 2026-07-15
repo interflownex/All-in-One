@@ -72,7 +72,7 @@ class ResourceRule:
 
 
 MODULE_ENTITIES: dict[str, tuple[str, ...]] = {
-    "identity": ("users", "kyc_records", "business_profiles", "consents", "audit_logs"),
+    "identity": ("users", "documents", "biometrics", "sessions", "identity_verifications", "consent_records"),
     "business": ("companies", "branches", "company_documents", "user_company_memberships", "catalog_offers"),
     "permissions": ("roles", "permissions", "user_roles", "access_policies", "approval_limits"),
     "finance": ("wallets", "ledger_entries", "escrows", "splits", "invoices", "valley_gold_ledger_entries"),
@@ -176,19 +176,43 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
             "reject": Transition(frozenset({"PROCESSING"}), "REJECTED", APPROVER_ROLES, True, "identity.kyc.rejected"),
         },
     ),
-    ("identity", "business_profiles"): ResourceRule(
-        ("owner_user_id", "legal_name", "document_cnpj"),
-        ("document_cnpj",),
-        "PENDING_KYB",
+    ("identity", "documents"): ResourceRule(
+        ("document_type", "document_number_hash", "storage_key"),
+        initial_status="pending_review",
+        sensitive=True,
         transitions={
-            "approve": Transition(frozenset({"PENDING_KYB"}), "ACTIVE", APPROVER_ROLES, True, "identity.kyb.approved"),
-            "reject": Transition(frozenset({"PENDING_KYB"}), "REJECTED", APPROVER_ROLES, True, "identity.kyb.rejected"),
+            "approve": Transition(frozenset({"pending_review"}), "approved", APPROVER_ROLES, True, "identity.document.approved"),
+            "reject": Transition(frozenset({"pending_review"}), "rejected", APPROVER_ROLES, True, "identity.document.rejected"),
         },
     ),
-    ("identity", "consents"): ResourceRule(
-        ("user_id", "document_version", "consent_type"),
+    ("identity", "biometrics"): ResourceRule(
+        ("face_hash", "consent_recorded_at"),
+        initial_status="captured",
+        sensitive=True,
+        immutable=True,
+    ),
+    ("identity", "sessions"): ResourceRule(
+        ("token_hash", "device_fingerprint", "ip_address", "expires_at"),
+        initial_status="active",
+        sensitive=True,
+        transitions={
+            "revoke": Transition(frozenset({"active"}), "revoked", event="identity.session.revoked"),
+        },
+    ),
+    ("identity", "identity_verifications"): ResourceRule(
+        ("verification_type",),
+        initial_status="PROCESSING",
+        sensitive=True,
+        transitions={
+            "approve": Transition(frozenset({"PROCESSING"}), "APPROVED", APPROVER_ROLES, True, "identity.kyc.approved"),
+            "reject": Transition(frozenset({"PROCESSING"}), "REJECTED", APPROVER_ROLES, True, "identity.kyc.rejected"),
+        },
+    ),
+    ("identity", "consent_records"): ResourceRule(
+        ("consent_type", "policy_version", "accepted_at"),
         initial_status="accepted",
         immutable=True,
+        sensitive=True,
     ),
     ("business", "companies"): ResourceRule(
         ("cnpj", "root_cnpj", "legal_name", "legal_representative_user_id"),
@@ -1146,6 +1170,11 @@ def check_payload(rule: ResourceRule, payload: dict[str, Any]) -> None:
 def event_for_create(module: str, resource_type: str) -> str:
     explicit = {
         ("identity", "users"): "identity.user.created",
+        ("identity", "documents"): "identity.document.created",
+        ("identity", "biometrics"): "identity.biometric.captured",
+        ("identity", "sessions"): "identity.session.created",
+        ("identity", "identity_verifications"): "identity.kyc.submitted",
+        ("identity", "consent_records"): "identity.consent.recorded",
         ("business", "companies"): "business.company.created",
         ("business", "user_company_memberships"): "business.user.invited",
         ("bpm", "workflow_instances"): "bpm.process.started",

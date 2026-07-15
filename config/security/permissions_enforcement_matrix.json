@@ -54,7 +54,7 @@
     "modules": {
       "identity": {
         "runtime_rule": "SENSITIVE_ROLES",
-        "sensitive_resources": ["users", "kyc_records", "documents", "biometrics", "identity_verifications", "consent_records"]
+        "sensitive_resources": ["users", "documents", "biometrics", "sessions", "identity_verifications", "consent_records"]
       },
       "finance": {
         "runtime_rule": "SENSITIVE_ROLES",

@@ -1,5 +1,29 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Identity Sensitive Entity Alignment
+
+### Concluido neste ciclo
+
+- `MODULE_ENTITIES["identity"]` foi alinhado ao catalogo versionado, migrations
+  PostgreSQL e `IdentityPostgresStore`: `users`, `documents`, `biometrics`,
+  `sessions`, `identity_verifications` e `consent_records`.
+- Recursos sensiveis reais de Identity ganharam regras explicitas de dominio,
+  incluindo documentos aprovaveis, biometria append-only, sessoes revogaveis,
+  verificacoes KYC e consentimentos append-only.
+- A revisao de permissoes sensiveis agora falha se apontar para recurso de
+  dominio inexistente, removendo o skip silencioso que mascarava drift.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_sensitive_permissions_review.py tests/test_permissions_enforcement_matrix.py tests/test_all_modules_integration.py modules/identity/tests/test_create_flow.py modules/identity/tests/test_permissions.py`:
+  aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar KYC/KYB/liveness reais com dados controlados de
+  provedor homologado.
+
 ## STATUS OPERACIONAL - 2026-07-15 Finance Gold Catalog Reconciliation
 
 ### Concluido neste ciclo

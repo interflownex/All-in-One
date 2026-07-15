@@ -114,8 +114,7 @@ def test_permissions_matrix_links_domain_consumers_to_sensitive_runtime() -> Non
             reviewed["sensitive_resources"]
         )
         for resource in consumer["sensitive_resources"]:
-            if resource not in MODULE_ENTITIES[module_name]:
-                continue
+            assert resource in MODULE_ENTITIES[module_name], f"{module_name}.{resource}"
             rule = rule_for(module_name, resource)
             assert rule.sensitive is True or rule.immutable is True
 

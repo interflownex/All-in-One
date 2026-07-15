@@ -68,8 +68,5 @@ def test_sensitive_permissions_review_points_to_sensitive_runtime_resources() ->
 
     for module_name, module_review in review["modules"].items():
         for resource in module_review["sensitive_resources"]:
-            try:
-                rule = rule_for(module_name, resource)
-            except Exception:
-                continue
+            rule = rule_for(module_name, resource)
             assert rule.sensitive is True or rule.immutable is True, f"{module_name}.{resource}"
