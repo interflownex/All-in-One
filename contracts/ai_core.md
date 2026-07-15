@@ -35,10 +35,27 @@
 - `POST /audit`
 
 
+## Provider, custo e governanca de modelo
+
+- `ai_memories` exige `memory_key` e `summary`, inicia em `draft` e emite `ai.memory.created`.
+- A acao `index` move memorias para `indexed` com `ai.memory.indexed`; `update` emite `ai.memory.updated`.
+- `model_runs` exige `provider_adapter`, `provider_name`, `model_name`, `prompt_tokens`, `completion_tokens`, `estimated_cost_brl` e `requested_at`.
+- A criacao de execucao emite `ai.model_run.requested`; `complete` emite `ai.model_run.completed` e `fail` emite `ai.model_run.failed`.
+- A acao `approve_cost` exige papel aprovador, MFA e emite `ai.model_run.cost_approved`.
+- `estimated_cost_brl` e validado como valor monetario nao negativo; providers reais seguem pendentes de homologacao.
+
+
         ## Eventos
 
-        - `ai.moderation.completed`
+        - `ai.memory.created`
+- `ai.memory.indexed`
 - `ai.memory.updated`
+- `ai.moderation.created`
+- `ai.moderation.completed`
+- `ai.model_run.requested`
+- `ai.model_run.completed`
+- `ai.model_run.failed`
+- `ai.model_run.cost_approved`
 
         ## Regras
 

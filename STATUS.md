@@ -1,5 +1,34 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 AI Core Provider Cost
+
+### Concluido neste ciclo
+
+- `ai_core.ai_memories` passou a exigir `memory_key` e `summary`, iniciando em
+  `draft`, com indexacao e atualizacao auditaveis.
+- `ai_core.model_runs` passou a exigir `provider_adapter`, `provider_name`,
+  `model_name`, `prompt_tokens`, `completion_tokens`, `estimated_cost_brl` e
+  `requested_at`.
+- A criacao de execucao emite `ai.model_run.requested`; `complete` e `fail`
+  registram resultado de provider sandbox.
+- A acao `approve_cost` exige papel aprovador e MFA, valida custo nao negativo
+  e emite `ai.model_run.cost_approved`.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar adapter, provider, custo e memoria autorizada nos
+  contratos gerados e nas jornadas vivas.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local
+  `Adapter de provider e custo por execucao` foi saneada em sandbox auditavel.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_ai_core_domain.py`: 1 teste aprovado.
+
+### Pendencias rastreadas
+
+- Permanecem externas: homologar providers IA reais, governanca de modelos e
+  custos produtivos controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 BI Dataset Dashboard Export
 
 ### Concluido neste ciclo

@@ -12,6 +12,9 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `ai_memories`, `moderation_decisions`, `model_runs`.
 
+`model_runs` registra adapter, provider, modelo, tokens e custo
+estimado; `ai_memories` preserva memoria autorizada e indexavel.
+
 ## Execucao
 
 ```bash

@@ -227,6 +227,17 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
+    if module["slug"] == "ai_core":
+        special = dedent(
+            """\
+            `model_runs` registra adapter, provider, modelo, tokens e custo
+            estimado; `ai_memories` preserva memoria autorizada e indexavel.
+            """
+        )
+        rendered = rendered.replace(
+            f"{entities}.\n\n## Execucao",
+            f"{entities}.\n\n{special}\n## Execucao",
+        )
     return rendered
 
 
@@ -385,6 +396,20 @@ def render_contract(module: dict) -> str:
             - `dashboards` exige `dataset_id`, `name`, `definition` e `allowed_roles`, inicia em `draft` e emite `bi.dashboard.created`.
             - A acao `publish` publica dashboard com papel aprovador, MFA e evento `bi.dashboard.published`; `archive` encerra a exposicao com MFA.
             - `exports` exige `dashboard_id`, `export_format` e `requested_at`, inicia em `requested`, emite `bi.export.requested` e conclui com `bi.export.completed`.
+            """
+        )
+    if module["slug"] == "ai_core":
+        special += dedent(
+            """
+
+            ## Provider, custo e governanca de modelo
+
+            - `ai_memories` exige `memory_key` e `summary`, inicia em `draft` e emite `ai.memory.created`.
+            - A acao `index` move memorias para `indexed` com `ai.memory.indexed`; `update` emite `ai.memory.updated`.
+            - `model_runs` exige `provider_adapter`, `provider_name`, `model_name`, `prompt_tokens`, `completion_tokens`, `estimated_cost_brl` e `requested_at`.
+            - A criacao de execucao emite `ai.model_run.requested`; `complete` emite `ai.model_run.completed` e `fail` emite `ai.model_run.failed`.
+            - A acao `approve_cost` exige papel aprovador, MFA e emite `ai.model_run.cost_approved`.
+            - `estimated_cost_brl` e validado como valor monetario nao negativo; providers reais seguem pendentes de homologacao.
             """
         )
     return dedent(

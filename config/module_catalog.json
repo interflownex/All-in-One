@@ -225,7 +225,7 @@
       "title": "AI Core",
       "description": "Memoria autorizada, classificacao anti-burla, modelos e governanca.",
       "entities": ["ai_memories", "moderation_decisions", "model_runs"],
-      "events": ["ai.moderation.completed", "ai.memory.updated"],
+      "events": ["ai.memory.created", "ai.memory.indexed", "ai.memory.updated", "ai.moderation.created", "ai.moderation.completed", "ai.model_run.requested", "ai.model_run.completed", "ai.model_run.failed", "ai.model_run.cost_approved"],
       "monetization": "Consumo de IA e automacoes premium.",
       "branch": "module/business"
     },

@@ -372,6 +372,19 @@ PHASE4_ROUTE_PAYLOADS = {
         "risk_score": "0.21",
         "title": "Decisao AI Core Playwright",
     },
+    ("ai_core", "ai_memories"): {
+        "memory_key": "phase4-business-context",
+        "summary": "Contexto autorizado para jornada Business Playwright",
+    },
+    ("ai_core", "model_runs"): {
+        "provider_adapter": "sandbox_openai_compatible",
+        "provider_name": "sandbox-ai",
+        "model_name": "gpt-sandbox-mini",
+        "prompt_tokens": "128",
+        "completion_tokens": "64",
+        "estimated_cost_brl": "0.42",
+        "requested_at": "2026-07-15T10:30:00Z",
+    },
     ("health", "patients"): {"health_identifier": "patient-phase4", "name": "Paciente Playwright"},
     ("health", "appointments"): {"scheduled_at": "2026-07-12T12:00:00Z", "care_line": "Consulta"},
     ("identity", "consents"): {
