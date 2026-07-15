@@ -433,6 +433,12 @@ Entregas ja existentes:
   Health, API Hub, Stock, Riders e Services.
 - Teste `tests/test_integration_sandbox_routes.py` valida autorizacao e contratos
   HTTP desses endpoints.
+- Configuracao `config/integrations/environment_profiles.json` separa
+  `sandbox`, `homologacao` e `producao`, com `ALL_IN_ONE_INTEGRATION_ENV`,
+  evidencias obrigatorias, politica de segredos e rollback por ambiente.
+- `tests/test_integration_provider_matrix.py` valida a matriz de provedores e a
+  promocao entre ambientes para impedir ativacao externa sem contrato, secret
+  store e gate de producao.
 - Plano persistente `config/cloud/apigee_api_hub_plan.json` registra o inicio do
   fluxo Apigee/API Hub no Google Cloud: projeto host `all-in-one-498012`,
   service identity `service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com`,
@@ -466,9 +472,8 @@ Proximos passos naturais:
 5. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
    host.
 6. Conectar respostas sandbox a recursos reais/auditaveis dos modulos prioritarios.
-7. Separar sandbox/homologacao/producao.
-8. Implementar adapters por provider real com testes de contrato.
-9. Registrar evidencias de homologacao.
+7. Implementar adapters por provider real com testes de contrato.
+8. Registrar evidencias de homologacao.
 
 ### Fase 6 - Seguranca, compliance e producao
 

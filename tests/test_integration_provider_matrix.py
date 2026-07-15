@@ -4,6 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MATRIX_PATH = ROOT / "config" / "integrations" / "provider_matrix.json"
+ENVIRONMENT_PROFILES_PATH = ROOT / "config" / "integrations" / "environment_profiles.json"
 CATALOG_PATH = ROOT / "config" / "module_catalog.json"
 
 REQUIRED_KEYS = {
@@ -38,6 +39,7 @@ CRITICAL_MODULES = {
     "permissions",
 }
 SECRET_WORDS = ("secret", "token", "password", "senha", "api_key", "client_secret")
+REQUIRED_ENVIRONMENTS = ("sandbox", "homologacao", "producao")
 
 
 def test_integration_provider_matrix_is_complete_and_secret_safe() -> None:
@@ -87,3 +89,42 @@ def test_integration_provider_matrix_is_complete_and_secret_safe() -> None:
         "jobs.resume.ctps_imported",
         "health.appointment.completed",
     } <= covered_events
+
+
+def test_integration_environment_profiles_gate_promotion() -> None:
+    matrix = json.loads(MATRIX_PATH.read_text(encoding="utf-8"))
+    profiles = json.loads(ENVIRONMENT_PROFILES_PATH.read_text(encoding="utf-8"))
+
+    assert profiles["schema_version"] == 1
+    assert profiles["source_matrix"] == "config/integrations/provider_matrix.json"
+    assert profiles["active_environment_variable"] == "ALL_IN_ONE_INTEGRATION_ENV"
+    assert profiles["default_environment"] == "sandbox"
+    assert profiles["promotion_order"] == list(REQUIRED_ENVIRONMENTS)
+    assert tuple(profiles["profiles"]) == REQUIRED_ENVIRONMENTS
+
+    sandbox = profiles["profiles"]["sandbox"]
+    homologacao = profiles["profiles"]["homologacao"]
+    producao = profiles["profiles"]["producao"]
+
+    assert sandbox["allows_external_calls"] is False
+    assert sandbox["allows_real_secret_values"] is False
+    assert sandbox["requires_provider_contract"] is False
+    assert "sem_chamada_externa" in sandbox["required_evidence"]
+
+    for environment in (homologacao, producao):
+        assert environment["allows_external_calls"] is True
+        assert environment["allows_real_secret_values"] is True
+        assert environment["requires_provider_contract"] is True
+        assert environment["requires_human_approval"] is True
+        assert "Google Secret Manager" in environment["secret_storage"]
+        serialized = json.dumps(environment, ensure_ascii=False).casefold()
+        assert not any(f"{word}=" in serialized for word in SECRET_WORDS)
+
+    assert "teste_de_contrato_por_provider" in homologacao["required_evidence"]
+    assert "go_live_gate_da_matriz_atendido" in producao["required_evidence"]
+    assert "partially_implemented" in producao["required_matrix_stage"]
+
+    matrix_stages = {integration["stage"] for integration in matrix["integrations"]}
+    for environment_name in REQUIRED_ENVIRONMENTS:
+        allowed_stages = set(profiles["profiles"][environment_name]["required_matrix_stage"])
+        assert allowed_stages <= matrix_stages | {"planned", "sandbox_required", "provider_discovery", "partially_implemented"}

@@ -62,6 +62,23 @@ exigindo `X-Actor-Roles` com papel aceito por compliance/operacao:
 
 As rotas sao validadas por `tests/test_integration_sandbox_routes.py`.
 
+## Ambientes de integracao
+
+A separacao operacional entre `sandbox`, `homologacao` e `producao` fica em
+`config/integrations/environment_profiles.json`, selecionada por
+`ALL_IN_ONE_INTEGRATION_ENV` e validada por
+`tests/test_integration_provider_matrix.py`.
+
+- `sandbox`: default local, deterministico, sem chamada externa e sem valor real
+  de segredo; exige adapter local, pytest de contrato e fallback auditavel.
+- `homologacao`: permite chamadas externas somente contra sandbox/conta de
+  homologacao do provedor, com credenciais fora do Git, teste de contrato,
+  webhook assinado quando aplicavel, registro de custo/limites e rollback para
+  sandbox.
+- `producao`: exige homologacao aprovada, go-live gate da matriz, base
+  legal/LGPD, monitoramento, runbook de incidente e rollback testado antes de
+  habilitar provider port produtivo.
+
 ## Convencoes
 
 - UUID em identificadores e `user_id` sempre associado ao All-in-One ID.
@@ -112,4 +129,3 @@ Todas as chamadas de API do frontend devem passar pelo Apigee para garantir gove
 - **Identity:** `https://api.all-in-one.com/identity/*`
 - **API Hub:** `https://api.all-in-one.com/gateway/*`
 - **Logística:** `https://api.all-in-one.com/{delivery|wms|tms}/*`
-

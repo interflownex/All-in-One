@@ -38,6 +38,34 @@
 - SDK Linux do Google Cloud validado; pendencia restante limitada ao ADC
   interativo antes de aplicar Apigee/API Hub.
 
+## STATUS OPERACIONAL - 2026-07-15 Ambientes de Integracao
+
+### Concluido neste ciclo
+
+- Criada `config/integrations/environment_profiles.json` para separar
+  `sandbox`, `homologacao` e `producao` por `ALL_IN_ONE_INTEGRATION_ENV`.
+- O perfil `sandbox` permanece default, deterministico, sem chamada externa e
+  sem valores reais de segredos.
+- Os perfis `homologacao` e `producao` exigem credenciais fora do Git, contrato
+  com provedor, aprovacao humana, evidencias e rollback antes de promover
+  provider ports reais.
+- `tests/test_integration_provider_matrix.py` agora valida a promocao entre
+  ambientes junto da matriz de provedores.
+- `docs/INTEGRATION.md` e `docs/EXECUTION_PLAN.md` documentam o contrato
+  operacional e removem a pendencia generica de separar ambientes.
+
+### Pendencias rastreadas
+
+- Implementar adapters reais por provider com testes de contrato quando houver
+  credenciais/homologacao legitimas.
+- Registrar evidencias de homologacao por integracao antes de qualquer gate de
+  producao.
+
+### Git
+
+- Incremento de ambientes de integracao em validacao local antes da
+  sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
 
 ### Concluido neste ciclo
