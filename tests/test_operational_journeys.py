@@ -79,9 +79,35 @@ def test_delivery_quote_assignment_completion_journey() -> None:
     assert completed.status_code == 200
     assert completed.json()["status"] == "completed"
 
+    pod = delivery.post(
+        "/resources/proofs",
+        headers=actor_headers(operator_id, "owner"),
+        json={
+            "user_id": customer_id,
+            "payload": {
+                "delivery_request_id": request_id,
+                "file_sha256": f"pod-{nonce}",
+                "storage_key": f"private/delivery/{request_id}/pod.aesgcm",
+                "captured_at": "2026-07-15T07:00:00Z",
+                "proof_type": "photo",
+                "antifraud_signal": "geo_hash_and_recipient_match",
+            },
+        },
+    )
+    assert pod.status_code == 201
+    assert pod.json()["status"] == "recorded"
+    assert pod.json()["payload"]["storage_key"].endswith("/pod.aesgcm")
+
+    delete_pod = delivery.delete(
+        f"/resources/proofs/{pod.json()['id']}",
+        headers=actor_headers(operator_id, "owner"),
+    )
+    assert delete_pod.status_code == 409
+
     outbox = delivery.get("/events/outbox", headers=actor_headers(operator_id, "auditor"))
     assert outbox.status_code == 200
     assert any(event["routing_key"] == "delivery.completed" for event in outbox.json())
+    assert any(event["routing_key"] == "delivery.proof.recorded" for event in outbox.json())
 
 
 def test_rider_onboarding_document_vehicle_journey() -> None:

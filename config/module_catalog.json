@@ -72,7 +72,7 @@
       "title": "Delivery",
       "description": "Food, coletas e fretes com calculo multimodal, seguro e rastreio.",
       "entities": ["delivery_requests", "quotes", "assignments", "proofs", "insurance_options"],
-      "events": ["delivery.request.created", "delivery.rider.assigned", "delivery.picked_up", "delivery.completed", "delivery.cancelled"],
+      "events": ["delivery.request.created", "delivery.rider.assigned", "delivery.picked_up", "delivery.completed", "delivery.proof.recorded", "delivery.cancelled"],
       "monetization": "Comissao de 10 a 30 por cento, urgencia, seguro e adicionais.",
       "branch": "module/delivery"
     },

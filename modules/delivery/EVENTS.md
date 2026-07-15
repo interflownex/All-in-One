@@ -6,6 +6,7 @@
 - `delivery.rider.assigned`
 - `delivery.picked_up`
 - `delivery.completed`
+- `delivery.proof.recorded`
 - `delivery.cancelled`
 
         Eventos carregam `event_id`, `occurred_at`, `actor_user_id`, `user_id`,

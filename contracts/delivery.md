@@ -37,12 +37,21 @@
 - `POST /audit`
 
 
+## POD e antifraude
+
+- `proofs` exige `delivery_request_id`, `file_sha256`, `storage_key` e `captured_at`.
+- A criacao de POD registra `delivery.proof.recorded`.
+- POD e append-only/sensivel: nao aceita edicao livre nem exclusao logica pelo runtime generico.
+- Arquivos reais devem ficar em storage privado; o payload versionado guarda apenas hash, chave privada e sinais antifraude minimizados.
+
+
         ## Eventos
 
         - `delivery.request.created`
 - `delivery.rider.assigned`
 - `delivery.picked_up`
 - `delivery.completed`
+- `delivery.proof.recorded`
 - `delivery.cancelled`
 
         ## Regras

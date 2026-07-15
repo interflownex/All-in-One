@@ -318,6 +318,13 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
             "cancel": Transition(frozenset({"created", "quoted", "assigned"}), "cancelled", event="delivery.cancelled"),
         },
     ),
+    ("delivery", "proofs"): ResourceRule(
+        ("delivery_request_id", "file_sha256", "storage_key", "captured_at"),
+        ("file_sha256",),
+        "recorded",
+        immutable=True,
+        sensitive=True,
+    ),
     ("riders", "rider_profiles"): ResourceRule(
         ("cnh_number_hash", "cnh_category", "wallet_id"),
         initial_status="pending_documents",
@@ -484,6 +491,7 @@ def event_for_create(module: str, resource_type: str) -> str:
         ("marketplace", "pepita_grants"): "valley.pepitas.granted",
         ("stock", "discount_quotes"): "valley.stock.discount.quoted",
         ("delivery", "delivery_requests"): "delivery.request.created",
+        ("delivery", "proofs"): "delivery.proof.recorded",
         ("services", "service_contracts"): "services.contract.created",
         ("mobility", "rides"): "mobility.ride.requested",
         ("jobs", "resumes"): "jobs.resume.created",

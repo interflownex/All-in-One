@@ -1,5 +1,34 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Delivery POD Auditavel
+
+### Concluido neste ciclo
+
+- `delivery.proofs` passou a ter regra de dominio explicita para POD:
+  `delivery_request_id`, `file_sha256`, `storage_key` e `captured_at`
+  obrigatorios.
+- A criacao de POD emite `delivery.proof.recorded`.
+- POD foi marcado como sensivel e append-only, bloqueando exclusao logica pelo
+  runtime generico.
+- `config/module_catalog.json`, `modules/delivery/CONTRACT.md`,
+  `modules/delivery/EVENTS.md` e `contracts/delivery.md` foram alinhados via
+  scaffold.
+- `docs/EXECUTION_PLAN.md` foi reconciliado para deixar tracking/matching,
+  mapas e antifraude homologados como pendencias externas principais.
+
+### Evidencias
+
+- `tests/test_operational_journeys.py::test_delivery_quote_assignment_completion_journey`
+  cobre cotacao, criacao transacional, atribuicao, coleta, conclusao, POD com
+  hash/chave privada, bloqueio de exclusao e eventos `delivery.completed` e
+  `delivery.proof.recorded`.
+
+### Pendencias rastreadas
+
+- Delivery permanece pendente para tracking/matching/mapas reais, provider
+  antifraude homologado e armazenamento final de arquivos em bucket/ambiente
+  produtivo.
+
 ## STATUS OPERACIONAL - 2026-07-15 Business Convite Operacional
 
 ### Concluido neste ciclo
