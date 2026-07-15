@@ -238,8 +238,21 @@ PHASE4_ROUTE_PAYLOADS = {
         "description": "Documento ERP vivo para conciliacao Business",
     },
     ("bi", "dashboards"): {
+        "dataset_id": PHASE4_BUSINESS_ID,
         "name": "Dashboard Giro de Estoque Playwright",
         "definition": {"metric": "inventory_turnover", "period": "monthly"},
+        "allowed_roles": ["administrator", "analyst"],
+    },
+    ("bi", "datasets"): {
+        "name": "Dataset Giro de Estoque Playwright",
+        "source_module": "wms",
+        "source_resource_type": "warehouses",
+        "refresh_mode": "daily",
+    },
+    ("bi", "exports"): {
+        "dashboard_id": PHASE4_BUSINESS_ID,
+        "export_format": "csv",
+        "requested_at": "2026-07-15T10:00:00Z",
     },
     ("wms", "warehouses"): {
         "name": "CD Regional Playwright",

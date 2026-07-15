@@ -668,7 +668,57 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
             ),
         },
     ),
-    ("bi", "dashboards"): ResourceRule(("name", "definition"), transitions=lifecycle_flow("bi.dashboard")),
+    ("bi", "datasets"): ResourceRule(
+        ("name", "source_module", "source_resource_type", "refresh_mode"),
+        initial_status="draft",
+        transitions={
+            "refresh": Transition(
+                frozenset({"draft", "published", "refreshed"}),
+                "refreshed",
+                event="bi.dataset.refreshed",
+            ),
+            "publish": Transition(
+                frozenset({"draft", "refreshed"}),
+                "published",
+                APPROVER_ROLES,
+                True,
+                "bi.dataset.published",
+            ),
+        },
+    ),
+    ("bi", "dashboards"): ResourceRule(
+        ("dataset_id", "name", "definition", "allowed_roles"),
+        initial_status="draft",
+        sensitive=True,
+        transitions={
+            "publish": Transition(
+                frozenset({"draft"}),
+                "published",
+                APPROVER_ROLES,
+                True,
+                "bi.dashboard.published",
+            ),
+            "archive": Transition(
+                frozenset({"published"}),
+                "archived",
+                APPROVER_ROLES,
+                True,
+                "bi.dashboard.archived",
+            ),
+        },
+    ),
+    ("bi", "exports"): ResourceRule(
+        ("dashboard_id", "export_format", "requested_at"),
+        initial_status="requested",
+        sensitive=True,
+        transitions={
+            "complete": Transition(
+                frozenset({"requested"}),
+                "completed",
+                event="bi.export.completed",
+            ),
+        },
+    ),
     ("ai_core", "moderation_decisions"): ResourceRule(("module", "risk_score"), sensitive=True, transitions=review_flow("ai.moderation")),
     ("api_hub", "api_clients"): ResourceRule(("client_name", "scopes"), sensitive=True, transitions=review_flow("api.client")),
     ("api_hub", "api_keys"): ResourceRule(("key_name", "key_hash", "key_hint", "scopes"), sensitive=True, transitions=review_flow("api.key")),
@@ -763,6 +813,9 @@ def event_for_create(module: str, resource_type: str) -> str:
         ("legal", "hearings"): "legal.hearing.scheduled",
         ("property", "leases"): "property.lease.created",
         ("property", "maintenance_orders"): "property.maintenance.requested",
+        ("bi", "datasets"): "bi.dataset.created",
+        ("bi", "dashboards"): "bi.dashboard.created",
+        ("bi", "exports"): "bi.export.requested",
         ("vision", "devices"): "vision.device.registered",
         ("vision", "streams"): "vision.stream.started",
         ("vision", "recordings"): "vision.recording.stored",

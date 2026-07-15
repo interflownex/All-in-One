@@ -12,6 +12,9 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `datasets`, `dashboards`, `indicators`, `exports`.
 
+`datasets` registra origem e refresh; `dashboards` exige politica de
+papeis permitidos; `exports` cria trilha auditavel de extracao.
+
 ## Execucao
 
 ```bash

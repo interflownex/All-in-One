@@ -216,6 +216,17 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
+    if module["slug"] == "bi":
+        special = dedent(
+            """\
+            `datasets` registra origem e refresh; `dashboards` exige politica de
+            papeis permitidos; `exports` cria trilha auditavel de extracao.
+            """
+        )
+        rendered = rendered.replace(
+            f"{entities}.\n\n## Execucao",
+            f"{entities}.\n\n{special}\n## Execucao",
+        )
     return rendered
 
 
@@ -361,6 +372,19 @@ def render_contract(module: dict) -> str:
             - A acao `terminate` encerra locacoes ativas com papel aprovador, MFA e emite `property.lease.terminated`.
             - `maintenance_orders` exige `property_id`, `issue_type` e `requested_at`, iniciando em `requested` e emitindo `property.maintenance.requested`.
             - A acao `schedule` agenda manutencao e emite `property.maintenance.scheduled`; `complete` exige papel aprovador, MFA e emite `property.maintenance.completed`.
+            """
+        )
+    if module["slug"] == "bi":
+        special += dedent(
+            """
+
+            ## Dataset, dashboard e exportacao
+
+            - `datasets` exige `name`, `source_module`, `source_resource_type` e `refresh_mode`, iniciando em `draft` e emitindo `bi.dataset.created`.
+            - A acao `refresh` registra refresh auditavel com `bi.dataset.refreshed`; `publish` exige papel aprovador, MFA e emite `bi.dataset.published`.
+            - `dashboards` exige `dataset_id`, `name`, `definition` e `allowed_roles`, inicia em `draft` e emite `bi.dashboard.created`.
+            - A acao `publish` publica dashboard com papel aprovador, MFA e evento `bi.dashboard.published`; `archive` encerra a exposicao com MFA.
+            - `exports` exige `dashboard_id`, `export_format` e `requested_at`, inicia em `requested`, emite `bi.export.requested` e conclui com `bi.export.completed`.
             """
         )
     return dedent(

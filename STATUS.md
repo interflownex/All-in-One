@@ -1,5 +1,36 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 BI Dataset Dashboard Export
+
+### Concluido neste ciclo
+
+- `bi.datasets` passou a exigir `name`, `source_module`,
+  `source_resource_type` e `refresh_mode`, iniciando em `draft` e emitindo
+  `bi.dataset.created`.
+- A acao `refresh` registra ETL sandbox auditavel com
+  `bi.dataset.refreshed`; `publish` exige papel aprovador, MFA e emite
+  `bi.dataset.published`.
+- `bi.dashboards` passou a exigir `dataset_id`, `name`, `definition` e
+  `allowed_roles`, iniciando em `draft` e protegendo publicacao/arquivamento
+  com MFA.
+- `bi.exports` registra solicitacao e conclusao de exportacao com eventos
+  `bi.export.requested` e `bi.export.completed`.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar dataset, dashboard e exportacao nos contratos
+  gerados e nas jornadas vivas.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local de
+  ETL/permissoes analiticas foi saneada em sandbox auditavel.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_bi_domain.py`: 1 teste aprovado.
+
+### Pendencias rastreadas
+
+- Permanecem externas: homologar fontes ETL/permissoes analiticas reais e
+  ampliar evidencias com datasets produtivos controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 Property Lease Maintenance
 
 ### Concluido neste ciclo
