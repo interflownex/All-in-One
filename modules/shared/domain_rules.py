@@ -503,8 +503,38 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
         sensitive=True,
         immutable=True,
     ),
-    ("hr", "employees"): ResourceRule(("company_id", "employment_type"), sensitive=True, transitions=review_flow("hr.employee")),
-    ("hr", "payroll_runs"): ResourceRule(("company_id",), sensitive=True, transitions=review_flow("hr.payroll")),
+    ("hr", "employees"): ResourceRule(
+        ("company_id", "employment_type", "admission_date"),
+        sensitive=True,
+        transitions=review_flow("hr.employee"),
+    ),
+    ("hr", "payroll_runs"): ResourceRule(
+        ("company_id", "period", "gross_amount_brl"),
+        initial_status="open",
+        sensitive=True,
+        monetary_fields=("gross_amount_brl", "net_amount_brl"),
+        transitions={
+            "close": Transition(
+                frozenset({"open", "pending_review", "approved"}),
+                "closed",
+                APPROVER_ROLES,
+                True,
+                "hr.payroll.closed",
+            )
+        },
+    ),
+    ("hr", "courses"): ResourceRule(
+        ("employee_id", "course_code", "title", "due_at"),
+        initial_status="assigned",
+        sensitive=True,
+        transitions={
+            "complete": Transition(
+                frozenset({"assigned", "in_progress"}),
+                "completed",
+                event="hr.training.completed",
+            )
+        },
+    ),
     ("hr", "occupational_records"): ResourceRule(("employee_id",), sensitive=True, transitions=review_flow("hr.occupational_record")),
     ("health", "patients"): ResourceRule(("health_identifier",), sensitive=True),
     ("health", "appointments"): ResourceRule(("scheduled_at",), sensitive=True, transitions=catalog_offer_flow("health.appointment")),
@@ -601,6 +631,9 @@ def event_for_create(module: str, resource_type: str) -> str:
         ("delivery", "proofs"): "delivery.proof.recorded",
         ("document", "documents"): "document.uploaded",
         ("document", "versions"): "document.versioned",
+        ("hr", "employees"): "hr.employee.created",
+        ("hr", "payroll_runs"): "hr.payroll.opened",
+        ("hr", "courses"): "hr.training.assigned",
         ("services", "service_contracts"): "services.contract.created",
         ("mobility", "rides"): "mobility.ride.requested",
         ("mobility", "routes"): "mobility.route.eta_quoted",

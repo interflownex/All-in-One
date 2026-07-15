@@ -12,6 +12,10 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `employees`, `payroll_runs`, `candidates`, `courses`, `occupational_records`.
 
+`employees` registra admissao; `payroll_runs` fecha folha com
+aprovacao MFA; `courses` acompanha treinamento obrigatorio ate a
+conclusao auditavel.
+
 ## Execucao
 
 ```bash

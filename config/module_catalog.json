@@ -171,7 +171,7 @@
       "title": "HR HCM ATS LMS",
       "description": "Colaboradores, folha, ponto, recrutamento, treinamento e saude ocupacional.",
       "entities": ["employees", "payroll_runs", "candidates", "courses", "occupational_records"],
-      "events": ["hr.employee.created", "hr.payroll.closed"],
+      "events": ["hr.employee.created", "hr.payroll.opened", "hr.payroll.closed", "hr.training.assigned", "hr.training.completed"],
       "monetization": "Modulo SaaS por colaborador.",
       "branch": "module/hr"
     },

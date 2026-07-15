@@ -37,10 +37,22 @@
 - `POST /audit`
 
 
+## Colaborador, folha e treinamento
+
+- `employees` exige `company_id`, `employment_type` e `admission_date`.
+- `payroll_runs` exige `company_id`, `period` e `gross_amount_brl`, inicia em `open` e emite `hr.payroll.opened`.
+- A acao `close` fecha folha com papel aprovador, MFA e evento `hr.payroll.closed`.
+- `courses` exige `employee_id`, `course_code`, `title` e `due_at`, inicia em `assigned` e emite `hr.training.assigned`.
+- A acao `complete` conclui treinamento e emite `hr.training.completed`.
+
+
         ## Eventos
 
         - `hr.employee.created`
+- `hr.payroll.opened`
 - `hr.payroll.closed`
+- `hr.training.assigned`
+- `hr.training.completed`
 
         ## Regras
 

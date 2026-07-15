@@ -288,7 +288,20 @@ PHASE4_ROUTE_PAYLOADS = {
     ("hr", "employees"): {
         "company_id": PHASE4_BUSINESS_ID,
         "employment_type": "clt",
+        "admission_date": "2026-07-15",
         "name": "Colaborador HR Playwright",
+    },
+    ("hr", "payroll_runs"): {
+        "company_id": PHASE4_BUSINESS_ID,
+        "period": "2026-07",
+        "gross_amount_brl": "3200.00",
+        "net_amount_brl": "2890.00",
+    },
+    ("hr", "courses"): {
+        "employee_id": PHASE4_USER_ID,
+        "course_code": "onboarding-valley",
+        "title": "Onboarding Valley Operacional",
+        "due_at": "2026-07-31",
     },
     ("legal", "cases"): {
         "case_number": "LEGAL-PLAYWRIGHT-001",

@@ -170,6 +170,18 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
+    if module["slug"] == "hr":
+        special = dedent(
+            """\
+            `employees` registra admissao; `payroll_runs` fecha folha com
+            aprovacao MFA; `courses` acompanha treinamento obrigatorio ate a
+            conclusao auditavel.
+            """
+        )
+        rendered = rendered.replace(
+            f"{entities}.\n\n## Execucao",
+            f"{entities}.\n\n{special}\n## Execucao",
+        )
     return rendered
 
 
@@ -263,6 +275,19 @@ def render_contract(module: dict) -> str:
             - `tasks` exige `workflow_instance_id`, `assignee_user_id`, `due_at` e `sla_policy_id`, iniciando em `open`.
             - A acao `escalate` move tarefas para `escalated`, exige papel aprovador, MFA e emite `bpm.task.escalated`.
             - A acao `complete` move tarefas abertas, em progresso ou escaladas para `completed` e emite `bpm.task.completed`.
+            """
+        )
+    if module["slug"] == "hr":
+        special += dedent(
+            """
+
+            ## Colaborador, folha e treinamento
+
+            - `employees` exige `company_id`, `employment_type` e `admission_date`.
+            - `payroll_runs` exige `company_id`, `period` e `gross_amount_brl`, inicia em `open` e emite `hr.payroll.opened`.
+            - A acao `close` fecha folha com papel aprovador, MFA e evento `hr.payroll.closed`.
+            - `courses` exige `employee_id`, `course_code`, `title` e `due_at`, inicia em `assigned` e emite `hr.training.assigned`.
+            - A acao `complete` conclui treinamento e emite `hr.training.completed`.
             """
         )
     return dedent(

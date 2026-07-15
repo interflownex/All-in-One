@@ -1,5 +1,41 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 HR Payroll Training
+
+### Concluido neste ciclo
+
+- `hr.employees` passou a exigir `company_id`, `employment_type` e
+  `admission_date`, mantendo fluxo sensivel de aprovacao.
+- `hr.payroll_runs` passou a exigir `company_id`, `period` e
+  `gross_amount_brl`, inicia em `open`, valida campos monetarios e emite
+  `hr.payroll.opened`.
+- A acao `close` fecha folha com papel aprovador, MFA e evento
+  `hr.payroll.closed`.
+- `hr.courses` passou a exigir `employee_id`, `course_code`, `title` e
+  `due_at`, inicia em `assigned`, emite `hr.training.assigned` e conclui com
+  `hr.training.completed`.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar colaborador -> folha -> treinamento nas jornadas
+  vivas e nos contratos gerados.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local de fluxo
+  colaborador -> folha -> treinamento foi saneada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_hr_domain.py modules/hr/tests/test_create_flow.py
+  tests/test_sensitive_permissions_review.py tests/test_frontend_journeys_contract.py`:
+  11 testes aprovados.
+- `./.venv/bin/ruff check tests/test_hr_domain.py`: aprovado.
+- `./.venv/bin/python -m py_compile modules/shared/domain_rules.py
+  tests/test_hr_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
+  aprovado.
+
+### Pendencias rastreadas
+
+- HR permanece pendente para folha/ponto/LMS reais homologados e evidencias com
+  dados produtivos controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 BPM SLA Escalation
 
 ### Concluido neste ciclo
