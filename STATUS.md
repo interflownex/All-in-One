@@ -1,5 +1,31 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Vision Runtime Event Catalog
+
+### Concluido neste ciclo
+
+- O catalogo Vision passou a declarar `vision.device.submitted`,
+  `vision.device.cancelled`, `vision.device.completed`,
+  `vision.stream.paused` e `vision.stream.resumed`, eventos ja emitidos pelo
+  runtime.
+- `modules/vision/CONTRACT.md`, `modules/vision/EVENTS.md` e
+  `contracts/vision.md` foram regenerados pelo scaffold com a superficie
+  completa de eventos Vision.
+- `tests/test_vision_event_catalog.py` bloqueia drift entre eventos Vision
+  emitidos em criacao/transicoes e `config/module_catalog.json`.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_vision_event_catalog.py tests/test_vision_domain.py`:
+  aprovado.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar ingestao de video/IA e ampliar evidencias com
+  streams reais controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 BI Indicator Event Catalog
 
 ### Concluido neste ciclo

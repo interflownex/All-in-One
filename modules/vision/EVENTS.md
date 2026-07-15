@@ -3,7 +3,12 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `vision.device.registered`
+- `vision.device.submitted`
+- `vision.device.cancelled`
+- `vision.device.completed`
 - `vision.stream.started`
+- `vision.stream.paused`
+- `vision.stream.resumed`
 - `vision.recording.stored`
 - `vision.motion.detected`
 - `vision.incident.created`
