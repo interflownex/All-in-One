@@ -1,5 +1,28 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Identity Event Catalog
+
+### Concluido neste ciclo
+
+- O catalogo Identity passou a declarar os eventos emitidos pelo runtime para
+  documentos, biometria, sessoes, verificacoes KYC e consentimentos.
+- `modules/identity/CONTRACT.md` e `modules/identity/EVENTS.md` foram
+  regenerados a partir do catalogo para publicar a superficie de eventos real.
+- `tests/test_identity_event_catalog.py` garante que todo evento emitido por
+  `MODULE_ENTITIES["identity"]`, criacao ou transicao, esteja declarado no
+  catalogo versionado.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_identity_event_catalog.py tests/test_sensitive_permissions_review.py modules/identity/tests/test_create_flow.py`:
+  aprovado.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar KYC/KYB/liveness reais com provedor homologado.
+
 ## STATUS OPERACIONAL - 2026-07-15 Identity Sensitive Entity Alignment
 
 ### Concluido neste ciclo
