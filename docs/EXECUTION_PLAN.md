@@ -539,10 +539,10 @@ Proximos passos naturais:
 | `mobility` | 73% | Rides, tickets, tarifa, aceite/conclusao e QR token cobertos por pytest | ETA, QR/NFC real e tarifas dinamicas | Levar jornada corrida e ticket para Playwright |
 | `jobs` | 87% | Mais maduro: CTPS/cofre/outbox/testes e jornada candidato -> vaga -> recrutador coberta por pytest | Homologacao CTPS oficial e Playwright E2E | Expandir fluxo para triagem, entrevista e notificacoes |
 | `api_hub` | 82% | API keys/webhooks, SQL refinado, rotas gateway de API key/webhook e testes de rate limit | OAuth2 real e testes de proxy com servicos vivos | Testar OAuth2 real, assinatura de webhooks de saida e rate limit com Redis real |
-| `erp` | 60% | Fiscal/accounting modelado e store gerado | Fluxos contabeis reais | Tipar store ERP e testar payables/receivables |
-| `wms` | 60% | Armazem/inventario modelados | Operacao real de estoque | Tipar store WMS e testar recebimento/picking |
-| `tms` | 60% | Fretes/transportadoras modelados | Torre de controle e POD | Tipar store TMS e testar frete |
-| `crm` | 60% | Leads/oportunidades modelados | Pipeline e campanhas reais | Tipar store CRM e testar lead -> oportunidade |
+| `erp` | 65% | Fiscal/accounting modelado, `ErpPostgresStore` tipado e billing create/detail/cancel coberto na suite PostgreSQL prioritaria | Fluxos contabeis reais e conciliacao fiscal | Testar payables/receivables e conciliacao em DSN homologado |
+| `wms` | 64% | Armazem/inventario modelados, `WmsPostgresStore` tipado e warehouse create/update/soft-delete coberto na suite PostgreSQL prioritaria | Operacao real de estoque | Testar recebimento/picking em jornada viva |
+| `tms` | 64% | Fretes/transportadoras modelados, `TmsPostgresStore` tipado e carrier create/update/soft-delete coberto na suite PostgreSQL prioritaria | Torre de controle e POD real | Testar frete/POD em jornada viva |
+| `crm` | 64% | Leads/oportunidades modelados, `CrmPostgresStore` tipado e lead create/update/soft-delete coberto na suite PostgreSQL prioritaria | Pipeline e campanhas reais | Testar lead -> oportunidade em jornada viva |
 | `bpm` | 58% | Processos/workflows modelados | Engine real de workflow | Implementar timers/SLA/escalonamento |
 | `document` | 58% | GED/OCR/assinatura modelados | Storage, OCR e assinatura reais | Tipar store e implementar upload/versionamento |
 | `hr` | 58% | HCM/ATS/LMS modelado | Folha, ponto e LMS reais | Fluxo colaborador -> folha -> treinamento |

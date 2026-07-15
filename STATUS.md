@@ -31,6 +31,24 @@
 - Expandir o uso da matriz de `permissions` para endpoints de dominio que ainda
   dependem apenas do runtime generico e de regras locais por modulo.
 
+## STATUS OPERACIONAL - 2026-07-15 Reconciliacao Stores Tipados
+
+### Concluido neste ciclo
+
+- Reconciliada a matriz por modulo em `docs/EXECUTION_PLAN.md`: ERP, WMS, TMS e
+  CRM nao devem mais listar "tipar store" como proximo passo aberto.
+- Evidencia atual no repositorio mostra `ErpPostgresStore`, `WmsPostgresStore`,
+  `TmsPostgresStore` e `CrmPostgresStore` presentes em `modules/shared`.
+- `tests/test_postgres_priority_stores_integration.py` cobre esses stores com
+  fluxos PostgreSQL prioritarios: billing ERP create/detail/cancel, warehouse
+  WMS, carrier TMS e lead CRM com create/update/soft-delete.
+
+### Pendencias rastreadas
+
+- As pendencias restantes desses modulos passam a ser jornadas vivas,
+  conciliacao, picking, POD, pipeline e homologacao em DSN/ambiente real, nao
+  mais criacao basica de store tipado.
+
 ## STATUS OPERACIONAL - 2026-07-15 Git Sync Linux Upstream
 
 ### Concluido neste ciclo
