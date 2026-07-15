@@ -116,6 +116,34 @@
 
 - Incremento de security CI em validacao local antes da sincronizacao.
 
+## STATUS OPERACIONAL - 2026-07-15 SLOs E Alertas
+
+### Concluido neste ciclo
+
+- Criado `config/observability/slo_catalog.json` com SLOs para API Hub,
+  Identity, Finance, Outbox, Retention e Jobs.
+- O catalogo define objetivo, janela, SLI, PromQL, alertas de burn rate,
+  evidencias aceitas, runbook e politica sem payload sensivel.
+- SLOs de Outbox e Retention reaproveitam os alertas Prometheus ja
+  materializados em `outbox-alerting.yaml` e `retention-alerting.yaml`.
+- Criado `tests/test_slo_catalog.py` para validar cobertura, runbook,
+  incident ticket, ausencia de payload sensivel e aderencia aos alertas
+  materializados.
+- `scripts/validate_repository.py`, `docs/OPERATIONS.md`, `docs/COMPLIANCE.md`
+  e `docs/EXECUTION_PLAN.md` passaram a tratar SLOs como contrato operacional
+  versionado.
+
+### Pendencias rastreadas
+
+- Aplicar/manter manifests de monitoramento no cluster real e validar disparo
+  controlado dos alertas.
+- Materializar PrometheusRules adicionais de API Hub, Identity, Finance e Jobs
+  quando as metricas finais estiverem expostas no cluster real.
+
+### Git
+
+- Incremento de SLOs e alertas em validacao local antes da sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
 
 ### Concluido neste ciclo

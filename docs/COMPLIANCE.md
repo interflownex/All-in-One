@@ -162,3 +162,6 @@ O agendamento declarativo foi adicionado em dois modos:
 - CI de seguranca obrigatorio em `.github/workflows/security.yml`: `pip-audit`
   para SCA Python, `bandit` para SAST Python e `npm audit --omit=dev
   --audit-level=critical` para lockfiles JavaScript dos apps/desktop.
+- Catalogo SLO em `config/observability/slo_catalog.json` define objetivos e
+  evidencias sem payload sensivel para API Hub, Identity, Finance, Outbox,
+  Retention e Jobs.

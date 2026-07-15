@@ -206,6 +206,32 @@ Para Kubernetes com Prometheus Operator, as regras aplicaveis ficam em
 `AlertmanagerConfig` para rotear severidade critica tambem ao plantao de
 plataforma.
 
+## SLO E Alertas
+
+O catalogo minimo de SLOs de producao fica em
+`config/observability/slo_catalog.json`. Ele cobre API Hub, Identity, Finance,
+Outbox, Retention e Jobs com objetivo, janela, SLI, PromQL, severidade,
+evidencias aceitas e runbook. Notificacoes de SLO nunca devem incluir payload
+sensivel; evidencias devem ser contadores, hashes, IDs auditaveis, logs
+operacionais e `incident_ticket`.
+
+SLOs de outbox e retencao reaproveitam alertas ja materializados em
+`infra/kubernetes/base/outbox-alerting.yaml` e
+`infra/kubernetes/base/retention-alerting.yaml`. SLOs de API Hub, Identity,
+Finance e Jobs ficam definidos como contrato de observabilidade ate o cluster
+real expor as metricas finais e receber os PrometheusRules correspondentes.
+
+Triagem padrao:
+
+- Confirmar se o alerta representa erro de usuario, dependencia externa,
+  deploy recente, saturacao de banco/fila ou regressao de codigo.
+- Abrir `incident_ticket` com ambiente, commit, SLO afetado, janela,
+  evidencias sem payload sensivel e responsavel.
+- Mitigar por rollback, pausa de provider port, aumento de capacidade,
+  reprocessamento idempotente ou fallback sandbox/homologacao quando aplicavel.
+- Encerrar apenas apos o SLI voltar para dentro do objetivo e as evidencias
+  ficarem anexadas ao ticket.
+
 ## Incidentes
 
 Revogue sessoes/API keys, preserve trilha imutavel, suspenda publicacao ou

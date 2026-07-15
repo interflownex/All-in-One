@@ -1,0 +1,124 @@
+{
+  "version": "2026-07-15",
+  "owner": "platform",
+  "metric_source": "kubernetes-prometheus",
+  "runbook_index": "docs/OPERATIONS.md#slo-e-alertas",
+  "notification_policy": {
+    "critical": ["platform_oncall"],
+    "high": ["platform_oncall"],
+    "medium": ["platform_oncall"],
+    "include_sensitive_payload": false
+  },
+  "slo_targets": {
+    "api_hub_gateway_availability": {
+      "service": "api_hub",
+      "objective": "99.50%",
+      "window": "30d",
+      "sli": "successful_gateway_requests / total_gateway_requests",
+      "promql": "sum(rate(all_in_one_http_requests_total{service=\"api_hub\",status!~\"5..\"}[5m])) / sum(rate(all_in_one_http_requests_total{service=\"api_hub\"}[5m]))",
+      "burn_rate_alerts": [
+        {
+          "severity": "critical",
+          "expr": "1 - (sum(rate(all_in_one_http_requests_total{service=\"api_hub\",status!~\"5..\"}[5m])) / sum(rate(all_in_one_http_requests_total{service=\"api_hub\"}[5m]))) > 0.05",
+          "for": "10m",
+          "response_sla_minutes": 30
+        }
+      ],
+      "runbook": "docs/OPERATIONS.md#slo-e-alertas",
+      "evidence": ["availability_ratio", "error_rate", "gateway_logs", "incident_ticket"]
+    },
+    "identity_auth_latency_p95": {
+      "service": "identity",
+      "objective": "p95 <= 500ms",
+      "window": "7d",
+      "sli": "p95 login/mfa latency",
+      "promql": "histogram_quantile(0.95, sum(rate(all_in_one_http_request_duration_seconds_bucket{service=\"identity\",route=~\"/auth/.*\"}[5m])) by (le))",
+      "burn_rate_alerts": [
+        {
+          "severity": "high",
+          "expr": "histogram_quantile(0.95, sum(rate(all_in_one_http_request_duration_seconds_bucket{service=\"identity\",route=~\"/auth/.*\"}[5m])) by (le)) > 0.5",
+          "for": "15m",
+          "response_sla_minutes": 60
+        }
+      ],
+      "runbook": "docs/OPERATIONS.md#slo-e-alertas",
+      "evidence": ["p95_latency_seconds", "auth_error_rate", "identity_logs", "incident_ticket"]
+    },
+    "finance_ledger_write_success": {
+      "service": "finance",
+      "objective": "99.90%",
+      "window": "30d",
+      "sli": "successful ledger writes / attempted ledger writes",
+      "promql": "sum(rate(all_in_one_finance_ledger_writes_total{result=\"success\"}[5m])) / sum(rate(all_in_one_finance_ledger_writes_total[5m]))",
+      "burn_rate_alerts": [
+        {
+          "severity": "critical",
+          "expr": "1 - (sum(rate(all_in_one_finance_ledger_writes_total{result=\"success\"}[5m])) / sum(rate(all_in_one_finance_ledger_writes_total[5m]))) > 0.01",
+          "for": "5m",
+          "response_sla_minutes": 15
+        }
+      ],
+      "runbook": "docs/OPERATIONS.md#slo-e-alertas",
+      "evidence": ["ledger_write_error_rate", "idempotency_key_hash", "finance_logs", "incident_ticket"]
+    },
+    "outbox_delivery_freshness": {
+      "service": "outbox-dispatcher",
+      "objective": "oldest pending <= 30m",
+      "window": "24h",
+      "sli": "oldest pending outbox event age",
+      "promql": "all_in_one_outbox_oldest_pending_age_seconds",
+      "burn_rate_alerts": [
+        {
+          "severity": "critical",
+          "expr": "all_in_one_outbox_oldest_pending_age_seconds > 1800",
+          "for": "10m",
+          "response_sla_minutes": 30,
+          "materialized_alert": "OutboxOldestPendingTooOld"
+        }
+      ],
+      "runbook": "docs/OPERATIONS.md#outbox",
+      "evidence": ["oldest_pending_age_seconds", "event_selector_hash", "dispatcher_logs", "incident_ticket"]
+    },
+    "retention_decision_timeliness": {
+      "service": "retention-worker",
+      "objective": "oldest candidate <= 24h",
+      "window": "7d",
+      "sli": "oldest pending retention candidate age",
+      "promql": "all_in_one_retention_oldest_candidate_age_seconds",
+      "burn_rate_alerts": [
+        {
+          "severity": "critical",
+          "expr": "all_in_one_retention_oldest_candidate_age_seconds > 86400",
+          "for": "15m",
+          "response_sla_minutes": 30,
+          "materialized_alert": "RetentionOldestCandidateTooOld"
+        }
+      ],
+      "runbook": "docs/OPERATIONS.md#retencao-lgpd",
+      "evidence": ["oldest_candidate_age_seconds", "candidate_selector_hash", "legal_hold_summary", "incident_ticket"]
+    },
+    "jobs_document_vault_access_audit": {
+      "service": "jobs",
+      "objective": "100% sensitive document reads audited",
+      "window": "30d",
+      "sli": "audited sensitive reads / sensitive document reads",
+      "promql": "sum(rate(all_in_one_jobs_sensitive_reads_total{audit=\"present\"}[5m])) / sum(rate(all_in_one_jobs_sensitive_reads_total[5m]))",
+      "burn_rate_alerts": [
+        {
+          "severity": "critical",
+          "expr": "sum(rate(all_in_one_jobs_sensitive_reads_total{audit=\"missing\"}[5m])) > 0",
+          "for": "5m",
+          "response_sla_minutes": 15
+        }
+      ],
+      "runbook": "docs/OPERATIONS.md#slo-e-alertas",
+      "evidence": ["resume_access_log_id", "actor_id_hash", "audit_event_id", "incident_ticket"]
+    }
+  },
+  "global_invariants": [
+    "alertas nao podem incluir payload sensivel",
+    "todo SLO critico deve apontar para runbook e incident_ticket",
+    "servicos com dados sensiveis exigem evidencia por hash ou identificador auditavel",
+    "alertas ja materializados em PrometheusRule devem manter o mesmo expr do contrato especifico"
+  ]
+}

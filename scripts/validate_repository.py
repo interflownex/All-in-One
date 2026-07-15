@@ -26,6 +26,7 @@ COMPLIANCE_MATRIX = ROOT / "config" / "compliance" / "data_classification.json"
 DATA_SUBJECT_RIGHTS = ROOT / "config" / "compliance" / "data_subject_rights.json"
 RETENTION_JOBS = ROOT / "config" / "compliance" / "retention_jobs.json"
 RETENTION_ALERTS = ROOT / "config" / "observability" / "retention_alerts.json"
+SLO_CATALOG = ROOT / "config" / "observability" / "slo_catalog.json"
 PROVIDER_MATRIX = ROOT / "config" / "integrations" / "provider_matrix.json"
 ENV_EXAMPLE = ROOT / ".env.example"
 VSCODE_SETTINGS = ROOT / ".vscode" / "settings.json"
@@ -577,6 +578,25 @@ def main() -> int:
         for alert_name, alert in retention_alerts.get("alerts", {}).items():
             if f"alert: {alert_name}" not in retention_alerting or alert["expr"] not in retention_alerting:
                 fail(f"PrometheusRule de retencao nao materializa alerta: {alert_name}", errors)
+    if not SLO_CATALOG.is_file():
+        fail(f"Catalogo SLO ausente: {SLO_CATALOG}", errors)
+    else:
+        slo_catalog = json.loads(SLO_CATALOG.read_text(encoding="utf-8"))
+        expected_slos = {
+            "api_hub_gateway_availability",
+            "identity_auth_latency_p95",
+            "finance_ledger_write_success",
+            "outbox_delivery_freshness",
+            "retention_decision_timeliness",
+            "jobs_document_vault_access_audit",
+        }
+        if set(slo_catalog.get("slo_targets", {})) != expected_slos:
+            fail("Catalogo SLO deve cobrir API Hub, Identity, Finance, Outbox, Retention e Jobs.", errors)
+        if slo_catalog.get("notification_policy", {}).get("include_sensitive_payload") is not False:
+            fail("Catalogo SLO nao deve permitir payload sensivel em notificacoes.", errors)
+        for slo_name, slo in slo_catalog.get("slo_targets", {}).items():
+            if not slo.get("promql") or not slo.get("burn_rate_alerts") or "incident_ticket" not in slo.get("evidence", []):
+                fail(f"SLO incompleto: {slo_name}", errors)
 
     if errors:
         print("\nFalhas de validacao encontradas:")
