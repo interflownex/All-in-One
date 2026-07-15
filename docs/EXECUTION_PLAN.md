@@ -448,21 +448,27 @@ Entregas ja existentes:
   Data Agent Kit: login do Google Cloud CLI e Application Default Credentials,
   sem imprimir tokens e com suporte a `GCLOUD_BIN` para evitar SDK Windows
   montado no WSL quando ele nao responder.
+- SDK Linux do Google Cloud instalado em `~/google-cloud-sdk/bin/gcloud`
+  (`Google Cloud SDK 576.0.0`) e validado no WSL. O diagnostico atual retorna
+  `cli_responsive=true` e conta ativa `nazareteandersoncarvalho@gmail.com`; a
+  unica pendencia do Data Agent Kit ainda e ADC `missing_or_unresponsive`.
 
 Proximos passos naturais:
-1. Executar `gcloud auth login` e `gcloud auth application-default login` em
-   terminal interativo com SDK responsivo.
-2. Rodar `GCLOUD_TIMEOUT_SECONDS=20 python3 scripts/google_cloud_control.py auth
+1. Executar `~/google-cloud-sdk/bin/gcloud auth application-default login` em
+   terminal interativo com navegador/fluxo OAuth legitimo.
+2. Executar `~/google-cloud-sdk/bin/gcloud auth login` somente se a conta ativa
+   deixar de aparecer no diagnostico.
+3. Rodar `GCLOUD_TIMEOUT_SECONDS=20 python3 scripts/google_cloud_control.py auth
    --project all-in-one-498012` ate `data_agent_ready=true`.
-3. Executar `python3 scripts/configure_apigee_api_hub.py --apply` com `gcloud`
+4. Executar `python3 scripts/configure_apigee_api_hub.py --apply` com `gcloud`
    autenticado e responsivo para aplicar a service identity e os grants IAM do
    plano Apigee/API Hub.
-4. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
+5. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
    host.
-5. Conectar respostas sandbox a recursos reais/auditaveis dos modulos prioritarios.
-6. Separar sandbox/homologacao/producao.
-7. Implementar adapters por provider real com testes de contrato.
-8. Registrar evidencias de homologacao.
+6. Conectar respostas sandbox a recursos reais/auditaveis dos modulos prioritarios.
+7. Separar sandbox/homologacao/producao.
+8. Implementar adapters por provider real com testes de contrato.
+9. Registrar evidencias de homologacao.
 
 ### Fase 6 - Seguranca, compliance e producao
 

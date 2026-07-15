@@ -7,9 +7,14 @@
 - Diagnosticado o bloqueio do Google Cloud Data Agent Kit: o ambiente precisa
   estar autenticado tanto no Google Cloud CLI quanto em Application Default
   Credentials.
-- Evidencia local: `gcloud` resolvido pelo PATH aponta para o SDK Windows
-  montado em `/mnt/c/Program Files (x86)/Google/Cloud SDK/...`; neste WSL ele
-  nao respondeu dentro de 20s para `--version`, `auth list` ou ADC.
+- Instalado SDK Linux do Google Cloud em `~/google-cloud-sdk/bin/gcloud`
+  (`Google Cloud SDK 576.0.0`), sem alterar PATH global nem material de
+  credencial.
+- Evidencia local atual: `GCLOUD_TIMEOUT_SECONDS=20 python3
+  scripts/google_cloud_control.py auth --project all-in-one-498012` usa
+  `/home/eretazan/google-cloud-sdk/bin/gcloud`, retorna `cli_responsive=true`,
+  identifica a conta ativa `nazareteandersoncarvalho@gmail.com` e mantém
+  `data_agent_ready=false` apenas porque ADC retorna `missing_or_unresponsive`.
 - `scripts/google_cloud_control.py` ganhou o comando `auth`, que valida de forma
   segura e nao-interativa `gcloud`, conta ativa e ADC, sem imprimir token ou
   ler material de credencial.
@@ -20,17 +25,18 @@
 
 ### Pendencias rastreadas
 
-- Executar login legitimo em terminal interativo com SDK responsivo:
-  `gcloud auth login` e `gcloud auth application-default login`.
-- Preferir SDK Linux em `~/google-cloud-sdk/bin/gcloud` ou definir `GCLOUD_BIN`
-  para evitar o SDK Windows montado que excede timeout no WSL.
+- Executar login ADC legitimo em terminal interativo com SDK Linux responsivo:
+  `~/google-cloud-sdk/bin/gcloud auth application-default login`.
+- Confirmar/renovar login CLI somente se a conta ativa deixar de aparecer:
+  `~/google-cloud-sdk/bin/gcloud auth login`.
 - Depois do login, rodar `GCLOUD_TIMEOUT_SECONDS=20 python3
   scripts/google_cloud_control.py auth --project all-in-one-498012` e entao
   retomar `scripts/configure_apigee_api_hub.py --apply`.
 
 ### Git
 
-- Incremento Google Auth/ADC em validacao local antes da sincronizacao.
+- SDK Linux do Google Cloud validado; pendencia restante limitada ao ADC
+  interativo antes de aplicar Apigee/API Hub.
 
 ## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
 
