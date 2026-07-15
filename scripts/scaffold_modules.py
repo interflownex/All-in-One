@@ -203,6 +203,18 @@ def render_contract(module: dict) -> str:
             - Arquivos reais devem ficar em storage privado; o payload versionado guarda apenas hash, chave privada e sinais antifraude minimizados.
             """
         )
+    if module["slug"] == "mobility":
+        special += dedent(
+            """
+
+            ## ETA, NFC e tarifas
+
+            - `routes` exige origem, destino, distancia, ETA e hash de rota para registrar `mobility.route.eta_quoted`.
+            - `tickets` exige QR e NFC tokenizados; uso de ticket emite `mobility.ticket.used`.
+            - `fare_rules` registra tarifas auditaveis append-only por tipo de veiculo e emite `mobility.fare_rule.published`.
+            - ETA dinamico, NFC real e tarifas produtivas dependem de provider homologado; o runtime local guarda somente metadados e hashes operacionais.
+            """
+        )
     return dedent(
         f"""\
         # Contrato: {module["title"]}

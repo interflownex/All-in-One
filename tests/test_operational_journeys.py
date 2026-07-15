@@ -253,6 +253,40 @@ def test_mobility_fare_ride_and_ticket_journey() -> None:
     )
     assert fare.status_code == 200
 
+    fare_rule = mobility.post(
+        "/resources/fare_rules",
+        headers=actor_headers(operator_id, "owner"),
+        json={
+            "user_id": operator_id,
+            "payload": {
+                "rule_name": f"comfort-{nonce}",
+                "base_fare_brl": "8.00",
+                "per_km_brl": "2.10",
+                "minimum_fare_brl": "12.00",
+                "vehicle_type": "comfort",
+            },
+        },
+    )
+    assert fare_rule.status_code == 201
+    assert fare_rule.json()["status"] == "active"
+
+    route = mobility.post(
+        "/resources/routes",
+        headers=actor_headers(passenger_id),
+        json={
+            "user_id": passenger_id,
+            "payload": {
+                "origin": {"lat": -23.567, "lng": -46.648},
+                "destination": {"lat": -23.589, "lng": -46.612},
+                "distance_km": "12.4",
+                "eta_minutes": 31,
+                "route_polyline_hash": f"route-{nonce}",
+            },
+        },
+    )
+    assert route.status_code == 201
+    assert route.json()["status"] == "quoted"
+
     ride = mobility.post(
         "/resources/rides",
         headers={**actor_headers(passenger_id), "X-Idempotency-Key": f"ride-{nonce}"},
@@ -263,6 +297,9 @@ def test_mobility_fare_ride_and_ticket_journey() -> None:
                 "destination": {"lat": -23.589, "lng": -46.612},
                 "vehicle_type": "comfort",
                 "fare_brl": fare.json()["fare_brl"],
+                "fare_rule_id": fare_rule.json()["id"],
+                "route_id": route.json()["id"],
+                "eta_minutes": route.json()["payload"]["eta_minutes"],
             },
         },
     )
@@ -296,6 +333,7 @@ def test_mobility_fare_ride_and_ticket_journey() -> None:
                 "route_code": "BUS-875",
                 "amount_brl": "6.40",
                 "qr_token_hash": "qr-mobility",
+                "nfc_token_hash": "nfc-mobility",
             },
         },
     )
@@ -309,6 +347,15 @@ def test_mobility_fare_ride_and_ticket_journey() -> None:
     )
     assert used_ticket.status_code == 200
     assert used_ticket.json()["status"] == "used"
+
+    outbox = mobility.get("/events/outbox", headers=actor_headers(operator_id, "auditor"))
+    assert outbox.status_code == 200
+    routing_keys = {event["routing_key"] for event in outbox.json()}
+    assert {
+        "mobility.fare_rule.published",
+        "mobility.route.eta_quoted",
+        "mobility.ticket.used",
+    } <= routing_keys
 
 
 def test_health_patient_appointment_access_journey() -> None:

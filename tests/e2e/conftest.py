@@ -162,6 +162,7 @@ PHASE4_ROUTE_PAYLOADS = {
         "route_code": "MOB-E2E",
         "amount_brl": "4.40",
         "qr_token_hash": "phase4-ticket-token",
+        "nfc_token_hash": "phase4-nfc-token",
     },
     ("services", "providers"): {"category": "home_services", "name": "Prestador Playwright"},
     ("services", "service_contracts"): {"visit_price_brl": "120.00", "scope": "Visita Playwright"},

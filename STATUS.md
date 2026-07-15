@@ -1,5 +1,33 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Mobility ETA NFC Tarifa
+
+### Concluido neste ciclo
+
+- Mobility passou a ter regras de dominio explicitas para `routes`,
+  `tickets` e `fare_rules`.
+- `routes` registra ETA auditavel com distancia, `eta_minutes` e
+  `route_polyline_hash`, emitindo `mobility.route.eta_quoted`.
+- `tickets` passa a exigir QR e NFC tokenizados, mantendo uso via
+  `mobility.ticket.used`.
+- `fare_rules` registra tarifas auditaveis append-only e emite
+  `mobility.fare_rule.published`.
+- `docs/EXECUTION_PLAN.md` foi reconciliado para manter ETA dinamico, NFC real
+  e tarifas produtivas como pendencias de homologacao/provider.
+
+### Evidencias
+
+- `tests/test_operational_journeys.py::test_mobility_fare_ride_and_ticket_journey`
+  cobre tarifa calculada, regra tarifaria versionada, rota com ETA, corrida,
+  ticket QR/NFC, uso do ticket e eventos de outbox.
+- `tests/e2e/conftest.py` passou a semear ticket Mobility com
+  `nfc_token_hash` para preservar o Playwright vivo.
+
+### Pendencias rastreadas
+
+- Mobility permanece pendente para mapas/ETA dinamico, NFC real e tarifas
+  produtivas homologadas com providers externos.
+
 ## STATUS OPERACIONAL - 2026-07-15 Jobs Triagem Entrevista
 
 ### Concluido neste ciclo

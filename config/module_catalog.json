@@ -99,7 +99,7 @@
       "title": "Mobility",
       "description": "Corridas, transporte publico, rotas, tickets, QR Code, NFC e ETA.",
       "entities": ["rides", "routes", "stops", "tickets", "fare_rules"],
-      "events": ["mobility.ride.requested", "mobility.ride.accepted", "mobility.ride.completed", "mobility.ticket.purchased", "mobility.ticket.used"],
+      "events": ["mobility.ride.requested", "mobility.ride.accepted", "mobility.ride.completed", "mobility.route.eta_quoted", "mobility.ticket.purchased", "mobility.ticket.used", "mobility.fare_rule.published"],
       "monetization": "Comissao de 15 a 25 por cento, cancelamento, tickets e passes.",
       "branch": "module/mobility"
     },

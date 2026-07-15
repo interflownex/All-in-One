@@ -37,13 +37,23 @@
 - `POST /audit`
 
 
+## ETA, NFC e tarifas
+
+- `routes` exige origem, destino, distancia, ETA e hash de rota para registrar `mobility.route.eta_quoted`.
+- `tickets` exige QR e NFC tokenizados; uso de ticket emite `mobility.ticket.used`.
+- `fare_rules` registra tarifas auditaveis append-only por tipo de veiculo e emite `mobility.fare_rule.published`.
+- ETA dinamico, NFC real e tarifas produtivas dependem de provider homologado; o runtime local guarda somente metadados e hashes operacionais.
+
+
         ## Eventos
 
         - `mobility.ride.requested`
 - `mobility.ride.accepted`
 - `mobility.ride.completed`
+- `mobility.route.eta_quoted`
 - `mobility.ticket.purchased`
 - `mobility.ticket.used`
+- `mobility.fare_rule.published`
 
         ## Regras
 
