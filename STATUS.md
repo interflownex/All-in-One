@@ -1,5 +1,28 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Permissions Identity Evidence
+
+### Concluido neste ciclo
+
+- A matriz `config/security/permissions_enforcement_matrix.json` passou a
+  listar a negativa `third_party_without_sensitive_role_cannot_read_identity_user`
+  e a positiva `auditor_can_read_identity_user_with_runtime_sensitive_role`.
+- `tests/test_permissions_enforcement_matrix.py` agora cobre HTTP real de
+  Identity: terceiro comum recebe `403` ao ler `identity.users` de outro
+  usuario, enquanto auditor autorizado recebe `200`.
+- A cobertura de enforcement sensivel local agora inclui Identity, Finance e
+  Health, alinhada ao `sensitive_permissions_review`.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_permissions_enforcement_matrix.py tests/test_sensitive_permissions_review.py`:
+  11 testes aprovados.
+
+### Pendencias rastreadas
+
+- Permanece externa: revisar RBAC/ABAC em ambiente homologado e ampliar
+  evidencias com dados reais controlados por modulo critico restante.
+
 ## STATUS OPERACIONAL - 2026-07-15 Identity Registration Negatives
 
 ### Concluido neste ciclo

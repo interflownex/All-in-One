@@ -83,6 +83,7 @@
     "common_user_cannot_list_roles",
     "auditor_cannot_create_role",
     "administrator_without_mfa_cannot_create_approval_limit",
+    "third_party_without_sensitive_role_cannot_read_identity_user",
     "third_party_without_sensitive_role_cannot_read_finance_wallet",
     "auditor_without_medical_context_cannot_read_patient_record"
   ],
@@ -90,6 +91,7 @@
     "administrator_can_create_role",
     "auditor_can_list_roles",
     "administrator_with_mfa_can_create_approval_limit",
+    "auditor_can_read_identity_user_with_runtime_sensitive_role",
     "auditor_can_read_finance_wallet_with_runtime_sensitive_role",
     "doctor_can_read_patient_record_with_runtime_medical_role"
   ],
