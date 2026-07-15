@@ -184,6 +184,56 @@ def test_jobs_active_business_can_publish_vacancy_for_candidates() -> None:
     assert application.status_code == 201
     assert application.json()["status"] == "submitted"
 
+    reviewed = client.post(
+        f"/resources/applications/{application.json()['id']}/actions/review",
+        headers=headers,
+        json={
+            "reason": "triagem aderente aos requisitos",
+            "payload": {"screening_notes": "experiencia compativel"},
+        },
+    )
+    assert reviewed.status_code == 200
+    assert reviewed.json()["status"] == "under_review"
+
+    shortlisted = client.post(
+        f"/resources/applications/{application.json()['id']}/actions/shortlist",
+        headers=headers,
+        json={
+            "reason": "candidato segue para entrevista",
+            "payload": {"notification_channel": "in_app"},
+        },
+    )
+    assert shortlisted.status_code == 200
+    assert shortlisted.json()["status"] == "shortlisted"
+
+    interview = client.post(
+        f"/resources/applications/{application.json()['id']}/actions/schedule_interview",
+        headers=headers,
+        json={
+            "reason": "entrevista tecnica agendada",
+            "payload": {
+                "interview_at": "2026-07-16T14:00:00Z",
+                "notification_channel": "in_app",
+            },
+        },
+    )
+    assert interview.status_code == 200
+    assert interview.json()["status"] == "interview_scheduled"
+    assert interview.json()["payload"]["interview_at"] == "2026-07-16T14:00:00Z"
+
+    outbox = client.get(
+        "/events/outbox",
+        headers=recruiter_headers(recruiter_id, business_id, "jobs:manage")
+        | {"X-Actor-Roles": "auditor,recruiter"},
+    )
+    assert outbox.status_code == 200
+    routing_keys = {event["routing_key"] for event in outbox.json()}
+    assert {
+        "jobs.application.reviewed",
+        "jobs.application.shortlisted",
+        "jobs.application.interview_scheduled",
+    } <= routing_keys
+
 
 def test_jobs_ctps_pdf_is_encrypted_and_downloadable_only_by_owner(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     key = base64.urlsafe_b64encode(AESGCM.generate_key(bit_length=256)).decode("ascii")

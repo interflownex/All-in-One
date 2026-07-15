@@ -1,5 +1,31 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Jobs Triagem Entrevista
+
+### Concluido neste ciclo
+
+- Jobs passou a suportar a acao `schedule_interview` em `applications`,
+  transicionando `shortlisted` para `interview_scheduled`.
+- O catalogo e os contratos Jobs agora anunciam eventos operacionais de
+  triagem, shortlist, entrevista e rejeicao de candidatura.
+- `tests/test_identity_jobs_domain.py` cobre vaga publicada, candidatura,
+  triagem (`jobs.application.reviewed`), shortlist
+  (`jobs.application.shortlisted`) e entrevista agendada
+  (`jobs.application.interview_scheduled`) como notificacoes via outbox.
+- `docs/EXECUTION_PLAN.md` foi reconciliado para manter CTPS oficial e
+  Playwright E2E final como pendencias reais do modulo Jobs.
+
+### Evidencias
+
+- `tests/test_identity_jobs_domain.py::test_jobs_active_business_can_publish_vacancy_for_candidates`
+  cobre o fluxo candidato -> vaga -> candidatura -> triagem -> shortlist ->
+  entrevista e valida os eventos de outbox.
+
+### Pendencias rastreadas
+
+- Jobs permanece pendente para homologacao CTPS oficial e Playwright vivo final
+  da triagem/entrevista em ambiente de frontend/homologacao.
+
 ## STATUS OPERACIONAL - 2026-07-15 Delivery POD Auditavel
 
 ### Concluido neste ciclo

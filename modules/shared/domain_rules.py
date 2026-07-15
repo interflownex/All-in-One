@@ -398,6 +398,7 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
             "withdraw": Transition(frozenset({"submitted", "under_review"}), "withdrawn", event="jobs.application.withdrawn"),
             "review": Transition(frozenset({"submitted"}), "under_review", RECRUITER_ROLES, False, "jobs.application.reviewed"),
             "shortlist": Transition(frozenset({"submitted", "under_review"}), "shortlisted", RECRUITER_ROLES, True, "jobs.application.shortlisted"),
+            "schedule_interview": Transition(frozenset({"shortlisted"}), "interview_scheduled", RECRUITER_ROLES, True, "jobs.application.interview_scheduled"),
             "reject": Transition(frozenset({"submitted", "under_review", "shortlisted"}), "rejected", RECRUITER_ROLES, True, "jobs.application.rejected"),
         },
     ),

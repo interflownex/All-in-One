@@ -6,7 +6,12 @@
 - `jobs.resume.ctps_imported`
 - `jobs.employment.self_declared`
 - `jobs.job_posting.created`
+- `jobs.job_posting.published`
 - `jobs.application.created`
+- `jobs.application.reviewed`
+- `jobs.application.shortlisted`
+- `jobs.application.interview_scheduled`
+- `jobs.application.rejected`
 - `jobs.resume.viewed`
 
         Eventos carregam `event_id`, `occurred_at`, `actor_user_id`, `user_id`,

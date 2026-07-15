@@ -45,6 +45,7 @@
 - Experiencias digitadas em `employment_records` sao sempre `self_declared_unverified`, inclusive trabalho informal e descricoes adicionais.
 - `GET /vacancies` expõe vagas publicadas para candidatos.
 - `GET /recruiting/resumes/{resume_id}` exige empresa ativa no All-in-One Business, papel de recrutador, escopo Jobs e registra cada visualizacao.
+- Candidaturas suportam triagem (`review`), shortlist (`shortlist`) e entrevista agendada (`schedule_interview`) com eventos de outbox para notificacoes operacionais.
 - O importador documental nao equivale a verificacao oficial externa; esse estado permanece exibido em `official_verification_status`.
 - PDFs CTPS ficam cifrados em cofre privado AES-256-GCM; em producao a chave deve vir de vault/KMS.
 - `ALL_IN_ONE_JOBS_POSTGRES_DSN` habilita persistencia tipada em `jobs.*` com auditoria e outbox PostgreSQL.
@@ -56,7 +57,12 @@
 - `jobs.resume.ctps_imported`
 - `jobs.employment.self_declared`
 - `jobs.job_posting.created`
+- `jobs.job_posting.published`
 - `jobs.application.created`
+- `jobs.application.reviewed`
+- `jobs.application.shortlisted`
+- `jobs.application.interview_scheduled`
+- `jobs.application.rejected`
 - `jobs.resume.viewed`
 
         ## Regras
