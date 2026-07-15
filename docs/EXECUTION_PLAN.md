@@ -543,15 +543,15 @@ Proximos passos naturais:
 | `wms` | 64% | Armazem/inventario modelados, `WmsPostgresStore` tipado e warehouse create/update/soft-delete coberto na suite PostgreSQL prioritaria | Operacao real de estoque | Testar recebimento/picking em jornada viva |
 | `tms` | 64% | Fretes/transportadoras modelados, `TmsPostgresStore` tipado e carrier create/update/soft-delete coberto na suite PostgreSQL prioritaria | Torre de controle e POD real | Testar frete/POD em jornada viva |
 | `crm` | 64% | Leads/oportunidades modelados, `CrmPostgresStore` tipado e lead create/update/soft-delete coberto na suite PostgreSQL prioritaria | Pipeline e campanhas reais | Testar lead -> oportunidade em jornada viva |
-| `bpm` | 58% | Processos/workflows modelados | Engine real de workflow | Implementar timers/SLA/escalonamento |
-| `document` | 58% | GED/OCR/assinatura modelados | Storage, OCR e assinatura reais | Tipar store e implementar upload/versionamento |
-| `hr` | 58% | HCM/ATS/LMS modelado | Folha, ponto e LMS reais | Fluxo colaborador -> folha -> treinamento |
+| `bpm` | 62% | Processos/workflows modelados, `BpmPostgresStore` tipado e process create/update/soft-delete coberto na suite PostgreSQL prioritaria | Engine real de workflow | Implementar timers/SLA/escalonamento em jornada viva |
+| `document` | 62% | GED/OCR/assinatura modelados, `DocumentPostgresStore` tipado e folder create/update/soft-delete coberto na suite PostgreSQL prioritaria | Storage, OCR e assinatura reais | Implementar upload/versionamento com storage privado |
+| `hr` | 62% | HCM/ATS/LMS modelado, `HrPostgresStore` tipado e employee create/update/soft-delete coberto na suite PostgreSQL prioritaria | Folha, ponto e LMS reais | Fluxo colaborador -> folha -> treinamento |
 | `health` | 66% | Pacientes, agenda, protecao de dado sensivel e consulta cobertos por pytest | Consentimento, prontuario e telemedicina reais | Implementar consentimento auditavel e prontuario |
 | `vision` | 55% | Dispositivos/streams/alertas modelados | Ingestao de video e IA | Prova de stream e alerta |
-| `legal` | 55% | Casos/prazos/audiencias modelados | Integracoes tribunal/calendario | Fluxo caso -> prazo -> alerta |
-| `property` | 55% | Imoveis/unidades/locacoes modelados | Condominio e manutencao reais | Fluxo locacao/manutencao |
-| `bi` | 55% | Datasets/dashboards modelados | ETL e permissao analitica | Primeiro dashboard auditavel |
-| `ai_core` | 55% | Memoria/moderacao/model runs modelados | Providers IA e governanca | Adapter de provider e custo por execucao |
+| `legal` | 59% | Casos/prazos/audiencias modelados, `LegalPostgresStore` tipado e case create/update/soft-delete coberto na suite PostgreSQL prioritaria | Integracoes tribunal/calendario | Fluxo caso -> prazo -> alerta |
+| `property` | 59% | Imoveis/unidades/locacoes modelados, `PropertyPostgresStore` tipado e property create/update/soft-delete coberto na suite PostgreSQL prioritaria | Condominio e manutencao reais | Fluxo locacao/manutencao |
+| `bi` | 59% | Datasets/dashboards modelados, `BiPostgresStore` tipado e dataset create/update/soft-delete coberto na suite PostgreSQL prioritaria | ETL e permissao analitica | Primeiro dashboard auditavel |
+| `ai_core` | 59% | Memoria/moderacao/model runs modelados, `AiCorePostgresStore` tipado e memory create/update/soft-delete coberto na suite PostgreSQL prioritaria | Providers IA e governanca | Adapter de provider e custo por execucao |
 
 ## 4. Criterios de beta
 

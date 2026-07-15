@@ -49,6 +49,26 @@
   conciliacao, picking, POD, pipeline e homologacao em DSN/ambiente real, nao
   mais criacao basica de store tipado.
 
+## STATUS OPERACIONAL - 2026-07-15 Reconciliacao Stores Tipados Remanescentes
+
+### Concluido neste ciclo
+
+- Reconciliada a matriz por modulo em `docs/EXECUTION_PLAN.md` para BPM,
+  Document, HR, Legal, Property, BI e AI Core.
+- Evidencia atual no repositorio mostra `BpmPostgresStore`,
+  `DocumentPostgresStore`, `HrPostgresStore`, `LegalPostgresStore`,
+  `PropertyPostgresStore`, `BiPostgresStore` e `AiCorePostgresStore` presentes
+  em `modules/shared`.
+- `tests/test_postgres_priority_stores_integration.py` cobre esses stores com
+  fluxos PostgreSQL prioritarios de create/update/soft-delete para process,
+  folder, employee, case, property, dataset e memory.
+
+### Pendencias rastreadas
+
+- As pendencias restantes nesses modulos sao engines/jornadas vivas, storage,
+  OCR/assinatura, folha/ponto/LMS, integracoes tribunal/calendario, ETL,
+  governanca IA e provedores reais.
+
 ## STATUS OPERACIONAL - 2026-07-15 Git Sync Linux Upstream
 
 ### Concluido neste ciclo
