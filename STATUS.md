@@ -66,6 +66,31 @@
 - Incremento de ambientes de integracao em validacao local antes da
   sincronizacao.
 
+## STATUS OPERACIONAL - 2026-07-15 Auditoria Sandbox Integracoes
+
+### Concluido neste ciclo
+
+- `SandboxResult` agora gera `audit` padronizado para todos os adapters locais,
+  com `audit_id`, `payload_sha256`, eventos emitidos, ambiente sandbox e
+  politica `sandbox_audit_90d_no_raw_sensitive_input`.
+- As rotas `/integrations/sandbox/*` passam a devolver esse rastro auditavel
+  sem expor documento, segredo, payload bruto sensivel ou chave original.
+- `local_fiscal_document_simulator` tambem anexa auditoria ao fluxo fiscal
+  legado de cancelamento.
+- `docs/INTEGRATION.md` e `docs/EXECUTION_PLAN.md` registram que a pendencia de
+  respostas sandbox auditaveis foi saneada localmente.
+
+### Pendencias rastreadas
+
+- Persistir esses envelopes de auditoria em store/outbox real quando cada fluxo
+  de produto exigir historico operacional duravel.
+- Implementar adapters reais por provider com testes de contrato e evidencias
+  de homologacao.
+
+### Git
+
+- Incremento de auditoria sandbox em validacao local antes da sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
 
 ### Concluido neste ciclo

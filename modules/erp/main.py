@@ -122,11 +122,4 @@ async def sandbox_fiscal_invoice(
         request.amount_brl,
         request.issuer_document,
     )
-    return {
-        "provider_key": result.provider_key,
-        "adapter": result.adapter,
-        "status": result.status,
-        "reference_id": result.reference_id,
-        "payload": result.payload,
-        "events": list(result.events),
-    }
+    return result.to_response()

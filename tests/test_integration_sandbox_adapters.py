@@ -48,6 +48,31 @@ def test_identity_verification_sandbox_hashes_sensitive_inputs() -> None:
     assert "12345678000199" not in str(business.payload)
 
 
+def test_sandbox_results_include_audit_record_without_raw_sensitive_input() -> None:
+    sandbox = IdentityVerificationSandbox()
+
+    result = sandbox.verify_person(
+        user_id="user-123",
+        document="12345678901",
+        full_name="Cliente Teste",
+        selfie_hash="selfie-sha256",
+    )
+    response = result.to_response()
+    audit = response["audit"]
+
+    assert audit["audit_id"].startswith("sandbox_audit_")
+    assert audit["provider_key"] == "identity_kyc_kyb"
+    assert audit["adapter"] == "local_identity_verification_simulator"
+    assert audit["provider_environment"] == "sandbox"
+    assert audit["reference_id"] == result.reference_id
+    assert audit["payload_sha256"]
+    assert audit["event_routing_keys"] == ["identity.user.verified"]
+    assert audit["event_count"] == 1
+    assert audit["retention_policy"] == "sandbox_audit_90d_no_raw_sensitive_input"
+    assert "12345678901" not in str(audit)
+    assert "Cliente Teste" not in str(audit)
+
+
 def test_psp_fiscal_and_supplier_sandboxes_emit_domain_events() -> None:
     psp = PspLedgerSandbox()
     fiscal = FiscalDocumentSandbox()

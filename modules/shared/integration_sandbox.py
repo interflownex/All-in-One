@@ -44,6 +44,31 @@ def _event(routing_key: str, payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def sandbox_audit_record(
+    provider_key: str,
+    adapter: str,
+    status: str,
+    reference_id: str,
+    payload: dict[str, Any],
+    events: tuple[dict[str, Any], ...] = (),
+) -> dict[str, Any]:
+    payload_sha256 = _digest("sandbox-payload", json.dumps(payload, sort_keys=True, default=str))
+    event_keys = [str(event.get("routing_key", "")) for event in events]
+    return {
+        "audit_id": _stable_id("sandbox_audit", provider_key, adapter, reference_id, payload_sha256),
+        "provider_key": provider_key,
+        "adapter": adapter,
+        "provider_environment": "sandbox",
+        "status": status,
+        "reference_id": reference_id,
+        "payload_sha256": payload_sha256,
+        "event_routing_keys": event_keys,
+        "event_count": len(events),
+        "retention_policy": "sandbox_audit_90d_no_raw_sensitive_input",
+        "created_at": _now(),
+    }
+
+
 def load_provider_matrix(path: Path = MATRIX_PATH) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -61,6 +86,27 @@ class SandboxResult:
     reference_id: str
     payload: dict[str, Any]
     events: tuple[dict[str, Any], ...] = ()
+
+    def audit_record(self) -> dict[str, Any]:
+        return sandbox_audit_record(
+            self.provider_key,
+            self.adapter,
+            self.status,
+            self.reference_id,
+            self.payload,
+            self.events,
+        )
+
+    def to_response(self) -> dict[str, Any]:
+        return {
+            "provider_key": self.provider_key,
+            "adapter": self.adapter,
+            "status": self.status,
+            "reference_id": self.reference_id,
+            "payload": self.payload,
+            "events": list(self.events),
+            "audit": self.audit_record(),
+        }
 
 
 class IdentityVerificationSandbox:
@@ -190,6 +236,13 @@ def local_fiscal_document_simulator(
         "reference_id": _stable_id("fiscal", document_id, action),
         "auth_code": _digest("fiscal", document_id, action, material["amount_brl"])[:16].upper(),
         "payload": material,
+        "audit": sandbox_audit_record(
+            FiscalDocumentSandbox.provider_key,
+            FiscalDocumentSandbox.adapter,
+            status,
+            _stable_id("fiscal", document_id, action),
+            material,
+        ),
     }
 
 

@@ -291,14 +291,7 @@ def _expose(item: dict[str, Any], actor: Actor, rule: ResourceRule, module_name:
 
 
 def _sandbox_response(result: SandboxResult) -> dict[str, Any]:
-    return {
-        "provider_key": result.provider_key,
-        "adapter": result.adapter,
-        "status": result.status,
-        "reference_id": result.reference_id,
-        "payload": result.payload,
-        "events": list(result.events),
-    }
+    return result.to_response()
 
 
 def _authorize_sandbox(actor: Actor) -> None:

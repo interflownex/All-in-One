@@ -62,6 +62,12 @@ exigindo `X-Actor-Roles` com papel aceito por compliance/operacao:
 
 As rotas sao validadas por `tests/test_integration_sandbox_routes.py`.
 
+Cada resposta sandbox retorna tambem um bloco `audit` com `audit_id`,
+`payload_sha256`, `event_routing_keys`, `event_count`, ambiente `sandbox` e
+politica `sandbox_audit_90d_no_raw_sensitive_input`. Esse rastro permite
+persistir ou correlacionar execucoes de homologacao sem gravar documentos,
+segredos, payloads originais de webhook ou outros insumos sensiveis brutos.
+
 ## Ambientes de integracao
 
 A separacao operacional entre `sandbox`, `homologacao` e `producao` fica em

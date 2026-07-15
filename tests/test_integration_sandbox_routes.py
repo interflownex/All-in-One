@@ -32,7 +32,11 @@ def test_identity_business_finance_sandbox_routes() -> None:
     assert kyc.status_code == 200
     assert kyc.json()["provider_key"] == "identity_kyc_kyb"
     assert kyc.json()["status"] == "approved"
+    assert kyc.json()["audit"]["audit_id"].startswith("sandbox_audit_")
+    assert kyc.json()["audit"]["provider_environment"] == "sandbox"
+    assert kyc.json()["audit"]["event_routing_keys"] == ["identity.user.verified"]
     assert "12345678901" not in str(kyc.json()["payload"])
+    assert "12345678901" not in str(kyc.json()["audit"])
 
     kyb = business.post(
         "/integrations/sandbox/kyb/business",
@@ -49,6 +53,7 @@ def test_identity_business_finance_sandbox_routes() -> None:
     )
     assert pix.status_code == 200
     assert pix.json()["status"] == "authorized"
+    assert pix.json()["audit"]["payload_sha256"]
 
     escrow = finance.post(
         "/integrations/sandbox/psp/escrows",
@@ -130,3 +135,4 @@ def test_logistics_jobs_health_api_hub_and_supplier_sandbox_routes() -> None:
     )
     assert invoice.status_code == 200
     assert invoice.json()["events"][0]["routing_key"] == "erp.invoice.created"
+    assert invoice.json()["audit"]["event_routing_keys"] == ["erp.invoice.created"]

@@ -433,6 +433,9 @@ Entregas ja existentes:
   Health, API Hub, Stock, Riders e Services.
 - Teste `tests/test_integration_sandbox_routes.py` valida autorizacao e contratos
   HTTP desses endpoints.
+- Respostas sandbox agora carregam bloco `audit` comum com `audit_id`,
+  `payload_sha256`, eventos emitidos e retencao `sandbox_audit_90d_no_raw_sensitive_input`,
+  permitindo rastreabilidade sem persistir entrada sensivel bruta.
 - Configuracao `config/integrations/environment_profiles.json` separa
   `sandbox`, `homologacao` e `producao`, com `ALL_IN_ONE_INTEGRATION_ENV`,
   evidencias obrigatorias, politica de segredos e rollback por ambiente.
@@ -471,9 +474,8 @@ Proximos passos naturais:
    plano Apigee/API Hub.
 5. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
    host.
-6. Conectar respostas sandbox a recursos reais/auditaveis dos modulos prioritarios.
-7. Implementar adapters por provider real com testes de contrato.
-8. Registrar evidencias de homologacao.
+6. Implementar adapters por provider real com testes de contrato.
+7. Registrar evidencias de homologacao.
 
 ### Fase 6 - Seguranca, compliance e producao
 
