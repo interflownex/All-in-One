@@ -234,7 +234,7 @@
       "title": "API Hub",
       "description": "OAuth2, API keys, webhooks, escopos, sandbox e integracoes.",
       "entities": ["api_clients", "api_keys", "webhooks", "integration_runs"],
-      "events": ["api.client.created", "api.webhook.delivered"],
+      "events": ["api.client.created", "api.client.submitted", "api.client.approved", "api.client.rejected", "api.key.created", "api.key.submitted", "api.key.approved", "api.key.rejected", "api.webhook.created", "api.webhook.submitted", "api.webhook.approved", "api.webhook.rejected", "api.integration_run.created", "api.integration_run.submitted", "api.integration_run.approved", "api.integration_run.rejected", "api.webhook.delivered"],
       "monetization": "Limites de API, conectores e SLA premium.",
       "branch": "module/business"
     }

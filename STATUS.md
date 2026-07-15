@@ -1,5 +1,28 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 API Hub Event Catalog
+
+### Concluido neste ciclo
+
+- O catalogo API Hub passou a declarar eventos administrativos de API clients,
+  API keys, webhooks e integration runs emitidos pelo runtime local.
+- `api.webhook.delivered` foi preservado como evento operacional de entrega de
+  webhook, enquanto criacao/revisao usam a familia `api.*`.
+- `tests/test_api_hub_event_catalog.py` bloqueia drift entre eventos
+  administrativos do runtime API Hub e `config/module_catalog.json`.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_api_hub_event_catalog.py modules/api_hub/tests/test_gateway_security.py tests/test_api_hub_catalog_gateway.py`:
+  aprovado.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: testar OAuth2 real, assinatura de webhooks de saida e rate
+  limit com Redis real.
+
 ## STATUS OPERACIONAL - 2026-07-15 Jobs Event Catalog
 
 ### Concluido neste ciclo
