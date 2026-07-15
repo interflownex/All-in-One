@@ -444,17 +444,25 @@ Entregas ja existentes:
   e o apply idempotente da service identity/IAM com timeout anti-travamento.
 - `scripts/google_cloud_control.py` tambem respeita `GCLOUD_TIMEOUT_SECONDS` e
   nao bloqueia mais a rodada quando `gcloud auth list` nao responde.
+- `scripts/google_cloud_control.py auth` valida o pre-requisito do Google Cloud
+  Data Agent Kit: login do Google Cloud CLI e Application Default Credentials,
+  sem imprimir tokens e com suporte a `GCLOUD_BIN` para evitar SDK Windows
+  montado no WSL quando ele nao responder.
 
 Proximos passos naturais:
-1. Executar `python3 scripts/configure_apigee_api_hub.py --apply` com `gcloud`
+1. Executar `gcloud auth login` e `gcloud auth application-default login` em
+   terminal interativo com SDK responsivo.
+2. Rodar `GCLOUD_TIMEOUT_SECONDS=20 python3 scripts/google_cloud_control.py auth
+   --project all-in-one-498012` ate `data_agent_ready=true`.
+3. Executar `python3 scripts/configure_apigee_api_hub.py --apply` com `gcloud`
    autenticado e responsivo para aplicar a service identity e os grants IAM do
    plano Apigee/API Hub.
-2. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
+4. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
    host.
-3. Conectar respostas sandbox a recursos reais/auditaveis dos modulos prioritarios.
-4. Separar sandbox/homologacao/producao.
-5. Implementar adapters por provider real com testes de contrato.
-6. Registrar evidencias de homologacao.
+5. Conectar respostas sandbox a recursos reais/auditaveis dos modulos prioritarios.
+6. Separar sandbox/homologacao/producao.
+7. Implementar adapters por provider real com testes de contrato.
+8. Registrar evidencias de homologacao.
 
 ### Fase 6 - Seguranca, compliance e producao
 

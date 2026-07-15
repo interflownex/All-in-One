@@ -21,7 +21,15 @@ bash scripts/enable_cloud_build_and_cloudcode.sh
 ```bash
 gcloud auth login
 gcloud auth application-default login
+gcloud config set project all-in-one-498012
+GCLOUD_TIMEOUT_SECONDS=20 python3 scripts/google_cloud_control.py auth --project all-in-one-498012
 ```
+
+O Data Agent Kit e bibliotecas Google que usam ADC exigem os dois logins:
+`gcloud auth login` para o CLI e `gcloud auth application-default login` para
+Application Default Credentials. Se o WSL resolver `gcloud` para o SDK Windows
+em `/mnt/c` e ele nao responder, use um SDK Linux responsivo ou defina
+`GCLOUD_BIN`.
 
 Configurações recomendadas do VS Code (workspace)
 

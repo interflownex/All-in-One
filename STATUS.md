@@ -1,5 +1,37 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Google Cloud Auth/ADC Data Agent
+
+### Concluido neste ciclo
+
+- Diagnosticado o bloqueio do Google Cloud Data Agent Kit: o ambiente precisa
+  estar autenticado tanto no Google Cloud CLI quanto em Application Default
+  Credentials.
+- Evidencia local: `gcloud` resolvido pelo PATH aponta para o SDK Windows
+  montado em `/mnt/c/Program Files (x86)/Google/Cloud SDK/...`; neste WSL ele
+  nao respondeu dentro de 20s para `--version`, `auth list` ou ADC.
+- `scripts/google_cloud_control.py` ganhou o comando `auth`, que valida de forma
+  segura e nao-interativa `gcloud`, conta ativa e ADC, sem imprimir token ou
+  ler material de credencial.
+- O comando aceita `GCLOUD_BIN` para apontar um SDK Linux responsivo e retorna
+  comandos obrigatorios para habilitar o Data Agent Kit:
+  `gcloud auth login`, `gcloud auth application-default login` e
+  `gcloud config set project all-in-one-498012`.
+
+### Pendencias rastreadas
+
+- Executar login legitimo em terminal interativo com SDK responsivo:
+  `gcloud auth login` e `gcloud auth application-default login`.
+- Preferir SDK Linux em `~/google-cloud-sdk/bin/gcloud` ou definir `GCLOUD_BIN`
+  para evitar o SDK Windows montado que excede timeout no WSL.
+- Depois do login, rodar `GCLOUD_TIMEOUT_SECONDS=20 python3
+  scripts/google_cloud_control.py auth --project all-in-one-498012` e entao
+  retomar `scripts/configure_apigee_api_hub.py --apply`.
+
+### Git
+
+- Incremento Google Auth/ADC em validacao local antes da sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
 
 ### Concluido neste ciclo

@@ -25,9 +25,24 @@ e aponte a URL base para `https://openrouter.ai/api/v1`.
    reativar recursos:
 
    ```bash
+   python3 scripts/google_cloud_control.py auth --project SEU_PROJETO
    python3 scripts/google_cloud_control.py status
    python3 scripts/google_cloud_control.py activate --project SEU_PROJETO
    ```
+
+   Para recursos do Google Cloud Data Agent Kit, Apigee/API Hub e bibliotecas que
+   usam ADC, autentique os dois fluxos antes de executar `status`/`activate`:
+
+   ```bash
+   gcloud auth login
+   gcloud auth application-default login
+   gcloud config set project all-in-one-498012
+   GCLOUD_TIMEOUT_SECONDS=20 python3 scripts/google_cloud_control.py auth --project all-in-one-498012
+   ```
+
+   Se o WSL estiver usando o SDK Windows montado em `/mnt/c` e o comando exceder
+   timeout, instale/use o SDK Linux e aponte `GCLOUD_BIN`, por exemplo
+   `GCLOUD_BIN="$HOME/google-cloud-sdk/bin/gcloud"`.
 
    `activate` habilita as APIs declaradas em
    `config/cloud/google_cloud_profile.json`, inicia somente instancias Compute

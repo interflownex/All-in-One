@@ -22,20 +22,29 @@ def load_profile() -> dict[str, Any]:
 
 
 def find_gcloud() -> str:
-    discovered = shutil.which("gcloud")
-    if discovered:
-        return discovered
+    override = os.getenv("GCLOUD_BIN", "").strip()
+    if override:
+        return override
     if LINUX_GCLOUD.is_file():
         return str(LINUX_GCLOUD)
+    discovered = shutil.which("gcloud")
+    if discovered and not discovered.startswith("/mnt/c/"):
+        return discovered
     if WINDOWS_GCLOUD.is_file():
         return str(WINDOWS_GCLOUD)
+    if discovered:
+        return discovered
     raise RuntimeError("Google Cloud SDK nao encontrado.")
 
 
-def run_gcloud(*args: str, check: bool = True) -> str:
-    timeout = int(os.getenv("GCLOUD_TIMEOUT_SECONDS", str(DEFAULT_GCLOUD_TIMEOUT_SECONDS)))
+def gcloud_timeout_seconds() -> int:
+    return int(os.getenv("GCLOUD_TIMEOUT_SECONDS", str(DEFAULT_GCLOUD_TIMEOUT_SECONDS)))
+
+
+def run_gcloud_result(*args: str) -> subprocess.CompletedProcess[str] | None:
+    timeout = gcloud_timeout_seconds()
     try:
-        result = subprocess.run(
+        return subprocess.run(
             [find_gcloud(), *args],
             check=False,
             text=True,
@@ -43,10 +52,17 @@ def run_gcloud(*args: str, check: bool = True) -> str:
             stderr=subprocess.PIPE,
             timeout=timeout,
         )
-    except subprocess.TimeoutExpired as exc:
+    except subprocess.TimeoutExpired:
+        return None
+
+
+def run_gcloud(*args: str, check: bool = True) -> str:
+    timeout = int(os.getenv("GCLOUD_TIMEOUT_SECONDS", str(DEFAULT_GCLOUD_TIMEOUT_SECONDS)))
+    result = run_gcloud_result(*args)
+    if result is None:
         if not check:
             return ""
-        raise RuntimeError(f"gcloud excedeu {timeout}s ao executar: {' '.join(args)}") from exc
+        raise RuntimeError(f"gcloud excedeu {timeout}s ao executar: {' '.join(args)}")
     if check and result.returncode:
         detail = result.stderr.strip() or result.stdout.strip()
         raise RuntimeError(detail or f"gcloud retornou codigo {result.returncode}.")
@@ -55,6 +71,62 @@ def run_gcloud(*args: str, check: bool = True) -> str:
 
 def active_account() -> str:
     return run_gcloud("auth", "list", "--filter=status:ACTIVE", "--format=value(account)", check=False)
+
+
+def adc_authenticated() -> bool:
+    result = run_gcloud_result("auth", "application-default", "print-access-token")
+    return bool(result and result.returncode == 0 and result.stdout.strip())
+
+
+def auth_status(project: str) -> dict[str, Any]:
+    try:
+        gcloud_path = find_gcloud()
+    except RuntimeError as exc:
+        return {
+            "data_agent_ready": False,
+            "gcloud_found": False,
+            "project": project or None,
+            "warning": str(exc),
+            "required_commands": [
+                "gcloud auth login",
+                "gcloud auth application-default login",
+            ],
+        }
+
+    version_probe = run_gcloud_result("--version")
+    cli_responsive = bool(version_probe and version_probe.returncode == 0)
+    account = active_account() if cli_responsive else ""
+    adc_ok = adc_authenticated() if cli_responsive else False
+    warnings: list[str] = []
+    if gcloud_path.startswith("/mnt/c/"):
+        warnings.append(
+            "gcloud encontrado no SDK Windows montado em /mnt/c; neste WSL ele pode exceder timeout. "
+            "Prefira SDK Linux em ~/google-cloud-sdk/bin/gcloud ou defina GCLOUD_BIN."
+        )
+    if not cli_responsive:
+        warnings.append(f"gcloud nao respondeu dentro de {gcloud_timeout_seconds()}s.")
+    if cli_responsive and not account:
+        warnings.append("Conta Google Cloud CLI ausente; execute gcloud auth login legitimamente.")
+    if cli_responsive and not adc_ok:
+        warnings.append(
+            "Application Default Credentials ausente ou expirado; execute gcloud auth application-default login."
+        )
+
+    return {
+        "data_agent_ready": bool(account and adc_ok),
+        "gcloud_found": True,
+        "gcloud_path": gcloud_path,
+        "cli_responsive": cli_responsive,
+        "active_account": account or None,
+        "application_default_credentials": "ok" if adc_ok else "missing_or_unresponsive",
+        "project": project or None,
+        "warnings": warnings,
+        "required_commands": [
+            "gcloud auth login",
+            "gcloud auth application-default login",
+            "gcloud config set project all-in-one-498012",
+        ],
+    }
 
 
 def selected_project(explicit_project: str | None, profile: dict[str, Any]) -> str:
@@ -158,13 +230,25 @@ def activate(project: str, profile: dict[str, Any]) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Diagnostica e reativa recursos Google Cloud permitidos.")
-    parser.add_argument("command", choices=("status", "activate"))
+    parser.add_argument("command", choices=("status", "activate", "auth"))
     parser.add_argument("--project")
     args = parser.parse_args()
     profile = load_profile()
-    project = selected_project(args.project, profile)
+    if args.command == "auth":
+        project = (
+            args.project
+            or os.getenv(str(profile["project_environment_variable"]), "").strip()
+            or str(profile["authoritative_project"])
+        )
+    else:
+        project = selected_project(args.project, profile)
     try:
-        result = status(project) if args.command == "status" else activate(project, profile)
+        if args.command == "auth":
+            result = auth_status(project)
+        elif args.command == "status":
+            result = status(project)
+        else:
+            result = activate(project, profile)
     except RuntimeError as exc:
         print(f"Falha Google Cloud: {exc}", file=sys.stderr)
         return 1
