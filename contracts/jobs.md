@@ -56,14 +56,18 @@
         - `jobs.resume.created`
 - `jobs.resume.ctps_imported`
 - `jobs.employment.self_declared`
+- `jobs.resume_document.created`
 - `jobs.job_posting.created`
 - `jobs.job_posting.published`
+- `jobs.job_posting.closed`
 - `jobs.application.created`
 - `jobs.application.reviewed`
 - `jobs.application.shortlisted`
 - `jobs.application.interview_scheduled`
 - `jobs.application.rejected`
+- `jobs.application.withdrawn`
 - `jobs.resume.viewed`
+- `jobs.resume_access_log.created`
 
         ## Regras
 

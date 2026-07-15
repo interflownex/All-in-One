@@ -1,5 +1,29 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Jobs Event Catalog
+
+### Concluido neste ciclo
+
+- O catalogo Jobs passou a declarar eventos operacionais ja emitidos pelo
+  runtime para documento de curriculo, fechamento de vaga, retirada de
+  candidatura e log de acesso ao curriculo.
+- `modules/jobs/CONTRACT.md`, `modules/jobs/EVENTS.md` e `contracts/jobs.md`
+  foram regenerados pelo scaffold com a superficie de eventos atualizada.
+- `tests/test_jobs_event_catalog.py` bloqueia drift entre eventos Jobs emitidos
+  em criacao/transicoes e `config/module_catalog.json`.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_jobs_event_catalog.py tests/test_identity_jobs_domain.py tests/test_business_jobs_journey.py`:
+  aprovado.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar CTPS oficial e levar triagem/entrevista para
+  Playwright vivo contra ambiente final.
+
 ## STATUS OPERACIONAL - 2026-07-15 Identity Event Catalog
 
 ### Concluido neste ciclo

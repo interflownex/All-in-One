@@ -108,7 +108,7 @@
       "title": "Jobs",
       "description": "Curriculos do usuario final, importacao rastreavel da CTPS Digital PDF, experiencias autodeclaradas, vagas e candidaturas com acesso Business controlado.",
       "entities": ["resumes", "employment_records", "resume_documents", "job_postings", "applications", "resume_access_logs"],
-      "events": ["jobs.resume.created", "jobs.resume.ctps_imported", "jobs.employment.self_declared", "jobs.job_posting.created", "jobs.job_posting.published", "jobs.application.created", "jobs.application.reviewed", "jobs.application.shortlisted", "jobs.application.interview_scheduled", "jobs.application.rejected", "jobs.resume.viewed"],
+      "events": ["jobs.resume.created", "jobs.resume.ctps_imported", "jobs.employment.self_declared", "jobs.resume_document.created", "jobs.job_posting.created", "jobs.job_posting.published", "jobs.job_posting.closed", "jobs.application.created", "jobs.application.reviewed", "jobs.application.shortlisted", "jobs.application.interview_scheduled", "jobs.application.rejected", "jobs.application.withdrawn", "jobs.resume.viewed", "jobs.resume_access_log.created"],
       "monetization": "Plano Business de recrutamento e publicacao de vagas com acesso auditado a candidatos.",
       "branch": "module/jobs"
     },
