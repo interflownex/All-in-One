@@ -126,7 +126,7 @@
       "title": "WMS",
       "description": "Armazens, bins, recebimento, separacao, lote, validade e inventario.",
       "entities": ["warehouses", "bins", "inventory", "picking_waves", "shipments"],
-      "events": ["wms.inventory.received", "wms.shipment.dispatched"],
+      "events": ["wms.warehouse.created", "wms.bin.created", "wms.inventory.received", "wms.inventory.allocated", "wms.picking.created", "wms.picking.completed", "wms.picking.closed", "wms.shipment.created", "wms.shipment.dispatched"],
       "monetization": "Modulo SaaS por deposito e volume operacional.",
       "branch": "module/wms"
     },

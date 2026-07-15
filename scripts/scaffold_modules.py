@@ -249,6 +249,17 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
+    if module["slug"] == "wms":
+        special = dedent(
+            """\
+            `inventory` registra recebimento e alocacao; `picking_waves`
+            acompanha separacao; `shipments` controla despacho com MFA.
+            """
+        )
+        rendered = rendered.replace(
+            f"{entities}.\n\n## Execucao",
+            f"{entities}.\n\n{special}\n## Execucao",
+        )
     return rendered
 
 
@@ -435,6 +446,21 @@ def render_contract(module: dict) -> str:
             - A acao `approve_payment` exige papel aprovador, MFA e emite `erp.payment.approved`; `settle` move para `paid` com `erp.payable.paid`.
             - `receivables` exige `customer_name`, `due_at`, `amount_brl` e `account_id`, iniciando em `issued` e emitindo `erp.receivable.created`.
             - A acao `receive` emite `erp.receivable.received`; `reconcile` exige papel aprovador, MFA e emite `erp.receivable.reconciled`.
+            """
+        )
+    if module["slug"] == "wms":
+        special += dedent(
+            """
+
+            ## Recebimento, picking e despacho
+
+            - `warehouses` exige `name`, inicia em `active` e emite `wms.warehouse.created`.
+            - `bins` exige `warehouse_id` e `code`, inicia em `active` e emite `wms.bin.created`.
+            - `inventory` exige `warehouse_id`, `sku`, `quantity` e `received_at`, iniciando em `received` e emitindo `wms.inventory.received`.
+            - A acao `allocate` move inventario para `allocated` e emite `wms.inventory.allocated`.
+            - `picking_waves` exige `warehouse_id`, `order_reference`, `sku` e `quantity`, iniciando em `open` e emitindo `wms.picking.created`.
+            - A acao `pick` emite `wms.picking.completed`; `close` exige papel aprovador, MFA e emite `wms.picking.closed`.
+            - `shipments` exige `warehouse_id`, `picking_wave_id` e `carrier_reference`; `dispatch` exige papel aprovador, MFA e emite `wms.shipment.dispatched`.
             """
         )
     return dedent(

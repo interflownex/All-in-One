@@ -488,7 +488,63 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
         monetary_fields=("amount_brl"),
         transitions=lifecycle_flow("erp.invoice"),
     ),
-    ("wms", "warehouses"): ResourceRule(("name",), transitions=lifecycle_flow("wms.warehouse")),
+    ("wms", "warehouses"): ResourceRule(
+        ("name",),
+        initial_status="active",
+        transitions=lifecycle_flow("wms.warehouse"),
+    ),
+    ("wms", "bins"): ResourceRule(
+        ("warehouse_id", "code"),
+        initial_status="active",
+        transitions=lifecycle_flow("wms.bin"),
+    ),
+    ("wms", "inventory"): ResourceRule(
+        ("warehouse_id", "sku", "quantity", "received_at"),
+        initial_status="received",
+        transitions={
+            "receive": Transition(
+                frozenset({"draft", "received"}),
+                "received",
+                event="wms.inventory.received",
+            ),
+            "allocate": Transition(
+                frozenset({"received"}),
+                "allocated",
+                event="wms.inventory.allocated",
+            ),
+        },
+    ),
+    ("wms", "picking_waves"): ResourceRule(
+        ("warehouse_id", "order_reference", "sku", "quantity"),
+        initial_status="open",
+        transitions={
+            "pick": Transition(
+                frozenset({"open"}),
+                "picked",
+                event="wms.picking.completed",
+            ),
+            "close": Transition(
+                frozenset({"picked"}),
+                "closed",
+                APPROVER_ROLES,
+                True,
+                "wms.picking.closed",
+            ),
+        },
+    ),
+    ("wms", "shipments"): ResourceRule(
+        ("warehouse_id", "picking_wave_id", "carrier_reference"),
+        initial_status="ready",
+        transitions={
+            "dispatch": Transition(
+                frozenset({"ready"}),
+                "dispatched",
+                APPROVER_ROLES,
+                True,
+                "wms.shipment.dispatched",
+            ),
+        },
+    ),
     ("tms", "freights"): ResourceRule(("freight_brl",), monetary_fields=("freight_brl", "toll_brl"), transitions=lifecycle_flow("tms.freight")),
     ("crm", "opportunities"): ResourceRule(("title",), monetary_fields=("expected_value_brl",), transitions=lifecycle_flow("crm.opportunity")),
     ("bpm", "workflow_instances"): ResourceRule(
@@ -918,6 +974,11 @@ def event_for_create(module: str, resource_type: str) -> str:
         ("erp", "payables"): "erp.payable.created",
         ("erp", "receivables"): "erp.receivable.created",
         ("erp", "fiscal_documents"): "erp.invoice.created",
+        ("wms", "warehouses"): "wms.warehouse.created",
+        ("wms", "bins"): "wms.bin.created",
+        ("wms", "inventory"): "wms.inventory.received",
+        ("wms", "picking_waves"): "wms.picking.created",
+        ("wms", "shipments"): "wms.shipment.created",
         ("hr", "employees"): "hr.employee.created",
         ("hr", "payroll_runs"): "hr.payroll.opened",
         ("hr", "courses"): "hr.training.assigned",

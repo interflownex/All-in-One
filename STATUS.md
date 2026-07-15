@@ -1,5 +1,35 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 WMS Receiving Picking
+
+### Concluido neste ciclo
+
+- `wms.warehouses` passou a iniciar em `active` e emitir
+  `wms.warehouse.created`.
+- `wms.bins` passou a exigir `warehouse_id` e `code`, com evento
+  `wms.bin.created`.
+- `wms.inventory` passou a exigir `warehouse_id`, `sku`, `quantity` e
+  `received_at`, iniciando em `received` e permitindo alocacao auditavel.
+- `wms.picking_waves` passou a cobrir separacao, fechamento com papel aprovador
+  e MFA, e eventos `wms.picking.completed`/`wms.picking.closed`.
+- `wms.shipments` passou a controlar despacho com papel aprovador, MFA e evento
+  `wms.shipment.dispatched`.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar recebimento, picking e despacho nos contratos
+  gerados e nas jornadas vivas.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local de
+  recebimento/picking foi saneada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_wms_domain.py`: 1 teste aprovado.
+
+### Pendencias rastreadas
+
+- Permanecem externas: homologar coletores/estoque fisico real e ampliar
+  evidencias com operacao controlada.
+
 ## STATUS OPERACIONAL - 2026-07-15 ERP Payables Receivables
 
 ### Concluido neste ciclo

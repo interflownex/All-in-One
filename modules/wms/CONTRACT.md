@@ -37,9 +37,27 @@
 - `POST /audit`
 
 
+## Recebimento, picking e despacho
+
+- `warehouses` exige `name`, inicia em `active` e emite `wms.warehouse.created`.
+- `bins` exige `warehouse_id` e `code`, inicia em `active` e emite `wms.bin.created`.
+- `inventory` exige `warehouse_id`, `sku`, `quantity` e `received_at`, iniciando em `received` e emitindo `wms.inventory.received`.
+- A acao `allocate` move inventario para `allocated` e emite `wms.inventory.allocated`.
+- `picking_waves` exige `warehouse_id`, `order_reference`, `sku` e `quantity`, iniciando em `open` e emitindo `wms.picking.created`.
+- A acao `pick` emite `wms.picking.completed`; `close` exige papel aprovador, MFA e emite `wms.picking.closed`.
+- `shipments` exige `warehouse_id`, `picking_wave_id` e `carrier_reference`; `dispatch` exige papel aprovador, MFA e emite `wms.shipment.dispatched`.
+
+
         ## Eventos
 
-        - `wms.inventory.received`
+        - `wms.warehouse.created`
+- `wms.bin.created`
+- `wms.inventory.received`
+- `wms.inventory.allocated`
+- `wms.picking.created`
+- `wms.picking.completed`
+- `wms.picking.closed`
+- `wms.shipment.created`
 - `wms.shipment.dispatched`
 
         ## Regras

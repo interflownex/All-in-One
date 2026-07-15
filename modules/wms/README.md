@@ -12,6 +12,9 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `warehouses`, `bins`, `inventory`, `picking_waves`, `shipments`.
 
+`inventory` registra recebimento e alocacao; `picking_waves`
+acompanha separacao; `shipments` controla despacho com MFA.
+
 ## Execucao
 
 ```bash

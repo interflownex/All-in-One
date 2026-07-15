@@ -278,6 +278,27 @@ PHASE4_ROUTE_PAYLOADS = {
         "name": "CD Regional Playwright",
         "description": "Estoque local vivo para operacao Business",
     },
+    ("wms", "bins"): {
+        "warehouse_id": PHASE4_BUSINESS_ID,
+        "code": "A-01-PLAYWRIGHT",
+    },
+    ("wms", "inventory"): {
+        "warehouse_id": PHASE4_BUSINESS_ID,
+        "sku": "SKU-PLAYWRIGHT",
+        "quantity": "25",
+        "received_at": "2026-07-15T11:00:00Z",
+    },
+    ("wms", "picking_waves"): {
+        "warehouse_id": PHASE4_BUSINESS_ID,
+        "order_reference": "ORDER-PLAYWRIGHT-001",
+        "sku": "SKU-PLAYWRIGHT",
+        "quantity": "3",
+    },
+    ("wms", "shipments"): {
+        "warehouse_id": PHASE4_BUSINESS_ID,
+        "picking_wave_id": PHASE4_BUSINESS_ID,
+        "carrier_reference": "CARRIER-PLAYWRIGHT",
+    },
     ("tms", "freights"): {
         "freight_brl": "89.90",
         "title": "Frete Regional Playwright",
