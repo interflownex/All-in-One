@@ -62,6 +62,21 @@ def test_business_membership_invite_and_role_assignment_flow() -> None:
     assert membership["entity_id"] == company_id
     assert membership["payload"]["role"] == "hr_manager"
 
+    invalid_role = client.post(
+        "/resources/user_company_memberships",
+        headers=actor_headers(owner_id),
+        json={
+            "user_id": str(uuid4()),
+            "entity_id": company_id,
+            "payload": {
+                "company_id": company_id,
+                "role": "super_admin_shadow",
+            },
+        },
+    )
+    assert invalid_role.status_code == 422
+    assert invalid_role.json()["detail"] == "Papel Business invalido para membership."
+
     outbox = client.get("/events/outbox", headers=actor_headers(owner_id))
     assert outbox.status_code == 200
     assert any(
@@ -75,6 +90,13 @@ def test_business_membership_invite_and_role_assignment_flow() -> None:
         json={"reason": "confirmacao operacional do convite"},
     )
     assert denied.status_code == 403
+
+    denied_role = client.post(
+        f"/resources/user_company_memberships/{membership['id']}/actions/activate",
+        headers=actor_headers(invited_user_id, roles="viewer", mfa=True),
+        json={"reason": "tentativa pelo convidado sem perfil aprovador"},
+    )
+    assert denied_role.status_code == 403
 
     activated = client.post(
         f"/resources/user_company_memberships/{membership['id']}/actions/activate",

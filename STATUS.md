@@ -1,5 +1,29 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Business Membership Negatives
+
+### Concluido neste ciclo
+
+- `business.user_company_memberships` passou a validar uma allowlist explicita
+  de papeis Business (`owner`, `administrator`, gestores operacionais,
+  recrutamento, loja e `viewer`).
+- Convites com papel desconhecido agora falham com `422` antes de gerar
+  membership ou evento.
+- O fluxo de ativacao de membership ganhou evidencia negativa para ator comum:
+  mesmo com MFA, perfil sem papel aprovador recebe `403`.
+- A evidencia positiva existente de convite, MFA obrigatorio e ativacao
+  auditavel foi preservada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q modules/business/tests/test_create_flow.py tests/test_business_jobs_journey.py`:
+  3 testes aprovados.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar KYB real e repetir convites/memberships com
+  dados produtivos controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 Commercial Observability
 
 ### Concluido neste ciclo

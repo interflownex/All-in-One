@@ -28,6 +28,18 @@ RECRUITER_ROLES = frozenset({"owner", "administrator", "hr_manager", "recruiter"
 SENSITIVE_PERMISSION_MODULES = frozenset(
     {"identity", "finance", "jobs", "document", "health", "hr"}
 )
+BUSINESS_MEMBERSHIP_ROLES = frozenset(
+    {
+        "owner",
+        "administrator",
+        "finance_manager",
+        "hr_manager",
+        "operations_manager",
+        "recruiter",
+        "store_manager",
+        "viewer",
+    }
+)
 SENSITIVE_PERMISSION_ROLE_RULES = {
     "identity": "SENSITIVE_ROLES",
     "finance": "SENSITIVE_ROLES",
@@ -1084,6 +1096,8 @@ def check_payload(rule: ResourceRule, payload: dict[str, Any]) -> None:
         raise HTTPException(status_code=422, detail="Operacao exige empresa aprovada.")
     if payload.get("recruiter_visibility") and payload["recruiter_visibility"] not in {"private", "business_recruiters"}:
         raise HTTPException(status_code=422, detail="Visibilidade de curriculo invalida.")
+    if payload.get("role") and str(payload["role"]).casefold() not in BUSINESS_MEMBERSHIP_ROLES:
+        raise HTTPException(status_code=422, detail="Papel Business invalido para membership.")
     storage_key = str(payload.get("storage_key", ""))
     storage_provider = str(payload.get("storage_provider", ""))
     storage_bucket = str(payload.get("storage_bucket", ""))
