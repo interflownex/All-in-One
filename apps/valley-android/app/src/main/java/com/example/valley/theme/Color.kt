@@ -2,10 +2,10 @@ package com.example.valley.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val ValleyNight = Color(0xFF09061A)
+val ValleySurface = Color(0xFF121428)
+val ValleySurfaceSoft = Color(0xFF1A1F38)
+val ValleyViolet = Color(0xFF8B5CF6)
+val ValleyCyan = Color(0xFF22D3EE)
+val ValleyLilac = Color(0xFFE9D5FF)
+val ValleyText = Color(0xFFF8FAFC)

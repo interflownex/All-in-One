@@ -25,6 +25,10 @@ interface Offer {
   consumer_action: 'view' | 'buy' | 'book' | 'hire' | 'apply' | 'request' | 'coming_soon'
   primary_action_label: string
   verified_seller: boolean
+  metadata?: {
+    image_url?: string
+    video_url?: string
+  }
 }
 
 interface FacetOption {
@@ -187,76 +191,7 @@ function App() {
       })
       .then(data => {
         const remoteOffers = data.data ?? []
-        if (remoteOffers.length === 0) {
-          // Inserir itens de simulação se a API estiver vazia
-          setOffers([
-            {
-              offer_id: 'sim-1',
-              title: 'Hambúrguer Gourmet Valley',
-              short_description: 'Blend de 180g de carne premium, queijo canastra derretido, cebola caramelizada.',
-              price_amount: '45.90',
-              price_type: 'fixed',
-              consumer_category: 'Alimentação',
-              offer_type: 'food',
-              offer_type_label: 'Alimento',
-              source_module: 'marketplace',
-              provider_label: 'Valley Store',
-              region_label: 'São Paulo, SP',
-              distance_km: 1.2,
-              consumer_action: 'buy',
-              primary_action_label: 'Comprar Agora',
-              verified_seller: true,
-              metadata: { 
-                image_url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80',
-                video_url: 'https://www.w3schools.com/html/mov_bbb.mp4'
-              }
-            } as any,
-            {
-              offer_id: 'sim-2',
-              title: 'Monitor Gamer UltraSharp 4K',
-              short_description: 'Monitor de 32 polegadas, 144Hz, HDR1000 e tempo de resposta de 1ms.',
-              price_amount: '3499.00',
-              price_type: 'fixed',
-              consumer_category: 'Eletrônicos',
-              offer_type: 'product',
-              offer_type_label: 'Produto',
-              source_module: 'marketplace',
-              provider_label: 'Valley Store',
-              region_label: 'São Paulo, SP',
-              distance_km: 2.5,
-              consumer_action: 'buy',
-              primary_action_label: 'Comprar Agora',
-              verified_seller: true,
-              metadata: { 
-                image_url: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=800&q=80',
-                video_url: 'https://www.w3schools.com/html/movie.mp4'
-              }
-            } as any,
-            {
-              offer_id: 'sim-3',
-              title: 'Consultoria de IA Estratégica',
-              short_description: 'Implementação de agentes inteligentes e automação de processos via LLMs.',
-              price_amount: null,
-              price_type: 'quote',
-              consumer_category: 'Tecnologia',
-              offer_type: 'service',
-              offer_type_label: 'Serviço',
-              source_module: 'marketplace',
-              provider_label: 'Valley Tech',
-              region_label: 'Online',
-              distance_km: 0,
-              consumer_action: 'request',
-              primary_action_label: 'Solicitar Orçamento',
-              verified_seller: true,
-              metadata: { 
-                image_url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80',
-                video_url: 'https://www.w3schools.com/html/mov_bbb.mp4'
-              }
-            } as any
-          ])
-        } else {
-          setOffers(remoteOffers)
-        }
+        setOffers(remoteOffers)
         setFacets(data.facets ?? {
           company_types: [],
           company_categories: [],

@@ -8,6 +8,12 @@ Coordenada operacional atual:
 - Executar em modo `local-first`, sem custo obrigatorio de Google Cloud neste momento.
 - Manter compatibilidade com futura migracao para Google/AlloyDB preservando migrations, DSNs PostgreSQL, manifests e contratos ja versionados.
 
+Atualizacao de fronteira:
+- O APK `apps/valley-android` esta compilando com sucesso e recebeu login nativo
+  com Google chooser, branding Valley e shell consumidor sem fallback ficticio.
+- O emulador do perfil `VALLEY_Pixel_8_API_36` foi disparado no host Windows;
+  o boot ainda pode estar em progresso no momento desta escrita.
+
 ## 1. Estado consolidado
 
 | Area | Conclusao | Evidencia atual | Leitura operacional |

@@ -1,3 +1,30 @@
+# STATUS OPERACIONAL - 2026-07-15 Valley Consumer APK
+
+### Concluido neste ciclo
+
+- O APK Android do Valley Consumer foi atualizado para uma experiencia nativa
+  com tela de login, entrada por Google via account chooser, shell web do
+  consumidor e icone/fidelidade visual da marca Valley.
+- O fallback com ofertas ficticias foi removido do app consumidor web para
+  evitar simulacao visual quando a API nao retornar dados.
+- A build Android foi validada com sucesso em `apps/valley-android` por
+  `./gradlew testDebugUnitTest assembleDebug`.
+- O emulador `VALLEY_Pixel_8_API_36` foi iniciado no Windows; o processo esta
+  vivo, embora o `adb devices` ainda nao tenha listado o device no instante da
+  verificacao final.
+
+### Evidencias
+
+- `./gradlew testDebugUnitTest assembleDebug`: aprovado.
+- `apps/valley-android/app/build/outputs/apk/debug/app-debug.apk`: gerado com
+  sucesso.
+
+### Pendencias rastreadas
+
+- Finalizar a exposicao do device no `adb` quando o boot do emulador concluir.
+- Se quiser Google OAuth real, ainda sera necessario fornecer `client_id`
+  valido e configurar o fluxo OAuth no app.
+
 # Status Operacional
 
 ## STATUS OPERACIONAL - 2026-07-15 Vision Runtime Event Catalog
