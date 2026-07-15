@@ -44,6 +44,13 @@
 - Ofertas locais exigem regiao, coordenadas publicas de base e `service_radius_km`; enderecos sensiveis nunca entram no payload publico.
 - A transicao de publicacao emite `valley.catalog.offer.synced` com allowlist publica.
 
+## Convites e memberships
+
+- `user_company_memberships` exige `company_id` e `role`.
+- A criacao representa convite operacional com status inicial `invited` e emite `business.user.invited`.
+- A acao `activate` exige papel aprovador, MFA e emite `business.role.assigned`.
+- A acao `revoke` exige papel aprovador, MFA e emite `business.user.revoked`.
+
 
         ## Eventos
 
@@ -51,6 +58,9 @@
 - `business.company.submitted`
 - `business.company.approved`
 - `business.company.rejected`
+- `business.user.invited`
+- `business.role.assigned`
+- `business.user.revoked`
 - `valley.catalog.offer.synced`
 
         ## Regras

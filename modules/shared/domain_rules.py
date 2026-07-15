@@ -174,6 +174,27 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
         sensitive=True,
         transitions=review_flow("business.company"),
     ),
+    ("business", "user_company_memberships"): ResourceRule(
+        ("company_id", "role"),
+        initial_status="invited",
+        sensitive=True,
+        transitions={
+            "activate": Transition(
+                frozenset({"invited", "pending_review"}),
+                "active",
+                APPROVER_ROLES,
+                True,
+                "business.role.assigned",
+            ),
+            "revoke": Transition(
+                frozenset({"invited", "pending_review", "active"}),
+                "revoked",
+                APPROVER_ROLES,
+                True,
+                "business.user.revoked",
+            ),
+        },
+    ),
     ("business", "catalog_offers"): ResourceRule(
         (
             "title",
@@ -455,6 +476,7 @@ def event_for_create(module: str, resource_type: str) -> str:
     explicit = {
         ("identity", "users"): "identity.user.created",
         ("business", "companies"): "business.company.created",
+        ("business", "user_company_memberships"): "business.user.invited",
         ("finance", "valley_gold_ledger_entries"): "valley.gold.ledger.posted",
         ("marketplace", "orders"): "marketplace.order.created",
         ("marketplace", "reviews"): "valley.review.created",

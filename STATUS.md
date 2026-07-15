@@ -1,5 +1,32 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Business Convite Operacional
+
+### Concluido neste ciclo
+
+- `business.user_company_memberships` passou a ter regra de dominio explicita:
+  `company_id` e `role` obrigatorios, status inicial `invited` e evento
+  `business.user.invited`.
+- A acao `activate` de membership exige papel aprovador, MFA e emite
+  `business.role.assigned`.
+- A acao `revoke` de membership exige papel aprovador, MFA e emite
+  `business.user.revoked`.
+- `modules/business/CONTRACT.md` e `modules/business/EVENTS.md` foram
+  atualizados com a trilha operacional de convites.
+- `docs/EXECUTION_PLAN.md` foi reconciliado para deixar KYB real como
+  pendencia externa principal do modulo Business.
+
+### Evidencias
+
+- `modules/business/tests/test_create_flow.py` cobre convite operacional,
+  evento `business.user.invited`, bloqueio de ativacao sem MFA e atribuicao de
+  papel com evento `business.role.assigned`.
+
+### Pendencias rastreadas
+
+- Business permanece pendente para KYB real homologado e testes negativos
+  adicionais de convite/membership contra provider/ambiente final.
+
 ## STATUS OPERACIONAL - 2026-07-15 Reconciliacao Riders Services Health BI
 
 ### Concluido neste ciclo

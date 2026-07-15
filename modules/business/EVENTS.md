@@ -6,6 +6,9 @@
 - `business.company.submitted`
 - `business.company.approved`
 - `business.company.rejected`
+- `business.user.invited`
+- `business.role.assigned`
+- `business.user.revoked`
 - `valley.catalog.offer.synced`
 
         Eventos carregam `event_id`, `occurred_at`, `actor_user_id`, `user_id`,

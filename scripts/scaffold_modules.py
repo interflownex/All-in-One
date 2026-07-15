@@ -62,6 +62,7 @@ CUSTOMIZED_ARTIFACTS = {
     "modules/api_hub/OPENAPI.yaml",
     "modules/marketplace/OPENAPI.yaml",
     # Apps com shells vivos possuem estado operacional proprio alem do scaffold.
+    "modules/business/tests/test_create_flow.py",
     "modules/permissions/tests/test_create_flow.py",
     "apps/all-in-one-business/README.md",
     "apps/all-in-one-business/STATUS.md",
@@ -180,6 +181,13 @@ def render_contract(module: dict) -> str:
             - O Valley so exibe ofertas com `publish_to_valley=true`, publicacao aprovada ou publicada e `visible_to_consumer` ativo.
             - Ofertas locais exigem regiao, coordenadas publicas de base e `service_radius_km`; enderecos sensiveis nunca entram no payload publico.
             - A transicao de publicacao emite `valley.catalog.offer.synced` com allowlist publica.
+
+            ## Convites e memberships
+
+            - `user_company_memberships` exige `company_id` e `role`.
+            - A criacao representa convite operacional com status inicial `invited` e emite `business.user.invited`.
+            - A acao `activate` exige papel aprovador, MFA e emite `business.role.assigned`.
+            - A acao `revoke` exige papel aprovador, MFA e emite `business.user.revoked`.
             """
         )
     return dedent(

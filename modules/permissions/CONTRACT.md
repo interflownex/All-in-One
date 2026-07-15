@@ -39,8 +39,8 @@
 
         ## Eventos
 
-        - `business.user.invited`
-- `business.role.assigned`
+        - `permissions.role.created`
+- `permissions.role.assigned`
 
         ## Regras
 
