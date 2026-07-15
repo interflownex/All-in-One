@@ -11,6 +11,9 @@
 - `erp.receivable.received`
 - `erp.receivable.reconciled`
 - `erp.invoice.created`
+- `erp.invoice.submitted`
+- `erp.invoice.completed`
+- `erp.invoice.cancelled`
 
         Eventos carregam `event_id`, `occurred_at`, `actor_user_id`, `user_id`,
         `entity_id`, `correlation_id`, `schema_version` e payload minimizado.

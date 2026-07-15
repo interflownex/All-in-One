@@ -117,7 +117,7 @@
       "title": "ERP",
       "description": "Financeiro empresarial, compras, vendas, fiscal, controladoria e aprovacao.",
       "entities": ["accounts", "payables", "receivables", "cost_centers", "fiscal_documents"],
-      "events": ["erp.account.created", "erp.cost_center.created", "erp.payable.created", "erp.payment.approved", "erp.payable.paid", "erp.receivable.created", "erp.receivable.received", "erp.receivable.reconciled", "erp.invoice.created"],
+      "events": ["erp.account.created", "erp.cost_center.created", "erp.payable.created", "erp.payment.approved", "erp.payable.paid", "erp.receivable.created", "erp.receivable.received", "erp.receivable.reconciled", "erp.invoice.created", "erp.invoice.submitted", "erp.invoice.completed", "erp.invoice.cancelled"],
       "monetization": "Modulo SaaS Business contratado por entidade.",
       "branch": "module/erp"
     },

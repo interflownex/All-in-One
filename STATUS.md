@@ -1,5 +1,29 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 ERP Fiscal Event Catalog
+
+### Concluido neste ciclo
+
+- O catalogo ERP passou a declarar `erp.invoice.submitted`,
+  `erp.invoice.completed` e `erp.invoice.cancelled`, eventos emitidos pelo
+  lifecycle local de documentos fiscais.
+- `modules/erp/CONTRACT.md`, `modules/erp/EVENTS.md` e `contracts/erp.md`
+  foram regenerados pelo scaffold com a superficie fiscal completa.
+- `tests/test_erp_event_catalog.py` bloqueia drift entre eventos ERP emitidos
+  em criacao/transicoes e `config/module_catalog.json`.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_erp_event_catalog.py tests/test_erp_domain.py`:
+  aprovado.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar integracoes contabeis/fiscais reais e
+  conciliacao bancaria produtiva controlada.
+
 ## STATUS OPERACIONAL - 2026-07-15 TMS Carrier Event Catalog
 
 ### Concluido neste ciclo

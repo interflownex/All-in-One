@@ -58,6 +58,9 @@
 - `erp.receivable.received`
 - `erp.receivable.reconciled`
 - `erp.invoice.created`
+- `erp.invoice.submitted`
+- `erp.invoice.completed`
+- `erp.invoice.cancelled`
 
         ## Regras
 
