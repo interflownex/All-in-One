@@ -47,6 +47,8 @@ Antes de producao ampla:
 6. Validar backup/restore e retencao para PostgreSQL, MongoDB e storage privado
    conforme `config/operations/backup_restore_plan.json`.
 7. Rodar pentest, SAST/SCA, DAST e testes negativos de permissao.
+8. Revisar permissoes sensiveis conforme
+   `config/security/sensitive_permissions_review.json`.
 
 ## Direitos Do Titular
 

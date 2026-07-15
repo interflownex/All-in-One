@@ -1,0 +1,86 @@
+{
+  "version": "2026-07-15",
+  "owner": "security-compliance",
+  "scope": "sensitive_data_permissions_review",
+  "source_controls": [
+    "modules/shared/domain_rules.py",
+    "config/compliance/data_classification.json",
+    "config/compliance/data_subject_rights.json"
+  ],
+  "global_requirements": {
+    "deny_by_default": true,
+    "mfa_required_for_mutation": true,
+    "audit_required_for_read": true,
+    "raw_sensitive_payload_in_logs": false,
+    "review_frequency": "quarterly",
+    "production_gate": [
+      "revisao_RBAC_ABAC",
+      "testes_negativos_permissoes",
+      "auditoria_de_acesso",
+      "DPIA_quando_critico"
+    ]
+  },
+  "modules": {
+    "identity": {
+      "risk_level": "critical",
+      "sensitive_resources": ["users", "kyc_records", "documents", "biometrics", "identity_verifications", "consent_records"],
+      "allowed_read_roles": ["owner", "administrator", "compliance_officer", "data_protection_officer", "auditor"],
+      "denied_read_roles": ["anonymous", "recruiter", "driver", "patient", "merchant_operator"],
+      "required_evidence": ["actor_id_hash", "resource_selector_hash", "identity_check", "audit_event_id", "incident_ticket_when_denied"],
+      "negative_tests": ["terceiro_sem_papel_sensivel_nao_le_usuario", "biometria_bruta_nao_aparece_em_payload_publico"],
+      "runtime_rule": "SENSITIVE_ROLES"
+    },
+    "finance": {
+      "risk_level": "critical",
+      "sensitive_resources": ["wallets", "ledger_entries", "escrows", "splits", "invoices", "valley_gold_ledger_entries"],
+      "allowed_read_roles": ["owner", "administrator", "compliance_officer", "data_protection_officer", "auditor"],
+      "denied_read_roles": ["anonymous", "recruiter", "driver", "patient", "merchant_operator"],
+      "required_evidence": ["actor_id_hash", "ledger_entry_id", "idempotency_key_hash", "audit_event_id", "incident_ticket_when_denied"],
+      "negative_tests": ["saldo_de_terceiro_sem_papel_sensivel_recebe_403", "ledger_append_only_nao_permite_update"],
+      "runtime_rule": "SENSITIVE_ROLES"
+    },
+    "jobs": {
+      "risk_level": "critical",
+      "sensitive_resources": ["resumes", "employment_records", "resume_documents", "applications", "resume_access_logs"],
+      "allowed_read_roles": ["owner", "administrator", "hr_manager", "recruiter", "auditor"],
+      "denied_read_roles": ["anonymous", "driver", "patient", "merchant_operator", "support_agent"],
+      "required_evidence": ["actor_id_hash", "business_id_hash", "resume_access_log_id", "purpose", "audit_event_id"],
+      "negative_tests": ["curriculo_de_terceiro_exige_recrutador_business_auditado", "ctps_download_apenas_titular_ou_fluxo_autorizado"],
+      "runtime_rule": "RECRUITER_ROLES"
+    },
+    "document": {
+      "risk_level": "critical",
+      "sensitive_resources": ["documents", "versions"],
+      "allowed_read_roles": ["owner", "administrator", "compliance_officer", "data_protection_officer", "auditor"],
+      "denied_read_roles": ["anonymous", "recruiter", "driver", "patient", "merchant_operator"],
+      "required_evidence": ["actor_id_hash", "object_selector_hash", "kms_key_version", "audit_event_id", "incident_ticket_when_denied"],
+      "negative_tests": ["storage_key_nao_vaza_em_payload_publico", "link_temporario_exige_auditoria"],
+      "runtime_rule": "SENSITIVE_ROLES"
+    },
+    "health": {
+      "risk_level": "critical",
+      "sensitive_resources": ["patients", "appointments", "medical_records", "prescriptions", "beds"],
+      "allowed_read_roles": ["medical_admin", "doctor", "nurse", "compliance_officer"],
+      "denied_read_roles": ["anonymous", "recruiter", "driver", "merchant_operator", "auditor_without_medical_context"],
+      "required_evidence": ["actor_id_hash", "patient_selector_hash", "care_context", "consent_record_id", "audit_event_id"],
+      "negative_tests": ["prontuario_de_terceiro_exige_papel_medico", "exportacao_nao_inclui_prontuario_de_terceiros"],
+      "runtime_rule": "MEDICAL_ROLES"
+    },
+    "hr": {
+      "risk_level": "critical",
+      "sensitive_resources": ["employees", "payroll_runs", "occupational_records"],
+      "allowed_read_roles": ["owner", "administrator", "compliance_officer", "data_protection_officer", "auditor"],
+      "denied_read_roles": ["anonymous", "recruiter", "driver", "patient", "merchant_operator"],
+      "required_evidence": ["actor_id_hash", "employee_selector_hash", "legal_basis", "audit_event_id", "incident_ticket_when_denied"],
+      "negative_tests": ["folha_de_terceiro_sem_papel_sensivel_recebe_403", "dado_ocupacional_exige_base_legal"],
+      "runtime_rule": "SENSITIVE_ROLES"
+    }
+  },
+  "global_invariants": [
+    "nenhum papel negado pode ler recurso sensivel",
+    "health usa MEDICAL_ROLES e nao SENSITIVE_ROLES generico",
+    "jobs usa RECRUITER_ROLES com finalidade auditada",
+    "finance e identity exigem trilha auditavel e nao expoem payload bruto",
+    "todo modulo critico deve ter teste negativo de permissao antes de producao"
+  ]
+}

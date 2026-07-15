@@ -28,6 +28,7 @@ RETENTION_JOBS = ROOT / "config" / "compliance" / "retention_jobs.json"
 RETENTION_ALERTS = ROOT / "config" / "observability" / "retention_alerts.json"
 SLO_CATALOG = ROOT / "config" / "observability" / "slo_catalog.json"
 BACKUP_RESTORE_PLAN = ROOT / "config" / "operations" / "backup_restore_plan.json"
+SENSITIVE_PERMISSIONS_REVIEW = ROOT / "config" / "security" / "sensitive_permissions_review.json"
 PROVIDER_MATRIX = ROOT / "config" / "integrations" / "provider_matrix.json"
 ENV_EXAMPLE = ROOT / ".env.example"
 VSCODE_SETTINGS = ROOT / ".vscode" / "settings.json"
@@ -612,6 +613,21 @@ def main() -> int:
                 fail(f"Plano backup/restore incompleto para {asset_name}.", errors)
         if backup_plan.get("dr_exercise", {}).get("cadence") != "quarterly":
             fail("Exercicio DR deve ser trimestral.", errors)
+    if not SENSITIVE_PERMISSIONS_REVIEW.is_file():
+        fail(f"Revisao de permissoes sensiveis ausente: {SENSITIVE_PERMISSIONS_REVIEW}", errors)
+    else:
+        permissions_review = json.loads(SENSITIVE_PERMISSIONS_REVIEW.read_text(encoding="utf-8"))
+        expected_modules = {"identity", "finance", "jobs", "document", "health", "hr"}
+        if set(permissions_review.get("modules", {})) != expected_modules:
+            fail("Revisao de permissoes sensiveis deve cobrir identity, finance, jobs, document, health e hr.", errors)
+        requirements = permissions_review.get("global_requirements", {})
+        if requirements.get("deny_by_default") is not True or requirements.get("audit_required_for_read") is not True:
+            fail("Revisao de permissoes sensiveis deve exigir deny-by-default e auditoria de leitura.", errors)
+        for module_name, module_review in permissions_review.get("modules", {}).items():
+            if not module_review.get("allowed_read_roles") or not module_review.get("denied_read_roles"):
+                fail(f"Revisao de permissoes sensiveis incompleta para {module_name}.", errors)
+            if "audit_event_id" not in module_review.get("required_evidence", []):
+                fail(f"Revisao de permissoes sensiveis deve exigir audit_event_id para {module_name}.", errors)
 
     if errors:
         print("\nFalhas de validacao encontradas:")

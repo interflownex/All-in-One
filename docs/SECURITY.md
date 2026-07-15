@@ -29,5 +29,17 @@
 - Moderacao com OCR/IA, fila humana, apelacao e auditoria.
 - Pentest, SAST/SCA, DAST, testes de permissao e plano de incidente.
 
+## Revisao De Permissoes Sensiveis
+
+A revisao RBAC/ABAC para dados sensiveis fica versionada em
+`config/security/sensitive_permissions_review.json`. Ela cobre Identity,
+Finance, Jobs, Document, Health e HR com papeis autorizados, papeis negados,
+recursos sensiveis, evidencias exigidas, testes negativos e regra de runtime
+correspondente (`SENSITIVE_ROLES`, `RECRUITER_ROLES` ou `MEDICAL_ROLES`).
+
+Leitura de dado sensivel deve ser deny-by-default, auditada, sem payload bruto
+em logs e com evidencias por hash/ID auditavel. Mutacoes sensiveis continuam
+exigindo MFA quando a transicao de dominio assim declarar.
+
 Nenhuma chave real, prontuario, documento, biometria bruta ou dado de cartao
 deve ser persistido no repositorio.

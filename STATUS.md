@@ -174,6 +174,32 @@
 
 - Incremento backup/restore DR em validacao local antes da sincronizacao.
 
+## STATUS OPERACIONAL - 2026-07-15 Permissoes Sensiveis
+
+### Concluido neste ciclo
+
+- Criado `config/security/sensitive_permissions_review.json` para revisar
+  RBAC/ABAC de Identity, Finance, Jobs, Document, Health e HR.
+- O contrato define recursos sensiveis, papeis permitidos, papeis negados,
+  evidencias obrigatorias, testes negativos e regra de runtime correspondente.
+- Criado `tests/test_sensitive_permissions_review.py` para validar cobertura,
+  alinhamento com `data_classification.json`, `can_read_sensitive` e regras de
+  recurso sensivel do runtime.
+- `scripts/validate_repository.py`, `docs/SECURITY.md`,
+  `docs/COMPLIANCE.md` e `docs/EXECUTION_PLAN.md` foram atualizados para
+  rastrear a revisao como contrato versionado.
+
+### Pendencias rastreadas
+
+- Executar a primeira revisao trimestral com evidencias reais de acesso,
+  negacao, MFA e auditoria em ambiente homologado/produtivo.
+- Expandir testes negativos por endpoint quando os fluxos finais de provider
+  real estiverem homologados.
+
+### Git
+
+- Incremento de permissoes sensiveis em validacao local antes da sincronizacao.
+
 ## STATUS OPERACIONAL - 2026-07-13 Reconciliacao de Pendencias
 
 ### Concluido neste ciclo

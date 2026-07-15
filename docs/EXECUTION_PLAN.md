@@ -481,7 +481,7 @@ Proximos passos naturais:
 
 Objetivo: sair de beta tecnica para producao auditavel.
 
-Status: 61%
+Status: 62%
 
 Pendencias:
 - Aplicar mutacoes finais nos stores de dominio apos homologacao de dry-run por modulo.
@@ -492,7 +492,7 @@ Pendencias:
 - Executar restore real de PostgreSQL/Mongo/storage e exercicio DR trimestral.
 - Observabilidade produtiva completa aplicada no cluster real.
 - Runbooks de incidentes.
-- Revisao de permissoes para dados sensiveis de saude, identidade, financeiro e trabalho.
+- Executar revisao trimestral de permissoes sensiveis com evidencias reais.
 
 Proximos passos naturais:
 1. Aplicar manifests de monitoramento no cluster real e validar disparo controlado dos alertas.
@@ -501,6 +501,8 @@ Proximos passos naturais:
    usando `config/operations/backup_restore_plan.json`.
 4. Materializar PrometheusRules de API Hub, Identity, Finance e Jobs apos as
    metricas finais estarem expostas no cluster real.
+5. Executar a primeira revisao operacional de permissoes usando
+   `config/security/sensitive_permissions_review.json`.
 
 ## 3. Matriz por modulo
 
