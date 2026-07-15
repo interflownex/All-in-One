@@ -1,5 +1,30 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 TMS Carrier Event Catalog
+
+### Concluido neste ciclo
+
+- O catalogo TMS passou a declarar `tms.carrier.submitted` e
+  `tms.carrier.rejected`, eventos emitidos pelo fluxo `review_flow` de
+  transportadoras.
+- `modules/tms/CONTRACT.md`, `modules/tms/EVENTS.md` e `contracts/tms.md`
+  foram regenerados pelo scaffold com a superficie de eventos completa para
+  carriers.
+- `tests/test_tms_event_catalog.py` bloqueia drift entre eventos TMS emitidos
+  em criacao/transicoes e `config/module_catalog.json`.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_tms_event_catalog.py tests/test_tms_domain.py`:
+  aprovado.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar torre de controle/POD real e ampliar evidencias
+  com transportadoras controladas.
+
 ## STATUS OPERACIONAL - 2026-07-15 API Hub Event Catalog
 
 ### Concluido neste ciclo

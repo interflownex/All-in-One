@@ -135,7 +135,7 @@
       "title": "TMS",
       "description": "Transportadoras, frota, rotas, fretes, documentos e torre de controle.",
       "entities": ["carriers", "freights", "routes", "proofs_of_delivery", "freight_audits"],
-      "events": ["tms.carrier.created", "tms.carrier.approved", "tms.route.created", "tms.route.activated", "tms.freight.created", "tms.freight.approved", "tms.freight.dispatched", "tms.freight.completed", "tms.delivery.proved", "tms.freight.audit_created", "tms.freight.audit_closed"],
+      "events": ["tms.carrier.created", "tms.carrier.submitted", "tms.carrier.approved", "tms.carrier.rejected", "tms.route.created", "tms.route.activated", "tms.freight.created", "tms.freight.approved", "tms.freight.dispatched", "tms.freight.completed", "tms.delivery.proved", "tms.freight.audit_created", "tms.freight.audit_closed"],
       "monetization": "Modulo SaaS e taxas por operacao logistica.",
       "branch": "module/tms"
     },

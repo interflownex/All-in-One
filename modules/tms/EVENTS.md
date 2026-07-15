@@ -3,7 +3,9 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `tms.carrier.created`
+- `tms.carrier.submitted`
 - `tms.carrier.approved`
+- `tms.carrier.rejected`
 - `tms.route.created`
 - `tms.route.activated`
 - `tms.freight.created`
