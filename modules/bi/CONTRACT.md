@@ -53,6 +53,10 @@
 - `bi.dashboard.created`
 - `bi.dashboard.published`
 - `bi.dashboard.archived`
+- `bi.indicator.created`
+- `bi.indicator.submitted`
+- `bi.indicator.cancelled`
+- `bi.indicator.completed`
 - `bi.export.requested`
 - `bi.export.completed`
 

@@ -216,7 +216,7 @@
       "title": "BI",
       "description": "Indicadores auditaveis, dashboards e exportacoes por entidade.",
       "entities": ["datasets", "dashboards", "indicators", "exports"],
-      "events": ["bi.dataset.created", "bi.dataset.refreshed", "bi.dataset.published", "bi.dashboard.created", "bi.dashboard.published", "bi.dashboard.archived", "bi.export.requested", "bi.export.completed"],
+      "events": ["bi.dataset.created", "bi.dataset.refreshed", "bi.dataset.published", "bi.dashboard.created", "bi.dashboard.published", "bi.dashboard.archived", "bi.indicator.created", "bi.indicator.submitted", "bi.indicator.cancelled", "bi.indicator.completed", "bi.export.requested", "bi.export.completed"],
       "monetization": "Relatorios premium e armazenamento analitico.",
       "branch": "module/business"
     },

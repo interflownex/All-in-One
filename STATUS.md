@@ -1,5 +1,29 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 BI Indicator Event Catalog
+
+### Concluido neste ciclo
+
+- O catalogo BI passou a declarar `bi.indicator.created`,
+  `bi.indicator.submitted`, `bi.indicator.cancelled` e
+  `bi.indicator.completed`, eventos emitidos pelo runtime de indicadores.
+- `modules/bi/CONTRACT.md`, `modules/bi/EVENTS.md` e `contracts/bi.md` foram
+  regenerados pelo scaffold com a superficie de indicadores completa.
+- `tests/test_bi_event_catalog.py` bloqueia drift entre eventos BI emitidos em
+  criacao/transicoes e `config/module_catalog.json`.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q tests/test_bi_event_catalog.py tests/test_bi_domain.py`:
+  aprovado.
+- `python3 scripts/check_generated_artifacts.py`: aprovado.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permanece externa: homologar fontes ETL/permissoes analiticas reais e ampliar
+  evidencias com datasets produtivos controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 AI Core Moderation Event Catalog
 
 ### Concluido neste ciclo
