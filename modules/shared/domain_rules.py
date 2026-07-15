@@ -437,7 +437,48 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
     ("wms", "warehouses"): ResourceRule(("name",), transitions=lifecycle_flow("wms.warehouse")),
     ("tms", "freights"): ResourceRule(("freight_brl",), monetary_fields=("freight_brl", "toll_brl"), transitions=lifecycle_flow("tms.freight")),
     ("crm", "opportunities"): ResourceRule(("title",), monetary_fields=("expected_value_brl",), transitions=lifecycle_flow("crm.opportunity")),
-    ("bpm", "workflow_instances"): ResourceRule(("process_key",), initial_status="running", transitions=lifecycle_flow("bpm.workflow")),
+    ("bpm", "workflow_instances"): ResourceRule(
+        ("process_key", "sla_policy_id", "started_at"),
+        initial_status="running",
+        transitions={
+            "complete": Transition(
+                frozenset({"running", "in_progress"}),
+                "completed",
+                event="bpm.process.completed",
+            ),
+            "cancel": Transition(
+                frozenset({"running", "in_progress"}),
+                "cancelled",
+                APPROVER_ROLES,
+                True,
+                "bpm.process.cancelled",
+            ),
+        },
+    ),
+    ("bpm", "tasks"): ResourceRule(
+        ("workflow_instance_id", "assignee_user_id", "due_at", "sla_policy_id"),
+        initial_status="open",
+        transitions={
+            "complete": Transition(
+                frozenset({"open", "in_progress", "escalated"}),
+                "completed",
+                event="bpm.task.completed",
+            ),
+            "escalate": Transition(
+                frozenset({"open", "in_progress"}),
+                "escalated",
+                APPROVER_ROLES,
+                True,
+                "bpm.task.escalated",
+            ),
+        },
+    ),
+    ("bpm", "sla_policies"): ResourceRule(
+        ("policy_key", "response_minutes", "escalation_role"),
+        ("policy_key",),
+        "active",
+        immutable=True,
+    ),
     ("document", "documents"): ResourceRule(
         (
             "storage_provider",
@@ -547,6 +588,9 @@ def event_for_create(module: str, resource_type: str) -> str:
         ("identity", "users"): "identity.user.created",
         ("business", "companies"): "business.company.created",
         ("business", "user_company_memberships"): "business.user.invited",
+        ("bpm", "workflow_instances"): "bpm.process.started",
+        ("bpm", "tasks"): "bpm.task.created",
+        ("bpm", "sla_policies"): "bpm.sla_policy.published",
         ("finance", "valley_gold_ledger_entries"): "valley.gold.ledger.posted",
         ("marketplace", "orders"): "marketplace.order.created",
         ("marketplace", "reviews"): "valley.review.created",

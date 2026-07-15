@@ -153,7 +153,7 @@
       "title": "BPM",
       "description": "Processos, workflows, tarefas, SLA, escalonamento e automacao.",
       "entities": ["processes", "workflow_instances", "tasks", "sla_policies"],
-      "events": ["bpm.process.started", "bpm.task.completed"],
+      "events": ["bpm.process.started", "bpm.task.created", "bpm.task.escalated", "bpm.task.completed", "bpm.sla_policy.published"],
       "monetization": "Modulo SaaS por execucao e automacao.",
       "branch": "module/bpm"
     },

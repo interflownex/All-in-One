@@ -158,6 +158,18 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
+    if module["slug"] == "bpm":
+        special = dedent(
+            """\
+            `sla_policies` define prazos e papel de escalonamento; `tasks`
+            registra `due_at`, responsavel, politica de SLA e transicoes
+            auditaveis de conclusao/escalonamento.
+            """
+        )
+        rendered = rendered.replace(
+            f"{entities}.\n\n## Execucao",
+            f"{entities}.\n\n{special}\n## Execucao",
+        )
     return rendered
 
 
@@ -238,6 +250,19 @@ def render_contract(module: dict) -> str:
             - `versions` registra revisoes append-only com `document_id`, `version`, `storage_key`, `file_sha256` e `kms_key_version`.
             - `storage_key` e `storage_bucket` devem apontar para cofre privado, sem URL publica.
             - Criacao de documento emite `document.uploaded`; nova versao emite `document.versioned`.
+            """
+        )
+    if module["slug"] == "bpm":
+        special += dedent(
+            """
+
+            ## Timers, SLA e escalonamento
+
+            - `sla_policies` exige `policy_key`, `response_minutes` e `escalation_role`, com status inicial `active`.
+            - `workflow_instances` exige `process_key`, `sla_policy_id` e `started_at`, iniciando em `running` e emitindo `bpm.process.started`.
+            - `tasks` exige `workflow_instance_id`, `assignee_user_id`, `due_at` e `sla_policy_id`, iniciando em `open`.
+            - A acao `escalate` move tarefas para `escalated`, exige papel aprovador, MFA e emite `bpm.task.escalated`.
+            - A acao `complete` move tarefas abertas, em progresso ou escaladas para `completed` e emite `bpm.task.completed`.
             """
         )
     return dedent(

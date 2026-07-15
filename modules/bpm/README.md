@@ -12,6 +12,10 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `processes`, `workflow_instances`, `tasks`, `sla_policies`.
 
+`sla_policies` define prazos e papel de escalonamento; `tasks`
+registra `due_at`, responsavel, politica de SLA e transicoes
+auditaveis de conclusao/escalonamento.
+
 ## Execucao
 
 ```bash

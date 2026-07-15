@@ -15,6 +15,7 @@ import jwt
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PHASE4_ACTOR_ID = "11111111-1111-4111-8111-111111111111"
 PHASE4_BUSINESS_ID = "22222222-2222-4222-8222-222222222222"
+PHASE4_USER_ID = "33333333-3333-4333-8333-333333333333"
 PHASE4_JWT_SECRET = "phase4-live-e2e-secret-with-32-bytes-minimum"
 PHASE4_HTTP_TIMEOUT_SECONDS = 60
 PLAYWRIGHT_LAUNCH_TIMEOUT_MS = 300_000
@@ -257,6 +258,23 @@ PHASE4_ROUTE_PAYLOADS = {
     ("bpm", "processes"): {
         "process_key": "onboarding-business-playwright",
         "title": "Fluxo BPM Playwright",
+    },
+    ("bpm", "sla_policies"): {
+        "policy_key": "onboarding-business-sla",
+        "response_minutes": "60",
+        "escalation_role": "compliance_officer",
+    },
+    ("bpm", "workflow_instances"): {
+        "process_key": "onboarding-business-playwright",
+        "sla_policy_id": PHASE4_BUSINESS_ID,
+        "started_at": "2026-07-15T07:00:00Z",
+    },
+    ("bpm", "tasks"): {
+        "workflow_instance_id": PHASE4_BUSINESS_ID,
+        "assignee_user_id": PHASE4_USER_ID,
+        "due_at": "2026-07-15T08:00:00Z",
+        "sla_policy_id": PHASE4_BUSINESS_ID,
+        "title": "Validar onboarding Business",
     },
     ("document", "documents"): {
         "storage_provider": "private_vault",

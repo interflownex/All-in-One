@@ -36,10 +36,22 @@
 - `POST /audit`
 
 
+## Timers, SLA e escalonamento
+
+- `sla_policies` exige `policy_key`, `response_minutes` e `escalation_role`, com status inicial `active`.
+- `workflow_instances` exige `process_key`, `sla_policy_id` e `started_at`, iniciando em `running` e emitindo `bpm.process.started`.
+- `tasks` exige `workflow_instance_id`, `assignee_user_id`, `due_at` e `sla_policy_id`, iniciando em `open`.
+- A acao `escalate` move tarefas para `escalated`, exige papel aprovador, MFA e emite `bpm.task.escalated`.
+- A acao `complete` move tarefas abertas, em progresso ou escaladas para `completed` e emite `bpm.task.completed`.
+
+
         ## Eventos
 
         - `bpm.process.started`
+- `bpm.task.created`
+- `bpm.task.escalated`
 - `bpm.task.completed`
+- `bpm.sla_policy.published`
 
         ## Regras
 

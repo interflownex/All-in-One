@@ -1,5 +1,40 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 BPM SLA Escalation
+
+### Concluido neste ciclo
+
+- `bpm.sla_policies` passou a exigir `policy_key`, `response_minutes` e
+  `escalation_role`, com status inicial `active` e evento
+  `bpm.sla_policy.published`.
+- `bpm.workflow_instances` passou a exigir `process_key`, `sla_policy_id` e
+  `started_at`, iniciando em `running` e emitindo `bpm.process.started`.
+- `bpm.tasks` passou a exigir `workflow_instance_id`, `assignee_user_id`,
+  `due_at` e `sla_policy_id`, iniciando em `open`.
+- A acao `escalate` move tarefas para `escalated`, exige papel aprovador, MFA
+  e emite `bpm.task.escalated`; `complete` conclui tarefas abertas ou
+  escaladas com `bpm.task.completed`.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar SLA/timers/escalonamento nas jornadas vivas e nos
+  contratos gerados.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local de
+  timers/SLA/escalonamento BPM foi saneada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_bpm_domain.py modules/bpm/tests/test_create_flow.py
+  tests/test_frontend_journeys_contract.py`: 8 testes aprovados.
+- `./.venv/bin/ruff check tests/test_bpm_domain.py`: aprovado.
+- `./.venv/bin/python -m py_compile modules/shared/domain_rules.py
+  tests/test_bpm_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
+  aprovado.
+
+### Pendencias rastreadas
+
+- BPM permanece pendente para engine/worker de timers real homologado e
+  evidencias produtivas de escalonamento em ambiente controlado.
+
 ## STATUS OPERACIONAL - 2026-07-15 Document Storage Versioning
 
 ### Concluido neste ciclo
