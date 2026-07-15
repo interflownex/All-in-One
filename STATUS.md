@@ -100,6 +100,26 @@
 - Delivery permanece pendente para tracking real, matching e POD com arquivo.
 - Mobility permanece pendente para ETA, NFC real e tarifas dinamicas.
 
+## STATUS OPERACIONAL - 2026-07-15 Reconciliacao Marketplace Stock
+
+### Concluido neste ciclo
+
+- Reconciliadas as linhas `marketplace` e `stock` em
+  `docs/EXECUTION_PLAN.md`.
+- `tests/test_user_marketplace_journey.py` cobre consumidor -> wallet -> escrow
+  -> pedido Marketplace -> pagamento sandbox (`paid`) com outbox.
+- `SupplierCatalogSandbox` ja existe em `modules/shared/integration_sandbox.py`
+  e e coberto por `tests/test_integration_sandbox_adapters.py`.
+- A rota administrativa `/integrations/sandbox/suppliers/products` e coberta em
+  `tests/test_integration_sandbox_routes.py`.
+
+### Pendencias rastreadas
+
+- Marketplace permanece pendente para checkout/fulfillment completos e pagamento
+  real com provedor homologado.
+- Stock permanece pendente para fornecedor real homologado e tracking de pedido
+  fornecedor.
+
 ## STATUS OPERACIONAL - 2026-07-15 Git Sync Linux Upstream
 
 ### Concluido neste ciclo

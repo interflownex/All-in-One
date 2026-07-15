@@ -531,8 +531,8 @@ Proximos passos naturais:
 | `business` | 77% | Companies, memberships, idempotencia, store tipado e criacao/aprovacao de empresa coberta na jornada Jobs | Fluxo KYB real e convite operacional de usuarios | Testar convite de usuario e homologar KYB |
 | `permissions` | 68% | RBAC/ABAC modelado, store gerado, matriz versionada e testes negativos de runtime para leitura/escrita/MFA | Expandir enforcement fino para fluxos consumidores de permissoes | Conectar a matriz aos endpoints de dominio que ainda dependem apenas do runtime generico |
 | `finance` | 74% | Wallet, ledger, escrow, store tipado e ledger Gold Valley append-only | PSP/Pix/split/fiscal reais | Conectar compra Gold a PSP/Pix e saldo derivado por ledger |
-| `marketplace` | 68% | Catalogo, pedidos e store tipado | Checkout, pagamento e fulfillment | Jornada produto -> carrinho -> pedido -> pagamento |
-| `stock` | 62% | Dropshipping e fornecedores modelados | Integracoes reais de fornecedores | Adapter inicial de fornecedor sandbox |
+| `marketplace` | 71% | Catalogo, pedidos, store tipado e jornada pytest consumidor -> wallet -> escrow -> pedido -> pagamento sandbox | Checkout completo, pagamento real e fulfillment | Expandir checkout/fulfillment com provedor homologado |
+| `stock` | 66% | Dropshipping, fornecedores modelados e adapter sandbox `SupplierCatalogSandbox` com rota administrativa/testes | Integracoes reais de fornecedores | Homologar fornecedor real e tracking de pedido fornecedor |
 | `delivery` | 76% | Entregas, riders, cotacao, atribuicao, coleta/conclusao, store tipado e entrega `completed` coberta por Playwright vivo no shell User | Tracking real, matching e POD com arquivo | Implementar tracking/POD/antifraude em jornada viva |
 | `riders` | 68% | Candidatura, documentos, aprovacao, ativacao e veiculos cobertos por pytest | Ganhos reais e antifraude documental | Integrar ganhos Finance e validacao documental sandbox |
 | `services` | 73% | Prestadores, aprovacao, contrato, escrow referenciado e conclusao cobertos por pytest | Anti-burla avancado e escrow Finance real | Integrar contrato Services ao escrow Finance |
