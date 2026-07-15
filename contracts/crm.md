@@ -36,10 +36,30 @@
 - `POST /audit`
 
 
+## Lead, oportunidade e relacionamento
+
+- `leads` exige `name` e `source`, iniciando em `new` e emitindo `crm.lead.created`.
+- A acao `qualify` move leads para `qualified` e emite `crm.lead.qualified`; `disqualify` emite `crm.lead.disqualified`.
+- `opportunities` exige `lead_id`, `title` e `expected_value_brl`, iniciando em `open` e emitindo `crm.opportunity.created`.
+- A acao `propose` exige papel aprovador, MFA e emite `crm.opportunity.proposed`; `win` exige MFA e emite `crm.opportunity.won`.
+- `activities` exige `lead_id`, `activity_type` e `scheduled_at`, iniciando em `scheduled` e concluindo com `crm.activity.completed`.
+- `campaigns` exige `campaign_key` e `channel`; `launch` exige papel aprovador, MFA e emite `crm.campaign.launched`.
+
+
         ## Eventos
 
         - `crm.lead.created`
+- `crm.lead.qualified`
+- `crm.lead.disqualified`
+- `crm.opportunity.created`
+- `crm.opportunity.proposed`
 - `crm.opportunity.won`
+- `crm.opportunity.lost`
+- `crm.activity.created`
+- `crm.activity.completed`
+- `crm.campaign.created`
+- `crm.campaign.launched`
+- `crm.campaign.closed`
 
         ## Regras
 

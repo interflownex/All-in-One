@@ -12,6 +12,9 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `leads`, `opportunities`, `activities`, `campaigns`.
 
+`leads` registra origem e qualificacao; `opportunities` controla
+proposta e ganho com MFA; `activities` preserva follow-up auditavel.
+
 ## Execucao
 
 ```bash

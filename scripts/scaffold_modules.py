@@ -271,6 +271,17 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
+    if module["slug"] == "crm":
+        special = dedent(
+            """\
+            `leads` registra origem e qualificacao; `opportunities` controla
+            proposta e ganho com MFA; `activities` preserva follow-up auditavel.
+            """
+        )
+        rendered = rendered.replace(
+            f"{entities}.\n\n## Execucao",
+            f"{entities}.\n\n{special}\n## Execucao",
+        )
     return rendered
 
 
@@ -487,6 +498,20 @@ def render_contract(module: dict) -> str:
             - A acao `complete` exige papel aprovador, MFA e emite `tms.freight.completed`.
             - `proofs_of_delivery` exige `freight_id`, `file_sha256`, `storage_key` e `delivered_at`, e e append-only com evento `tms.delivery.proved`.
             - `freight_audits` exige `freight_id`, `audit_result` e `audited_at`; `close` exige papel aprovador, MFA e emite `tms.freight.audit_closed`.
+            """
+        )
+    if module["slug"] == "crm":
+        special += dedent(
+            """
+
+            ## Lead, oportunidade e relacionamento
+
+            - `leads` exige `name` e `source`, iniciando em `new` e emitindo `crm.lead.created`.
+            - A acao `qualify` move leads para `qualified` e emite `crm.lead.qualified`; `disqualify` emite `crm.lead.disqualified`.
+            - `opportunities` exige `lead_id`, `title` e `expected_value_brl`, iniciando em `open` e emitindo `crm.opportunity.created`.
+            - A acao `propose` exige papel aprovador, MFA e emite `crm.opportunity.proposed`; `win` exige MFA e emite `crm.opportunity.won`.
+            - `activities` exige `lead_id`, `activity_type` e `scheduled_at`, iniciando em `scheduled` e concluindo com `crm.activity.completed`.
+            - `campaigns` exige `campaign_key` e `channel`; `launch` exige papel aprovador, MFA e emite `crm.campaign.launched`.
             """
         )
     return dedent(

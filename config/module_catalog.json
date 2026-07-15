@@ -144,7 +144,7 @@
       "title": "CRM",
       "description": "Leads, oportunidades, propostas, campanhas e relacionamento.",
       "entities": ["leads", "opportunities", "activities", "campaigns"],
-      "events": ["crm.lead.created", "crm.opportunity.won"],
+      "events": ["crm.lead.created", "crm.lead.qualified", "crm.lead.disqualified", "crm.opportunity.created", "crm.opportunity.proposed", "crm.opportunity.won", "crm.opportunity.lost", "crm.activity.created", "crm.activity.completed", "crm.campaign.created", "crm.campaign.launched", "crm.campaign.closed"],
       "monetization": "Modulo SaaS por usuarios e automacoes.",
       "branch": "module/crm"
     },

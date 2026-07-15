@@ -329,9 +329,23 @@ PHASE4_ROUTE_PAYLOADS = {
         "audited_at": "2026-07-15T19:00:00Z",
     },
     ("crm", "opportunities"): {
+        "lead_id": PHASE4_BUSINESS_ID,
         "title": "Oportunidade B2B Playwright",
         "expected_value_brl": "1299.00",
         "description": "Pipeline vivo para lojista Business",
+    },
+    ("crm", "leads"): {
+        "name": "Lead B2B Playwright",
+        "source": "landing-page",
+    },
+    ("crm", "activities"): {
+        "lead_id": PHASE4_BUSINESS_ID,
+        "activity_type": "call",
+        "scheduled_at": "2026-07-15T14:00:00Z",
+    },
+    ("crm", "campaigns"): {
+        "campaign_key": "playwright-b2b",
+        "channel": "email",
     },
     ("bpm", "processes"): {
         "process_key": "onboarding-business-playwright",

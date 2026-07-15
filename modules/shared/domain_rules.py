@@ -607,7 +607,80 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
             ),
         },
     ),
-    ("crm", "opportunities"): ResourceRule(("title",), monetary_fields=("expected_value_brl",), transitions=lifecycle_flow("crm.opportunity")),
+    ("crm", "leads"): ResourceRule(
+        ("name", "source"),
+        initial_status="new",
+        sensitive=True,
+        transitions={
+            "qualify": Transition(
+                frozenset({"new", "contacted"}),
+                "qualified",
+                event="crm.lead.qualified",
+            ),
+            "disqualify": Transition(
+                frozenset({"new", "contacted", "qualified"}),
+                "disqualified",
+                event="crm.lead.disqualified",
+            ),
+        },
+    ),
+    ("crm", "opportunities"): ResourceRule(
+        ("lead_id", "title", "expected_value_brl"),
+        initial_status="open",
+        sensitive=True,
+        monetary_fields=("expected_value_brl",),
+        transitions={
+            "propose": Transition(
+                frozenset({"open"}),
+                "proposal_sent",
+                APPROVER_ROLES,
+                True,
+                "crm.opportunity.proposed",
+            ),
+            "win": Transition(
+                frozenset({"proposal_sent"}),
+                "won",
+                APPROVER_ROLES,
+                True,
+                "crm.opportunity.won",
+            ),
+            "lose": Transition(
+                frozenset({"open", "proposal_sent"}),
+                "lost",
+                event="crm.opportunity.lost",
+            ),
+        },
+    ),
+    ("crm", "activities"): ResourceRule(
+        ("lead_id", "activity_type", "scheduled_at"),
+        initial_status="scheduled",
+        sensitive=True,
+        transitions={
+            "complete": Transition(
+                frozenset({"scheduled"}),
+                "completed",
+                event="crm.activity.completed",
+            ),
+        },
+    ),
+    ("crm", "campaigns"): ResourceRule(
+        ("campaign_key", "channel"),
+        initial_status="draft",
+        transitions={
+            "launch": Transition(
+                frozenset({"draft"}),
+                "active",
+                APPROVER_ROLES,
+                True,
+                "crm.campaign.launched",
+            ),
+            "close": Transition(
+                frozenset({"active"}),
+                "closed",
+                event="crm.campaign.closed",
+            ),
+        },
+    ),
     ("bpm", "workflow_instances"): ResourceRule(
         ("process_key", "sla_policy_id", "started_at"),
         initial_status="running",
@@ -1045,6 +1118,10 @@ def event_for_create(module: str, resource_type: str) -> str:
         ("tms", "freights"): "tms.freight.created",
         ("tms", "proofs_of_delivery"): "tms.delivery.proved",
         ("tms", "freight_audits"): "tms.freight.audit_created",
+        ("crm", "leads"): "crm.lead.created",
+        ("crm", "opportunities"): "crm.opportunity.created",
+        ("crm", "activities"): "crm.activity.created",
+        ("crm", "campaigns"): "crm.campaign.created",
         ("hr", "employees"): "hr.employee.created",
         ("hr", "payroll_runs"): "hr.payroll.opened",
         ("hr", "courses"): "hr.training.assigned",

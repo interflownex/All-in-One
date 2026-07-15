@@ -1,5 +1,34 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 CRM Lead Opportunity
+
+### Concluido neste ciclo
+
+- `crm.leads` passou a exigir `name` e `source`, iniciando em `new` e
+  permitindo qualificacao/desqualificacao auditavel.
+- `crm.opportunities` passou a exigir `lead_id`, `title` e
+  `expected_value_brl`, com proposta e ganho protegidos por papel aprovador e
+  MFA.
+- `crm.activities` passou a registrar follow-up com `lead_id`,
+  `activity_type` e `scheduled_at`, concluindo com evento auditavel.
+- `crm.campaigns` passou a exigir `campaign_key` e `channel`, com lancamento
+  protegido por MFA.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar lead, oportunidade, atividade e campanha nos
+  contratos gerados e nas jornadas vivas.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local de
+  lead -> oportunidade foi saneada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_crm_domain.py`: 1 teste aprovado.
+
+### Pendencias rastreadas
+
+- Permanecem externas: homologar pipeline/campanhas reais e ampliar evidencias
+  com dados comerciais controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 TMS Freight POD
 
 ### Concluido neste ciclo
