@@ -258,7 +258,15 @@ PHASE4_ROUTE_PAYLOADS = {
         "process_key": "onboarding-business-playwright",
         "title": "Fluxo BPM Playwright",
     },
-    ("document", "documents"): {"storage_key": "phase4/doc.pdf", "filename": "doc.pdf"},
+    ("document", "documents"): {
+        "storage_provider": "private_vault",
+        "storage_bucket": "all-in-one-private-documents",
+        "storage_key": "vault/document/phase4/doc.pdf",
+        "file_sha256": "6f1ed002ab5595859014ebf0951522d9f59b7a3df43f1f4f13ff2f90a61f1f8c",
+        "kms_key_version": "kms://document/v1",
+        "filename": "doc.pdf",
+        "content_type": "application/pdf",
+    },
     ("hr", "employees"): {
         "company_id": PHASE4_BUSINESS_ID,
         "employment_type": "clt",

@@ -145,6 +145,19 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
+    if module["slug"] == "document":
+        special = dedent(
+            """\
+            `documents` exige `storage_provider`, `storage_bucket`,
+            `storage_key`, `file_sha256`, `kms_key_version`, `filename` e
+            `content_type`; `versions` registra novas revisoes append-only com
+            hash, chave privada e versao KMS.
+            """
+        )
+        rendered = rendered.replace(
+            f"{entities}.\n\n## Execucao",
+            f"{entities}.\n\n{special}\n## Execucao",
+        )
     return rendered
 
 
@@ -213,6 +226,18 @@ def render_contract(module: dict) -> str:
             - `tickets` exige QR e NFC tokenizados; uso de ticket emite `mobility.ticket.used`.
             - `fare_rules` registra tarifas auditaveis append-only por tipo de veiculo e emite `mobility.fare_rule.published`.
             - ETA dinamico, NFC real e tarifas produtivas dependem de provider homologado; o runtime local guarda somente metadados e hashes operacionais.
+            """
+        )
+    if module["slug"] == "document":
+        special += dedent(
+            """
+
+            ## Cofre privado e versionamento
+
+            - `documents` exige `storage_provider`, `storage_bucket`, `storage_key`, `file_sha256`, `kms_key_version`, `filename` e `content_type`.
+            - `versions` registra revisoes append-only com `document_id`, `version`, `storage_key`, `file_sha256` e `kms_key_version`.
+            - `storage_key` e `storage_bucket` devem apontar para cofre privado, sem URL publica.
+            - Criacao de documento emite `document.uploaded`; nova versao emite `document.versioned`.
             """
         )
     return dedent(

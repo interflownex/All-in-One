@@ -1,6 +1,6 @@
 # GED ECM
 
-Documentos, OCR, versoes, assinatura, retencao e indexacao.
+Documentos, OCR, versoes, cofre privado KMS, assinatura, retencao e indexacao.
 
 ## Responsabilidade
 
@@ -11,6 +11,11 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 ## Entidades
 
 `folders`, `documents`, `versions`, `retention_policies`.
+
+`documents` exige `storage_provider`, `storage_bucket`,
+`storage_key`, `file_sha256`, `kms_key_version`, `filename` e
+`content_type`; `versions` registra novas revisoes append-only com
+hash, chave privada e versao KMS.
 
 ## Execucao
 

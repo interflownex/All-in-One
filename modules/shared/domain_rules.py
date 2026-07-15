@@ -438,8 +438,30 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
     ("tms", "freights"): ResourceRule(("freight_brl",), monetary_fields=("freight_brl", "toll_brl"), transitions=lifecycle_flow("tms.freight")),
     ("crm", "opportunities"): ResourceRule(("title",), monetary_fields=("expected_value_brl",), transitions=lifecycle_flow("crm.opportunity")),
     ("bpm", "workflow_instances"): ResourceRule(("process_key",), initial_status="running", transitions=lifecycle_flow("bpm.workflow")),
-    ("document", "documents"): ResourceRule(("storage_key", "filename"), sensitive=True, transitions=lifecycle_flow("document")),
-    ("document", "versions"): ResourceRule(("document_id", "version"), sensitive=True, immutable=True),
+    ("document", "documents"): ResourceRule(
+        (
+            "storage_provider",
+            "storage_bucket",
+            "storage_key",
+            "file_sha256",
+            "kms_key_version",
+            "filename",
+            "content_type",
+        ),
+        sensitive=True,
+        transitions=lifecycle_flow("document"),
+    ),
+    ("document", "versions"): ResourceRule(
+        (
+            "document_id",
+            "version",
+            "storage_key",
+            "file_sha256",
+            "kms_key_version",
+        ),
+        sensitive=True,
+        immutable=True,
+    ),
     ("hr", "employees"): ResourceRule(("company_id", "employment_type"), sensitive=True, transitions=review_flow("hr.employee")),
     ("hr", "payroll_runs"): ResourceRule(("company_id",), sensitive=True, transitions=review_flow("hr.payroll")),
     ("hr", "occupational_records"): ResourceRule(("employee_id",), sensitive=True, transitions=review_flow("hr.occupational_record")),
@@ -503,6 +525,21 @@ def check_payload(rule: ResourceRule, payload: dict[str, Any]) -> None:
         raise HTTPException(status_code=422, detail="Operacao exige empresa aprovada.")
     if payload.get("recruiter_visibility") and payload["recruiter_visibility"] not in {"private", "business_recruiters"}:
         raise HTTPException(status_code=422, detail="Visibilidade de curriculo invalida.")
+    storage_key = str(payload.get("storage_key", ""))
+    storage_provider = str(payload.get("storage_provider", ""))
+    storage_bucket = str(payload.get("storage_bucket", ""))
+    if storage_key and (
+        storage_key.startswith(("http://", "https://"))
+        or "public" in storage_key.casefold()
+    ):
+        raise HTTPException(
+            status_code=422,
+            detail="storage_key deve apontar para cofre privado, sem URL publica.",
+        )
+    if storage_provider and storage_provider not in {"private_vault", "gcs_kms", "s3_kms"}:
+        raise HTTPException(status_code=422, detail="storage_provider privado invalido.")
+    if storage_bucket and "public" in storage_bucket.casefold():
+        raise HTTPException(status_code=422, detail="storage_bucket publico nao permitido.")
 
 
 def event_for_create(module: str, resource_type: str) -> str:
@@ -518,6 +555,8 @@ def event_for_create(module: str, resource_type: str) -> str:
         ("stock", "discount_quotes"): "valley.stock.discount.quoted",
         ("delivery", "delivery_requests"): "delivery.request.created",
         ("delivery", "proofs"): "delivery.proof.recorded",
+        ("document", "documents"): "document.uploaded",
+        ("document", "versions"): "document.versioned",
         ("services", "service_contracts"): "services.contract.created",
         ("mobility", "rides"): "mobility.ride.requested",
         ("mobility", "routes"): "mobility.route.eta_quoted",

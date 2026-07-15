@@ -160,9 +160,9 @@
     {
       "slug": "document",
       "title": "GED ECM",
-      "description": "Documentos, OCR, versoes, assinatura, retencao e indexacao.",
+      "description": "Documentos, OCR, versoes, cofre privado KMS, assinatura, retencao e indexacao.",
       "entities": ["folders", "documents", "versions", "retention_policies"],
-      "events": ["document.uploaded", "document.signed"],
+      "events": ["document.uploaded", "document.versioned", "document.signed"],
       "monetization": "Armazenamento e assinatura adicionais.",
       "branch": "module/document"
     },

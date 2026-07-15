@@ -1,5 +1,41 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Document Storage Versioning
+
+### Concluido neste ciclo
+
+- `document.documents` passou a exigir contrato de cofre privado com
+  `storage_provider`, `storage_bucket`, `storage_key`, `file_sha256`,
+  `kms_key_version`, `filename` e `content_type`.
+- `document.versions` passou a registrar novas revisoes append-only com
+  `document_id`, `version`, `storage_key`, `file_sha256` e `kms_key_version`.
+- `modules/shared/domain_rules.py` bloqueia `storage_key` com URL publica,
+  bucket publico e provider fora de `private_vault`, `gcs_kms` ou `s3_kms`.
+- `document.uploaded` e `document.versioned` foram ligados ao outbox, catalogo,
+  contratos gerados e template do scaffold.
+- `tests/e2e/conftest.py` foi atualizado para semear Document com storage
+  privado/KMS/hash nas jornadas vivas Business/API Hub.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local de
+  upload/versionamento com storage privado foi saneada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_document_domain.py modules/document/tests/test_create_flow.py
+  tests/test_frontend_journeys_contract.py tests/test_sensitive_permissions_review.py`:
+  11 testes aprovados.
+- `python3 scripts/check_generated_artifacts.py`: aprovado apos atualizar o
+  template `scripts/scaffold_modules.py`.
+- `./.venv/bin/ruff check tests/test_document_domain.py`: aprovado.
+- `./.venv/bin/python -m py_compile modules/shared/domain_rules.py
+  tests/test_document_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
+  aprovado.
+
+### Pendencias rastreadas
+
+- Document permanece pendente para bucket/KMS/OCR/assinatura reais homologados
+  e evidencias com arquivos produtivos em ambiente controlado.
+
 ## STATUS OPERACIONAL - 2026-07-15 Permissions Domain Enforcement
 
 ### Concluido neste ciclo
