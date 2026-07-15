@@ -12,6 +12,10 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `devices`, `streams`, `recordings`, `motion_alerts`.
 
+`streams` guarda somente metadados privados e hash da URL;
+`recordings` preserva hash/storage append-only; `motion_alerts`
+registra deteccoes e incidentes auditaveis.
+
 ## Execucao
 
 ```bash

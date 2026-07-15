@@ -189,7 +189,7 @@
       "title": "Vision",
       "description": "Dispositivos de camera, streams, gravacoes, deteccao e ocorrencias.",
       "entities": ["devices", "streams", "recordings", "motion_alerts"],
-      "events": ["vision.motion.detected", "vision.incident.created"],
+      "events": ["vision.device.registered", "vision.stream.started", "vision.recording.stored", "vision.motion.detected", "vision.incident.created", "vision.incident.resolved"],
       "monetization": "Plano por camera, retencao e analise IA.",
       "branch": "module/vision"
     },

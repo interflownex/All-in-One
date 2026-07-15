@@ -1,5 +1,41 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Vision Stream Alert
+
+### Concluido neste ciclo
+
+- `vision.streams` passou a exigir `device_id`, `stream_url_hash`, `protocol`
+  e `started_at`, iniciando em `active` e emitindo `vision.stream.started`.
+- `vision.recordings` passou a registrar gravacoes append-only com
+  `stream_id`, `storage_key`, `file_sha256` e `started_at`, emitindo
+  `vision.recording.stored`.
+- `vision.motion_alerts` passou a exigir `device_id`, `stream_id`,
+  `detected_at` e `confidence_score`, iniciando em `detected` e emitindo
+  `vision.motion.detected`.
+- As acoes `triage` e `resolve` exigem papel aprovador e MFA, emitindo
+  `vision.incident.created` e `vision.incident.resolved`.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar stream, gravacao e alerta operacional nos
+  contratos gerados e nas jornadas vivas.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local de prova de
+  stream e alerta operacional foi saneada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_vision_domain.py modules/vision/tests/test_create_flow.py
+  tests/test_sensitive_permissions_review.py tests/test_frontend_journeys_contract.py`:
+  11 testes aprovados.
+- `./.venv/bin/ruff check tests/test_vision_domain.py`: aprovado.
+- `./.venv/bin/python -m py_compile modules/shared/domain_rules.py
+  tests/test_vision_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
+  aprovado.
+
+### Pendencias rastreadas
+
+- Vision permanece pendente para ingestao de video/IA produtivas homologadas e
+  evidencias com streams reais controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 HR Payroll Training
 
 ### Concluido neste ciclo
