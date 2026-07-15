@@ -1,5 +1,39 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Permissions Domain Enforcement
+
+### Concluido neste ciclo
+
+- `config/security/permissions_enforcement_matrix.json` passou a declarar os
+  consumidores sensiveis de dominio (`identity`, `finance`, `jobs`,
+  `document`, `health` e `hr`) ligados a
+  `config/security/sensitive_permissions_review.json`.
+- `modules/shared/domain_rules.py` tornou explicito o contrato runtime
+  `SENSITIVE_PERMISSION_MODULES`/`SENSITIVE_PERMISSION_ROLE_RULES`, mantendo
+  `can_read_sensitive` como ponto unico para papéis sensiveis, recrutamento e
+  contexto medico.
+- `tests/test_permissions_enforcement_matrix.py` passou a provar que a matriz
+  `permissions` bate com a revisao sensivel e que endpoints reais de dominio
+  negam leitura de terceiros sem papel adequado em `finance` e `health`.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local de conectar a
+  matriz aos endpoints de dominio foi saneada, restando homologacao RBAC/ABAC
+  e refinamento contextual em ambiente real.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_permissions_enforcement_matrix.py
+  tests/test_sensitive_permissions_review.py`: 10 testes aprovados.
+- `./.venv/bin/ruff check tests/test_permissions_enforcement_matrix.py`:
+  aprovado.
+- `./.venv/bin/python -m py_compile modules/shared/domain_rules.py
+  tests/test_permissions_enforcement_matrix.py`: aprovado.
+
+### Pendencias rastreadas
+
+- Permissions permanece pendente para homologacao RBAC/ABAC com dados reais,
+  validacao por tenant/contexto e ampliacao de evidencias por modulo critico.
+
 ## STATUS OPERACIONAL - 2026-07-15 Mobility ETA NFC Tarifa
 
 ### Concluido neste ciclo

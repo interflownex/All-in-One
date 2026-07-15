@@ -25,6 +25,17 @@ SENSITIVE_ROLES = frozenset(
 )
 MEDICAL_ROLES = frozenset({"medical_admin", "doctor", "nurse", "compliance_officer"})
 RECRUITER_ROLES = frozenset({"owner", "administrator", "hr_manager", "recruiter", "auditor"})
+SENSITIVE_PERMISSION_MODULES = frozenset(
+    {"identity", "finance", "jobs", "document", "health", "hr"}
+)
+SENSITIVE_PERMISSION_ROLE_RULES = {
+    "identity": "SENSITIVE_ROLES",
+    "finance": "SENSITIVE_ROLES",
+    "jobs": "RECRUITER_ROLES",
+    "document": "SENSITIVE_ROLES",
+    "health": "MEDICAL_ROLES",
+    "hr": "SENSITIVE_ROLES",
+}
 
 
 @dataclass(frozen=True)
@@ -521,9 +532,10 @@ def event_for_create(module: str, resource_type: str) -> str:
 
 
 def can_read_sensitive(module: str, roles: frozenset[str]) -> bool:
-    if module == "health":
+    role_rule = SENSITIVE_PERMISSION_ROLE_RULES.get(module, "SENSITIVE_ROLES")
+    if role_rule == "MEDICAL_ROLES":
         required = MEDICAL_ROLES
-    elif module == "jobs":
+    elif role_rule == "RECRUITER_ROLES":
         required = RECRUITER_ROLES
     else:
         required = SENSITIVE_ROLES
