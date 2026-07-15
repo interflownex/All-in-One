@@ -29,6 +29,32 @@
   alternativa de escrita; ate la, o fechamento operacional segue por
   `origin/main`.
 
+## STATUS OPERACIONAL - 2026-07-15 Gate De Artefatos Gerados
+
+### Concluido neste ciclo
+
+- Reproduzida a falha de `python3 scripts/check_generated_artifacts.py`: o
+  scaffold tentava regenerar README/STATUS de shells vivos como baseline
+  generico e detectava dessincronia em 11 arquivos de apps.
+- `scripts/scaffold_modules.py` agora preserva como customizados os artefatos
+  operacionais de `all-in-one-user`, `all-in-one-business`,
+  `all-in-one-riders`, `all-in-one-services`, `all-in-one-health` e
+  `all-in-one-mobility`, evitando rebaixar evidencias de API Hub vivo para
+  `contract_defined`.
+- `tests/test_scaffold_custom_artifacts.py` bloqueia regressao dessa lista.
+
+### Evidencias
+
+- `python3 scripts/check_generated_artifacts.py`: aprovado, com 441 artefatos
+  verificados e 27 customizados preservados.
+- `python3 scripts/configure_docker_dx.py --print-status`: Docker, Compose,
+  Buildx e Docker MCP responsivos; `env_changed=false`.
+
+### Pendencias rastreadas
+
+- Manter `scripts/check_generated_artifacts.py` no fechamento local sempre que
+  scaffold, catalogo, apps ou contratos forem alterados.
+
 ## STATUS OPERACIONAL - 2026-07-15 Google Cloud Auth/ADC Data Agent
 
 ### Concluido neste ciclo

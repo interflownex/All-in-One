@@ -42,6 +42,9 @@ Entregas esperadas:
   upstream configurado antes de cair no nome da branch local; neste worktree
   `worktree-sync -> origin/main`, o gate padrao valida `origin/main:
   behind=0 ahead=0` e apenas avisa quando `fork` esta ausente.
+- Em 2026-07-15, `scripts/check_generated_artifacts.py` voltou a passar sem
+  rebaixar docs operacionais dos shells vivos; `scripts/scaffold_modules.py`
+  preserva os README/STATUS customizados dos apps com API Hub conectado.
 
 Pendencias:
 - Reconfigurar o remoto `fork` neste checkout ou manter fechamento operacional

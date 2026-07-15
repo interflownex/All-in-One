@@ -61,7 +61,18 @@ CUSTOMIZED_ARTIFACTS = {
     "contracts/finance.md",
     "modules/api_hub/OPENAPI.yaml",
     "modules/marketplace/OPENAPI.yaml",
-    # Apps Valley ja possuem estado operacional proprio alem do scaffold inicial.
+    # Apps com shells vivos possuem estado operacional proprio alem do scaffold.
+    "apps/all-in-one-business/README.md",
+    "apps/all-in-one-business/STATUS.md",
+    "apps/all-in-one-health/README.md",
+    "apps/all-in-one-health/STATUS.md",
+    "apps/all-in-one-mobility/README.md",
+    "apps/all-in-one-mobility/STATUS.md",
+    "apps/all-in-one-riders/README.md",
+    "apps/all-in-one-riders/STATUS.md",
+    "apps/all-in-one-services/README.md",
+    "apps/all-in-one-services/STATUS.md",
+    "apps/all-in-one-user/STATUS.md",
     "apps/valley/README.md",
     "apps/valley/STATUS.md",
 }
