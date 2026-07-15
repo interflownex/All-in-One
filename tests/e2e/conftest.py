@@ -305,8 +305,15 @@ PHASE4_ROUTE_PAYLOADS = {
     },
     ("legal", "cases"): {
         "case_number": "LEGAL-PLAYWRIGHT-001",
+        "case_type": "consumer",
+        "opened_at": "2026-07-15",
         "title": "Caso Legal Playwright",
         "risk_brl": "700.00",
+    },
+    ("legal", "deadlines"): {
+        "case_id": PHASE4_BUSINESS_ID,
+        "deadline_type": "hearing",
+        "due_at": "2026-07-31T09:00:00Z",
     },
     ("property", "properties"): {
         "address": "Rua Playwright, 100",

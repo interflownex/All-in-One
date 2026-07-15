@@ -1,5 +1,33 @@
 # Status Operacional
 
+## STATUS OPERACIONAL - 2026-07-15 Legal Deadline Alert
+
+### Concluido neste ciclo
+
+- `legal.cases` passou a exigir `case_number`, `case_type` e `opened_at`,
+  mantendo `risk_brl` como valor monetario auditavel.
+- `legal.deadlines` passou a exigir `case_id`, `deadline_type` e `due_at`,
+  iniciando em `pending` e emitindo `legal.deadline.created`.
+- A acao `alert` move prazos para `alerted`, exige papel aprovador e MFA, e
+  emite `legal.deadline.alerted`.
+- A acao `complete` conclui prazos pendentes ou alertados e emite
+  `legal.deadline.completed`.
+- `tests/e2e/conftest.py`, `config/module_catalog.json` e o scaffold foram
+  atualizados para preservar caso, prazo e alerta juridico nos contratos
+  gerados e nas jornadas vivas.
+- `docs/EXECUTION_PLAN.md` foi reconciliado: a pendencia local
+  `Fluxo caso -> prazo -> alerta` foi saneada.
+
+### Evidencias
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
+  -q -s tests/test_legal_domain.py`: 1 teste aprovado.
+
+### Pendencias rastreadas
+
+- Permanecem externas: homologar integracoes tribunal/calendario e ampliar
+  evidencias com prazos reais controlados.
+
 ## STATUS OPERACIONAL - 2026-07-15 Vision Stream Alert
 
 ### Concluido neste ciclo

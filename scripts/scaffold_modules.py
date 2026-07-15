@@ -194,6 +194,17 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
+    if module["slug"] == "legal":
+        special = dedent(
+            """\
+            `cases` registra processo com tipo, abertura e risco; `deadlines`
+            acompanha prazo processual, alerta com MFA e conclusao auditavel.
+            """
+        )
+        rendered = rendered.replace(
+            f"{entities}.\n\n## Execucao",
+            f"{entities}.\n\n{special}\n## Execucao",
+        )
     return rendered
 
 
@@ -313,6 +324,19 @@ def render_contract(module: dict) -> str:
             - `motion_alerts` exige `device_id`, `stream_id`, `detected_at` e `confidence_score`, iniciando em `detected` e emitindo `vision.motion.detected`.
             - A acao `triage` exige papel aprovador, MFA e cria incidente com `vision.incident.created`.
             - A acao `resolve` exige papel aprovador, MFA e emite `vision.incident.resolved`.
+            """
+        )
+    if module["slug"] == "legal":
+        special += dedent(
+            """
+
+            ## Caso, prazo e alerta juridico
+
+            - `cases` exige `case_number`, `case_type` e `opened_at`, preserva `risk_brl` como valor monetario auditavel e emite `legal.case.created`.
+            - `deadlines` exige `case_id`, `deadline_type` e `due_at`, iniciando em `pending` e emitindo `legal.deadline.created`.
+            - A acao `alert` move prazos para `alerted`, exige papel aprovador, MFA e emite `legal.deadline.alerted`.
+            - A acao `complete` move prazos pendentes ou alertados para `completed` e emite `legal.deadline.completed`.
+            - `hearings` exige `case_id` e `scheduled_at`, iniciando em `scheduled` e emitindo `legal.hearing.scheduled`.
             """
         )
     return dedent(

@@ -12,6 +12,9 @@ cabecalho `X-Actor-User-Id`, salvo o autorregistro inicial em Identity.
 
 `cases`, `deadlines`, `hearings`, `legal_contracts`.
 
+`cases` registra processo com tipo, abertura e risco; `deadlines`
+acompanha prazo processual, alerta com MFA e conclusao auditavel.
+
 ## Execucao
 
 ```bash

@@ -198,7 +198,7 @@
       "title": "Legal",
       "description": "Processos, contratos, prazos, audiencias, provisionamento e alertas.",
       "entities": ["cases", "deadlines", "hearings", "legal_contracts"],
-      "events": ["legal.case.created", "legal.deadline.alerted"],
+      "events": ["legal.case.created", "legal.deadline.created", "legal.deadline.alerted", "legal.deadline.completed", "legal.hearing.scheduled"],
       "monetization": "Modulo SaaS para juridico interno e escritorios.",
       "branch": "module/legal"
     },
