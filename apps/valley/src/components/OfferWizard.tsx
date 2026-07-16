@@ -1,10 +1,11 @@
 import { useState } from 'react';
-
-const API_HUB_URL = import.meta.env.VITE_API_HUB_URL || 'http://localhost:8000';
+import { publishOffer as publishOfferAction } from '../lib/valleyPlatform';
 
 export default function OfferWizard({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  const [failed, setFailed] = useState(false);
   const [formData, setFormData] = useState({
     offer_type: 'product',
     category_id: '',
@@ -24,31 +25,14 @@ export default function OfferWizard({ onClose }: { onClose: () => void }) {
 
   const publishOffer = async () => {
     setLoading(true);
+    setFeedback('');
+    setFailed(false);
     try {
-      const response = await fetch(`${API_HUB_URL}/gateway/business/valley/catalog/offers`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-      if (!response.ok) throw new Error('Falha ao publicar');
-      
-      const data = await response.json();
-      
-      
-      await fetch(`${API_HUB_URL}/gateway/business/valley/catalog/offers/${data.id}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: 'published' })
-      });
-      
-      alert('Oferta publicada com sucesso no Valley!');
-      onClose();
+      const response = await publishOfferAction(formData);
+      setFeedback(response.message);
     } catch (err) {
-      alert('Erro ao publicar: ' + String(err));
+      setFailed(true);
+      setFeedback(err instanceof Error ? err.message : 'Erro ao publicar a oferta.');
     } finally {
       setLoading(false);
     }
@@ -64,15 +48,15 @@ export default function OfferWizard({ onClose }: { onClose: () => void }) {
 
         {step === 1 && (
           <div>
-            <h3>1. O que você vende?</h3>
+            <h3>1. O que voce vende?</h3>
             <select 
               value={formData.offer_type} 
               onChange={e => updateForm('offer_type', e.target.value)}
               style={{ width: '100%', padding: '0.5rem', margin: '1rem 0' }}
             >
               <option value="product">Produto Físico/Digital</option>
-              <option value="service">Serviço Profissional</option>
-              <option value="food">Alimentação/Delivery</option>
+              <option value="service">Servico Profissional</option>
+              <option value="food">Alimentacao/Delivery</option>
               <option value="appointment">Consulta/Agendamento</option>
             </select>
           </div>
@@ -81,7 +65,7 @@ export default function OfferWizard({ onClose }: { onClose: () => void }) {
         {step === 2 && (
           <div>
             <h3>2. Categoria</h3>
-            <input type="text" placeholder="Ex: Eletrônicos, Serviços Domésticos" style={{ width: '100%', padding: '0.5rem', margin: '1rem 0' }} onChange={e => updateForm('category_id', e.target.value)} />
+            <input type="text" placeholder="Ex: Eletronicos, Servicos Domesticos" style={{ width: '100%', padding: '0.5rem', margin: '1rem 0' }} onChange={e => updateForm('category_id', e.target.value)} />
           </div>
         )}
 
@@ -93,10 +77,9 @@ export default function OfferWizard({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        {/* Simplificando steps intermediários visualmente para o MVP, mas mantendo a jornada em 11 */}
         {step > 3 && step < 10 && (
           <div>
-            <h3>Passo {step} (Configurações Adicionais)</h3>
+            <h3>Passo {step} (Configuracoes Adicionais)</h3>
             <p>Configurando imagens, preços, estoque, etc.</p>
             {step === 5 && (
               <input type="number" placeholder="Preço (R$)" value={formData.price_amount} onChange={e => updateForm('price_amount', parseFloat(e.target.value))} style={{ width: '100%', padding: '0.5rem', margin: '1rem 0' }} />
@@ -106,7 +89,7 @@ export default function OfferWizard({ onClose }: { onClose: () => void }) {
 
         {step === 10 && (
           <div>
-            <h3>10. Revisão</h3>
+            <h3>10. Revisao</h3>
             <pre style={{ background: '#f1f5f9', padding: '1rem', borderRadius: '4px' }}>
               {JSON.stringify(formData, null, 2)}
             </pre>
@@ -117,6 +100,12 @@ export default function OfferWizard({ onClose }: { onClose: () => void }) {
           <div>
             <h3>11. Publicar no Valley</h3>
             <p>Sua oferta estará disponível imediatamente para todos os clientes.</p>
+          </div>
+        )}
+
+        {feedback && (
+          <div style={{ marginTop: '1rem', padding: '0.85rem 1rem', background: failed ? '#fee2e2' : '#dcfce7', color: failed ? '#991b1b' : '#166534', borderRadius: '6px' }}>
+            {feedback}
           </div>
         )}
 
@@ -139,7 +128,7 @@ export default function OfferWizard({ onClose }: { onClose: () => void }) {
           ) : (
             <button 
               onClick={publishOffer}
-              disabled={loading}
+              disabled={loading || (!failed && feedback !== '')}
               style={{ padding: '0.5rem 1rem', background: '#10b981', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}
             >
               {loading ? 'Publicando...' : 'Publicar Agora'}

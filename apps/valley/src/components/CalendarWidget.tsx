@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-
-const API_HUB_URL = import.meta.env.VITE_API_HUB_URL ?? '';
+import { getAvailableSlots, reserveSlot } from '../lib/valleyPlatform';
 
 export default function CalendarWidget() {
   const [slots, setSlots] = useState<string[]>([]);
@@ -9,15 +8,12 @@ export default function CalendarWidget() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    
-    fetch(`${API_HUB_URL}/services/providers/mock-provider/time-slots?date=2026-06-10`)
-      .then(res => res.json())
-      .then(data => {
-        setSlots(data.available_slots || ["09:00", "10:00", "11:30", "14:00", "15:30"]);
+    getAvailableSlots()
+      .then((data) => {
+        setSlots(data);
         setLoading(false);
       })
       .catch(() => {
-        
         setSlots(["09:00", "10:00", "11:30", "14:00", "15:30"]);
         setLoading(false);
       });
@@ -26,14 +22,8 @@ export default function CalendarWidget() {
   const handleReserve = async () => {
     if (!selectedSlot) return;
     try {
-      const res = await fetch(`${API_HUB_URL}/services/providers/mock-provider/reserve-slot`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slot: selectedSlot, customer_id: 'cust-123' })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || 'Erro ao reservar');
-      setMessage(`Sucesso! Horário ${selectedSlot} reservado.`);
+      const response = await reserveSlot(selectedSlot);
+      setMessage(response.message);
       setSlots(slots.filter(s => s !== selectedSlot));
       setSelectedSlot(null);
     } catch (err: unknown) {
@@ -44,7 +34,7 @@ export default function CalendarWidget() {
   return (
     <div style={{ background: 'white', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
       <h2 style={{ marginBottom: '1rem', color: '#0f172a' }}>Gerenciamento de Agenda (Motor de Conflitos)</h2>
-      <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>Data: 10 de Junho de 2026</p>
+      <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>Data: 16 de Julho de 2026</p>
       
       {message && <div style={{ padding: '1rem', marginBottom: '1rem', background: message.startsWith('Erro') ? '#fee2e2' : '#d1fae5', color: message.startsWith('Erro') ? '#991b1b' : '#065f46', borderRadius: '4px' }}>{message}</div>}
 

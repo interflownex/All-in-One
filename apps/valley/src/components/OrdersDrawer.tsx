@@ -1,24 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import SupportModal from './SupportModal'
 import ReviewModal from './ReviewModal'
-
-interface OrderItem {
-  id: string
-  kind: 'order' | 'appointment' | 'service'
-  title: string
-  status: string
-  amount_brl?: string | null
-  scheduled_at?: string | null
-  created_at?: string
-}
+import { getOrders, submitReview as submitReviewAction, submitSupportCase, type OrderItem } from '../lib/valleyPlatform'
 
 interface OrdersDrawerProps {
   isOpen: boolean
   onClose: () => void
   token: string | null
 }
-
-const API_HUB_URL = import.meta.env.VITE_API_HUB_URL ?? ''
 
 const statusMap: Record<string, string> = {
   created: 'Aguardando pagamento',
@@ -42,15 +31,9 @@ const OrdersDrawerContent: React.FC<{ onClose: () => void; token: string }> = ({
   const [reviewedOrders, setReviewedOrders] = useState<Set<string>>(new Set())
 
   useEffect(() => {
-    fetch(`${API_HUB_URL}/gateway/consumer/orders`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(res => {
-        if (!res.ok) throw new Error('Falha ao carregar historico')
-        return res.json()
-      })
+    getOrders(token)
       .then(data => {
-        setItems(data.data || [])
+        setItems(data)
       })
       .catch(err => {
         setError(err.message)
@@ -62,47 +45,14 @@ const OrdersDrawerContent: React.FC<{ onClose: () => void; token: string }> = ({
 
   const submitReview = async (rating: number, comment: string) => {
     if (!reviewOrder) throw new Error('Selecione um pedido concluido.')
-    const response = await fetch(`${API_HUB_URL}/gateway/consumer/orders/${reviewOrder.id}/reviews`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        rating,
-        comment: comment || null,
-        idempotency_key: `review-${reviewOrder.id}-${window.crypto.randomUUID()}`,
-      }),
-    })
-    const payload = await response.json()
-    if (!response.ok) {
-      throw new Error(payload.detail || 'Nao foi possivel publicar a avaliacao.')
-    }
+    const payload = await submitReviewAction(reviewOrder.id, rating, comment, token)
     setReviewedOrders(current => new Set(current).add(reviewOrder.id))
     return payload
   }
 
   const submitSupport = async (kind: 'support' | 'dispute', subject: string, message: string, desiredResolution: string) => {
     if (!supportOrder) throw new Error('Selecione um pedido para abrir suporte.')
-    const response = await fetch(`${API_HUB_URL}/gateway/consumer/orders/${supportOrder.id}/support`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        kind,
-        subject: subject || null,
-        message,
-        desired_resolution: desiredResolution || null,
-        idempotency_key: `support-${supportOrder.id}-${window.crypto.randomUUID()}`,
-      }),
-    })
-    const payload = await response.json()
-    if (!response.ok) {
-      throw new Error(payload.detail || 'Nao foi possivel registrar o caso.')
-    }
-    return payload
+    return submitSupportCase(supportOrder.id, kind, subject, message, desiredResolution, token)
   }
 
   return (

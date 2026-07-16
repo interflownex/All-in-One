@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
+import { signInWithEmail, signInWithGoogle } from '../lib/valleyPlatform'
 
 interface LoginModalProps {
   isOpen: boolean
   onClose: () => void
   onSuccess: (token: string, userId: string) => void
 }
-
-const API_HUB_URL = import.meta.env.VITE_API_HUB_URL ?? ''
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) => {
   const [email, setEmail] = useState('')
@@ -23,40 +22,23 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
     setError('')
 
     try {
-      if (isRegistering) {
-        const now = new Date().toISOString()
-        const payload = {
-          full_name: email.split('@')[0].replace(/[._-]+/g, ' '),
-          email,
-          password_hash: password,
-          document_cpf: `CPF-${window.crypto.randomUUID().replaceAll('-', '').slice(0, 12)}`,
-          terms_accepted_at: now,
-          lgpd_consent_at: now,
-        }
-        const response = await fetch(`${API_HUB_URL}/registrations`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        })
-
-        if (!response.ok) {
-          const res = await response.json()
-          throw new Error(res.detail || 'Falha ao realizar cadastro.')
-        }
-      }
-
-      const loginResponse = await fetch(`${API_HUB_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-      if (!loginResponse.ok) {
-        throw new Error('E-mail ou senha invalidos.')
-      }
-      const session = await loginResponse.json()
-      onSuccess(session.access_token, session.user_id)
+      const session = await signInWithEmail(email, password, isRegistering)
+      onSuccess(session.token, session.userId)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro na requisicao.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const session = await signInWithGoogle(email.trim() || 'google@valley.app')
+      onSuccess(session.token, session.userId)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Nao foi possivel autenticar com Google.')
     } finally {
       setLoading(false)
     }
@@ -70,6 +52,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
           <button className="close-btn" onClick={onClose} aria-label="Fechar">&times;</button>
         </header>
         <div className="modal-body">
+          <button className="btn-google" type="button" disabled={loading} onClick={handleGoogleLogin}>
+            {loading ? 'Conectando...' : 'Continuar com Google'}
+          </button>
+          <div className="login-separator"><span>ou use e-mail</span></div>
           <form onSubmit={handleSubmit} className="login-form">
             <div className="input-group">
               <label htmlFor="email">E-mail</label>

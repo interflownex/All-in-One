@@ -9,10 +9,16 @@ Coordenada operacional atual:
 - Manter compatibilidade com futura migracao para Google/AlloyDB preservando migrations, DSNs PostgreSQL, manifests e contratos ja versionados.
 
 Atualizacao de fronteira:
-- O APK `apps/valley-android` esta compilando com sucesso e recebeu login nativo
-  com Google chooser, branding Valley e shell consumidor sem fallback ficticio.
-- O emulador do perfil `VALLEY_Pixel_8_API_36` foi disparado no host Windows;
-  o boot ainda pode estar em progresso no momento desta escrita.
+- Em 2026-07-16, `apps/valley` recebeu modo demonstracao local-first com
+  login/cadastro por e-mail, entrada via Google de teste, catalogo com midia,
+  checkout, agenda, tracking, pedidos, suporte e matriz de modulos sem botoes
+  mortos.
+- Em 2026-07-16, a build web passou a usar base relativa e foi empacotada em
+  `apps/valley-android/app/src/main/assets/valley`, permitindo que o APK
+  `apps/valley-android` rode o shell consumidor localmente no WebView.
+- Em 2026-07-16, `./gradlew assembleDebug --no-daemon` e
+  `./gradlew testDebugUnitTest --no-daemon` passaram com sucesso para o app
+  Android consumidor.
 
 ## 1. Estado consolidado
 

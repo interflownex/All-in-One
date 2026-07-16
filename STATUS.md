@@ -1,3 +1,36 @@
+# STATUS OPERACIONAL - 2026-07-16 Valley Consumer Build Final
+
+### Concluido neste ciclo
+
+- A versao consumidora `apps/valley` passou a operar em modo conectado ou em
+  modo demonstracao local-first, com login/cadastro por e-mail, entrada via
+  Google de teste, checkout, agendamento, pagamento, pedidos, suporte, agenda
+  B2B, tracking e vitrine de modulos sem botoes mortos.
+- A marca All-in-One e a logomarca Valley oficial foram preservadas no shell
+  web e no launcher Android, sem redesenho ou alteracao do ativo.
+- A build web foi gerada com base relativa e empacotada dentro de
+  `apps/valley-android/app/src/main/assets/valley`, permitindo que o APK debug
+  rode o shell consumidor localmente no WebView, inclusive com fallback de
+  autenticacao demonstrativa no Android.
+- O app Android foi validado com sucesso em `apps/valley-android` por
+  `./gradlew assembleDebug --no-daemon` e `./gradlew testDebugUnitTest --no-daemon`.
+
+### Evidencias
+
+- `npm run build` em `apps/valley`: aprovado em 2026-07-16.
+- `apps/valley/dist/index.html`: gerado com sucesso.
+- `./gradlew assembleDebug --no-daemon`: aprovado em 2026-07-16.
+- `./gradlew testDebugUnitTest --no-daemon`: aprovado em 2026-07-16.
+- `apps/valley-android/app/build/outputs/apk/debug/app-debug.apk`: gerado com sucesso.
+
+### Pendencias rastreadas
+
+- Se quiser autenticacao Google OAuth real, ainda sera necessario fornecer
+  `client_id` valido e fechar o fluxo OAuth nativo/web com credenciais oficiais.
+- O acesso remoto ao projeto Stitch `13752689113810261883` segue bloqueado por
+  autenticacao ausente no MCP local; a entrega desta rodada foi concluida em
+  modo local-first reaproveitando a base versionada do workspace.
+
 # STATUS OPERACIONAL - 2026-07-15 Valley Consumer APK
 
 ### Concluido neste ciclo

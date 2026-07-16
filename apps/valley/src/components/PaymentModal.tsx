@@ -1,9 +1,5 @@
 import React, { useState } from 'react'
-
-export interface PaymentIntent {
-  amount: string
-  order_id: string
-}
+import { authorizePayment, type PaymentIntent } from '../lib/valleyPlatform'
 
 interface PaymentModalProps {
   isOpen: boolean
@@ -12,9 +8,6 @@ interface PaymentModalProps {
   paymentIntent: PaymentIntent | null
   token: string | null
 }
-
-const API_HUB_URL = import.meta.env.VITE_API_HUB_URL ?? ''
-
 const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, onSuccess, paymentIntent, token }) => {
   const [submitting, setSubmitting] = useState(false)
   const [feedback, setFeedback] = useState('')
@@ -30,30 +23,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, onSuccess,
     setFailed(false)
 
     try {
-      const response = await fetch(`${API_HUB_URL}/gateway/payments/sandbox/authorize`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          order_id: paymentIntent.order_id,
-          method: 'pix_sandbox',
-          idempotency_key: `payment-${paymentIntent.order_id}`
-        })
-      })
-
-      const payload = await response.json()
-      if (!response.ok) {
-        throw new Error(payload.detail || 'Falha ao processar pagamento.')
-      }
-
+      const payload = await authorizePayment(paymentIntent, token)
       setFeedback(payload.message || 'Pagamento sandbox autorizado.')
-      
       setTimeout(() => {
         onSuccess()
       }, 2000)
-
     } catch (error) {
       setFailed(true)
       setFeedback(error instanceof Error ? error.message : 'Erro no processamento.')

@@ -2,20 +2,7 @@ import { useEffect, useState } from 'react';
 import CalendarWidget from './CalendarWidget';
 import OfferWizard from './OfferWizard';
 import PepitaWidget from './PepitaWidget';
-
-interface CommercialMetrics {
-  orders_total: number
-  orders_paid: number
-  orders_completed: number
-  reviews_total: number
-  average_rating: number | null
-  support_cases_total: number
-  support_cases_open: number
-  support_cases_resolved: number
-  conversion_rate_percent: number
-  crm_records: number
-  bi_records: number
-}
+import { getCommercialMetrics, type CommercialMetrics } from '../lib/valleyPlatform';
 
 export default function B2BDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'calendar'>('overview');
@@ -36,25 +23,9 @@ export default function B2BDashboard() {
   const [metricsError, setMetricsError] = useState('');
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_HUB_URL ?? ''}/gateway/insights/commercial`)
-      .then(async res => {
-        if (!res.ok) throw new Error(`Falha HTTP ${res.status}`)
-        return res.json()
-      })
+    getCommercialMetrics()
       .then(data => {
-        setMetrics({
-          orders_total: data.orders_total ?? 0,
-          orders_paid: data.orders_paid ?? 0,
-          orders_completed: data.orders_completed ?? 0,
-          reviews_total: data.reviews_total ?? 0,
-          average_rating: data.average_rating ?? null,
-          support_cases_total: data.support_cases_total ?? 0,
-          support_cases_open: data.support_cases_open ?? 0,
-          support_cases_resolved: data.support_cases_resolved ?? 0,
-          conversion_rate_percent: data.conversion_rate_percent ?? 0,
-          crm_records: data.crm_records ?? 0,
-          bi_records: data.bi_records ?? 0,
-        })
+        setMetrics(data)
       })
       .catch(() => {
         setMetricsError('Indicadores comerciais indisponiveis no momento.')
