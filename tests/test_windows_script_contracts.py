@@ -29,3 +29,14 @@ def test_stop_conflicting_valley_runtime_disables_communication_bridge() -> None
     assert "'ValleyCommunicationBridge'" in script
     assert r"*\scripts\valley_communication_bridge.py*" in script
     assert "Runtime conflitante do VALLEY desligado de forma persistente." in script
+
+
+def test_wsl_bootstrap_loads_environment_and_prepares_venv() -> None:
+    script = (ROOT / "scripts" / "bootstrap_wsl_dev_environment.sh").read_text(encoding="utf-8")
+
+    assert "grep -qi microsoft /proc/version" in script
+    assert "source \"$file\"" in script
+    assert "python3 \"$ROOT/scripts/configure_docker_dx.py\"" in script
+    assert "load_env_file \"$ROOT/.env.docker-dx\"" in script
+    assert "export COMPOSE_PROJECT_NAME=\"${COMPOSE_PROJECT_NAME:-all-in-one-dx}\"" in script
+    assert "python -m pip install -r \"$ROOT/requirements-dev.txt\"" in script
