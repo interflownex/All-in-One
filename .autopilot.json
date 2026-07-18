@@ -4,16 +4,16 @@
     "telegram"
   ],
   "telegram": {
-    "token": "YOUR_BOT_TOKEN_HERE",
-    "chatId": "YOUR_CHAT_ID_HERE"
+    "token": "8704646286:AAGbqdQp7WzdyrwtxRnUH2vu1mqN0dONUwc",
+    "chatId": "6466662132"
   },
   "email": {
     "host": "smtp.gmail.com",
     "port": 587,
-    "secure": false,
-    "user": "your-email@gmail.com",
-    "pass": "your-app-password",
-    "to": "recipient@example.com"
+    "secure": true,
+    "user": "codexanderson1000@gmail.com",
+    "pass": "@Aa3135930253",
+    "to": "nazareteandersoncarvalho@gmail.com"
   },
   "feishu": {
     "appId": "cli_xxxxxxxxxxxxxxxxx",
