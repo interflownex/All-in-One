@@ -41,32 +41,57 @@
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "[html]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[css]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[yaml]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
     "yaml.validate": true,
+    "docker.extension.enableComposeLanguageServer": true,
+    "docker.lsp.telemetry": "off",
+    "rust-analyzer.check.command": "clippy",
+    "java.import.gradle.enabled": true,
     "terminal.integrated.defaultProfile.windows": "PowerShell",
     "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.env.windows": {
-        "GOOGLE_INTEGRATIONS_ENABLED": "false",
-        "GOOGLE_CLOUD_ENABLED": "false",
-        "GOOGLE_AI_STUDIO_ENABLED": "false",
-        "GOOGLE_CODE_CLI_ENABLED": "false",
-        "ALLOYDB_ENABLED": "false",
+        "GOOGLE_INTEGRATIONS_ENABLED": "true",
+        "GOOGLE_CLOUD_ENABLED": "true",
+        "GOOGLE_AI_STUDIO_ENABLED": "true",
+        "GOOGLE_CODE_CLI_ENABLED": "true",
+        "ALLOYDB_ENABLED": "true",
         "GEMINI_CODE_ASSIST_ENABLED": "true",
-        "STITCH_REMOTE_SYNC_ENABLED": "false"
+        "STITCH_REMOTE_SYNC_ENABLED": "true"
     },
     "terminal.integrated.env.linux": {
-        "GOOGLE_INTEGRATIONS_ENABLED": "false",
-        "GOOGLE_CLOUD_ENABLED": "false",
-        "GOOGLE_AI_STUDIO_ENABLED": "false",
-        "GOOGLE_CODE_CLI_ENABLED": "false",
-        "ALLOYDB_ENABLED": "false",
+        "GOOGLE_INTEGRATIONS_ENABLED": "true",
+        "GOOGLE_CLOUD_ENABLED": "true",
+        "GOOGLE_AI_STUDIO_ENABLED": "true",
+        "GOOGLE_CODE_CLI_ENABLED": "true",
+        "ALLOYDB_ENABLED": "true",
         "GEMINI_CODE_ASSIST_ENABLED": "true",
-        "STITCH_REMOTE_SYNC_ENABLED": "false"
+        "STITCH_REMOTE_SYNC_ENABLED": "true"
     },
     "terminal.integrated.profiles.windows": {
         "PowerShell": {
@@ -79,11 +104,11 @@
     "geminicodeassist.outlines.automaticOutlineGeneration": true,
     "geminicodeassist.agentYoloMode": false,
     "geminicodeassist.enable": true,
-    "mdb.presetConnections": [],
     "workbench.editor.preferHistoryBasedLanguageDetection": true,
     "geminicodeassist.codeLens.enable": false,
     "geminicodeassist.telemetry.enable": false,
+    "google.datacloud.enableTelemetry": false,
+    "google.cloud.project": "all-in-one-498012",
     "java.configuration.updateBuildConfiguration": "automatic",
-    "github.copilot.chat.agentDebugLog.fileLogging.enabled": true,
     "cloudcode.active-kubeconfig": "Default KubeConfig"
 }
