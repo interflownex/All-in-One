@@ -4,7 +4,7 @@
   "source": "config/module_catalog.json",
   "branding_source": "config/branding/brand_identity.json",
   "project_count": 25,
-  "screen_count": 180,
+  "screen_count": 181,
   "screen_generation": {
     "standard": [
       "overview",
@@ -42,7 +42,7 @@
     {
       "module": "finance",
       "project_name": "All-in-One - Finance Pay Billing Fiscal",
-      "screen_count": 8,
+      "screen_count": 9,
       "special_screens": [
         "wallet_ledger"
       ]

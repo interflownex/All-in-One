@@ -12,20 +12,29 @@
 - O `SmartCRUD` deixou de usar `alert` e botoes demonstrativos: criar, salvar,
   cancelar, editar, excluir e pesquisar possuem handlers reais, com API Hub
   quando configurado e persistencia local quando operado sem backend.
-- A cobertura autoritativa Stitch foi confrontada: 25 projetos, 180 telas,
-  todos com `project_id` e `screen_id`; nao existe template ausente neste
-  incremento.
-- Cloudflare Pages recebeu fallback SPA, politica versionada e workflow de
-  build/publicacao sem segredos no frontend.
+- A cobertura autoritativa Stitch foi regenerada e confrontada: 25 projetos e
+  181 telas esperadas. As 180 telas anteriores preservam `project_id` e
+  `screen_id`; a nova `finance/entity_valley_gold_ledger_entries` aguarda
+  geracao remota porque `STITCH_API_KEY` nao esta presente nesta sessao.
+- Cloudflare Pages recebeu fallback SPA automatico sem regra circular, politica
+  versionada e workflow de build/publicacao sem segredos no frontend,
+  `wrangler.jsonc` e headers de seguranca/cache.
+- Cada um dos 25 modulos passou a expor dez registros demonstrativos coerentes,
+  com imagem local propria; a visualizacao detalhada inclui midia e video, e o
+  CRUD preserva criacao, edicao, exclusao e pesquisa sem backend.
 
 ### Evidencias
 
-- `npm run build` em `apps/all-in-one`: aprovado com 327 modulos transformados.
+- `npm run build` em `apps/all-in-one`: aprovado com 328 modulos transformados.
 - Smoke HTTP local: Home e os 25 dashboards retornaram HTTP 200.
-- `python3 scripts/validate_web_frontend.py`: 25 modulos, 180 telas Stitch e
+- `python3 scripts/validate_web_frontend.py`: 25 modulos, 180/181 telas Stitch,
+  uma sincronizacao remota pendente, dez cenarios por modulo, midia local e
   fallback Cloudflare aprovados.
 - `python3 scripts/validate_repository.py`: 25 modulos e infraestrutura
   aprovados.
+- `pytest` dos contratos frontend/Stitch: 15 testes aprovados.
+- Playwright Chromium: jornadas de Home/mobile e CRUD integral aprovadas,
+  totalizando 3 testes aprovados.
 - A referencia publica respondeu HTTP 200 e teve a paleta e estrutura da Home
   auditadas em `all-in-one-web.codexanderson100.chatgpt.site`.
 
@@ -36,12 +45,13 @@
   para consumir os secrets sem versiona-los.
 - Configurar `VITE_API_HUB_URL` publico e validar as jornadas contra os 25
   microservicos em ambiente externo, nao apenas o fallback local.
-- Executar auditoria interativa de todas as 180 telas no navegador; o navegador
-  integrado estava indisponivel nesta sessao, embora build, rotas e smoke HTTP
-  tenham passado.
+- Ampliar a auditoria interativa das jornadas representativas aprovadas para
+  todas as 181 telas no navegador e repeti-la contra o API Hub publico.
 - Para qualquer nova tela sem template, executar imediatamente
   `scripts/stitch_orchestrator.py sync` com `STITCH_API_KEY` antes de gerar o
   componente local.
+- Gerar no Stitch a tela `finance/entity_valley_gold_ledger_entries`; ela foi
+  detectada no manifesto, mas a credencial Stitch esta ausente no ambiente.
 
 # STATUS OPERACIONAL - 2026-07-19 Firebase Auth e assinatura Valley Android
 

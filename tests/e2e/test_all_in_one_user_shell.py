@@ -1,3 +1,4 @@
+import re
 from urllib.parse import urlparse
 
 from playwright.sync_api import Page, Route, expect
@@ -57,8 +58,9 @@ def test_all_in_one_user_shell_runs_consumer_journey(page: Page, all_in_one_user
 
     page.goto(all_in_one_user_server, wait_until="domcontentloaded")
 
-    expect(page.locator("h1")).to_contain_text("Bem-vindo ao All-in-One")
-    expect(page.get_by_text("Hambúrguer Gourmet Valley")).to_be_visible()
+    expect(page.locator("h1")).to_contain_text("Todos os sistemas.")
+    expect(page.locator(".aio-module-card")).to_have_count(25)
+    expect(page.get_by_role("link", name="Abrir dashboard")).to_have_count(25)
 
     for path, title, fixture_name in USER_JOURNEY_ROUTES:
         page.goto(f"{all_in_one_user_server}{path}", wait_until="domcontentloaded")
@@ -84,7 +86,7 @@ def test_all_in_one_user_shell_completes_live_order_and_delivery_actions(
 ) -> None:
     page.goto(all_in_one_user_live_server, wait_until="domcontentloaded")
 
-    expect(page.locator("h1")).to_contain_text("Bem-vindo ao All-in-One")
+    expect(page.locator("h1")).to_contain_text("Todos os sistemas.")
 
     for path, title, fixture_name in USER_LIVE_JOURNEY_ROUTES:
         page.goto(f"{all_in_one_user_live_server}{path}", wait_until="domcontentloaded")
@@ -130,3 +132,25 @@ def test_all_in_one_user_shell_submits_live_job_application(
     expect(jobs_status).to_contain_text("Pos-candidatura Jobs", timeout=LIVE_ACTION_TIMEOUT)
     expect(jobs_status).to_contain_text("Status: submitted", timeout=LIVE_ACTION_TIMEOUT)
     expect(page.locator(".badge", has_text="submitted")).to_be_visible(timeout=LIVE_ACTION_TIMEOUT)
+
+
+def test_all_in_one_user_shell_crud_has_no_dead_actions(page: Page, all_in_one_user_server: str) -> None:
+    page.goto(f"{all_in_one_user_server}/identity/users-form", wait_until="domcontentloaded")
+    page.get_by_label("Nome / Identificador").fill("Pessoa Funcional")
+    page.get_by_label("Descrição Detalhada").fill("Registro criado pelo teste E2E")
+    page.get_by_label("Categoria / Tipo").select_option("Estrategico")
+    page.get_by_role("button", name="Salvar Registro").click()
+
+    expect(page).to_have_url(re.compile(r"/identity/users$"), timeout=10000)
+    expect(page.get_by_text("Pessoa Funcional")).to_be_visible(timeout=10000)
+
+    page.get_by_role("button", name="Editar").click()
+    expect(page.get_by_role("heading", name=re.compile("Editar Registro"))).to_be_visible()
+    name_field = page.get_by_label("Nome / Identificador")
+    name_field.fill("Pessoa Atualizada")
+    page.get_by_role("button", name="Salvar Registro").click()
+
+    expect(page.get_by_text("Pessoa Atualizada")).to_be_visible(timeout=10000)
+    page.once("dialog", lambda dialog: dialog.accept())
+    page.get_by_role("button", name="Excluir").click()
+    expect(page.get_by_text("Pessoa Atualizada")).to_have_count(0)

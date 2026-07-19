@@ -499,7 +499,6 @@ function App() {
               <Route path="/permissions/permissions-form" element={PermissionsPermissionsForm ? <PermissionsPermissionsForm /> : <div>Carregando...</div>} />
               <Route path="/permissions/approvallimits-form" element={PermissionsApprovalLimitsForm ? <PermissionsApprovalLimitsForm /> : <div>Carregando...</div>} />
               <Route path="/permissions/accesspolicies" element={PermissionsAccessPoliciesList ? <PermissionsAccessPoliciesList /> : <div>Carregando...</div>} />
-              <Route path="/permissions/permissions" element={PermissionsPermissionsOverview ? <PermissionsPermissionsOverview /> : <div>Carregando...</div>} />
               <Route path="/permissions/roles-form" element={PermissionsRolesForm ? <PermissionsRolesForm /> : <div>Carregando...</div>} />
               <Route path="/permissions/accesspolicies-form" element={PermissionsAccessPoliciesForm ? <PermissionsAccessPoliciesForm /> : <div>Carregando...</div>} />
               <Route path="/api_hub/apiclients-form" element={Api_hubApiClientsForm ? <Api_hubApiClientsForm /> : <div>Carregando...</div>} />

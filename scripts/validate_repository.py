@@ -442,8 +442,12 @@ def main() -> int:
             fail("Ambiente web deve usar Cloudflare Pages.", errors)
         if cloudflare_policy.get("project_name") != "all-in-one-web":
             fail("Projeto Cloudflare Pages deve ser all-in-one-web.", errors)
-        if cloudflare_policy.get("spa_fallback") != "apps/all-in-one/public/_redirects":
-            fail("Cloudflare Pages deve preservar o fallback SPA das rotas React.", errors)
+        if cloudflare_policy.get("spa_fallback") != "cloudflare_pages_automatic_without_404":
+            fail("Cloudflare Pages deve declarar o fallback SPA automatico sem 404.html.", errors)
+        if cloudflare_policy.get("wrangler_config") != "apps/all-in-one/wrangler.jsonc":
+            fail("Cloudflare Pages deve declarar o wrangler.jsonc versionado.", errors)
+        if cloudflare_policy.get("security_headers") != "apps/all-in-one/public/_headers":
+            fail("Cloudflare Pages deve declarar headers de seguranca versionados.", errors)
         if set(cloudflare_policy.get("required_secrets", [])) != {"CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"}:
             fail("Politica Cloudflare deve exigir token e account ID fora do Git.", errors)
     if not GOOGLE_CLOUD_PROFILE.is_file():

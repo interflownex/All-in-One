@@ -5,7 +5,9 @@
   "application": "apps/all-in-one",
   "build_command": "npm ci && npm run build",
   "output_directory": "apps/all-in-one/dist",
-  "spa_fallback": "apps/all-in-one/public/_redirects",
+  "spa_fallback": "cloudflare_pages_automatic_without_404",
+  "wrangler_config": "apps/all-in-one/wrangler.jsonc",
+  "security_headers": "apps/all-in-one/public/_headers",
   "workflow": ".github/workflows/cloudflare-pages.yml",
   "required_secrets": [
     "CLOUDFLARE_API_TOKEN",
@@ -17,6 +19,7 @@
   "rules": [
     "Nunca versionar tokens Cloudflare ou tokens de usuario do API Hub.",
     "Toda rota React deve responder pelo fallback SPA no Cloudflare Pages.",
+    "Assets imutaveis devem receber cache longo e as paginas devem receber headers de seguranca.",
     "A Home segue a referencia visual fornecida pelo usuario; dashboards preservam o layout Stitch.",
     "Novas telas sem screen_id devem ser geradas no Stitch e sincronizadas antes da implementacao."
   ]

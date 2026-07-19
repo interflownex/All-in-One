@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { demoRecordsFor } from '../lib/demoData';
 
 interface SmartCRUDProps {
   module: string;
@@ -69,6 +70,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   });
   const [formState, setFormState] = useState<'idle' | 'saving' | 'saved' | 'failed'>('idle');
   const [formFeedback, setFormFeedback] = useState('');
+  const [selectedMedia, setSelectedMedia] = useState<any | null>(null);
 
   const resourceType = liveResourceFor(module, entity);
   const liveResourcePath = `/${module}/resources/${resourceType}`;
@@ -106,11 +108,8 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
     } catch (err) {
       const localRecords = JSON.parse(localStorage.getItem(localStorageKey) ?? '[]');
       setError(isLiveApiHub ? 'API Hub vivo indisponivel para esta lista.' : '');
-      setData(localRecords.length > 0 ? localRecords : [
-        { id: '1', name: `${title} Item 1`, status: 'Ativo', created_at: new Date().toISOString() },
-        { id: '2', name: `${title} Item 2`, status: 'Pendente', created_at: new Date().toISOString() },
-        { id: '3', name: `${title} Item 3`, status: 'Inativo', created_at: new Date().toISOString() },
-      ]);
+      const filteredLocalRecords = localRecords.filter((record: any) => !query || displayNameFor(record, title).toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR')));
+      setData(localRecords.length > 0 ? filteredLocalRecords : demoRecordsFor(module, entity, title, query));
     } finally {
       setLoading(false);
     }
@@ -229,7 +228,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
     event.preventDefault();
     setFormState('saving');
     setFormFeedback('Salvando registro...');
-    const payload = { ...formData, status: 'Ativo', updated_at: new Date().toISOString() };
+    const payload = { ...formData, status: 'Ativo', updated_at: new Date().toISOString(), image: `/assets/demo/modules/${module}.webp`, video: '/assets/demo/platform-overview.mp4' };
     try {
       if (API_HUB_URL && API_HUB_TOKEN) {
         const endpoint = editingRecord?.id
@@ -286,16 +285,16 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         <form className="neo-form neo-brutalism" onSubmit={saveForm}>
           <h2 style={{ marginBottom: '24px', color: '#236cff' }}>{title} - {editingRecord ? 'Editar Registro' : 'Novo Registro'}</h2>
           <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
-            <label style={{ fontWeight: 800 }}>Nome / Identificador</label>
-            <input type="text" className="neo-input" placeholder="Digite aqui..." required value={formData.name} onChange={(event) => setFormData((current) => ({ ...current, name: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a' }} />
+            <label htmlFor="record-name" style={{ fontWeight: 800 }}>Nome / Identificador</label>
+            <input id="record-name" type="text" className="neo-input" placeholder="Digite aqui..." required value={formData.name} onChange={(event) => setFormData((current) => ({ ...current, name: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a' }} />
           </div>
           <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
-            <label style={{ fontWeight: 800 }}>Descrição Detalhada</label>
-            <textarea className="neo-input" placeholder="Informacoes adicionais..." value={formData.description} onChange={(event) => setFormData((current) => ({ ...current, description: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a', minHeight: '100px' }}></textarea>
+            <label htmlFor="record-description" style={{ fontWeight: 800 }}>Descrição Detalhada</label>
+            <textarea id="record-description" className="neo-input" placeholder="Informacoes adicionais..." value={formData.description} onChange={(event) => setFormData((current) => ({ ...current, description: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a', minHeight: '100px' }}></textarea>
           </div>
           <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '24px' }}>
-            <label style={{ fontWeight: 800 }}>Categoria / Tipo</label>
-            <select className="neo-input" value={formData.category} onChange={(event) => setFormData((current) => ({ ...current, category: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a' }}>
+            <label htmlFor="record-category" style={{ fontWeight: 800 }}>Categoria / Tipo</label>
+            <select id="record-category" className="neo-input" value={formData.category} onChange={(event) => setFormData((current) => ({ ...current, category: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a' }}>
               <option value="Padrao">Padrao</option>
               <option value="Prioritario">Prioritario</option>
               <option value="Estrategico">Estrategico</option>
@@ -387,15 +386,18 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
       ) : (
         <div className="data-grid" style={{ display: 'grid', gap: '16px' }}>
           {data.length > 0 ? data.map((item: any) => (
-            <div key={item.id} className="data-card neo-brutalism" style={{ background: '#fff', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
+            <div key={item.id} className="data-card neo-brutalism">
+              {item.image ? <img className="data-card-media" src={item.image} alt="" loading="lazy" /> : null}
+              <div className="data-card-copy">
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{displayNameFor(item, title)}</h3>
                 <p style={{ fontSize: '0.9rem', color: '#626b8e' }}>ID: {item.id} | Criado em: {new Date(item.created_at).toLocaleDateString()}</p>
+                {item.description ? <p className="data-card-description">{item.description}</p> : null}
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <div className="data-card-actions">
                 <span className="badge" style={{ background: item.status === 'Ativo' ? '#eef1ff' : '#fef3c7', color: item.status === 'Ativo' ? '#1a6fb3' : '#92400e', padding: '6px 12px', borderRadius: '4px', fontWeight: 700 }}>
                   {item.status || 'Disponível'}
                 </span>
+                <button type="button" className="btn-secondary" onClick={() => setSelectedMedia(item)} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>Ver detalhes</button>
                 <button type="button" className="btn-secondary" onClick={() => navigate(`/${module}/${entity}-form`, { state: { record: item } })} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>Editar</button>
                 <button type="button" className="btn-secondary danger" onClick={() => deleteRecord(item)} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>Excluir</button>
               </div>
@@ -407,6 +409,18 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
           )}
         </div>
       )}
+      {selectedMedia ? (
+        <div className="modal-overlay" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelectedMedia(null); }}>
+          <section className="modal-content media-detail-modal" role="dialog" aria-modal="true" aria-labelledby="media-detail-title">
+            <div className="modal-header"><h2 id="media-detail-title">{displayNameFor(selectedMedia, title)}</h2><button type="button" className="close-btn" aria-label="Fechar detalhes" onClick={() => setSelectedMedia(null)}>×</button></div>
+            <div className="modal-body">
+              {selectedMedia.video ? <video className="detail-video" src={selectedMedia.video} poster={selectedMedia.image} controls autoPlay muted loop /> : <img className="detail-image" src={selectedMedia.image} alt={displayNameFor(selectedMedia, title)} />}
+              <p>{selectedMedia.description}</p>
+              <dl className="detail-metadata"><div><dt>Status</dt><dd>{selectedMedia.status}</dd></div><div><dt>Regiao</dt><dd>{selectedMedia.region ?? 'Brasil'}</dd></div><div><dt>Categoria</dt><dd>{selectedMedia.category ?? 'Padrao'}</dd></div></dl>
+            </div>
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 };

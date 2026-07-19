@@ -248,7 +248,6 @@ const modulesData = [
         { title: "Access Policies", path: "/permissions/accesspolicies-form" },
         { title: "Approval Limits", path: "/permissions/approvallimits" },
         { title: "Approval Limits", path: "/permissions/approvallimits-form" },
-        { title: "Permissões", path: "/permissions/permissions" },
         { title: "Permissões", path: "/permissions/permissions-form" },
         { title: "Permissões", path: "/permissions/permissions" },
         { title: "Permissões Permissões", path: "/permissions/permissionspermissions" },
