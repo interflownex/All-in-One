@@ -1,90 +1,101 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"powershell.powerShellAdditionalExePaths": [
-			"/mnt/c/Users/ereta/.local/bin/pwsh"
-		],
-		"google.cloud.project": "all-in-one-498012",
-		"cloudcode.autoDependencies": "on",
-		"cloudcode.dependencyPaths": {
-			"kubectl": "/usr/local/bin/kubectl"
-		},
-		"cloudcode.kubeconfigs": [
-			{
-				"name": "all-in-one-local",
-				"configPath": "/home/eretazan/.kube/config"
-			}
-		],
-		"cloudcode.active-kubeconfig": "all-in-one-local",
-		"cloudcode.kubectlRequestTimeout": "20s",
-		"cloudcode.useGcloudAuthSkaffold": true,
-		"cloudcode.enableGkeAutopilotSupport": true,
-		"cloudcode.enableTelemetry": false,
-		"cloudcode.enableCrashReporting": false,
-		"cloudcode.yaml.validate": true,
-		"cloudcode.yaml.completion": true,
-		"cloudcode.yaml.enableKubernetesSupport": true,
-		"cloudcode.yaml.kubernetesVersion": "v1.34.0",
-		"vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
-		"vscode-kubernetes.helm-path": "/usr/local/bin/helm",
-		"vs-kubernetes.kubectlVersioning": "user-provided",
-		"vs-kubernetes.kubeconfig": "/home/eretazan/.kube/config",
-		"vs-kubernetes.knownKubeconfigs": [
-			"/home/eretazan/.kube/config"
-		],
-		"vs-kubernetes.namespace": "default",
-		"vs-kubernetes.outputFormat": "yaml",
-		"imageBuildTool": "Docker",
-		"vs-kubernetes.enable-minimal-workflow": true,
-		"vs-kubernetes.crd-code-completion": "enabled",
-		"vscode-kubernetes.log-viewer.timestamp": true,
-		"vscode-kubernetes.log-viewer.since": 3600,
-		"vscode-kubernetes.log-viewer.tail": 500,
-		"vscode-kubernetes.log-viewer.destination": "Webview",
-		"vscode-kubernetes.log-viewer.wrap": true,
-		"chat.mcp.autostart": true,
-		"ruff.importStrategy": "fromEnvironment",
-		"docker.lsp.telemetry": "off",
-		"rust-analyzer.check.command": "clippy",
-		"java.import.gradle.enabled": true,
-		"terminal.integrated.defaultProfile.windows": "PowerShell",
-		"terminal.integrated.defaultProfile.linux": "bash",
-		"terminal.integrated.env.windows": {
-			"GOOGLE_INTEGRATIONS_ENABLED": "true",
-			"GOOGLE_CLOUD_ENABLED": "true",
-			"GOOGLE_AI_STUDIO_ENABLED": "true",
-			"GOOGLE_CODE_CLI_ENABLED": "true",
-			"ALLOYDB_ENABLED": "true",
-			"GEMINI_CODE_ASSIST_ENABLED": "true",
-			"STITCH_REMOTE_SYNC_ENABLED": "true"
-		},
-		"terminal.integrated.env.linux": {
-			"GOOGLE_INTEGRATIONS_ENABLED": "true",
-			"GOOGLE_CLOUD_ENABLED": "true",
-			"GOOGLE_AI_STUDIO_ENABLED": "true",
-			"GOOGLE_CODE_CLI_ENABLED": "true",
-			"ALLOYDB_ENABLED": "true",
-			"GEMINI_CODE_ASSIST_ENABLED": "true",
-			"STITCH_REMOTE_SYNC_ENABLED": "true"
-		},
-		"terminal.integrated.profiles.windows": {
-			"PowerShell": {
-				"source": "PowerShell"
-			},
-			"Git Bash": {
-				"path": "C:\\Program Files\\Git\\bin\\bash.exe"
-			}
-		},
-		"geminicodeassist.outlines.automaticOutlineGeneration": true,
-		"geminicodeassist.agentYoloMode": false,
-		"geminicodeassist.enable": true,
-		"workbench.editor.preferHistoryBasedLanguageDetection": true,
-		"google.datacloud.enableTelemetry": false,
-		"java.configuration.updateBuildConfiguration": "automatic",
-		"cloudcode.cloudshell.project": "all-in-one-498012"
-	}
+  "folders": [
+    {
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "powershell.powerShellAdditionalExePaths": ["/mnt/c/Users/ereta/.local/bin/pwsh"],
+    "google.cloud.project": "all-in-one-498012",
+    "cloudcode.autoDependencies": "on",
+    "cloudcode.dependencyPaths": {
+      "kubectl": "/usr/local/bin/kubectl",
+    },
+    "cloudcode.kubeconfigs": [
+      {
+        "name": "all-in-one-local",
+        "configPath": "/home/eretazan/.kube/config",
+      },
+    ],
+    "cloudcode.active-kubeconfig": "all-in-one-local",
+    "cloudcode.kubectlRequestTimeout": "20s",
+    "cloudcode.useGcloudAuthSkaffold": true,
+    "cloudcode.enableGkeAutopilotSupport": true,
+    "cloudcode.enableTelemetry": false,
+    "cloudcode.enableCrashReporting": false,
+    "cloudcode.yaml.validate": true,
+    "cloudcode.yaml.completion": true,
+    "cloudcode.yaml.enableKubernetesSupport": true,
+    "cloudcode.yaml.kubernetesVersion": "v1.34.0",
+    "vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
+    "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
+    "vs-kubernetes.kubectlVersioning": "user-provided",
+    "vs-kubernetes.kubeconfig": "/home/eretazan/.kube/config",
+    "vs-kubernetes.knownKubeconfigs": ["/home/eretazan/.kube/config"],
+    "vs-kubernetes.namespace": "default",
+    "vs-kubernetes.outputFormat": "yaml",
+    "imageBuildTool": "Docker",
+    "vs-kubernetes.enable-minimal-workflow": true,
+    "vs-kubernetes.crd-code-completion": "enabled",
+    "vscode-kubernetes.log-viewer.timestamp": true,
+    "vscode-kubernetes.log-viewer.since": 3600,
+    "vscode-kubernetes.log-viewer.tail": 500,
+    "vscode-kubernetes.log-viewer.destination": "Webview",
+    "vscode-kubernetes.log-viewer.wrap": true,
+    "chat.mcp.autostart": true,
+    "ruff.importStrategy": "fromEnvironment",
+    "docker.lsp.telemetry": "off",
+    "rust-analyzer.check.command": "clippy",
+    "java.import.gradle.enabled": true,
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.env.windows": {
+      "GOOGLE_INTEGRATIONS_ENABLED": "true",
+      "GOOGLE_CLOUD_ENABLED": "true",
+      "GOOGLE_AI_STUDIO_ENABLED": "true",
+      "GOOGLE_CODE_CLI_ENABLED": "true",
+      "ALLOYDB_ENABLED": "true",
+      "GEMINI_CODE_ASSIST_ENABLED": "true",
+      "STITCH_REMOTE_SYNC_ENABLED": "true",
+    },
+    "terminal.integrated.env.linux": {
+      "GOOGLE_INTEGRATIONS_ENABLED": "true",
+      "GOOGLE_CLOUD_ENABLED": "true",
+      "GOOGLE_AI_STUDIO_ENABLED": "true",
+      "GOOGLE_CODE_CLI_ENABLED": "true",
+      "ALLOYDB_ENABLED": "true",
+      "GEMINI_CODE_ASSIST_ENABLED": "true",
+      "STITCH_REMOTE_SYNC_ENABLED": "true",
+    },
+    "terminal.integrated.profiles.windows": {
+      "PowerShell": {
+        "source": "PowerShell",
+      },
+      "Git Bash": {
+        "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      },
+    },
+    "geminicodeassist.outlines.automaticOutlineGeneration": true,
+    "geminicodeassist.agentYoloMode": false,
+    "geminicodeassist.enable": true,
+    "workbench.editor.preferHistoryBasedLanguageDetection": true,
+    "google.datacloud.enableTelemetry": false,
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "cloudcode.cloudshell.project": "all-in-one-498012",
+    "chatgpt.runCodexInWindowsSubsystemForLinux": true,
+    "chatgpt.openOnStartup": true,
+    "emmet.showSuggestionsAsSnippets": false,
+    "eslint.debug": true,
+    "eslint.lintTask.enable": true,
+    "workbench.browser.enableRemoteProxy": true,
+    "remote.portsAttributes": {
+      
+      "443": {
+        "protocol": "https"
+      },
+      "8443": {
+        "protocol": "https"
+      }
+    },
+  },
 }
