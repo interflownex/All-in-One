@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { demoRecordsFor } from '../lib/demoData';
+import ModuleDashboard from './ModuleDashboard';
 
 interface SmartCRUDProps {
   module: string;
@@ -106,10 +107,12 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         ]);
       }
     } catch (err) {
-      const localRecords = JSON.parse(localStorage.getItem(localStorageKey) ?? '[]');
+      const storedRecords = localStorage.getItem(localStorageKey);
+      const localRecords = storedRecords === null ? demoRecordsFor(module, entity, title) : JSON.parse(storedRecords);
+      if (storedRecords === null) localStorage.setItem(localStorageKey, JSON.stringify(localRecords));
       setError(isLiveApiHub ? 'API Hub vivo indisponivel para esta lista.' : '');
       const filteredLocalRecords = localRecords.filter((record: any) => !query || displayNameFor(record, title).toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR')));
-      setData(localRecords.length > 0 ? filteredLocalRecords : demoRecordsFor(module, entity, title, query));
+      setData(filteredLocalRecords);
     } finally {
       setLoading(false);
     }
@@ -241,7 +244,8 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         });
         if (!response.ok) throw new Error(`API Hub retornou HTTP ${response.status}.`);
       } else {
-        const current = JSON.parse(localStorage.getItem(localStorageKey) ?? '[]');
+        const storedRecords = localStorage.getItem(localStorageKey);
+        const current = storedRecords === null ? demoRecordsFor(module, entity, title) : JSON.parse(storedRecords);
         const record = { id: editingRecord?.id ?? crypto.randomUUID(), ...payload, created_at: editingRecord?.created_at ?? payload.updated_at };
         const next = editingRecord?.id
           ? current.map((item: any) => item.id === editingRecord.id ? record : item)
@@ -308,6 +312,10 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         </form>
       </div>
     );
+  }
+
+  if (entity === module) {
+    return <ModuleDashboard module={module} title={title} records={data} />;
   }
 
   return (

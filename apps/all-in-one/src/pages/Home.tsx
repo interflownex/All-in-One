@@ -65,7 +65,7 @@ const Home = () => (
         </div>
         <div className="aio-stats" aria-label="Resumo da plataforma">
           <div><strong>25</strong><span>microservicos</span></div>
-          <div><strong>180</strong><span>telas Stitch</span></div>
+          <div><strong>181</strong><span>telas Stitch</span></div>
           <div><strong>1</strong><span>identidade</span></div>
         </div>
       </div>
