@@ -56,7 +56,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   const navigate = useNavigate();
   const location = useLocation();
   const editingRecord = (location.state as { record?: any } | null)?.record;
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<any[]>(() => API_HUB_TOKEN ? [] : demoRecordsFor(module, entity, title));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
@@ -330,7 +330,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
       </section>
 
       <div className="filters-section" style={{ background: '#fff', padding: '24px', border: '3px solid #11142a', boxShadow: '6px 6px 0px #11142a', marginBottom: '32px' }}>
-        <div className="search-row" style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '16px' }}>
+        <div className="search-row search-row-crud">
           <input 
             type="text" 
             placeholder={`Buscar em ${title}...`} 

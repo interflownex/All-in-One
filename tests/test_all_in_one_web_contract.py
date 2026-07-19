@@ -38,3 +38,17 @@ def test_each_module_has_ten_coherent_demo_records_and_media() -> None:
     module_images = list((assets / "modules").glob("*.webp"))
     assert len(module_images) == 25
     assert all(image.stat().st_size > 10_000 for image in module_images)
+
+
+def test_mobile_shell_has_an_accessible_drawer_and_responsive_operations() -> None:
+    navigation = (WEB / "components" / "Navigation.tsx").read_text(encoding="utf-8")
+    smart_crud = (WEB / "components" / "SmartCRUD.tsx").read_text(encoding="utf-8")
+    styles = (WEB / "index.css").read_text(encoding="utf-8")
+
+    assert 'className="mobile-nav-toggle"' in navigation
+    assert "aria-expanded={mobileOpen}" in navigation
+    assert '<button type="button"\n                className={`module-link' in navigation
+    assert 'className="search-row search-row-crud"' in smart_crud
+    assert "@media (max-width: 700px)" in styles
+    assert ".side-nav.mobile-open { transform: translateX(0); }" in styles
+    assert ".data-card { grid-template-columns: 1fr; gap: 14px; }" in styles

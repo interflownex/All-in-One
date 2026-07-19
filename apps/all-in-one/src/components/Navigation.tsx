@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const modulesData = [
@@ -354,12 +354,17 @@ const modulesData = [
 
 const Navigation: React.FC = () => {
   const [openModule, setOpenModule] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+
+  useEffect(() => setMobileOpen(false), [location.pathname]);
 
   if (location.pathname === '/') return null;
 
   return (
-    <nav className="side-nav">
+    <>
+    <button type="button" className="mobile-nav-toggle" aria-label={mobileOpen ? 'Fechar menu de modulos' : 'Abrir menu de modulos'} aria-expanded={mobileOpen} onClick={() => setMobileOpen((current) => !current)}>{mobileOpen ? '×' : '☰'}</button>
+    <nav className={`side-nav${mobileOpen ? ' mobile-open' : ''}`} aria-label="Modulos e telas">
       <div className="nav-header" style={{ padding: '24px 16px', borderBottom: '2px solid #11142a', marginBottom: '16px', background: '#fff' }}>
         <Link to="/" className="logo-container" style={{ display: 'block' }}>
           <img 
@@ -374,8 +379,9 @@ const Navigation: React.FC = () => {
         <ul>
           {modulesData.map(mod => (
             <li key={mod.slug} className="nav-item-group" style={{ marginBottom: '4px' }}>
-              <div 
+              <button type="button"
                 className={`module-link ${openModule === mod.slug ? 'active' : ''}`}
+                aria-expanded={openModule === mod.slug}
                 onClick={() => setOpenModule(openModule === mod.slug ? null : mod.slug)}
                 style={{ 
                     cursor: 'pointer', 
@@ -392,7 +398,7 @@ const Navigation: React.FC = () => {
                 <span className="icon" style={{ marginRight: '12px' }}>{mod.icon}</span>
                 <span className="title" style={{ flex: 1 }}>{mod.title}</span>
                 <span style={{ fontSize: '10px' }}>{openModule === mod.slug ? '▼' : '▶'}</span>
-              </div>
+              </button>
               {openModule === mod.slug && (
                 <ul className="sub-menu" style={{ listStyle: 'none', padding: '8px 0', background: '#f9fafa', borderLeft: '2px solid #11142a', marginLeft: '24px' }}>
                   {mod.screens.map(screen => (
@@ -409,6 +415,7 @@ const Navigation: React.FC = () => {
         </ul>
       </div>
     </nav>
+    </>
   );
 };
 

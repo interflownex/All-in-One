@@ -583,6 +583,9 @@ textarea.neo-input {
   z-index: 50;
 }
 
+.mobile-nav-toggle { display: none; }
+.module-link { width: 100%; color: #11142a; font: inherit; text-align: left; }
+
 .nav-header {
   padding: 32px 24px;
   border-bottom: 4px solid #11142a;
@@ -632,6 +635,8 @@ textarea.neo-input {
   background: #f7f8ff;
   min-width: 0;
 }
+
+.search-row-crud { grid-template-columns: minmax(0, 1fr) auto auto; gap: 16px; }
 
 .content-area:has(> .aio-home) {
   padding: 0;
@@ -695,6 +700,23 @@ textarea.neo-input {
   .detail-metadata { grid-template-columns: 1fr; }
 }
 
+@media (max-width: 700px) {
+  .app-layout { display: block; }
+  .content-area { width: 100%; min-height: 100vh; padding: 72px 16px 36px; }
+  .side-nav { position: fixed; inset: 0 auto 0 0; width: min(86vw, 320px); height: 100dvh; transform: translateX(-105%); transition: transform .22s ease; box-shadow: 12px 0 30px rgba(17,20,42,.18); }
+  .side-nav.mobile-open { transform: translateX(0); }
+  .mobile-nav-toggle { position: fixed; top: 14px; left: 14px; z-index: 70; display: grid; place-items: center; width: 44px; height: 44px; color: #fff; background: #11142a; border: 2px solid #6ee7b7; border-radius: 10px; box-shadow: 3px 3px 0 #236cff; font-size: 22px; }
+  .nav-section h3, .nav-section li a span { display: initial; }
+  .search-row-crud { grid-template-columns: 1fr; }
+  .search-row-crud button { width: 100%; min-height: 46px; }
+  .container { width: 100%; }
+  .data-card { grid-template-columns: 1fr; gap: 14px; }
+  .data-card-media { width: 100%; height: 180px; }
+  .data-card-actions { grid-column: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .data-card-actions .badge { grid-column: 1 / -1; width: fit-content; }
+  .data-card-actions button { width: 100%; }
+}
+
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -720,7 +742,7 @@ textarea.neo-input {
   color: #236cff;
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 701px) and (max-width: 1024px) {
   .side-nav {
     width: 80px;
   }
