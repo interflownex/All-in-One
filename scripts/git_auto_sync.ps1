@@ -1,5 +1,5 @@
 param(
-    [string]$Activity = "atividade Codex",
+    [string]$Activity = "",
     [string]$Remote = "",
     [string]$Branch = "",
     [switch]$NoFetch,
@@ -115,7 +115,16 @@ if ($LASTEXITCODE -eq 0) {
 
 $safeActivity = ($Activity -replace "\s+", " ").Trim()
 if ([string]::IsNullOrWhiteSpace($safeActivity)) {
-    $safeActivity = "atividade Codex"
+    $changedFiles = @(& $GitExecutable diff --cached --name-only)
+    if ($LASTEXITCODE -ne 0) {
+        throw "Nao foi possivel inspecionar o diff staged para gerar a mensagem de commit."
+    }
+    $fileCount = $changedFiles.Count
+    if ($fileCount -eq 1) {
+        $safeActivity = "atualizar $($changedFiles[0])"
+    } else {
+        $safeActivity = "sincronizar $fileCount arquivos alterados"
+    }
 }
 
 $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss zzz"

@@ -16,6 +16,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 - A politica persistente fica em `config/autonomy/git_auto_sync_policy.json`.
 - Neste checkout, o push automatico deve usar o remoto `fork` quando `origin` nao aceitar escrita.
 - Nao criar commit vazio quando nao houver mudancas.
+- O Codex deve gerar e aplicar a mensagem de commit com base na atividade e no
+  diff real, sem transferir essa responsabilidade ao usuario nem solicitar que
+  ele edite `COMMIT_EDITMSG` manualmente.
+- A mensagem deve ser concisa, rastreavel e escrita em portugues do Brasil;
+  preservar o prefixo `chore(auto-sync):` no fluxo automatico.
 - Se houver merge ou rebase em andamento, parar e reportar o bloqueio em portugues do Brasil.
 
 # Alinhamento multiagente obrigatorio

@@ -22,7 +22,8 @@
     "Sempre fazer git fetch + merge antes do push para evitar rejeicao por non-fast-forward.",
     "Nao criar commit vazio quando nao houver mudancas staged.",
     "Bloquear sincronizacao automatica se houver merge ou rebase em andamento.",
-    "Usar mensagem de commit rastreavel com prefixo chore(auto-sync).",
+    "Codex gera a mensagem automaticamente a partir da atividade e do diff real, sem solicitar edicao manual de COMMIT_EDITMSG.",
+    "Usar mensagem concisa em portugues do Brasil e rastreavel com prefixo chore(auto-sync).",
     "Manter respostas, alertas, erros, orientacoes e opcoes em portugues do Brasil."
   ]
 }
