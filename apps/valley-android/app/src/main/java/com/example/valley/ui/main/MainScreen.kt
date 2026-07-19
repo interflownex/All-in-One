@@ -2,6 +2,7 @@ package com.example.valley.ui.main
 
 import android.content.Context
 import android.webkit.WebChromeClient
+import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -60,6 +61,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.valley.R
+import com.example.valley.security.PlayIntegrityAttestor
+import com.example.valley.security.SecureSessionStore
+import com.example.valley.security.StoredSession
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
@@ -76,8 +80,6 @@ import java.util.Locale
 
 private const val VALLEY_WEB_URL = "file:///android_asset/valley/index.html"
 private const val API_HUB_URL = "https://all-in-one-api-hub.web.app"
-private const val SESSION_PREFS = "valley.session"
-
 private data class ValleySession(
   val token: String,
   val userId: String,
@@ -100,34 +102,27 @@ fun valleyCpfForEmail(email: String): String = "CPF-" + valleyHash(email).take(1
 fun valleyGooglePasswordFor(email: String): String = "valley-" + valleyHash(email.lowercase(Locale.US)).take(16)
 
 private fun loadValleySession(context: Context): ValleySession? {
-  val prefs = context.getSharedPreferences(SESSION_PREFS, Context.MODE_PRIVATE)
-  val token = prefs.getString("token", null) ?: return null
-  val userId = prefs.getString("user_id", null) ?: return null
-  val email = prefs.getString("email", null) ?: return null
-  val source = prefs.getString("source", "email") ?: "email"
-  return ValleySession(token = token, userId = userId, email = email, source = source)
+  val stored = SecureSessionStore(context).load() ?: return null
+  return ValleySession(stored.token, stored.userId, stored.email, stored.source)
 }
 
 private fun saveValleySession(context: Context, session: ValleySession) {
-  context.getSharedPreferences(SESSION_PREFS, Context.MODE_PRIVATE).edit()
-    .putString("token", session.token)
-    .putString("user_id", session.userId)
-    .putString("email", session.email)
-    .putString("source", session.source)
-    .apply()
+  SecureSessionStore(context).save(
+    StoredSession(session.token, session.userId, session.email, session.source),
+  )
 }
 
 private fun clearValleySession(context: Context) {
-  context.getSharedPreferences(SESSION_PREFS, Context.MODE_PRIVATE).edit().clear().apply()
+  SecureSessionStore(context).clear()
 }
 
 private fun sessionInjectionScript(session: ValleySession): String {
   return """
     (() => {
-      localStorage.setItem('valley.session.token', ${JSONObject.quote(session.token)});
-      localStorage.setItem('valley.session.user-id', ${JSONObject.quote(session.userId)});
-      localStorage.setItem('valley.session.email', ${JSONObject.quote(session.email)});
-      localStorage.setItem('valley.session.source', ${JSONObject.quote(session.source)});
+      sessionStorage.setItem('valley.session.token', ${JSONObject.quote(session.token)});
+      sessionStorage.setItem('valley.session.user-id', ${JSONObject.quote(session.userId)});
+      sessionStorage.setItem('valley.session.email', ${JSONObject.quote(session.email)});
+      sessionStorage.setItem('valley.session.source', ${JSONObject.quote(session.source)});
       window.dispatchEvent(new Event('storage'));
     })();
   """.trimIndent()
@@ -399,7 +394,14 @@ private fun ConsumerShell(
           }
         },
         actions = {
-          OutlinedButton(onClick = onLogout) {
+          OutlinedButton(
+            onClick = {
+              webView?.evaluateJavascript("sessionStorage.clear(); localStorage.clear();", null)
+              WebStorage.getInstance().deleteAllData()
+              webView?.clearCache(true)
+              onLogout()
+            },
+          ) {
             Text("Sair")
           }
         },
@@ -425,6 +427,8 @@ private fun ConsumerShell(
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             settings.mediaPlaybackRequiresUserGesture = false
+            settings.allowContentAccess = false
+            settings.setSupportMultipleWindows(false)
             webChromeClient = WebChromeClient()
             webViewClient =
               object : WebViewClient() {
@@ -521,29 +525,30 @@ private suspend fun authenticateWithValley(
         .put("document_cpf", valleyCpfForEmail(normalizedEmail))
         .put("terms_accepted_at", now)
         .put("lgpd_consent_at", now)
-    val registrationResult = runCatching { postJson("$API_HUB_URL/registrations", registration) }
+    val registrationResult = runCatching { postJson(context, "$API_HUB_URL/registrations", registration) }
     registrationResult.exceptionOrNull()?.let { error ->
       if (error !is ValleyHttpException || error.statusCode != 409) {
-        return buildDemoSession(normalizedEmail, source)
+        throw error
       }
     }
   }
 
   val loginBody = JSONObject().put("email", normalizedEmail).put("password", password)
   val loginResult =
-    runCatching { postJson("$API_HUB_URL/auth/login", loginBody) }
-      .getOrElse { return buildDemoSession(normalizedEmail, source) }
+    postJson(context, "$API_HUB_URL/auth/login", loginBody)
   val token = loginResult.optString("access_token")
   val userId = loginResult.optString("user_id")
   if (token.isBlank() || userId.isBlank()) {
-    return buildDemoSession(normalizedEmail, source)
+    error("O backend nao retornou uma sessao Valley valida.")
   }
   return ValleySession(token = token, userId = userId, email = normalizedEmail, source = source)
 }
 
 private data class ValleyHttpException(val statusCode: Int, override val message: String) : IllegalStateException(message)
 
-private suspend fun postJson(url: String, body: JSONObject): JSONObject = withContext(Dispatchers.IO) {
+private suspend fun postJson(context: Context, url: String, body: JSONObject): JSONObject {
+  val integrityToken = PlayIntegrityAttestor(context).tokenFor(body.toString())
+  return withContext(Dispatchers.IO) {
   val connection = (URL(url).openConnection() as HttpURLConnection).apply {
     requestMethod = "POST"
     connectTimeout = 15_000
@@ -551,6 +556,8 @@ private suspend fun postJson(url: String, body: JSONObject): JSONObject = withCo
     doOutput = true
     setRequestProperty("Content-Type", "application/json")
     setRequestProperty("Accept", "application/json")
+    setRequestProperty("X-Valley-Api-Version", "1")
+    integrityToken?.let { setRequestProperty("X-Play-Integrity-Token", it) }
   }
 
   connection.outputStream.use { stream ->
@@ -578,21 +585,13 @@ private suspend fun postJson(url: String, body: JSONObject): JSONObject = withCo
 
   if (responseText.isBlank()) return@withContext JSONObject()
   return@withContext JSONObject(responseText)
+  }
 }
 
 private fun nowIso8601(): String {
   val formatter = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
   formatter.timeZone = java.util.TimeZone.getTimeZone("UTC")
   return formatter.format(java.util.Date())
-}
-
-private fun buildDemoSession(email: String, source: String): ValleySession {
-  return ValleySession(
-    token = "demo-${valleyHash(email).take(16)}",
-    userId = "demo-${valleyHash(email.lowercase(Locale.US)).take(12)}",
-    email = email,
-    source = source,
-  )
 }
 
 private fun valleyHash(value: String): String {

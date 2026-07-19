@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { isDemoModeEnabled } from '../lib/valleyPlatform';
 
-const WEBSOCKET_URL = import.meta.env.VITE_API_HUB_URL?.replace('http', 'ws') || 'ws://localhost:8000';
+const WEBSOCKET_URL = import.meta.env.VITE_API_HUB_URL?.replace('http', 'ws') || 'wss://all-in-one-api-hub.web.app';
 
 export default function LiveTracking({ deliveryId = 'del-123' }) {
   const [logs, setLogs] = useState<string[]>([]);

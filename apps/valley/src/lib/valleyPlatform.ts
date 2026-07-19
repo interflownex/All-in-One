@@ -671,6 +671,7 @@ async function putJson(path: string, body: unknown, token?: string) {
 async function fetchJson(path: string, init: RequestInit, token?: string) {
   const headers = new Headers(init.headers)
   headers.set('Accept', 'application/json')
+  headers.set('X-Valley-Api-Version', '1')
   if (token) {
     headers.set('Authorization', `Bearer ${token}`)
   }

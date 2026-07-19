@@ -19,19 +19,19 @@ import {
 } from './lib/valleyPlatform'
 
 function getStoredAuth() {
-  const token = window.localStorage.getItem('valley.session.token')
-  const userId = window.localStorage.getItem('valley.session.user-id')
+  const token = window.sessionStorage.getItem('valley.session.token')
+  const userId = window.sessionStorage.getItem('valley.session.user-id')
   return { token, userId }
 }
 
 function setStoredAuth(token: string, userId: string) {
-  window.localStorage.setItem('valley.session.token', token)
-  window.localStorage.setItem('valley.session.user-id', userId)
+  window.sessionStorage.setItem('valley.session.token', token)
+  window.sessionStorage.setItem('valley.session.user-id', userId)
 }
 
 function clearStoredAuth() {
-  window.localStorage.removeItem('valley.session.token')
-  window.localStorage.removeItem('valley.session.user-id')
+  window.sessionStorage.removeItem('valley.session.token')
+  window.sessionStorage.removeItem('valley.session.user-id')
 }
 
 function App() {

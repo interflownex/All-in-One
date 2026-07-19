@@ -27,5 +27,8 @@ jobs:
       - name: Check generated artifacts
         run: python scripts/check_generated_artifacts.py
 
+      - name: Validate Valley Android release contract
+        run: python scripts/validate_valley_android_release.py
+
       - name: Run Unit Tests
         run: python -m pytest -q --ignore=tests/e2e

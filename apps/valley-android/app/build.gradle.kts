@@ -8,6 +8,11 @@ plugins {
 }
 
 val releaseSigningProperties = Properties()
+val playIntegrityCloudProjectNumber =
+  providers.environmentVariable("VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER").orElse("0").get()
+require(playIntegrityCloudProjectNumber.matches(Regex("[0-9]+"))) {
+  "VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER deve conter apenas digitos."
+}
 val releaseSigningPropertiesFile =
   file(
     System.getenv("VALLEY_RELEASE_SIGNING_PROPERTIES")
@@ -15,6 +20,25 @@ val releaseSigningPropertiesFile =
   )
 if (releaseSigningPropertiesFile.isFile) {
   releaseSigningPropertiesFile.inputStream().use(releaseSigningProperties::load)
+}
+
+val releaseRequested =
+  gradle.startParameter.taskNames.any { taskName ->
+    taskName.contains("release", ignoreCase = true) &&
+      (taskName.contains("assemble", ignoreCase = true) ||
+        taskName.contains("bundle", ignoreCase = true) ||
+        taskName.contains("package", ignoreCase = true))
+  }
+if (releaseRequested && !releaseSigningPropertiesFile.isFile) {
+  throw GradleException(
+    "Build release bloqueado: configure VALLEY_RELEASE_SIGNING_PROPERTIES " +
+      "ou ~/.config/all-in-one/valley-release.properties. Assinatura debug nunca e aceita.",
+  )
+}
+if (releaseRequested && playIntegrityCloudProjectNumber == "0") {
+  throw GradleException(
+    "Build release bloqueado: configure VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER para a Play Integrity API.",
+  )
 }
 
 android {
@@ -27,6 +51,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("long", "PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER", "${playIntegrityCloudProjectNumber}L")
     }
 
     signingConfigs {
@@ -41,8 +66,18 @@ android {
     }
 
     buildTypes {
+        debug {
+            versionNameSuffix = "-debug"
+        }
+        create("staging") {
+            initWith(getByName("debug"))
+            versionNameSuffix = "-staging"
+            matchingFallbacks += listOf("debug")
+        }
         release {
-            isMinifyEnabled = false
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.findByName("release")
         }
@@ -54,18 +89,32 @@ android {
     buildFeatures {
       compose = true
       aidl = false
-      buildConfig = false
+      buildConfig = true
       shaders = false
     }
 
     packaging {
-      jniLibs {
-        keepDebugSymbols += "**/*.so"
-      }
       resources {
-        excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        excludes += setOf(
+          "/META-INF/{AL2.0,LGPL2.1}",
+          "**/README*",
+          "**/CHANGELOG*",
+          "**/docs/**",
+          "**/runbooks/**",
+          "**/roadmap/**",
+          "**/*.sql",
+        )
       }
     }
+}
+
+androidComponents {
+  onVariants(selector().withBuildType("debug")) { variant ->
+    variant.packaging.jniLibs.keepDebugSymbols.add("**/*.so")
+  }
+  onVariants(selector().withBuildType("staging")) { variant ->
+    variant.packaging.jniLibs.keepDebugSymbols.add("**/*.so")
+  }
 }
 
 kotlin {
@@ -96,6 +145,7 @@ dependencies {
   implementation(libs.firebase.auth)
   implementation(libs.googleid)
   implementation(libs.kotlinx.coroutines.play.services)
+  implementation(libs.play.integrity)
   // Tooling
   debugImplementation(libs.androidx.compose.ui.tooling)
   // Instrumented tests
