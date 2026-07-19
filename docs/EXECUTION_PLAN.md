@@ -599,3 +599,15 @@ Sequencia recomendada:
 8. Levar jornadas contratuais para shell frontend e Playwright.
 9. Atualizar `STATUS.md`.
 10. Sincronizar Git.
+
+## 6. Ambiente Google Cloud Data Agent Kit
+
+- Configuracao autoritativa da extensao: projeto e quota
+  `all-in-one-498012`, regiao de dados/Composer/BigQuery
+  `southamerica-east1`, skills instaladas no workspace com atualizacao
+  automatica e telemetria desabilitada.
+- O runtime deve preferir `~/google-cloud-sdk/bin/gcloud` no WSL e validar com
+  `python3 scripts/configure_data_agent_kit.py --check-runtime`.
+- Gate humano restante para deployments de pipelines: executar
+  `~/google-cloud-sdk/bin/gcloud auth application-default login` em terminal
+  interativo e, depois, `~/google-cloud-sdk/bin/gcloud auth application-default set-quota-project all-in-one-498012`.

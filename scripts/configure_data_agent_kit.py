@@ -16,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "config/autonomy/data_agent_kit_policy.json"
 PROFILE = ROOT / "config/cloud/google_cloud_profile.json"
 EXTENSIONS = ROOT / ".vscode/extensions.json"
+SETTINGS = ROOT / ".vscode/settings.json"
+LINUX_GCLOUD = Path.home() / "google-cloud-sdk" / "bin" / "gcloud"
 
 
 def load_json(path: Path) -> dict:
@@ -27,6 +29,7 @@ def validate() -> list[str]:
     policy = load_json(POLICY)
     profile = load_json(PROFILE)
     extensions = load_json(EXTENSIONS)
+    settings = load_json(SETTINGS)
 
     if not policy.get("enabled"):
         errors.append("Data Agent Kit deve permanecer habilitado.")
@@ -35,6 +38,33 @@ def validate() -> list[str]:
         errors.append("Versao homologada do starter pack deve ser 0.6.1.")
     if starter.get("vscode_extension") not in extensions.get("recommendations", []):
         errors.append("Extensao oficial do Data Agent Kit ausente das recomendacoes do VS Code.")
+    defaults = policy.get("defaults", {})
+    expected_settings = {
+        "google.cloud.project": defaults.get("project_id"),
+        "google.cloud.billingQuotaProject": defaults.get("project_id"),
+        "google.cloud.region": defaults.get("region"),
+        "google.datacloud.bigqueryRegion": defaults.get("bigquery_location"),
+        "google.datacloud.composer.project": defaults.get("project_id"),
+        "google.datacloud.composer.region": defaults.get("region"),
+        "google.datacloud.agent.skills.autoUpdate": True,
+        "google.datacloud.agent.skills.installLocation": "workspace",
+        "google.datacloud.executeCellToolForNotebookMCP": False,
+        "google.datacloud.executeCellToolConsent": True,
+    }
+    for key, expected in expected_settings.items():
+        if settings.get(key) != expected:
+            errors.append(f"Configuracao persistente invalida para {key}: esperado {expected!r}.")
+    expected_environment = {
+        "DATA_AGENT_KIT_ENABLED": "true",
+        defaults.get("project_environment_variable"): defaults.get("project_id"),
+        defaults.get("region_environment_variable"): defaults.get("region"),
+        defaults.get("bigquery_location_environment_variable"): defaults.get("bigquery_location"),
+    }
+    for terminal_key in ("terminal.integrated.env.linux", "terminal.integrated.env.windows"):
+        environment = settings.get(terminal_key, {})
+        for key, expected in expected_environment.items():
+            if environment.get(key) != expected:
+                errors.append(f"Variavel persistente ausente ou invalida em {terminal_key}: {key}.")
     missing_apis = sorted(set(policy.get("required_apis", [])) - set(profile.get("required_apis", [])))
     if missing_apis:
         errors.append("APIs do Data Agent Kit ausentes do perfil Google Cloud: " + ", ".join(missing_apis))
@@ -50,17 +80,21 @@ def runtime_status() -> dict:
     project = os.environ.get(defaults["project_environment_variable"], defaults["project_id"])
     region = os.environ.get(defaults["region_environment_variable"], defaults["region"])
     location = os.environ.get(defaults["bigquery_location_environment_variable"], defaults["bigquery_location"])
-    gcloud = shutil.which("gcloud")
+    gcloud = str(LINUX_GCLOUD) if LINUX_GCLOUD.is_file() else shutil.which("gcloud")
     adc = False
+    runtime_warning = None
     if gcloud:
-        result = subprocess.run(
-            [gcloud, "auth", "application-default", "print-access-token"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            check=False,
-            timeout=20,
-        )
-        adc = result.returncode == 0
+        try:
+            result = subprocess.run(
+                [gcloud, "auth", "application-default", "print-access-token"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+                timeout=20,
+            )
+            adc = result.returncode == 0
+        except subprocess.TimeoutExpired:
+            runtime_warning = "gcloud excedeu 20s ao verificar Application Default Credentials."
     return {
         "enabled": policy["enabled"],
         "version": policy["starter_pack"]["version"],
@@ -68,7 +102,9 @@ def runtime_status() -> dict:
         "region": region,
         "bigquery_location": location,
         "gcloud_available": bool(gcloud),
+        "gcloud_path": gcloud,
         "application_default_credentials_available": adc,
+        "runtime_warning": runtime_warning,
         "vscode_extension": policy["starter_pack"]["vscode_extension"],
         "codex_plugin": policy["starter_pack"]["codex_plugin"],
     }
