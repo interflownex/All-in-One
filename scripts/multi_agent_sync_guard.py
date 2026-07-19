@@ -13,6 +13,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TTL_MINUTES = 120
+GCP_HYGIENE_TIMEOUT_SECONDS = 60
 
 
 def run_git(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -205,7 +206,16 @@ def main() -> int:
             # Higienização mandatória de armazenamento GCP antes de liberar
             hygiene_script = ROOT / "scripts" / "gcp_storage_hygiene.py"
             if hygiene_script.exists():
-                subprocess.run([sys.executable, str(hygiene_script)], capture_output=True)
+                try:
+                    subprocess.run(
+                        [sys.executable, str(hygiene_script)],
+                        capture_output=True,
+                        timeout=GCP_HYGIENE_TIMEOUT_SECONDS,
+                    )
+                except subprocess.TimeoutExpired:
+                    # A higiene externa não pode manter o workspace bloqueado
+                    # indefinidamente. O próximo ciclo tentará executá-la de novo.
+                    pass
             release_lock(args.agent, args.force)
             result = {"released": True, "agent": args.agent}
         elif args.command == "status":
