@@ -1,115 +1,149 @@
 {
-    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
-    "powershell.powerShellAdditionalExePaths": [
-        "/mnt/c/Users/ereta/.local/bin/pwsh"
-    ],
-    "cloudcode.gcloudSdkPath": "/usr/bin/gcloud",
-    "cloudcode.project": "all-in-one-498012",
-    "cloudcode.cloudBuild.enable": true,
-    "cloudcode.skaffold.path": "skaffold",
-    "chat.mcp.autostart": true,
-    "python.testing.pytestEnabled": true,
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestArgs": [],
-    "python.analysis.typeCheckingMode": "strict",
-    "python.analysis.autoImportCompletions": true,
-    "python.analysis.fixAll": [
-        "source.unusedImports"
-    ],
-    "ruff.importStrategy": "fromEnvironment",
-    "files.eol": "\n",
-    "files.insertFinalNewline": true,
-    "files.autoSave": "afterDelay",
-    "files.trimTrailingWhitespace": true,
-    "editor.formatOnSave": true,
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "powershell.powerShellAdditionalExePaths": ["/mnt/c/Users/ereta/.local/bin/pwsh"],
+  "google.cloud.project": "all-in-one-498012",
+  "cloudcode.autoDependencies": "on",
+  "cloudcode.dependencyPaths": {
+    "kubectl": "/usr/local/bin/kubectl"
+  },
+  "cloudcode.kubeconfigs": [
+    {
+      "name": "all-in-one-local",
+      "configPath": "/home/eretazan/.kube/config"
+    }
+  ],
+  "cloudcode.active-kubeconfig": "all-in-one-local",
+  "cloudcode.kubectlExecShell": "sh",
+  "cloudcode.kubectlRequestTimeout": "20s",
+  "cloudcode.useGcloudAuthSkaffold": true,
+  "cloudcode.enableGkeAutopilotSupport": true,
+  "cloudcode.updateAdcOnLogin": true,
+  "cloudcode.updateChannel": "Default",
+  "cloudcode.enableTelemetry": false,
+  "cloudcode.enableCrashReporting": false,
+  "cloudcode.yaml.validate": true,
+  "cloudcode.yaml.hover": true,
+  "cloudcode.yaml.completion": true,
+  "cloudcode.yaml.clusterResourceCompletion": true,
+  "cloudcode.yaml.enableKubernetesSupport": true,
+  "cloudcode.yaml.kubernetesVersion": "v1.34.0",
+  "cloudcode.cloudshell.project": "all-in-one-498012",
+  "vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
+  "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
+  "vs-kubernetes.kubectlVersioning": "user-provided",
+  "vs-kubernetes.kubeconfig": "/home/eretazan/.kube/config",
+  "vs-kubernetes.knownKubeconfigs": ["/home/eretazan/.kube/config"],
+  "vs-kubernetes.namespace": "default",
+  "vs-kubernetes.outputFormat": "yaml",
+  "imageBuildTool": "Docker",
+  "resource-commands-on-files": false,
+  "vs-kubernetes.enable-minimal-workflow": true,
+  "vs-kubernetes.crd-code-completion": "enabled",
+  "vs-kubernetes.autoCleanupOnDebugTerminate": true,
+  "vs-kubernetes.disable-context-info-status-bar": false,
+  "vs-kubernetes.disable-namespace-info-status-bar": false,
+  "vscode-kubernetes.log-viewer.follow": false,
+  "vscode-kubernetes.log-viewer.timestamp": true,
+  "vscode-kubernetes.log-viewer.since": 3600,
+  "vscode-kubernetes.log-viewer.tail": 500,
+  "vscode-kubernetes.log-viewer.destination": "Webview",
+  "vscode-kubernetes.log-viewer.wrap": true,
+  "vscode-kubernetes.log-viewer.autorun": false,
+  "chat.mcp.autostart": true,
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": [],
+  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.fixAll": ["source.unusedImports"],
+  "ruff.importStrategy": "fromEnvironment",
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.autoSave": "afterDelay",
+  "files.trimTrailingWhitespace": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit",
+    "source.fixAll.ruff": "explicit",
+    "source.organizeImports.ruff": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit",
-        "source.organizeImports": "explicit",
-        "source.fixAll.ruff": "explicit",
-        "source.organizeImports.ruff": "explicit"
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    }
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "yaml.validate": true,
+  "docker.extension.enableComposeLanguageServer": true,
+  "docker.lsp.telemetry": "off",
+  "rust-analyzer.check.command": "clippy",
+  "java.import.gradle.enabled": true,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.env.windows": {
+    "GOOGLE_INTEGRATIONS_ENABLED": "true",
+    "GOOGLE_CLOUD_ENABLED": "true",
+    "GOOGLE_AI_STUDIO_ENABLED": "true",
+    "GOOGLE_CODE_CLI_ENABLED": "true",
+    "ALLOYDB_ENABLED": "true",
+    "GEMINI_CODE_ASSIST_ENABLED": "true",
+    "STITCH_REMOTE_SYNC_ENABLED": "true"
+  },
+  "terminal.integrated.env.linux": {
+    "GOOGLE_INTEGRATIONS_ENABLED": "true",
+    "GOOGLE_CLOUD_ENABLED": "true",
+    "GOOGLE_AI_STUDIO_ENABLED": "true",
+    "GOOGLE_CODE_CLI_ENABLED": "true",
+    "ALLOYDB_ENABLED": "true",
+    "GEMINI_CODE_ASSIST_ENABLED": "true",
+    "STITCH_REMOTE_SYNC_ENABLED": "true"
+  },
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell"
     },
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "[python]": {
-        "editor.defaultFormatter": "charliermarsh.ruff",
-        "editor.codeActionsOnSave": {
-            "source.fixAll.ruff": "explicit",
-            "source.organizeImports.ruff": "explicit"
-        }
-    },
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[javascriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[html]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[css]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[json]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[jsonc]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[yaml]": {
-        "editor.defaultFormatter": "redhat.vscode-yaml"
-    },
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        "typescript",
-        "typescriptreact"
-    ],
-    "yaml.validate": true,
-    "docker.extension.enableComposeLanguageServer": true,
-    "docker.lsp.telemetry": "off",
-    "rust-analyzer.check.command": "clippy",
-    "java.import.gradle.enabled": true,
-    "terminal.integrated.defaultProfile.windows": "PowerShell",
-    "terminal.integrated.defaultProfile.linux": "bash",
-    "terminal.integrated.env.windows": {
-        "GOOGLE_INTEGRATIONS_ENABLED": "true",
-        "GOOGLE_CLOUD_ENABLED": "true",
-        "GOOGLE_AI_STUDIO_ENABLED": "true",
-        "GOOGLE_CODE_CLI_ENABLED": "true",
-        "ALLOYDB_ENABLED": "true",
-        "GEMINI_CODE_ASSIST_ENABLED": "true",
-        "STITCH_REMOTE_SYNC_ENABLED": "true"
-    },
-    "terminal.integrated.env.linux": {
-        "GOOGLE_INTEGRATIONS_ENABLED": "true",
-        "GOOGLE_CLOUD_ENABLED": "true",
-        "GOOGLE_AI_STUDIO_ENABLED": "true",
-        "GOOGLE_CODE_CLI_ENABLED": "true",
-        "ALLOYDB_ENABLED": "true",
-        "GEMINI_CODE_ASSIST_ENABLED": "true",
-        "STITCH_REMOTE_SYNC_ENABLED": "true"
-    },
-    "terminal.integrated.profiles.windows": {
-        "PowerShell": {
-            "source": "PowerShell"
-        },
-        "Git Bash": {
-            "path": "C:\\Program Files\\Git\\bin\\bash.exe"
-        }
-    },
-    "geminicodeassist.outlines.automaticOutlineGeneration": true,
-    "geminicodeassist.agentYoloMode": false,
-    "geminicodeassist.enable": true,
-    "workbench.editor.preferHistoryBasedLanguageDetection": true,
-    "geminicodeassist.codeLens.enable": false,
-    "geminicodeassist.telemetry.enable": false,
-    "google.datacloud.enableTelemetry": false,
-    "google.cloud.project": "all-in-one-498012",
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "cloudcode.active-kubeconfig": "Default KubeConfig"
+    "Git Bash": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe"
+    }
+  },
+  "geminicodeassist.outlines.automaticOutlineGeneration": true,
+  "geminicodeassist.agentYoloMode": false,
+  "geminicodeassist.enable": true,
+  "workbench.editor.preferHistoryBasedLanguageDetection": true,
+  "geminicodeassist.codeLens.enable": false,
+  "geminicodeassist.telemetry.enable": false,
+  "google.datacloud.enableTelemetry": false,
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.jdt.ls.java.home": "/home/eretazan/.vscode-server/extensions/redhat.java-1.55.0-linux-x64/jre/21.0.11-linux-x86_64"
 }

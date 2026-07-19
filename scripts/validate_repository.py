@@ -262,13 +262,42 @@ def main() -> int:
         for kubeconfig in settings.get("cloudcode.kubeconfigs") or []:
             if kubeconfig.get("configPath") == invalid_kubeconfig:
                 fail("cloudcode.kubeconfigs nao pode registrar .vscode/settings.json como kubeconfig.", errors)
+        expected_cloudcode = {
+            "google.cloud.project": "all-in-one-498012",
+            "cloudcode.autoDependencies": "on",
+            "cloudcode.active-kubeconfig": "all-in-one-local",
+            "cloudcode.enableTelemetry": False,
+            "cloudcode.enableCrashReporting": False,
+            "cloudcode.useGcloudAuthSkaffold": True,
+            "cloudcode.enableGkeAutopilotSupport": True,
+        }
+        for setting_name, expected_value in expected_cloudcode.items():
+            if settings.get(setting_name) != expected_value:
+                fail(f"Configuracao Cloud Code invalida: {setting_name}.", errors)
+        expected_kubernetes = {
+            "vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
+            "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
+            "vs-kubernetes.kubeconfig": "/home/eretazan/.kube/config",
+            "vs-kubernetes.kubectlVersioning": "user-provided",
+            "vs-kubernetes.outputFormat": "yaml",
+            "imageBuildTool": "Docker",
+        }
+        for setting_name, expected_value in expected_kubernetes.items():
+            if settings.get(setting_name) != expected_value:
+                fail(f"Configuracao Kubernetes invalida: {setting_name}.", errors)
     vscode_extensions = ROOT / ".vscode" / "extensions.json"
     if not vscode_extensions.is_file():
         fail("Configuracao VS Code ausente: .vscode/extensions.json", errors)
     else:
         extensions = json.loads(vscode_extensions.read_text(encoding="utf-8"))
         recommendations = set(extensions.get("recommendations", []))
-        for extension in ["ms-python.python", "ms-python.vscode-pylance", "ms-python.debugpy"]:
+        for extension in [
+            "ms-python.python",
+            "ms-python.vscode-pylance",
+            "ms-python.debugpy",
+            "ms-kubernetes-tools.vscode-kubernetes-tools",
+            "googlecloudtools.cloudcode",
+        ]:
             if extension not in recommendations:
                 fail(f"Extensao VS Code Python obrigatoria ausente em .vscode/extensions.json: {extension}", errors)
     if not VSCODE_TASKS.is_file():
