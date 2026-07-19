@@ -542,11 +542,35 @@ def main() -> int:
         antigravity = json.loads(antigravity_config.read_text(encoding="utf-8"))
         if antigravity.get("name") != "antigravity":
             fail("Contrato Antigravity deve declarar name=antigravity.", errors)
-        required_mcp_servers = {"docker", "playwright"}
+        required_mcp_servers = {
+            "filesystem-all-in-one",
+            "context7",
+            "cloudflare-docs",
+            "cloudflare-api",
+            "docker",
+            "stitch",
+        }
         if not required_mcp_servers.issubset(set(antigravity.get("mcp_servers", []))):
-            fail("Contrato Antigravity deve manter MCPs essenciais ativos: docker e playwright.", errors)
-        if "stitch" not in set(antigravity.get("mcp_servers", [])):
-            fail("Antigravity deve manter o MCP Stitch ativo.", errors)
+            fail(
+                "Contrato Antigravity deve manter somente os MCPs essenciais "
+                "do projeto ativos.",
+                errors,
+            )
+        redundant_mcp_servers = {
+            "cloudrun",
+            "figma",
+            "gke-oss",
+            "github-official",
+            "linear",
+            "playwright",
+            "terraform",
+        }
+        if redundant_mcp_servers.intersection(set(antigravity.get("mcp_servers", []))):
+            fail(
+                "Contrato Antigravity nao deve duplicar MCPs opcionais ou "
+                "fornecidos pelo Docker Gateway.",
+                errors,
+            )
     stitch_workflow = STITCH_SYNC_WORKFLOW.read_text(encoding="utf-8") if STITCH_SYNC_WORKFLOW.is_file() else ""
     for needle in [
         "workflow_dispatch:",

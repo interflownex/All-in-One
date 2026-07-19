@@ -1,7 +1,7 @@
 {
   "name": "antigravity",
   "description": "Agente de desenvolvimento avançado com acesso aos servidores MCP.",
-  "mcp_servers": ["docker", "cloudflare-api", "cloudrun", "context7", "figma", "gke-oss", "linear", "playwright", "stitch", "terraform"],
+  "mcp_servers": ["filesystem-all-in-one", "context7", "cloudflare-docs", "cloudflare-api", "docker", "stitch"],
   "disabled_mcp_servers": [
     {
       "name": "arize-tracing-assistant",
@@ -10,6 +10,34 @@
     {
       "name": "chrome-devtools-mcp",
       "reason": "Desativado para estabilidade do ambiente local, evitando timeouts."
+    },
+    {
+      "name": "cloudrun",
+      "reason": "Removido do perfil permanente; o projeto usa gcloud e Terraform sem precisar manter outro servidor MCP ativo."
+    },
+    {
+      "name": "figma",
+      "reason": "Removido do perfil permanente porque o projeto usa Stitch e nao possui fluxo Figma autenticado."
+    },
+    {
+      "name": "gke-oss",
+      "reason": "Removido do perfil permanente; kubectl, gcloud e Terraform ja cobrem a infraestrutura GKE."
+    },
+    {
+      "name": "github-official",
+      "reason": "Removido por redundancia com o plugin GitHub e o CLI gh ja disponiveis."
+    },
+    {
+      "name": "linear",
+      "reason": "Removido porque o repositorio nao possui integracao ou fluxo Linear."
+    },
+    {
+      "name": "playwright",
+      "reason": "Fornecido pelo perfil Docker all_in_one_local; nao iniciar uma segunda instancia direta."
+    },
+    {
+      "name": "terraform",
+      "reason": "Fornecido pelo perfil Docker all_in_one_local em modo de documentacao; nao iniciar uma segunda instancia direta."
     }
   ]
 }
