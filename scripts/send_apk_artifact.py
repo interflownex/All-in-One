@@ -64,6 +64,17 @@ def send_to_telegram(apk: Path, bot_token: str, chat_id: str, caption: str | Non
         with request.urlopen(req, timeout=60) as response:
             if response.status < 200 or response.status >= 300:
                 raise RuntimeError(f"Telegram retornou HTTP {response.status}")
+    except error.HTTPError as exc:
+        detalhe = ""
+        try:
+            corpo = exc.read().decode("utf-8", errors="replace").strip()
+        except Exception:
+            corpo = ""
+        if corpo:
+            detalhe = f": {corpo}"
+        raise RuntimeError(
+            f"Falha ao enviar para Telegram: HTTP {exc.code} {exc.reason}{detalhe}"
+        ) from exc
     except error.URLError as exc:
         raise RuntimeError(f"Falha ao enviar para Telegram: {exc}") from exc
 
