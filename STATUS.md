@@ -1,3 +1,64 @@
+# STATUS OPERACIONAL - 2026-07-19 Firebase Auth e assinatura Valley Android
+
+### Concluido neste ciclo
+
+- O projeto Google Cloud `all-in-one-498012` foi associado ao Firebase e recebeu
+  o app Android `com.example.valley` (`Valley Consumer Android`).
+- O provedor Firebase Authentication `google.com` foi habilitado pelo
+  provisionador oficial usado pelo Firebase CLI, sem ativar billing.
+- A tela inicial nativa deixou de usar apenas o seletor de contas Android e
+  passou a autenticar com Credential Manager, Google ID token e Firebase Auth.
+- Os fingerprints SHA-1/SHA-256 das assinaturas debug e release foram
+  registrados no app Firebase; o `google-services.json` atualizado declara os
+  clientes OAuth Android correspondentes e o web client usado pelo ID token.
+- A chave cliente Firebase foi restringida ao pacote `com.example.valley` e
+  aos fingerprints SHA-1 debug/release, preservando os targets Firebase.
+- O Firebase CLI 15.24.0 foi instalado no ambiente local.
+- Uma assinatura final RSA 4096 foi criada com alias `valley-release`; o `.jks`
+  e as senhas permanecem fora do Git em `~/.config/all-in-one`, com permissao
+  exclusiva do usuario.
+- O Gradle passou a assinar automaticamente a variante release quando encontra
+  `~/.config/all-in-one/valley-release.properties` ou o caminho definido por
+  `VALLEY_RELEASE_SIGNING_PROPERTIES`.
+
+### Evidencias
+
+- Firebase project: `projects/all-in-one-498012`, estado ativo.
+- Firebase Android app: `1:864981916504:android:1287cc3b743d697e7a232d`.
+- Identity Toolkit: `google.com`, `enabled=true`.
+- Build inicial completo: `testDebugUnitTest assembleDebug assembleRelease`,
+  aprovado em 18m03s.
+- APK release: assinatura v2 valida, um signer, RSA 4096, certificado
+  `CN=Valley Consumer, OU=Mobile, O=All-in-One, C=BR`.
+- APK debug instalado no `emulator-5554`; `MainActivity` ficou resumida, a tela
+  exibiu `Continuar com Google` e o Firebase inicializou sem erro fatal.
+- O acionamento do Credential Manager foi exercitado; sem conta cadastrada no
+  AVD, a UI retornou a mensagem orientativa em portugues para adicionar uma
+  conta Google, comprovando o caminho nativo ate o provider.
+- `python3 scripts/validate_firebase_auth.py`: aprovado.
+- `python3 scripts/check_firebase_auth_remote.py`: projeto, app Android, quatro
+  fingerprints, provider Google e restricao da chave API ativos.
+- `python3 scripts/configure_valley_android_signing.py --check`: aprovado.
+- Testes de assinatura e politicas locais: `11 passed`.
+- `python3 scripts/validate_repository.py`: aprovado.
+
+### Material local protegido
+
+- Keystore: `~/.config/all-in-one/valley-release.jks`.
+- Alias: `valley-release`.
+- Senhas e caminho do keystore:
+  `~/.config/all-in-one/valley-release.properties` (`chmod 600`).
+- Esses dois arquivos devem receber backup seguro; a perda do `.jks` ou das
+  senhas impede publicar atualizacoes assinadas com a mesma identidade.
+
+### Pendencias rastreadas
+
+- Executar login Google completo com uma conta de teste no APK instalado; o
+  emulador atual nao possui conta Google e o Credential Manager confirmou essa
+  condicao, portanto o token final depende de adicionar/escolher uma conta.
+- Antes da publicacao definitiva na Play Store, armazenar a chave em cofre
+  seguro e decidir entre upload key local e Play App Signing.
+
 # STATUS OPERACIONAL - 2026-07-19 Confronto do plano e gates locais
 
 ### Concluido neste ciclo

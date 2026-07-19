@@ -1,16 +1,16 @@
 package com.example.valley.ui.main
 
-import android.accounts.AccountManager
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.credentials.exceptions.NoCredentialException
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -60,7 +60,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.valley.R
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -78,6 +83,11 @@ private data class ValleySession(
   val userId: String,
   val email: String,
   val source: String,
+)
+
+private data class FirebaseGoogleIdentity(
+  val email: String,
+  val uid: String,
 )
 
 fun valleyDisplayName(email: String): String {
@@ -138,15 +148,16 @@ fun MainScreen(modifier: Modifier = Modifier) {
       modifier = modifier,
       loading = authInProgress,
       error = authError,
-      onGooglePick = { selectedEmail ->
+      onGoogleSignIn = {
         scope.launch {
           authInProgress = true
           authError = null
           runCatching {
+            val identity = authenticateWithFirebaseGoogle(context)
             authenticateWithValley(
               context = context,
-              email = selectedEmail,
-              password = valleyGooglePasswordFor(selectedEmail),
+              email = identity.email,
+              password = valleyGooglePasswordFor(identity.uid),
               source = "google",
               createAccount = true,
             )
@@ -187,6 +198,12 @@ fun MainScreen(modifier: Modifier = Modifier) {
       session = activeSession,
       onLogout = {
         clearValleySession(context)
+        FirebaseAuth.getInstance().signOut()
+        scope.launch {
+          runCatching {
+            CredentialManager.create(context).clearCredentialState(ClearCredentialStateRequest())
+          }
+        }
         session = null
       },
     )
@@ -198,25 +215,12 @@ private fun LoginScreen(
   modifier: Modifier = Modifier,
   loading: Boolean,
   error: String?,
-  onGooglePick: (String) -> Unit,
+  onGoogleSignIn: () -> Unit,
   onEmailSubmit: (String, String, Boolean) -> Unit,
 ) {
-  val context = LocalContext.current
   var email by rememberSaveable { mutableStateOf("") }
   var password by rememberSaveable { mutableStateOf("") }
   var createAccount by rememberSaveable { mutableStateOf(false) }
-
-  val googleLauncher = rememberLauncherForActivityResult(StartActivityForResult()) { result: ActivityResult ->
-    if (result.resultCode != Activity.RESULT_OK) {
-      return@rememberLauncherForActivityResult
-    }
-    val pickedEmail = result.data?.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)?.trim().orEmpty()
-    if (pickedEmail.isBlank()) {
-      authFallback(email, password, createAccount, onEmailSubmit)
-    } else {
-      onGooglePick(pickedEmail)
-    }
-  }
 
   Box(
     modifier =
@@ -269,7 +273,7 @@ private fun LoginScreen(
           Spacer(modifier = Modifier.height(20.dp))
 
           Button(
-            onClick = { googleLauncher.launch(createGoogleAccountChooserIntent(context)) },
+            onClick = onGoogleSignIn,
             modifier = Modifier.fillMaxWidth(),
             enabled = !loading,
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8B5CF6), contentColor = Color.White),
@@ -450,28 +454,50 @@ private fun ConsumerShell(
   }
 }
 
-private fun authFallback(
-  email: String,
-  password: String,
-  createAccount: Boolean,
-  onEmailSubmit: (String, String, Boolean) -> Unit,
-) {
-  if (email.isNotBlank()) {
-    onEmailSubmit(email, password, createAccount)
-  }
-}
+private suspend fun authenticateWithFirebaseGoogle(context: Context): FirebaseGoogleIdentity {
+  val credentialManager = CredentialManager.create(context)
 
-private fun createGoogleAccountChooserIntent(context: Context): Intent {
-  return AccountManager.newChooseAccountIntent(
-    null,
-    null,
-    arrayOf("com.google"),
-    false,
-    null,
-    null,
-    null,
-    null,
-  )
+  suspend fun requestGoogleCredential(filterAuthorizedAccounts: Boolean) =
+    credentialManager.getCredential(
+      context = context,
+      request =
+        GetCredentialRequest.Builder()
+          .addCredentialOption(
+            GetGoogleIdOption.Builder()
+              .setServerClientId(context.getString(R.string.default_web_client_id))
+              .setFilterByAuthorizedAccounts(filterAuthorizedAccounts)
+              .setAutoSelectEnabled(filterAuthorizedAccounts)
+              .build(),
+          )
+          .build(),
+    )
+
+  val result =
+    try {
+      requestGoogleCredential(filterAuthorizedAccounts = true)
+    } catch (_: NoCredentialException) {
+      try {
+        requestGoogleCredential(filterAuthorizedAccounts = false)
+      } catch (_: NoCredentialException) {
+        error("Nenhuma conta Google esta disponivel neste aparelho. Adicione uma conta e tente novamente.")
+      }
+    } catch (_: GetCredentialCancellationException) {
+      error("A selecao da conta Google foi cancelada.")
+    }
+  val credential = result.credential
+  require(
+    credential is CustomCredential &&
+      credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL,
+  ) { "A credencial retornada nao e uma conta Google valida." }
+
+  val googleCredential = GoogleIdTokenCredential.createFrom(credential.data)
+  val firebaseCredential = GoogleAuthProvider.getCredential(googleCredential.idToken, null)
+  val firebaseUser =
+    FirebaseAuth.getInstance().signInWithCredential(firebaseCredential).await().user
+      ?: error("O Firebase nao retornou o usuario autenticado.")
+  val email = firebaseUser.email?.trim()?.lowercase(Locale.US)
+  require(!email.isNullOrBlank()) { "A conta Google nao disponibilizou um e-mail." }
+  return FirebaseGoogleIdentity(email = email, uid = firebaseUser.uid)
 }
 
 private suspend fun authenticateWithValley(

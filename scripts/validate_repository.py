@@ -10,6 +10,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.validate_stitch_mcp_config import validate_stitch_mcp_config
+from scripts.validate_firebase_auth import validate as validate_firebase_auth
 
 CATALOG = json.loads((ROOT / "config" / "module_catalog.json").read_text(encoding="utf-8"))
 STITCH_MANIFEST = ROOT / "config" / "stitch" / "screen_manifest.json"
@@ -17,6 +18,7 @@ STITCH_MCP_POLICY = ROOT / "config" / "autonomy" / "stitch_mcp_policy.json"
 MULTI_AGENT_SYNC_POLICY = ROOT / "config" / "autonomy" / "multi_agent_sync_policy.json"
 GOOGLE_INTEGRATIONS_POLICY = ROOT / "config" / "autonomy" / "google_integrations_policy.json"
 DATA_AGENT_KIT_POLICY = ROOT / "config" / "autonomy" / "data_agent_kit_policy.json"
+FIREBASE_AUTH_POLICY = ROOT / "config" / "autonomy" / "firebase_auth_policy.json"
 GOOGLE_CLOUD_PROFILE = ROOT / "config" / "cloud" / "google_cloud_profile.json"
 GOOGLE_CLOUD_INVENTORY = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
 APIGEE_API_HUB_PLAN = ROOT / "config" / "cloud" / "apigee_api_hub_plan.json"
@@ -426,6 +428,11 @@ def main() -> int:
             fail("Data Agent Kit deve usar o projeto e a regiao autoritativos.", errors)
         if security.get("credentials_outside_git") is not True or security.get("allow_destructive_data_operations") is not False:
             fail("Data Agent Kit deve preservar credenciais fora do Git e bloquear operacoes destrutivas.", errors)
+    if not FIREBASE_AUTH_POLICY.is_file():
+        fail("Politica obrigatoria do Firebase Auth ausente.", errors)
+    else:
+        for error in validate_firebase_auth():
+            fail(error, errors)
     if not GOOGLE_CLOUD_PROFILE.is_file():
         fail("Perfil Google Cloud ativo ausente: config/cloud/google_cloud_profile.json", errors)
     else:

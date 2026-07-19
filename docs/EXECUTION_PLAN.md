@@ -9,6 +9,13 @@ Coordenada operacional atual:
 - Manter compatibilidade com futura migracao para Google/AlloyDB preservando migrations, DSNs PostgreSQL, manifests e contratos ja versionados.
 
 Atualizacao de fronteira:
+- Em 2026-07-19, Firebase Authentication foi provisionado no projeto
+  `all-in-one-498012`; o app `com.example.valley` recebeu Google Sign-In real
+  via Credential Manager/Firebase Auth, fingerprints debug/release e
+  configuracao Android versionada sem segredos.
+- Em 2026-07-19, a variante release passou a usar `.jks` RSA 4096 externo ao
+  Git, alias `valley-release`, propriedades `chmod 600` e verificacao de
+  assinatura APK v2.
 - Em 2026-07-19, o plano foi confrontado com os gates locais: Git, artefatos,
   contrato do repositorio, Compose e o smoke PostgreSQL efemero passaram. O
   acompanhamento remoto via `gh` e Stitch autenticado permanecem bloqueios de
@@ -39,7 +46,7 @@ Atualizacao de fronteira:
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
 | Docker local | 100% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real, contexto Docker higienizado por `.dockerignore`, Docker DX persistente em `config/autonomy/docker_dx_policy.json` + `.env.docker-dx`, reparo sem sudo para plugins Compose/Buildx em `~/.docker/cli-plugins` e gate vivo `all-in-one-dx` validado neste host com 13 APIs healthy | Frente Docker local fechada; manter observacao do workflow remoto e regressao a cada mudanca de runtime/compose. |
 | Apps/frontend | 100% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` e `all-in-one-business` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo, User Jobs com busca/notificacoes/pos-candidatura, pos-corrida Mobility, filtros/auditoria Business, self-management API Hub para API clients/keys/webhooks/integration runs e acoes reais Services/Mobility/Riders/Health/Business/ERP/BI/WMS/TMS/CRM/BPM/Document/HR/Legal/Property/Vision/AI Core, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Frente local concluida; proximas evidencias dependem de provedores/ambiente externos. |
-| Integracoes externas | 38% | Contratos, matriz versionada, adapters sandbox e endpoints administrativos locais existem | Provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
+| Integracoes externas | 42% | Contratos, matriz versionada, adapters sandbox, endpoints administrativos locais e Firebase Auth Google real no Valley Android existem | Demais provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
 ## 2. Ordem mandataria de execucao
@@ -435,7 +442,7 @@ Proximos passos naturais:
 
 Objetivo: substituir mocks/contratos por provedores reais.
 
-Status: 38%
+Status: 42%
 
 Pendencias por area:
 - Identity: OIDC, MFA real, KYC/KYB, liveness, biometria e consentimento LGPD.
@@ -447,6 +454,13 @@ Pendencias por area:
 - API Hub: OAuth2, API keys, webhooks assinados, sandbox e rate limits reais.
 
 Entregas ja existentes:
+- Firebase project `all-in-one-498012`, app Android `com.example.valley` e
+  provider `google.com` habilitado sem billing; Credential Manager troca o
+  Google ID token por sessao Firebase antes de provisionar a sessao Valley.
+- Assinaturas debug/release registradas no Firebase e keystore release mantido
+  fora do Git por `scripts/configure_valley_android_signing.py`.
+- Chave Android Firebase restrita ao pacote Valley e aos certificados SHA-1
+  debug/release por `scripts/harden_firebase_android_api_key.py`.
 - Matriz `config/integrations/provider_matrix.json` cobre provedores candidatos,
   adapter sandbox, eventos, variaveis de ambiente, dados sensiveis, custo minimo
   e gate de producao.

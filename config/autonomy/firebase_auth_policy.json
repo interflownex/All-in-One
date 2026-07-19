@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "enabled": true,
+  "project_id": "all-in-one-498012",
+  "project_number": "864981916504",
+  "android_app_id": "1:864981916504:android:1287cc3b743d697e7a232d",
+  "android_api_key_id": "b870aed8-788e-4190-aa05-b9e1ef7088f1",
+  "android_package": "com.example.valley",
+  "certificates": {
+    "debug": {
+      "sha1": "43:CD:38:B4:59:E2:3A:8D:1A:F2:3C:19:EB:45:1D:5A:C4:31:F9:09",
+      "sha256": "25:93:CA:98:D4:02:C2:CB:ED:C5:8F:10:C5:56:C3:92:AC:BF:A0:37:3D:0F:69:A9:4F:5B:8E:55:2A:43:B4:0C"
+    },
+    "release": {
+      "sha1": "A7:7F:00:F1:48:64:44:22:54:6C:AB:FA:BF:09:67:B4:42:16:B8:08",
+      "sha256": "8C:1C:B6:EC:BF:A6:59:AC:15:FC:F2:1B:D8:FB:37:7E:2E:CF:02:F8:FE:AC:90:AD:A1:B1:C4:21:0B:CF:13:94"
+    }
+  },
+  "authentication": {
+    "provider": "google.com",
+    "android_flow": "credential_manager_google_id_to_firebase_auth",
+    "require_debug_sha": true,
+    "require_release_sha": true,
+    "backend_session_bridge": "valley_api_hub_after_verified_firebase_identity"
+  },
+  "signing": {
+    "alias": "valley-release",
+    "properties_env": "VALLEY_RELEASE_SIGNING_PROPERTIES",
+    "default_properties": "~/.config/all-in-one/valley-release.properties",
+    "default_keystore": "~/.config/all-in-one/valley-release.jks",
+    "credentials_outside_git": true
+  },
+  "security": {
+    "google_services_json_is_client_config": true,
+    "forbid_oauth_client_secret_in_git": true,
+    "forbid_keystore_in_git": true,
+    "forbid_signing_passwords_in_git": true
+  },
+  "validation": {
+    "static": "python3 scripts/validate_firebase_auth.py",
+    "remote": "python3 scripts/check_firebase_auth_remote.py",
+    "harden_api_key": "python3 scripts/harden_firebase_android_api_key.py",
+    "signing": "python3 scripts/configure_valley_android_signing.py --check",
+    "android": "./gradlew testDebugUnitTest assembleDebug assembleRelease --no-daemon"
+  }
+}

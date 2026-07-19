@@ -23,3 +23,9 @@ htmlcov/
 node_modules/
 dist/
 tmp/
+
+# Assinatura Android e logs locais de ferramentas
+*.jks
+*.keystore
+valley-release.properties
+firebase-debug.log
