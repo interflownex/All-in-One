@@ -22,6 +22,7 @@ htmlcov/
 .mypy_cache/
 node_modules/
 dist/
+.wrangler/
 tmp/
 
 # Assinatura Android e logs locais de ferramentas
