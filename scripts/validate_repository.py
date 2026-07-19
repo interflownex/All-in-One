@@ -20,6 +20,7 @@ GOOGLE_INTEGRATIONS_POLICY = ROOT / "config" / "autonomy" / "google_integrations
 DATA_AGENT_KIT_POLICY = ROOT / "config" / "autonomy" / "data_agent_kit_policy.json"
 FIREBASE_AUTH_POLICY = ROOT / "config" / "autonomy" / "firebase_auth_policy.json"
 CLOUDFLARE_WEB_POLICY = ROOT / "config" / "autonomy" / "cloudflare_web_policy.json"
+TELEGRAM_DELIVERY_POLICY = ROOT / "config" / "autonomy" / "telegram_delivery_policy.json"
 GOOGLE_CLOUD_PROFILE = ROOT / "config" / "cloud" / "google_cloud_profile.json"
 GOOGLE_CLOUD_INVENTORY = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
 APIGEE_API_HUB_PLAN = ROOT / "config" / "cloud" / "apigee_api_hub_plan.json"
@@ -450,6 +451,25 @@ def main() -> int:
             fail("Cloudflare Pages deve declarar headers de seguranca versionados.", errors)
         if set(cloudflare_policy.get("required_secrets", [])) != {"CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"}:
             fail("Politica Cloudflare deve exigir token e account ID fora do Git.", errors)
+    if not TELEGRAM_DELIVERY_POLICY.is_file():
+        fail("Politica obrigatoria de entrega via Telegram ausente.", errors)
+    else:
+        telegram_policy = json.loads(TELEGRAM_DELIVERY_POLICY.read_text(encoding="utf-8"))
+        targets = telegram_policy.get("targets", {})
+        if telegram_policy.get("enabled") is not True or telegram_policy.get("channel") != "telegram":
+            fail("Entrega de artefatos prontos via Telegram deve permanecer ativa.", errors)
+        if set(telegram_policy.get("required_secrets", [])) != {"TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"}:
+            fail("Politica Telegram deve exigir token e chat ID fora do Git.", errors)
+        if telegram_policy.get("credentials_outside_git") is not True:
+            fail("Credenciais do Telegram devem permanecer fora do Git.", errors)
+        if set(targets) != {"web", "app"}:
+            fail("Politica Telegram deve cobrir ambiente web e aplicativo.", errors)
+        if targets.get("web", {}).get("delivery") != "public_url_and_version":
+            fail("Entrega web via Telegram deve incluir URL publica e versao.", errors)
+        if targets.get("web", {}).get("identity_marker") != "<title>All-in-One — Ecossistema Digital</title>":
+            fail("Entrega web via Telegram deve validar a identidade exata do ambiente.", errors)
+        if targets.get("app", {}).get("delivery") != "installable_artifact_and_version":
+            fail("Entrega do aplicativo via Telegram deve incluir artefato instalavel e versao.", errors)
     if not GOOGLE_CLOUD_PROFILE.is_file():
         fail("Perfil Google Cloud ativo ausente: config/cloud/google_cloud_profile.json", errors)
     else:

@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "enabled": true,
+  "channel": "telegram",
+  "required_secrets": [
+    "TELEGRAM_BOT_TOKEN",
+    "TELEGRAM_CHAT_ID"
+  ],
+  "credentials_outside_git": true,
+  "delivery_script": "scripts/send_ready_artifact_to_telegram.py",
+  "targets": {
+    "web": {
+      "application": "apps/all-in-one",
+      "ready_when": [
+        "build_succeeded",
+        "deployment_succeeded",
+        "public_url_available",
+        "web_identity_verified"
+      ],
+      "delivery": "public_url_and_version",
+      "identity_marker": "<title>All-in-One — Ecossistema Digital</title>",
+      "workflow": ".github/workflows/cloudflare-pages.yml"
+    },
+    "app": {
+      "application": "apps/valley-android",
+      "ready_when": [
+        "build_succeeded",
+        "release_validation_succeeded",
+        "installable_artifact_available"
+      ],
+      "delivery": "installable_artifact_and_version"
+    }
+  },
+  "rules": [
+    "Enviar via Telegram assim que o ambiente web ou o aplicativo estiver realmente pronto.",
+    "Nao declarar prontidao com build parcial, deploy incompleto ou artefato nao verificado.",
+    "O ambiente web deve enviar a URL publica e a identificacao da versao.",
+    "O aplicativo deve enviar o artefato instalavel e a identificacao da versao.",
+    "Nunca versionar token do bot, chat ID ou outras credenciais do Telegram."
+  ]
+}
