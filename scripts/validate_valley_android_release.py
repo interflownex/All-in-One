@@ -10,6 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ANDROID = ROOT / "apps" / "valley-android"
+RELEASE_WORKFLOW = ROOT / ".github" / "workflows" / "valley-android-release.yml"
 
 
 def require(text: str, marker: str, source: Path, errors: list[str]) -> None:
@@ -31,6 +32,7 @@ def validate() -> list[str]:
     network = network_path.read_text(encoding="utf-8")
     secure_store = secure_store_path.read_text(encoding="utf-8")
     integrity = integrity_path.read_text(encoding="utf-8")
+    release_workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
 
     for marker in (
         'create("staging")',
@@ -75,6 +77,17 @@ def validate() -> list[str]:
         errors.append("credencial sensivel persiste em SharedPreferences sem envelope criptografado")
     if "buildDemoSession(" in kotlin_sources:
         errors.append("aplicativo Android ainda aceita sessao local simulada quando o backend falha")
+
+    for marker in (
+        "VALLEY_RELEASE_KEYSTORE_BASE64",
+        "VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER",
+        "testReleaseUnitTest assembleRelease bundleRelease",
+        "--require-release-signature",
+        "anchore/sbom-action@v0",
+        "actions/attest-build-provenance@v2",
+        "google-play-production",
+    ):
+        require(release_workflow, marker, RELEASE_WORKFLOW, errors)
 
     web_sources = "\n".join(
         path.read_text(encoding="utf-8")

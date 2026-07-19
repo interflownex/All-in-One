@@ -30,5 +30,8 @@ jobs:
       - name: Validate Valley Android release contract
         run: python scripts/validate_valley_android_release.py
 
+      - name: Test Valley APK audit rules
+        run: python -m pytest -q tests/test_valley_android_signing.py tests/test_valley_apk_audit.py
+
       - name: Run Unit Tests
         run: python -m pytest -q --ignore=tests/e2e
