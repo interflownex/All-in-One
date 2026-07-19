@@ -69,6 +69,8 @@ def validate() -> list[str]:
 
     for marker in ("AndroidKeyStore", "AES/GCM/NoPadding", "KeyGenParameterSpec", "setKeySize(256)"):
         require(secure_store, marker, secure_store_path, errors)
+    for marker in ('getString("refresh_token")', '.put("refresh_token", session.refreshToken)', 'getString("session_id")'):
+        require(secure_store, marker, secure_store_path, errors)
     for marker in ("IntegrityManagerFactory.createStandard", "setCloudProjectNumber", "setRequestHash"):
         require(integrity, marker, integrity_path, errors)
 
@@ -77,6 +79,9 @@ def validate() -> list[str]:
         errors.append("credencial sensivel persiste em SharedPreferences sem envelope criptografado")
     if "buildDemoSession(" in kotlin_sources:
         errors.append("aplicativo Android ainda aceita sessao local simulada quando o backend falha")
+    for marker in ("/auth/refresh", "/auth/logout", "X-Device-Fingerprint"):
+        if marker not in kotlin_sources:
+            errors.append(f"cliente Android nao implementa contrato de sessao obrigatorio: {marker}")
 
     for marker in (
         "VALLEY_RELEASE_KEYSTORE_BASE64",

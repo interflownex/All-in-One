@@ -38,6 +38,11 @@
 - `POST /audit`
 
 - `POST /registrations` cria o All-in-One ID inicial sem ator preexistente e preserva controles de duplicidade.
+- `POST /auth/login` emite access token de curta duracao e refresh token opaco associado ao dispositivo.
+- `POST /auth/refresh` rotaciona obrigatoriamente a sessao e rejeita replay, expiracao ou troca de dispositivo.
+- `POST /auth/logout` revoga a sessao no servidor; apenas o hash SHA-256 do refresh token e persistido.
+- `POST /mfa/setup` cria fator TOTP do proprio titular com segredo aleatorio cifrado em AES-GCM e validade de dez minutos.
+- `POST /mfa/verify` rejeita replay e emite novo access token com a claim `mfa_verified=true` vinculada a sessao ativa.
 
 
         ## Eventos
@@ -51,9 +56,13 @@
 - `identity.biometric.captured`
 - `identity.session.created`
 - `identity.session.revoked`
+- `identity.session.mfa_verified`
 - `identity.kyc.submitted`
 - `identity.kyc.approved`
 - `identity.kyc.rejected`
+- `identity.mfa.setup_started`
+- `identity.mfa.verified`
+- `identity.mfa.setup_expired`
 - `identity.consent.recorded`
 
         ## Regras

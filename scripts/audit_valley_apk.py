@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import shutil
 import subprocess
 import sys
 import zipfile
@@ -55,6 +56,12 @@ def locate_apksigner(android_sdk: Path | None) -> Path | None:
 def verify_signature(apk: Path, apksigner: Path, require_release: bool) -> list[str]:
     command = [str(apksigner), "verify", "--verbose", "--print-certs", str(apk)]
     if apksigner.suffix.lower() == ".bat":
+        cmd_executable = shutil.which("cmd.exe")
+        if cmd_executable is None:
+            windows_cmd = Path("/mnt/c/Windows/System32/cmd.exe")
+            cmd_executable = str(windows_cmd) if windows_cmd.is_file() else None
+        if cmd_executable is None or shutil.which("wslpath") is None:
+            return ["cmd.exe/wslpath indisponivel para executar o apksigner do SDK Windows"]
         converted = [
             subprocess.run(
                 ["wslpath", "-w", str(path)],
@@ -64,7 +71,7 @@ def verify_signature(apk: Path, apksigner: Path, require_release: bool) -> list[
             ).stdout.strip()
             for path in (apksigner, apk.resolve())
         ]
-        command = ["cmd.exe", "/d", "/c", converted[0], "verify", "--verbose", "--print-certs", converted[1]]
+        command = [cmd_executable, "/d", "/c", converted[0], "verify", "--verbose", "--print-certs", converted[1]]
     result = subprocess.run(
         command,
         capture_output=True,

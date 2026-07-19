@@ -1,6 +1,9 @@
 from pathlib import Path
 import sys
 from typing import Any
+from datetime import datetime, timedelta, timezone
+import hashlib
+import hmac
 from uuid import UUID, uuid4
 from fastapi import Body, Request, HTTPException, Depends
 from pydantic import BaseModel
@@ -9,18 +12,104 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from shared.domain_rules import check_payload
 from shared.runtime import create_module_app
+from shared.security import Actor, actor_from_headers
 from auth_logic import (
     LoginRequest, 
+    RefreshTokenRequest,
     TokenResponse, 
     TelemetryClient, 
     verify_password, 
     create_access_token,
-    get_password_hash
+    get_password_hash,
+    create_refresh_token,
+    hash_refresh_token,
+    decrypt_mfa_secret,
+    encrypt_mfa_secret,
+    generate_totp_secret,
+    verify_totp,
 )
 from kyc_mfa_models import KYCSubmission, KYCStatus, MFASetup, MFAVerification
 
 app = create_module_app("identity")
 telemetry = TelemetryClient()
+
+
+def _public_user(user: dict[str, Any]) -> dict[str, Any]:
+    public = dict(user)
+    public["payload"] = {
+        key: value
+        for key, value in user["payload"].items()
+        if key not in {"password_hash", "refresh_token", "token_hash"}
+    }
+    return public
+
+
+def _client_ip(request: Request) -> str:
+    return request.client.host if request.client else "unknown"
+
+
+def _device_fingerprint(request: Request, explicit: str | None = None) -> str:
+    value = explicit or request.headers.get("X-Device-Fingerprint")
+    if value:
+        return value[:256]
+    user_agent = request.headers.get("user-agent", "unknown")
+    return "legacy-" + hashlib.sha256(user_agent.encode("utf-8")).hexdigest()
+
+
+def _issue_session(store: Any, user: dict[str, Any], request: Request, device_fingerprint: str) -> dict[str, Any]:
+    refresh_token, token_hash, refresh_expires_at = create_refresh_token()
+    session = store.create(
+        "sessions",
+        user["id"],
+        None,
+        "active",
+        {
+            "token_hash": token_hash,
+            "device_fingerprint": device_fingerprint,
+            "ip_address": _client_ip(request),
+            "expires_at": refresh_expires_at.isoformat(),
+        },
+        user["id"],
+        (),
+        "identity.session.created",
+        None,
+    )
+    token_data = {
+        "sub": user["id"],
+        "email": user["payload"]["email"],
+        "roles": user["payload"].get("roles", []),
+        "sid": session["id"],
+        "token_use": "access",
+    }
+    access_token, expires_at = create_access_token(token_data)
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+        "user_id": user["id"],
+        "session_id": session["id"],
+        "expires_at": expires_at.isoformat(),
+        "refresh_expires_at": refresh_expires_at.isoformat(),
+    }
+
+
+def _active_session_for(store: Any, refresh_token: str) -> dict[str, Any] | None:
+    token_hash = hash_refresh_token(refresh_token)
+    return next(
+        (
+            session
+            for session in store.list("sessions")
+            if session["status"] == "active" and session["payload"].get("token_hash") == token_hash
+        ),
+        None,
+    )
+
+
+def _revoke_session(store: Any, session: dict[str, Any], actor: str, reason: str) -> None:
+    payload = dict(session["payload"])
+    payload["revoked_at"] = datetime.now(timezone.utc).isoformat()
+    payload["revocation_reason"] = reason
+    store.update(session, payload, "revoked", actor, "revoke", "identity.session.revoked")
 
 app.router.routes = [
     route
@@ -89,31 +178,96 @@ async def get_kyc_status(user_id: UUID) -> Any:
     }
 
 @app.post("/mfa/setup")
-async def setup_mfa(body: MFASetup, request: Request):
-    await telemetry.log_access(str(body.user_id), "mfa_setup_init", body.method, request.client.host)
-    
-    if body.method == "sms":
-        return {
-            "method": "sms",
-            "message": "Um código de 6 dígitos foi enviado via SMS (simulado).",
-            "status": "pending_verification"
-        }
-    
+async def setup_mfa(body: MFASetup, request: Request, actor: Actor = Depends(actor_from_headers)) -> Any:
+    user_id = str(body.user_id)
+    if str(actor.user_id) != user_id:
+        raise HTTPException(status_code=403, detail="MFA so pode ser configurado pelo titular autenticado.")
+    if body.method != "totp":
+        raise HTTPException(status_code=501, detail="Metodo MFA depende de provedor externo ainda nao homologado.")
+    store = app.extra["store"]
+    secret = generate_totp_secret()
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=10)
+    factor = store.create(
+        "identity_verifications",
+        user_id,
+        None,
+        "PROCESSING",
+        {
+            "verification_type": "mfa_totp",
+            "method": "totp",
+            "secret_ciphertext": encrypt_mfa_secret(secret, user_id),
+            "setup_expires_at": expires_at.isoformat(),
+            "last_counter": -1,
+        },
+        user_id,
+        (),
+        "identity.mfa.setup_started",
+        body.idempotency_key,
+    )
+    await telemetry.log_access(user_id, "mfa_setup_init", "totp", _client_ip(request), metadata={"factor_id": factor["id"]})
     return {
-        "method": body.method,
-        "secret": "JBSWY3DPEHPK3PXP",
-        "qr_code_url": f"otpauth://totp/AllInOne?secret=JBSWY3DPEHPK3PXP&issuer=AllInOneID",
-        "status": "pending_verification"
+        "factor_id": factor["id"],
+        "method": "totp",
+        "secret": secret,
+        "qr_code_url": f"otpauth://totp/AllInOne:{user_id}?secret={secret}&issuer=AllInOneID&digits=6&period=30",
+        "expires_at": expires_at.isoformat(),
+        "status": "pending_verification",
     }
 
 @app.post("/mfa/verify")
-async def verify_mfa(body: MFAVerification, request: Request):
-    if body.code == "123456":
-        await telemetry.log_access(str(body.user_id), "mfa_verify", "success", request.client.host)
-        return {"status": "verified"}
-    
-    await telemetry.log_access(str(body.user_id), "mfa_verify", "failed", request.client.host)
-    raise HTTPException(status_code=401, detail="Codigo MFA invalido.")
+async def verify_mfa(body: MFAVerification, request: Request, actor: Actor = Depends(actor_from_headers)) -> Any:
+    user_id = str(body.user_id)
+    if str(actor.user_id) != user_id:
+        raise HTTPException(status_code=403, detail="MFA so pode ser verificado pelo titular autenticado.")
+    store = app.extra["store"]
+    factors = [
+        item
+        for item in store.list("identity_verifications", user_id)
+        if item["payload"].get("verification_type") == "mfa_totp" and item["status"] in {"PROCESSING", "APPROVED"}
+    ]
+    if not factors:
+        raise HTTPException(status_code=404, detail="Fator TOTP nao configurado.")
+    factor = factors[0]
+    session = store.get("sessions", str(body.session_id))
+    if session is None or session["status"] != "active" or session["user_id"] != user_id:
+        raise HTTPException(status_code=401, detail="Sessao ativa do titular obrigatoria para concluir MFA.")
+    payload = dict(factor["payload"])
+    if factor["status"] == "PROCESSING" and datetime.fromisoformat(payload["setup_expires_at"]) <= datetime.now(timezone.utc):
+        store.update(factor, payload, "REJECTED", user_id, "expire", "identity.mfa.setup_expired")
+        raise HTTPException(status_code=410, detail="Configuracao MFA expirada.")
+    secret = decrypt_mfa_secret(payload["secret_ciphertext"], user_id)
+    accepted_counter = verify_totp(secret, body.code, int(payload.get("last_counter", -1)))
+    if accepted_counter is None:
+        await telemetry.log_access(user_id, "mfa_verify", "failed", _client_ip(request), metadata={"factor_id": factor["id"]})
+        raise HTTPException(status_code=401, detail="Codigo MFA invalido ou reutilizado.")
+    payload["last_counter"] = accepted_counter
+    payload["verified_at"] = datetime.now(timezone.utc).isoformat()
+    store.update(factor, payload, "APPROVED", user_id, "verify", "identity.mfa.verified")
+    session_payload = dict(session["payload"])
+    session_payload["mfa_verified_at"] = payload["verified_at"]
+    store.update(session, session_payload, "active", user_id, "mfa_verify", "identity.session.mfa_verified")
+    user = store.get("users", user_id)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Usuario da sessao indisponivel.")
+    access_token, access_expires_at = create_access_token(
+        {
+            "sub": user_id,
+            "email": user["payload"]["email"],
+            "roles": user["payload"].get("roles", []),
+            "sid": session["id"],
+            "token_use": "access",
+            "mfa_verified": True,
+            "mfa_verified_at": payload["verified_at"],
+        }
+    )
+    await telemetry.log_access(user_id, "mfa_verify", "success", _client_ip(request), metadata={"factor_id": factor["id"]})
+    return {
+        "status": "verified",
+        "factor_id": factor["id"],
+        "verified_at": payload["verified_at"],
+        "access_token": access_token,
+        "expires_at": access_expires_at.isoformat(),
+    }
 
 @app.post("/kyc/ocr-validate", status_code=200)
 async def kyc_ocr_validate(request: Request, body: dict = Body(...)):
@@ -143,9 +297,8 @@ async def login(
     body: LoginRequest, 
     request: Request
 ) -> Any:
-    store = app.state.store if hasattr(app.state, "store") else None
-    
-    users = app.extra["store"].list("users")
+    store = app.extra["store"]
+    users = store.list("users")
     user = next((u for u in users if u["payload"].get("email") == body.email), None)
     
     if not user:
@@ -160,12 +313,7 @@ async def login(
         await telemetry.log_access(user["id"], "login_attempt", "failed_blocked", request.client.host)
         raise HTTPException(status_code=403, detail="Conta bloqueada.")
 
-    token_data = {
-        "sub": user["id"],
-        "email": user["payload"]["email"],
-        "roles": user["payload"].get("roles", [])
-    }
-    access_token, expires_at = create_access_token(token_data)
+    tokens = _issue_session(store, user, request, _device_fingerprint(request))
     
     await telemetry.log_access(
         user["id"], 
@@ -175,17 +323,53 @@ async def login(
         request.headers.get("user-agent")
     )
     
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user_id": user["id"],
-        "expires_at": expires_at.isoformat()
-    }
+    return tokens
+
+@app.post("/auth/refresh", response_model=TokenResponse)
+async def refresh_session(body: RefreshTokenRequest, request: Request) -> Any:
+    store = app.extra["store"]
+    session = _active_session_for(store, body.refresh_token)
+    if session is None:
+        await telemetry.log_access("unknown", "refresh_attempt", "failed_invalid_or_replayed", _client_ip(request))
+        raise HTTPException(status_code=401, detail="Refresh token invalido, revogado ou reutilizado.")
+    try:
+        expires_at = datetime.fromisoformat(session["payload"]["expires_at"])
+    except (KeyError, ValueError):
+        _revoke_session(store, session, session["user_id"], "invalid_expiry")
+        raise HTTPException(status_code=401, detail="Sessao invalida.") from None
+    if expires_at <= datetime.now(timezone.utc):
+        _revoke_session(store, session, session["user_id"], "expired")
+        raise HTTPException(status_code=401, detail="Sessao expirada.")
+    fingerprint = _device_fingerprint(request, body.device_fingerprint)
+    if not secrets_compare(session["payload"].get("device_fingerprint", ""), fingerprint):
+        _revoke_session(store, session, session["user_id"], "device_mismatch")
+        await telemetry.log_access(session["user_id"], "refresh_attempt", "failed_device_mismatch", _client_ip(request))
+        raise HTTPException(status_code=401, detail="Dispositivo da sessao nao confere.")
+    user = store.get("users", session["user_id"])
+    if user is None or user["status"] == "BLOCKED":
+        _revoke_session(store, session, session["user_id"], "user_unavailable")
+        raise HTTPException(status_code=401, detail="Usuario da sessao indisponivel.")
+    _revoke_session(store, session, user["id"], "rotated")
+    tokens = _issue_session(store, user, request, fingerprint)
+    await telemetry.log_access(user["id"], "refresh_success", "success", _client_ip(request), metadata={"session_id": tokens["session_id"]})
+    return tokens
+
 
 @app.post("/auth/logout")
-async def logout(request: Request, user_id: str):
-    await telemetry.log_access(user_id, "logout", "success", request.client.host)
-    return {"message": "Logout registrado."}
+async def logout(body: RefreshTokenRequest, request: Request) -> Any:
+    store = app.extra["store"]
+    session = _active_session_for(store, body.refresh_token)
+    if session is not None:
+        _revoke_session(store, session, session["user_id"], "logout")
+        await telemetry.log_access(session["user_id"], "logout", "success", _client_ip(request), metadata={"session_id": session["id"]})
+    return {"message": "Sessao encerrada."}
+
+
+def secrets_compare(left: str, right: str) -> bool:
+    return hmac.compare_digest(
+        hashlib.sha256(left.encode("utf-8")).digest(),
+        hashlib.sha256(right.encode("utf-8")).digest(),
+    )
 
 @app.post("/registrations", status_code=201)
 async def register_user_with_hash(request: Request, body: dict[str, Any] = Body(...)):
@@ -219,6 +403,6 @@ async def register_user_with_hash(request: Request, body: dict[str, Any] = Body(
             None,
         )
         await telemetry.log_access(user["id"], "registration", "success", request.client.host)
-        return user
+        return _public_user(user)
     except Exception as exc:
         raise HTTPException(status_code=409, detail=f"Erro no cadastro: {exc}")

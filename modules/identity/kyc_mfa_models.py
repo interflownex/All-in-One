@@ -25,5 +25,6 @@ class MFASetup(BaseModel):
 
 class MFAVerification(BaseModel):
     user_id: UUID
-    method: str
-    code: str
+    session_id: UUID
+    method: str = Field(..., pattern="^totp$")
+    code: str = Field(..., pattern="^[0-9]{6}$")

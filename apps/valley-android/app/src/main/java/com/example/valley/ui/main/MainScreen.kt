@@ -1,6 +1,7 @@
 package com.example.valley.ui.main
 
 import android.content.Context
+import android.provider.Settings
 import android.webkit.WebChromeClient
 import android.webkit.WebStorage
 import android.webkit.WebView
@@ -82,9 +83,13 @@ private const val VALLEY_WEB_URL = "file:///android_asset/valley/index.html"
 private const val API_HUB_URL = "https://all-in-one-api-hub.web.app"
 private data class ValleySession(
   val token: String,
+  val refreshToken: String,
+  val sessionId: String,
   val userId: String,
   val email: String,
   val source: String,
+  val expiresAt: String,
+  val refreshExpiresAt: String,
 )
 
 private data class FirebaseGoogleIdentity(
@@ -103,12 +108,30 @@ fun valleyGooglePasswordFor(email: String): String = "valley-" + valleyHash(emai
 
 private fun loadValleySession(context: Context): ValleySession? {
   val stored = SecureSessionStore(context).load() ?: return null
-  return ValleySession(stored.token, stored.userId, stored.email, stored.source)
+  return ValleySession(
+    stored.token,
+    stored.refreshToken,
+    stored.sessionId,
+    stored.userId,
+    stored.email,
+    stored.source,
+    stored.expiresAt,
+    stored.refreshExpiresAt,
+  )
 }
 
 private fun saveValleySession(context: Context, session: ValleySession) {
   SecureSessionStore(context).save(
-    StoredSession(session.token, session.userId, session.email, session.source),
+    StoredSession(
+      session.token,
+      session.refreshToken,
+      session.sessionId,
+      session.userId,
+      session.email,
+      session.source,
+      session.expiresAt,
+      session.refreshExpiresAt,
+    ),
   )
 }
 
@@ -135,6 +158,21 @@ fun MainScreen(modifier: Modifier = Modifier) {
   var session by remember { mutableStateOf(loadValleySession(context)) }
   var authInProgress by rememberSaveable { mutableStateOf(false) }
   var authError by rememberSaveable { mutableStateOf<String?>(null) }
+
+  LaunchedEffect(Unit) {
+    session?.let { current ->
+      runCatching { refreshValleySession(context, current) }
+        .onSuccess { refreshed ->
+          saveValleySession(context, refreshed)
+          session = refreshed
+        }
+        .onFailure {
+          clearValleySession(context)
+          session = null
+          authError = "Sua sessao expirou. Entre novamente."
+        }
+    }
+  }
 
   val activeSession = session
 
@@ -192,6 +230,17 @@ fun MainScreen(modifier: Modifier = Modifier) {
       modifier = modifier,
       session = activeSession,
       onLogout = {
+        scope.launch {
+          runCatching {
+            postJson(
+              context,
+              "$API_HUB_URL/auth/logout",
+              JSONObject()
+                .put("refresh_token", activeSession.refreshToken)
+                .put("device_fingerprint", valleyDeviceFingerprint(context)),
+            )
+          }
+        }
         clearValleySession(context)
         FirebaseAuth.getInstance().signOut()
         scope.launch {
@@ -537,11 +586,53 @@ private suspend fun authenticateWithValley(
   val loginResult =
     postJson(context, "$API_HUB_URL/auth/login", loginBody)
   val token = loginResult.optString("access_token")
+  val refreshToken = loginResult.optString("refresh_token")
+  val sessionId = loginResult.optString("session_id")
   val userId = loginResult.optString("user_id")
-  if (token.isBlank() || userId.isBlank()) {
+  val expiresAt = loginResult.optString("expires_at")
+  val refreshExpiresAt = loginResult.optString("refresh_expires_at")
+  if (
+    token.isBlank() || refreshToken.isBlank() || sessionId.isBlank() || userId.isBlank() ||
+      expiresAt.isBlank() || refreshExpiresAt.isBlank()
+  ) {
     error("O backend nao retornou uma sessao Valley valida.")
   }
-  return ValleySession(token = token, userId = userId, email = normalizedEmail, source = source)
+  return ValleySession(
+    token,
+    refreshToken,
+    sessionId,
+    userId,
+    normalizedEmail,
+    source,
+    expiresAt,
+    refreshExpiresAt,
+  )
+}
+
+private suspend fun refreshValleySession(context: Context, session: ValleySession): ValleySession {
+  val response =
+    postJson(
+      context,
+      "$API_HUB_URL/auth/refresh",
+      JSONObject()
+        .put("refresh_token", session.refreshToken)
+        .put("device_fingerprint", valleyDeviceFingerprint(context)),
+    )
+  val token = response.optString("access_token")
+  val refreshToken = response.optString("refresh_token")
+  val sessionId = response.optString("session_id")
+  val expiresAt = response.optString("expires_at")
+  val refreshExpiresAt = response.optString("refresh_expires_at")
+  require(token.isNotBlank() && refreshToken.isNotBlank() && sessionId.isNotBlank()) {
+    "O backend nao renovou a sessao Valley."
+  }
+  return session.copy(
+    token = token,
+    refreshToken = refreshToken,
+    sessionId = sessionId,
+    expiresAt = expiresAt,
+    refreshExpiresAt = refreshExpiresAt,
+  )
 }
 
 private data class ValleyHttpException(val statusCode: Int, override val message: String) : IllegalStateException(message)
@@ -557,6 +648,7 @@ private suspend fun postJson(context: Context, url: String, body: JSONObject): J
     setRequestProperty("Content-Type", "application/json")
     setRequestProperty("Accept", "application/json")
     setRequestProperty("X-Valley-Api-Version", "1")
+    setRequestProperty("X-Device-Fingerprint", valleyDeviceFingerprint(context))
     integrityToken?.let { setRequestProperty("X-Play-Integrity-Token", it) }
   }
 
@@ -586,6 +678,11 @@ private suspend fun postJson(context: Context, url: String, body: JSONObject): J
   if (responseText.isBlank()) return@withContext JSONObject()
   return@withContext JSONObject(responseText)
   }
+}
+
+private fun valleyDeviceFingerprint(context: Context): String {
+  val androidId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID).orEmpty()
+  return "android-" + valleyHash("${context.packageName}:$androidId")
 }
 
 private fun nowIso8601(): String {

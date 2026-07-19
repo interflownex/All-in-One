@@ -13,9 +13,13 @@ import javax.crypto.spec.GCMParameterSpec
 
 data class StoredSession(
   val token: String,
+  val refreshToken: String,
+  val sessionId: String,
   val userId: String,
   val email: String,
   val source: String,
+  val expiresAt: String,
+  val refreshExpiresAt: String,
 )
 
 /** Persiste a sessao cifrada com uma chave AES-GCM nao exportavel do Android Keystore. */
@@ -36,9 +40,13 @@ class SecureSessionStore(private val context: Context) {
       val session = JSONObject(String(cleartext, Charsets.UTF_8))
       StoredSession(
         token = session.getString("token"),
+        refreshToken = session.getString("refresh_token"),
+        sessionId = session.getString("session_id"),
         userId = session.getString("user_id"),
         email = session.getString("email"),
         source = session.optString("source", "email"),
+        expiresAt = session.getString("expires_at"),
+        refreshExpiresAt = session.getString("refresh_expires_at"),
       )
     }.getOrElse {
       clear()
@@ -50,9 +58,13 @@ class SecureSessionStore(private val context: Context) {
     val cleartext =
       JSONObject()
         .put("token", session.token)
+        .put("refresh_token", session.refreshToken)
+        .put("session_id", session.sessionId)
         .put("user_id", session.userId)
         .put("email", session.email)
         .put("source", session.source)
+        .put("expires_at", session.expiresAt)
+        .put("refresh_expires_at", session.refreshExpiresAt)
         .toString()
         .toByteArray(Charsets.UTF_8)
     val cipher = Cipher.getInstance(TRANSFORMATION)

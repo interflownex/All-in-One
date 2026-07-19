@@ -18,7 +18,7 @@
       "title": "Identity",
       "description": "All-in-One ID, KYC, KYB, biometria, MFA, sessoes e consentimentos.",
       "entities": ["users", "documents", "biometrics", "sessions", "identity_verifications", "consent_records"],
-      "events": ["identity.user.created", "identity.user.verified", "identity.user.duplicate_detected", "identity.document.created", "identity.document.approved", "identity.document.rejected", "identity.biometric.captured", "identity.session.created", "identity.session.revoked", "identity.kyc.submitted", "identity.kyc.approved", "identity.kyc.rejected", "identity.consent.recorded"],
+      "events": ["identity.user.created", "identity.user.verified", "identity.user.duplicate_detected", "identity.document.created", "identity.document.approved", "identity.document.rejected", "identity.biometric.captured", "identity.session.created", "identity.session.revoked", "identity.session.mfa_verified", "identity.kyc.submitted", "identity.kyc.approved", "identity.kyc.rejected", "identity.mfa.setup_started", "identity.mfa.verified", "identity.mfa.setup_expired", "identity.consent.recorded"],
       "monetization": "Sem cobranca direta; habilita todas as receitas com identidade confiavel.",
       "branch": "module/identity"
     },
