@@ -91,6 +91,35 @@ def start_vite_server(app_directory: str, env: dict[str, str] | None = None) -> 
     return process, server_url
 
 
+def start_vite_preview_server(app_directory: str, env: dict[str, str] | None = None) -> tuple[subprocess.Popen, str]:
+    """Gera e serve a build de producao para auditorias integrais de rotas."""
+    port = free_port()
+    server_url = f"http://127.0.0.1:{port}"
+    process_env = os.environ.copy()
+    if env:
+        process_env.update({key: value.format(server_url=server_url) for key, value in env.items()})
+    subprocess.run(
+        ["npm", "run", "build"],
+        cwd=app_directory,
+        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        env=process_env,
+        timeout=240,
+    )
+    process = subprocess.Popen(
+        ["npm", "run", "preview", "--", "--port", str(port), "--strictPort", "--host", "127.0.0.1"],
+        cwd=app_directory,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        env=process_env,
+    )
+    if not wait_for_http(port, timeout=120, process=process):
+        process.terminate()
+        raise RuntimeError(f"Preview Vite nao respondeu corretamente na porta {port}.")
+    return process, server_url
+
+
 def start_python_http_server(
     app_directory: Path,
     port: int,
@@ -650,6 +679,19 @@ def all_in_one_user_server():
             {"VITE_API_HUB_URL": "{server_url}"},
         )
     except RuntimeError as exc:
+        pytest.fail(str(exc))
+    yield url
+    stop_process(process)
+
+
+@pytest.fixture(scope="session")
+def all_in_one_user_preview_server():
+    try:
+        process, url = start_vite_preview_server(
+            os.path.join(os.path.dirname(__file__), "../../apps/all-in-one"),
+            {"VITE_API_HUB_URL": "{server_url}"},
+        )
+    except (RuntimeError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
         pytest.fail(str(exc))
     yield url
     stop_process(process)

@@ -35,6 +35,12 @@
 - `pytest` dos contratos frontend/Stitch: 15 testes aprovados.
 - Playwright Chromium: jornadas de Home/mobile e CRUD integral aprovadas,
   totalizando 3 testes aprovados.
+- Auditoria Playwright da build de producao abriu diretamente todas as 335
+  rotas React, validou cabecalho ou formulario, controles habilitados, ausencia
+  de tela presa em carregamento e ausencia de erros JavaScript: aprovada.
+- O gate de controles compartilhados exercitou pesquisa, abertura/fechamento de
+  detalhes, novo registro, cancelamento e edicao; a exclusao e o salvamento ja
+  permanecem cobertos pela jornada CRUD integral.
 - A referencia publica respondeu HTTP 200 e teve a paleta e estrutura da Home
   auditadas em `all-in-one-web.codexanderson100.chatgpt.site`.
 
@@ -43,10 +49,13 @@
 - Publicar de fato no Cloudflare Pages. Esta sessao nao possui
   `CLOUDFLARE_API_TOKEN` nem `CLOUDFLARE_ACCOUNT_ID`; o workflow esta pronto
   para consumir os secrets sem versiona-los.
+- A publicacao temporaria anonima chegou ao aceite obrigatorio dos Termos de
+  Servico e Politica de Privacidade da Cloudflare. Esse aceite juridico precisa
+  ser realizado pelo titular; nao foi aceito automaticamente pelo agente.
 - Configurar `VITE_API_HUB_URL` publico e validar as jornadas contra os 25
   microservicos em ambiente externo, nao apenas o fallback local.
-- Ampliar a auditoria interativa das jornadas representativas aprovadas para
-  todas as 181 telas no navegador e repeti-la contra o API Hub publico.
+- Repetir a auditoria integral das 335 rotas contra o API Hub publico; a build
+  local de producao ja foi percorrida integralmente no Chromium.
 - Para qualquer nova tela sem template, executar imediatamente
   `scripts/stitch_orchestrator.py sync` com `STITCH_API_KEY` antes de gerar o
   componente local.

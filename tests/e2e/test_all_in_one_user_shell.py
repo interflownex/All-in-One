@@ -1,10 +1,12 @@
 import re
+from pathlib import Path
 from urllib.parse import urlparse
 
 from playwright.sync_api import Page, Route, expect
 
 
 LIVE_ACTION_TIMEOUT = 60000
+APP_SOURCE = Path(__file__).resolve().parents[2] / "apps" / "all-in-one" / "src" / "App.tsx"
 
 
 USER_JOURNEY_ROUTES = [
@@ -154,3 +156,57 @@ def test_all_in_one_user_shell_crud_has_no_dead_actions(page: Page, all_in_one_u
     page.once("dialog", lambda dialog: dialog.accept())
     page.get_by_role("button", name="Excluir").click()
     expect(page.get_by_text("Pessoa Atualizada")).to_have_count(0)
+
+
+def test_all_in_one_user_shell_renders_every_registered_route_without_runtime_errors(
+    page: Page, all_in_one_user_preview_server: str
+) -> None:
+    routes = re.findall(r'<Route path="([^"]+)"', APP_SOURCE.read_text(encoding="utf-8"))
+    assert len(routes) == len(set(routes)) >= 335
+
+    runtime_errors: list[str] = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+
+    for path in routes:
+        page.goto(f"{all_in_one_user_preview_server}{path}", wait_until="domcontentloaded")
+        if path == "/":
+            expect(page.locator("h1")).to_contain_text("Todos os sistemas.")
+        expect(page.locator("h1, form h2").first).to_be_visible(timeout=15000)
+        if page.locator("form h2").count():
+            expect(page.locator("form h2")).to_contain_text("Novo Registro")
+            expect(page.get_by_role("button", name="Salvar Registro")).to_be_enabled()
+            expect(page.get_by_role("button", name="Cancelar")).to_be_enabled()
+        elif path != "/":
+            expect(page.locator("h1")).to_be_visible()
+            expect(page.get_by_role("button", name="Pesquisar")).to_be_enabled()
+            expect(page.get_by_role("button", name="Novo registro")).to_be_enabled()
+
+        assert "Carregando..." not in page.locator("body").inner_text()
+
+    assert not runtime_errors, "Erros JavaScript durante auditoria integral: " + " | ".join(runtime_errors)
+
+
+def test_all_in_one_user_shell_exercises_every_shared_control_type(
+    page: Page, all_in_one_user_server: str
+) -> None:
+    page.goto(f"{all_in_one_user_server}/finance/wallets", wait_until="domcontentloaded")
+
+    search = page.get_by_placeholder("Buscar em Wallets...")
+    search.fill("Carteira principal")
+    page.get_by_role("button", name="Pesquisar").click()
+    expect(page.get_by_text("Carteira principal").first).to_be_visible()
+
+    page.get_by_role("button", name="Ver detalhes").first.click()
+    expect(page.get_by_role("dialog")).to_be_visible()
+    page.get_by_role("button", name="Fechar detalhes").click()
+    expect(page.get_by_role("dialog")).to_have_count(0)
+
+    page.get_by_role("button", name="Novo registro").click()
+    expect(page).to_have_url(re.compile(r"/finance/wallets-form$"))
+    page.get_by_role("button", name="Cancelar").click()
+    expect(page).to_have_url(re.compile(r"/finance/wallets$"))
+
+    page.get_by_role("button", name="Editar").first.click()
+    expect(page.get_by_role("heading", name=re.compile("Editar Registro"))).to_be_visible()
+    page.get_by_role("button", name="Cancelar").click()
+    expect(page).to_have_url(re.compile(r"/finance/wallets$"))

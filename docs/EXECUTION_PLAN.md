@@ -21,6 +21,9 @@ Atualizacao de fronteira:
   modulos receberam dez cenarios demonstrativos coerentes, imagens locais e
   video; a publicacao externa ainda depende dos secrets Cloudflare e do
   endpoint publico do API Hub.
+- Em 2026-07-19, a build de producao foi auditada no Chromium por entrada direta
+  em todas as 335 rotas React. O gate valida renderizacao, formularios, botoes
+  comuns, ausencia de carregamento permanente e erros JavaScript.
 - Em 2026-07-19, Firebase Authentication foi provisionado no projeto
   `all-in-one-498012`; o app `com.example.valley` recebeu Google Sign-In real
   via Credential Manager/Firebase Auth, fingerprints debug/release e
@@ -57,7 +60,7 @@ Atualizacao de fronteira:
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
 | Docker local | 100% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real, contexto Docker higienizado por `.dockerignore`, Docker DX persistente em `config/autonomy/docker_dx_policy.json` + `.env.docker-dx`, reparo sem sudo para plugins Compose/Buildx em `~/.docker/cli-plugins` e gate vivo `all-in-one-dx` validado neste host com 13 APIs healthy | Frente Docker local fechada; manter observacao do workflow remoto e regressao a cada mudanca de runtime/compose. |
-| Apps/frontend | 94% | Home alinhada a referencia visual do usuario, paleta global azul/ciano/violeta, 25 dashboards Stitch, 181 telas esperadas e 180 sincronizadas, dez cenarios com midia por modulo, CRUD comum funcional, build Vite, smoke HTTP e jornadas Playwright representativas aprovados; workflow Cloudflare Pages, Wrangler, headers e fallback SPA versionados | Falta sincronizar a nova tela Finance no Stitch, publicar com credenciais Cloudflare, apontar o API Hub externo e ampliar a comprovacao em navegador para as 181 telas contra os servicos vivos. |
+| Apps/frontend | 95% | Home alinhada a referencia visual do usuario, paleta global azul/ciano/violeta, 25 dashboards Stitch, 181 telas esperadas e 180 sincronizadas, 335 rotas React auditadas na build de producao, dez cenarios com midia por modulo, CRUD comum funcional, build Vite, smoke HTTP e jornadas Playwright aprovados; workflow Cloudflare Pages, Wrangler, headers e fallback SPA versionados | Falta sincronizar a nova tela Finance no Stitch, publicar com credenciais/aceite Cloudflare, apontar o API Hub externo e repetir as 335 rotas contra os servicos vivos. |
 | Integracoes externas | 42% | Contratos, matriz versionada, adapters sandbox, endpoints administrativos locais e Firebase Auth Google real no Valley Android existem | Demais provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
