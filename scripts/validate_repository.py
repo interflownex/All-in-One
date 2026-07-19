@@ -452,6 +452,11 @@ def main() -> int:
             fail("Plano Apigee API Hub deve preservar a location southamerica-west1 do inventario.", errors)
         if encryption.get("mode") != "customer_managed_encryption_key":
             fail("Plano Apigee API Hub deve declarar CMEK para criptografia.", errors)
+        hmac = api_hub_plan.get("cloud_storage_hmac", {})
+        if hmac.get("service_account") != "service-account@all-in-one-498012.iam.gserviceaccount.com":
+            fail("Plano Apigee deve registrar a conta de servico HMAC solicitada.", errors)
+        if hmac.get("secret_material_in_git") is not False:
+            fail("Plano Apigee deve impedir segredo HMAC no Git.", errors)
         kms_key = encryption.get("kms_key_resource")
         if not kms_key:
             fail("Plano Apigee API Hub deve declarar a chave KMS selecionada.", errors)

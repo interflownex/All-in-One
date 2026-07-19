@@ -5,6 +5,7 @@ import argparse
 import json
 import os
 import shutil
+import stat
 import subprocess
 import sys
 from pathlib import Path
@@ -154,6 +155,13 @@ def validate_plan(plan: dict[str, Any], inventory: dict[str, Any]) -> list[str]:
         errors.append("Service identity do API Hub diverge do projeto host.")
     if plan.get("encryption", {}).get("secret_material_in_git") is not False:
         errors.append("Plano nao pode permitir material criptografico no Git.")
+    hmac = plan.get("cloud_storage_hmac", {})
+    if hmac.get("service_account") != "service-account@all-in-one-498012.iam.gserviceaccount.com":
+        errors.append("Conta de servico HMAC inesperada.")
+    if hmac.get("project_id") != "all-in-one-498012":
+        errors.append("Projeto da chave HMAC inesperado.")
+    if hmac.get("secret_material_in_git") is not False:
+        errors.append("Segredo HMAC nunca pode ser persistido no Git.")
     return errors
 
 
@@ -191,6 +199,16 @@ def main() -> int:
         help="Executa os comandos IAM idempotentes.",
     )
     parser.add_argument(
+        "--create-hmac",
+        action="store_true",
+        help="Cria uma nova chave HMAC e grava o segredo somente em arquivo local 0600.",
+    )
+    parser.add_argument(
+        "--hmac-secret-output",
+        type=Path,
+        help="Destino local, fora do Git, para o segredo HMAC retornado uma unica vez.",
+    )
+    parser.add_argument(
         "--timeout",
         type=int,
         default=int(os.environ.get("GCLOUD_TIMEOUT_SECONDS", DEFAULT_TIMEOUT)),
@@ -218,7 +236,12 @@ def main() -> int:
     if args.status:
         args.print_status = True
 
-    if args.print_status or args.apply:
+    if args.create_hmac and not args.hmac_secret_output:
+        parser.error("--create-hmac exige --hmac-secret-output")
+    if args.hmac_secret_output and args.hmac_secret_output.resolve().is_relative_to(ROOT):
+        parser.error("O segredo HMAC deve ser armazenado fora do workspace Git.")
+
+    if args.print_status or args.apply or args.create_hmac:
         gcloud = find_gcloud()
         if not gcloud:
             print_json({"ok": False, "gcloud_found": False})
@@ -283,7 +306,38 @@ def main() -> int:
             all_ok = all(bool(item["result"]["ok"]) for item in results)
             print_json({"ok": all_ok, "results": results})
             return 0 if all_ok else 1
-    if not any([args.check, args.print_commands, args.print_status, args.apply]):
+        if args.create_hmac:
+            output = args.hmac_secret_output.resolve()
+            if output.exists():
+                print_json({"ok": False, "error": "Destino do segredo HMAC ja existe; sobrescrita recusada."})
+                return 1
+            hmac = plan["cloud_storage_hmac"]
+            result = run_command(
+                [
+                    gcloud,
+                    "storage",
+                    "hmac",
+                    "create",
+                    hmac["service_account"],
+                    f"--project={hmac['project_id']}",
+                    "--format=json",
+                    "--quiet",
+                ],
+                max(args.timeout, 60),
+            )
+            if not result["ok"]:
+                print_json({"ok": False, "error": result["stderr"], "secret_written": False})
+                return 1
+            payload = json.loads(result["stdout"])
+            output.parent.mkdir(parents=True, exist_ok=True)
+            descriptor = os.open(output, os.O_WRONLY | os.O_CREAT | os.O_EXCL, stat.S_IRUSR | stat.S_IWUSR)
+            with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+                json.dump(payload, handle, indent=2)
+                handle.write("\n")
+            access_id = payload.get("accessId") or payload.get("metadata", {}).get("accessId")
+            print_json({"ok": True, "access_id": access_id, "secret_written": True, "secret_output": str(output)})
+            return 0
+    if not any([args.check, args.print_commands, args.print_status, args.apply, args.create_hmac]):
         parser.print_help()
     return 0
 
