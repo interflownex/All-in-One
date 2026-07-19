@@ -1,0 +1,229 @@
+{
+  "bundleChecksum": "0cef6a16dec21120a6157d19f18e92778bd291e33830ff512714bc87e453a2ed",
+  "skills": {
+    "accidental-data-loss-prevention": {
+      "status": "installed",
+      "checksum": "b8f858f8143114ed9189b29ea8af1672378d66db3b8c92c5ec1b23712141ef1b"
+    },
+    "alloydb-omni-access-control": {
+      "status": "installed",
+      "checksum": "74310c8f55e09661103241b62db7c972f155a8e983cea770693be4824f0d51e0"
+    },
+    "alloydb-omni-container": {
+      "status": "installed",
+      "checksum": "694830789d3bcb22c96e69a3bcba6ed8ca18d821dac36e93cafdb9fceed8edb0"
+    },
+    "alloydb-omni-data": {
+      "status": "installed",
+      "checksum": "66501a43667e5bdabba10bffb79a5b532b5fa56db1047751e617d8d6a7229e0e"
+    },
+    "alloydb-omni-health": {
+      "status": "installed",
+      "checksum": "a878a7b06c7a010304d75635baa39f48824e9e494215b9a3900403ed71f0a1a4"
+    },
+    "alloydb-omni-kubernetes": {
+      "status": "installed",
+      "checksum": "cc8db322e109d3ba4ad8eca4776d69626632c19738d545a3a7dfd371f9008eb0"
+    },
+    "alloydb-omni-monitor": {
+      "status": "installed",
+      "checksum": "292ac5e4e28f27cf952564d9b6b452385cdecd2c50b7ee769f69a47c07df2353"
+    },
+    "alloydb-omni-optimize": {
+      "status": "installed",
+      "checksum": "5f05f5dd5ad56d2e6fe091eae94d05acbade1fdc644000624382b8471b4b8c86"
+    },
+    "alloydb-omni-performance": {
+      "status": "installed",
+      "checksum": "bb953e1f1004d12caff5f963bbfca3294c17a8b27760ccd231b727789e64e065"
+    },
+    "alloydb-omni-replication": {
+      "status": "installed",
+      "checksum": "7a5ee8846fd537e428d414f26175d73c8d09cd914f65aa85ad6888bd0b05b3f8"
+    },
+    "alloydb-postgres-access-management": {
+      "status": "installed",
+      "checksum": "c1dba0ddde6129f9931e71648c7311987ec2d4b547631ee79b662ee8a5da4b69"
+    },
+    "alloydb-postgres-admin": {
+      "status": "installed",
+      "checksum": "051c3d9cfa9672d1555a0c8ae29e7a500e5ddb38a9ac5b68692e0994c9990658"
+    },
+    "alloydb-postgres-data": {
+      "status": "installed",
+      "checksum": "52abd704c14edd056b11afa1087d38483a44b138aebc31517a9a579776381e13"
+    },
+    "alloydb-postgres-health": {
+      "status": "installed",
+      "checksum": "308532f531552d5313a5836959d7ee8da3da45b57af8907857c5746ab743dc36"
+    },
+    "alloydb-postgres-monitor": {
+      "status": "installed",
+      "checksum": "b1ccfe69b0870d01725cb5344bb6121906c542270add542167a67bd5778a21ff"
+    },
+    "alloydb-postgres-optimize": {
+      "status": "installed",
+      "checksum": "9751f782384df91102df9866199f6f7525df672a1858e9b074d341d3c88c8688"
+    },
+    "alloydb-postgres-replication": {
+      "status": "installed",
+      "checksum": "2d3fc5e66aca890323df0a19ffba8533e183f7cf54b61f673fba56e2a0ac61c4"
+    },
+    "bigquery": {
+      "status": "installed",
+      "checksum": "932a418a7ff6a149ab2d40eb8359713967eef0c084887795bed0920c892fcc17"
+    },
+    "bigquery-data-transfer-service": {
+      "status": "installed",
+      "checksum": "d2b0bdd977e8dc50c06c82deb80b742eacb8eadd5a0c27a34cfacd94fc1d1723"
+    },
+    "building-data-apps": {
+      "status": "installed",
+      "checksum": "84fe4db0d4100f6644d4041c293c4fbcbf9a49d2a79743626c721d3634e9f46f"
+    },
+    "cloud-sql-mysql-admin": {
+      "status": "installed",
+      "checksum": "9f85747e3d231520e655350ca9d82aba6813cbd4d6e2d48717e58a355d2df838"
+    },
+    "cloud-sql-mysql-data": {
+      "status": "installed",
+      "checksum": "17e4c852dd12e86f3f11e33d9827f1ee1f10b2c91f77e68568272c523fe6ed53"
+    },
+    "cloud-sql-mysql-lifecycle": {
+      "status": "installed",
+      "checksum": "62bdcd5f4fbac9e9dcc4557efeb80199ea03729d18e2101c88159acba6285614"
+    },
+    "cloud-sql-mysql-monitor": {
+      "status": "installed",
+      "checksum": "a51924fc04cd345050f60c943739d74ee3948cb6f5755510a163fe5bbbde1dbb"
+    },
+    "cloud-sql-postgres-admin": {
+      "status": "installed",
+      "checksum": "a58ead866a2ec9e07330ce34ea6240141b7f7e26140c598493e159708efbaed5"
+    },
+    "cloud-sql-postgres-data": {
+      "status": "installed",
+      "checksum": "7ac5008555bc23d99e219892851121471bed119b15e9edde0ed3fc94b7d2b247"
+    },
+    "cloud-sql-postgres-health": {
+      "status": "installed",
+      "checksum": "c4573fa32e791c1b210ba0efad71abc1db8eea27aa39f6545eab03cfe84777da"
+    },
+    "cloud-sql-postgres-lifecycle": {
+      "status": "installed",
+      "checksum": "ea525c6f93385739fd8848faa1f60cbc36ccbccc4b23fd56fc98ec4623b9a6ae"
+    },
+    "cloud-sql-postgres-monitor": {
+      "status": "installed",
+      "checksum": "6fd5ebe715b9b8e1ad7d7fc3b1e0e049de6cab3597fa26cab569539adf039a45"
+    },
+    "cloud-sql-postgres-replication": {
+      "status": "installed",
+      "checksum": "6cad1d12e740e95e0bddd52a5e7e1c07c3851cfd46fc24cec63821248119649a"
+    },
+    "cloud-sql-postgres-vectorassist": {
+      "status": "installed",
+      "checksum": "69cc2d520b35a8181a3230d966e485c5f538d21704229ed5c7efe16471e0c2b7"
+    },
+    "cloud-sql-postgres-view-config": {
+      "status": "installed",
+      "checksum": "f17ca959ee65421299eb91b7d65ca16c180f417f1988c14f1b78ad43f8b24e7f"
+    },
+    "cloud-sql-sqlserver-admin": {
+      "status": "installed",
+      "checksum": "7bcb3f860c59b8b5d80138a7fc7548cc123c493d2815d92efcf60d91e1976fd8"
+    },
+    "cloud-sql-sqlserver-data": {
+      "status": "installed",
+      "checksum": "8f3ed8ecccfb5e4245c3a57473a79485a0a338332b309d3a43dcce01a812bbc3"
+    },
+    "cloud-sql-sqlserver-lifecycle": {
+      "status": "installed",
+      "checksum": "d6e051f1373e0246b7409062ada4eac570e0fd3258571e492bcaf3a823e049c6"
+    },
+    "cloud-sql-sqlserver-monitor": {
+      "status": "installed",
+      "checksum": "8fe58905272410260ff6dca0ab7509044e9188d20a5c2a81f435bfe674028fb6"
+    },
+    "data-autocleaning": {
+      "status": "installed",
+      "checksum": "14a97cd0a785e9ff334c385c4dc8f83599e9a6420200547d78fd5de6f84983a5"
+    },
+    "dataform-bigquery": {
+      "status": "installed",
+      "checksum": "680e3fc62d7e4e9ea78ce3627479fec5b7f4bc421fae0f5e742f4ef99c553f56"
+    },
+    "dbt-bigquery": {
+      "status": "installed",
+      "checksum": "55b3d410b47a240cb188cc7142e4efade3bb1daea22a24af7916e95e17952b3f"
+    },
+    "discovering-gcp-data-assets": {
+      "status": "installed",
+      "checksum": "553a6cd984882b1a63782885c54c0120f40de214c11fdbf46ec05e6acbf88840"
+    },
+    "federate-lakehouse-catalog": {
+      "status": "installed",
+      "checksum": "c1e071ca3d8c9eaa42ae814f2d4ae2e5e12f3e0f289367c74ced4d87ccf157d3"
+    },
+    "firestore-data": {
+      "status": "installed",
+      "checksum": "1463dab61899062798d6277fb72187fdbb714308bb85f58a6e14da604e38cb42"
+    },
+    "gcloud-auth-verification": {
+      "status": "installed",
+      "checksum": "b4a6f58394290ad1c22de6e14e211b08b21ec015053929101e725dbccc0b6b09"
+    },
+    "gcp-composer-troubleshooting": {
+      "status": "installed",
+      "checksum": "9128f016ece2b9dbde8a62af809685b152048694be672c93152ffc34e81dbe49"
+    },
+    "gcp-data-pipelines": {
+      "status": "installed",
+      "checksum": "8cd8124624e803a22cff67911a3542f1e5ec29bae6024ce33b9a76aceacb5ce5"
+    },
+    "gcp-dataflow": {
+      "status": "installed",
+      "checksum": "88603a6022611decbc0507b20892478ffd7368aeee0e9a0ae9b99de0d700dfac"
+    },
+    "gcp-managed-airflow-migrations": {
+      "status": "installed",
+      "checksum": "8e49cf40174f6a3903fa14398d0dd249d7de0aeef7f2cc9e35e7254f9e7cc1bd"
+    },
+    "gcp-pipeline-orchestration": {
+      "status": "installed",
+      "checksum": "8a9d06dfebee2b4b8a706ff63b9a136252d1906dc2c1726a0b7bf7ab2dd3a576"
+    },
+    "gcp-pipeline-resource-provisioning": {
+      "status": "installed",
+      "checksum": "c7d31d4e4f5da4d7f3c79c717e8213a402085f5a9e6ecc2cebf6821cb8e02400"
+    },
+    "gcp-spark": {
+      "status": "installed",
+      "checksum": "264922f636f2010886fb8108d4d98d731c51fa1c2a5dba632d2c255beb66b58d"
+    },
+    "gcs-security-assessment": {
+      "status": "installed",
+      "checksum": "695f0452cb3c1477ce8399aa54e9bf19dc387c9260bf999ec3ffd4ec094f3cd0"
+    },
+    "managing-python-dependencies": {
+      "status": "installed",
+      "checksum": "04a1ab128e1167a02a605d6b1459d9512c4a58cfeb81a8f5303e814eafe089ef"
+    },
+    "ml-best-practices": {
+      "status": "installed",
+      "checksum": "d3f2134aed8ce5865776363a5e0d704de0166970bca121ace8bdfaa28c8cf213"
+    },
+    "notebook-guidance": {
+      "status": "installed",
+      "checksum": "b7ef387087342eaa4a6db2bec83b7ade8fd9fdf096951266737709a3199debe3"
+    },
+    "skill-repair": {
+      "status": "installed",
+      "checksum": "276efcab0cdeb25cb412644bcf0fd5fb827f4873b44a6ba24f4e49e035d25c3e"
+    },
+    "spanner-data": {
+      "status": "installed",
+      "checksum": "56c913cde3e0ef80fc609b71466a9f171892ccc2f6be40e7a58d26063969ccd4"
+    }
+  }
+}
