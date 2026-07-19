@@ -5077,3 +5077,18 @@
 
 - Branch principal: `main`.
 - Iniciando nova fase de deploy infraestrutura.
+
+## STATUS OPERACIONAL - 2026-07-19 Google Cloud Data Agent Kit
+
+- Extensao oficial `GoogleCloudTools.datacloud@0.6.1` instalada e verificada nos
+  perfis WSL e Windows do VS Code.
+- Projeto, quota, regiao, BigQuery e Composer persistidos para
+  `all-in-one-498012` / `southamerica-east1`; skills de agentes usam instalacao
+  por workspace e atualizacao automatica.
+- Notebook MCP permanece em modo seguro: execucao automatica desabilitada e
+  consentimento explicito preservado.
+- SDK Linux priorizado em `~/google-cloud-sdk/bin/gcloud`; perfil ativo gravado
+  com a conta `nazareteandersoncarvalho@gmail.com`, projeto autoritativo e regiao.
+- Validacao persistente e `scripts/validate_repository.py` verdes.
+- Pendencia externa: renovar Application Default Credentials em terminal
+  interativo; a verificacao de ADC excedeu o timeout de 20 segundos.

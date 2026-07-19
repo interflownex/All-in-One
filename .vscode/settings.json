@@ -2,6 +2,18 @@
   "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
   "powershell.powerShellAdditionalExePaths": ["/mnt/c/Users/ereta/.local/bin/pwsh"],
   "google.cloud.project": "all-in-one-498012",
+  "google.cloud.billingQuotaProject": "all-in-one-498012",
+  "google.cloud.region": "southamerica-east1",
+  "google.datacloud.bigqueryRegion": "southamerica-east1",
+  "google.datacloud.composer.project": "all-in-one-498012",
+  "google.datacloud.composer.region": "southamerica-east1",
+  "google.datacloud.expandMenus": true,
+  "google.datacloud.recentProjectsEnabled": true,
+  "google.datacloud.starredProjects": ["all-in-one-498012"],
+  "google.datacloud.agent.skills.autoUpdate": true,
+  "google.datacloud.agent.skills.installLocation": "workspace",
+  "google.datacloud.executeCellToolForNotebookMCP": false,
+  "google.datacloud.executeCellToolConsent": true,
   "cloudcode.autoDependencies": "on",
   "cloudcode.dependencyPaths": {
     "kubectl": "/usr/local/bin/kubectl"
@@ -118,7 +130,11 @@
     "GOOGLE_CODE_CLI_ENABLED": "true",
     "ALLOYDB_ENABLED": "true",
     "GEMINI_CODE_ASSIST_ENABLED": "true",
-    "STITCH_REMOTE_SYNC_ENABLED": "true"
+    "STITCH_REMOTE_SYNC_ENABLED": "true",
+    "DATA_AGENT_KIT_ENABLED": "true",
+    "GOOGLE_CLOUD_PROJECT": "all-in-one-498012",
+    "GCP_REGION": "southamerica-east1",
+    "BIGQUERY_LOCATION": "southamerica-east1"
   },
   "terminal.integrated.env.linux": {
     "GOOGLE_INTEGRATIONS_ENABLED": "true",
@@ -127,7 +143,11 @@
     "GOOGLE_CODE_CLI_ENABLED": "true",
     "ALLOYDB_ENABLED": "true",
     "GEMINI_CODE_ASSIST_ENABLED": "true",
-    "STITCH_REMOTE_SYNC_ENABLED": "true"
+    "STITCH_REMOTE_SYNC_ENABLED": "true",
+    "DATA_AGENT_KIT_ENABLED": "true",
+    "GOOGLE_CLOUD_PROJECT": "all-in-one-498012",
+    "GCP_REGION": "southamerica-east1",
+    "BIGQUERY_LOCATION": "southamerica-east1"
   },
   "terminal.integrated.profiles.windows": {
     "PowerShell": {
