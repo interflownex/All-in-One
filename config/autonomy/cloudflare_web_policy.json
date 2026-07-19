@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "provider": "cloudflare_pages",
+  "project_name": "all-in-one-web",
+  "application": "apps/all-in-one",
+  "build_command": "npm ci && npm run build",
+  "output_directory": "apps/all-in-one/dist",
+  "spa_fallback": "apps/all-in-one/public/_redirects",
+  "workflow": ".github/workflows/cloudflare-pages.yml",
+  "required_secrets": [
+    "CLOUDFLARE_API_TOKEN",
+    "CLOUDFLARE_ACCOUNT_ID"
+  ],
+  "required_variables": [
+    "VITE_API_HUB_URL"
+  ],
+  "rules": [
+    "Nunca versionar tokens Cloudflare ou tokens de usuario do API Hub.",
+    "Toda rota React deve responder pelo fallback SPA no Cloudflare Pages.",
+    "A Home segue a referencia visual fornecida pelo usuario; dashboards preservam o layout Stitch.",
+    "Novas telas sem screen_id devem ser geradas no Stitch e sincronizadas antes da implementacao."
+  ]
+}

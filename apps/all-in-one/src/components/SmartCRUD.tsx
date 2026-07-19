@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface SmartCRUDProps {
   module: string;
@@ -50,6 +51,9 @@ const displayNameFor = (item: any, title: string) =>
   `${title} #${item.id}`;
 
 const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const editingRecord = (location.state as { record?: any } | null)?.record;
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -58,9 +62,17 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   const [postApplication, setPostApplication] = useState<any | null>(null);
   const [actionFeedback, setActionFeedback] = useState('');
   const [actionState, setActionState] = useState<'idle' | 'running' | 'completed' | 'failed'>('idle');
+  const [formData, setFormData] = useState({
+    name: editingRecord ? displayNameFor(editingRecord, title) : '',
+    description: editingRecord?.description ?? '',
+    category: editingRecord?.category ?? 'Padrao',
+  });
+  const [formState, setFormState] = useState<'idle' | 'saving' | 'saved' | 'failed'>('idle');
+  const [formFeedback, setFormFeedback] = useState('');
 
   const resourceType = liveResourceFor(module, entity);
   const liveResourcePath = `/${module}/resources/${resourceType}`;
+  const localStorageKey = `all-in-one:${module}:${resourceType}`;
   const isLiveApiHub = Boolean(API_HUB_TOKEN);
   const isJobsVacancyJourney = module === 'jobs' && resourceType === 'job_postings';
 
@@ -92,10 +104,9 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         ]);
       }
     } catch (err) {
-      // Fallback para dados fictícios se a API falhar (para demonstração)
-      console.warn(`Usando dados fictícios para ${module}/${entity}`);
+      const localRecords = JSON.parse(localStorage.getItem(localStorageKey) ?? '[]');
       setError(isLiveApiHub ? 'API Hub vivo indisponivel para esta lista.' : '');
-      setData([
+      setData(localRecords.length > 0 ? localRecords : [
         { id: '1', name: `${title} Item 1`, status: 'Ativo', created_at: new Date().toISOString() },
         { id: '2', name: `${title} Item 2`, status: 'Pendente', created_at: new Date().toISOString() },
         { id: '3', name: `${title} Item 3`, status: 'Inativo', created_at: new Date().toISOString() },
@@ -214,30 +225,86 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
     }
   }, [module, entity, type, query]);
 
+  const saveForm = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFormState('saving');
+    setFormFeedback('Salvando registro...');
+    const payload = { ...formData, status: 'Ativo', updated_at: new Date().toISOString() };
+    try {
+      if (API_HUB_URL && API_HUB_TOKEN) {
+        const endpoint = editingRecord?.id
+          ? `${API_HUB_URL}/${module}/resources/${resourceType}/${editingRecord.id}`
+          : `${API_HUB_URL}/${module}/resources/${resourceType}`;
+        const response = await fetch(endpoint, {
+          method: editingRecord?.id ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json', ...apiHeaders() },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error(`API Hub retornou HTTP ${response.status}.`);
+      } else {
+        const current = JSON.parse(localStorage.getItem(localStorageKey) ?? '[]');
+        const record = { id: editingRecord?.id ?? crypto.randomUUID(), ...payload, created_at: editingRecord?.created_at ?? payload.updated_at };
+        const next = editingRecord?.id
+          ? current.map((item: any) => item.id === editingRecord.id ? record : item)
+          : [...current, record];
+        localStorage.setItem(localStorageKey, JSON.stringify(next));
+      }
+      setFormState('saved');
+      setFormFeedback('Registro salvo com sucesso. Retornando para a lista...');
+      window.setTimeout(() => navigate(`/${module}/${entity}`), 450);
+    } catch (error) {
+      setFormState('failed');
+      setFormFeedback(error instanceof Error ? error.message : 'Nao foi possivel salvar o registro.');
+    }
+  };
+
+  const deleteRecord = async (record: any) => {
+    if (!window.confirm(`Excluir ${displayNameFor(record, title)}?`)) return;
+    setActionFeedback('Excluindo registro...');
+    try {
+      if (API_HUB_URL && API_HUB_TOKEN && !String(record.id).match(/^[123]$/)) {
+        const response = await fetch(`${API_HUB_URL}${liveResourcePath}/${record.id}`, {
+          method: 'DELETE',
+          headers: apiHeaders(),
+        });
+        if (!response.ok) throw new Error(`API Hub retornou HTTP ${response.status}.`);
+      }
+      const current = JSON.parse(localStorage.getItem(localStorageKey) ?? '[]');
+      localStorage.setItem(localStorageKey, JSON.stringify(current.filter((item: any) => item.id !== record.id)));
+      setData((items) => items.filter((item) => item.id !== record.id));
+      setActionState('completed');
+      setActionFeedback('Registro excluido com sucesso.');
+    } catch (error) {
+      setActionState('failed');
+      setActionFeedback(error instanceof Error ? error.message : 'Nao foi possivel excluir o registro.');
+    }
+  };
+
   if (type === 'form') {
     return (
       <div className="container">
-        <form className="neo-form neo-brutalism" onSubmit={(e) => { e.preventDefault(); alert('Salvo com sucesso!'); }}>
-          <h2 style={{ marginBottom: '24px', color: '#126b45' }}>{title} - Novo Registro</h2>
+        <form className="neo-form neo-brutalism" onSubmit={saveForm}>
+          <h2 style={{ marginBottom: '24px', color: '#236cff' }}>{title} - {editingRecord ? 'Editar Registro' : 'Novo Registro'}</h2>
           <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
             <label style={{ fontWeight: 800 }}>Nome / Identificador</label>
-            <input type="text" className="neo-input" placeholder="Digite aqui..." required style={{ padding: '12px', border: '2px solid #17211c' }} />
+            <input type="text" className="neo-input" placeholder="Digite aqui..." required value={formData.name} onChange={(event) => setFormData((current) => ({ ...current, name: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a' }} />
           </div>
           <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
             <label style={{ fontWeight: 800 }}>Descrição Detalhada</label>
-            <textarea className="neo-input" placeholder="Informações adicionais..." style={{ padding: '12px', border: '2px solid #17211c', minHeight: '100px' }}></textarea>
+            <textarea className="neo-input" placeholder="Informacoes adicionais..." value={formData.description} onChange={(event) => setFormData((current) => ({ ...current, description: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a', minHeight: '100px' }}></textarea>
           </div>
           <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '24px' }}>
             <label style={{ fontWeight: 800 }}>Categoria / Tipo</label>
-            <select className="neo-input" style={{ padding: '12px', border: '2px solid #17211c' }}>
-              <option>Padrão</option>
-              <option>Prioritário</option>
-              <option>Estratégico</option>
+            <select className="neo-input" value={formData.category} onChange={(event) => setFormData((current) => ({ ...current, category: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a' }}>
+              <option value="Padrao">Padrao</option>
+              <option value="Prioritario">Prioritario</option>
+              <option value="Estrategico">Estrategico</option>
             </select>
           </div>
+          {formFeedback ? <p className={`action-feedback ${formState === 'failed' ? 'error' : 'success'}`} role="status">{formFeedback}</p> : null}
           <div className="actions-row" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-            <button type="button" className="btn-secondary" style={{ padding: '10px 20px' }}>Cancelar</button>
-            <button type="submit" className="btn-primary" style={{ padding: '10px 20px' }}>Salvar Registro</button>
+            <button type="button" className="btn-secondary" onClick={() => navigate(-1)} style={{ padding: '10px 20px' }}>Cancelar</button>
+            <button type="submit" className="btn-primary" disabled={formState === 'saving'} style={{ padding: '10px 20px' }}>{formState === 'saving' ? 'Salvando...' : 'Salvar Registro'}</button>
           </div>
         </form>
       </div>
@@ -252,19 +319,20 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
       <section className="hero">
 
         <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '12px' }}>{title}</h1>
-        <p style={{ color: '#536159', fontSize: '1.1rem' }}>Gerenciamento inteligente do módulo {module.toUpperCase()}.</p>
+        <p style={{ color: '#626b8e', fontSize: '1.1rem' }}>Gerenciamento inteligente do módulo {module.toUpperCase()}.</p>
       </section>
 
-      <div className="filters-section" style={{ background: '#fff', padding: '24px', border: '3px solid #17211c', boxShadow: '6px 6px 0px #17211c', marginBottom: '32px' }}>
-        <div className="search-row" style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '16px' }}>
+      <div className="filters-section" style={{ background: '#fff', padding: '24px', border: '3px solid #11142a', boxShadow: '6px 6px 0px #11142a', marginBottom: '32px' }}>
+        <div className="search-row" style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: '16px' }}>
           <input 
             type="text" 
             placeholder={`Buscar em ${title}...`} 
             value={query} 
             onChange={(e) => setQuery(e.target.value)} 
-            style={{ padding: '12px', border: '2px solid #17211c', borderRadius: '4px' }}
+            style={{ padding: '12px', border: '2px solid #11142a', borderRadius: '4px' }}
           />
           <button className="btn-primary" onClick={fetchData} style={{ padding: '0 24px' }}>Pesquisar</button>
+          <button type="button" className="btn-secondary" onClick={() => navigate(`/${module}/${entity}-form`)} style={{ padding: '0 24px' }}>Novo registro</button>
         </div>
       </div>
 
@@ -303,7 +371,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
             )}
           </ul>
           {postApplication ? (
-            <div className="post-application-card" style={{ marginTop: '16px', padding: '16px', border: '2px solid #17211c' }}>
+            <div className="post-application-card" style={{ marginTop: '16px', padding: '16px', border: '2px solid #11142a' }}>
               <h3 style={{ margin: 0, fontWeight: 900 }}>Pos-candidatura Jobs</h3>
               <p style={{ margin: '8px 0 0' }}>Vaga: {postApplication.jobTitle}</p>
               <p style={{ margin: '4px 0 0' }}>Status: {postApplication.status}</p>
@@ -322,13 +390,14 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
             <div key={item.id} className="data-card neo-brutalism" style={{ background: '#fff', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{displayNameFor(item, title)}</h3>
-                <p style={{ fontSize: '0.9rem', color: '#536159' }}>ID: {item.id} | Criado em: {new Date(item.created_at).toLocaleDateString()}</p>
+                <p style={{ fontSize: '0.9rem', color: '#626b8e' }}>ID: {item.id} | Criado em: {new Date(item.created_at).toLocaleDateString()}</p>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <span className="badge" style={{ background: item.status === 'Ativo' ? '#e2f2ea' : '#fef3c7', color: item.status === 'Ativo' ? '#0d5135' : '#92400e', padding: '6px 12px', borderRadius: '4px', fontWeight: 700 }}>
+                <span className="badge" style={{ background: item.status === 'Ativo' ? '#eef1ff' : '#fef3c7', color: item.status === 'Ativo' ? '#1a6fb3' : '#92400e', padding: '6px 12px', borderRadius: '4px', fontWeight: 700 }}>
                   {item.status || 'Disponível'}
                 </span>
-                <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem' }}>Editar</button>
+                <button type="button" className="btn-secondary" onClick={() => navigate(`/${module}/${entity}-form`, { state: { record: item } })} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>Editar</button>
+                <button type="button" className="btn-secondary danger" onClick={() => deleteRecord(item)} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>Excluir</button>
               </div>
             </div>
           )) : (

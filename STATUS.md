@@ -1,3 +1,48 @@
+# STATUS OPERACIONAL - 2026-07-19 Ambiente web All-in-One e Cloudflare
+
+### Concluido neste incremento
+
+- A Home de `apps/all-in-one` foi substituida pela composicao visual da
+  referencia fornecida pelo usuario, preservando os ativos oficiais e a
+  colorimetria escura azul, ciano e violeta.
+- Os 25 cards da Home abrem os dashboards reais ja versionados; o menu lateral
+  e os layouts internos Stitch foram preservados.
+- A paleta da referencia foi propagada aos componentes globais dos dashboards
+  sem substituir sua estrutura de navegacao e CRUD.
+- O `SmartCRUD` deixou de usar `alert` e botoes demonstrativos: criar, salvar,
+  cancelar, editar, excluir e pesquisar possuem handlers reais, com API Hub
+  quando configurado e persistencia local quando operado sem backend.
+- A cobertura autoritativa Stitch foi confrontada: 25 projetos, 180 telas,
+  todos com `project_id` e `screen_id`; nao existe template ausente neste
+  incremento.
+- Cloudflare Pages recebeu fallback SPA, politica versionada e workflow de
+  build/publicacao sem segredos no frontend.
+
+### Evidencias
+
+- `npm run build` em `apps/all-in-one`: aprovado com 327 modulos transformados.
+- Smoke HTTP local: Home e os 25 dashboards retornaram HTTP 200.
+- `python3 scripts/validate_web_frontend.py`: 25 modulos, 180 telas Stitch e
+  fallback Cloudflare aprovados.
+- `python3 scripts/validate_repository.py`: 25 modulos e infraestrutura
+  aprovados.
+- A referencia publica respondeu HTTP 200 e teve a paleta e estrutura da Home
+  auditadas em `all-in-one-web.codexanderson100.chatgpt.site`.
+
+### Pendencias rastreadas do objetivo integral
+
+- Publicar de fato no Cloudflare Pages. Esta sessao nao possui
+  `CLOUDFLARE_API_TOKEN` nem `CLOUDFLARE_ACCOUNT_ID`; o workflow esta pronto
+  para consumir os secrets sem versiona-los.
+- Configurar `VITE_API_HUB_URL` publico e validar as jornadas contra os 25
+  microservicos em ambiente externo, nao apenas o fallback local.
+- Executar auditoria interativa de todas as 180 telas no navegador; o navegador
+  integrado estava indisponivel nesta sessao, embora build, rotas e smoke HTTP
+  tenham passado.
+- Para qualquer nova tela sem template, executar imediatamente
+  `scripts/stitch_orchestrator.py sync` com `STITCH_API_KEY` antes de gerar o
+  componente local.
+
 # STATUS OPERACIONAL - 2026-07-19 Firebase Auth e assinatura Valley Android
 
 ### Concluido neste ciclo

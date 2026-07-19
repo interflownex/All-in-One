@@ -2,6 +2,7 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
+import Home from './pages/Home';
 import './index.css';
 const IdentityIdentityOverview = lazy(() => import('./pages/identity/IdentityOverview'));
 const IdentityAuthGateway = lazy(() => import('./pages/identity/AuthGateway'));
@@ -304,71 +305,6 @@ const Ai_coreAiMemoriesForm = lazy(() => import('./pages/ai_core/AiMemoriesForm'
 const Ai_coreAiMemoriesList = lazy(() => import('./pages/ai_core/AiMemoriesList'));
 const Ai_coreModerationDecisionsForm = lazy(() => import('./pages/ai_core/ModerationDecisionsForm'));
 
-const FeaturedItems = () => {
-  const items = [
-    {
-      id: '1',
-      title: 'Hambúrguer Gourmet Valley',
-      desc: 'Blend de 180g de carne premium, queijo canastra derretido, cebola caramelizada e pão artesanal.',
-      price: 'R$ 45,90',
-      image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80',
-      video: 'https://www.w3schools.com/html/mov_bbb.mp4'
-    },
-    {
-      id: '2',
-      title: 'Monitor Gamer UltraSharp 4K',
-      desc: 'Monitor de 32 polegadas, 144Hz, HDR1000 e tempo de resposta de 1ms. O auge da imersão.',
-      price: 'R$ 3.499,00',
-      image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=800&q=80',
-      video: 'https://www.w3schools.com/html/movie.mp4'
-    },
-    {
-      id: '3',
-      title: 'Consultoria de IA Estratégica',
-      desc: 'Implementação de agentes inteligentes e automação de processos via LLMs de última geração.',
-      price: 'Sob consulta',
-      image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80',
-      video: 'https://www.w3schools.com/html/mov_bbb.mp4'
-    }
-  ];
-
-  return (
-    <div className="container">
-      <section className="hero">
-        <h1>Bem-vindo ao All-in-One</h1>
-        <p>Selecione um módulo no menu lateral ou confira nossos itens em destaque abaixo.</p>
-      </section>
-
-      <div className="featured-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginTop: '40px' }}>
-        {items.map(item => (
-          <div key={item.id} className="offer-card neo-brutalism" style={{ display: 'flex', flexDirection: 'column' }}>
-            <div className="media-container" style={{ position: 'relative', height: '200px', overflow: 'hidden', borderRadius: '4px', marginBottom: '12px', border: '2px solid #17211c' }}>
-              <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              <video 
-                src={item.video} 
-                muted 
-                loop 
-                onMouseOver={(e) => e.currentTarget.play()} 
-                onMouseOut={(e) => { e.currentTarget.pause(); e.currentTarget.currentTime = 0; }}
-                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0, transition: 'opacity 0.3s' }}
-                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
-              />
-              <div style={{ position: 'absolute', bottom: '8px', right: '8px', background: 'rgba(0,0,0,0.6)', color: '#fff', padding: '2px 6px', fontSize: '10px', borderRadius: '4px' }}>Passe o mouse para ver vídeo</div>
-            </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '800', marginBottom: '8px' }}>{item.title}</h3>
-            <p style={{ fontSize: '0.875rem', color: '#536159', flex: 1, marginBottom: '16px' }}>{item.desc}</p>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '1.125rem', fontWeight: '900', color: '#126b45' }}>{item.price}</span>
-              <button className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.875rem' }}>Ver Detalhes</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
 function App() {
   return (
     <Router>
@@ -377,7 +313,7 @@ function App() {
         <main className="content-area">
           <Suspense fallback={<div className="loader">Carregando...</div>}>
             <Routes>
-              <Route path="/" element={<FeaturedItems />} />
+              <Route path="/" element={<Home />} />
                             <Route path="/identity" element={IdentityIdentityOverview ? <IdentityIdentityOverview /> : <div>Carregando...</div>} />
               <Route path="/identity/auth-gateway" element={IdentityAuthGateway ? <IdentityAuthGateway /> : <div>Carregando...</div>} />
               <Route path="/identity/kyc-verification" element={IdentityKycVerification ? <IdentityKycVerification /> : <div>Carregando...</div>} />

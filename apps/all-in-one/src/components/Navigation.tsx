@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const modulesData = [
     { slug: "ai_core", title: "Ai_core", icon: "🧠", screens: [
@@ -355,10 +355,13 @@ const modulesData = [
 
 const Navigation: React.FC = () => {
   const [openModule, setOpenModule] = useState<string | null>(null);
+  const location = useLocation();
+
+  if (location.pathname === '/') return null;
 
   return (
     <nav className="side-nav">
-      <div className="nav-header" style={{ padding: '24px 16px', borderBottom: '2px solid #17211c', marginBottom: '16px', background: '#fff' }}>
+      <div className="nav-header" style={{ padding: '24px 16px', borderBottom: '2px solid #11142a', marginBottom: '16px', background: '#fff' }}>
         <Link to="/" className="logo-container" style={{ display: 'block' }}>
           <img 
             src="/assets/brand/all-in-one-logo-official.png" 
@@ -382,9 +385,9 @@ const Navigation: React.FC = () => {
                     padding: '12px 16px', 
                     fontWeight: 700, 
                     border: '2px solid transparent',
-                    background: openModule === mod.slug ? '#e2f2ea' : 'transparent',
-                    borderColor: openModule === mod.slug ? '#17211c' : 'transparent',
-                    boxShadow: openModule === mod.slug ? '4px 4px 0px #17211c' : 'none'
+                    background: openModule === mod.slug ? '#eef1ff' : 'transparent',
+                    borderColor: openModule === mod.slug ? '#11142a' : 'transparent',
+                    boxShadow: openModule === mod.slug ? '4px 4px 0px #11142a' : 'none'
                 }}
               >
                 <span className="icon" style={{ marginRight: '12px' }}>{mod.icon}</span>
@@ -392,10 +395,10 @@ const Navigation: React.FC = () => {
                 <span style={{ fontSize: '10px' }}>{openModule === mod.slug ? '▼' : '▶'}</span>
               </div>
               {openModule === mod.slug && (
-                <ul className="sub-menu" style={{ listStyle: 'none', padding: '8px 0', background: '#f9fafa', borderLeft: '2px solid #17211c', marginLeft: '24px' }}>
+                <ul className="sub-menu" style={{ listStyle: 'none', padding: '8px 0', background: '#f9fafa', borderLeft: '2px solid #11142a', marginLeft: '24px' }}>
                   {mod.screens.map(screen => (
                     <li key={screen.path}>
-                      <Link to={screen.path} style={{ fontSize: '13px', padding: '8px 16px', display: 'block', color: '#536159', textDecoration: 'none' }}>
+                      <Link to={screen.path} style={{ fontSize: '13px', padding: '8px 16px', display: 'block', color: '#626b8e', textDecoration: 'none' }}>
                         {screen.title}
                       </Link>
                     </li>

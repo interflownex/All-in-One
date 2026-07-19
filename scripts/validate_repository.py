@@ -19,6 +19,7 @@ MULTI_AGENT_SYNC_POLICY = ROOT / "config" / "autonomy" / "multi_agent_sync_polic
 GOOGLE_INTEGRATIONS_POLICY = ROOT / "config" / "autonomy" / "google_integrations_policy.json"
 DATA_AGENT_KIT_POLICY = ROOT / "config" / "autonomy" / "data_agent_kit_policy.json"
 FIREBASE_AUTH_POLICY = ROOT / "config" / "autonomy" / "firebase_auth_policy.json"
+CLOUDFLARE_WEB_POLICY = ROOT / "config" / "autonomy" / "cloudflare_web_policy.json"
 GOOGLE_CLOUD_PROFILE = ROOT / "config" / "cloud" / "google_cloud_profile.json"
 GOOGLE_CLOUD_INVENTORY = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
 APIGEE_API_HUB_PLAN = ROOT / "config" / "cloud" / "apigee_api_hub_plan.json"
@@ -433,6 +434,18 @@ def main() -> int:
     else:
         for error in validate_firebase_auth():
             fail(error, errors)
+    if not CLOUDFLARE_WEB_POLICY.is_file():
+        fail("Politica obrigatoria do ambiente web Cloudflare ausente.", errors)
+    else:
+        cloudflare_policy = json.loads(CLOUDFLARE_WEB_POLICY.read_text(encoding="utf-8"))
+        if cloudflare_policy.get("provider") != "cloudflare_pages":
+            fail("Ambiente web deve usar Cloudflare Pages.", errors)
+        if cloudflare_policy.get("project_name") != "all-in-one-web":
+            fail("Projeto Cloudflare Pages deve ser all-in-one-web.", errors)
+        if cloudflare_policy.get("spa_fallback") != "apps/all-in-one/public/_redirects":
+            fail("Cloudflare Pages deve preservar o fallback SPA das rotas React.", errors)
+        if set(cloudflare_policy.get("required_secrets", [])) != {"CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"}:
+            fail("Politica Cloudflare deve exigir token e account ID fora do Git.", errors)
     if not GOOGLE_CLOUD_PROFILE.is_file():
         fail("Perfil Google Cloud ativo ausente: config/cloud/google_cloud_profile.json", errors)
     else:

@@ -9,6 +9,14 @@ Coordenada operacional atual:
 - Manter compatibilidade com futura migracao para Google/AlloyDB preservando migrations, DSNs PostgreSQL, manifests e contratos ja versionados.
 
 Atualizacao de fronteira:
+- Em 2026-07-19, a Home principal passou a seguir a referencia visual enviada
+  pelo usuario, com paleta azul/ciano/violeta aplicada globalmente e 25 cards
+  ligados aos dashboards Stitch existentes. A cobertura Stitch foi confirmada
+  em 25 projetos/180 telas, sem IDs ausentes.
+- Em 2026-07-19, o CRUD comum recebeu criar, salvar, cancelar, editar, excluir
+  e busca funcionais via API Hub ou persistencia local. Cloudflare Pages ganhou
+  fallback SPA, workflow e politica; a publicacao externa ainda depende dos
+  secrets Cloudflare e do endpoint publico do API Hub.
 - Em 2026-07-19, Firebase Authentication foi provisionado no projeto
   `all-in-one-498012`; o app `com.example.valley` recebeu Google Sign-In real
   via Credential Manager/Firebase Auth, fingerprints debug/release e
@@ -45,7 +53,7 @@ Atualizacao de fronteira:
 | Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
 | MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
 | Docker local | 100% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real, contexto Docker higienizado por `.dockerignore`, Docker DX persistente em `config/autonomy/docker_dx_policy.json` + `.env.docker-dx`, reparo sem sudo para plugins Compose/Buildx em `~/.docker/cli-plugins` e gate vivo `all-in-one-dx` validado neste host com 13 APIs healthy | Frente Docker local fechada; manter observacao do workflow remoto e regressao a cada mudanca de runtime/compose. |
-| Apps/frontend | 100% | 9 apps prioritarios catalogados em `config/apps/frontend_journeys.json`, shells React dedicados/nomeados, trilha Valley com telas funcionais e Playwright, quatro shells fora Valley conectados a rotas proxy do API Hub, `all-in-one-user` e `all-in-one-business` com Playwright inicial desktop/mobile, dependencias Node materializadas, Playwright verde com interceptacao/API Hub vivo, User Jobs com busca/notificacoes/pos-candidatura, pos-corrida Mobility, filtros/auditoria Business, self-management API Hub para API clients/keys/webhooks/integration runs e acoes reais Services/Mobility/Riders/Health/Business/ERP/BI/WMS/TMS/CRM/BPM/Document/HR/Legal/Property/Vision/AI Core, Stitch remoto concluido com 25 projetos/180 telas e jornadas contratuais locais por pytest | Frente local concluida; proximas evidencias dependem de provedores/ambiente externos. |
+| Apps/frontend | 92% | Home alinhada a referencia visual do usuario, paleta global azul/ciano/violeta, 25 dashboards Stitch, 180 telas identificadas, CRUD comum funcional, build Vite e smoke HTTP de todas as raizes aprovados; workflow Cloudflare Pages e fallback SPA versionados | Falta publicar com credenciais Cloudflare, apontar o API Hub externo e comprovar as 180 jornadas em navegador contra os servicos vivos. |
 | Integracoes externas | 42% | Contratos, matriz versionada, adapters sandbox, endpoints administrativos locais e Firebase Auth Google real no Valley Android existem | Demais provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
 | Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
 
