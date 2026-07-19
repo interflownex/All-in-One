@@ -16,6 +16,7 @@ STITCH_MANIFEST = ROOT / "config" / "stitch" / "screen_manifest.json"
 STITCH_MCP_POLICY = ROOT / "config" / "autonomy" / "stitch_mcp_policy.json"
 MULTI_AGENT_SYNC_POLICY = ROOT / "config" / "autonomy" / "multi_agent_sync_policy.json"
 GOOGLE_INTEGRATIONS_POLICY = ROOT / "config" / "autonomy" / "google_integrations_policy.json"
+DATA_AGENT_KIT_POLICY = ROOT / "config" / "autonomy" / "data_agent_kit_policy.json"
 GOOGLE_CLOUD_PROFILE = ROOT / "config" / "cloud" / "google_cloud_profile.json"
 GOOGLE_CLOUD_INVENTORY = ROOT / "config" / "cloud" / "google_cloud_inventory.json"
 APIGEE_API_HUB_PLAN = ROOT / "config" / "cloud" / "apigee_api_hub_plan.json"
@@ -78,6 +79,11 @@ REQUIRED_ENV_VARS = {
     "ALLOYDB_ENABLED",
     "GEMINI_CODE_ASSIST_ENABLED",
     "STITCH_REMOTE_SYNC_ENABLED",
+    "DATA_AGENT_KIT_ENABLED",
+    "GOOGLE_CLOUD_PROJECT",
+    "PROJECT_ID",
+    "GCP_REGION",
+    "BIGQUERY_LOCATION",
 }
 REQUIRED_SUBJECT_RIGHTS = {
     "acesso",
@@ -355,6 +361,7 @@ def main() -> int:
             "gemini_cli_termux",
             "gemini_cli_ubuntu",
             "google_stitch_mcp",
+            "google_cloud_data_agent_kit",
         }
         if set(google_policy.get("affected_integrations", [])) != expected_integrations:
             fail("Politica Google deve cobrir SDK, AI Studio, Cloud, AlloyDB, Code CLI e Gemini CLI.", errors)
@@ -373,6 +380,23 @@ def main() -> int:
             fail("Politica Google deve manter GEMINI_CODE_ASSIST_ENABLED=true no Antigravity/editor.", errors)
         if runtime.get("STITCH_REMOTE_SYNC_ENABLED") != "false":
             fail("Politica Google deve manter STITCH_REMOTE_SYNC_ENABLED=false no modo local-first.", errors)
+        if runtime.get("DATA_AGENT_KIT_ENABLED") != "true":
+            fail("Data Agent Kit deve permanecer como excecao ativa e persistente.", errors)
+        if "google_cloud_data_agent_kit" not in google_policy.get("explicit_exceptions", []):
+            fail("Politica Google deve registrar o Data Agent Kit como excecao ativa.", errors)
+    if not DATA_AGENT_KIT_POLICY.is_file():
+        fail("Politica obrigatoria do Google Cloud Data Agent Kit ausente.", errors)
+    else:
+        data_agent_policy = json.loads(DATA_AGENT_KIT_POLICY.read_text(encoding="utf-8"))
+        starter_pack = data_agent_policy.get("starter_pack", {})
+        defaults = data_agent_policy.get("defaults", {})
+        security = data_agent_policy.get("security", {})
+        if data_agent_policy.get("enabled") is not True or starter_pack.get("version") != "0.6.1":
+            fail("Data Agent Kit deve permanecer ativo na versao homologada 0.6.1.", errors)
+        if defaults.get("project_id") != "all-in-one-498012" or defaults.get("region") != "southamerica-east1":
+            fail("Data Agent Kit deve usar o projeto e a regiao autoritativos.", errors)
+        if security.get("credentials_outside_git") is not True or security.get("allow_destructive_data_operations") is not False:
+            fail("Data Agent Kit deve preservar credenciais fora do Git e bloquear operacoes destrutivas.", errors)
     if not GOOGLE_CLOUD_PROFILE.is_file():
         fail("Perfil Google Cloud ativo ausente: config/cloud/google_cloud_profile.json", errors)
     else:

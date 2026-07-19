@@ -1,6 +1,8 @@
 {
   "recommendations": [
     "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-python.debugpy",
     "charliermarsh.ruff",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
@@ -19,6 +21,7 @@
     "googlecloudtools.cloudcode",
     "google.geminicodeassist",
     "google.gemini-cli-vscode-ide-companion",
-    "openai.chatgpt"
+    "openai.chatgpt",
+    "GoogleCloudTools.datacloud"
   ]
 }

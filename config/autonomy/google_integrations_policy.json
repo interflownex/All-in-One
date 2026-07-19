@@ -13,9 +13,12 @@
     "google_code_cli",
     "gemini_cli_termux",
     "gemini_cli_ubuntu",
-    "google_stitch_mcp"
+    "google_stitch_mcp",
+    "google_cloud_data_agent_kit"
   ],
-  "explicit_exceptions": [],
+  "explicit_exceptions": [
+    "google_cloud_data_agent_kit"
+  ],
   "rules": [
     "Manter arquivos, contratos, documentacao e estado versionado para retomada futura.",
     "Nao depender de Google Cloud SDK, Google AI Studio, AlloyDB, Stitch remoto ou Google Code CLI para operacao local obrigatoria.",
@@ -32,7 +35,8 @@
     "GOOGLE_CODE_CLI_ENABLED": "false",
     "ALLOYDB_ENABLED": "false",
     "GEMINI_CODE_ASSIST_ENABLED": "true",
-    "STITCH_REMOTE_SYNC_ENABLED": "false"
+    "STITCH_REMOTE_SYNC_ENABLED": "false",
+    "DATA_AGENT_KIT_ENABLED": "true"
   },
   "activation_requirements": [
     "credenciais validas fora do Git",

@@ -10,6 +10,9 @@
   "required_apis": [
     "aiplatform.googleapis.com",
     "alloydb.googleapis.com",
+    "biglake.googleapis.com",
+    "bigquery.googleapis.com",
+    "composer.googleapis.com",
     "apigee.googleapis.com",
     "apihub.googleapis.com",
     "artifactregistry.googleapis.com",
@@ -17,11 +20,16 @@
     "cloudkms.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "compute.googleapis.com",
+    "dataplex.googleapis.com",
+    "dataproc.googleapis.com",
+    "dataprocrm.googleapis.com",
     "container.googleapis.com",
     "iam.googleapis.com",
     "run.googleapis.com",
     "secretmanager.googleapis.com",
     "serviceusage.googleapis.com",
+    "spanner.googleapis.com",
+    "storage.googleapis.com",
     "sqladmin.googleapis.com"
   ],
   "restorable_resources": [
