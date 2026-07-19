@@ -1,7 +1,7 @@
 # Plano de Execucao Ordenada - All-in-One
 
-Data-base: 2026-05-29  
-Branch operacional: `main`  
+Data-base: 2026-07-19
+Branch operacional deste checkout: `worktree-sync` -> `origin/worktree-sync`
 Meta: transformar o MVP backend/data atual em beta operacional validado, com infraestrutura estavel, PostgreSQL real por modulo, jornadas E2E e integracoes externas homologadas.
 
 Coordenada operacional atual:
@@ -9,6 +9,13 @@ Coordenada operacional atual:
 - Manter compatibilidade com futura migracao para Google/AlloyDB preservando migrations, DSNs PostgreSQL, manifests e contratos ja versionados.
 
 Atualizacao de fronteira:
+- Em 2026-07-19, o plano foi confrontado com os gates locais: Git, artefatos,
+  contrato do repositorio, Compose e o smoke PostgreSQL efemero passaram. O
+  acompanhamento remoto via `gh` e Stitch autenticado permanecem bloqueios de
+  ambiente comprovados. O AVD passou a aparecer como `emulator-5554 device`,
+  mas ainda aguardava `sys.boot_completed` ao encerrar a janela de verificacao.
+- Em 2026-07-19, os probes de Docker DX e Data Agent Kit receberam tolerancia
+  a CLIs lentos para eliminar falsos negativos observados neste host WSL.
 - Em 2026-07-16, `apps/valley` recebeu modo demonstracao local-first com
   login/cadastro por e-mail, entrada via Google de teste, catalogo com midia,
   checkout, agenda, tracking, pedidos, suporte e matriz de modulos sem botoes
@@ -24,7 +31,7 @@ Atualizacao de fronteira:
 
 | Area | Conclusao | Evidencia atual | Leitura operacional |
 | --- | ---: | --- | --- |
-| Git e sincronizacao remota | 99% | `worktree-sync` alinhado com `origin/main`; remoto `fork` indisponivel neste checkout | Fluxo de entrega via `origin` esta operacional; `fork` deve ser reconfigurado ou tratado como opcional quando ausente. |
+| Git e sincronizacao remota | 100% local | `worktree-sync` alinhado com `origin/worktree-sync` (`behind=0 ahead=0`); remoto `fork` indisponivel neste checkout | Fluxo de entrega via `origin` esta operacional; `fork` continua como fallback quando configurado. |
 | Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
 | PostgreSQL estrutural | 90% | 15 migrations SQL, stores para 25 modulos, suite de matriz estrutural para todos os adapters PostgreSQL e suite viva preparada para os 25 modulos tipados | Schema amplo existe; falta converter a cobertura pronta em evidencia real de banco vivo. |
 | Runtime FastAPI modular | 88% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado, carregamento dinamico por DSN validado em containers e resolucao obrigatoria de store tipado para modulos conhecidos | Base local estabilizada; falta ampliar testes E2E por jornada. |
@@ -41,7 +48,7 @@ Atualizacao de fronteira:
 
 Objetivo: impedir regressao enquanto o projeto avanca.
 
-Status: 99%
+Status: 100% no checkout local
 
 Entregas esperadas:
 - Manter `main` limpo e sincronizado com `origin` e `fork`.
@@ -57,10 +64,11 @@ Entregas esperadas:
 - Em 2026-07-15, `scripts/check_generated_artifacts.py` voltou a passar sem
   rebaixar docs operacionais dos shells vivos; `scripts/scaffold_modules.py`
   preserva os README/STATUS customizados dos apps com API Hub conectado.
+- Em 2026-07-19, `scripts/check_git_sync.py` confirmou
+  `origin/worktree-sync: behind=0 ahead=0`; o aviso do `fork` ausente nao
+  bloqueia o remoto gravavel atual.
 
 Pendencias:
-- Reconfigurar o remoto `fork` neste checkout ou manter fechamento operacional
-  via `origin` quando `fork` estiver indisponivel.
 - Executar o gate de divergencia em ambiente com PowerShell Core disponivel e
   credenciais remotas configuradas.
 - Gate Python/CI de artefatos gerados e Git Sync Linux entregues; manter
@@ -70,8 +78,8 @@ Proximos passos naturais:
 1. Rodar `scripts/check_git_sync.py` no fechamento de cada incremento; usar
    `scripts/check_git_sync.ps1` apenas quando PowerShell Core estiver
    disponivel no host.
-2. Corrigir ou recriar o remoto `fork` quando ele voltar a ser necessario para
-   escrita alternativa.
+2. Configurar o remoto `fork` somente quando ele voltar a ser necessario como
+   alternativa de escrita; preservar `origin` como remoto funcional atual.
 3. Manter `scripts/check_generated_artifacts.py` no CI e nos fechamentos locais Linux.
 
 ### Fase 1 - Estabilizacao Docker e runtime local
@@ -115,6 +123,9 @@ Entregas ja existentes:
   --command-timeout-seconds 900 --timeout-seconds 600
   --probe-timeout-seconds 1` passou neste host com banco limpo, migrations e 13
   APIs FastAPI healthy.
+- Em 2026-07-19, a configuracao Compose voltou a passar e os probes de
+  Compose/Buildx foram endurecidos para aguardar ate 45s, eliminando o falso
+  negativo observado com o daemon lento.
 
 Pendencias:
 - Medir tempo de rebuild dos containers Python no runner remoto apos reducao do
@@ -139,7 +150,7 @@ Objetivo: trocar o contrato local por persistencia PostgreSQL real, auditavel e 
 Diretriz de menor manutencao:
 - O banco operacional atual deve ser PostgreSQL local/self-managed, usando os mesmos contratos e migrations preparados para futura migracao a AlloyDB.
 
-Status: 93%
+Status: 95%
 
 Entregas ja existentes:
 - 15 migrations PostgreSQL.
@@ -152,7 +163,6 @@ Pendencias:
 - Validar migrations 001-015 em banco limpo e banco ja populado fora do GitHub
   Actions via smoke efemero ou `scripts/validate_postgres_real_dsn.py` com DSN
   real de homologacao.
-- Rodar o gate opt-in `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com Docker e imagem PostgreSQL pronta.
 - Evoluir o CRUD amplo de `tests/test_postgres_stores_matrix.py` para fixtures
   completas por modulo; a cobertura estrutural e a existencia das tabelas contra
   schema vivo ja rodam no workflow `Database`.
@@ -179,19 +189,17 @@ Prioridade de tipagem por risco:
 
 Proximos passos naturais:
 1. Rodar `scripts/validate_postgres_real_dsn.py --apply-migrations --repeat-migrations --write-checks` com `ALL_IN_ONE_POSTGRES_MATRIX_DSN` apontando para PostgreSQL real.
-2. Rodar `tests/test_postgres_migrations_smoke.py` com `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1` em ambiente com imagem PostgreSQL pronta, quando o daemon Docker local estiver estavel.
-3. Rodar `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN real para obter prova CRUD viva adicional nos 25 stores tipados.
-4. Evoluir `tests/test_postgres_stores_matrix.py` com fixtures completas antes
+2. Rodar `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN real para obter prova CRUD viva adicional nos 25 stores tipados.
+3. Evoluir `tests/test_postgres_stores_matrix.py` com fixtures completas antes
    de habilitar `ALL_IN_ONE_ENABLE_POSTGRES_MATRIX_CRUD=1` no CI.
-5. Testar create/get/list/update/soft_delete/idempotency por modulo.
-6. Testar audit/outbox por modulo.
-7. Corrigir cada store gerado que tentar gravar colunas inexistentes.
+4. Testar create/get/list/update/soft_delete/idempotency por modulo.
+5. Testar audit/outbox por modulo.
+6. Corrigir cada store gerado que tentar gravar colunas inexistentes.
 
 Nota operacional atual:
-- O smoke opt-in ja esta endurecido para falhar rapido quando o host nao consegue
-  iniciar `postgres:16` efemero; neste host especifico o resultado observado foi
-  `SKIPPED` por timeout do Docker ao iniciar o contêiner, entao a pendencia
-  restante depende de um daemon/host com PostgreSQL efemero funcional.
+- Em 2026-07-19, o smoke opt-in executou `postgres:16` efemero neste host e
+  concluiu com `1 passed in 210.95s`; a evidencia local de banco limpo deixou
+  de ser pendencia.
 - Para nao depender apenas desse daemon, `scripts/validate_postgres_real_dsn.py`
   agora valida banco real por DSN, aplica/reaplica migrations quando solicitado
   e confirma evidencias append-only/outbox com `--write-checks`.
@@ -495,6 +503,10 @@ Entregas ja existentes:
   o ADC esta intermitente entre token redigido obtido por `configure_apigee_api_hub.py --status`
   e `missing_or_unresponsive` no gate `google_cloud_control.py auth`, portanto
   ainda deve ser renovado antes de apply remoto.
+- Em 2026-07-19, `configure_apigee_api_hub.py --status --timeout 30` confirmou
+  conta ativa, projeto correto e ADC valido. O probe do Data Agent Kit continua
+  sujeito a latencia intermitente do `gcloud`; seu timeout foi ampliado para
+  45s e passou a reportar explicitamente quando a sonda expira.
 
 Proximos passos naturais:
 1. Reativar/associar billing do projeto `all-in-one-498012` sem contornar

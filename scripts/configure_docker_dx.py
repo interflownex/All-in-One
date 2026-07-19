@@ -20,6 +20,7 @@ SYSTEM_PLUGIN_DIRS = (
     Path("/usr/lib/docker/cli-plugins"),
 )
 REQUIRED_CLI_PLUGINS = ("compose", "buildx")
+DOCKER_CAPABILITY_TIMEOUT_SECONDS = 45
 
 
 def load_policy() -> dict[str, object]:
@@ -84,7 +85,10 @@ def ensure_user_cli_plugin_links(dry_run: bool) -> list[str]:
     return changed
 
 
-def docker_subcommand_exists(*args: str, timeout_seconds: int = 5) -> bool:
+def docker_subcommand_exists(
+    *args: str,
+    timeout_seconds: int = DOCKER_CAPABILITY_TIMEOUT_SECONDS,
+) -> bool:
     if not command_exists("docker"):
         return False
     try:

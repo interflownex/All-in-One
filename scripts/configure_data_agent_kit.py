@@ -18,6 +18,7 @@ PROFILE = ROOT / "config/cloud/google_cloud_profile.json"
 EXTENSIONS = ROOT / ".vscode/extensions.json"
 SETTINGS = ROOT / ".vscode/settings.json"
 LINUX_GCLOUD = Path.home() / "google-cloud-sdk" / "bin" / "gcloud"
+GCLOUD_RUNTIME_TIMEOUT_SECONDS = 45
 
 
 def load_json(path: Path) -> dict:
@@ -74,7 +75,7 @@ def validate() -> list[str]:
     return errors
 
 
-def runtime_status() -> dict:
+def runtime_status(timeout_seconds: int = GCLOUD_RUNTIME_TIMEOUT_SECONDS) -> dict:
     policy = load_json(POLICY)
     defaults = policy["defaults"]
     project = os.environ.get(defaults["project_environment_variable"], defaults["project_id"])
@@ -90,11 +91,14 @@ def runtime_status() -> dict:
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 check=False,
-                timeout=20,
+                timeout=timeout_seconds,
             )
             adc = result.returncode == 0
         except subprocess.TimeoutExpired:
-            runtime_warning = "gcloud excedeu 20s ao verificar Application Default Credentials."
+            runtime_warning = (
+                f"gcloud excedeu {timeout_seconds}s ao verificar "
+                "Application Default Credentials."
+            )
     return {
         "enabled": policy["enabled"],
         "version": policy["starter_pack"]["version"],

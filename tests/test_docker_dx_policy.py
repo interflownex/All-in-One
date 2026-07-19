@@ -70,6 +70,21 @@ def test_docker_dx_capability_probe_does_not_hang(monkeypatch) -> None:
     assert configure_docker_dx.docker_subcommand_exists("compose", "version", timeout_seconds=1) is False
 
 
+def test_docker_dx_capability_probe_tolerates_slow_daemon(monkeypatch) -> None:
+    observed: dict[str, int] = {}
+    monkeypatch.setattr(configure_docker_dx, "command_exists", lambda command: command == "docker")
+
+    def fake_run(*args, **kwargs):
+        observed["timeout"] = kwargs["timeout"]
+        return subprocess.CompletedProcess(args[0], 0)
+
+    monkeypatch.setattr(configure_docker_dx.subprocess, "run", fake_run)
+
+    assert configure_docker_dx.docker_subcommand_exists("compose", "version") is True
+    assert observed["timeout"] == configure_docker_dx.DOCKER_CAPABILITY_TIMEOUT_SECONDS
+    assert observed["timeout"] >= 30
+
+
 def test_docker_dx_repairs_user_plugin_links_without_sudo(tmp_path, monkeypatch) -> None:
     system_plugins = tmp_path / "usr" / "libexec" / "docker" / "cli-plugins"
     user_plugins = tmp_path / "home" / ".docker" / "cli-plugins"

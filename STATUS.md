@@ -1,3 +1,47 @@
+# STATUS OPERACIONAL - 2026-07-19 Confronto do plano e gates locais
+
+### Concluido neste ciclo
+
+- `STATUS.md` e `docs/EXECUTION_PLAN.md` foram confrontados com o checkout
+  `worktree-sync`, seu upstream real e os gates executaveis neste host.
+- O smoke PostgreSQL opt-in deixou de ser pendencia local: migrations em banco
+  efemero passaram por
+  `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1 ... tests/test_postgres_migrations_smoke.py`.
+- Os diagnosticos Docker DX e Data Agent Kit receberam timeouts ampliados e
+  cobertos por testes; o Docker deixou de gerar falso negativo e o Data Agent
+  Kit agora explicita a expiracao quando a latencia do `gcloud` excede 45s.
+- Compose, Buildx, configuracao Compose, artefatos gerados, contrato do
+  repositorio e sincronizacao com `origin/worktree-sync` foram validados.
+- O AVD `VALLEY_Pixel_8_API_36` foi reiniciado pelo SDK Windows e passou a ser
+  listado no ADB como `emulator-5554 device`; `emulator` e
+  `qemu-system-x86_64` permaneceram responsivos durante a verificacao.
+
+### Evidencias
+
+- `python3 scripts/check_git_sync.py`: aprovado; `behind=0 ahead=0` em
+  `origin/worktree-sync`, com aviso esperado para o remoto `fork` ausente.
+- `python3 scripts/check_generated_artifacts.py`: 439 artefatos e OpenAPI dos
+  25 modulos aprovados.
+- `python3 scripts/validate_repository.py`: aprovado.
+- `docker compose ... config --quiet`: aprovado.
+- `tests/test_postgres_migrations_smoke.py`: `1 passed in 210.95s`.
+- `tests/test_data_agent_kit_runtime.py tests/test_docker_dx_policy.py`:
+  `9 passed`.
+- `scripts/configure_apigee_api_hub.py --status --timeout 30`: conta, projeto
+  `all-in-one-498012` e ADC aprovados com token redigido.
+
+### Pendencias rastreadas
+
+- O registro no ADB foi concluido, mas `sys.boot_completed` continuou vazio e
+  `bootanim=running` durante a janela de verificacao; a instalacao do APK deve
+  ser repetida quando o boot terminar.
+- A validacao remota Stitch permanece bloqueada pela ausencia de
+  `STITCH_API_KEY` no ambiente; nenhum segredo foi inferido ou versionado.
+- O acompanhamento de workflows GitHub pelo `gh` permanece indisponivel neste
+  host porque nao existe sessao autenticada.
+- Billing, IAM, providers reais, cluster produtivo e homologacoes externas
+  permanecem gates externos e nao foram contornados.
+
 # STATUS OPERACIONAL - 2026-07-16 Valley Consumer Build Final
 
 ### Concluido neste ciclo
