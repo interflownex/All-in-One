@@ -107,8 +107,8 @@ const CompaniesForm: React.FC = () => {
 
   return (
     <div className="container">
-      <section className="hero" style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: '2.3rem', fontWeight: 900, marginBottom: 12 }}>Cadastrar empresa</h1>
+      <section className="hero a1-module-hero" style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: '2.3rem', fontWeight: 900, marginBottom: 12 }}>Cadastre-se</h1>
         <p style={{ color: '#536159', fontSize: '1.05rem' }}>
           Informe os dados principais da empresa. O sistema classifica o perfil operacional e seleciona automaticamente os módulos adequados, ocultando o que não fizer sentido para a operação inicial.
         </p>
@@ -188,12 +188,12 @@ const CompaniesForm: React.FC = () => {
           <div className="actions-row" style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
             <button type="button" className="btn-secondary" style={{ padding: '10px 20px' }}>Salvar rascunho</button>
             <button type="submit" className="btn-primary" disabled={saving} style={{ padding: '10px 20px' }}>
-              {saving ? 'Aplicando módulos...' : 'Concluir cadastro e aplicar módulos'}
+              {saving ? 'Aplicando módulos...' : 'Cadastre-se'}
             </button>
           </div>
         </form>
 
-        <aside style={{ background: '#fff', padding: 20, border: '3px solid #17211c', boxShadow: '6px 6px 0 #17211c' }}>
+        <aside className="a1-card" style={{ background: '#fff', padding: 20, border: '3px solid #17211c', boxShadow: '6px 6px 0 #17211c' }}>
           <h2 style={{ color: '#126b45', marginBottom: 12 }}>Módulos sugeridos</h2>
           <p style={{ color: '#536159', fontSize: 13, marginBottom: 12 }}>
             {businessModulesApiEnabled ? 'Integração com back-end Business habilitada.' : 'Prévia local ativa; back-end será usado quando o API Hub estiver configurado.'}
@@ -205,7 +205,7 @@ const CompaniesForm: React.FC = () => {
           </div>
           <div style={{ display: 'grid', gap: 10 }}>
             {recommendations.map(module => (
-              <div key={module.moduleSlug} style={{ border: '2px solid #17211c', padding: 12, background: module.state === 'hidden' ? '#f9fafa' : '#fff' }}>
+              <div key={module.moduleSlug} className="a1-card" style={{ border: '2px solid #17211c', padding: 12, background: module.state === 'hidden' ? '#f9fafa' : '#fff' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
                   <strong>{module.titlePtBr}</strong>
                   <span style={{ color: stateTone[module.state], fontWeight: 900 }}>{stateLabel[module.state]}</span>
