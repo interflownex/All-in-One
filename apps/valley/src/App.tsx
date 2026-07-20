@@ -37,6 +37,8 @@ function clearStoredAuth() {
 function App() {
   const [offers, setOffers] = useState<Offer[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [catalogTotal, setCatalogTotal] = useState(0)
   const [error, setError] = useState('')
   const [query, setQuery] = useState('')
   const [currentView, setCurrentView] = useState<'consumer' | 'b2b' | 'tracking'>('consumer')
@@ -115,8 +117,9 @@ function App() {
     'Tecnologia, Seguranca e IA',
   ]
 
-  const fetchOffers = () => {
-    setLoading(true)
+  const fetchOffers = (append = false) => {
+    if (append) setLoadingMore(true)
+    else setLoading(true)
     setError('')
     listOffers({
       q: query,
@@ -125,9 +128,10 @@ function App() {
       company_type: selectedCompanyType,
       company_category: selectedCompanyCategory,
       business_activity: selectedBusinessActivity,
-    })
+    }, { offset: append ? offers.length : 0, limit: 20 })
       .then((data) => {
-        setOffers(data.offers)
+        setOffers((current) => append ? [...current, ...data.offers] : data.offers)
+        setCatalogTotal(data.total)
         setFacets(data.facets)
         setIsDemoMode(isDemoModeEnabled())
         if (data.partial) {
@@ -138,21 +142,23 @@ function App() {
         setOffers([])
         setError('Nao foi possivel carregar as ofertas agora.')
       })
-      .finally(() => setLoading(false))
+      .finally(() => { setLoading(false); setLoadingMore(false) })
   }
 
+  // A troca dos filtros reinicia a página; a busca textual continua sob envio explícito.
   useEffect(() => {
     const timer = window.setTimeout(fetchOffers, 0)
     return () => window.clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, selectedType, selectedCompanyType, selectedCompanyCategory, selectedBusinessActivity])
 
   return (
     <>
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 24px', background: '#120B2E', borderBottom: '2px solid #22D3EE' }}>
         <div className="brand-group" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <img src="./assets/brand/all-in-one-logo-light-official.png" alt="All-in-One" style={{ height: '32px', width: 'auto' }} />
+          <img src="./assets/brand/all-in-one-logo-light-official.png" alt="All-in-One" decoding="async" style={{ height: '32px', width: 'auto' }} />
           <div style={{ width: '2px', height: '24px', background: 'rgba(255,255,255,0.2)' }}></div>
-          <img src="./assets/brand/valley-logo-official.png" alt="Valley" style={{ height: '28px', width: 'auto' }} />
+          <img src="./assets/brand/valley-logo-official.png" alt="Valley" decoding="async" style={{ height: '28px', width: 'auto' }} />
         </div>
         <nav style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <button className="btn-link" style={{ color: '#fff', fontWeight: currentView === 'consumer' ? 'bold' : 'normal' }} onClick={() => setCurrentView('consumer')}>Ofertas</button>
@@ -218,7 +224,7 @@ function App() {
                 <input id="latitude" type="text" value={lat} onChange={(e) => setLat(e.target.value)} placeholder="Latitude" />
                 <input type="text" value={lng} onChange={(e) => setLng(e.target.value)} placeholder="Longitude" />
               </div>
-              <button className="btn-secondary" onClick={fetchOffers}>Atualizar regiao</button>
+              <button className="btn-secondary" onClick={() => fetchOffers()}>Atualizar regiao</button>
             </div>
 
             <div className="business-filters">
@@ -277,10 +283,11 @@ function App() {
               {offers.length > 0 ? offers.map((offer) => (
                 <article className="offer-card" key={offer.offer_id} style={{ display: 'flex', flexDirection: 'column' }}>
                   <div className="media-container" style={{ position: 'relative', height: '160px', overflow: 'hidden', borderRadius: '12px', marginBottom: '12px', border: '1px solid #d4ddd8' }}>
-                    <img src={offer.metadata?.image_url} alt={offer.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={offer.metadata?.image_url} alt={offer.title} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     {offer.metadata?.video_url && (
                       <video
                         src={offer.metadata.video_url}
+                        preload="none"
                         muted
                         loop
                         onMouseOver={(e) => e.currentTarget.play()}
@@ -320,6 +327,12 @@ function App() {
                 </div>
               )}
             </div>
+          )}
+
+          {!loading && offers.length < catalogTotal && (
+            <button className="btn-secondary" type="button" disabled={loadingMore} onClick={() => fetchOffers(true)}>
+              {loadingMore ? 'Carregando mais ofertas...' : 'Carregar mais ofertas'}
+            </button>
           )}
 
           <section className="modules-section">

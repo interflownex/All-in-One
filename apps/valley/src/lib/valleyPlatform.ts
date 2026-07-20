@@ -110,6 +110,20 @@ interface DemoCatalogFilters {
   business_activity?: string
 }
 
+interface CatalogPageOptions {
+  offset?: number
+  limit?: number
+}
+
+export interface CatalogPage {
+  offers: Offer[]
+  facets: CatalogFacets
+  partial: boolean
+  total: number
+  offset: number
+  limit: number
+}
+
 interface OfferDraft {
   offer_type: string
   category_id: string
@@ -122,6 +136,9 @@ interface OfferDraft {
 }
 
 const API_HUB_URL = import.meta.env.VITE_API_HUB_URL?.trim() ?? ''
+const ALLOW_DEMO = import.meta.env.DEV && import.meta.env.VITE_VALLEY_ALLOW_DEMO === 'true'
+const CATALOG_CACHE_PREFIX = 'valley.catalog.v1.'
+const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000
 const DEMO_USERS_KEY = 'valley.demo.users'
 const DEMO_OFFERS_KEY = 'valley.demo.offers'
 const DEMO_ORDERS_KEY = 'valley.demo.orders'
@@ -221,7 +238,7 @@ export const moduleShowcase: ModuleShowcaseItem[] = [
 ]
 
 export function isDemoModeEnabled() {
-  return !API_HUB_URL || window.localStorage.getItem(DEMO_MODE_KEY) === 'true'
+  return ALLOW_DEMO && (!API_HUB_URL || window.localStorage.getItem(DEMO_MODE_KEY) === 'true')
 }
 
 export async function signInWithEmail(email: string, password: string, createAccount: boolean): Promise<DemoSession> {
@@ -247,7 +264,8 @@ export async function signInWithEmail(email: string, password: string, createAcc
       const session = await postJson('/auth/login', { email: normalizedEmail, password })
       window.localStorage.removeItem(DEMO_MODE_KEY)
       return { token: session.access_token, userId: session.user_id, email: normalizedEmail, source: 'email' }
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -276,7 +294,8 @@ export async function signInWithGoogle(email: string): Promise<DemoSession> {
       const session = await postJson('/auth/login', { email: normalizedEmail, password: googlePassword })
       window.localStorage.removeItem(DEMO_MODE_KEY)
       return { token: session.access_token, userId: session.user_id, email: normalizedEmail, source: 'google' }
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -291,21 +310,32 @@ export async function signInWithGoogle(email: string): Promise<DemoSession> {
   return demoSessionFor(user, 'google')
 }
 
-export async function listOffers(filters: DemoCatalogFilters): Promise<{ offers: Offer[]; facets: CatalogFacets; partial: boolean }> {
+export async function listOffers(filters: DemoCatalogFilters, options: CatalogPageOptions = {}): Promise<CatalogPage> {
   if (!isDemoModeEnabled()) {
+    const limit = Math.min(Math.max(options.limit ?? 20, 1), 50)
+    const offset = Math.max(options.offset ?? 0, 0)
+    const params = new URLSearchParams()
+    params.append('limit', String(limit))
+    params.append('offset', String(offset))
+    if (filters.q?.trim()) params.append('q', filters.q.trim())
+    if (filters.category) params.append('category', filters.category)
+    if (filters.offer_type) params.append('offer_type', filters.offer_type)
+    if (filters.company_type) params.append('company_type', filters.company_type)
+    if (filters.company_category) params.append('company_category', filters.company_category)
+    if (filters.business_activity) params.append('business_activity', filters.business_activity)
+    const cacheKey = `${CATALOG_CACHE_PREFIX}${params.toString()}`
     try {
-      const params = new URLSearchParams()
-      params.append('limit', '50')
-      if (filters.q?.trim()) params.append('q', filters.q.trim())
-      if (filters.category) params.append('category', filters.category)
-      if (filters.offer_type) params.append('offer_type', filters.offer_type)
-      if (filters.company_type) params.append('company_type', filters.company_type)
-      if (filters.company_category) params.append('company_category', filters.company_category)
-      if (filters.business_activity) params.append('business_activity', filters.business_activity)
       const data = await getJson(`/gateway/catalog/offers?${params.toString()}`)
-      return { offers: data.data ?? [], facets: data.facets ?? emptyFacets(), partial: Boolean(data.partial) }
-    } catch {
-      window.localStorage.setItem(DEMO_MODE_KEY, 'true')
+      const page = {
+        offers: data.data ?? [], facets: data.facets ?? emptyFacets(), partial: Boolean(data.partial),
+        total: Number(data.total ?? 0), offset: Number(data.offset ?? offset), limit: Number(data.limit ?? limit),
+      }
+      writeStorage(cacheKey, { cachedAt: Date.now(), page })
+      return page
+    } catch (error) {
+      const cached = readOptionalStorage<{ cachedAt: number; page: CatalogPage }>(cacheKey)
+      if (cached && Date.now() - cached.cachedAt <= CATALOG_CACHE_TTL_MS) return { ...cached.page, partial: true }
+      throw error
     }
   }
 
@@ -321,7 +351,9 @@ export async function listOffers(filters: DemoCatalogFilters): Promise<{ offers:
     const haystack = [offer.title, offer.short_description, offer.description, offer.provider_label, offer.source_module].join(' ').toLowerCase()
     return haystack.includes(normalizedQuery)
   })
-  return { offers: filtered, facets: buildFacets(offers), partial: false }
+  const offset = Math.max(options.offset ?? 0, 0)
+  const limit = Math.min(Math.max(options.limit ?? 20, 1), 50)
+  return { offers: filtered.slice(offset, offset + limit), facets: buildFacets(offers), partial: false, total: filtered.length, offset, limit }
 }
 
 export async function createCatalogAction(params: {
@@ -343,7 +375,8 @@ export async function createCatalogAction(params: {
         note: params.note ?? null,
         quantity: 1,
       }, params.token)
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -383,7 +416,8 @@ export async function authorizePayment(paymentIntent: PaymentIntent, token?: str
         method: 'pix_sandbox',
         idempotency_key: `payment-${paymentIntent.order_id}`,
       }, token)
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -397,7 +431,8 @@ export async function getOrders(token?: string | null): Promise<OrderItem[]> {
     try {
       const data = await getJson('/gateway/consumer/orders', token)
       return data.data ?? []
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -412,7 +447,8 @@ export async function submitReview(orderId: string, rating: number, comment: str
         comment: comment || null,
         idempotency_key: `review-${orderId}-${randomId(8)}`,
       }, token)
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -432,7 +468,8 @@ export async function submitSupportCase(orderId: string, kind: 'support' | 'disp
         desired_resolution: desiredResolution || null,
         idempotency_key: `support-${orderId}-${randomId(8)}`,
       }, token)
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -459,7 +496,8 @@ export async function getCommercialMetrics(): Promise<CommercialMetrics> {
         crm_records: data.crm_records ?? 0,
         bi_records: data.bi_records ?? 0,
       }
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -490,7 +528,8 @@ export async function getAvailableSlots() {
     try {
       const data = await getJson('/services/providers/mock-provider/time-slots?date=2026-07-16')
       return data.available_slots ?? ['09:00', '10:00', '11:30', '14:00', '15:30']
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -502,7 +541,8 @@ export async function reserveSlot(slot: string) {
     try {
       await postJson('/services/providers/mock-provider/reserve-slot', { slot, customer_id: 'cust-123' })
       return { message: `Horario ${slot} reservado com sucesso.` }
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -515,7 +555,8 @@ export async function publishOffer(draft: OfferDraft) {
       const created = await postJson('/gateway/business/valley/catalog/offers', draft)
       await putJson(`/gateway/business/valley/catalog/offers/${created.id}/status`, { status: 'published' })
       return { message: 'Oferta publicada com sucesso no Valley.' }
-    } catch {
+    } catch (error) {
+      if (!ALLOW_DEMO) throw error
       window.localStorage.setItem(DEMO_MODE_KEY, 'true')
     }
   }
@@ -700,6 +741,17 @@ function readStorage<T>(key: string, fallback: T): T {
 
 function writeStorage<T>(key: string, value: T) {
   window.localStorage.setItem(key, JSON.stringify(value))
+}
+
+function readOptionalStorage<T>(key: string): T | null {
+  const raw = window.localStorage.getItem(key)
+  if (!raw) return null
+  try {
+    return JSON.parse(raw) as T
+  } catch {
+    window.localStorage.removeItem(key)
+    return null
+  }
 }
 
 function randomId(length: number) {

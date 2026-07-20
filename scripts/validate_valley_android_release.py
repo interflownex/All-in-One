@@ -211,6 +211,21 @@ def validate() -> list[str]:
         errors.append("sessao web sensivel persiste em localStorage")
     if "ws://localhost" in web_sources or "http://localhost" in web_sources:
         errors.append("fonte Valley contem endpoint local inseguro que pode vazar para o APK")
+    for marker in (
+        "import.meta.env.DEV && import.meta.env.VITE_VALLEY_ALLOW_DEMO === 'true'",
+        "CATALOG_CACHE_TTL_MS",
+        "params.append('offset'",
+        'loading="lazy"',
+        'preload="none"',
+        "Carregar mais ofertas",
+    ):
+        if marker not in web_sources:
+            errors.append(f"frontend Valley sem requisito de catálogo/performance: {marker}")
+
+    embedded_web = ANDROID / "app" / "src" / "main" / "assets" / "valley"
+    embedded_javascript = "\n".join(path.read_text(encoding="utf-8") for path in embedded_web.rglob("*.js"))
+    if "VITE_VALLEY_ALLOW_DEMO" in embedded_javascript:
+        errors.append("bundle Android permite alterar o modo demonstrativo em tempo de execução")
 
     permissions = re.findall(r'<uses-permission[^>]+android:name="([^"]+)"', manifest)
     unexpected = sorted(set(permissions) - {"android.permission.INTERNET"})
