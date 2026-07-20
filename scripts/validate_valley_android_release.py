@@ -166,6 +166,17 @@ def validate() -> list[str]:
     for marker in ("/auth/refresh", "/auth/logout", "X-Device-Fingerprint", "X-Correlation-Id", "/health"):
         if marker not in kotlin_sources:
             errors.append(f"cliente Android nao implementa contrato de sessao obrigatorio: {marker}")
+    for marker in (
+        "DisposableEffect(lifecycleOwner)",
+        "Lifecycle.Event.ON_STOP -> webView?.onPause()",
+        "settings.cacheMode = WebSettings.LOAD_DEFAULT",
+        "settings.mediaPlaybackRequiresUserGesture = true",
+        "setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_BOUND, true)",
+        "stopLoading()",
+        "destroy()",
+    ):
+        if marker not in kotlin_sources:
+            errors.append(f"WebView Android sem requisito de memoria/ciclo de vida: {marker}")
 
     for marker in (
         "VALLEY_RELEASE_KEYSTORE_BASE64",

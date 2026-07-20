@@ -1,11 +1,13 @@
 package com.example.valley.ui.main
 
 import android.content.Context
+import android.os.Build
 import android.provider.Settings
 import android.webkit.WebChromeClient
 import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.webkit.WebSettings
 import androidx.activity.compose.BackHandler
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
@@ -46,6 +48,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +62,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -499,6 +505,7 @@ private fun ConsumerShell(
   onLogout: () -> Unit,
 ) {
   val context = LocalContext.current
+  val lifecycleOwner = LocalLifecycleOwner.current
   var webView by remember { mutableStateOf<WebView?>(null) }
   var canGoBack by remember { mutableStateOf(false) }
   var needsReload by remember { mutableStateOf(true) }
@@ -510,6 +517,30 @@ private fun ConsumerShell(
   LaunchedEffect(session) {
     needsReload = true
     webView?.loadUrl(VALLEY_WEB_URL)
+  }
+
+  DisposableEffect(lifecycleOwner) {
+    val observer = LifecycleEventObserver { _, event ->
+      when (event) {
+        Lifecycle.Event.ON_START -> webView?.onResume()
+        Lifecycle.Event.ON_STOP -> webView?.onPause()
+        else -> Unit
+      }
+    }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose {
+      lifecycleOwner.lifecycle.removeObserver(observer)
+      webView?.apply {
+        stopLoading()
+        webChromeClient = null
+        webViewClient = WebViewClient()
+        loadUrl("about:blank")
+        clearHistory()
+        removeAllViews()
+        destroy()
+      }
+      webView = null
+    }
   }
 
   Scaffold(
@@ -569,9 +600,13 @@ private fun ConsumerShell(
           WebView(appContext).apply {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
-            settings.mediaPlaybackRequiresUserGesture = false
+            settings.cacheMode = WebSettings.LOAD_DEFAULT
+            settings.mediaPlaybackRequiresUserGesture = true
             settings.allowContentAccess = false
             settings.setSupportMultipleWindows(false)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+              setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_BOUND, true)
+            }
             webChromeClient = WebChromeClient()
             webViewClient =
               object : WebViewClient() {
