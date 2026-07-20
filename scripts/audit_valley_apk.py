@@ -23,6 +23,28 @@ FORBIDDEN_TEXT_PATTERNS = (
     re.compile(rb"(?:/home/|[A-Z]:\\Users\\)", re.I),
 )
 TEXT_EXTENSIONS = {".html", ".js", ".css", ".json", ".xml", ".txt"}
+FORBIDDEN_PERMISSIONS = {
+    "android.permission.RECORD_AUDIO",
+    "android.permission.CAMERA",
+    "android.permission.ACCESS_FINE_LOCATION",
+    "android.permission.ACCESS_COARSE_LOCATION",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.READ_MEDIA_IMAGES",
+    "android.permission.READ_MEDIA_VIDEO",
+    "android.permission.READ_CONTACTS",
+    "android.permission.WRITE_CONTACTS",
+    "android.permission.READ_CALENDAR",
+    "android.permission.WRITE_CALENDAR",
+    "android.permission.READ_PHONE_STATE",
+    "android.permission.CALL_PHONE",
+    "android.permission.READ_SMS",
+    "android.permission.SEND_SMS",
+    "android.permission.BLUETOOTH_CONNECT",
+    "com.google.android.gms.permission.AD_ID",
+    "android.permission.ACCESS_ADSERVICES_AD_ID",
+    "android.permission.ACCESS_ADSERVICES_ATTRIBUTION",
+}
 
 
 def forbidden_entries(names: list[str]) -> list[str]:
@@ -51,6 +73,42 @@ def locate_apksigner(android_sdk: Path | None) -> Path | None:
             return candidates[-1]
     result = subprocess.run(["bash", "-lc", "command -v apksigner"], capture_output=True, text=True)
     return Path(result.stdout.strip()) if result.returncode == 0 and result.stdout.strip() else None
+
+
+def locate_aapt(android_sdk: Path | None) -> Path | None:
+    if android_sdk:
+        candidates = sorted(
+            [
+                *(android_sdk / "build-tools").glob("*/aapt"),
+                *(android_sdk / "build-tools").glob("*/aapt.exe"),
+            ]
+        )
+        if candidates:
+            return candidates[-1]
+    result = subprocess.run(["bash", "-lc", "command -v aapt"], capture_output=True, text=True)
+    return Path(result.stdout.strip()) if result.returncode == 0 and result.stdout.strip() else None
+
+
+def verify_permissions(apk: Path, aapt: Path | None) -> list[str]:
+    if aapt is None:
+        return ["aapt nao encontrado; permissoes compiladas nao podem ser comprovadas"]
+    result = subprocess.run(
+        [str(aapt), "dump", "badging", str(apk)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if result.returncode != 0:
+        return ["aapt nao conseguiu ler o manifesto compilado: " + (result.stderr.strip() or result.stdout.strip())]
+    permissions = set(re.findall(r"^uses-permission: name='([^']+)'", result.stdout, re.M))
+    errors: list[str] = []
+    if "android.permission.INTERNET" not in permissions:
+        errors.append("APK nao declara a permissao de rede obrigatoria")
+    forbidden = sorted(permissions & FORBIDDEN_PERMISSIONS)
+    if forbidden:
+        errors.append("APK declara permissoes proibidas ou nao justificadas: " + ", ".join(forbidden))
+    return errors
 
 
 def verify_signature(apk: Path, apksigner: Path, require_release: bool) -> list[str]:
@@ -90,7 +148,7 @@ def verify_signature(apk: Path, apksigner: Path, require_release: bool) -> list[
     return errors
 
 
-def audit(apk: Path, apksigner: Path | None, require_release: bool) -> list[str]:
+def audit(apk: Path, apksigner: Path | None, aapt: Path | None, require_release: bool) -> list[str]:
     errors: list[str] = []
     if not apk.is_file():
         return [f"APK ausente: {apk}"]
@@ -108,6 +166,7 @@ def audit(apk: Path, apksigner: Path | None, require_release: bool) -> list[str]
         errors.append("apksigner nao encontrado; assinatura nao pode ser comprovada")
     else:
         errors.extend(verify_signature(apk, apksigner, require_release))
+    errors.extend(verify_permissions(apk, aapt))
     return errors
 
 
@@ -120,6 +179,7 @@ def main() -> int:
     errors = audit(
         args.apk,
         locate_apksigner(args.android_sdk),
+        locate_aapt(args.android_sdk),
         args.require_release_signature,
     )
     if errors:

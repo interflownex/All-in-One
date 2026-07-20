@@ -91,6 +91,9 @@ def validate() -> list[str]:
         'android:name="firebase_analytics_collection_enabled"',
         'android:name="firebase_crashlytics_collection_enabled"',
         'android:name="google_analytics_adid_collection_enabled"',
+        'android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"',
+        'android:name="android.permission.ACCESS_ADSERVICES_AD_ID" tools:node="remove"',
+        'android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION" tools:node="remove"',
     ):
         require(manifest, marker, manifest_path, errors)
     require(network, 'cleartextTrafficPermitted="false"', network_path, errors)
@@ -254,7 +257,13 @@ def validate() -> list[str]:
     if oversized_brand:
         errors.append("logotipos WebP excedem 50 KB: " + ", ".join(oversized_brand))
 
-    permissions = re.findall(r'<uses-permission[^>]+android:name="([^"]+)"', manifest)
+    permission_tags = re.findall(r"<uses-permission[^>]+>", manifest)
+    permissions = [
+        match.group(1)
+        for tag in permission_tags
+        if 'tools:node="remove"' not in tag
+        if (match := re.search(r'android:name="([^"]+)"', tag))
+    ]
     unexpected = sorted(set(permissions) - {"android.permission.INTERNET"})
     if unexpected:
         errors.append("permissoes Android fora da allowlist: " + ", ".join(unexpected))
