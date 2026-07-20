@@ -1,357 +1,256 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { BrandLogo } from './BrandLogo';
 
-const modulesData = [
-    { slug: "ai_core", title: "Ai_core", icon: "🧠", screens: [
-        { title: "Ai Memories", path: "/ai_core/aimemories-form" },
-        { title: "Ai Memories", path: "/ai_core/aimemories" },
-        { title: "Ai_core", path: "/ai_core/ai_core" },
-        { title: "Ai_core Permissões", path: "/ai_core/ai_corepermissions" },
-        { title: "Model Runs", path: "/ai_core/modelruns" },
-        { title: "Model Runs", path: "/ai_core/modelruns-form" },
-        { title: "Moderation Decisions", path: "/ai_core/moderationdecisions" },
-        { title: "Moderation Decisions", path: "/ai_core/moderationdecisions-form" }
-    ] },
-    { slug: "api_hub", title: "Api_hub", icon: "📦", screens: [
-        { title: "Api Clients", path: "/api_hub/apiclients-form" },
-        { title: "Api Clients", path: "/api_hub/apiclients" },
-        { title: "Api Keys", path: "/api_hub/apikeys-form" },
-        { title: "Api Keys", path: "/api_hub/apikeys" },
-        { title: "Api_hub", path: "/api_hub/api_hub" },
-        { title: "Api_hub Permissões", path: "/api_hub/api_hubpermissions" },
-        { title: "Integration Runs", path: "/api_hub/integrationruns-form" },
-        { title: "Integration Runs", path: "/api_hub/integrationruns" },
-        { title: "Webhooks", path: "/api_hub/webhooks" },
-        { title: "Webhooks", path: "/api_hub/webhooks-form" }
-    ] },
-    { slug: "bi", title: "Bi", icon: "📈", screens: [
-        { title: "Bi", path: "/bi/bi" },
-        { title: "Bi Permissões", path: "/bi/bipermissions" },
-        { title: "Dashboards", path: "/bi/dashboards" },
-        { title: "Dashboards", path: "/bi/dashboards-form" },
-        { title: "Datasets", path: "/bi/datasets" },
-        { title: "Datasets", path: "/bi/datasets-form" },
-        { title: "Exports", path: "/bi/exports-form" },
-        { title: "Exports", path: "/bi/exports" },
-        { title: "Indicators", path: "/bi/indicators-form" },
-        { title: "Indicators", path: "/bi/indicators" }
-    ] },
-    { slug: "bpm", title: "Bpm", icon: "⚙️", screens: [
-        { title: "Bpm", path: "/bpm/bpm" },
-        { title: "Bpm Permissões", path: "/bpm/bpmpermissions" },
-        { title: "Processes", path: "/bpm/processes" },
-        { title: "Processes", path: "/bpm/processes-form" },
-        { title: "Sla Policies", path: "/bpm/slapolicies-form" },
-        { title: "Sla Policies", path: "/bpm/slapolicies" },
-        { title: "Tasks", path: "/bpm/tasks-form" },
-        { title: "Tasks", path: "/bpm/tasks" },
-        { title: "Workflow Instances", path: "/bpm/workflowinstances-form" },
-        { title: "Workflow Instances", path: "/bpm/workflowinstances" }
-    ] },
-    { slug: "business", title: "Business", icon: "🏢", screens: [
-        { title: "Branches", path: "/business/branches-form" },
-        { title: "Branches", path: "/business/branches" },
-        { title: "Business", path: "/business/business" },
-        { title: "Business Permissões", path: "/business/businesspermissions" },
-        { title: "Catalog Offers", path: "/business/catalogoffers" },
-        { title: "Catalog Offers", path: "/business/catalogoffers-form" },
-        { title: "Companies", path: "/business/companies" },
-        { title: "Companies", path: "/business/companies-form" },
-        { title: "Company Documents", path: "/business/companydocuments" },
-        { title: "Company Documents", path: "/business/companydocuments-form" },
-        { title: "User Company Memberships", path: "/business/usercompanymemberships" },
-        { title: "User Company Memberships", path: "/business/usercompanymemberships-form" }
-    ] },
-    { slug: "crm", title: "Crm", icon: "🤝", screens: [
-        { title: "Activities", path: "/crm/activities-form" },
-        { title: "Activities", path: "/crm/activities" },
-        { title: "Campaigns", path: "/crm/campaigns" },
-        { title: "Campaigns", path: "/crm/campaigns-form" },
-        { title: "Crm", path: "/crm/crm" },
-        { title: "Crm Permissões", path: "/crm/crmpermissions" },
-        { title: "Leads", path: "/crm/leads-form" },
-        { title: "Leads", path: "/crm/leads" },
-        { title: "Opportunities", path: "/crm/opportunities" },
-        { title: "Opportunities", path: "/crm/opportunities-form" }
-    ] },
-    { slug: "delivery", title: "Delivery", icon: "🚚", screens: [
-        { title: "Assignments", path: "/delivery/assignments" },
-        { title: "Assignments", path: "/delivery/assignments-form" },
-        { title: "Delivery", path: "/delivery/delivery" },
-        { title: "Delivery Permissões", path: "/delivery/deliverypermissions" },
-        { title: "Delivery Requests", path: "/delivery/deliveryrequests" },
-        { title: "Delivery Requests", path: "/delivery/deliveryrequests-form" },
-        { title: "Insurance Options", path: "/delivery/insuranceoptions" },
-        { title: "Insurance Options", path: "/delivery/insuranceoptions-form" },
-        { title: "Proofs", path: "/delivery/proofs-form" },
-        { title: "Proofs", path: "/delivery/proofs" },
-        { title: "Quotes", path: "/delivery/quotes" },
-        { title: "Quotes", path: "/delivery/quotes-form" }
-    ] },
-    { slug: "document", title: "Document", icon: "📦", screens: [
-        { title: "Document", path: "/document/document" },
-        { title: "Document Permissões", path: "/document/documentpermissions" },
-        { title: "Documents", path: "/document/documents-form" },
-        { title: "Documents", path: "/document/documents" },
-        { title: "Folders", path: "/document/folders" },
-        { title: "Folders", path: "/document/folders-form" },
-        { title: "Retention Policies", path: "/document/retentionpolicies-form" },
-        { title: "Retention Policies", path: "/document/retentionpolicies" },
-        { title: "Versions", path: "/document/versions-form" },
-        { title: "Versions", path: "/document/versions" }
-    ] },
-    { slug: "erp", title: "Erp", icon: "📊", screens: [
-        { title: "Accounts", path: "/erp/accounts-form" },
-        { title: "Accounts", path: "/erp/accounts" },
-        { title: "Cost Centers", path: "/erp/costcenters-form" },
-        { title: "Cost Centers", path: "/erp/costcenters" },
-        { title: "Erp", path: "/erp/erp" },
-        { title: "Erp Permissões", path: "/erp/erppermissions" },
-        { title: "Fiscal Documents", path: "/erp/fiscaldocuments-form" },
-        { title: "Fiscal Documents", path: "/erp/fiscaldocuments" },
-        { title: "Payables", path: "/erp/payables" },
-        { title: "Payables", path: "/erp/payables-form" },
-        { title: "Receivables", path: "/erp/receivables" },
-        { title: "Receivables", path: "/erp/receivables-form" }
-    ] },
-    { slug: "finance", title: "Finance", icon: "💰", screens: [
-        { title: "Escrows", path: "/finance/escrows" },
-        { title: "Escrows", path: "/finance/escrows-form" },
-        { title: "Finance", path: "/finance/finance" },
-        { title: "Finance Permissões", path: "/finance/financepermissions" },
-        { title: "Invoices", path: "/finance/invoices" },
-        { title: "Invoices", path: "/finance/invoices-form" },
-        { title: "Ledger Entries", path: "/finance/ledgerentries" },
-        { title: "Ledger Entries", path: "/finance/ledgerentries-form" },
-        { title: "Splits", path: "/finance/splits-form" },
-        { title: "Splits", path: "/finance/splits" },
-        { title: "Wallet Ledger", path: "/finance/walletledger" },
-        { title: "Wallets", path: "/finance/wallets-form" },
-        { title: "Wallets", path: "/finance/wallets" }
-    ] },
-    { slug: "hr", title: "Hr", icon: "📦", screens: [
-        { title: "Candidates", path: "/hr/candidates-form" },
-        { title: "Candidates", path: "/hr/candidates" },
-        { title: "Courses", path: "/hr/courses" },
-        { title: "Courses", path: "/hr/courses-form" },
-        { title: "Employees", path: "/hr/employees" },
-        { title: "Employees", path: "/hr/employees-form" },
-        { title: "Hr", path: "/hr/hr" },
-        { title: "Hr Permissões", path: "/hr/hrpermissions" },
-        { title: "Occupational Records", path: "/hr/occupationalrecords" },
-        { title: "Occupational Records", path: "/hr/occupationalrecords-form" },
-        { title: "Payroll Runs", path: "/hr/payrollruns" },
-        { title: "Payroll Runs", path: "/hr/payrollruns-form" }
-    ] },
-    { slug: "identity", title: "Identity", icon: "🆔", screens: [
-        { title: "Auth Gateway", path: "/identity/authgateway" },
-        { title: "Biometrics", path: "/identity/biometrics" },
-        { title: "Biometrics", path: "/identity/biometrics-form" },
-        { title: "Consent Lgpd", path: "/identity/consentlgpd" },
-        { title: "Consent Records", path: "/identity/consentrecords" },
-        { title: "Consent Records", path: "/identity/consentrecords-form" },
-        { title: "Documents", path: "/identity/documents-form" },
-        { title: "Documents", path: "/identity/documents" },
-        { title: "Identity", path: "/identity/identity" },
-        { title: "Identity Permissões", path: "/identity/identitypermissions" },
-        { title: "Identity Verifications", path: "/identity/identityverifications-form" },
-        { title: "Identity Verifications", path: "/identity/identityverifications" },
-        { title: "Kyb Business", path: "/identity/kybbusiness" },
-        { title: "Kyc Verification", path: "/identity/kycverification" },
-        { title: "Mfa Manager", path: "/identity/mfamanager" },
-        { title: "Session Control", path: "/identity/sessioncontrol" },
-        { title: "Sessions", path: "/identity/sessions-form" },
-        { title: "Sessions", path: "/identity/sessions" },
-        { title: "Users", path: "/identity/users" },
-        { title: "Users", path: "/identity/users-form" }
-    ] },
-    { slug: "jobs", title: "Jobs", icon: "💼", screens: [
-        { title: "Applications", path: "/jobs/applications-form" },
-        { title: "Applications", path: "/jobs/applications" },
-        { title: "Candidate Resume", path: "/jobs/candidateresume" },
-        { title: "Ctps Import", path: "/jobs/ctpsimport" },
-        { title: "Employment Records", path: "/jobs/employmentrecords" },
-        { title: "Employment Records", path: "/jobs/employmentrecords-form" },
-        { title: "Job Postings", path: "/jobs/jobpostings-form" },
-        { title: "Job Postings", path: "/jobs/jobpostings" },
-        { title: "Jobs", path: "/jobs/jobs" },
-        { title: "Jobs Permissões", path: "/jobs/jobspermissions" },
-        { title: "Recruiter Resume Review", path: "/jobs/recruiterresumereview" },
-        { title: "Resume Access Logs", path: "/jobs/resumeaccesslogs-form" },
-        { title: "Resume Access Logs", path: "/jobs/resumeaccesslogs" },
-        { title: "Resume Documents", path: "/jobs/resumedocuments-form" },
-        { title: "Resume Documents", path: "/jobs/resumedocuments" },
-        { title: "Resumes", path: "/jobs/resumes" },
-        { title: "Resumes", path: "/jobs/resumes-form" },
-        { title: "Vacancy Search", path: "/jobs/vacancysearch" }
-    ] },
-    { slug: "legal", title: "Legal", icon: "📦", screens: [
-        { title: "Cases", path: "/legal/cases" },
-        { title: "Cases", path: "/legal/cases-form" },
-        { title: "Deadlines", path: "/legal/deadlines-form" },
-        { title: "Deadlines", path: "/legal/deadlines" },
-        { title: "Hearings", path: "/legal/hearings-form" },
-        { title: "Hearings", path: "/legal/hearings" },
-        { title: "Legal", path: "/legal/legal" },
-        { title: "Legal Contracts", path: "/legal/legalcontracts" },
-        { title: "Legal Contracts", path: "/legal/legalcontracts-form" },
-        { title: "Legal Permissões", path: "/legal/legalpermissions" }
-    ] },
-    { slug: "marketplace", title: "Marketplace", icon: "🛍️", screens: [
-        { title: "Carts", path: "/marketplace/carts-form" },
-        { title: "Carts", path: "/marketplace/carts" },
-        { title: "Disputes", path: "/marketplace/disputes" },
-        { title: "Disputes", path: "/marketplace/disputes-form" },
-        { title: "Marketplace", path: "/marketplace/marketplace" },
-        { title: "Marketplace Permissões", path: "/marketplace/marketplacepermissions" },
-        { title: "Orders", path: "/marketplace/orders-form" },
-        { title: "Orders", path: "/marketplace/orders" },
-        { title: "Pepita Grants", path: "/marketplace/pepitagrants-form" },
-        { title: "Pepita Grants", path: "/marketplace/pepitagrants" },
-        { title: "Products", path: "/marketplace/products-form" },
-        { title: "Products", path: "/marketplace/products" },
-        { title: "Reviews", path: "/marketplace/reviews" },
-        { title: "Reviews", path: "/marketplace/reviews-form" },
-        { title: "Stores", path: "/marketplace/stores" },
-        { title: "Stores", path: "/marketplace/stores-form" }
-    ] },
-    { slug: "permissions", title: "Permissions", icon: "📦", screens: [
-        { title: "Access Policies", path: "/permissions/accesspolicies" },
-        { title: "Access Policies", path: "/permissions/accesspolicies-form" },
-        { title: "Approval Limits", path: "/permissions/approvallimits" },
-        { title: "Approval Limits", path: "/permissions/approvallimits-form" },
-        { title: "Permissões", path: "/permissions/permissions" },
-        { title: "Permissões", path: "/permissions/permissions-form" },
-        { title: "Permissões", path: "/permissions/permissions" },
-        { title: "Permissões Permissões", path: "/permissions/permissionspermissions" },
-        { title: "Roles", path: "/permissions/roles" },
-        { title: "Roles", path: "/permissions/roles-form" },
-        { title: "User Roles", path: "/permissions/userroles" },
-        { title: "User Roles", path: "/permissions/userroles-form" }
-    ] },
-    { slug: "property", title: "Property", icon: "📦", screens: [
-        { title: "Assemblies", path: "/property/assemblies" },
-        { title: "Assemblies", path: "/property/assemblies-form" },
-        { title: "Leases", path: "/property/leases-form" },
-        { title: "Leases", path: "/property/leases" },
-        { title: "Maintenance Orders", path: "/property/maintenanceorders" },
-        { title: "Maintenance Orders", path: "/property/maintenanceorders-form" },
-        { title: "Properties", path: "/property/properties" },
-        { title: "Properties", path: "/property/properties-form" },
-        { title: "Property", path: "/property/property" },
-        { title: "Property Permissões", path: "/property/propertypermissions" },
-        { title: "Units", path: "/property/units-form" },
-        { title: "Units", path: "/property/units" }
-    ] },
-    { slug: "stock", title: "Stock", icon: "📦", screens: [
-        { title: "Catalog Products", path: "/stock/catalogproducts-form" },
-        { title: "Catalog Products", path: "/stock/catalogproducts" },
-        { title: "Discount Quotes", path: "/stock/discountquotes-form" },
-        { title: "Discount Quotes", path: "/stock/discountquotes" },
-        { title: "Price Rules", path: "/stock/pricerules" },
-        { title: "Price Rules", path: "/stock/pricerules-form" },
-        { title: "Stock", path: "/stock/stock" },
-        { title: "Stock Permissões", path: "/stock/stockpermissions" },
-        { title: "Supplier Orders", path: "/stock/supplierorders-form" },
-        { title: "Supplier Orders", path: "/stock/supplierorders" },
-        { title: "Suppliers", path: "/stock/suppliers-form" },
-        { title: "Suppliers", path: "/stock/suppliers" }
-    ] },
-    { slug: "tms", title: "Tms", icon: "🗺️", screens: [
-        { title: "Carriers", path: "/tms/carriers" },
-        { title: "Carriers", path: "/tms/carriers-form" },
-        { title: "Freight Audits", path: "/tms/freightaudits" },
-        { title: "Freight Audits", path: "/tms/freightaudits-form" },
-        { title: "Freights", path: "/tms/freights" },
-        { title: "Freights", path: "/tms/freights-form" },
-        { title: "Proofs Of Delivery", path: "/tms/proofsofdelivery" },
-        { title: "Proofs Of Delivery", path: "/tms/proofsofdelivery-form" },
-        { title: "Routes", path: "/tms/routes-form" },
-        { title: "Routes", path: "/tms/routes" },
-        { title: "Tms", path: "/tms/tms" },
-        { title: "Tms Permissões", path: "/tms/tmspermissions" }
-    ] },
-    { slug: "vision", title: "Vision", icon: "📦", screens: [
-        { title: "Devices", path: "/vision/devices-form" },
-        { title: "Devices", path: "/vision/devices" },
-        { title: "Motion Alerts", path: "/vision/motionalerts-form" },
-        { title: "Motion Alerts", path: "/vision/motionalerts" },
-        { title: "Recordings", path: "/vision/recordings" },
-        { title: "Recordings", path: "/vision/recordings-form" },
-        { title: "Streams", path: "/vision/streams-form" },
-        { title: "Streams", path: "/vision/streams" },
-        { title: "Vision", path: "/vision/vision" },
-        { title: "Vision Permissões", path: "/vision/visionpermissions" }
-    ] },
-    { slug: "wms", title: "Wms", icon: "🏗️", screens: [
-        { title: "Bins", path: "/wms/bins" },
-        { title: "Bins", path: "/wms/bins-form" },
-        { title: "Inventory", path: "/wms/inventory-form" },
-        { title: "Inventory", path: "/wms/inventory" },
-        { title: "Picking Waves", path: "/wms/pickingwaves-form" },
-        { title: "Picking Waves", path: "/wms/pickingwaves" },
-        { title: "Shipments", path: "/wms/shipments-form" },
-        { title: "Shipments", path: "/wms/shipments" },
-        { title: "Warehouses", path: "/wms/warehouses-form" },
-        { title: "Warehouses", path: "/wms/warehouses" },
-        { title: "Wms", path: "/wms/wms" },
-        { title: "Wms Permissões", path: "/wms/wmspermissions" }
-    ] },
+type NavigationScreen = {
+  title: string;
+  path: string;
+  kind: 'visao_geral' | 'lista' | 'formulario' | 'configuracao' | 'relatorio';
+};
+
+type NavigationModule = {
+  slug: string;
+  title: string;
+  category: 'Operacao' | 'Gestao' | 'Dados' | 'Configuracoes';
+  state: 'mandatory' | 'active' | 'recommended';
+  screens: NavigationScreen[];
+};
+
+const modulesData: NavigationModule[] = [
+  {
+    slug: 'business',
+    title: 'Empresas',
+    category: 'Configuracoes',
+    state: 'mandatory',
+    screens: [
+      { title: 'Visao geral da empresa', path: '/business/business', kind: 'visao_geral' },
+      { title: 'Empresas cadastradas', path: '/business/companies', kind: 'lista' },
+      { title: 'Cadastrar empresa', path: '/business/companies-form', kind: 'formulario' },
+      { title: 'Filiais', path: '/business/branches', kind: 'lista' },
+      { title: 'Documentos da empresa', path: '/business/companydocuments', kind: 'lista' },
+      { title: 'Ofertas do catalogo', path: '/business/catalogoffers', kind: 'lista' },
+      { title: 'Usuarios da empresa', path: '/business/usercompanymemberships', kind: 'configuracao' },
+    ],
+  },
+  {
+    slug: 'permissions',
+    title: 'Permissoes',
+    category: 'Configuracoes',
+    state: 'mandatory',
+    screens: [
+      { title: 'Papeis de acesso', path: '/permissions/roles', kind: 'configuracao' },
+      { title: 'Permissoes', path: '/permissions/permissions', kind: 'configuracao' },
+      { title: 'Usuarios e papeis', path: '/permissions/userroles', kind: 'configuracao' },
+      { title: 'Politicas de acesso', path: '/permissions/accesspolicies', kind: 'configuracao' },
+      { title: 'Alcadas de aprovacao', path: '/permissions/approvallimits', kind: 'configuracao' },
+    ],
+  },
+  {
+    slug: 'finance',
+    title: 'Financeiro',
+    category: 'Gestao',
+    state: 'active',
+    screens: [
+      { title: 'Visao financeira', path: '/finance/finance', kind: 'visao_geral' },
+      { title: 'Carteiras', path: '/finance/wallets', kind: 'lista' },
+      { title: 'Lancamentos do livro-razão', path: '/finance/ledgerentries', kind: 'lista' },
+      { title: 'Faturas', path: '/finance/invoices', kind: 'lista' },
+      { title: 'Split de pagamento', path: '/finance/splits', kind: 'lista' },
+      { title: 'Escrow', path: '/finance/escrows', kind: 'lista' },
+    ],
+  },
+  {
+    slug: 'marketplace',
+    title: 'Marketplace',
+    category: 'Operacao',
+    state: 'active',
+    screens: [
+      { title: 'Visao do marketplace', path: '/marketplace/marketplace', kind: 'visao_geral' },
+      { title: 'Lojas', path: '/marketplace/stores', kind: 'lista' },
+      { title: 'Produtos', path: '/marketplace/products', kind: 'lista' },
+      { title: 'Cadastrar produto', path: '/marketplace/products-form', kind: 'formulario' },
+      { title: 'Pedidos', path: '/marketplace/orders', kind: 'lista' },
+      { title: 'Avaliacoes', path: '/marketplace/reviews', kind: 'lista' },
+      { title: 'Disputas', path: '/marketplace/disputes', kind: 'lista' },
+    ],
+  },
+  {
+    slug: 'erp',
+    title: 'ERP',
+    category: 'Gestao',
+    state: 'recommended',
+    screens: [
+      { title: 'Visao do ERP', path: '/erp/erp', kind: 'visao_geral' },
+      { title: 'Contas', path: '/erp/accounts', kind: 'lista' },
+      { title: 'Centros de custo', path: '/erp/costcenters', kind: 'lista' },
+      { title: 'Contas a pagar', path: '/erp/payables', kind: 'lista' },
+      { title: 'Contas a receber', path: '/erp/receivables', kind: 'lista' },
+      { title: 'Documentos fiscais', path: '/erp/fiscaldocuments', kind: 'relatorio' },
+    ],
+  },
+  {
+    slug: 'stock',
+    title: 'Estoque',
+    category: 'Operacao',
+    state: 'recommended',
+    screens: [
+      { title: 'Visao de estoque', path: '/stock/stock', kind: 'visao_geral' },
+      { title: 'Produtos de catalogo', path: '/stock/catalogproducts', kind: 'lista' },
+      { title: 'Fornecedores', path: '/stock/suppliers', kind: 'lista' },
+      { title: 'Regras de preco', path: '/stock/pricerules', kind: 'lista' },
+      { title: 'Pedidos a fornecedores', path: '/stock/supplierorders', kind: 'lista' },
+    ],
+  },
+  {
+    slug: 'delivery',
+    title: 'Entregas',
+    category: 'Operacao',
+    state: 'recommended',
+    screens: [
+      { title: 'Visao de entregas', path: '/delivery/delivery', kind: 'visao_geral' },
+      { title: 'Solicitacoes de entrega', path: '/delivery/deliveryrequests', kind: 'lista' },
+      { title: 'Cotacoes', path: '/delivery/quotes', kind: 'lista' },
+      { title: 'Atribuicoes', path: '/delivery/assignments', kind: 'lista' },
+      { title: 'Comprovantes', path: '/delivery/proofs', kind: 'lista' },
+    ],
+  },
+  {
+    slug: 'jobs',
+    title: 'Vagas e candidatos',
+    category: 'Gestao',
+    state: 'recommended',
+    screens: [
+      { title: 'Visao de vagas', path: '/jobs/jobs', kind: 'visao_geral' },
+      { title: 'Vagas', path: '/jobs/jobpostings', kind: 'lista' },
+      { title: 'Publicar vaga', path: '/jobs/jobpostings-form', kind: 'formulario' },
+      { title: 'Candidaturas', path: '/jobs/applications', kind: 'lista' },
+      { title: 'Curriculos', path: '/jobs/resumes', kind: 'lista' },
+    ],
+  },
+  {
+    slug: 'bi',
+    title: 'Analises e indicadores',
+    category: 'Dados',
+    state: 'recommended',
+    screens: [
+      { title: 'Visao de indicadores', path: '/bi/bi', kind: 'visao_geral' },
+      { title: 'Paineis', path: '/bi/dashboards', kind: 'relatorio' },
+      { title: 'Indicadores', path: '/bi/indicators', kind: 'relatorio' },
+      { title: 'Conjuntos de dados', path: '/bi/datasets', kind: 'lista' },
+      { title: 'Exportacoes', path: '/bi/exports', kind: 'lista' },
+    ],
+  },
+  {
+    slug: 'api_hub',
+    title: 'Integracoes e APIs',
+    category: 'Configuracoes',
+    state: 'recommended',
+    screens: [
+      { title: 'Visao de integracoes', path: '/api_hub/api_hub', kind: 'visao_geral' },
+      { title: 'Clientes de API', path: '/api_hub/apiclients', kind: 'configuracao' },
+      { title: 'Chaves de API', path: '/api_hub/apikeys', kind: 'configuracao' },
+      { title: 'Webhooks', path: '/api_hub/webhooks', kind: 'configuracao' },
+      { title: 'Execucoes de integracao', path: '/api_hub/integrationruns', kind: 'relatorio' },
+    ],
+  },
 ];
 
+const categoryOrder: NavigationModule['category'][] = ['Operacao', 'Gestao', 'Dados', 'Configuracoes'];
+const visibleStates: NavigationModule['state'][] = ['mandatory', 'active', 'recommended'];
+
+const statusLabel: Record<NavigationModule['state'], string> = {
+  mandatory: 'Obrigatorio',
+  active: 'Ativo',
+  recommended: 'Recomendado',
+};
+
 const Navigation: React.FC = () => {
-  const [openModule, setOpenModule] = useState<string | null>(null);
+  const [openModule, setOpenModule] = useState<string | null>('business');
+  const [filter, setFilter] = useState('');
+
+  const groupedModules = useMemo(() => {
+    const normalizedFilter = filter.trim().toLowerCase();
+    const visibleModules = modulesData
+      .filter(module => visibleStates.includes(module.state))
+      .filter(module => {
+        if (!normalizedFilter) return true;
+        return module.title.toLowerCase().includes(normalizedFilter) || module.screens.some(screen => screen.title.toLowerCase().includes(normalizedFilter));
+      });
+
+    return categoryOrder.map(category => ({
+      category,
+      modules: visibleModules.filter(module => module.category === category),
+    })).filter(group => group.modules.length > 0);
+  }, [filter]);
 
   return (
-    <nav className="side-nav">
+    <nav className="side-nav" aria-label="Navegacao principal do painel empresarial">
       <div className="nav-header" style={{ padding: '24px 16px', borderBottom: '2px solid #17211c', marginBottom: '16px', background: '#126b45' }}>
-        <Link to="/" className="logo-container" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <img 
-            src="/assets/brand/all-in-one-logo-light-official.png" 
-            alt="All-in-One Logo" 
-            style={{ width: '100%', maxWidth: '120px', height: 'auto', display: 'block' }} 
-          />
-          <div style={{ color: '#fff', fontSize: '14px', fontWeight: 900, letterSpacing: '1px', textTransform: 'uppercase' }}>Business Unit</div>
+        <Link to="/" className="logo-container" style={{ display: 'flex', flexDirection: 'column', gap: '8px', textDecoration: 'none' }}>
+          <BrandLogo alt="All-in-One" maxWidth={120} />
+          <div style={{ color: '#fff', fontSize: '14px', fontWeight: 900, letterSpacing: '1px', textTransform: 'uppercase' }}>Unidade empresarial</div>
         </Link>
       </div>
+
       <div className="nav-section">
-        <h3>Painel Administrativo</h3>
-        <ul>
-          {modulesData.map(mod => (
-            <li key={mod.slug} className="nav-item-group" style={{ marginBottom: '4px' }}>
-              <div 
-                className={`module-link ${openModule === mod.slug ? 'active' : ''}`}
-                onClick={() => setOpenModule(openModule === mod.slug ? null : mod.slug)}
-                style={{ 
-                    cursor: 'pointer', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    padding: '12px 16px', 
-                    fontWeight: 700, 
-                    border: '2px solid transparent',
-                    background: openModule === mod.slug ? '#e2f2ea' : 'transparent',
-                    borderColor: openModule === mod.slug ? '#17211c' : 'transparent',
-                    boxShadow: openModule === mod.slug ? '4px 4px 0px #17211c' : 'none'
-                }}
-              >
-                <span className="icon" style={{ marginRight: '12px' }}>{mod.icon}</span>
-                <span className="title" style={{ flex: 1 }}>{mod.title}</span>
-                <span style={{ fontSize: '10px' }}>{openModule === mod.slug ? '▼' : '▶'}</span>
-              </div>
-              {openModule === mod.slug && (
-                <ul className="sub-menu" style={{ listStyle: 'none', padding: '8px 0', background: '#f9fafa', borderLeft: '2px solid #17211c', marginLeft: '24px' }}>
-                  {mod.screens.map(screen => (
-                    <li key={screen.path}>
-                      <Link to={screen.path} style={{ fontSize: '13px', padding: '8px 16px', display: 'block', color: '#536159', textDecoration: 'none' }}>
-                        {screen.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
+        <h3>Painel administrativo</h3>
+        <label style={{ display: 'block', padding: '0 16px 12px' }}>
+          <span style={{ display: 'block', fontSize: '12px', fontWeight: 800, marginBottom: '6px', color: '#536159' }}>Buscar modulo ou tela</span>
+          <input
+            aria-label="Buscar modulo ou tela"
+            value={filter}
+            onChange={event => setFilter(event.target.value)}
+            placeholder="Ex.: produtos, financeiro, vagas"
+            style={{ width: '100%', border: '2px solid #17211c', borderRadius: '10px', padding: '10px 12px', fontSize: '14px' }}
+          />
+        </label>
+
+        {groupedModules.map(group => (
+          <section key={group.category} aria-labelledby={`nav-${group.category}`}>
+            <h4 id={`nav-${group.category}`} style={{ padding: '12px 16px 6px', margin: 0, fontSize: '12px', color: '#536159', textTransform: 'uppercase', letterSpacing: '1px' }}>{group.category}</h4>
+            <ul>
+              {group.modules.map(module => (
+                <li key={module.slug} className="nav-item-group" style={{ marginBottom: '4px' }}>
+                  <button
+                    type="button"
+                    className={`module-link ${openModule === module.slug ? 'active' : ''}`}
+                    onClick={() => setOpenModule(openModule === module.slug ? null : module.slug)}
+                    aria-expanded={openModule === module.slug}
+                    style={{
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      width: '100%',
+                      padding: '12px 16px',
+                      fontWeight: 700,
+                      border: '2px solid transparent',
+                      background: openModule === module.slug ? '#e2f2ea' : 'transparent',
+                      borderColor: openModule === module.slug ? '#17211c' : 'transparent',
+                      boxShadow: openModule === module.slug ? '4px 4px 0px #17211c' : 'none',
+                      color: '#17211c',
+                      textAlign: 'left',
+                    }}
+                  >
+                    <span className="title" style={{ flex: 1 }}>{module.title}</span>
+                    <span style={{ marginRight: '8px', fontSize: '10px', color: '#536159' }}>{statusLabel[module.state]}</span>
+                    <span style={{ fontSize: '10px' }}>{openModule === module.slug ? '▼' : '▶'}</span>
+                  </button>
+                  {openModule === module.slug && (
+                    <ul className="sub-menu" style={{ listStyle: 'none', padding: '8px 0', background: '#f9fafa', borderLeft: '2px solid #17211c', marginLeft: '24px' }}>
+                      {module.screens.map(screen => (
+                        <li key={screen.path}>
+                          <Link to={screen.path} style={{ fontSize: '13px', padding: '8px 16px', display: 'block', color: '#536159', textDecoration: 'none' }}>
+                            {screen.title}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
     </nav>
   );
