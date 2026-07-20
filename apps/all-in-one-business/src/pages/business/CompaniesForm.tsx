@@ -4,6 +4,9 @@ import {
   type BusinessClassificationInput,
   recommendBusinessModules,
 } from '../../modules/moduleRecommendationRules';
+import { applyBusinessModuleRecommendations, businessModulesApiEnabled } from '../../modules/businessModuleApi';
+
+const DEMO_COMPANY_ID = '00000000-0000-4000-8000-000000000001';
 
 const businessKindOptions: Array<{ value: BusinessKind; label: string }> = [
   { value: 'physical_store', label: 'Loja física' },
@@ -71,6 +74,8 @@ const CompaniesForm: React.FC = () => {
   });
 
   const [savedMessage, setSavedMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [saving, setSaving] = useState(false);
   const recommendations = useMemo(() => recommendBusinessModules(form), [form]);
   const activeCount = recommendations.filter(module => ['mandatory', 'active'].includes(module.state)).length;
   const recommendedCount = recommendations.filter(module => module.state === 'recommended').length;
@@ -78,12 +83,26 @@ const CompaniesForm: React.FC = () => {
 
   const update = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setSavedMessage('');
+    setErrorMessage('');
     setForm(current => ({ ...current, [key]: value }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setSavedMessage('Cadastro validado localmente. A próxima integração deve enviar empresa, classificação e módulos para o API Hub com auditoria.');
+    setSaving(true);
+    setErrorMessage('');
+    try {
+      if (businessModulesApiEnabled) {
+        const result = await applyBusinessModuleRecommendations(DEMO_COMPANY_ID, form);
+        setSavedMessage(`Cadastro enviado ao back-end. ${result.modules.length} módulos foram classificados, aplicados e auditados para a empresa.`);
+        return;
+      }
+      setSavedMessage('Cadastro validado localmente. Configure VITE_API_HUB_URL e VITE_API_HUB_TOKEN para aplicar a classificação e os módulos no back-end Business.');
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Não foi possível aplicar os módulos no back-end. Seus dados foram preservados.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -164,15 +183,21 @@ const CompaniesForm: React.FC = () => {
           </label>
 
           {savedMessage && <div role="status" style={{ background: '#e2f2ea', border: '2px solid #126b45', padding: 12, marginBottom: 16, fontWeight: 700 }}>{savedMessage}</div>}
+          {errorMessage && <div role="alert" style={{ background: '#fee2e2', border: '2px solid #991b1b', padding: 12, marginBottom: 16, fontWeight: 700 }}>{errorMessage}</div>}
 
           <div className="actions-row" style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
             <button type="button" className="btn-secondary" style={{ padding: '10px 20px' }}>Salvar rascunho</button>
-            <button type="submit" className="btn-primary" style={{ padding: '10px 20px' }}>Concluir cadastro e aplicar módulos</button>
+            <button type="submit" className="btn-primary" disabled={saving} style={{ padding: '10px 20px' }}>
+              {saving ? 'Aplicando módulos...' : 'Concluir cadastro e aplicar módulos'}
+            </button>
           </div>
         </form>
 
         <aside style={{ background: '#fff', padding: 20, border: '3px solid #17211c', boxShadow: '6px 6px 0 #17211c' }}>
           <h2 style={{ color: '#126b45', marginBottom: 12 }}>Módulos sugeridos</h2>
+          <p style={{ color: '#536159', fontSize: 13, marginBottom: 12 }}>
+            {businessModulesApiEnabled ? 'Integração com back-end Business habilitada.' : 'Prévia local ativa; back-end será usado quando o API Hub estiver configurado.'}
+          </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginBottom: 16 }}>
             <strong>{activeCount}<br /><span style={{ color: '#536159', fontSize: 12 }}>ativos</span></strong>
             <strong>{recommendedCount}<br /><span style={{ color: '#536159', fontSize: 12 }}>recomendados</span></strong>
