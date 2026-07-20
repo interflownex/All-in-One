@@ -156,9 +156,9 @@ function App() {
     <>
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 24px', background: '#120B2E', borderBottom: '2px solid #22D3EE' }}>
         <div className="brand-group" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <img src="./assets/brand/all-in-one-logo-light-official.png" alt="All-in-One" decoding="async" style={{ height: '32px', width: 'auto' }} />
+          <img src="./assets/brand/all-in-one-logo-light-official.webp" alt="All-in-One" decoding="async" style={{ height: '32px', width: 'auto' }} />
           <div style={{ width: '2px', height: '24px', background: 'rgba(255,255,255,0.2)' }}></div>
-          <img src="./assets/brand/valley-logo-official.png" alt="Valley" decoding="async" style={{ height: '28px', width: 'auto' }} />
+          <img src="./assets/brand/valley-logo-official.webp" alt="Valley" decoding="async" style={{ height: '28px', width: 'auto' }} />
         </div>
         <nav style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <button className="btn-link" style={{ color: '#fff', fontWeight: currentView === 'consumer' ? 'bold' : 'normal' }} onClick={() => setCurrentView('consumer')}>Ofertas</button>

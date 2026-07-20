@@ -226,6 +226,22 @@ def validate() -> list[str]:
     embedded_javascript = "\n".join(path.read_text(encoding="utf-8") for path in embedded_web.rglob("*.js"))
     if "VITE_VALLEY_ALLOW_DEMO" in embedded_javascript:
         errors.append("bundle Android permite alterar o modo demonstrativo em tempo de execução")
+    embedded_brand = embedded_web / "assets" / "brand"
+    required_optimized_brand = {
+        "all-in-one-logo-light-official.webp",
+        "valley-logo-official.webp",
+    }
+    present_optimized_brand = {path.name for path in embedded_brand.glob("*.webp")}
+    if not required_optimized_brand.issubset(present_optimized_brand):
+        errors.append("bundle Android não contém todos os logotipos WebP otimizados")
+    embedded_pngs = sorted(path.name for path in embedded_brand.glob("*.png"))
+    if embedded_pngs:
+        errors.append("bundle Android ainda contém logotipos PNG não otimizados: " + ", ".join(embedded_pngs))
+    oversized_brand = sorted(
+        path.name for path in embedded_brand.glob("*.webp") if path.stat().st_size > 50_000
+    )
+    if oversized_brand:
+        errors.append("logotipos WebP excedem 50 KB: " + ", ".join(oversized_brand))
 
     permissions = re.findall(r'<uses-permission[^>]+android:name="([^"]+)"', manifest)
     unexpected = sorted(set(permissions) - {"android.permission.INTERNET"})
