@@ -270,6 +270,8 @@ def test_gateway_creates_marketplace_order_from_canonical_offer(monkeypatch) -> 
     )
 
     assert response.status_code == 201
+    assert response.headers["x-valley-signature-algorithm"] == "Ed25519"
+    assert response.headers["x-valley-response-signature"]
     assert response.json() == {
         "status": "created",
         "action": "buy",
@@ -334,6 +336,8 @@ def test_gateway_authorizes_pix_sandbox_using_server_side_order_data(monkeypatch
     )
 
     assert response.status_code == 200
+    assert response.headers["x-valley-signature-algorithm"] == "Ed25519"
+    assert response.headers["x-valley-response-signature"]
     assert response.json()["status"] == "paid"
     assert response.json()["provider_environment"] == "sandbox"
     pix_call = next(call for call in fake_client.posts if call[0].endswith("/psp/pix/authorize"))

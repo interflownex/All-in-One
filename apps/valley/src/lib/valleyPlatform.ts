@@ -139,6 +139,8 @@ const API_HUB_URL = import.meta.env.VITE_API_HUB_URL?.trim() ?? ''
 const ALLOW_DEMO = import.meta.env.DEV && import.meta.env.VITE_VALLEY_ALLOW_DEMO === 'true'
 const CATALOG_CACHE_PREFIX = 'valley.catalog.v1.'
 const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000
+const RESPONSE_SIGNATURE_MAX_AGE_SECONDS = 300
+let responseSigningKeyPromise: Promise<{ keyId: string; key: CryptoKey }> | null = null
 const DEMO_USERS_KEY = 'valley.demo.users'
 const DEMO_OFFERS_KEY = 'valley.demo.offers'
 const DEMO_ORDERS_KEY = 'valley.demo.orders'
@@ -722,7 +724,71 @@ async function fetchJson(path: string, init: RequestInit, token?: string) {
     const detail = typeof payload?.detail === 'string' ? payload.detail : `Falha HTTP ${response.status}`
     throw new Error(detail)
   }
+  if (isCriticalResponse(path, init.method)) {
+    await verifyCriticalResponse(payload, response.headers)
+  }
   return payload
+}
+
+function isCriticalResponse(path: string, method?: string) {
+  if ((method ?? 'GET').toUpperCase() === 'GET') return false
+  return path === '/gateway/catalog/actions' || path === '/gateway/payments/sandbox/authorize'
+}
+
+async function verifyCriticalResponse(payload: unknown, headers: Headers) {
+  const algorithm = headers.get('X-Valley-Signature-Algorithm')
+  const keyId = headers.get('X-Valley-Signature-Key-Id')
+  const timestamp = headers.get('X-Valley-Signature-Timestamp')
+  const signatureB64 = headers.get('X-Valley-Response-Signature')
+  if (algorithm !== 'Ed25519' || !keyId || !timestamp || !signatureB64) {
+    throw new Error('Resposta crítica sem assinatura válida.')
+  }
+  const timestampNumber = Number(timestamp)
+  const nowSeconds = Math.floor(Date.now() / 1000)
+  if (!Number.isSafeInteger(timestampNumber) || Math.abs(nowSeconds - timestampNumber) > RESPONSE_SIGNATURE_MAX_AGE_SECONDS) {
+    throw new Error('Resposta crítica expirada ou com horário inválido.')
+  }
+  const signingKey = await getResponseSigningKey()
+  if (signingKey.keyId !== keyId) throw new Error('Resposta crítica assinada por chave desconhecida.')
+  const body = new TextEncoder().encode(stableStringify(payload))
+  const digest = await window.crypto.subtle.digest('SHA-256', body)
+  const digestHex = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('')
+  const canonical = new TextEncoder().encode(`${timestamp}\n${digestHex}`)
+  const valid = await window.crypto.subtle.verify('Ed25519', signingKey.key, decodeBase64(signatureB64), canonical)
+  if (!valid) throw new Error('Assinatura da resposta crítica não confere.')
+}
+
+async function getResponseSigningKey() {
+  if (!responseSigningKeyPromise) {
+    responseSigningKeyPromise = fetch(`${API_HUB_URL}/gateway/security/response-signing-key`, {
+      headers: { Accept: 'application/json', 'X-Valley-Api-Version': '1' },
+    }).then(async (response) => {
+      if (!response.ok) throw new Error('Chave pública de respostas indisponível.')
+      const contract = await response.json()
+      if (contract.algorithm !== 'Ed25519' || typeof contract.key_id !== 'string' || typeof contract.public_key_b64 !== 'string') {
+        throw new Error('Contrato de chave pública inválido.')
+      }
+      const key = await window.crypto.subtle.importKey('raw', decodeBase64(contract.public_key_b64), 'Ed25519', false, ['verify'])
+      return { keyId: contract.key_id, key }
+    }).catch((error) => {
+      responseSigningKeyPromise = null
+      throw error
+    })
+  }
+  return responseSigningKeyPromise
+}
+
+function stableStringify(value: unknown): string {
+  if (value === null || typeof value !== 'object') return JSON.stringify(value)
+  if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`
+  const record = value as Record<string, unknown>
+  return `{${Object.keys(record).sort().map((key) => `${JSON.stringify(key)}:${stableStringify(record[key])}`).join(',')}}`
+}
+
+function decodeBase64(value: string): ArrayBuffer {
+  const binary = window.atob(value)
+  const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0))
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer
 }
 
 function readStorage<T>(key: string, fallback: T): T {

@@ -32,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from shared.runtime import create_module_app, get_config
 from shared.security import Actor
 from shared.valley_catalog import PUBLIC_RESOURCE_TYPES, offer_sort_key, valley_facets
+from shared.response_signing import public_key_contract, signed_json_response
 
 app = create_module_app("api_hub")
 
@@ -49,7 +50,19 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "DELETE", "PUT"],
     allow_headers=["*"],
+    expose_headers=[
+        "X-Valley-Signature-Algorithm",
+        "X-Valley-Signature-Key-Id",
+        "X-Valley-Signature-Timestamp",
+        "X-Valley-Response-Signature",
+    ],
 )
+
+
+@app.get("/gateway/security/response-signing-key")
+async def response_signing_key() -> dict[str, str]:
+    """Publica somente a chave pública necessária para validar respostas críticas."""
+    return public_key_contract()
 
 MODULES = [
     "ai_core", "bi", "bpm", "business", "crm", "delivery", "document", "erp",
@@ -811,7 +824,7 @@ async def commercial_insights() -> dict[str, Any]:
 async def create_catalog_action(
     body: CatalogActionRequest,
     token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
-) -> dict[str, Any]:
+) -> JSONResponse:
     """Cria o primeiro registro operacional sem concluir pagamento ou atendimento."""
     if str(token_payload.get("sub") or "") != str(body.customer_user_id):
         raise HTTPException(status_code=403, detail="A sessao nao pertence ao usuario da solicitacao.")
@@ -856,7 +869,7 @@ async def create_catalog_action(
                 ],
             },
         )
-        return {
+        return signed_json_response({
             "status": "created",
             "action": body.action,
             "target_module": "marketplace",
@@ -867,8 +880,8 @@ async def create_catalog_action(
             "payment_intent": {
                 "amount": price,
                 "order_id": resource.get("id"),
-            }
-        }
+            },
+        }, status_code=201)
 
     if body.action == "book" and offer.get("source_module") == "health":
         if not body.scheduled_at:
@@ -917,7 +930,7 @@ async def create_catalog_action(
         target_module = "services"
         resource_type = "service_contracts"
 
-    return {
+    return signed_json_response({
         "status": "created",
         "action": body.action,
         "target_module": target_module,
@@ -925,14 +938,14 @@ async def create_catalog_action(
         "resource_id": resource.get("id"),
         "next_step": "provider_confirmation",
         "message": "Solicitacao enviada. Voce recebera a confirmacao do prestador.",
-    }
+    }, status_code=201)
 
 
 @app.post("/gateway/payments/sandbox/authorize", dependencies=[Depends(rate_limiter)])
 async def authorize_catalog_payment(
     body: CatalogPaymentRequest,
     token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
-) -> dict[str, Any]:
+) -> JSONResponse:
     """Autoriza Pix sandbox e marca o pedido pago somente apos escrow aceito."""
     user_id = str(token_payload.get("sub") or "")
     actor_headers = {"X-Actor-User-Id": user_id}
@@ -944,11 +957,11 @@ async def authorize_catalog_payment(
     if not isinstance(order, dict) or str(order.get("user_id") or "") != user_id:
         raise HTTPException(status_code=403, detail="Pedido nao pertence ao consumidor autenticado.")
     if order.get("status") == "paid":
-        return {
+        return signed_json_response({
             "status": "paid",
             "order_id": str(body.order_id),
             "message": "Pagamento ja confirmado anteriormente.",
-        }
+        })
     if order.get("status") != "created":
         raise HTTPException(status_code=409, detail="Este pedido nao aceita pagamento no estado atual.")
 
@@ -1007,12 +1020,12 @@ async def authorize_catalog_payment(
             },
         },
     )
-    return {
+    return signed_json_response({
         "status": str(paid.get("status") if isinstance(paid, dict) else "paid"),
         "order_id": str(body.order_id),
         "provider_environment": "sandbox",
         "message": "Pagamento sandbox autorizado e protegido ate a conclusao do pedido.",
-    }
+    })
 
 @app.get("/gateway/telemetry/outbox")
 async def outbox_telemetry(limit: int = 100):

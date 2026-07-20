@@ -30,6 +30,13 @@ spec:
               key: api-hub-dsn
         - name: REDIS_URL
           value: "redis://all-in-one-cache.us-central1.cloudmemorystore.google.com:6379"
+        - name: ALL_IN_ONE_ENVIRONMENT
+          value: "production"
+        - name: VALLEY_RESPONSE_SIGNING_PRIVATE_KEY_B64
+          valueFrom:
+            secretKeyRef:
+              name: valley-response-signing
+              key: private-key-b64
         resources:
           limits:
             cpu: "1"

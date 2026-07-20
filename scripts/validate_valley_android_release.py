@@ -36,6 +36,9 @@ def validate() -> list[str]:
     play_integrity_policy_path = ROOT / "config" / "security" / "valley_play_integrity_policy.json"
     identity_manifest_path = ROOT / "infra" / "kubernetes" / "base" / "identity.yaml"
     dast_policy_path = ROOT / "config" / "security" / "valley_dast_policy.json"
+    response_signing_path = ROOT / "modules" / "shared" / "response_signing.py"
+    api_hub_path = ROOT / "modules" / "api_hub" / "main.py"
+    api_hub_manifest_path = ROOT / "infra" / "kubernetes" / "base" / "api-hub.yaml"
     catalog_source = ROOT / "apps" / "valley" / "src"
     gradle = gradle_path.read_text(encoding="utf-8")
     manifest = manifest_path.read_text(encoding="utf-8")
@@ -50,6 +53,9 @@ def validate() -> list[str]:
     play_integrity_policy = play_integrity_policy_path.read_text(encoding="utf-8")
     identity_manifest = identity_manifest_path.read_text(encoding="utf-8")
     dast_policy = dast_policy_path.read_text(encoding="utf-8")
+    response_signing = response_signing_path.read_text(encoding="utf-8")
+    api_hub = api_hub_path.read_text(encoding="utf-8")
+    api_hub_manifest = api_hub_manifest_path.read_text(encoding="utf-8")
     release_workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
     security_workflow = SECURITY_WORKFLOW.read_text(encoding="utf-8")
     dast_workflow = DAST_WORKFLOW.read_text(encoding="utf-8")
@@ -215,6 +221,27 @@ def validate() -> list[str]:
         '"pentest_equivalence": false',
     ):
         require(dast_policy, marker, dast_policy_path, errors)
+    for marker in (
+        "Ed25519PrivateKey",
+        "VALLEY_RESPONSE_SIGNING_PRIVATE_KEY_B64",
+        "canonical_response",
+        "X-Valley-Response-Signature",
+        "obrigatoria em producao",
+    ):
+        require(response_signing, marker, response_signing_path, errors)
+    for marker in (
+        "/gateway/security/response-signing-key",
+        "signed_json_response",
+        "expose_headers",
+    ):
+        require(api_hub, marker, api_hub_path, errors)
+    for marker in (
+        "ALL_IN_ONE_ENVIRONMENT",
+        "VALLEY_RESPONSE_SIGNING_PRIVATE_KEY_B64",
+        "name: valley-response-signing",
+        "key: private-key-b64",
+    ):
+        require(api_hub_manifest, marker, api_hub_manifest_path, errors)
 
     web_sources = "\n".join(
         path.read_text(encoding="utf-8")
@@ -232,6 +259,9 @@ def validate() -> list[str]:
         'loading="lazy"',
         'preload="none"',
         "Carregar mais ofertas",
+        "verifyCriticalResponse",
+        "window.crypto.subtle.verify('Ed25519'",
+        "RESPONSE_SIGNATURE_MAX_AGE_SECONDS",
     ):
         if marker not in web_sources:
             errors.append(f"frontend Valley sem requisito de catálogo/performance: {marker}")
