@@ -1,0 +1,36 @@
+{
+  "version": "2026-07-19",
+  "owner": "valley-mobile",
+  "providers": ["firebase-crashlytics", "firebase-analytics"],
+  "privacy": {
+    "default_collection_enabled": false,
+    "granular_consent": ["analytics", "crash_reports"],
+    "advertising_id_collection": false,
+    "ad_personalization": false,
+    "forbidden_fields": ["access_token", "refresh_token", "password", "email", "request_body", "response_body"]
+  },
+  "events": {
+    "api_request_completed": {
+      "allowed_parameters": ["route", "status_code", "duration_ms", "correlation_id"],
+      "availability_success": "status_code >= 200 && status_code < 500",
+      "latency_unit": "milliseconds"
+    }
+  },
+  "slos": {
+    "mobile_api_availability": {
+      "objective": "99.50%",
+      "window": "30d",
+      "sli": "successful api_request_completed / total api_request_completed",
+      "alert": "availability below 99.0% for 30m",
+      "runbook": "docs/OPERATIONS.md#valley-mobile"
+    },
+    "mobile_api_latency_p95": {
+      "objective": "p95 <= 1500ms",
+      "window": "7d",
+      "sli": "p95 duration_ms for api_request_completed",
+      "alert": "p95 above 2000ms for 30m",
+      "runbook": "docs/OPERATIONS.md#valley-mobile"
+    }
+  },
+  "release_evidence": ["mapping.txt", "consent-contract-test", "firebase-console-test-event"]
+}

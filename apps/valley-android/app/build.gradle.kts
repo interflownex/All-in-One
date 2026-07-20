@@ -5,6 +5,7 @@ plugins {
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.google.services)
+  alias(libs.plugins.firebase.crashlytics)
 }
 
 val releaseSigningProperties = Properties()
@@ -143,6 +144,8 @@ dependencies {
   implementation(libs.androidx.compose.material3)
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.auth)
+  implementation(libs.firebase.analytics)
+  implementation(libs.firebase.crashlytics)
   implementation(libs.googleid)
   implementation(libs.kotlinx.coroutines.play.services)
   implementation(libs.play.integrity)

@@ -241,6 +241,26 @@ SLOs de outbox e retencao reaproveitam alertas ja materializados em
 Finance e Jobs ficam definidos como contrato de observabilidade ate o cluster
 real expor as metricas finais e receber os PrometheusRules correspondentes.
 
+### Valley Mobile
+
+O contrato móvel fica em
+`config/observability/valley_mobile_observability.json`. Crashlytics e Analytics
+permanecem desativados até consentimento granular no aplicativo; recusa ou
+retirada apaga dados Analytics locais e relatórios de falha ainda não enviados.
+Publicidade personalizada, Advertising ID, credenciais, e-mail e corpos HTTP
+não fazem parte da telemetria.
+
+O evento `api_request_completed` contém somente rota normalizada, código HTTP,
+duração e `correlation_id`. O painel Firebase/BigQuery deve calcular
+disponibilidade e p95 pelas metas do contrato. Abra incidente se a
+disponibilidade ficar abaixo de 99,0% ou o p95 superar 2 segundos por 30
+minutos; relacione o `correlation_id` com os logs sanitizados do API Hub.
+
+Antes de promover uma release, confirme `mapping.txt`, execute os testes do
+contrato de consentimento e produza um evento de teste em dispositivo real com
+opt-in explícito. Não force crash em versão pública nem habilite coleta por
+Remote Config sem nova decisão do titular.
+
 ## Observabilidade Comercial
 
 `GET /gateway/insights/commercial` consolida Marketplace, CRM e BI para operacao

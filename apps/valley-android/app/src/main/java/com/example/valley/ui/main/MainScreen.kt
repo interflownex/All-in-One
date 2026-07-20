@@ -33,6 +33,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +42,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -62,6 +65,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.valley.R
+import com.example.valley.observability.ValleyObservability
 import com.example.valley.security.PlayIntegrityAttestor
 import com.example.valley.security.SecureSessionStore
 import com.example.valley.security.StoredSession
@@ -78,6 +82,7 @@ import java.security.MessageDigest
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.Locale
+import java.util.UUID
 
 private const val VALLEY_WEB_URL = "file:///android_asset/valley/index.html"
 private const val API_HUB_URL = "https://all-in-one-api-hub.web.app"
@@ -158,8 +163,11 @@ fun MainScreen(modifier: Modifier = Modifier) {
   var session by remember { mutableStateOf(loadValleySession(context)) }
   var authInProgress by rememberSaveable { mutableStateOf(false) }
   var authError by rememberSaveable { mutableStateOf<String?>(null) }
+  var telemetryConsent by remember { mutableStateOf(ValleyObservability.readConsent(context)) }
+  var showPrivacyControls by rememberSaveable { mutableStateOf(!telemetryConsent.decided) }
 
   LaunchedEffect(Unit) {
+    probeApiAvailability(context)
     session?.let { current ->
       runCatching { refreshValleySession(context, current) }
         .onSuccess { refreshed ->
@@ -181,6 +189,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
       modifier = modifier,
       loading = authInProgress,
       error = authError,
+      onPrivacy = { showPrivacyControls = true },
       onGoogleSignIn = {
         scope.launch {
           authInProgress = true
@@ -229,6 +238,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
     ConsumerShell(
       modifier = modifier,
       session = activeSession,
+      onPrivacy = { showPrivacyControls = true },
       onLogout = {
         scope.launch {
           runCatching {
@@ -252,6 +262,84 @@ fun MainScreen(modifier: Modifier = Modifier) {
       },
     )
   }
+
+  if (showPrivacyControls) {
+    PrivacyConsentDialog(
+      initialAnalytics = telemetryConsent.analytics,
+      initialCrashReports = telemetryConsent.crashReports,
+      canDismiss = telemetryConsent.decided,
+      onDismiss = { showPrivacyControls = false },
+      onSave = { analytics, crashReports ->
+        ValleyObservability.saveConsent(context, analytics, crashReports)
+        telemetryConsent = ValleyObservability.readConsent(context)
+        showPrivacyControls = false
+      },
+    )
+  }
+}
+
+private suspend fun probeApiAvailability(context: Context) = withContext(Dispatchers.IO) {
+  val correlationId = UUID.randomUUID().toString()
+  val startedAt = android.os.SystemClock.elapsedRealtime()
+  val connection = (URL("$API_HUB_URL/health").openConnection() as HttpURLConnection).apply {
+    requestMethod = "GET"
+    connectTimeout = 8_000
+    readTimeout = 8_000
+    setRequestProperty("Accept", "application/json")
+    setRequestProperty("X-Valley-Api-Version", "1")
+    setRequestProperty("X-Correlation-Id", correlationId)
+  }
+  try {
+    val statusCode = connection.responseCode
+    ValleyObservability.recordHttpResult(
+      correlationId = correlationId,
+      route = "/health",
+      statusCode = statusCode,
+      durationMs = android.os.SystemClock.elapsedRealtime() - startedAt,
+    )
+  } catch (throwable: Throwable) {
+    ValleyObservability.recordHttpResult(
+      correlationId = correlationId,
+      route = "/health",
+      statusCode = 0,
+      durationMs = android.os.SystemClock.elapsedRealtime() - startedAt,
+      failure = throwable,
+    )
+  } finally {
+    connection.disconnect()
+  }
+}
+
+@Composable
+private fun PrivacyConsentDialog(
+  initialAnalytics: Boolean,
+  initialCrashReports: Boolean,
+  canDismiss: Boolean,
+  onDismiss: () -> Unit,
+  onSave: (Boolean, Boolean) -> Unit,
+) {
+  var analytics by remember(initialAnalytics) { mutableStateOf(initialAnalytics) }
+  var crashReports by remember(initialCrashReports) { mutableStateOf(initialCrashReports) }
+  AlertDialog(
+    onDismissRequest = { if (canDismiss) onDismiss() },
+    title = { Text("Privacidade e telemetria") },
+    text = {
+      Column {
+        Text("Escolha separadamente o que deseja compartilhar. O app funciona normalmente se você recusar ambos.")
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Checkbox(checked = analytics, onCheckedChange = { analytics = it })
+          Text("Métricas anônimas de uso e disponibilidade")
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Checkbox(checked = crashReports, onCheckedChange = { crashReports = it })
+          Text("Falhas e diagnósticos técnicos sem conteúdo ou credenciais")
+        }
+        Text("Publicidade personalizada e identificador de anúncios permanecem desativados.")
+      }
+    },
+    confirmButton = { TextButton(onClick = { onSave(analytics, crashReports) }) { Text("Salvar escolhas") } },
+    dismissButton = if (canDismiss) ({ TextButton(onClick = onDismiss) { Text("Cancelar") } }) else null,
+  )
 }
 
 @Composable
@@ -259,6 +347,7 @@ private fun LoginScreen(
   modifier: Modifier = Modifier,
   loading: Boolean,
   error: String?,
+  onPrivacy: () -> Unit,
   onGoogleSignIn: () -> Unit,
   onEmailSubmit: (String, String, Boolean) -> Unit,
 ) {
@@ -371,6 +460,9 @@ private fun LoginScreen(
               style = MaterialTheme.typography.bodyMedium,
             )
           }
+          TextButton(onClick = onPrivacy, enabled = !loading) {
+            Text("Preferências de privacidade")
+          }
         }
       }
     }
@@ -403,6 +495,7 @@ private fun LoginScreen(
 private fun ConsumerShell(
   modifier: Modifier = Modifier,
   session: ValleySession,
+  onPrivacy: () -> Unit,
   onLogout: () -> Unit,
 ) {
   val context = LocalContext.current
@@ -443,6 +536,7 @@ private fun ConsumerShell(
           }
         },
         actions = {
+          TextButton(onClick = onPrivacy) { Text("Privacidade") }
           OutlinedButton(
             onClick = {
               webView?.evaluateJavascript("sessionStorage.clear(); localStorage.clear();", null)
@@ -639,44 +733,63 @@ private data class ValleyHttpException(val statusCode: Int, override val message
 
 private suspend fun postJson(context: Context, url: String, body: JSONObject): JSONObject {
   val integrityToken = PlayIntegrityAttestor(context).tokenFor(body.toString())
+  val correlationId = UUID.randomUUID().toString()
+  val route = URL(url).path.ifBlank { "/" }
+  val startedAt = android.os.SystemClock.elapsedRealtime()
   return withContext(Dispatchers.IO) {
-  val connection = (URL(url).openConnection() as HttpURLConnection).apply {
-    requestMethod = "POST"
-    connectTimeout = 15_000
-    readTimeout = 20_000
-    doOutput = true
-    setRequestProperty("Content-Type", "application/json")
-    setRequestProperty("Accept", "application/json")
-    setRequestProperty("X-Valley-Api-Version", "1")
-    setRequestProperty("X-Device-Fingerprint", valleyDeviceFingerprint(context))
-    integrityToken?.let { setRequestProperty("X-Play-Integrity-Token", it) }
-  }
-
-  connection.outputStream.use { stream ->
-    stream.write(body.toString().toByteArray(Charsets.UTF_8))
-  }
-
-  val responseCode = connection.responseCode
-  val responseText =
-    runCatching {
-      (if (responseCode in 200..299) connection.inputStream else connection.errorStream)
-        ?.bufferedReader()
-        ?.use { it.readText() }
-        .orEmpty()
-    }.getOrDefault("")
-
-  connection.disconnect()
-
-  if (responseCode !in 200..299) {
-    val detail =
-      runCatching { JSONObject(responseText).optString("detail") }
-        .getOrDefault("")
-        .ifBlank { "Falha HTTP $responseCode" }
-    throw ValleyHttpException(responseCode, detail)
-  }
-
-  if (responseText.isBlank()) return@withContext JSONObject()
-  return@withContext JSONObject(responseText)
+    val connection = (URL(url).openConnection() as HttpURLConnection).apply {
+      requestMethod = "POST"
+      connectTimeout = 15_000
+      readTimeout = 20_000
+      doOutput = true
+      setRequestProperty("Content-Type", "application/json")
+      setRequestProperty("Accept", "application/json")
+      setRequestProperty("X-Valley-Api-Version", "1")
+      setRequestProperty("X-Device-Fingerprint", valleyDeviceFingerprint(context))
+      setRequestProperty("X-Correlation-Id", correlationId)
+      integrityToken?.let { setRequestProperty("X-Play-Integrity-Token", it) }
+    }
+    try {
+      connection.outputStream.use { stream ->
+        stream.write(body.toString().toByteArray(Charsets.UTF_8))
+      }
+      val responseCode = connection.responseCode
+      val responseText =
+        runCatching {
+          (if (responseCode in 200..299) connection.inputStream else connection.errorStream)
+            ?.bufferedReader()
+            ?.use { it.readText() }
+            .orEmpty()
+        }.getOrDefault("")
+      ValleyObservability.recordHttpResult(
+        correlationId = correlationId,
+        route = route,
+        statusCode = responseCode,
+        durationMs = android.os.SystemClock.elapsedRealtime() - startedAt,
+      )
+      if (responseCode !in 200..299) {
+        val detail =
+          runCatching { JSONObject(responseText).optString("detail") }
+            .getOrDefault("")
+            .ifBlank { "Falha HTTP $responseCode" }
+        throw ValleyHttpException(responseCode, detail)
+      }
+      if (responseText.isBlank()) return@withContext JSONObject()
+      return@withContext JSONObject(responseText)
+    } catch (throwable: Throwable) {
+      if (throwable !is ValleyHttpException) {
+        ValleyObservability.recordHttpResult(
+          correlationId = correlationId,
+          route = route,
+          statusCode = 0,
+          durationMs = android.os.SystemClock.elapsedRealtime() - startedAt,
+          failure = throwable,
+        )
+      }
+      throw throwable
+    } finally {
+      connection.disconnect()
+    }
   }
 }
 
