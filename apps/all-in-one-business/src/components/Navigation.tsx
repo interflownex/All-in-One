@@ -11,7 +11,7 @@ type NavigationScreen = {
 type NavigationModule = {
   slug: string;
   title: string;
-  category: 'Operacao' | 'Gestao' | 'Dados' | 'Configuracoes';
+  category: 'Operação' | 'Gestão' | 'Dados' | 'Configurações';
   state: 'mandatory' | 'active' | 'recommended';
   screens: NavigationScreen[];
 };
@@ -20,40 +20,41 @@ const modulesData: NavigationModule[] = [
   {
     slug: 'business',
     title: 'Empresas',
-    category: 'Configuracoes',
+    category: 'Configurações',
     state: 'mandatory',
     screens: [
-      { title: 'Visao geral da empresa', path: '/business/business', kind: 'visao_geral' },
+      { title: 'Visão geral da empresa', path: '/business/business', kind: 'visao_geral' },
       { title: 'Empresas cadastradas', path: '/business/companies', kind: 'lista' },
-      { title: 'Cadastrar empresa', path: '/business/companies-form', kind: 'formulario' },
+      { title: 'Cadastre-se', path: '/business/companies-form', kind: 'formulario' },
       { title: 'Filiais', path: '/business/branches', kind: 'lista' },
       { title: 'Documentos da empresa', path: '/business/companydocuments', kind: 'lista' },
-      { title: 'Ofertas do catalogo', path: '/business/catalogoffers', kind: 'lista' },
-      { title: 'Usuarios da empresa', path: '/business/usercompanymemberships', kind: 'configuracao' },
+      { title: 'Ofertas do catálogo', path: '/business/catalogoffers', kind: 'lista' },
+      { title: 'Usuários da empresa', path: '/business/usercompanymemberships', kind: 'configuracao' },
+      { title: 'Módulos e recursos', path: '/business/businesspermissions', kind: 'configuracao' },
     ],
   },
   {
     slug: 'permissions',
-    title: 'Permissoes',
-    category: 'Configuracoes',
+    title: 'Permissões',
+    category: 'Configurações',
     state: 'mandatory',
     screens: [
-      { title: 'Papeis de acesso', path: '/permissions/roles', kind: 'configuracao' },
-      { title: 'Permissoes', path: '/permissions/permissions', kind: 'configuracao' },
-      { title: 'Usuarios e papeis', path: '/permissions/userroles', kind: 'configuracao' },
-      { title: 'Politicas de acesso', path: '/permissions/accesspolicies', kind: 'configuracao' },
-      { title: 'Alcadas de aprovacao', path: '/permissions/approvallimits', kind: 'configuracao' },
+      { title: 'Papéis de acesso', path: '/permissions/roles', kind: 'configuracao' },
+      { title: 'Permissões', path: '/permissions/permissions', kind: 'configuracao' },
+      { title: 'Usuários e papéis', path: '/permissions/userroles', kind: 'configuracao' },
+      { title: 'Políticas de acesso', path: '/permissions/accesspolicies', kind: 'configuracao' },
+      { title: 'Alçadas de aprovação', path: '/permissions/approvallimits', kind: 'configuracao' },
     ],
   },
   {
     slug: 'finance',
     title: 'Financeiro',
-    category: 'Gestao',
+    category: 'Gestão',
     state: 'active',
     screens: [
-      { title: 'Visao financeira', path: '/finance/finance', kind: 'visao_geral' },
+      { title: 'Visão financeira', path: '/finance/finance', kind: 'visao_geral' },
       { title: 'Carteiras', path: '/finance/wallets', kind: 'lista' },
-      { title: 'Lancamentos do livro-razão', path: '/finance/ledgerentries', kind: 'lista' },
+      { title: 'Lançamentos do livro-razão', path: '/finance/ledgerentries', kind: 'lista' },
       { title: 'Faturas', path: '/finance/invoices', kind: 'lista' },
       { title: 'Split de pagamento', path: '/finance/splits', kind: 'lista' },
       { title: 'Escrow', path: '/finance/escrows', kind: 'lista' },
@@ -62,25 +63,25 @@ const modulesData: NavigationModule[] = [
   {
     slug: 'marketplace',
     title: 'Marketplace',
-    category: 'Operacao',
+    category: 'Operação',
     state: 'active',
     screens: [
-      { title: 'Visao do marketplace', path: '/marketplace/marketplace', kind: 'visao_geral' },
+      { title: 'Visão do marketplace', path: '/marketplace/marketplace', kind: 'visao_geral' },
       { title: 'Lojas', path: '/marketplace/stores', kind: 'lista' },
       { title: 'Produtos', path: '/marketplace/products', kind: 'lista' },
       { title: 'Cadastrar produto', path: '/marketplace/products-form', kind: 'formulario' },
       { title: 'Pedidos', path: '/marketplace/orders', kind: 'lista' },
-      { title: 'Avaliacoes', path: '/marketplace/reviews', kind: 'lista' },
+      { title: 'Avaliações', path: '/marketplace/reviews', kind: 'lista' },
       { title: 'Disputas', path: '/marketplace/disputes', kind: 'lista' },
     ],
   },
   {
     slug: 'erp',
     title: 'ERP',
-    category: 'Gestao',
+    category: 'Gestão',
     state: 'recommended',
     screens: [
-      { title: 'Visao do ERP', path: '/erp/erp', kind: 'visao_geral' },
+      { title: 'Visão do ERP', path: '/erp/erp', kind: 'visao_geral' },
       { title: 'Contas', path: '/erp/accounts', kind: 'lista' },
       { title: 'Centros de custo', path: '/erp/costcenters', kind: 'lista' },
       { title: 'Contas a pagar', path: '/erp/payables', kind: 'lista' },
@@ -91,75 +92,75 @@ const modulesData: NavigationModule[] = [
   {
     slug: 'stock',
     title: 'Estoque',
-    category: 'Operacao',
+    category: 'Operação',
     state: 'recommended',
     screens: [
-      { title: 'Visao de estoque', path: '/stock/stock', kind: 'visao_geral' },
-      { title: 'Produtos de catalogo', path: '/stock/catalogproducts', kind: 'lista' },
+      { title: 'Visão de estoque', path: '/stock/stock', kind: 'visao_geral' },
+      { title: 'Produtos de catálogo', path: '/stock/catalogproducts', kind: 'lista' },
       { title: 'Fornecedores', path: '/stock/suppliers', kind: 'lista' },
-      { title: 'Regras de preco', path: '/stock/pricerules', kind: 'lista' },
+      { title: 'Regras de preço', path: '/stock/pricerules', kind: 'lista' },
       { title: 'Pedidos a fornecedores', path: '/stock/supplierorders', kind: 'lista' },
     ],
   },
   {
     slug: 'delivery',
     title: 'Entregas',
-    category: 'Operacao',
+    category: 'Operação',
     state: 'recommended',
     screens: [
-      { title: 'Visao de entregas', path: '/delivery/delivery', kind: 'visao_geral' },
-      { title: 'Solicitacoes de entrega', path: '/delivery/deliveryrequests', kind: 'lista' },
-      { title: 'Cotacoes', path: '/delivery/quotes', kind: 'lista' },
-      { title: 'Atribuicoes', path: '/delivery/assignments', kind: 'lista' },
+      { title: 'Visão de entregas', path: '/delivery/delivery', kind: 'visao_geral' },
+      { title: 'Solicitações de entrega', path: '/delivery/deliveryrequests', kind: 'lista' },
+      { title: 'Cotações', path: '/delivery/quotes', kind: 'lista' },
+      { title: 'Atribuições', path: '/delivery/assignments', kind: 'lista' },
       { title: 'Comprovantes', path: '/delivery/proofs', kind: 'lista' },
     ],
   },
   {
     slug: 'jobs',
     title: 'Vagas e candidatos',
-    category: 'Gestao',
+    category: 'Gestão',
     state: 'recommended',
     screens: [
-      { title: 'Visao de vagas', path: '/jobs/jobs', kind: 'visao_geral' },
+      { title: 'Visão de vagas', path: '/jobs/jobs', kind: 'visao_geral' },
       { title: 'Vagas', path: '/jobs/jobpostings', kind: 'lista' },
       { title: 'Publicar vaga', path: '/jobs/jobpostings-form', kind: 'formulario' },
       { title: 'Candidaturas', path: '/jobs/applications', kind: 'lista' },
-      { title: 'Curriculos', path: '/jobs/resumes', kind: 'lista' },
+      { title: 'Currículos', path: '/jobs/resumes', kind: 'lista' },
     ],
   },
   {
     slug: 'bi',
-    title: 'Analises e indicadores',
+    title: 'Análises e indicadores',
     category: 'Dados',
     state: 'recommended',
     screens: [
-      { title: 'Visao de indicadores', path: '/bi/bi', kind: 'visao_geral' },
-      { title: 'Paineis', path: '/bi/dashboards', kind: 'relatorio' },
+      { title: 'Visão de indicadores', path: '/bi/bi', kind: 'visao_geral' },
+      { title: 'Painéis', path: '/bi/dashboards', kind: 'relatorio' },
       { title: 'Indicadores', path: '/bi/indicators', kind: 'relatorio' },
       { title: 'Conjuntos de dados', path: '/bi/datasets', kind: 'lista' },
-      { title: 'Exportacoes', path: '/bi/exports', kind: 'lista' },
+      { title: 'Exportações', path: '/bi/exports', kind: 'lista' },
     ],
   },
   {
     slug: 'api_hub',
-    title: 'Integracoes e APIs',
-    category: 'Configuracoes',
+    title: 'Integrações e APIs',
+    category: 'Configurações',
     state: 'recommended',
     screens: [
-      { title: 'Visao de integracoes', path: '/api_hub/api_hub', kind: 'visao_geral' },
+      { title: 'Visão de integrações', path: '/api_hub/api_hub', kind: 'visao_geral' },
       { title: 'Clientes de API', path: '/api_hub/apiclients', kind: 'configuracao' },
       { title: 'Chaves de API', path: '/api_hub/apikeys', kind: 'configuracao' },
       { title: 'Webhooks', path: '/api_hub/webhooks', kind: 'configuracao' },
-      { title: 'Execucoes de integracao', path: '/api_hub/integrationruns', kind: 'relatorio' },
+      { title: 'Execuções de integração', path: '/api_hub/integrationruns', kind: 'relatorio' },
     ],
   },
 ];
 
-const categoryOrder: NavigationModule['category'][] = ['Operacao', 'Gestao', 'Dados', 'Configuracoes'];
+const categoryOrder: NavigationModule['category'][] = ['Operação', 'Gestão', 'Dados', 'Configurações'];
 const visibleStates: NavigationModule['state'][] = ['mandatory', 'active', 'recommended'];
 
 const statusLabel: Record<NavigationModule['state'], string> = {
-  mandatory: 'Obrigatorio',
+  mandatory: 'Obrigatório',
   active: 'Ativo',
   recommended: 'Recomendado',
 };
@@ -184,20 +185,23 @@ const Navigation: React.FC = () => {
   }, [filter]);
 
   return (
-    <nav className="side-nav" aria-label="Navegacao principal do painel empresarial">
+    <nav className="side-nav" aria-label="Navegação principal do painel empresarial">
       <div className="nav-header" style={{ padding: '24px 16px', borderBottom: '2px solid #17211c', marginBottom: '16px', background: '#126b45' }}>
         <Link to="/" className="logo-container" style={{ display: 'flex', flexDirection: 'column', gap: '8px', textDecoration: 'none' }}>
           <BrandLogo alt="All-in-One" maxWidth={120} />
           <div style={{ color: '#fff', fontSize: '14px', fontWeight: 900, letterSpacing: '1px', textTransform: 'uppercase' }}>Unidade empresarial</div>
+        </Link>
+        <Link to="/business/companies-form" className="a1-cta" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 16, minHeight: 42 }}>
+          Cadastre-se
         </Link>
       </div>
 
       <div className="nav-section">
         <h3>Painel administrativo</h3>
         <label style={{ display: 'block', padding: '0 16px 12px' }}>
-          <span style={{ display: 'block', fontSize: '12px', fontWeight: 800, marginBottom: '6px', color: '#536159' }}>Buscar modulo ou tela</span>
+          <span style={{ display: 'block', fontSize: '12px', fontWeight: 800, marginBottom: '6px', color: '#536159' }}>Buscar módulo ou tela</span>
           <input
-            aria-label="Buscar modulo ou tela"
+            aria-label="Buscar módulo ou tela"
             value={filter}
             onChange={event => setFilter(event.target.value)}
             placeholder="Ex.: produtos, financeiro, vagas"
