@@ -1,5 +1,8 @@
 name: Security
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
@@ -49,3 +52,34 @@ jobs:
           cache-dependency-path: ${{ matrix.app }}/package-lock.json
       - run: npm audit --omit=dev --audit-level=critical
         working-directory: ${{ matrix.app }}
+
+  valley-android-security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      security-events: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Inicializar CodeQL para Java e Kotlin
+        uses: github/codeql-action/init@v4
+        with:
+          languages: java-kotlin
+          build-mode: manual
+      - name: Submeter grafo completo de dependências Gradle
+        uses: gradle/actions/dependency-submission@v6
+        with:
+          build-root-directory: apps/valley-android
+          dependency-graph: ${{ github.event_name == 'pull_request' && 'generate-and-upload' || 'generate-and-submit' }}
+      - name: Validar, testar, analisar e empacotar Android
+        run: |
+          python scripts/validate_valley_android_release.py
+          apps/valley-android/gradlew -p apps/valley-android \
+            testDebugUnitTest lintDebug assembleDebug --no-daemon
+      - name: Publicar análise SAST CodeQL
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: valley-android-java-kotlin

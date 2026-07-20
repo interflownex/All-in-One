@@ -1,0 +1,14 @@
+{
+  "version": "2026-07-20",
+  "scanner": "OWASP ZAP Full Scan",
+  "authorized_target": "ephemeral Identity service inside the CI runner only",
+  "active_scan": true,
+  "maximum_duration_minutes": 25,
+  "blocking_severity": ["high", "critical"],
+  "report_retention_days": 30,
+  "synthetic_data_only": true,
+  "production_scan_allowed": false,
+  "required_evidence": ["report_json.json", "report_html.html", "report_md.md", "valley-zap-summary.json"],
+  "latest_local_evidence": "config/security/evidence/valley_dast_2026-07-20.json",
+  "pentest_equivalence": false
+}

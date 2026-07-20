@@ -1,0 +1,22 @@
+{
+  "executed_at": "2026-07-20T03:04:24-03:00",
+  "commit": "427ddedf2fbad77a8408dd12c0022fd8122b9da0",
+  "scanner": "OWASP ZAP Full Scan",
+  "scanner_image": "ghcr.io/zaproxy/zaproxy@sha256:8d387b1a63e3425beef4846e39719f5af2a787753af2d8b6558c6257d7a577a2",
+  "target": "ephemeral-loopback-identity",
+  "active_scan": true,
+  "spider_minutes": 1,
+  "gate": "fail-at-high",
+  "result": "approved",
+  "pass_rules": 141,
+  "alerts": {
+    "informational": 2,
+    "low": 0,
+    "medium": 0,
+    "high": 0,
+    "critical": 0
+  },
+  "contains_target_urls": false,
+  "contains_personal_data": false,
+  "pentest_equivalence": false
+}

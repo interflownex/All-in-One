@@ -58,6 +58,24 @@ O deploy precisa de uma identidade de workload com acesso à Play Integrity API,
 `VALLEY_PLAY_APP_SIGNING_CERT_SHA256` e `ALL_IN_ONE_ENV=production`. Arquivos de
 conta de serviço e tokens Play Integrity nunca devem entrar no Git ou nos logs.
 
+## Pipeline SAST, SCA e DAST do Valley
+
+O workflow `Security` executa CodeQL para Java/Kotlin, testes e lint Android,
+gera o APK debug e submete o grafo Gradle ao GitHub Dependency Graph. Em pull
+requests sem permissão de escrita, o grafo é somente gerado como artefato; em
+`main`, ele é submetido para alimentar alertas de dependências.
+
+O workflow `Valley DAST` inicia um Identity descartável dentro do runner e
+executa OWASP ZAP Full Scan com regras ativas. O alvo autorizado nunca é
+produção: somente o endereço interno efêmero do runner pode ser usado. O script
+`scripts/evaluate_zap_report.py` reprova relatório ausente ou achado High/
+Critical e cria um resumo sem URLs. Relatórios completos ficam retidos como
+artefatos por 30 dias para triagem restrita.
+
+DAST automatizado não equivale a pentest. A promoção pública continua exigindo
+avaliação humana independente, escopo assinado, reteste e relatório final sem
+segredos ou dados pessoais.
+
 ## Revisao De Permissoes Sensiveis
 
 A revisao RBAC/ABAC para dados sensiveis fica versionada em

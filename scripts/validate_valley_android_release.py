@@ -11,6 +11,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ANDROID = ROOT / "apps" / "valley-android"
 RELEASE_WORKFLOW = ROOT / ".github" / "workflows" / "valley-android-release.yml"
+SECURITY_WORKFLOW = ROOT / ".github" / "workflows" / "security.yml"
+DAST_WORKFLOW = ROOT / ".github" / "workflows" / "valley-dast.yml"
 
 
 def require(text: str, marker: str, source: Path, errors: list[str]) -> None:
@@ -33,6 +35,7 @@ def validate() -> list[str]:
     identity_main_path = ROOT / "modules" / "identity" / "main.py"
     play_integrity_policy_path = ROOT / "config" / "security" / "valley_play_integrity_policy.json"
     identity_manifest_path = ROOT / "infra" / "kubernetes" / "base" / "identity.yaml"
+    dast_policy_path = ROOT / "config" / "security" / "valley_dast_policy.json"
     catalog_source = ROOT / "apps" / "valley" / "src"
     gradle = gradle_path.read_text(encoding="utf-8")
     manifest = manifest_path.read_text(encoding="utf-8")
@@ -46,7 +49,10 @@ def validate() -> list[str]:
     identity_main = identity_main_path.read_text(encoding="utf-8")
     play_integrity_policy = play_integrity_policy_path.read_text(encoding="utf-8")
     identity_manifest = identity_manifest_path.read_text(encoding="utf-8")
+    dast_policy = dast_policy_path.read_text(encoding="utf-8")
     release_workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
+    security_workflow = SECURITY_WORKFLOW.read_text(encoding="utf-8")
+    dast_workflow = DAST_WORKFLOW.read_text(encoding="utf-8")
 
     for marker in (
         'create("staging")',
@@ -172,6 +178,29 @@ def validate() -> list[str]:
         "google-play-production",
     ):
         require(release_workflow, marker, RELEASE_WORKFLOW, errors)
+    for marker in (
+        "github/codeql-action/init@v4",
+        "languages: java-kotlin",
+        "gradle/actions/dependency-submission@v6",
+        "testDebugUnitTest lintDebug assembleDebug",
+        "github/codeql-action/analyze@v4",
+    ):
+        require(security_workflow, marker, SECURITY_WORKFLOW, errors)
+    for marker in (
+        "zaproxy/action-full-scan@v0.13.0",
+        "allow_issue_writing: false",
+        "fail_action: false",
+        'cmd_options: "-a -m 2 -T 5"',
+        "scripts/evaluate_zap_report.py",
+        "--fail-at high",
+    ):
+        require(dast_workflow, marker, DAST_WORKFLOW, errors)
+    for marker in (
+        '"active_scan": true',
+        '"production_scan_allowed": false',
+        '"pentest_equivalence": false',
+    ):
+        require(dast_policy, marker, dast_policy_path, errors)
 
     web_sources = "\n".join(
         path.read_text(encoding="utf-8")
