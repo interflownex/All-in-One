@@ -205,6 +205,8 @@ def test_gateway_aggregates_business_offer_with_consumer_filters(monkeypatch) ->
     )
 
     assert response.status_code == 200
+    assert response.headers["x-valley-signature-algorithm"] == "Ed25519"
+    assert response.headers["x-valley-response-signature"]
     payload = response.json()
     assert payload["partial"] is True
     assert payload["total"] == 2

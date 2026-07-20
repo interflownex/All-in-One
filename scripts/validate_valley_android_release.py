@@ -37,6 +37,7 @@ def validate() -> list[str]:
     identity_manifest_path = ROOT / "infra" / "kubernetes" / "base" / "identity.yaml"
     dast_policy_path = ROOT / "config" / "security" / "valley_dast_policy.json"
     response_signing_path = ROOT / "modules" / "shared" / "response_signing.py"
+    media_cdn_path = ROOT / "modules" / "shared" / "media_cdn.py"
     api_hub_path = ROOT / "modules" / "api_hub" / "main.py"
     api_hub_manifest_path = ROOT / "infra" / "kubernetes" / "base" / "api-hub.yaml"
     catalog_source = ROOT / "apps" / "valley" / "src"
@@ -54,6 +55,7 @@ def validate() -> list[str]:
     identity_manifest = identity_manifest_path.read_text(encoding="utf-8")
     dast_policy = dast_policy_path.read_text(encoding="utf-8")
     response_signing = response_signing_path.read_text(encoding="utf-8")
+    media_cdn = media_cdn_path.read_text(encoding="utf-8")
     api_hub = api_hub_path.read_text(encoding="utf-8")
     api_hub_manifest = api_hub_manifest_path.read_text(encoding="utf-8")
     release_workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
@@ -242,6 +244,16 @@ def validate() -> list[str]:
         "key: private-key-b64",
     ):
         require(api_hub_manifest, marker, api_hub_manifest_path, errors)
+    for marker in (
+        "VALLEY_MEDIA_CDN_BASE_URL",
+        'parsed.scheme != "https"',
+        "normalize_offer_media",
+        "IMAGE_EXTENSIONS",
+        "VIDEO_EXTENSIONS",
+    ):
+        require(media_cdn, marker, media_cdn_path, errors)
+    for marker in ("VALLEY_MEDIA_CDN_BASE_URL", "configMapKeyRef", "name: valley-media-cdn", "key: base-url"):
+        require(api_hub_manifest, marker, api_hub_manifest_path, errors)
 
     web_sources = "\n".join(
         path.read_text(encoding="utf-8")
@@ -262,6 +274,7 @@ def validate() -> list[str]:
         "verifyCriticalResponse",
         "window.crypto.subtle.verify('Ed25519'",
         "RESPONSE_SIGNATURE_MAX_AGE_SECONDS",
+        "safeMediaUrl",
     ):
         if marker not in web_sources:
             errors.append(f"frontend Valley sem requisito de catálogo/performance: {marker}")

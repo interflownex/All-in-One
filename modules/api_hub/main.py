@@ -33,6 +33,7 @@ from shared.runtime import create_module_app, get_config
 from shared.security import Actor
 from shared.valley_catalog import PUBLIC_RESOURCE_TYPES, offer_sort_key, valley_facets
 from shared.response_signing import public_key_contract, signed_json_response
+from shared.media_cdn import normalize_offer_media
 
 app = create_module_app("api_hub")
 
@@ -181,7 +182,8 @@ def _catalog_offer_key(offer: dict[str, Any]) -> str:
 def merge_catalog_offers(results: list[list[dict[str, Any]]]) -> list[dict[str, Any]]:
     merged: dict[str, dict[str, Any]] = {}
     for offers in results:
-        for offer in offers:
+        for raw_offer in offers:
+            offer = normalize_offer_media(raw_offer)
             key = _catalog_offer_key(offer)
             current = merged.get(key)
             if current is None or (
@@ -519,7 +521,7 @@ async def aggregate_catalog_offers(
     price_max: float | None = None,
     availability: str | None = None,
     verified_only: bool = False,
-) -> dict[str, Any]:
+) -> JSONResponse:
     """Agrega as vitrines publicas dos modulos no contrato unico do Valley."""
     query_values = locals()
     forwarded_params = {
@@ -571,7 +573,7 @@ async def aggregate_catalog_offers(
         if error is not None
     ]
     page = merged[offset : offset + limit]
-    return {
+    return signed_json_response({
         "data": page,
         "total": len(merged),
         "limit": limit,
@@ -583,7 +585,7 @@ async def aggregate_catalog_offers(
             for module, offers, error in clean_responses
         ],
         "failures": failures,
-    }
+    })
 
 
 @app.get("/gateway/consumer/orders", dependencies=[Depends(rate_limiter)])

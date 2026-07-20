@@ -14,6 +14,7 @@ import {
   isDemoModeEnabled,
   listOffers,
   moduleShowcase,
+  safeMediaUrl,
   type Offer,
   type PaymentIntent,
 } from './lib/valleyPlatform'
@@ -283,10 +284,12 @@ function App() {
               {offers.length > 0 ? offers.map((offer) => (
                 <article className="offer-card" key={offer.offer_id} style={{ display: 'flex', flexDirection: 'column' }}>
                   <div className="media-container" style={{ position: 'relative', height: '160px', overflow: 'hidden', borderRadius: '12px', marginBottom: '12px', border: '1px solid #d4ddd8' }}>
-                    <img src={offer.metadata?.image_url} alt={offer.title} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    {offer.metadata?.video_url && (
+                    {safeMediaUrl(offer.metadata?.image_url) && (
+                      <img src={safeMediaUrl(offer.metadata?.image_url)} alt={offer.title} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    )}
+                    {safeMediaUrl(offer.metadata?.video_url) && (
                       <video
-                        src={offer.metadata.video_url}
+                        src={safeMediaUrl(offer.metadata?.video_url)}
                         preload="none"
                         muted
                         loop

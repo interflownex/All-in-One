@@ -37,6 +37,11 @@ spec:
             secretKeyRef:
               name: valley-response-signing
               key: private-key-b64
+        - name: VALLEY_MEDIA_CDN_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: valley-media-cdn
+              key: base-url
         resources:
           limits:
             cpu: "1"

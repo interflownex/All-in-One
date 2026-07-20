@@ -243,6 +243,17 @@ export function isDemoModeEnabled() {
   return ALLOW_DEMO && (!API_HUB_URL || window.localStorage.getItem(DEMO_MODE_KEY) === 'true')
 }
 
+export function safeMediaUrl(value?: string): string | undefined {
+  if (!value) return undefined
+  try {
+    const url = new URL(value)
+    if (url.protocol !== 'https:' || url.username || url.password) return undefined
+    return url.href
+  } catch {
+    return undefined
+  }
+}
+
 export async function signInWithEmail(email: string, password: string, createAccount: boolean): Promise<DemoSession> {
   const normalizedEmail = email.trim().toLowerCase()
   validateEmail(normalizedEmail)
@@ -731,6 +742,7 @@ async function fetchJson(path: string, init: RequestInit, token?: string) {
 }
 
 function isCriticalResponse(path: string, method?: string) {
+  if (path.startsWith('/gateway/catalog/offers?')) return true
   if ((method ?? 'GET').toUpperCase() === 'GET') return false
   return path === '/gateway/catalog/actions' || path === '/gateway/payments/sandbox/authorize'
 }
