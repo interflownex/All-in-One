@@ -1,0 +1,22 @@
+{
+  "version": "2026-07-20",
+  "owner": "identity-security",
+  "package_name": "com.example.valley",
+  "protected_routes": ["/registrations", "/auth/login", "/auth/refresh", "/auth/logout"],
+  "production_enforcement": "fail-closed",
+  "maximum_token_age_seconds": 120,
+  "required_verdicts": {
+    "requestPackageName": "com.example.valley",
+    "requestHash": "sha256-base64url-of-exact-request-body",
+    "appRecognitionVerdict": "PLAY_RECOGNIZED",
+    "certificateSha256Digest": "VALLEY_PLAY_APP_SIGNING_CERT_SHA256",
+    "deviceRecognitionVerdict": "MEETS_DEVICE_INTEGRITY",
+    "appLicensingVerdict": "LICENSED when evaluated"
+  },
+  "rejected_app_access_risks": ["UNKNOWN_CAPTURING", "UNKNOWN_CONTROLLING"],
+  "authentication": "Application Default Credentials with playintegrity scope",
+  "audit": {
+    "allowed": ["reason", "correlation_id"],
+    "forbidden": ["integrity_token", "request_body", "email", "device_fingerprint"]
+  }
+}

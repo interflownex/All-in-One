@@ -43,6 +43,7 @@
 - `POST /auth/logout` revoga a sessao no servidor; apenas o hash SHA-256 do refresh token e persistido.
 - `POST /mfa/setup` cria fator TOTP do proprio titular com segredo aleatorio cifrado em AES-GCM e validade de dez minutos.
 - `POST /mfa/verify` rejeita replay e emite novo access token com a claim `mfa_verified=true` vinculada a sessao ativa.
+- Cadastro, login, refresh e logout exigem `X-Play-Integrity-Token` em producao. O token e decodificado pelo Google com ADC e vinculado ao corpo exato por `requestHash`; pacote, certificado Play App Signing, frescor, licenca, integridade do app/dispositivo e risco de captura/controle sao validados antes da operacao.
 
 
         ## Eventos
@@ -85,7 +86,7 @@
         ## Integracoes e erros
 
         Eventos sao entregues pelo barramento RabbitMQ. Respostas esperadas:
-        `401` ator ausente, `404` recurso inexistente e `422` regra de validacao
+        `401` ator ausente, `403` veredito Play Integrity rejeitado, `404` recurso inexistente, `503` validador externo indisponivel e `422` regra de validacao
         ou politica anti-burla violada.
 
         ## Auditoria

@@ -152,6 +152,8 @@ paths:
   /registrations:
     post:
       security: []
+      parameters:
+        - $ref: '#/components/parameters/PlayIntegrityToken'
       responses:
         '201':
           description: All-in-One user registration pending validation
@@ -160,6 +162,7 @@ paths:
       security: []
       parameters:
         - $ref: '#/components/parameters/DeviceFingerprint'
+        - $ref: '#/components/parameters/PlayIntegrityToken'
       requestBody:
         required: true
         content:
@@ -175,9 +178,15 @@ paths:
                 $ref: '#/components/schemas/TokenResponse'
         '401':
           description: Credenciais invalidas
+        '403':
+          description: Veredito Play Integrity rejeitado
+        '503':
+          description: Validacao Play Integrity indisponivel
   /auth/refresh:
     post:
       security: []
+      parameters:
+        - $ref: '#/components/parameters/PlayIntegrityToken'
       requestBody:
         required: true
         content:
@@ -193,9 +202,15 @@ paths:
                 $ref: '#/components/schemas/TokenResponse'
         '401':
           description: Token expirado, revogado, reutilizado ou associado a outro dispositivo
+        '403':
+          description: Veredito Play Integrity rejeitado
+        '503':
+          description: Validacao Play Integrity indisponivel
   /auth/logout:
     post:
       security: []
+      parameters:
+        - $ref: '#/components/parameters/PlayIntegrityToken'
       requestBody:
         required: true
         content:
@@ -205,6 +220,10 @@ paths:
       responses:
         '200':
           description: Sessao revogada e logout auditado
+        '403':
+          description: Veredito Play Integrity rejeitado
+        '503':
+          description: Validacao Play Integrity indisponivel
   /mfa/setup:
     post:
       parameters:
@@ -265,6 +284,14 @@ components:
       schema:
         type: string
         minLength: 8
+    PlayIntegrityToken:
+      name: X-Play-Integrity-Token
+      in: header
+      required: true
+      description: Token opaco Standard Play Integrity vinculado ao corpo HTTP por requestHash.
+      schema:
+        type: string
+        minLength: 32
   schemas:
     CreatePayload:
       type: object

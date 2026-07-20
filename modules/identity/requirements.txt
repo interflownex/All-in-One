@@ -6,3 +6,4 @@ passlib[argon2]==1.7.4
 psycopg[binary]==3.3.4
 motor==3.7.0
 pymongo==4.11.1
+google-auth==2.56.0

@@ -59,6 +59,10 @@ CUSTOMIZED_ARTIFACTS = {
     "modules/finance/DATABASE.md",
     "modules/finance/EVENTS.md",
     "contracts/finance.md",
+    "modules/identity/CONTRACT.md",
+    "modules/identity/OPENAPI.yaml",
+    "modules/identity/EVENTS.md",
+    "contracts/identity.md",
     "modules/api_hub/OPENAPI.yaml",
     "modules/marketplace/OPENAPI.yaml",
     # Apps com shells vivos possuem estado operacional proprio alem do scaffold.
@@ -966,6 +970,7 @@ def render_requirements(slug: str) -> str:
             "psycopg[binary]==3.3.4\n"
             "motor==3.7.0\n"
             "pymongo==4.11.1\n"
+            "google-auth==2.56.0\n"
         )
     if slug == "jobs":
         return (

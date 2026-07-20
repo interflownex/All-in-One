@@ -6,6 +6,7 @@ import hashlib
 import hmac
 from uuid import UUID, uuid4
 from fastapi import Body, Request, HTTPException, Depends
+from starlette.concurrency import run_in_threadpool
 from pydantic import BaseModel
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -29,9 +30,45 @@ from auth_logic import (
     verify_totp,
 )
 from kyc_mfa_models import KYCSubmission, KYCStatus, MFASetup, MFAVerification
+from play_integrity import (
+    IntegrityConfigurationError,
+    IntegrityDecision,
+    IntegrityRejected,
+    PlayIntegrityVerifier,
+)
 
 app = create_module_app("identity")
 telemetry = TelemetryClient()
+app.extra["play_integrity_verifier"] = PlayIntegrityVerifier()
+
+
+async def require_play_integrity(request: Request) -> IntegrityDecision:
+    token = request.headers.get("X-Play-Integrity-Token")
+    verifier: PlayIntegrityVerifier = app.extra["play_integrity_verifier"]
+    try:
+        decision = await run_in_threadpool(verifier.verify, token, await request.body())
+    except IntegrityRejected as exc:
+        await telemetry.log_access(
+            "unknown",
+            "play_integrity",
+            "rejected",
+            _client_ip(request),
+            metadata={
+                "reason": exc.reason,
+                "correlation_id": request.headers.get("X-Correlation-Id", "")[:64],
+            },
+        )
+        raise HTTPException(
+            status_code=403,
+            detail="Integridade do aplicativo ou dispositivo rejeitada.",
+        ) from exc
+    except IntegrityConfigurationError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="Validacao de integridade indisponivel.",
+        ) from exc
+    request.state.play_integrity = decision
+    return decision
 
 
 def _public_user(user: dict[str, Any]) -> dict[str, Any]:
@@ -295,7 +332,8 @@ async def kyc_ocr_validate(request: Request, body: dict = Body(...)):
 @app.post("/auth/login", response_model=TokenResponse)
 async def login(
     body: LoginRequest, 
-    request: Request
+    request: Request,
+    _integrity: IntegrityDecision = Depends(require_play_integrity),
 ) -> Any:
     store = app.extra["store"]
     users = store.list("users")
@@ -326,7 +364,11 @@ async def login(
     return tokens
 
 @app.post("/auth/refresh", response_model=TokenResponse)
-async def refresh_session(body: RefreshTokenRequest, request: Request) -> Any:
+async def refresh_session(
+    body: RefreshTokenRequest,
+    request: Request,
+    _integrity: IntegrityDecision = Depends(require_play_integrity),
+) -> Any:
     store = app.extra["store"]
     session = _active_session_for(store, body.refresh_token)
     if session is None:
@@ -356,7 +398,11 @@ async def refresh_session(body: RefreshTokenRequest, request: Request) -> Any:
 
 
 @app.post("/auth/logout")
-async def logout(body: RefreshTokenRequest, request: Request) -> Any:
+async def logout(
+    body: RefreshTokenRequest,
+    request: Request,
+    _integrity: IntegrityDecision = Depends(require_play_integrity),
+) -> Any:
     store = app.extra["store"]
     session = _active_session_for(store, body.refresh_token)
     if session is not None:
@@ -372,7 +418,11 @@ def secrets_compare(left: str, right: str) -> bool:
     )
 
 @app.post("/registrations", status_code=201)
-async def register_user_with_hash(request: Request, body: dict[str, Any] = Body(...)):
+async def register_user_with_hash(
+    request: Request,
+    body: dict[str, Any] = Body(...),
+    _integrity: IntegrityDecision = Depends(require_play_integrity),
+):
     payload = body.model_dump() if hasattr(body, "model_dump") else dict(body)
     user_id = str(payload.get("id") or uuid4())
     payload["id"] = user_id

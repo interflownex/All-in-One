@@ -29,6 +29,10 @@ def validate() -> list[str]:
     runtime_integrity_path = source_root / "com" / "example" / "valley" / "security" / "RuntimeIntegrityGuard.kt"
     observability_path = source_root / "com" / "example" / "valley" / "observability" / "ValleyObservability.kt"
     observability_contract_path = ROOT / "config" / "observability" / "valley_mobile_observability.json"
+    play_integrity_server_path = ROOT / "modules" / "identity" / "play_integrity.py"
+    identity_main_path = ROOT / "modules" / "identity" / "main.py"
+    play_integrity_policy_path = ROOT / "config" / "security" / "valley_play_integrity_policy.json"
+    identity_manifest_path = ROOT / "infra" / "kubernetes" / "base" / "identity.yaml"
     catalog_source = ROOT / "apps" / "valley" / "src"
     gradle = gradle_path.read_text(encoding="utf-8")
     manifest = manifest_path.read_text(encoding="utf-8")
@@ -38,6 +42,10 @@ def validate() -> list[str]:
     runtime_integrity = runtime_integrity_path.read_text(encoding="utf-8")
     observability = observability_path.read_text(encoding="utf-8")
     observability_contract = observability_contract_path.read_text(encoding="utf-8")
+    play_integrity_server = play_integrity_server_path.read_text(encoding="utf-8")
+    identity_main = identity_main_path.read_text(encoding="utf-8")
+    play_integrity_policy = play_integrity_policy_path.read_text(encoding="utf-8")
+    identity_manifest = identity_manifest_path.read_text(encoding="utf-8")
     release_workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
 
     for marker in (
@@ -117,6 +125,32 @@ def validate() -> list[str]:
         '"mobile_api_latency_p95"',
     ):
         require(observability_contract, marker, observability_contract_path, errors)
+    for marker in (
+        "decodeIntegrityToken",
+        "PLAY_RECOGNIZED",
+        "MEETS_DEVICE_INTEGRITY",
+        "certificateSha256Digest",
+        "requestPackageName",
+        "requestHash",
+        "timestampMillis",
+        "UNKNOWN_CAPTURING",
+        "UNKNOWN_CONTROLLING",
+        "google.auth.default",
+    ):
+        require(play_integrity_server, marker, play_integrity_server_path, errors)
+    for marker in (
+        'request.headers.get("X-Play-Integrity-Token")',
+        "Depends(require_play_integrity)",
+        'app.extra["play_integrity_verifier"]',
+    ):
+        require(identity_main, marker, identity_main_path, errors)
+    for route in ("/registrations", "/auth/login", "/auth/refresh", "/auth/logout"):
+        require(play_integrity_policy, route, play_integrity_policy_path, errors)
+    for marker in (
+        "serviceAccountName: identity-play-integrity",
+        "iam.gke.io/gcp-service-account",
+    ):
+        require(identity_manifest, marker, identity_manifest_path, errors)
 
     kotlin_sources = "\n".join(path.read_text(encoding="utf-8") for path in source_root.rglob("*.kt"))
     if re.search(r'putString\(\s*"(?:token|password|refresh_token)"', kotlin_sources):

@@ -46,6 +46,18 @@ certificado, `PLAY_RECOGNIZED` e os verdicts de dispositivo antes de autorizar
 operações críticas. Não registrar mapas de processo, lista de aplicativos,
 tokens ou identificadores do titular como telemetria de integridade.
 
+A validação server-side está implementada no módulo Identity e segue
+`config/security/valley_play_integrity_policy.json`. Em produção, cadastro,
+login, refresh e logout operam em modo fail-closed. O serviço usa Application
+Default Credentials com o escopo `playintegrity` para chamar
+`decodeIntegrityToken`, compara o `requestHash` ao corpo HTTP exato e rejeita
+token expirado, pacote/certificado divergente, app não reconhecido, dispositivo
+sem `MEETS_DEVICE_INTEGRITY` ou risco de captura/controle desconhecido.
+
+O deploy precisa de uma identidade de workload com acesso à Play Integrity API,
+`VALLEY_PLAY_APP_SIGNING_CERT_SHA256` e `ALL_IN_ONE_ENV=production`. Arquivos de
+conta de serviço e tokens Play Integrity nunca devem entrar no Git ou nos logs.
+
 ## Revisao De Permissoes Sensiveis
 
 A revisao RBAC/ABAC para dados sensiveis fica versionada em

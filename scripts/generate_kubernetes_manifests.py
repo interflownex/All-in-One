@@ -36,6 +36,7 @@ def generate_deployment(
     readiness_mode="http",
     readiness_timeout_seconds=None,
     image_pull_policy="IfNotPresent",
+    service_account_name=None,
 ):
     if readiness_mode == "exec":
         readiness_probe = """\
@@ -54,6 +55,12 @@ def generate_deployment(
               port: {port}"""
     if readiness_timeout_seconds is not None:
         readiness_probe += f"\n            timeoutSeconds: {readiness_timeout_seconds}"
+    pod_identity = (
+        f"      serviceAccountName: {service_account_name}\n"
+        "      automountServiceAccountToken: true\n"
+        if service_account_name
+        else ""
+    )
     return f"""---
 apiVersion: apps/v1
 kind: Deployment
@@ -68,7 +75,7 @@ spec:
     metadata:
       labels: {{app: {name}}}
     spec:
-      containers:
+{pod_identity}      containers:
         - name: {name}
           image: {image}:latest
           imagePullPolicy: {image_pull_policy}
@@ -133,6 +140,20 @@ def main():
                 readiness_timeout_seconds=5,
                 image_pull_policy="Always",
             )
+        elif module == "identity":
+            content = f"""---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: identity-play-integrity
+  namespace: {NAMESPACE}
+  annotations:
+    iam.gke.io/gcp-service-account: identity-play-integrity@{PROJECT_ID}.iam.gserviceaccount.com
+""" + generate_deployment(
+                module,
+                f"{REPO}/{module}",
+                service_account_name="identity-play-integrity",
+            )
         else:
             content = generate_deployment(module, f"{REPO}/{module}")
         with open(f"{BASE_DIR}/{module}.yaml", "w") as f:
@@ -163,7 +184,11 @@ def main():
         print(f"Generated {worker}.yaml")
 
     # Update kustomization.yaml if it exists, or create it
-    resources = [f"{m}.yaml" for m in MODULES] + [f"{w}.yaml" for w in WORKERS.keys()] + ["platform.yaml", "retention-alerting.yaml"]
+    resources = (
+        [f"{m}.yaml" for m in MODULES]
+        + ["outbox-dispatcher.yaml", "outbox-alerting.yaml", "retention-worker.yaml"]
+        + ["platform.yaml", "retention-alerting.yaml"]
+    )
 
     kustomization = f"""apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
