@@ -26,6 +26,7 @@ def validate() -> list[str]:
     source_root = ANDROID / "app" / "src" / "main" / "java"
     secure_store_path = source_root / "com" / "example" / "valley" / "security" / "SecureSessionStore.kt"
     integrity_path = source_root / "com" / "example" / "valley" / "security" / "PlayIntegrityAttestor.kt"
+    runtime_integrity_path = source_root / "com" / "example" / "valley" / "security" / "RuntimeIntegrityGuard.kt"
     observability_path = source_root / "com" / "example" / "valley" / "observability" / "ValleyObservability.kt"
     observability_contract_path = ROOT / "config" / "observability" / "valley_mobile_observability.json"
     catalog_source = ROOT / "apps" / "valley" / "src"
@@ -34,6 +35,7 @@ def validate() -> list[str]:
     network = network_path.read_text(encoding="utf-8")
     secure_store = secure_store_path.read_text(encoding="utf-8")
     integrity = integrity_path.read_text(encoding="utf-8")
+    runtime_integrity = runtime_integrity_path.read_text(encoding="utf-8")
     observability = observability_path.read_text(encoding="utf-8")
     observability_contract = observability_contract_path.read_text(encoding="utf-8")
     release_workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
@@ -47,6 +49,8 @@ def validate() -> list[str]:
         "releaseRequested && !releaseSigningPropertiesFile.isFile",
         "VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER",
         "releaseRequested && playIntegrityCloudProjectNumber == \"0\"",
+        "VALLEY_PLAY_APP_SIGNING_CERT_SHA256",
+        "releaseRequested && !releaseCertificateSha256.matches",
         "implementation(libs.play.integrity)",
         "implementation(libs.firebase.analytics)",
         "implementation(libs.firebase.crashlytics)",
@@ -84,6 +88,18 @@ def validate() -> list[str]:
     for marker in ("IntegrityManagerFactory.createStandard", "setCloudProjectNumber", "setRequestHash"):
         require(integrity, marker, integrity_path, errors)
     for marker in (
+        "if (BuildConfig.DEBUG)",
+        "Debug.isDebuggerConnected()",
+        'File("/proc/self/status")',
+        'File("/proc/self/maps")',
+        '"frida"',
+        '"xposed"',
+        '"zygisk"',
+        "PackageManager.CERT_INPUT_SHA256",
+        "BuildConfig.PLAY_APP_SIGNING_CERT_SHA256",
+    ):
+        require(runtime_integrity, marker, runtime_integrity_path, errors)
+    for marker in (
         "setAnalyticsCollectionEnabled(consent.decided && consent.analytics)",
         "setCrashlyticsCollectionEnabled(consent.decided && consent.crashReports)",
         "deleteUnsentReports()",
@@ -114,6 +130,7 @@ def validate() -> list[str]:
     for marker in (
         "VALLEY_RELEASE_KEYSTORE_BASE64",
         "VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER",
+        "VALLEY_PLAY_APP_SIGNING_CERT_SHA256",
         "testReleaseUnitTest assembleRelease bundleRelease",
         "--require-release-signature",
         "anchore/sbom-action@v0",

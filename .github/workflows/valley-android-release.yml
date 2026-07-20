@@ -17,6 +17,7 @@ jobs:
     environment: google-play-production
     env:
       VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER: ${{ secrets.VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER }}
+      VALLEY_PLAY_APP_SIGNING_CERT_SHA256: ${{ secrets.VALLEY_PLAY_APP_SIGNING_CERT_SHA256 }}
       VALLEY_RELEASE_SIGNING_PROPERTIES: ${{ runner.temp }}/valley-release.properties
     steps:
       - uses: actions/checkout@v4

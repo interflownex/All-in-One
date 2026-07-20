@@ -29,6 +29,23 @@
 - Moderacao com OCR/IA, fila humana, apelacao e auditoria.
 - Pentest, SAST/SCA, DAST, testes de permissao e plano de incidente.
 
+## Valley Android e MASVS-R
+
+O contrato de resiliência do APK está em
+`config/security/valley_masvs_resilience.json`. Builds `release` exigem o
+SHA-256 do certificado de **Play App Signing** em
+`VALLEY_PLAY_APP_SIGNING_CERT_SHA256`; a chave de upload não deve ser usada
+nesse campo. Em execução, o app bloqueia fluxos sensíveis quando identifica
+certificado inesperado, depurador, tracer, indicadores de root ou bibliotecas
+de instrumentação conhecidas. A aplicação desses sinais é restrita a release
+para não impedir testes controlados.
+
+Esses controles são defesa em profundidade, não uma fronteira de confiança. O
+backend deve validar o token Play Integrity, conferir `requestHash`, pacote,
+certificado, `PLAY_RECOGNIZED` e os verdicts de dispositivo antes de autorizar
+operações críticas. Não registrar mapas de processo, lista de aplicativos,
+tokens ou identificadores do titular como telemetria de integridade.
+
 ## Revisao De Permissoes Sensiveis
 
 A revisao RBAC/ABAC para dados sensiveis fica versionada em

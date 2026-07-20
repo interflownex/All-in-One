@@ -11,6 +11,8 @@ plugins {
 val releaseSigningProperties = Properties()
 val playIntegrityCloudProjectNumber =
   providers.environmentVariable("VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER").orElse("0").get()
+val releaseCertificateSha256 =
+  providers.environmentVariable("VALLEY_PLAY_APP_SIGNING_CERT_SHA256").orElse("").get().replace(":", "").lowercase()
 require(playIntegrityCloudProjectNumber.matches(Regex("[0-9]+"))) {
   "VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER deve conter apenas digitos."
 }
@@ -41,6 +43,11 @@ if (releaseRequested && playIntegrityCloudProjectNumber == "0") {
     "Build release bloqueado: configure VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER para a Play Integrity API.",
   )
 }
+if (releaseRequested && !releaseCertificateSha256.matches(Regex("(?i)[0-9a-f]{64}"))) {
+  throw GradleException(
+    "Build release bloqueado: configure VALLEY_PLAY_APP_SIGNING_CERT_SHA256 com o SHA-256 do certificado Play App Signing.",
+  )
+}
 
 android {
     namespace = "com.example.valley"
@@ -53,6 +60,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         buildConfigField("long", "PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER", "${playIntegrityCloudProjectNumber}L")
+        buildConfigField("String", "PLAY_APP_SIGNING_CERT_SHA256", "\"${releaseCertificateSha256.lowercase()}\"")
     }
 
     signingConfigs {
