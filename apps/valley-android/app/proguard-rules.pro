@@ -1,4 +1,5 @@
-# Valley release: preserve only metadata required by Firebase/Credential Manager.
+# Regras de endurecimento do Valley Android.
+# Mantém apenas os metadados necessários para serialização e diagnóstico controlado.
 -keepattributes Signature,InnerClasses,EnclosingMethod
 -keepattributes RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations,AnnotationDefault
 
@@ -11,23 +12,35 @@
 -repackageclasses
 -adaptclassstrings
 
-# Strip logging calls from release bytecode.
+# Remove chamadas de log da bytecode de produção.
 -assumenosideeffects class android.util.Log {
-	public static boolean isLoggable(...);
-	public static int v(...);
-	public static int i(...);
-	public static int d(...);
-	public static int w(...);
-	public static int e(...);
-	public static int println(...);
+    public static boolean isLoggable(...);
+    public static int v(...);
+    public static int i(...);
+    public static int d(...);
+    public static int w(...);
+    public static int e(...);
+    public static int println(...);
 }
 
-# Keep only serialization/data-transfer contract required at runtime.
--keep class kotlinx.serialization.** { *; }
+# Kotlin serialization depende dos serializers gerados em tempo de compilação.
+-if @kotlinx.serialization.Serializable class **
+-keepclassmembers class <1> {
+    static <1>$Companion Companion;
+}
+-if @kotlinx.serialization.Serializable class ** {
+    static **$Companion Companion;
+}
+-keepclasseswithmembers class **$Companion {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+-keep,includedescriptorclasses class **$$serializer { *; }
 -keepclassmembers class ** {
-	@kotlinx.serialization.SerialName <fields>;
+    *** Companion;
 }
--keep @kotlinx.serialization.Serializable class * { *; }
 
-# Keep API response DTO package if present.
+# Preserva o contrato de transferência da API, quando presente.
 -keep class com.example.valley.api.dto.** { *; }
+-keepclassmembers class ** {
+    @kotlinx.serialization.SerialName <fields>;
+}

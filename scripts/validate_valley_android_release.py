@@ -83,10 +83,16 @@ def validate() -> list[str]:
         errors.append("release referencia explicitamente a assinatura debug")
     if re.search(r"packaging\s*\{[^}]*keepDebugSymbols", gradle, re.S):
         errors.append("configuracao global preserva simbolos nativos no release")
-    for variant in ("debug", "staging"):
+    require(
+        gradle,
+        'selector().withBuildType("debug")',
+        gradle_path,
+        errors,
+    )
+    for flavor in ("staging", "production"):
         require(
             gradle,
-            f'selector().withBuildType("{variant}")',
+            f'create("{flavor}")',
             gradle_path,
             errors,
         )

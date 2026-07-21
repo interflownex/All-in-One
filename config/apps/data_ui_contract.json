@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "locale": "pt-BR",
+  "updated_at": "2026-07-20",
+  "brand": {
+    "official_asset": "/assets/brand/all-in-one-logo-light-official.png",
+    "required_on_every_screen": true,
+    "allowed_operations": ["proportional_resize"],
+    "prohibited_operations": [
+      "crop",
+      "recolor",
+      "filter",
+      "rotate",
+      "distort",
+      "change_typography",
+      "change_composition",
+      "replace_asset"
+    ]
+  },
+  "screen_families": {
+    "overview": {
+      "required_regions": [
+        "page_header",
+        "period_and_scope_filters",
+        "decision_kpis",
+        "attention_required",
+        "recommended_actions",
+        "recent_activity",
+        "data_freshness"
+      ]
+    },
+    "report": {
+      "required_regions": [
+        "title_and_description",
+        "filters",
+        "summary",
+        "visualization",
+        "accessible_table",
+        "drill_down",
+        "export",
+        "data_source_and_updated_at"
+      ]
+    },
+    "list": {
+      "required_regions": [
+        "page_header",
+        "primary_action",
+        "search",
+        "filters",
+        "saved_views",
+        "data_table",
+        "pagination",
+        "bulk_actions",
+        "empty_state",
+        "error_state"
+      ]
+    },
+    "form": {
+      "required_regions": [
+        "page_header",
+        "progress_or_sections",
+        "field_groups",
+        "validation_summary",
+        "autosave_status",
+        "primary_action",
+        "secondary_action",
+        "success_state",
+        "error_recovery"
+      ],
+      "field_contract": [
+        "visible_label",
+        "required_or_optional",
+        "helper_text_when_needed",
+        "client_validation",
+        "server_validation",
+        "specific_error_message_pt_br",
+        "autocomplete",
+        "keyboard_access",
+        "draft_persistence",
+        "duplicate_submission_protection"
+      ]
+    }
+  },
+  "mandatory_states": [
+    "loading",
+    "partial_loading",
+    "empty_initial",
+    "empty_filtered",
+    "recoverable_error",
+    "permission_denied",
+    "integration_unavailable",
+    "success",
+    "confirmation",
+    "read_only",
+    "stale_data",
+    "offline_when_supported",
+    "edit_conflict",
+    "maintenance"
+  ],
+  "quality_gates": {
+    "no_dead_buttons": true,
+    "wcag": "2.2-AA",
+    "responsive_viewports": [320, 768, 1024, 1440],
+    "currency": "BRL",
+    "date_format": "dd/MM/yyyy",
+    "generated_metrics_without_source": false,
+    "production_fake_data": false,
+    "backend_authorization_required": true
+  }
+}

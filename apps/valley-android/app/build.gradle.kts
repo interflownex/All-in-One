@@ -68,6 +68,7 @@ android {
     namespace = "com.example.valley"
     compileSdk = 36
     buildToolsVersion = "36.1.0"
+
     defaultConfig {
         applicationId = "com.example.valley"
         minSdk = 24
@@ -77,6 +78,21 @@ android {
         buildConfigField("long", "PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER", "${playIntegrityCloudProjectNumber}L")
         buildConfigField("String", "PLAY_APP_SIGNING_CERT_SHA256", "\"${releaseCertificateSha256.lowercase()}\"")
         buildConfigField("String", "API_HUB_PINNED_SPKI_SHA256", "\"${apiHubPinnedSpkiSha256}\"")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions += "environment"
+    productFlavors {
+        create("staging") {
+            dimension = "environment"
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
+            manifestPlaceholders["appLabel"] = "Valley Staging"
+        }
+        create("production") {
+            dimension = "environment"
+            manifestPlaceholders["appLabel"] = "Valley"
+        }
     }
 
     signingConfigs {
@@ -92,25 +108,27 @@ android {
 
     buildTypes {
         debug {
+            applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
-        }
-        create("staging") {
-            initWith(getByName("debug"))
-            versionNameSuffix = "-staging"
-            matchingFallbacks += listOf("debug")
+            isDebuggable = true
         }
         release {
             isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
             signingConfig = signingConfigs.findByName("release")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     buildFeatures {
       compose = true
       aidl = false
@@ -122,6 +140,9 @@ android {
       resources {
         excludes += setOf(
           "/META-INF/{AL2.0,LGPL2.1}",
+          "META-INF/DEPENDENCIES",
+          "META-INF/LICENSE*",
+          "META-INF/NOTICE*",
           "**/README*",
           "**/CHANGELOG*",
           "**/docs/**",
@@ -135,9 +156,6 @@ android {
 
 androidComponents {
   onVariants(selector().withBuildType("debug")) { variant ->
-    variant.packaging.jniLibs.keepDebugSymbols.add("**/*.so")
-  }
-  onVariants(selector().withBuildType("staging")) { variant ->
     variant.packaging.jniLibs.keepDebugSymbols.add("**/*.so")
   }
 }
@@ -173,17 +191,17 @@ dependencies {
   implementation(libs.googleid)
   implementation(libs.kotlinx.coroutines.play.services)
   implementation(libs.play.integrity)
+
   // Tooling
   debugImplementation(libs.androidx.compose.ui.tooling)
-  // Instrumented tests
-  androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-  debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-  // Local tests: jUnit, coroutines, Android runner
+  // Local tests
   testImplementation(libs.junit)
   testImplementation(libs.kotlinx.coroutines.test)
 
-  // Instrumented tests: jUnit rules and runners
+  // Instrumented tests
+  androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+  debugImplementation(libs.androidx.compose.ui.test.manifest)
   androidTestImplementation(libs.androidx.test.core)
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.androidx.test.runner)
