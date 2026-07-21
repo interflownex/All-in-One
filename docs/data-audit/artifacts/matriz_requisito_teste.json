@@ -19,19 +19,21 @@
     "endpoints_with_response_model": 8,
     "api_model_fields": 115,
     "ui_candidates": 1067,
+    "ui_bindings_probable": 82,
+    "ui_bindings_unproven": 985,
     "ui_surfaces": 299,
     "ui_forms": 129,
     "ui_actions": 1111,
-    "ui_actions_incompatible": 129,
-    "ui_actions_without_frontend_permission_gate": 979,
+    "ui_actions_incompatible": 0,
+    "ui_actions_without_frontend_permission_gate": 680,
     "permission_operations": 794,
-    "permission_horizontal_read_gaps": 56,
-    "permission_operations_with_test_candidates": 128,
-    "test_functions": 482,
-    "tests_with_assertions": 451,
-    "tests_with_http_calls": 191,
-    "test_functions_in_execution_reports": 457,
-    "test_functions_passed": 424,
+    "permission_horizontal_read_gaps": 0,
+    "permission_operations_with_test_candidates": 129,
+    "test_functions": 484,
+    "tests_with_assertions": 453,
+    "tests_with_http_calls": 192,
+    "test_functions_in_execution_reports": 459,
+    "test_functions_passed": 426,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -540,6 +542,7 @@
       "requirement": "100% dos formulários tiverem coordenada de frontend",
       "test_candidates": [
         "tests/test_all_in_one_web_contract.py::test_home_and_dashboards_cover_the_authoritative_stitch_manifest",
+        "tests/test_all_in_one_web_contract.py::test_smartcrud_save_uses_the_shared_backend_contract",
         "tests/test_frontend_journeys_contract.py::test_frontend_contract_links_to_existing_e2e_and_pytest_evidence",
         "tests/test_frontend_journeys_contract.py::test_frontend_journeys_contract_covers_phase_4_apps",
         "tests/test_frontend_journeys_contract.py::test_frontend_shell_package_names_match_contract",
@@ -557,12 +560,12 @@
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_branding_pending_for_legacy_screens",
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_remote_gaps_without_credentials",
         "tests/test_stitch_orchestrator.py::test_versioned_manifest_matches_catalog_generation",
-        "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
-        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
+        "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
         "tests/test_all_in_one_web_contract.py::test_home_and_dashboards_cover_the_authoritative_stitch_manifest",
+        "tests/test_all_in_one_web_contract.py::test_smartcrud_save_uses_the_shared_backend_contract",
         "tests/test_frontend_journeys_contract.py::test_frontend_contract_links_to_existing_e2e_and_pytest_evidence",
         "tests/test_frontend_journeys_contract.py::test_frontend_journeys_contract_covers_phase_4_apps",
         "tests/test_frontend_journeys_contract.py::test_frontend_shell_package_names_match_contract",
@@ -580,8 +583,7 @@
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_branding_pending_for_legacy_screens",
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_remote_gaps_without_credentials",
         "tests/test_stitch_orchestrator.py::test_versioned_manifest_matches_catalog_generation",
-        "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
-        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
+        "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -599,7 +601,7 @@
         "tests/test_retention_jobs.py::test_module_rules_have_action_legal_hold_and_known_job",
         "tests/test_retention_worker.py::test_forbidden_action_requires_legal_review_even_without_current_hold",
         "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract",
-        "tests/test_validate_data_audit_delivery.py::test_ui_action_matrix_exposes_the_generic_save_contract_mismatch"
+        "tests/test_validate_data_audit_delivery.py::test_ui_action_matrix_proves_the_generic_save_contract_alignment"
       ],
       "candidate_count": 5,
       "passed_test_candidates": [
@@ -607,7 +609,7 @@
         "tests/test_retention_jobs.py::test_module_rules_have_action_legal_hold_and_known_job",
         "tests/test_retention_worker.py::test_forbidden_action_requires_legal_review_even_without_current_hold",
         "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract",
-        "tests/test_validate_data_audit_delivery.py::test_ui_action_matrix_exposes_the_generic_save_contract_mismatch"
+        "tests/test_validate_data_audit_delivery.py::test_ui_action_matrix_proves_the_generic_save_contract_alignment"
       ],
       "passed_candidate_count": 5,
       "trace_status": "candidatos_localizados",
@@ -622,11 +624,13 @@
       "requirement": "100% das permissões tiverem enforcement backend",
       "test_candidates": [
         "modules/business/tests/test_create_flow.py::test_business_membership_invite_and_role_assignment_flow",
+        "tests/test_all_in_one_web_contract.py::test_smartcrud_save_uses_the_shared_backend_contract",
         "tests/test_business_module_settings_backend.py::test_apply_and_patch_company_modules_endpoint",
         "tests/test_business_module_settings_backend.py::test_mandatory_module_cannot_be_hidden",
         "tests/test_business_module_settings_backend.py::test_recommend_business_modules_for_ecommerce",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_finance_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_identity_read",
+        "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_non_sensitive_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_uses_medical_roles_for_health_sensitive_read",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_approval_limits_require_mfa_for_write",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_enforcement_matrix_matches_runtime_constants",
@@ -638,16 +642,17 @@
         "tests/test_postgres_priority_stores_integration.py::test_permissions_role_create_update_and_soft_delete",
         "tests/test_sensitive_permissions_review.py::test_sensitive_permissions_review_matches_runtime_role_sets",
         "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract",
-        "tests/test_validate_data_audit_delivery.py::test_permission_matrix_exposes_horizontal_read_authorization_gaps",
-        "tests/test_valley_catalog.py::test_valley_catalog_hides_business_offers_without_publication_authorization"
+        "tests/test_validate_data_audit_delivery.py::test_permission_matrix_proves_horizontal_read_authorization_enforcement"
       ],
-      "candidate_count": 19,
+      "candidate_count": 20,
       "passed_test_candidates": [
+        "tests/test_all_in_one_web_contract.py::test_smartcrud_save_uses_the_shared_backend_contract",
         "tests/test_business_module_settings_backend.py::test_apply_and_patch_company_modules_endpoint",
         "tests/test_business_module_settings_backend.py::test_mandatory_module_cannot_be_hidden",
         "tests/test_business_module_settings_backend.py::test_recommend_business_modules_for_ecommerce",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_finance_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_identity_read",
+        "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_non_sensitive_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_uses_medical_roles_for_health_sensitive_read",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_approval_limits_require_mfa_for_write",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_enforcement_matrix_matches_runtime_constants",
@@ -658,10 +663,9 @@
         "tests/test_play_integrity_route_enforcement.py::test_login_route_forwards_opaque_token_and_exact_body_to_verifier",
         "tests/test_sensitive_permissions_review.py::test_sensitive_permissions_review_matches_runtime_role_sets",
         "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract",
-        "tests/test_validate_data_audit_delivery.py::test_permission_matrix_exposes_horizontal_read_authorization_gaps",
-        "tests/test_valley_catalog.py::test_valley_catalog_hides_business_offers_without_publication_authorization"
+        "tests/test_validate_data_audit_delivery.py::test_permission_matrix_proves_horizontal_read_authorization_enforcement"
       ],
-      "passed_candidate_count": 17,
+      "passed_candidate_count": 18,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1426,6 +1430,7 @@
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_finance_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_identity_read",
+        "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_non_sensitive_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_uses_medical_roles_for_health_sensitive_read",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_approval_limits_require_mfa_for_write",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_enforcement_matrix_matches_runtime_constants",
@@ -1436,14 +1441,15 @@
         "tests/test_play_integrity_route_enforcement.py::test_login_route_forwards_opaque_token_and_exact_body_to_verifier",
         "tests/test_postgres_priority_stores_integration.py::test_permissions_role_create_update_and_soft_delete",
         "tests/test_sensitive_permissions_review.py::test_sensitive_permissions_review_matches_runtime_role_sets",
-        "tests/test_validate_data_audit_delivery.py::test_permission_matrix_exposes_horizontal_read_authorization_gaps",
+        "tests/test_validate_data_audit_delivery.py::test_permission_matrix_proves_horizontal_read_authorization_enforcement",
         "tests/test_valley_catalog.py::test_valley_catalog_hides_business_offers_without_publication_authorization"
       ],
-      "candidate_count": 16,
+      "candidate_count": 17,
       "passed_test_candidates": [
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_finance_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_identity_read",
+        "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_non_sensitive_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_uses_medical_roles_for_health_sensitive_read",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_approval_limits_require_mfa_for_write",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_enforcement_matrix_matches_runtime_constants",
@@ -1453,10 +1459,10 @@
         "tests/test_play_integrity_route_enforcement.py::test_login_rejects_before_authentication_when_integrity_fails",
         "tests/test_play_integrity_route_enforcement.py::test_login_route_forwards_opaque_token_and_exact_body_to_verifier",
         "tests/test_sensitive_permissions_review.py::test_sensitive_permissions_review_matches_runtime_role_sets",
-        "tests/test_validate_data_audit_delivery.py::test_permission_matrix_exposes_horizontal_read_authorization_gaps",
+        "tests/test_validate_data_audit_delivery.py::test_permission_matrix_proves_horizontal_read_authorization_enforcement",
         "tests/test_valley_catalog.py::test_valley_catalog_hides_business_offers_without_publication_authorization"
       ],
-      "passed_candidate_count": 14,
+      "passed_candidate_count": 15,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1576,17 +1582,19 @@
       "subsection": "construir",
       "requirement": "Catalogar formulários",
       "test_candidates": [
+        "tests/test_all_in_one_web_contract.py::test_smartcrud_save_uses_the_shared_backend_contract",
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
         "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
-      "candidate_count": 3,
+      "candidate_count": 4,
       "passed_test_candidates": [
+        "tests/test_all_in_one_web_contract.py::test_smartcrud_save_uses_the_shared_backend_contract",
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
         "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
-      "passed_candidate_count": 3,
+      "passed_candidate_count": 4,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1598,15 +1606,17 @@
       "subsection": "construir",
       "requirement": "Modelar formulário dinâmico",
       "test_candidates": [
+        "tests/test_all_in_one_web_contract.py::test_smartcrud_save_uses_the_shared_backend_contract",
         "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
         "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
-      "candidate_count": 2,
+      "candidate_count": 3,
       "passed_test_candidates": [
+        "tests/test_all_in_one_web_contract.py::test_smartcrud_save_uses_the_shared_backend_contract",
         "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
         "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
-      "passed_candidate_count": 2,
+      "passed_candidate_count": 3,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",

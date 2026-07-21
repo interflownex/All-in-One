@@ -4,20 +4,20 @@
 
 | Dimensão | Percentual | Evidência/Lacuna |
 | --- | --- | --- |
-| bancos | 80 | registrada no backlog |
+| bancos | 80 | AUD-P0-000 |
 | schemas | 100 | comprovada |
-| tabelas_colecoes | 85 | registrada no backlog |
-| campos | 75 | registrada no backlog |
-| relacionamentos | 80 | registrada no backlog |
-| bindings_frontend | 0 | registrada no backlog |
-| campos_sensiveis | 0 | registrada no backlog |
-| auditoria | 40 | registrada no backlog |
-| calculos | 0 | registrada no backlog |
-| unidades | 0 | registrada no backlog |
-| regras_fiscais | 0 | registrada no backlog |
-| formularios | 10 | registrada no backlog |
-| acoes_ui | 0 | registrada no backlog |
-| permissoes_backend | 0 | registrada no backlog |
+| tabelas_colecoes | 85 | AUD-P0-000; AUD-P1-004; AUD-P1-005; AUD-P1-006 |
+| campos | 75 | AUD-P0-000; AUD-P1-003; AUD-P1-004; AUD-P1-005; AUD-P1-006 |
+| relacionamentos | 99 | AUD-P1-003; AUD-P1-006 |
+| bindings_frontend | 8 | AUD-P1-002 |
+| campos_sensiveis | 0 | AUD-P0-001; AUD-P1-007 |
+| auditoria | 51 | AUD-P1-004; AUD-P1-007 |
+| calculos | 0 | AUD-P1-004; AUD-P1-005 |
+| unidades | 0 | AUD-P1-005 |
+| regras_fiscais | 0 | AUD-P1-005 |
+| formularios | 99 | AUD-P1-002; AUD-P1-004; AUD-P1-005; AUD-P1-006 |
+| acoes_ui | 99 | AUD-P1-004 |
+| permissoes_backend | 99 | AUD-P1-004; AUD-P1-007 |
 | lacunas_com_backlog | 100 | comprovada |
 
 O status somente poderá mudar para `concluido` quando todas as dimensões alcançarem 100% com evidência. EVIDÊNCIAS: `artifacts/checklist_cobertura.json`.

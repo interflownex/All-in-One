@@ -234,13 +234,21 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
     const payload = { ...formData, status: 'Ativo', updated_at: new Date().toISOString(), image: `/assets/demo/modules/${module}.webp`, video: '/assets/demo/platform-overview.mp4' };
     try {
       if (API_HUB_URL && API_HUB_TOKEN) {
+        const actorId = actorIdFromToken();
+        if (!actorId) throw new Error('Token sem usuario autenticado para salvar o registro.');
+        const isEditing = Boolean(editingRecord?.id);
         const endpoint = editingRecord?.id
           ? `${API_HUB_URL}/${module}/resources/${resourceType}/${editingRecord.id}`
           : `${API_HUB_URL}/${module}/resources/${resourceType}`;
         const response = await fetch(endpoint, {
-          method: editingRecord?.id ? 'PUT' : 'POST',
-          headers: { 'Content-Type': 'application/json', ...apiHeaders() },
-          body: JSON.stringify(payload),
+          method: isEditing ? 'PATCH' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Correlation-Id': crypto.randomUUID(),
+            ...(isEditing ? {} : { 'X-Idempotency-Key': crypto.randomUUID() }),
+            ...apiHeaders(),
+          },
+          body: JSON.stringify(isEditing ? { payload } : { user_id: actorId, payload }),
         });
         if (!response.ok) throw new Error(`API Hub retornou HTTP ${response.status}.`);
       } else {

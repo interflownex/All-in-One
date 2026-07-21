@@ -200,6 +200,36 @@ def test_domain_endpoint_denies_third_party_finance_read() -> None:
     assert allowed.status_code == 200
 
 
+def test_domain_endpoint_denies_third_party_non_sensitive_read() -> None:
+    client = client_for("business")
+    owner = str(uuid4())
+    intruder = str(uuid4())
+
+    created = client.post(
+        "/resources/branches",
+        headers=headers(owner),
+        json={
+            "user_id": owner,
+            "payload": {
+                "name": "Filial isolada por ownership",
+            },
+        },
+    )
+    assert created.status_code == 201
+
+    denied = client.get(
+        f"/resources/branches/{created.json()['id']}",
+        headers=headers(intruder),
+    )
+    allowed = client.get(
+        f"/resources/branches/{created.json()['id']}",
+        headers=headers(intruder, "auditor"),
+    )
+
+    assert denied.status_code == 403
+    assert allowed.status_code == 200
+
+
 def test_domain_endpoint_denies_third_party_identity_read() -> None:
     client = client_for("identity")
     owner = str(uuid4())

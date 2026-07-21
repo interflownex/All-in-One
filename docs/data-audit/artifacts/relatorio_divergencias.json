@@ -2,9 +2,9 @@
   "version": 2,
   "status": "em_execucao",
   "counts": {
-    "total": 10,
-    "P0": 3,
-    "P1": 7,
+    "total": 8,
+    "P0": 2,
+    "P1": 6,
     "P2": 0,
     "P3": 0,
     "P4": 0
@@ -317,81 +317,6 @@
         "auditoria",
         "campos_sensiveis",
         "permissoes_backend"
-      ]
-    },
-    {
-      "id": "AUD-P1-008",
-      "priority": "P1",
-      "module": "frontend e runtime compartilhado",
-      "title": "Salvar Registro é incompatível com o contrato CRUD do backend",
-      "description": "Nas 129 superfícies de formulário, a criação envia payload plano sem user_id/payload e a edição usa PUT, enquanto o runtime exige ResourceCreate envelopado no POST e oferece PATCH com ResourcePatch.",
-      "evidence": [
-        "apps/all-in-one/src/components/SmartCRUD.tsx:241",
-        "modules/shared/runtime.py:101",
-        "modules/shared/runtime.py:479",
-        "modules/shared/runtime.py:512",
-        "docs/data-audit/artifacts/matriz_acao_ui_backend.json"
-      ],
-      "impact": "Criação e edição autenticadas podem retornar 422 ou 405 em todas as telas genéricas.",
-      "risk": "Botão principal não conclui a operação e o fallback local mascara a incompatibilidade.",
-      "proposal": "Definir adapter frontend tipado por entidade, usar POST {user_id,payload}, PATCH {payload}, idempotência quando transacional e testes HTTP/E2E por formulário.",
-      "dependencies": [
-        "bindings de campo",
-        "actor autenticado",
-        "contratos por entidade"
-      ],
-      "affected_files": [
-        "apps/all-in-one/src/components/SmartCRUD.tsx",
-        "modules/shared/runtime.py"
-      ],
-      "migration": "não aplicável",
-      "backend": "manter contratos explícitos e documentar métodos",
-      "frontend": "corrigir envelope, método, idempotência e gates de permissão",
-      "tests": "contrato HTTP e E2E para criação/edição das 129 superfícies",
-      "documentation": "09_FORMULARIOS_FRONTEND.md",
-      "acceptance": "Cada formulário cria e edita via contrato backend compatível, com permissão, estados, auditoria e teste aprovado.",
-      "status": "incompativel",
-      "owner_suggestion": "frontend e plataforma backend",
-      "dimensions": [
-        "bindings_frontend",
-        "formularios",
-        "acoes_ui",
-        "permissoes_backend"
-      ]
-    },
-    {
-      "id": "AUD-P0-009",
-      "priority": "P0",
-      "module": "runtime compartilhado",
-      "title": "Leitura por ID não aplica ownership para recursos não sensíveis",
-      "description": "A rota genérica GET por resource_id autentica o ator, mas _expose só restringe leitura de terceiro quando a regra é sensível. Das 61 entidades não sensíveis, 56 fora do módulo permissions não recebem verificação de proprietário, tenant ou papel nessa rota.",
-      "evidence": [
-        "modules/shared/runtime.py:502",
-        "modules/shared/runtime.py:305",
-        "docs/data-audit/artifacts/matriz_enforcement_permissao.json"
-      ],
-      "impact": "Um usuário autenticado que obtenha UUID alheio pode ler registro não sensível de outro usuário ou contexto.",
-      "risk": "IDOR e quebra de isolamento horizontal/multitenant.",
-      "proposal": "Aplicar autorização owner/operator ou política ABAC/tenant antes de _expose, negar por padrão e criar testes negativos para todas as classes de recurso.",
-      "dependencies": [
-        "contrato de ownership por entidade",
-        "tenant/business context"
-      ],
-      "affected_files": [
-        "modules/shared/runtime.py",
-        "tests"
-      ],
-      "migration": "não aplicável",
-      "backend": "enforcement deny-by-default em get_resource",
-      "frontend": "não confiar em ocultação de links ou UUIDs",
-      "tests": "teste negativo de leitura cruzada para as 56 entidades e teste positivo autorizado",
-      "documentation": "11_PERMISSOES_E_SEGURANCA.md",
-      "acceptance": "Toda leitura por ID valida owner, tenant ou papel/atributo explicitamente autorizado e possui teste negativo/positivo por política.",
-      "status": "incompativel_seguranca",
-      "owner_suggestion": "segurança e plataforma backend",
-      "dimensions": [
-        "permissoes_backend",
-        "auditoria"
       ]
     }
   ]

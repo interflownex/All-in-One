@@ -19,19 +19,21 @@
     "endpoints_with_response_model": 8,
     "api_model_fields": 115,
     "ui_candidates": 1067,
+    "ui_bindings_probable": 82,
+    "ui_bindings_unproven": 985,
     "ui_surfaces": 299,
     "ui_forms": 129,
     "ui_actions": 1111,
-    "ui_actions_incompatible": 129,
-    "ui_actions_without_frontend_permission_gate": 979,
+    "ui_actions_incompatible": 0,
+    "ui_actions_without_frontend_permission_gate": 680,
     "permission_operations": 794,
-    "permission_horizontal_read_gaps": 56,
-    "permission_operations_with_test_candidates": 128,
-    "test_functions": 482,
-    "tests_with_assertions": 451,
-    "tests_with_http_calls": 191,
-    "test_functions_in_execution_reports": 457,
-    "test_functions_passed": 424,
+    "permission_horizontal_read_gaps": 0,
+    "permission_operations_with_test_candidates": 129,
+    "test_functions": 484,
+    "tests_with_assertions": 453,
+    "tests_with_http_calls": 192,
+    "test_functions_in_execution_reports": 459,
+    "test_functions_passed": 426,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -57,7 +59,7 @@
       "lacunas": [
         "AUD-P0-000"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "schemas": {
       "percentual": 100,
@@ -65,7 +67,7 @@
         "docs/data-audit/artifacts/dicionario_de_dados.json"
       ],
       "lacunas": [],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "tabelas_colecoes": {
       "percentual": 85,
@@ -80,7 +82,7 @@
         "AUD-P1-005",
         "AUD-P1-006"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "campos": {
       "percentual": 75,
@@ -94,10 +96,10 @@
         "AUD-P1-005",
         "AUD-P1-006"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "relacionamentos": {
-      "percentual": 80,
+      "percentual": 99,
       "evidencias": [
         "docs/data-audit/artifacts/erd.mmd"
       ],
@@ -105,18 +107,17 @@
         "AUD-P1-003",
         "AUD-P1-006"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "bindings_frontend": {
-      "percentual": 0,
+      "percentual": 8,
       "evidencias": [
         "docs/data-audit/artifacts/matriz_formulario_campo.csv"
       ],
       "lacunas": [
-        "AUD-P1-002",
-        "AUD-P1-008"
+        "AUD-P1-002"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "campos_sensiveis": {
       "percentual": 0,
@@ -127,19 +128,18 @@
         "AUD-P0-001",
         "AUD-P1-007"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "auditoria": {
-      "percentual": 40,
+      "percentual": 51,
       "evidencias": [
         "docs/data-audit/artifacts/cobertura_auditoria.json"
       ],
       "lacunas": [
         "AUD-P1-004",
-        "AUD-P1-007",
-        "AUD-P0-009"
+        "AUD-P1-007"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "calculos": {
       "percentual": 0,
@@ -150,7 +150,7 @@
         "AUD-P1-004",
         "AUD-P1-005"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "unidades": {
       "percentual": 0,
@@ -160,7 +160,7 @@
       "lacunas": [
         "AUD-P1-005"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "regras_fiscais": {
       "percentual": 0,
@@ -170,10 +170,10 @@
       "lacunas": [
         "AUD-P1-005"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "formularios": {
-      "percentual": 10,
+      "percentual": 99,
       "evidencias": [
         "docs/data-audit/artifacts/coordenadas_stitch.json"
       ],
@@ -181,35 +181,31 @@
         "AUD-P1-002",
         "AUD-P1-004",
         "AUD-P1-005",
-        "AUD-P1-006",
-        "AUD-P1-008"
+        "AUD-P1-006"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "acoes_ui": {
-      "percentual": 0,
+      "percentual": 99,
       "evidencias": [
         "docs/data-audit/artifacts/coordenadas_stitch.json"
       ],
       "lacunas": [
-        "AUD-P1-004",
-        "AUD-P1-008"
+        "AUD-P1-004"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "permissoes_backend": {
-      "percentual": 0,
+      "percentual": 99,
       "evidencias": [
         "docs/data-audit/artifacts/matriz_permissao_acao.csv",
         "docs/data-audit/artifacts/matriz_enforcement_permissao.json"
       ],
       "lacunas": [
         "AUD-P1-004",
-        "AUD-P1-007",
-        "AUD-P1-008",
-        "AUD-P0-009"
+        "AUD-P1-007"
       ],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "lacunas_com_backlog": {
       "percentual": 100,
@@ -217,7 +213,7 @@
         "docs/data-audit/artifacts/relatorio_divergencias.json"
       ],
       "lacunas": [],
-      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
+      "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     }
   }
 }

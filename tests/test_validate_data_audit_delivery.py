@@ -185,33 +185,36 @@ def test_every_smartcrud_surface_has_a_stitch_coordinate_and_route() -> None:
     assert all(item["binding_status"] == "parcial" for item in data["coordinates"])
 
 
-def test_ui_action_matrix_exposes_the_generic_save_contract_mismatch() -> None:
+def test_ui_action_matrix_proves_the_generic_save_contract_alignment() -> None:
     matrix = ROOT / "docs" / "data-audit" / "artifacts" / "matriz_acao_ui_backend.json"
     data = __import__("json").loads(matrix.read_text(encoding="utf-8"))
     actions = data["actions"]
 
     assert data["counts"]["ui_actions"] == len(actions) == 1111
-    assert data["counts"]["ui_actions_incompatible"] == 129
-    assert data["counts"]["ui_actions_without_frontend_permission_gate"] == 979
+    assert data["counts"]["ui_actions_incompatible"] == 0
+    assert data["counts"]["ui_actions_without_frontend_permission_gate"] == 680
     incompatible = [item for item in actions if item["contract_status"] == "incompativel"]
-    assert len(incompatible) == data["counts"]["ui_forms"]
-    assert all(item["action"] == "Salvar Registro" for item in incompatible)
-    assert all("PUT" in item["method"] and "PATCH" in item["backend_contract"] for item in incompatible)
+    assert not incompatible
+    saves = [item for item in actions if item["action"] == "Salvar Registro"]
+    assert len(saves) == data["counts"]["ui_forms"]
+    assert all(item["contract_status"] == "compativel" for item in saves)
+    assert all("POST" in item["method"] and "PATCH" in item["method"] for item in saves)
+    assert all("user_id" in item["request_contract"] and "payload" in item["request_contract"] for item in saves)
     assert any(item["action"] == "Enviar candidatura" for item in actions)
 
 
-def test_permission_matrix_exposes_horizontal_read_authorization_gaps() -> None:
+def test_permission_matrix_proves_horizontal_read_authorization_enforcement() -> None:
     matrix = ROOT / "docs" / "data-audit" / "artifacts" / "matriz_enforcement_permissao.json"
     data = __import__("json").loads(matrix.read_text(encoding="utf-8"))
     operations = data["operations"]
 
     assert data["counts"]["permission_operations"] == len(operations) == 794
-    assert data["counts"]["permission_horizontal_read_gaps"] == 56
+    assert data["counts"]["permission_horizontal_read_gaps"] == 0
     assert data["counts"]["permission_operations_with_test_candidates"] > 0
     gaps = [item for item in operations if item["enforcement_status"] == "lacuna_autorizacao_horizontal"]
-    assert len(gaps) == 56
-    assert all(item["operation"] == "read" and item["method"] == "GET" for item in gaps)
-    assert all(not item["sensitive_resource"] and item["module"] != "permissions" for item in gaps)
+    assert not gaps
+    reads = [item for item in operations if item["operation"] == "read"]
+    assert reads and all(item["ownership_enforcement"] == "owner_or_operator antes da exposição" for item in reads)
     assert any(item["operation"] == "approve" and item["role_enforcement"] for item in operations)
 
 
@@ -293,7 +296,7 @@ def test_coverage_links_only_dimension_specific_gaps_and_evidence() -> None:
         assert item["evidencias"]
         assert item["metodo"]
         assert all(dimension in gaps_by_id[gap_id]["dimensions"] for gap_id in item["lacunas"])
-    assert coverage["dimensoes"]["bindings_frontend"]["lacunas"] == ["AUD-P1-002", "AUD-P1-008"]
+    assert coverage["dimensoes"]["bindings_frontend"]["lacunas"] == ["AUD-P1-002"]
     assert coverage["dimensoes"]["campos_sensiveis"]["lacunas"] == ["AUD-P0-001", "AUD-P1-007"]
     assert "AUD-P1-007" in coverage["dimensoes"]["auditoria"]["lacunas"]
     assert not any(item["percentual"] == 100 and item["lacunas"] for item in coverage["dimensoes"].values())

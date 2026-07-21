@@ -18,19 +18,21 @@
     "endpoints_with_response_model": 8,
     "api_model_fields": 115,
     "ui_candidates": 1067,
+    "ui_bindings_probable": 82,
+    "ui_bindings_unproven": 985,
     "ui_surfaces": 299,
     "ui_forms": 129,
     "ui_actions": 1111,
-    "ui_actions_incompatible": 129,
-    "ui_actions_without_frontend_permission_gate": 979,
+    "ui_actions_incompatible": 0,
+    "ui_actions_without_frontend_permission_gate": 680,
     "permission_operations": 794,
-    "permission_horizontal_read_gaps": 56,
-    "permission_operations_with_test_candidates": 128,
-    "test_functions": 482,
-    "tests_with_assertions": 451,
-    "tests_with_http_calls": 191,
-    "test_functions_in_execution_reports": 457,
-    "test_functions_passed": 424,
+    "permission_horizontal_read_gaps": 0,
+    "permission_operations_with_test_candidates": 129,
+    "test_functions": 484,
+    "tests_with_assertions": 453,
+    "tests_with_http_calls": 192,
+    "test_functions_in_execution_reports": 459,
+    "test_functions_passed": 426,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -991,7 +993,7 @@
       "function": "health",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:417"
+      "evidence": "modules/shared/runtime.py:427"
     },
     {
       "method": "GET",
@@ -1000,7 +1002,7 @@
       "function": "get_version",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:421"
+      "evidence": "modules/shared/runtime.py:431"
     },
     {
       "method": "GET",
@@ -1015,7 +1017,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:425"
+      "evidence": "modules/shared/runtime.py:435"
     },
     {
       "method": "GET",
@@ -1024,7 +1026,7 @@
       "function": "metrics",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:437"
+      "evidence": "modules/shared/runtime.py:447"
     },
     {
       "method": "GET",
@@ -1033,7 +1035,7 @@
       "function": "catalog",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:447"
+      "evidence": "modules/shared/runtime.py:457"
     },
     {
       "method": "POST",
@@ -1072,7 +1074,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:479"
+      "evidence": "modules/shared/runtime.py:489"
     },
     {
       "method": "GET",
@@ -1097,7 +1099,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:499"
     },
     {
       "method": "GET",
@@ -1122,7 +1124,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:502"
+      "evidence": "modules/shared/runtime.py:512"
     },
     {
       "method": "PATCH",
@@ -1159,7 +1161,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:524"
     },
     {
       "method": "DELETE",
@@ -1189,7 +1191,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:533"
+      "evidence": "modules/shared/runtime.py:545"
     },
     {
       "method": "POST",
@@ -1232,7 +1234,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:550"
+      "evidence": "modules/shared/runtime.py:562"
     },
     {
       "method": "GET",
@@ -1247,7 +1249,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:587"
+      "evidence": "modules/shared/runtime.py:599"
     },
     {
       "method": "GET",
@@ -1262,7 +1264,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:593"
+      "evidence": "modules/shared/runtime.py:605"
     },
     {
       "method": "POST",
@@ -1292,7 +1294,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:995"
+      "evidence": "modules/shared/runtime.py:1007"
     },
     {
       "method": "GET",
@@ -1312,7 +1314,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1017"
+      "evidence": "modules/shared/runtime.py:1029"
     },
     {
       "method": "POST",
@@ -1340,7 +1342,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1023"
+      "evidence": "modules/shared/runtime.py:1035"
     },
     {
       "method": "POST",
@@ -1368,7 +1370,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1035"
+      "evidence": "modules/shared/runtime.py:1047"
     },
     {
       "method": "POST",
@@ -1398,7 +1400,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1047"
+      "evidence": "modules/shared/runtime.py:1059"
     },
     {
       "method": "GET",
@@ -1418,7 +1420,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1057"
+      "evidence": "modules/shared/runtime.py:1069"
     },
     {
       "method": "PATCH",
@@ -1448,7 +1450,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1064"
+      "evidence": "modules/shared/runtime.py:1076"
     },
     {
       "method": "DELETE",
@@ -1473,7 +1475,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1083"
+      "evidence": "modules/shared/runtime.py:1095"
     },
     {
       "method": "POST",
@@ -1501,7 +1503,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:452"
+      "evidence": "modules/shared/runtime.py:462"
     },
     {
       "method": "POST",
@@ -1526,7 +1528,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:600"
+      "evidence": "modules/shared/runtime.py:612"
     },
     {
       "method": "POST",
@@ -1550,7 +1552,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:616"
+      "evidence": "modules/shared/runtime.py:628"
     },
     {
       "method": "POST",
@@ -1575,7 +1577,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:631"
+      "evidence": "modules/shared/runtime.py:643"
     },
     {
       "method": "POST",
@@ -1600,7 +1602,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:646"
+      "evidence": "modules/shared/runtime.py:658"
     },
     {
       "method": "POST",
@@ -1623,7 +1625,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:661"
+      "evidence": "modules/shared/runtime.py:673"
     },
     {
       "method": "POST",
@@ -1648,7 +1650,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:670"
+      "evidence": "modules/shared/runtime.py:682"
     },
     {
       "method": "POST",
@@ -1671,7 +1673,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:686"
+      "evidence": "modules/shared/runtime.py:698"
     },
     {
       "method": "POST",
@@ -1696,7 +1698,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:695"
+      "evidence": "modules/shared/runtime.py:707"
     },
     {
       "method": "POST",
@@ -1721,7 +1723,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:711"
+      "evidence": "modules/shared/runtime.py:723"
     },
     {
       "method": "POST",
@@ -1745,7 +1747,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:727"
+      "evidence": "modules/shared/runtime.py:739"
     },
     {
       "method": "POST",
@@ -1768,7 +1770,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:735"
+      "evidence": "modules/shared/runtime.py:747"
     },
     {
       "method": "POST",
@@ -1793,7 +1795,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:744"
+      "evidence": "modules/shared/runtime.py:756"
     },
     {
       "method": "POST",
@@ -1813,7 +1815,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:760"
+      "evidence": "modules/shared/runtime.py:772"
     },
     {
       "method": "POST",
@@ -1833,7 +1835,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:765"
+      "evidence": "modules/shared/runtime.py:777"
     },
     {
       "method": "POST",
@@ -1853,7 +1855,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:770"
+      "evidence": "modules/shared/runtime.py:782"
     },
     {
       "method": "POST",
@@ -1883,7 +1885,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:825"
+      "evidence": "modules/shared/runtime.py:837"
     },
     {
       "method": "GET",
@@ -1913,7 +1915,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:885"
+      "evidence": "modules/shared/runtime.py:897"
     },
     {
       "method": "GET",
@@ -1933,7 +1935,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:920"
+      "evidence": "modules/shared/runtime.py:932"
     },
     {
       "method": "GET",
@@ -1948,7 +1950,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:927"
+      "evidence": "modules/shared/runtime.py:939"
     },
     {
       "method": "GET",
@@ -1973,7 +1975,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:939"
+      "evidence": "modules/shared/runtime.py:951"
     },
     {
       "method": "GET",
@@ -2003,7 +2005,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:967"
+      "evidence": "modules/shared/runtime.py:979"
     },
     {
       "method": "GET",

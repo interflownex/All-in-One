@@ -44,49 +44,49 @@ marketplace,POST,/valley/orders/{order_id}/support,create_order_support_case,ord
 marketplace,GET,/valley/insights/commercial,commercial_insights,actor:Actor,,,modules/marketplace/main.py:71
 services,GET,/providers/{provider_id}/time-slots,get_time_slots,provider_id:str;date:str,,,modules/services/main.py:12
 services,POST,/providers/{provider_id}/reserve-slot,reserve_slot,provider_id:str;body:dict,,,modules/services/main.py:26
-shared,GET,/health,health,,,,modules/shared/runtime.py:417
-shared,GET,/version,get_version,,,,modules/shared/runtime.py:421
-shared,GET,/status,status,actor:Actor,,,modules/shared/runtime.py:425
-shared,GET,/metrics,metrics,,,,modules/shared/runtime.py:437
-shared,GET,/catalog,catalog,,,,modules/shared/runtime.py:447
-shared,POST,/resources/{resource_type},create_resource,resource_type:str;body:ResourceCreate;actor:Actor;x_idempotency_key:str | None;x_correlation_id:UUID | None,user_id;entity_id;payload,,modules/shared/runtime.py:479
-shared,GET,/resources/{resource_type},list_resources,resource_type:str;user_id:UUID | None;actor:Actor,,,modules/shared/runtime.py:489
-shared,GET,/resources/{resource_type}/{resource_id},get_resource,resource_type:str;resource_id:UUID;actor:Actor,,,modules/shared/runtime.py:502
-shared,PATCH,/resources/{resource_type}/{resource_id},patch_resource,resource_type:str;resource_id:UUID;body:ResourcePatch;actor:Actor;x_correlation_id:UUID | None,payload,,modules/shared/runtime.py:512
-shared,DELETE,/resources/{resource_type}/{resource_id},delete_resource,resource_type:str;resource_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:533
-shared,POST,/resources/{resource_type}/{resource_id}/actions/{action},transition_resource,resource_type:str;resource_id:UUID;action:str;body:ActionPayload;actor:Actor;x_correlation_id:UUID | None,reason;payload,,modules/shared/runtime.py:550
-shared,GET,/audit/events,audit_events,actor:Actor,,,modules/shared/runtime.py:587
-shared,GET,/events/outbox,outbox,actor:Actor,,,modules/shared/runtime.py:593
-shared,POST,/create,create_record,body:CreatePayload;actor:Actor;x_idempotency_key:str | None;x_correlation_id:UUID | None,,,modules/shared/runtime.py:995
-shared,GET,/list,list_records,user_id:UUID | None;actor:Actor,,,modules/shared/runtime.py:1017
-shared,POST,/approve,approve,body:DecisionPayload;actor:Actor;x_correlation_id:UUID | None,id;reason,,modules/shared/runtime.py:1023
-shared,POST,/reject,reject,body:DecisionPayload;actor:Actor;x_correlation_id:UUID | None,id;reason,,modules/shared/runtime.py:1035
-shared,POST,/audit,audit,body:AuditPayload;actor:Actor;x_correlation_id:UUID | None,action;resource_type;resource_id;payload,,modules/shared/runtime.py:1047
-shared,GET,/{resource_id},get_record,resource_id:UUID;actor:Actor,,,modules/shared/runtime.py:1057
-shared,PATCH,/{resource_id},patch_record,resource_id:UUID;body:PatchPayload;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1064
-shared,DELETE,/{resource_id},delete_record,resource_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1083
-shared,POST,/registrations,register_user,body:IdentityRegistration;x_correlation_id:UUID | None,full_name;email;password_hash;document_cpf;cpf_document;terms_accepted_at;lgpd_consent_at,,modules/shared/runtime.py:452
-shared,POST,/integrations/sandbox/kyc/person,sandbox_kyc_person,body:SandboxKycPersonPayload;actor:Actor,user_id;document;full_name;selfie_hash,,modules/shared/runtime.py:600
-shared,POST,/integrations/sandbox/kyb/business,sandbox_kyb_business,body:SandboxKybBusinessPayload;actor:Actor,company_id;cnpj;legal_name,,modules/shared/runtime.py:616
-shared,POST,/integrations/sandbox/psp/pix/authorize,sandbox_pix_authorize,body:SandboxPixPayload;actor:Actor,payment_id;payer_id;amount_brl;idempotency_key,,modules/shared/runtime.py:631
-shared,POST,/integrations/sandbox/psp/escrows,sandbox_escrow_create,body:SandboxEscrowPayload;actor:Actor,escrow_id;payer_id;beneficiary_id;amount_brl,,modules/shared/runtime.py:646
-shared,POST,/integrations/sandbox/psp/escrows/release,sandbox_escrow_release,body:SandboxEscrowReleasePayload;actor:Actor,escrow_id;amount_brl,,modules/shared/runtime.py:661
-shared,POST,/integrations/sandbox/fiscal/invoices,sandbox_fiscal_invoice,body:SandboxFiscalInvoicePayload;actor:Actor,invoice_id;document_type;amount_brl;issuer_document,,modules/shared/runtime.py:670
-shared,POST,/integrations/sandbox/ctps/classify,sandbox_ctps_classify,body:SandboxCtpsPayload;actor:Actor,resume_id;pdf_text,,modules/shared/runtime.py:686
-shared,POST,/integrations/sandbox/maps/route,sandbox_maps_route,body:SandboxRoutePayload;actor:Actor,route_id;origin;destination;vehicle_type,,modules/shared/runtime.py:695
-shared,POST,/integrations/sandbox/health/consents,sandbox_health_consent,body:SandboxClinicalConsentPayload;actor:Actor,patient_id;professional_id;purpose;ttl_days,,modules/shared/runtime.py:711
-shared,POST,/integrations/sandbox/api-hub/webhooks/sign,sandbox_api_hub_webhook_sign,body:SandboxWebhookSignPayload;actor:Actor,webhook_id;payload;secret,,modules/shared/runtime.py:727
-shared,POST,/integrations/sandbox/api-hub/api-key/verify,sandbox_api_hub_api_key_verify,body:SandboxApiKeyVerifyPayload;actor:Actor,api_key;allowed_hashes,,modules/shared/runtime.py:735
-shared,POST,/integrations/sandbox/suppliers/products,sandbox_supplier_product,body:SandboxSupplierProductPayload;actor:Actor,supplier_id;external_sku;cost_brl;available_quantity,,modules/shared/runtime.py:744
-shared,POST,/pricing/quote,calculate_delivery_quote,body:DeliveryQuoteRequest;actor:Actor,,,modules/shared/runtime.py:760
-shared,POST,/pricing/fare,calculate_mobility_fare,body:MobilityFareRequest;actor:Actor,,,modules/shared/runtime.py:765
-shared,POST,/pricing/commission,calculate_marketplace_commission,body:CommissionRequest;actor:Actor,,,modules/shared/runtime.py:770
-shared,POST,/resumes/{resume_id}/imports/ctps-digital,import_ctps_digital,resume_id:UUID;document:bytes;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:825
-shared,GET,/resumes/{resume_id}/documents/{document_id}/content,own_resume_document,resume_id:UUID;document_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:885
-shared,GET,/resumes/{resume_id}/complete,own_complete_resume,resume_id:UUID;actor:Actor,,,modules/shared/runtime.py:920
-shared,GET,/vacancies,vacancies,q:str | None,,,modules/shared/runtime.py:927
-shared,GET,/recruiting/resumes,candidate_resumes,q:str | None;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:939
-shared,GET,/recruiting/resumes/{resume_id},recruiter_resume_view,resume_id:UUID;purpose:str;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:967
+shared,GET,/health,health,,,,modules/shared/runtime.py:427
+shared,GET,/version,get_version,,,,modules/shared/runtime.py:431
+shared,GET,/status,status,actor:Actor,,,modules/shared/runtime.py:435
+shared,GET,/metrics,metrics,,,,modules/shared/runtime.py:447
+shared,GET,/catalog,catalog,,,,modules/shared/runtime.py:457
+shared,POST,/resources/{resource_type},create_resource,resource_type:str;body:ResourceCreate;actor:Actor;x_idempotency_key:str | None;x_correlation_id:UUID | None,user_id;entity_id;payload,,modules/shared/runtime.py:489
+shared,GET,/resources/{resource_type},list_resources,resource_type:str;user_id:UUID | None;actor:Actor,,,modules/shared/runtime.py:499
+shared,GET,/resources/{resource_type}/{resource_id},get_resource,resource_type:str;resource_id:UUID;actor:Actor,,,modules/shared/runtime.py:512
+shared,PATCH,/resources/{resource_type}/{resource_id},patch_resource,resource_type:str;resource_id:UUID;body:ResourcePatch;actor:Actor;x_correlation_id:UUID | None,payload,,modules/shared/runtime.py:524
+shared,DELETE,/resources/{resource_type}/{resource_id},delete_resource,resource_type:str;resource_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:545
+shared,POST,/resources/{resource_type}/{resource_id}/actions/{action},transition_resource,resource_type:str;resource_id:UUID;action:str;body:ActionPayload;actor:Actor;x_correlation_id:UUID | None,reason;payload,,modules/shared/runtime.py:562
+shared,GET,/audit/events,audit_events,actor:Actor,,,modules/shared/runtime.py:599
+shared,GET,/events/outbox,outbox,actor:Actor,,,modules/shared/runtime.py:605
+shared,POST,/create,create_record,body:CreatePayload;actor:Actor;x_idempotency_key:str | None;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1007
+shared,GET,/list,list_records,user_id:UUID | None;actor:Actor,,,modules/shared/runtime.py:1029
+shared,POST,/approve,approve,body:DecisionPayload;actor:Actor;x_correlation_id:UUID | None,id;reason,,modules/shared/runtime.py:1035
+shared,POST,/reject,reject,body:DecisionPayload;actor:Actor;x_correlation_id:UUID | None,id;reason,,modules/shared/runtime.py:1047
+shared,POST,/audit,audit,body:AuditPayload;actor:Actor;x_correlation_id:UUID | None,action;resource_type;resource_id;payload,,modules/shared/runtime.py:1059
+shared,GET,/{resource_id},get_record,resource_id:UUID;actor:Actor,,,modules/shared/runtime.py:1069
+shared,PATCH,/{resource_id},patch_record,resource_id:UUID;body:PatchPayload;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1076
+shared,DELETE,/{resource_id},delete_record,resource_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1095
+shared,POST,/registrations,register_user,body:IdentityRegistration;x_correlation_id:UUID | None,full_name;email;password_hash;document_cpf;cpf_document;terms_accepted_at;lgpd_consent_at,,modules/shared/runtime.py:462
+shared,POST,/integrations/sandbox/kyc/person,sandbox_kyc_person,body:SandboxKycPersonPayload;actor:Actor,user_id;document;full_name;selfie_hash,,modules/shared/runtime.py:612
+shared,POST,/integrations/sandbox/kyb/business,sandbox_kyb_business,body:SandboxKybBusinessPayload;actor:Actor,company_id;cnpj;legal_name,,modules/shared/runtime.py:628
+shared,POST,/integrations/sandbox/psp/pix/authorize,sandbox_pix_authorize,body:SandboxPixPayload;actor:Actor,payment_id;payer_id;amount_brl;idempotency_key,,modules/shared/runtime.py:643
+shared,POST,/integrations/sandbox/psp/escrows,sandbox_escrow_create,body:SandboxEscrowPayload;actor:Actor,escrow_id;payer_id;beneficiary_id;amount_brl,,modules/shared/runtime.py:658
+shared,POST,/integrations/sandbox/psp/escrows/release,sandbox_escrow_release,body:SandboxEscrowReleasePayload;actor:Actor,escrow_id;amount_brl,,modules/shared/runtime.py:673
+shared,POST,/integrations/sandbox/fiscal/invoices,sandbox_fiscal_invoice,body:SandboxFiscalInvoicePayload;actor:Actor,invoice_id;document_type;amount_brl;issuer_document,,modules/shared/runtime.py:682
+shared,POST,/integrations/sandbox/ctps/classify,sandbox_ctps_classify,body:SandboxCtpsPayload;actor:Actor,resume_id;pdf_text,,modules/shared/runtime.py:698
+shared,POST,/integrations/sandbox/maps/route,sandbox_maps_route,body:SandboxRoutePayload;actor:Actor,route_id;origin;destination;vehicle_type,,modules/shared/runtime.py:707
+shared,POST,/integrations/sandbox/health/consents,sandbox_health_consent,body:SandboxClinicalConsentPayload;actor:Actor,patient_id;professional_id;purpose;ttl_days,,modules/shared/runtime.py:723
+shared,POST,/integrations/sandbox/api-hub/webhooks/sign,sandbox_api_hub_webhook_sign,body:SandboxWebhookSignPayload;actor:Actor,webhook_id;payload;secret,,modules/shared/runtime.py:739
+shared,POST,/integrations/sandbox/api-hub/api-key/verify,sandbox_api_hub_api_key_verify,body:SandboxApiKeyVerifyPayload;actor:Actor,api_key;allowed_hashes,,modules/shared/runtime.py:747
+shared,POST,/integrations/sandbox/suppliers/products,sandbox_supplier_product,body:SandboxSupplierProductPayload;actor:Actor,supplier_id;external_sku;cost_brl;available_quantity,,modules/shared/runtime.py:756
+shared,POST,/pricing/quote,calculate_delivery_quote,body:DeliveryQuoteRequest;actor:Actor,,,modules/shared/runtime.py:772
+shared,POST,/pricing/fare,calculate_mobility_fare,body:MobilityFareRequest;actor:Actor,,,modules/shared/runtime.py:777
+shared,POST,/pricing/commission,calculate_marketplace_commission,body:CommissionRequest;actor:Actor,,,modules/shared/runtime.py:782
+shared,POST,/resumes/{resume_id}/imports/ctps-digital,import_ctps_digital,resume_id:UUID;document:bytes;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:837
+shared,GET,/resumes/{resume_id}/documents/{document_id}/content,own_resume_document,resume_id:UUID;document_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:897
+shared,GET,/resumes/{resume_id}/complete,own_complete_resume,resume_id:UUID;actor:Actor,,,modules/shared/runtime.py:932
+shared,GET,/vacancies,vacancies,q:str | None,,,modules/shared/runtime.py:939
+shared,GET,/recruiting/resumes,candidate_resumes,q:str | None;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:951
+shared,GET,/recruiting/resumes/{resume_id},recruiter_resume_view,resume_id:UUID;purpose:str;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:979
 shared,GET,/valley/catalog/modules,valley_catalog_modules,,,,modules/shared/valley.py:109
 shared,GET,/valley/catalog/categories,valley_catalog_categories,,,,modules/shared/valley.py:113
 shared,GET,/valley/catalog/business-activities,valley_catalog_business_activities,,,,modules/shared/valley.py:117

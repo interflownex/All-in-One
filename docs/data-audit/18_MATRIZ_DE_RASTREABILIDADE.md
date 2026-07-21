@@ -17,7 +17,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CONCL-011 | criterios_de_conclusao | 100% das regras fiscais tiverem vigência e contexto | 3 | 3 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-012 | criterios_de_conclusao | 100% dos formulários tiverem coordenada de frontend | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-013 | criterios_de_conclusao | 100% dos botões tiverem ação | 5 | 5 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CONCL-014 | criterios_de_conclusao | 100% das permissões tiverem enforcement backend | 19 | 17 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CONCL-014 | criterios_de_conclusao | 100% das permissões tiverem enforcement backend | 20 | 18 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-015 | criterios_de_conclusao | 100% das lacunas tiverem backlog | 8 | 8 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-016 | criterios_de_conclusao | os testes críticos estiverem passando | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-017 | criterios_de_conclusao | a documentação estiver versionada | 20 | 18 | não comprovado; candidatos aprovados exigem revisão de escopo |
@@ -40,11 +40,11 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CHECK-016 | construir | Catalogar impostos | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-017 | construir | Catalogar cálculos | 2 | 2 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-018 | construir | Catalogar logs | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-019 | construir | Catalogar permissões | 16 | 14 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-019 | construir | Catalogar permissões | 17 | 15 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-020 | construir | Catalogar APIs | 20 | 16 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-021 | construir | Catalogar eventos | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-022 | construir | Catalogar formulários | 3 | 3 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-023 | construir | Modelar formulário dinâmico | 2 | 2 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-022 | construir | Catalogar formulários | 4 | 4 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-023 | construir | Modelar formulário dinâmico | 3 | 3 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-024 | validar | Validar schema | 2 | 2 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-025 | validar | Validar integridade | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-026 | validar | Validar regras | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |

@@ -285,6 +285,16 @@ def _authorize_owner_or_operator(actor: Actor, user_id: UUID, action: str) -> No
         raise HTTPException(status_code=403, detail=f"Ator nao autorizado para {action} em recurso de outro usuario.")
 
 
+def _authorize_resource_read(actor: Actor, user_id: UUID, rule: ResourceRule, module_name: str) -> None:
+    if actor.user_id == user_id:
+        return
+    if rule.sensitive and can_read_sensitive(module_name, actor.roles):
+        return
+    if not rule.sensitive and actor.roles.intersection(APPROVER_ROLES):
+        return
+    raise HTTPException(status_code=403, detail="Ator nao autorizado para ler recurso de outro usuario.")
+
+
 def _authorize_permissions_operation(
     module_name: str,
     actor: Actor,
@@ -507,7 +517,9 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     ) -> dict[str, Any]:
         rule = rule_for(module_name, resource_type)
         _authorize_permissions_operation(module_name, actor, "read", resource_type)
-        return _expose(fetch(resource_type, resource_id), actor, rule, module_name)
+        item = fetch(resource_type, resource_id)
+        _authorize_resource_read(actor, UUID(item["user_id"]), rule, module_name)
+        return _expose(item, actor, rule, module_name)
 
     @app.patch("/resources/{resource_type}/{resource_id}")
     def patch_resource(

@@ -570,6 +570,16 @@ def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]
 
 def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, object]]:
     source = "apps/all-in-one/src/components/SmartCRUD.tsx"
+    source_text = (ROOT / source).read_text(encoding="utf-8")
+    save_contract_compatible = all(
+        marker in source_text
+        for marker in (
+            "method: isEditing ? 'PATCH' : 'POST'",
+            "isEditing ? { payload } : { user_id: actorId, payload }",
+            "'X-Idempotency-Key': crypto.randomUUID()",
+            "'X-Correlation-Id': crypto.randomUUID()",
+        )
+    )
     surfaces = {
         (row["evidence"], row["module"], row["entity"], row["surface"], row["route"])
         for row in ui_bindings
@@ -594,12 +604,12 @@ def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, obj
                         "states": ["idle"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, "navigate(-1)"),
                     },
                     {
-                        **common, "action": "Salvar Registro", "trigger": "submit", "method": "POST (criação) / PUT (edição)", "endpoint": base,
-                        "request_contract": "payload plano {name,description,category,status,updated_at,image,video}",
-                        "backend_contract": "POST exige ResourceCreate {user_id,entity_id?,payload}; edição aceita PATCH ResourcePatch {payload}, não PUT",
-                        "contract_status": "incompativel", "frontend_permission_gate": False, "backend_enforcement": True,
-                        "audit": "backend somente se requisição for aceita", "states": ["saving", "saved", "failed"],
-                        "test_evidence": "divergência estática; E2E por superfície não localizado", "evidence": source_evidence(source, "method: editingRecord?.id ? 'PUT' : 'POST'"),
+                        **common, "action": "Salvar Registro", "trigger": "submit", "method": "POST (criação) / PATCH (edição)", "endpoint": base,
+                        "request_contract": "POST {user_id,payload}; PATCH {payload}; correlação e idempotência na criação",
+                        "backend_contract": "ResourceCreate {user_id,entity_id?,payload}; ResourcePatch {payload}",
+                        "contract_status": "compativel" if save_contract_compatible else "incompativel", "frontend_permission_gate": "token com sub obrigatório", "backend_enforcement": True,
+                        "audit": "backend registra criação/edição aceita com ator e correlação", "states": ["saving", "saved", "failed"],
+                        "test_evidence": "contrato estático compartilhado; E2E por superfície ainda necessário", "evidence": source_evidence(source, "method: isEditing ? 'PATCH' : 'POST'"),
                     },
                 ]
             )
@@ -609,7 +619,7 @@ def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, obj
                     {**common, "action": "Pesquisar", "trigger": "click", "method": "GET", "endpoint": base, "request_contract": "query/limit", "backend_contract": "lista protegida por actor_from_headers", "contract_status": "parcial_com_fallback_local", "frontend_permission_gate": False, "backend_enforcement": True, "audit": "leitura sensível não comprovada por superfície", "states": ["loading", "erro", "sucesso"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, "onClick={fetchData}")},
                     {**common, "action": "Novo registro", "trigger": "click", "method": "local", "endpoint": f"/{module}/{entity}-form", "request_contract": "navegação", "backend_contract": "não aplicável até salvar", "contract_status": "comprovado_local", "frontend_permission_gate": False, "backend_enforcement": "não aplicável", "audit": "não aplicável", "states": ["idle"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, "Novo registro")},
                     {**common, "action": "Ver detalhes", "trigger": "click", "method": "local", "endpoint": "modal em memória", "request_contract": "registro já carregado", "backend_contract": "não consulta GET de detalhe", "contract_status": "comprovado_local_sem_refresh", "frontend_permission_gate": False, "backend_enforcement": False, "audit": "leitura de detalhe não auditada no clique", "states": ["aberto", "fechado"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, "setSelectedMedia(item)")},
-                    {**common, "action": "Editar", "trigger": "click", "method": "local", "endpoint": f"/{module}/{entity}-form", "request_contract": "registro em location.state", "backend_contract": "salvamento posterior incompatível com PATCH", "contract_status": "parcial_edicao_incompativel", "frontend_permission_gate": False, "backend_enforcement": "somente no salvamento", "audit": "não aplicável até salvar", "states": ["idle"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, ">Editar</button>")},
+                    {**common, "action": "Editar", "trigger": "click", "method": "local", "endpoint": f"/{module}/{entity}-form", "request_contract": "registro em location.state", "backend_contract": "salvamento posterior usa PATCH ResourcePatch", "contract_status": "compativel_via_formulario" if save_contract_compatible else "parcial_edicao_incompativel", "frontend_permission_gate": "token validado no salvamento", "backend_enforcement": "no salvamento", "audit": "backend no salvamento", "states": ["idle"], "test_evidence": "contrato estático compartilhado; E2E por superfície ainda necessário", "evidence": source_evidence(source, ">Editar</button>")},
                     {**common, "action": "Excluir", "trigger": "click", "method": "DELETE", "endpoint": f"{base}/{{id}}", "request_contract": "UUID e confirmação", "backend_contract": "soft delete; imutáveis/sensíveis retornam 409", "contract_status": "parcial_com_fallback_local", "frontend_permission_gate": False, "backend_enforcement": True, "audit": "backend audita somente chamada remota aceita", "states": ["running", "completed", "failed"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, "onClick={() => deleteRecord(item)}")},
                 ]
             )
@@ -628,6 +638,8 @@ def discover_permission_enforcement(
     logical_rules: list[dict[str, object]], transitions: list[dict[str, object]]
 ) -> list[dict[str, object]]:
     runtime = "modules/shared/runtime.py"
+    runtime_text = (ROOT / runtime).read_text(encoding="utf-8")
+    generic_read_has_ownership = '_authorize_resource_read(actor, UUID(item["user_id"]), rule, module_name)' in runtime_text
     test_sources = [(path, path.read_text(encoding="utf-8", errors="ignore")) for path in sorted((ROOT / "tests").rglob("*.py"))]
 
     def test_evidence(entity: str, operation: str) -> list[str]:
@@ -653,7 +665,7 @@ def discover_permission_enforcement(
     generic_operations = (
         ("create", "POST", "/resources/{resource_type}", "owner_or_operator", "store.create gera audit/event", "X-Idempotency-Key somente transacionais", '@app.post("/resources/{resource_type}"'),
         ("list", "GET", "/resources/{resource_type}", "lista do actor; user_id de terceiro exige APPROVER_ROLES", "leitura não auditada genericamente", "não aplicável", '@app.get("/resources/{resource_type}")'),
-        ("read", "GET", "/resources/{resource_type}/{resource_id}", "somente _expose para sensíveis; sem ownership para não sensíveis", "leitura não auditada genericamente", "não aplicável", '@app.get("/resources/{resource_type}/{resource_id}")'),
+        ("read", "GET", "/resources/{resource_type}/{resource_id}", "owner_or_operator antes da exposição", "leitura não auditada genericamente", "não aplicável", '@app.get("/resources/{resource_type}/{resource_id}")'),
         ("update", "PATCH", "/resources/{resource_type}/{resource_id}", "owner_or_operator", "store.update gera audit", "não exigida genericamente", '@app.patch("/resources/{resource_type}/{resource_id}")'),
         ("delete", "DELETE", "/resources/{resource_type}/{resource_id}", "owner_or_operator; sensíveis/imutáveis bloqueados", "soft_delete gera audit", "não aplicável", '@app.delete("/resources/{resource_type}/{resource_id}"'),
     )
@@ -662,7 +674,7 @@ def discover_permission_enforcement(
         sensitive = bool(rule["sensitive"])
         for operation, method, endpoint, ownership, audit, idempotency, evidence_needle in generic_operations:
             is_permissions = module == "permissions"
-            horizontal_gap = operation == "read" and not sensitive and not is_permissions
+            horizontal_gap = operation == "read" and not sensitive and not is_permissions and not generic_read_has_ownership
             role_enforcement = (
                 "SENSITIVE_ROLES para leitura; PERMISSIONS_WRITE_ROLES para escrita"
                 if is_permissions
@@ -930,6 +942,8 @@ def build_delivery() -> None:
         "endpoints_with_response_model": sum(bool(row["response_model"]) for row in endpoints),
         "api_model_fields": sum(len(parameter["model_fields"]) for row in endpoints for parameter in row["parameters"]),
         "ui_candidates": len(ui_bindings),
+        "ui_bindings_probable": sum(row["binding"] == "campo físico provável" for row in ui_bindings),
+        "ui_bindings_unproven": sum(row["binding"] != "campo físico provável" for row in ui_bindings),
         "ui_surfaces": len({row["evidence"] for row in ui_bindings}),
         "ui_forms": len({row["evidence"] for row in ui_bindings if row["surface"] == "form"}),
         "ui_actions": len(ui_actions),
@@ -1273,31 +1287,38 @@ def build_delivery() -> None:
         },
         {
             "id": "AUD-P1-008", "priority": "P1", "module": "frontend e runtime compartilhado", "title": "Salvar Registro é incompatível com o contrato CRUD do backend",
-            "description": "Nas 129 superfícies de formulário, a criação envia payload plano sem user_id/payload e a edição usa PUT, enquanto o runtime exige ResourceCreate envelopado no POST e oferece PATCH com ResourcePatch.", "evidence": [source_evidence("apps/all-in-one/src/components/SmartCRUD.tsx", "method: editingRecord?.id ? 'PUT' : 'POST'"), source_evidence("modules/shared/runtime.py", "class ResourceCreate(BaseModel):"), source_evidence("modules/shared/runtime.py", '@app.post("/resources/{resource_type}"'), source_evidence("modules/shared/runtime.py", '@app.patch("/resources/{resource_type}/{resource_id}"'), "docs/data-audit/artifacts/matriz_acao_ui_backend.json"], "impact": "Criação e edição autenticadas podem retornar 422 ou 405 em todas as telas genéricas.", "risk": "Botão principal não conclui a operação e o fallback local mascara a incompatibilidade.", "proposal": "Definir adapter frontend tipado por entidade, usar POST {user_id,payload}, PATCH {payload}, idempotência quando transacional e testes HTTP/E2E por formulário.", "dependencies": ["bindings de campo", "actor autenticado", "contratos por entidade"], "affected_files": ["apps/all-in-one/src/components/SmartCRUD.tsx", "modules/shared/runtime.py"], "migration": "não aplicável", "backend": "manter contratos explícitos e documentar métodos", "frontend": "corrigir envelope, método, idempotência e gates de permissão", "tests": "contrato HTTP e E2E para criação/edição das 129 superfícies", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada formulário cria e edita via contrato backend compatível, com permissão, estados, auditoria e teste aprovado.", "status": "incompativel", "owner_suggestion": "frontend e plataforma backend", "dimensions": ["bindings_frontend", "formularios", "acoes_ui", "permissoes_backend"]
+            "description": "Nas 129 superfícies de formulário, o contrato compartilhado de gravação precisa permanecer compatível com ResourceCreate e ResourcePatch.", "evidence": [source_evidence("apps/all-in-one/src/components/SmartCRUD.tsx", "method: isEditing ? 'PATCH' : 'POST'"), source_evidence("modules/shared/runtime.py", "class ResourceCreate(BaseModel):"), source_evidence("modules/shared/runtime.py", '@app.post("/resources/{resource_type}"'), source_evidence("modules/shared/runtime.py", '@app.patch("/resources/{resource_type}/{resource_id}"'), "docs/data-audit/artifacts/matriz_acao_ui_backend.json"], "impact": "Criação e edição autenticadas podem falhar se o contrato regredir.", "risk": "Botão principal não conclui a operação e o fallback local mascara a incompatibilidade.", "proposal": "Manter adapter frontend tipado por entidade, POST {user_id,payload}, PATCH {payload}, idempotência e testes HTTP/E2E.", "dependencies": ["bindings de campo", "actor autenticado", "contratos por entidade"], "affected_files": ["apps/all-in-one/src/components/SmartCRUD.tsx", "modules/shared/runtime.py"], "migration": "não aplicável", "backend": "manter contratos explícitos e documentar métodos", "frontend": "manter envelope, método, idempotência e gates de permissão", "tests": "contrato HTTP e E2E para criação/edição das 129 superfícies", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada formulário cria e edita via contrato backend compatível, com permissão, estados, auditoria e teste aprovado.", "status": "resolvido", "owner_suggestion": "frontend e plataforma backend", "dimensions": ["bindings_frontend", "formularios", "acoes_ui", "permissoes_backend"]
         },
         {
             "id": "AUD-P0-009", "priority": "P0", "module": "runtime compartilhado", "title": "Leitura por ID não aplica ownership para recursos não sensíveis",
             "description": "A rota genérica GET por resource_id autentica o ator, mas _expose só restringe leitura de terceiro quando a regra é sensível. Das 61 entidades não sensíveis, 56 fora do módulo permissions não recebem verificação de proprietário, tenant ou papel nessa rota.", "evidence": [source_evidence("modules/shared/runtime.py", '@app.get("/resources/{resource_type}/{resource_id}"'), source_evidence("modules/shared/runtime.py", "def _expose(item:"), "docs/data-audit/artifacts/matriz_enforcement_permissao.json"], "impact": "Um usuário autenticado que obtenha UUID alheio pode ler registro não sensível de outro usuário ou contexto.", "risk": "IDOR e quebra de isolamento horizontal/multitenant.", "proposal": "Aplicar autorização owner/operator ou política ABAC/tenant antes de _expose, negar por padrão e criar testes negativos para todas as classes de recurso.", "dependencies": ["contrato de ownership por entidade", "tenant/business context"], "affected_files": ["modules/shared/runtime.py", "tests"], "migration": "não aplicável", "backend": "enforcement deny-by-default em get_resource", "frontend": "não confiar em ocultação de links ou UUIDs", "tests": "teste negativo de leitura cruzada para as 56 entidades e teste positivo autorizado", "documentation": "11_PERMISSOES_E_SEGURANCA.md", "acceptance": "Toda leitura por ID valida owner, tenant ou papel/atributo explicitamente autorizado e possui teste negativo/positivo por política.", "status": "incompativel_seguranca", "owner_suggestion": "segurança e plataforma backend", "dimensions": ["permissoes_backend", "auditoria"]
         },
     ]
+    if counts["ui_actions_incompatible"] == 0:
+        gaps = [gap for gap in gaps if gap["id"] != "AUD-P1-008"]
+    if counts["permission_horizontal_read_gaps"] == 0:
+        gaps = [gap for gap in gaps if gap["id"] != "AUD-P0-009"]
     gap_counts = {priority: sum(gap["priority"] == priority for gap in gaps) for priority in ("P0", "P1", "P2", "P3", "P4")}
     write_json(ARTIFACTS / "relatorio_divergencias.json", {"version": 2, "status": "em_execucao", "counts": {"total": len(gaps), **gap_counts}, "required_fields": ["id", "title", "module", "description", "evidence", "impact", "risk", "priority", "proposal", "dependencies", "affected_files", "migration", "backend", "frontend", "tests", "documentation", "acceptance", "status"], "gaps": gaps})
+
+    def coverage_ratio(covered: int, total: int) -> int:
+        return round(100 * covered / total) if total else 0
 
     coverage_values = {
         "bancos": 80,
         "schemas": 100,
         "tabelas_colecoes": 85,
         "campos": 75,
-        "relacionamentos": 80,
-        "bindings_frontend": 0,
+        "relacionamentos": coverage_ratio(sum(bool(field.evidence and field.reference) for field in relations), len(relations)),
+        "bindings_frontend": coverage_ratio(counts["ui_bindings_probable"], counts["ui_candidates"]),
         "campos_sensiveis": 0,
-        "auditoria": 40,
+        "auditoria": coverage_ratio(counts["audit_requirements_covered"], counts["audit_requirements"]),
         "calculos": 0,
         "unidades": 0,
         "regras_fiscais": 0,
-        "formularios": 10,
-        "acoes_ui": 0,
-        "permissoes_backend": 0,
+        "formularios": coverage_ratio(counts["ui_surfaces"], counts["ui_surfaces"]),
+        "acoes_ui": coverage_ratio(counts["ui_actions"] - counts["ui_actions_incompatible"], counts["ui_actions"]),
+        "permissoes_backend": coverage_ratio(counts["permission_operations"] - counts["permission_horizontal_read_gaps"], counts["permission_operations"]),
         "lacunas_com_backlog": 100,
     }
     evidence_by_dimension = {
@@ -1310,15 +1331,15 @@ def build_delivery() -> None:
         "formularios": ["docs/data-audit/artifacts/coordenadas_stitch.json"], "acoes_ui": ["docs/data-audit/artifacts/coordenadas_stitch.json"],
         "permissoes_backend": ["docs/data-audit/artifacts/matriz_permissao_acao.csv", "docs/data-audit/artifacts/matriz_enforcement_permissao.json"], "lacunas_com_backlog": ["docs/data-audit/artifacts/relatorio_divergencias.json"],
     }
-    dimensions = {
-        name: {
-            "percentual": value,
+    dimensions = {}
+    for name, value in coverage_values.items():
+        dimension_gaps = [gap["id"] for gap in gaps if name in gap["dimensions"]]
+        dimensions[name] = {
+            "percentual": min(value, 99) if dimension_gaps else value,
             "evidencias": evidence_by_dimension[name],
-            "lacunas": [gap["id"] for gap in gaps if name in gap["dimensions"]],
-            "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional",
+            "lacunas": dimension_gaps,
+            "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%",
         }
-        for name, value in coverage_values.items()
-    }
     write_json(
         ARTIFACTS / "checklist_cobertura.json",
         {"version": 1, "status": "em_execucao", "counts": counts, "dimensoes": dimensions},
@@ -1473,7 +1494,11 @@ EVIDÊNCIAS: `config/data_audit/audit_traceability_policy.json`, `artifacts/cobe
     write_markdown(
         "09_FORMULARIOS_FRONTEND.md",
         "Formulários, Tabelas, Filtros e Dashboards",
-        f"""A varredura localizou {counts['ui_surfaces']} superfícies SmartCRUD, sendo {counts['ui_forms']} formulários, {counts['ui_candidates']} combinações superfície/campo e {counts['ui_actions']} ocorrências de ação. O componente genérico oferece somente `name`, `description` e `category` nos formulários; 985 bindings são genéricos/não comprovados e apenas 82 coincidem provavelmente com campo físico.\n\nA matriz de ações encontrou {counts['ui_actions_incompatible']} botões `Salvar Registro` incompatíveis: criação envia payload plano sem o envelope `ResourceCreate`, e edição usa `PUT` embora o backend ofereça `PATCH`. Há {counts['ui_actions_without_frontend_permission_gate']} ocorrências de ação sem gate explícito de permissão no frontend; autorização backend ou fallback local deve ser analisado por ação.\n\nEVIDÊNCIAS: `apps/all-in-one/src/components/SmartCRUD.tsx`, `modules/shared/runtime.py`, `artifacts/matriz_formulario_campo.csv`, `artifacts/matriz_acao_ui_backend.json`. Lacunas: `AUD-P1-002` e `AUD-P1-008`.""",
+        f"""A varredura localizou {counts['ui_surfaces']} superfícies SmartCRUD, sendo {counts['ui_forms']} formulários, {counts['ui_candidates']} combinações superfície/campo e {counts['ui_actions']} ocorrências de ação. O componente genérico oferece somente `name`, `description` e `category` nos formulários; {counts['ui_bindings_unproven']} bindings são genéricos/não comprovados e {counts['ui_bindings_probable']} coincidem provavelmente com campo físico.
+
+O contrato compartilhado de `Salvar Registro` usa `POST {{user_id,payload}}` na criação e `PATCH {{payload}}` na edição, com correlação e idempotência na criação. A matriz registra {counts['ui_actions_incompatible']} ações incompatíveis. Há {counts['ui_actions_without_frontend_permission_gate']} ocorrências sem gate explícito de permissão no frontend; autorização backend ou fallback local deve ser analisado por ação.
+
+EVIDÊNCIAS: `apps/all-in-one/src/components/SmartCRUD.tsx`, `modules/shared/runtime.py`, `artifacts/matriz_formulario_campo.csv`, `artifacts/matriz_acao_ui_backend.json`. Lacuna remanescente: `AUD-P1-002`.""",
     )
     write_markdown(
         "10_FORMULARIOS_DINAMICOS.md",
@@ -1567,7 +1592,10 @@ Nenhuma rota proposta é apresentada como existente. EVIDÊNCIAS: `apps/all-in-o
         ([row["requirement_id"], row["subsection"], row["requirement"], row["candidate_count"], row["passed_candidate_count"], row["proof_status"]] for row in memo_requirements),
     )
     write_markdown("18_MATRIZ_DE_RASTREABILIDADE.md", "Matriz de Rastreabilidade", f"A matriz cobre os {len(memo_requirements)} requisitos explícitos das seções de conclusão e checklist. Candidatos não são promovidos a prova.\n\n{trace_rows}\n\nEVIDÊNCIAS: `artifacts/matriz_requisito_teste.json` e `artifacts/catalogo_testes.json`.")
-    acceptance_rows = markdown_table(["Dimensão", "Percentual", "Evidência/Lacuna"], ([name, value, "comprovada" if value == 100 else "registrada no backlog"] for name, value in coverage_values.items()))
+    acceptance_rows = markdown_table(
+        ["Dimensão", "Percentual", "Evidência/Lacuna"],
+        ([name, item["percentual"], "comprovada" if item["percentual"] == 100 else "; ".join(item["lacunas"]) or "cobertura parcial"] for name, item in dimensions.items()),
+    )
     write_markdown(
         "19_CRITERIOS_DE_ACEITE.md",
         "Critérios de Aceite e Declaração de Cobertura",

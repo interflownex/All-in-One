@@ -52,3 +52,13 @@ def test_mobile_shell_has_an_accessible_drawer_and_responsive_operations() -> No
     assert "@media (max-width: 700px)" in styles
     assert ".side-nav.mobile-open { transform: translateX(0); }" in styles
     assert ".data-card { grid-template-columns: 1fr; gap: 14px; }" in styles
+
+
+def test_smartcrud_save_uses_the_shared_backend_contract() -> None:
+    smart_crud = (WEB / "components" / "SmartCRUD.tsx").read_text(encoding="utf-8")
+
+    assert "method: isEditing ? 'PATCH' : 'POST'" in smart_crud
+    assert "isEditing ? { payload } : { user_id: actorId, payload }" in smart_crud
+    assert "'X-Idempotency-Key': crypto.randomUUID()" in smart_crud
+    assert "'X-Correlation-Id': crypto.randomUUID()" in smart_crud
+    assert "method: editingRecord?.id ? 'PUT' : 'POST'" not in smart_crud
