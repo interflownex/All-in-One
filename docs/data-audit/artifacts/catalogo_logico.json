@@ -19,7 +19,9 @@
     "event_transitions": 194,
     "unique_events": 187,
     "sensitive_candidates": 147,
-    "dynamic_form_entities_proposed": 14
+    "dynamic_form_entities_proposed": 14,
+    "measurement_entities_proposed": 6,
+    "fiscal_entities_proposed": 5
   },
   "entities": [
     {

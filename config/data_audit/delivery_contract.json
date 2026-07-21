@@ -36,6 +36,7 @@
     "artifacts/formulario_dinamico_modelo.json",
     "artifacts/coordenadas_stitch.csv",
     "artifacts/coordenadas_stitch.json",
+    "artifacts/modelo_unidades_tributacao.json",
     "artifacts/erd.mmd",
     "artifacts/matriz_formulario_campo.csv",
     "artifacts/matriz_api_campo.csv",

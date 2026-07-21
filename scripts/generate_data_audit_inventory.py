@@ -21,6 +21,7 @@ AUDIT = ROOT / "docs" / "data-audit"
 ARTIFACTS = AUDIT / "artifacts"
 DATABASE = AUDIT / "databases" / "postgresql"
 DYNAMIC_FORM_MODEL = ROOT / "config" / "data_audit" / "dynamic_form_model_proposal.json"
+PRODUCT_UNITS_TAX_MODEL = ROOT / "config" / "data_audit" / "product_units_tax_model_proposal.json"
 
 
 @dataclass(frozen=True)
@@ -450,7 +451,10 @@ def build_delivery() -> None:
         "sensitive_candidates": len(sensitive),
     }
     dynamic_form_model = json.loads(DYNAMIC_FORM_MODEL.read_text(encoding="utf-8"))
+    product_units_tax_model = json.loads(PRODUCT_UNITS_TAX_MODEL.read_text(encoding="utf-8"))
     counts["dynamic_form_entities_proposed"] = len(dynamic_form_model["entities"])
+    counts["measurement_entities_proposed"] = len(product_units_tax_model["measurement_entities"])
+    counts["fiscal_entities_proposed"] = len(product_units_tax_model["fiscal_entities"])
 
     field_rows = [asdict(field) for field in fields]
     write_csv(ARTIFACTS / "dicionario_de_dados.csv", list(Field.__annotations__), field_rows)
@@ -496,6 +500,7 @@ def build_delivery() -> None:
     )
     write_json(ARTIFACTS / "catalogo_apis.json", {"version": 1, "counts": counts, "endpoints": endpoints})
     write_json(ARTIFACTS / "formulario_dinamico_modelo.json", dynamic_form_model)
+    write_json(ARTIFACTS / "modelo_unidades_tributacao.json", product_units_tax_model)
     surfaces: dict[str, dict[str, object]] = {}
     required_states = ["loading", "vazio", "erro", "sucesso", "sem_permissao", "conflito", "dados_desatualizados"]
     for row in ui_bindings:
@@ -751,12 +756,48 @@ EVIDÊNCIAS: `database/postgres/migrations/`, `database/mongodb/init/001_ai_soci
     write_markdown(
         "06_UNIDADES_E_CONVERSOES.md",
         "Unidades, Conversões, Precisão e Arredondamento",
-        """**Status:** lacuna P1. O repositório não comprova um catálogo completo de unidades nem conversões versionadas por produto, vigência, contexto, precisão e aprovação.\n\nProposta: criar catálogo dimensional e `product_unit_conversions` com validação backend, auditoria e testes de incompatibilidade dimensional. Nenhuma migration é aplicada por este documento.\n\nEVIDÊNCIAS: `database/postgres/migrations/` e lacuna `AUD-P1-005`.""",
+        f"""**Status:** proposta; implementação não comprovada.
+
+## Estruturas
+
+Foram modeladas {counts['measurement_entities_proposed']} estruturas: {', '.join(f'`{name}`' for name in product_units_tax_model['measurement_entities'])}. Os propósitos cobrem cadastro, estoque base, compra, venda, consumo, produção, transporte, fiscal, exibição, conferência e inventário.
+
+## Conversão e precisão
+
+- Decimal é obrigatório; ponto flutuante binário é proibido.
+- Conversões exigem compatibilidade dimensional, vigência, versão, aprovação, tolerância e arredondamento.
+- Conversões entre dimensões exigem fórmula segura, densidade e contexto técnico.
+- Movimentações preservam unidade informada, quantidade base e snapshot do fator.
+- O backend recalcula e registra correlação e idempotência.
+
+## Gate
+
+Migration, backfill, backend, frontend e testes permanecem não implementados. Nenhuma migration é aplicada por este documento.
+
+EVIDÊNCIAS: `config/data_audit/product_units_tax_model_proposal.json`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.""",
     )
     write_markdown(
         "07_TRIBUTACAO.md",
         "Tributação e Perfis Fiscais",
-        """**Status:** lacuna P1. A cobertura atual não comprova perfis fiscais versionados para NCM, CEST, CFOP, CST, CSOSN, ICMS, IPI, PIS, COFINS, ISS e exceções por jurisdição.\n\nProposta: regras com condição, prioridade, vigência, fundamento, homologação e cálculo exclusivo no backend.\n\nEVIDÊNCIAS: `database/postgres/migrations/` e lacuna `AUD-P1-005`.""",
+        f"""**Status:** proposta; implementação e homologação fiscal não comprovadas.
+
+## Estruturas
+
+Foram modeladas {counts['fiscal_entities_proposed']} estruturas fiscais e três estruturas de preço/custo. Regras possuem prioridade, jurisdição, regime, operação, cliente, destino, canal, benefício, alíquota, base, crédito, arredondamento, fundamento, vigência, versão e aprovação.
+
+## Brasil
+
+O checklist cobre {', '.join(f'`{item}`' for item in product_units_tax_model['brazilian_fields_to_evaluate'])}. Aplicabilidade deve ser decidida por cenário e nunca duplicada indiscriminadamente em cada produto.
+
+## Cálculo
+
+Cada snapshot preserva regra, classificação, base, alíquota, valor, moeda, precisão, arredondamento, fundamento, versão e hash de entrada. Cálculos fiscais são exclusivos do backend.
+
+## Gate
+
+Migration, backfill, backend, frontend, testes e homologação fiscal permanecem não implementados.
+
+EVIDÊNCIAS: `config/data_audit/product_units_tax_model_proposal.json`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.""",
     )
     write_markdown(
         "08_AUDITORIA_E_LOGS.md",

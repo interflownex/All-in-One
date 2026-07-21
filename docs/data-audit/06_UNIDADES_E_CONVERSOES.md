@@ -1,7 +1,21 @@
 # Unidades, Conversões, Precisão e Arredondamento
 
-**Status:** lacuna P1. O repositório não comprova um catálogo completo de unidades nem conversões versionadas por produto, vigência, contexto, precisão e aprovação.
+**Status:** proposta; implementação não comprovada.
 
-Proposta: criar catálogo dimensional e `product_unit_conversions` com validação backend, auditoria e testes de incompatibilidade dimensional. Nenhuma migration é aplicada por este documento.
+## Estruturas
 
-EVIDÊNCIAS: `database/postgres/migrations/` e lacuna `AUD-P1-005`.
+Foram modeladas 6 estruturas: `measurement_units`, `product_units`, `product_unit_conversions`, `stock_movements`, `product_lots`, `product_serials`. Os propósitos cobrem cadastro, estoque base, compra, venda, consumo, produção, transporte, fiscal, exibição, conferência e inventário.
+
+## Conversão e precisão
+
+- Decimal é obrigatório; ponto flutuante binário é proibido.
+- Conversões exigem compatibilidade dimensional, vigência, versão, aprovação, tolerância e arredondamento.
+- Conversões entre dimensões exigem fórmula segura, densidade e contexto técnico.
+- Movimentações preservam unidade informada, quantidade base e snapshot do fator.
+- O backend recalcula e registra correlação e idempotência.
+
+## Gate
+
+Migration, backfill, backend, frontend e testes permanecem não implementados. Nenhuma migration é aplicada por este documento.
+
+EVIDÊNCIAS: `config/data_audit/product_units_tax_model_proposal.json`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.

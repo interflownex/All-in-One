@@ -29,13 +29,14 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 19
+    assert len(contract["required_complementary"]) == 20
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
     assert "artifacts/catalogo_apis.json" in contract["required_complementary"]
     assert "artifacts/formulario_dinamico_modelo.json" in contract["required_complementary"]
     assert "artifacts/coordenadas_stitch.json" in contract["required_complementary"]
+    assert "artifacts/modelo_unidades_tributacao.json" in contract["required_complementary"]
     assert "artifacts/relatorio_divergencias.json" in contract["required_complementary"]
 
 
@@ -115,3 +116,17 @@ def test_every_smartcrud_surface_has_a_stitch_coordinate_and_route() -> None:
     assert all(item["route"].startswith("/") for item in data["coordinates"])
     assert all(item["states"] and item["accessibility"] for item in data["coordinates"])
     assert all(item["binding_status"] == "parcial" for item in data["coordinates"])
+
+
+def test_units_and_tax_model_covers_precision_and_fiscal_governance() -> None:
+    model = ROOT / "docs" / "data-audit" / "artifacts" / "modelo_unidades_tributacao.json"
+    data = __import__("json").loads(model.read_text(encoding="utf-8"))
+
+    assert data["status"] == "proposta"
+    assert "product_unit_conversions" in data["measurement_entities"]
+    assert "stock_movements" in data["measurement_entities"]
+    assert "fiscal_rules" in data["fiscal_entities"]
+    assert "tax_calculation_snapshots" in data["fiscal_entities"]
+    assert data["conversion_rules"]["binary_float_forbidden"]
+    assert data["calculation_contract"]["tax_calculation_backend_only"]
+    assert not any(data["implementation_gate"].values())
