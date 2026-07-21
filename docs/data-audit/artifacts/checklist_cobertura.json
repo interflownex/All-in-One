@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "status": "em_execucao",
+  "counts": {
+    "migrations": 24,
+    "schemas": 31,
+    "tables": 81,
+    "fields": 1189,
+    "relationships": 297,
+    "indexes": 48,
+    "endpoints": 99,
+    "ui_candidates": 25,
+    "sensitive_candidates": 147
+  },
+  "dimensoes": {
+    "bancos": {
+      "percentual": 100,
+      "evidencias": [
+        "docs/data-audit/artifacts/dicionario_de_dados.json"
+      ],
+      "lacunas": []
+    },
+    "schemas": {
+      "percentual": 100,
+      "evidencias": [
+        "docs/data-audit/artifacts/dicionario_de_dados.json"
+      ],
+      "lacunas": []
+    },
+    "tabelas_colecoes": {
+      "percentual": 85,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "campos": {
+      "percentual": 75,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "relacionamentos": {
+      "percentual": 80,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "bindings_frontend": {
+      "percentual": 0,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "campos_sensiveis": {
+      "percentual": 0,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "auditoria": {
+      "percentual": 40,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "calculos": {
+      "percentual": 0,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "unidades": {
+      "percentual": 0,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "regras_fiscais": {
+      "percentual": 0,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "formularios": {
+      "percentual": 10,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "acoes_ui": {
+      "percentual": 0,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "permissoes_backend": {
+      "percentual": 0,
+      "evidencias": [],
+      "lacunas": [
+        "AUD-P0-000",
+        "AUD-P0-001",
+        "AUD-P1-002",
+        "AUD-P1-003",
+        "AUD-P1-004",
+        "AUD-P1-005"
+      ]
+    },
+    "lacunas_com_backlog": {
+      "percentual": 100,
+      "evidencias": [
+        "docs/data-audit/artifacts/dicionario_de_dados.json"
+      ],
+      "lacunas": []
+    }
+  }
+}

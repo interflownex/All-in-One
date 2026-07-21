@@ -1,0 +1,26 @@
+app,field,binding,evidence
+all-in-one,record-name,não comprovado,apps/all-in-one/src/components/SmartCRUD.tsx:293
+all-in-one,record-description,não comprovado,apps/all-in-one/src/components/SmartCRUD.tsx:297
+all-in-one,record-category,não comprovado,apps/all-in-one/src/components/SmartCRUD.tsx:301
+all-in-one,media-detail-title,não comprovado,apps/all-in-one/src/components/SmartCRUD.tsx:423
+all-in-one,inicio,não comprovado,apps/all-in-one/src/pages/Home.tsx:42
+all-in-one,experiencias,não comprovado,apps/all-in-one/src/pages/Home.tsx:79
+all-in-one,modulos,não comprovado,apps/all-in-one/src/pages/Home.tsx:95
+all-in-one,arquitetura,não comprovado,apps/all-in-one/src/pages/Home.tsx:111
+valley,latitude,não comprovado,apps/valley/src/App.tsx:225
+valley,checkout-title,não comprovado,apps/valley/src/components/CheckoutModal.tsx:37
+valley,support-title,não comprovado,apps/valley/src/components/SupportModal.tsx:42
+valley,support-subject,não comprovado,apps/valley/src/components/SupportModal.tsx:54
+valley,support-message,não comprovado,apps/valley/src/components/SupportModal.tsx:65
+valley,support-resolution,não comprovado,apps/valley/src/components/SupportModal.tsx:76
+valley,booking-title,não comprovado,apps/valley/src/components/BookingModal.tsx:45
+valley,booking-date,não comprovado,apps/valley/src/components/BookingModal.tsx:55
+valley,booking-time,não comprovado,apps/valley/src/components/BookingModal.tsx:59
+valley,booking-note,não comprovado,apps/valley/src/components/BookingModal.tsx:63
+valley,payment-title,não comprovado,apps/valley/src/components/PaymentModal.tsx:43
+valley,drawer-title,não comprovado,apps/valley/src/components/OrdersDrawer.tsx:63
+valley,login-title,não comprovado,apps/valley/src/components/LoginModal.tsx:51
+valley,email,não comprovado,apps/valley/src/components/LoginModal.tsx:63
+valley,password,não comprovado,apps/valley/src/components/LoginModal.tsx:74
+valley,review-title,não comprovado,apps/valley/src/components/ReviewModal.tsx:40
+valley,review-comment,não comprovado,apps/valley/src/components/ReviewModal.tsx:65

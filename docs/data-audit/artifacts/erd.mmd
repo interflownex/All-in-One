@@ -1,0 +1,1649 @@
+erDiagram
+  ai_core_moderation_decisions {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(60) module
+    UUID resource_id
+    NUMERIC(5,_4) risk_score
+    JSONB reasons
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  api_hub_api_clients {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(150) client_name
+    TEXT client_id_hash
+    TEXT secret_reference
+    JSONB scopes
+    INTEGER rate_limit_per_minute
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  api_hub_api_keys {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    UUID client_id FK
+    VARCHAR(150) key_name
+    TEXT key_hash
+    VARCHAR(20) key_hint
+    JSONB scopes
+    TIMESTAMPTZ expires_at
+    TIMESTAMPTZ last_used_at
+    VARCHAR(40) status
+    VARCHAR(120) idempotency_key
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  api_hub_integration_runs {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(80) integration_type
+    VARCHAR(100) provider_name
+    TIMESTAMPTZ started_at
+    TIMESTAMPTZ ended_at
+    TEXT log_summary
+    VARCHAR(40) status
+    VARCHAR(120) idempotency_key
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  api_hub_webhooks {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    TEXT target_url
+    JSONB event_patterns
+    TEXT signing_secret_reference
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  audit_domain_events {
+    UUID id PK
+    UUID user_id FK
+    UUID actor_user_id FK
+    UUID entity_id FK
+    VARCHAR(120) routing_key
+    VARCHAR(100) aggregate_type
+    UUID aggregate_id
+    UUID correlation_id
+    INTEGER schema_version
+    JSONB payload
+    TIMESTAMPTZ published_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+    TIMESTAMPTZ next_retry_at
+  }
+  audit_event_deliveries {
+    UUID id PK
+    UUID user_id FK
+    UUID event_id FK
+    VARCHAR(120) destination
+    VARCHAR(40) delivery_status
+    JSONB response_metadata
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  audit_logs {
+    UUID id PK
+    UUID user_id FK
+    UUID actor_user_id FK
+    UUID actor_entity_id FK
+    VARCHAR(100) action
+    VARCHAR(80) module
+    VARCHAR(100) resource_type
+    UUID resource_id
+    JSONB before_data
+    JSONB after_data
+    INET ip_address
+    TEXT user_agent
+    TEXT device_fingerprint
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  bi_dashboards {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(160) name
+    JSONB definition
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  billing_subscriptions {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(80) plan_code
+    NUMERIC(18,_4) recurring_brl
+    TIMESTAMPTZ next_billing_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  bpm_workflow_instances {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(120) process_key
+    VARCHAR(120) current_task
+    TIMESTAMPTZ sla_due_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  business_catalog_offers {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(60) source_module
+    UUID source_entity_id
+    VARCHAR(40) offer_type
+    VARCHAR(240) title
+    TEXT short_description
+    UUID category_id
+    VARCHAR(120) business_category
+    VARCHAR(80) business_type
+    VARCHAR(120) activity_branch
+    VARCHAR(40) price_type
+    NUMERIC(18,_4) price_amount
+    VARCHAR(10) currency
+    VARCHAR(40) location_type
+    VARCHAR(40) availability_type
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    TIMESTAMPTZ published_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(100) idempotency_key
+  }
+  business_companies {
+    UUID id PK
+    UUID user_id FK
+    UUID parent_company_id FK
+    VARCHAR(18) cnpj
+    VARCHAR(18) root_cnpj
+    VARCHAR(240) legal_name
+    VARCHAR(240) trade_name
+    VARCHAR(20) cnae
+    VARCHAR(40) state_registration
+    VARCHAR(40) municipal_registration
+    UUID legal_representative_user_id FK
+    TIMESTAMPTZ submitted_at
+    TIMESTAMPTZ approved_at
+    UUID approved_by FK
+    TEXT rejection_reason
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  business_company_documents {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(80) document_type
+    TEXT storage_key
+    DATE expires_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  business_user_company_memberships {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(100) department
+    VARCHAR(100) cost_center
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  compliance_moderation_cases {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(60) module
+    VARCHAR(80) resource_type
+    UUID resource_id
+    JSONB matched_signals
+    NUMERIC(5,_4) risk_score
+    UUID reviewer_user_id FK
+    TEXT decision
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  compliance_retention_candidates {
+    UUID id PK
+    VARCHAR(80) module
+    VARCHAR(100) resource_type
+    UUID resource_id
+    UUID subject_id FK
+    JSONB payload
+    JSONB legal_hold
+    VARCHAR(120) requested_action
+    BOOLEAN legal_review_approved
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ locked_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  compliance_retention_decisions {
+    UUID id PK
+    UUID candidate_id FK
+    VARCHAR(80) module
+    VARCHAR(100) resource_type
+    UUID resource_id
+    VARCHAR(120) job_name
+    VARCHAR(160) action
+    VARCHAR(40) decision_status
+    VARCHAR(120) audit_event
+    JSONB evidence
+    JSONB payload
+    BOOLEAN dry_run
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  crm_opportunities {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(240) title
+    NUMERIC(18,_4) expected_value_brl
+    VARCHAR(50) stage
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  delivery_delivery_requests {
+    UUID id PK
+    UUID user_id FK
+    UUID assigned_rider_user_id FK
+    UUID escrow_id FK
+    VARCHAR(40) service_type
+    JSONB origin
+    JSONB destination
+    NUMERIC(12,_3) distance_km
+    NUMERIC(12,_3) weight_kg
+    NUMERIC(12,_4) volume_m3
+    NUMERIC(18,_4) quoted_brl
+    BOOLEAN insurance_required
+    BOOLEAN insurance_accepted
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  delivery_rider_documents {
+    UUID id PK
+    UUID user_id FK
+    UUID rider_profile_id FK
+    VARCHAR(60) document_type
+    TEXT storage_key
+    TIMESTAMPTZ verified_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  delivery_rider_profiles {
+    UUID id PK
+    UUID user_id FK
+    UUID wallet_id
+    TEXT cnh_number_hash
+    VARCHAR(10) cnh_category
+    DATE document_expiry
+    TIMESTAMPTZ proof_of_life_at
+    UUID approved_by FK
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  delivery_rider_reviews {
+    UUID id PK
+    UUID user_id FK
+    UUID rider_profile_id FK
+    UUID reviewer_user_id FK
+    INTEGER rating
+    TEXT comment
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  delivery_vehicles {
+    UUID id PK
+    UUID user_id FK
+    UUID rider_profile_id FK
+    VARCHAR(40) type
+    VARCHAR(12) license_plate
+    NUMERIC(12,_3) capacity_kg
+    BOOLEAN refrigerated
+    TIMESTAMPTZ approved_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  document_documents {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    TEXT storage_key
+    VARCHAR(255) filename
+    VARCHAR(120) mime_type
+    INTEGER version_number
+    DATE retention_until
+    TEXT searchable_text
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  erp_fiscal_documents {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(20) document_type
+    TEXT access_key
+    NUMERIC(18,_4) amount_brl
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  erp_invoice_items {
+    UUID id PK
+    UUID fiscal_document_id FK
+    TEXT description
+    NUMERIC(18,_4) quantity
+    NUMERIC(18,_4) unit_price_brl
+    NUMERIC(18,_4) total_price_brl
+    NUMERIC(18,_4) tax_amount_brl
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+  }
+  finance_escrows {
+    UUID id PK
+    UUID user_id FK
+    UUID wallet_id
+    UUID beneficiary_user_id FK
+    NUMERIC(18,_4) amount_brl
+    JSONB release_condition
+    TIMESTAMPTZ dispute_deadline
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  finance_ledger_entries {
+    UUID id PK
+    UUID user_id FK
+    UUID wallet_id
+    UUID counterparty_user_id FK
+    VARCHAR(10) currency
+    NUMERIC(18,_4) amount_brl
+    NUMERIC(18,_8) amount_nex
+    VARCHAR(40) entry_type
+    VARCHAR(60) reference_type
+    UUID reference_id
+    TEXT idempotency_key
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  finance_valley_gold_ledger_entries {
+    UUID id PK
+    UUID user_id FK
+    UUID merchant_business_id FK
+    VARCHAR(40) entry_type
+    INTEGER amount_gold_delta
+    VARCHAR(60) reference_type
+    UUID reference_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+    TEXT idempotency_key
+  }
+  finance_wallets {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(30) wallet_type
+    NUMERIC(18,_4) brl_available
+    NUMERIC(18,_4) brl_held
+    NUMERIC(18,_8) nex_available
+    NUMERIC(18,_8) nex_held
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  fiscal_tax_documents {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(20) type
+    NUMERIC(18,_4) amount_brl
+    TEXT authority_protocol
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  health_appointments {
+    UUID id PK
+    UUID user_id FK
+    UUID patient_id FK
+    UUID professional_user_id FK
+    TIMESTAMPTZ scheduled_at
+    BOOLEAN telemedicine
+    TEXT clinical_data_encrypted
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+    UUID offer_id FK
+    UUID company_id FK
+  }
+  health_patients {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(80) health_identifier
+    VARCHAR(5) blood_type
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  hr_employees {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(40) employment_type
+    VARCHAR(120) position_title
+    DATE admission_date
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  identity_biometrics {
+    UUID id PK
+    UUID user_id FK
+    TEXT face_hash
+    TEXT provider_reference
+    NUMERIC(5,_4) last_liveness_score
+    TIMESTAMPTZ consent_recorded_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(100) idempotency_key
+  }
+  identity_consent_records {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(60) consent_type
+    VARCHAR(30) policy_version
+    TIMESTAMPTZ accepted_at
+    TIMESTAMPTZ revoked_at
+    INET ip_address
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(100) idempotency_key
+  }
+  identity_documents {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(60) document_type
+    TEXT document_number_hash
+    TEXT storage_key
+    DATE expires_at
+    VARCHAR(40) verification_status
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(100) idempotency_key
+  }
+  identity_duplicate_attempts {
+    UUID id PK
+    UUID user_id FK
+    TEXT cpf_document_hash
+    TEXT face_hash
+    TEXT email_hash
+    TEXT device_fingerprint
+    INET ip_address
+    TEXT blocked_reason
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(100) idempotency_key
+  }
+  identity_identity_verifications {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(50) verification_type
+    NUMERIC(5,_4) risk_score
+    UUID reviewer_user_id FK
+    TEXT decision_reason
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(100) idempotency_key
+  }
+  identity_led_cards {
+    UUID id PK
+    UUID user_id FK
+    UUID wallet_id
+    TEXT card_uid_hash
+    TEXT nfc_public_token_hash
+    TIMESTAMPTZ activated_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  identity_mfa_devices {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(30) method
+    TEXT secret_reference
+    TIMESTAMPTZ verified_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(100) idempotency_key
+  }
+  identity_sessions {
+    UUID id PK
+    UUID user_id FK
+    TEXT token_hash
+    TEXT device_fingerprint
+    INET ip_address
+    TEXT user_agent
+    TIMESTAMPTZ expires_at
+    TIMESTAMPTZ revoked_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(100) idempotency_key
+  }
+  identity_users {
+    UUID id PK
+    UUID all_in_one_id
+    VARCHAR(200) full_name
+    VARCHAR(32) cpf_document
+    DATE birth_date
+    CITEXT email
+    VARCHAR(20) phone_e164
+    TEXT password_hash
+    TEXT face_hash
+    NUMERIC(5,_4) liveness_score
+    VARCHAR(40) document_status
+    VARCHAR(40) kyc_status
+    BOOLEAN mfa_required
+    TIMESTAMPTZ terms_accepted_at
+    TIMESTAMPTZ lgpd_consent_at
+    UUID default_wallet_id
+    UUID primary_led_card_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by
+    UUID updated_by
+    VARCHAR(100) idempotency_key
+  }
+  identity_core_audit_logs {
+    UUID log_id PK
+    UUID actor_user_id
+    VARCHAR(100) action_type
+    VARCHAR(100) target_table
+    UUID target_record_id
+    JSONB old_payload
+    JSONB new_payload
+    INET ip_address
+    TIMESTAMP_WITH_TIME_ZONE created_at
+  }
+  identity_core_business_profiles {
+    UUID id PK
+    UUID owner_user_id FK
+    VARCHAR(255) legal_name
+    VARCHAR(255) trade_name
+    VARCHAR(18) document_cnpj
+    VARCHAR(20) cnae_primary
+    VARCHAR(50) business_status
+    VARCHAR(100) idempotency_key
+    JSONB metadata
+    TIMESTAMP_WITH_TIME_ZONE created_at
+  }
+  identity_core_consents {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(50) document_version
+    VARCHAR(100) consent_type
+    INET ip_address
+    TEXT user_agent
+    TIMESTAMP_WITH_TIME_ZONE accepted_at
+    TIMESTAMP_WITH_TIME_ZONE revoked_at
+    VARCHAR(100) idempotency_key
+    JSONB metadata
+  }
+  identity_core_kyc_records {
+    UUID id PK
+    UUID user_id FK
+    TEXT biometry_hash
+    TEXT doc_front_url
+    TEXT doc_back_url
+    VARCHAR(50) verification_status
+    UUID audited_by
+    TEXT rejection_reason
+    TIMESTAMP_WITH_TIME_ZONE verified_at
+    VARCHAR(100) idempotency_key
+    JSONB metadata
+    TIMESTAMP_WITH_TIME_ZONE created_at
+  }
+  identity_core_users {
+    UUID id PK
+    UUID global_id
+    VARCHAR(255) email
+    VARCHAR(255) password_hash
+    VARCHAR(255) full_name
+    VARCHAR(14) document_cpf
+    BOOLEAN mfa_enabled
+    VARCHAR(255) mfa_secret
+    VARCHAR(50) account_status
+    TIMESTAMP_WITH_TIME_ZONE last_login_at
+    VARCHAR(100) idempotency_key
+    JSONB metadata
+    TIMESTAMP_WITH_TIME_ZONE created_at
+    TIMESTAMP_WITH_TIME_ZONE updated_at
+  }
+  insurance_policies {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(50) reference_type
+    UUID reference_id
+    NUMERIC(18,_4) premium_brl
+    NUMERIC(18,_4) insured_value_brl
+    TIMESTAMPTZ accepted_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  jobs_applications {
+    UUID id PK
+    UUID user_id FK
+    UUID job_posting_id FK
+    UUID resume_id
+    TEXT cover_letter
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    TEXT idempotency_key
+  }
+  jobs_employment_records {
+    UUID id PK
+    UUID user_id FK
+    UUID resume_id
+    UUID source_document_id FK
+    VARCHAR(50) source_type
+    VARCHAR(60) evidence_status
+    VARCHAR(60) official_verification_status
+    VARCHAR(240) employer_name
+    VARCHAR(20) employer_cnpj
+    VARCHAR(180) role_title
+    DATE started_on
+    DATE ended_on
+    TEXT user_activity_description
+    BOOLEAN is_informal_activity
+    BOOLEAN visible_to_recruiter
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    TEXT idempotency_key
+  }
+  jobs_job_postings {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(240) title
+    TEXT description
+    TEXT requirements
+    VARCHAR(60) employment_type
+    VARCHAR(40) workplace_model
+    NUMERIC(18,_4) salary_min_brl
+    NUMERIC(18,_4) salary_max_brl
+    TIMESTAMPTZ published_at
+    TIMESTAMPTZ closes_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    TEXT idempotency_key
+  }
+  jobs_resume_access_logs {
+    UUID id PK
+    UUID user_id FK
+    UUID resume_id
+    UUID business_id FK
+    UUID recruiter_user_id FK
+    TEXT purpose
+    TIMESTAMPTZ accessed_at
+    VARCHAR(40) status
+    JSONB metadata
+    UUID created_by FK
+    TEXT idempotency_key
+  }
+  jobs_resume_documents {
+    UUID id PK
+    UUID user_id FK
+    UUID resume_id FK
+    VARCHAR(60) document_type
+    TEXT storage_key
+    CHAR(64) sha256
+    INTEGER page_count
+    VARCHAR(60) evidence_status
+    VARCHAR(60) official_verification_status
+    VARCHAR(60) extraction_status
+    JSONB extracted_fields
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+    TEXT idempotency_key
+    VARCHAR(40) storage_encryption
+  }
+  jobs_resumes {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(240) headline
+    TEXT professional_summary
+    JSONB skills
+    JSONB education
+    VARCHAR(40) recruiter_visibility
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    TEXT idempotency_key
+  }
+  legal_cases {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(120) case_number
+    NUMERIC(18,_4) risk_brl
+    TIMESTAMPTZ next_deadline
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  marketplace_disputes {
+    UUID id PK
+    UUID user_id FK
+    UUID order_id FK
+    UUID store_id FK
+    UUID company_id FK
+    TEXT offer_id
+    VARCHAR(40) case_type
+    VARCHAR(200) subject
+    TEXT message
+    TEXT desired_resolution
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    UUID created_by FK
+    UUID updated_by FK
+    TEXT idempotency_key
+  }
+  marketplace_orders {
+    UUID id PK
+    UUID user_id FK
+    UUID store_id FK
+    UUID escrow_id FK
+    NUMERIC(18,_4) total_brl
+    NUMERIC(18,_4) commission_brl
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+    UUID offer_id FK
+    UUID company_id FK
+  }
+  marketplace_pepita_grants {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    UUID order_id
+    UUID customer_user_id FK
+    INTEGER pepitas
+    VARCHAR(120) merchant_gold_ledger_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(100) idempotency_key
+  }
+  marketplace_products {
+    UUID id PK
+    UUID user_id FK
+    UUID store_id FK
+    VARCHAR(100) sku
+    VARCHAR(240) name
+    NUMERIC(18,_4) price_brl
+    NUMERIC(18,_4) stock_quantity
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  marketplace_reviews {
+    UUID id PK
+    UUID user_id FK
+    UUID order_id FK
+    UUID store_id FK
+    TEXT offer_id
+    SMALLINT rating
+    TEXT comment
+    VARCHAR(40) moderation_status
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    UUID created_by FK
+    UUID updated_by FK
+    TEXT idempotency_key
+  }
+  marketplace_stores {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(200) name
+    TIMESTAMPTZ published_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  mobility_rides {
+    UUID id PK
+    UUID user_id FK
+    UUID driver_user_id FK
+    UUID escrow_id FK
+    JSONB origin
+    JSONB destination
+    NUMERIC(18,_4) fare_brl
+    VARCHAR(40) vehicle_type
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  mobility_tickets {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(80) route_code
+    NUMERIC(18,_4) amount_brl
+    TEXT qr_token_hash
+    TIMESTAMPTZ used_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  notifications_messages {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(30) channel
+    VARCHAR(100) template_key
+    TIMESTAMPTZ dispatched_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  permissions_access_policies {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(60) module
+    JSONB expression
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  permissions_approval_limits {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    UUID role_id FK
+    NUMERIC(18,_4) limit_brl
+    BOOLEAN requires_dual_approval
+    VARCHAR(60) scope
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  permissions_permissions {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(60) module
+    VARCHAR(40) action
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  permissions_roles {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(80) name
+    BOOLEAN is_system
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  permissions_user_roles {
+    UUID id PK
+    UUID user_id FK
+    UUID role_id FK
+    UUID company_id FK
+    TIMESTAMPTZ valid_until
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
+  property_properties {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    JSONB address
+    VARCHAR(60) property_type
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  services_providers {
+    UUID id PK
+    UUID user_id FK
+    VARCHAR(100) category
+    TIMESTAMPTZ approved_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  services_service_contracts {
+    UUID id PK
+    UUID user_id FK
+    UUID provider_user_id FK
+    UUID escrow_id FK
+    NUMERIC(18,_4) visit_price_brl
+    NUMERIC(18,_4) contracted_price_brl
+    JSONB evidence
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+    UUID offer_id FK
+    UUID company_id FK
+    TIMESTAMPTZ scheduled_at
+  }
+  stock_catalog_products {
+    UUID id PK
+    UUID user_id FK
+    UUID supplier_id FK
+    VARCHAR(120) external_sku
+    NUMERIC(18,_4) cost_brl
+    NUMERIC(7,_4) markup_percent
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  stock_discount_quotes {
+    UUID id PK
+    UUID user_id FK
+    UUID catalog_product_id
+    INTEGER selected_percent
+    INTEGER pepitas_required
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(100) idempotency_key
+  }
+  stock_suppliers {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    TIMESTAMPTZ homologated_at
+    JSONB api_configuration
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  tms_freights {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    UUID driver_user_id FK
+    NUMERIC(18,_4) freight_brl
+    NUMERIC(18,_4) toll_brl
+    JSONB proof_of_delivery
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  vision_devices {
+    UUID id PK
+    UUID user_id FK
+    TEXT device_fingerprint
+    VARCHAR(160) location_label
+    INTEGER retention_days
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  wms_inventory {
+    UUID id PK
+    UUID user_id FK
+    UUID warehouse_id FK
+    VARCHAR(120) sku
+    VARCHAR(80) bin_code
+    NUMERIC(18,_4) quantity
+    VARCHAR(80) lot_code
+    DATE expires_at
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  wms_warehouses {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    VARCHAR(160) name
+    JSONB addressing_rules
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(120) idempotency_key
+  }
+  identity_documents }o--|| identity_users : "user_id"
+  identity_documents }o--|| identity_users : "created_by"
+  identity_documents }o--|| identity_users : "updated_by"
+  identity_biometrics }o--|| identity_users : "user_id"
+  identity_biometrics }o--|| identity_users : "created_by"
+  identity_biometrics }o--|| identity_users : "updated_by"
+  identity_mfa_devices }o--|| identity_users : "user_id"
+  identity_mfa_devices }o--|| identity_users : "created_by"
+  identity_mfa_devices }o--|| identity_users : "updated_by"
+  identity_sessions }o--|| identity_users : "user_id"
+  identity_sessions }o--|| identity_users : "created_by"
+  identity_sessions }o--|| identity_users : "updated_by"
+  identity_identity_verifications }o--|| identity_users : "user_id"
+  identity_identity_verifications }o--|| identity_users : "reviewer_user_id"
+  identity_identity_verifications }o--|| identity_users : "created_by"
+  identity_identity_verifications }o--|| identity_users : "updated_by"
+  identity_consent_records }o--|| identity_users : "user_id"
+  identity_consent_records }o--|| identity_users : "created_by"
+  identity_consent_records }o--|| identity_users : "updated_by"
+  identity_duplicate_attempts }o--|| identity_users : "user_id"
+  identity_duplicate_attempts }o--|| identity_users : "created_by"
+  identity_duplicate_attempts }o--|| identity_users : "updated_by"
+  business_companies }o--|| identity_users : "user_id"
+  business_companies }o--|| business_companies : "parent_company_id"
+  business_companies }o--|| identity_users : "legal_representative_user_id"
+  business_companies }o--|| identity_users : "approved_by"
+  business_companies }o--|| identity_users : "created_by"
+  business_companies }o--|| identity_users : "updated_by"
+  business_company_documents }o--|| identity_users : "user_id"
+  business_company_documents }o--|| business_companies : "company_id"
+  business_company_documents }o--|| identity_users : "created_by"
+  business_company_documents }o--|| identity_users : "updated_by"
+  business_user_company_memberships }o--|| identity_users : "user_id"
+  business_user_company_memberships }o--|| business_companies : "company_id"
+  business_user_company_memberships }o--|| identity_users : "created_by"
+  business_user_company_memberships }o--|| identity_users : "updated_by"
+  permissions_roles }o--|| identity_users : "user_id"
+  permissions_roles }o--|| business_companies : "company_id"
+  permissions_roles }o--|| identity_users : "created_by"
+  permissions_roles }o--|| identity_users : "updated_by"
+  permissions_permissions }o--|| identity_users : "user_id"
+  permissions_permissions }o--|| identity_users : "created_by"
+  permissions_permissions }o--|| identity_users : "updated_by"
+  permissions_user_roles }o--|| identity_users : "user_id"
+  permissions_user_roles }o--|| permissions_roles : "role_id"
+  permissions_user_roles }o--|| business_companies : "company_id"
+  permissions_user_roles }o--|| identity_users : "created_by"
+  permissions_user_roles }o--|| identity_users : "updated_by"
+  permissions_access_policies }o--|| identity_users : "user_id"
+  permissions_access_policies }o--|| business_companies : "company_id"
+  permissions_access_policies }o--|| identity_users : "created_by"
+  permissions_access_policies }o--|| identity_users : "updated_by"
+  permissions_approval_limits }o--|| identity_users : "user_id"
+  permissions_approval_limits }o--|| business_companies : "company_id"
+  permissions_approval_limits }o--|| permissions_roles : "role_id"
+  permissions_approval_limits }o--|| identity_users : "created_by"
+  permissions_approval_limits }o--|| identity_users : "updated_by"
+  finance_wallets }o--|| identity_users : "user_id"
+  finance_wallets }o--|| identity_users : "created_by"
+  finance_wallets }o--|| identity_users : "updated_by"
+  finance_ledger_entries }o--|| identity_users : "user_id"
+  finance_ledger_entries }o--|| identity_users : "counterparty_user_id"
+  finance_ledger_entries }o--|| identity_users : "created_by"
+  finance_escrows }o--|| identity_users : "user_id"
+  finance_escrows }o--|| identity_users : "beneficiary_user_id"
+  finance_escrows }o--|| identity_users : "created_by"
+  finance_escrows }o--|| identity_users : "updated_by"
+  identity_led_cards }o--|| identity_users : "user_id"
+  identity_led_cards }o--|| identity_users : "created_by"
+  identity_led_cards }o--|| identity_users : "updated_by"
+  delivery_rider_profiles }o--|| identity_users : "user_id"
+  delivery_rider_profiles }o--|| identity_users : "approved_by"
+  delivery_rider_profiles }o--|| identity_users : "created_by"
+  delivery_rider_profiles }o--|| identity_users : "updated_by"
+  delivery_vehicles }o--|| identity_users : "user_id"
+  delivery_vehicles }o--|| delivery_rider_profiles : "rider_profile_id"
+  delivery_vehicles }o--|| identity_users : "created_by"
+  delivery_vehicles }o--|| identity_users : "updated_by"
+  marketplace_stores }o--|| identity_users : "user_id"
+  marketplace_stores }o--|| business_companies : "company_id"
+  marketplace_stores }o--|| identity_users : "created_by"
+  marketplace_stores }o--|| identity_users : "updated_by"
+  marketplace_products }o--|| identity_users : "user_id"
+  marketplace_products }o--|| marketplace_stores : "store_id"
+  marketplace_products }o--|| identity_users : "created_by"
+  marketplace_products }o--|| identity_users : "updated_by"
+  marketplace_orders }o--|| identity_users : "user_id"
+  marketplace_orders }o--|| marketplace_stores : "store_id"
+  marketplace_orders }o--|| finance_escrows : "escrow_id"
+  marketplace_orders }o--|| identity_users : "created_by"
+  marketplace_orders }o--|| identity_users : "updated_by"
+  marketplace_orders }o--|| business_catalog_offers : "offer_id"
+  marketplace_orders }o--|| business_companies : "company_id"
+  stock_suppliers }o--|| identity_users : "user_id"
+  stock_suppliers }o--|| business_companies : "company_id"
+  stock_suppliers }o--|| identity_users : "created_by"
+  stock_suppliers }o--|| identity_users : "updated_by"
+  stock_catalog_products }o--|| identity_users : "user_id"
+  stock_catalog_products }o--|| stock_suppliers : "supplier_id"
+  stock_catalog_products }o--|| identity_users : "created_by"
+  stock_catalog_products }o--|| identity_users : "updated_by"
+  delivery_delivery_requests }o--|| identity_users : "user_id"
+  delivery_delivery_requests }o--|| identity_users : "assigned_rider_user_id"
+  delivery_delivery_requests }o--|| finance_escrows : "escrow_id"
+  delivery_delivery_requests }o--|| identity_users : "created_by"
+  delivery_delivery_requests }o--|| identity_users : "updated_by"
+  services_providers }o--|| identity_users : "user_id"
+  services_providers }o--|| identity_users : "created_by"
+  services_providers }o--|| identity_users : "updated_by"
+  services_service_contracts }o--|| identity_users : "user_id"
+  services_service_contracts }o--|| identity_users : "provider_user_id"
+  services_service_contracts }o--|| finance_escrows : "escrow_id"
+  services_service_contracts }o--|| identity_users : "created_by"
+  services_service_contracts }o--|| identity_users : "updated_by"
+  services_service_contracts }o--|| business_catalog_offers : "offer_id"
+  services_service_contracts }o--|| business_companies : "company_id"
+  mobility_rides }o--|| identity_users : "user_id"
+  mobility_rides }o--|| identity_users : "driver_user_id"
+  mobility_rides }o--|| finance_escrows : "escrow_id"
+  mobility_rides }o--|| identity_users : "created_by"
+  mobility_rides }o--|| identity_users : "updated_by"
+  mobility_tickets }o--|| identity_users : "user_id"
+  mobility_tickets }o--|| identity_users : "created_by"
+  mobility_tickets }o--|| identity_users : "updated_by"
+  erp_fiscal_documents }o--|| identity_users : "user_id"
+  erp_fiscal_documents }o--|| business_companies : "company_id"
+  erp_fiscal_documents }o--|| identity_users : "created_by"
+  erp_fiscal_documents }o--|| identity_users : "updated_by"
+  wms_warehouses }o--|| identity_users : "user_id"
+  wms_warehouses }o--|| business_companies : "company_id"
+  wms_warehouses }o--|| identity_users : "created_by"
+  wms_warehouses }o--|| identity_users : "updated_by"
+  wms_inventory }o--|| identity_users : "user_id"
+  wms_inventory }o--|| wms_warehouses : "warehouse_id"
+  wms_inventory }o--|| identity_users : "created_by"
+  wms_inventory }o--|| identity_users : "updated_by"
+  tms_freights }o--|| identity_users : "user_id"
+  tms_freights }o--|| business_companies : "company_id"
+  tms_freights }o--|| identity_users : "driver_user_id"
+  tms_freights }o--|| identity_users : "created_by"
+  tms_freights }o--|| identity_users : "updated_by"
+  crm_opportunities }o--|| identity_users : "user_id"
+  crm_opportunities }o--|| business_companies : "company_id"
+  crm_opportunities }o--|| identity_users : "created_by"
+  crm_opportunities }o--|| identity_users : "updated_by"
+  bpm_workflow_instances }o--|| identity_users : "user_id"
+  bpm_workflow_instances }o--|| business_companies : "company_id"
+  bpm_workflow_instances }o--|| identity_users : "created_by"
+  bpm_workflow_instances }o--|| identity_users : "updated_by"
+  document_documents }o--|| identity_users : "user_id"
+  document_documents }o--|| business_companies : "company_id"
+  document_documents }o--|| identity_users : "created_by"
+  document_documents }o--|| identity_users : "updated_by"
+  billing_subscriptions }o--|| identity_users : "user_id"
+  billing_subscriptions }o--|| business_companies : "company_id"
+  billing_subscriptions }o--|| identity_users : "created_by"
+  billing_subscriptions }o--|| identity_users : "updated_by"
+  fiscal_tax_documents }o--|| identity_users : "user_id"
+  fiscal_tax_documents }o--|| business_companies : "company_id"
+  fiscal_tax_documents }o--|| identity_users : "created_by"
+  fiscal_tax_documents }o--|| identity_users : "updated_by"
+  hr_employees }o--|| identity_users : "user_id"
+  hr_employees }o--|| business_companies : "company_id"
+  hr_employees }o--|| identity_users : "created_by"
+  hr_employees }o--|| identity_users : "updated_by"
+  health_patients }o--|| identity_users : "user_id"
+  health_patients }o--|| identity_users : "created_by"
+  health_patients }o--|| identity_users : "updated_by"
+  health_appointments }o--|| identity_users : "user_id"
+  health_appointments }o--|| health_patients : "patient_id"
+  health_appointments }o--|| identity_users : "professional_user_id"
+  health_appointments }o--|| identity_users : "created_by"
+  health_appointments }o--|| identity_users : "updated_by"
+  health_appointments }o--|| business_catalog_offers : "offer_id"
+  health_appointments }o--|| business_companies : "company_id"
+  vision_devices }o--|| identity_users : "user_id"
+  vision_devices }o--|| identity_users : "created_by"
+  vision_devices }o--|| identity_users : "updated_by"
+  legal_cases }o--|| identity_users : "user_id"
+  legal_cases }o--|| business_companies : "company_id"
+  legal_cases }o--|| identity_users : "created_by"
+  legal_cases }o--|| identity_users : "updated_by"
+  property_properties }o--|| identity_users : "user_id"
+  property_properties }o--|| business_companies : "company_id"
+  property_properties }o--|| identity_users : "created_by"
+  property_properties }o--|| identity_users : "updated_by"
+  insurance_policies }o--|| identity_users : "user_id"
+  insurance_policies }o--|| identity_users : "created_by"
+  insurance_policies }o--|| identity_users : "updated_by"
+  notifications_messages }o--|| identity_users : "user_id"
+  notifications_messages }o--|| identity_users : "created_by"
+  notifications_messages }o--|| identity_users : "updated_by"
+  bi_dashboards }o--|| identity_users : "user_id"
+  bi_dashboards }o--|| business_companies : "company_id"
+  bi_dashboards }o--|| identity_users : "created_by"
+  bi_dashboards }o--|| identity_users : "updated_by"
+  ai_core_moderation_decisions }o--|| identity_users : "user_id"
+  ai_core_moderation_decisions }o--|| identity_users : "created_by"
+  ai_core_moderation_decisions }o--|| identity_users : "updated_by"
+  audit_logs }o--|| identity_users : "user_id"
+  audit_logs }o--|| identity_users : "actor_user_id"
+  audit_logs }o--|| business_companies : "actor_entity_id"
+  audit_logs }o--|| identity_users : "created_by"
+  audit_domain_events }o--|| identity_users : "user_id"
+  audit_domain_events }o--|| identity_users : "actor_user_id"
+  audit_domain_events }o--|| business_companies : "entity_id"
+  audit_domain_events }o--|| identity_users : "created_by"
+  audit_event_deliveries }o--|| identity_users : "user_id"
+  audit_event_deliveries }o--|| audit_domain_events : "event_id"
+  audit_event_deliveries }o--|| identity_users : "created_by"
+  compliance_moderation_cases }o--|| identity_users : "user_id"
+  compliance_moderation_cases }o--|| identity_users : "reviewer_user_id"
+  compliance_moderation_cases }o--|| identity_users : "created_by"
+  compliance_moderation_cases }o--|| identity_users : "updated_by"
+  api_hub_api_clients }o--|| identity_users : "user_id"
+  api_hub_api_clients }o--|| business_companies : "company_id"
+  api_hub_api_clients }o--|| identity_users : "created_by"
+  api_hub_api_clients }o--|| identity_users : "updated_by"
+  api_hub_webhooks }o--|| identity_users : "user_id"
+  api_hub_webhooks }o--|| business_companies : "company_id"
+  api_hub_webhooks }o--|| identity_users : "created_by"
+  api_hub_webhooks }o--|| identity_users : "updated_by"
+  jobs_resumes }o--|| identity_users : "user_id"
+  jobs_resumes }o--|| identity_users : "created_by"
+  jobs_resumes }o--|| identity_users : "updated_by"
+  jobs_resume_documents }o--|| identity_users : "user_id"
+  jobs_resume_documents }o--|| jobs_resumes : "resume_id"
+  jobs_resume_documents }o--|| identity_users : "created_by"
+  jobs_employment_records }o--|| identity_users : "user_id"
+  jobs_employment_records }o--|| jobs_resume_documents : "source_document_id"
+  jobs_employment_records }o--|| identity_users : "created_by"
+  jobs_employment_records }o--|| identity_users : "updated_by"
+  jobs_job_postings }o--|| identity_users : "user_id"
+  jobs_job_postings }o--|| business_companies : "company_id"
+  jobs_job_postings }o--|| identity_users : "created_by"
+  jobs_job_postings }o--|| identity_users : "updated_by"
+  jobs_applications }o--|| identity_users : "user_id"
+  jobs_applications }o--|| jobs_job_postings : "job_posting_id"
+  jobs_applications }o--|| identity_users : "created_by"
+  jobs_applications }o--|| identity_users : "updated_by"
+  jobs_resume_access_logs }o--|| identity_users : "user_id"
+  jobs_resume_access_logs }o--|| business_companies : "business_id"
+  jobs_resume_access_logs }o--|| identity_users : "recruiter_user_id"
+  jobs_resume_access_logs }o--|| identity_users : "created_by"
+  identity_core_kyc_records }o--|| identity_core_users : "user_id"
+  identity_core_business_profiles }o--|| identity_core_users : "owner_user_id"
+  identity_core_consents }o--|| identity_core_users : "user_id"
+  api_hub_api_keys }o--|| identity_users : "user_id"
+  api_hub_api_keys }o--|| business_companies : "company_id"
+  api_hub_api_keys }o--|| api_hub_api_clients : "client_id"
+  api_hub_api_keys }o--|| identity_users : "created_by"
+  api_hub_api_keys }o--|| identity_users : "updated_by"
+  api_hub_integration_runs }o--|| identity_users : "user_id"
+  api_hub_integration_runs }o--|| business_companies : "company_id"
+  api_hub_integration_runs }o--|| identity_users : "created_by"
+  api_hub_integration_runs }o--|| identity_users : "updated_by"
+  marketplace_pepita_grants }o--|| identity_users : "user_id"
+  marketplace_pepita_grants }o--|| business_companies : "company_id"
+  marketplace_pepita_grants }o--|| identity_users : "customer_user_id"
+  marketplace_pepita_grants }o--|| identity_users : "created_by"
+  marketplace_pepita_grants }o--|| identity_users : "updated_by"
+  stock_discount_quotes }o--|| identity_users : "user_id"
+  stock_discount_quotes }o--|| identity_users : "created_by"
+  stock_discount_quotes }o--|| identity_users : "updated_by"
+  finance_valley_gold_ledger_entries }o--|| identity_users : "user_id"
+  finance_valley_gold_ledger_entries }o--|| business_companies : "merchant_business_id"
+  finance_valley_gold_ledger_entries }o--|| identity_users : "created_by"
+  compliance_retention_candidates }o--|| identity_users : "subject_id"
+  compliance_retention_candidates }o--|| identity_users : "created_by"
+  compliance_retention_candidates }o--|| identity_users : "updated_by"
+  compliance_retention_decisions }o--|| compliance_retention_candidates : "candidate_id"
+  compliance_retention_decisions }o--|| identity_users : "created_by"
+  erp_invoice_items }o--|| erp_fiscal_documents : "fiscal_document_id"
+  business_catalog_offers }o--|| identity_users : "user_id"
+  business_catalog_offers }o--|| business_companies : "company_id"
+  business_catalog_offers }o--|| identity_users : "created_by"
+  business_catalog_offers }o--|| identity_users : "updated_by"
+  marketplace_reviews }o--|| identity_users : "user_id"
+  marketplace_reviews }o--|| marketplace_orders : "order_id"
+  marketplace_reviews }o--|| marketplace_stores : "store_id"
+  marketplace_reviews }o--|| identity_users : "created_by"
+  marketplace_reviews }o--|| identity_users : "updated_by"
+  marketplace_disputes }o--|| identity_users : "user_id"
+  marketplace_disputes }o--|| marketplace_orders : "order_id"
+  marketplace_disputes }o--|| marketplace_stores : "store_id"
+  marketplace_disputes }o--|| business_companies : "company_id"
+  marketplace_disputes }o--|| identity_users : "created_by"
+  marketplace_disputes }o--|| identity_users : "updated_by"
+  delivery_rider_documents }o--|| identity_users : "user_id"
+  delivery_rider_documents }o--|| delivery_rider_profiles : "rider_profile_id"
+  delivery_rider_documents }o--|| identity_users : "created_by"
+  delivery_rider_documents }o--|| identity_users : "updated_by"
+  delivery_rider_reviews }o--|| identity_users : "user_id"
+  delivery_rider_reviews }o--|| delivery_rider_profiles : "rider_profile_id"
+  delivery_rider_reviews }o--|| identity_users : "reviewer_user_id"
+  delivery_rider_reviews }o--|| identity_users : "created_by"
+  delivery_rider_reviews }o--|| identity_users : "updated_by"

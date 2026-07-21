@@ -41,7 +41,12 @@
     "databases/postgresql/schemas",
     "databases/postgresql/tables",
     "databases/postgresql/views",
-    "databases/postgresql/diagrams"
+    "databases/postgresql/diagrams",
+    "databases/mongodb/README.md",
+    "databases/sqlite/README.md",
+    "databases/redis/README.md",
+    "databases/object-storage/README.md",
+    "databases/browser-storage/README.md"
   ],
   "coverage_dimensions": [
     "bancos",

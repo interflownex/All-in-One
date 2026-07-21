@@ -41,3 +41,21 @@ def test_contract_requires_all_completion_dimensions() -> None:
     assert len(contract["coverage_dimensions"]) == 15
     assert "campos" in contract["coverage_dimensions"]
     assert "permissoes_backend" in contract["coverage_dimensions"]
+
+
+def test_generated_coverage_does_not_claim_false_completion() -> None:
+    coverage = ROOT / "docs" / "data-audit" / "artifacts" / "checklist_cobertura.json"
+    data = __import__("json").loads(coverage.read_text(encoding="utf-8"))
+
+    assert data["status"] == "em_execucao"
+    assert data["counts"]["migrations"] == 24
+    assert data["counts"]["tables"] >= 80
+    assert any(item["percentual"] < 100 for item in data["dimensoes"].values())
+
+
+def test_generated_summary_is_rendered_markdown() -> None:
+    summary = (ROOT / "docs" / "data-audit" / "00_RESUMO_EXECUTIVO.md").read_text(encoding="utf-8")
+
+    assert "24 migrations PostgreSQL" in summary
+    assert 'f"A varredura' not in summary
+    assert "conclusão de 100% não declarada" in summary

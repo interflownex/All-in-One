@@ -1,0 +1,2 @@
+persona,action,resource,backend_enforcement,status,evidence
+papéis dinâmicos,CRUD por domínio,entidade do módulo,requer verificação endpoint a endpoint,parcial,docs/data-audit/evidence/03_MAPA_DE_PERSONAS.md

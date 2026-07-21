@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "status": "em_execucao",
+  "gaps": [
+    {
+      "id": "AUD-P0-000",
+      "priority": "P0",
+      "title": "Persistências não PostgreSQL exigem catálogo de campo e validação em runtime",
+      "evidence": "infra/docker/docker-compose.yml:69",
+      "acceptance": "MongoDB, SQLite, Redis, object storage e storage de navegador possuem catálogo, retenção, ownership e testes aprovados."
+    },
+    {
+      "id": "AUD-P0-001",
+      "priority": "P0",
+      "title": "Classificação LGPD exige revisão humana por campo",
+      "evidence": "docs/data-audit/artifacts/dicionario_de_dados.csv",
+      "acceptance": "Todos os campos possuem classificação aprovada pelo proprietário do domínio."
+    },
+    {
+      "id": "AUD-P1-002",
+      "priority": "P1",
+      "title": "Bindings frontend-backend não estão integralmente comprovados",
+      "evidence": "docs/data-audit/artifacts/matriz_formulario_campo.csv",
+      "acceptance": "Cada campo UI aponta para DTO, endpoint, regra e teste."
+    },
+    {
+      "id": "AUD-P1-003",
+      "priority": "P1",
+      "title": "Eventos não possuem catálogo de payload versionado",
+      "evidence": "docs/data-audit/artifacts/matriz_evento_campo.csv",
+      "acceptance": "Cada evento possui produtor, consumidor, schema, idempotência e compatibilidade."
+    },
+    {
+      "id": "AUD-P1-004",
+      "priority": "P1",
+      "title": "Construtor de formulários dinâmicos é proposta, não implementação",
+      "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:1583",
+      "acceptance": "Metadados, API, homologação, segurança e testes implementados."
+    },
+    {
+      "id": "AUD-P1-005",
+      "priority": "P1",
+      "title": "Regras fiscais e conversões carecem de modelo completo",
+      "evidence": "database/postgres/migrations/",
+      "acceptance": "Perfis fiscais e conversões versionadas possuem migrations, backend e testes."
+    }
+  ]
+}
