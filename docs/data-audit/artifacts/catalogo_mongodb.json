@@ -1,0 +1,878 @@
+{
+  "version": 1,
+  "counts": {
+    "migrations": 24,
+    "schemas": 31,
+    "tables": 81,
+    "fields": 1189,
+    "mongodb_collections": 4,
+    "mongodb_fields": 29,
+    "sqlite_tables": 4,
+    "sqlite_fields": 39,
+    "relationships": 297,
+    "indexes": 48,
+    "endpoints": 99,
+    "endpoints_with_response_model": 8,
+    "api_model_fields": 115,
+    "ui_candidates": 1067,
+    "ui_surfaces": 299,
+    "ui_forms": 129,
+    "logical_entities": 120,
+    "logical_without_physical_table": 62,
+    "logical_without_ui_surface": 46,
+    "event_transitions": 194,
+    "unique_events": 187,
+    "sensitive_candidates": 304,
+    "dynamic_form_entities_proposed": 14,
+    "measurement_entities_proposed": 6,
+    "fiscal_entities_proposed": 5,
+    "audit_candidate_tables": 5,
+    "audit_requirements": 35,
+    "audit_requirements_covered": 18
+  },
+  "fields": [
+    {
+      "database": "all_in_one",
+      "collection": "ai_memory",
+      "field": "user_id",
+      "bson_type": "string",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "pseudônimo vinculável",
+      "classification_basis": "política v1 categoria identidade_relacional; padrões: user_id",
+      "encryption": "controle de acesso e segregação por tenant; criptografia do banco",
+      "masking": "não expor identificadores internos sem necessidade",
+      "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:16"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "ai_memory",
+      "field": "memory_type",
+      "bson_type": "object/complex",
+      "required": true,
+      "enum": [
+        "preference",
+        "context",
+        "summary",
+        "moderation"
+      ],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:17"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "ai_memory",
+      "field": "content_encrypted",
+      "bson_type": "string",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": true,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:18"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "ai_memory",
+      "field": "consent_scope",
+      "bson_type": "string",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:19"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "ai_memory",
+      "field": "retention_until",
+      "bson_type": "date",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:20"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "ai_memory",
+      "field": "created_at",
+      "bson_type": "date",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:21"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "ai_memory",
+      "field": "metadata",
+      "bson_type": "object",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:22"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "social_videos",
+      "field": "user_id",
+      "bson_type": "string",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "pseudônimo vinculável",
+      "classification_basis": "política v1 categoria identidade_relacional; padrões: user_id",
+      "encryption": "controle de acesso e segregação por tenant; criptografia do banco",
+      "masking": "não expor identificadores internos sem necessidade",
+      "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:32"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "social_videos",
+      "field": "asset_key",
+      "bson_type": "string",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": true,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:33"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "social_videos",
+      "field": "caption",
+      "bson_type": "string",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:34"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "social_videos",
+      "field": "commission_links",
+      "bson_type": "array",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "financeiro confidencial",
+      "classification_basis": "política v1 categoria financeiro; padrões: commission",
+      "encryption": "obrigatória em trânsito e repouso",
+      "masking": "restringir por papel e finalidade; não registrar valor sensível desnecessário",
+      "retention": "definir por obrigação contábil, fiscal e prevenção a fraude",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:35"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "social_videos",
+      "field": "moderation",
+      "bson_type": "object",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": true,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:36"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "social_videos",
+      "field": "views",
+      "bson_type": "long",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:37"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "social_videos",
+      "field": "likes",
+      "bson_type": "long",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:38"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "social_videos",
+      "field": "status",
+      "bson_type": "string",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:39"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "social_videos",
+      "field": "created_at",
+      "bson_type": "date",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "created_at": -1
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:40"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "influencer_metrics",
+      "field": "user_id",
+      "bson_type": "string",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "pseudônimo vinculável",
+      "classification_basis": "política v1 categoria identidade_relacional; padrões: user_id",
+      "encryption": "controle de acesso e segregação por tenant; criptografia do banco",
+      "masking": "não expor identificadores internos sem necessidade",
+      "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "period": 1
+          },
+          "options": {
+            "unique": true
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:49"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "influencer_metrics",
+      "field": "period",
+      "bson_type": "string",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "period": 1
+          },
+          "options": {
+            "unique": true
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:50"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "influencer_metrics",
+      "field": "clicks",
+      "bson_type": "long",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "period": 1
+          },
+          "options": {
+            "unique": true
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:51"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "influencer_metrics",
+      "field": "conversions",
+      "bson_type": "long",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "period": 1
+          },
+          "options": {
+            "unique": true
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:52"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "influencer_metrics",
+      "field": "commissions_brl",
+      "bson_type": "decimal",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": true,
+      "lgpd": "financeiro confidencial",
+      "classification_basis": "política v1 categoria financeiro; padrões: commission",
+      "encryption": "obrigatória em trânsito e repouso",
+      "masking": "restringir por papel e finalidade; não registrar valor sensível desnecessário",
+      "retention": "definir por obrigação contábil, fiscal e prevenção a fraude",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "period": 1
+          },
+          "options": {
+            "unique": true
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:53"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "influencer_metrics",
+      "field": "created_at",
+      "bson_type": "date",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "user_id": 1,
+            "period": 1
+          },
+          "options": {
+            "unique": true
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:54"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "telemetry_logs",
+      "field": "user_id",
+      "bson_type": "string",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "pseudônimo vinculável",
+      "classification_basis": "política v1 categoria identidade_relacional; padrões: user_id",
+      "encryption": "controle de acesso e segregação por tenant; criptografia do banco",
+      "masking": "não expor identificadores internos sem necessidade",
+      "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
+      "indexes": [
+        {
+          "keys": {
+            "location": "2dsphere"
+          }
+        },
+        {
+          "keys": {
+            "user_id": 1,
+            "occurred_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:63"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "telemetry_logs",
+      "field": "source",
+      "bson_type": "object/complex",
+      "required": true,
+      "enum": [
+        "rider_gps",
+        "mobility_gps",
+        "vision_sensor",
+        "home_sensor",
+        "medical_device"
+      ],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "location": "2dsphere"
+          }
+        },
+        {
+          "keys": {
+            "user_id": 1,
+            "occurred_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:64"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "telemetry_logs",
+      "field": "device_id",
+      "bson_type": "string",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": true,
+      "lgpd": "dado pessoal",
+      "classification_basis": "política v1 categoria contato_localizacao; padrões: device",
+      "encryption": "criptografar quando associado a pessoa identificada ou rastreamento",
+      "masking": "mascarar em logs, listagens e exportações não autorizadas",
+      "retention": "limitar à finalidade operacional e consentimento aplicável",
+      "indexes": [
+        {
+          "keys": {
+            "location": "2dsphere"
+          }
+        },
+        {
+          "keys": {
+            "user_id": 1,
+            "occurred_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:65"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "telemetry_logs",
+      "field": "occurred_at",
+      "bson_type": "date",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "location": "2dsphere"
+          }
+        },
+        {
+          "keys": {
+            "user_id": 1,
+            "occurred_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:66"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "telemetry_logs",
+      "field": "location",
+      "bson_type": "object/complex",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": true,
+      "lgpd": "dado pessoal",
+      "classification_basis": "política v1 categoria contato_localizacao; padrões: location",
+      "encryption": "criptografar quando associado a pessoa identificada ou rastreamento",
+      "masking": "mascarar em logs, listagens e exportações não autorizadas",
+      "retention": "limitar à finalidade operacional e consentimento aplicável",
+      "indexes": [
+        {
+          "keys": {
+            "location": "2dsphere"
+          }
+        },
+        {
+          "keys": {
+            "user_id": 1,
+            "occurred_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:67"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "telemetry_logs",
+      "field": "payload",
+      "bson_type": "object",
+      "required": true,
+      "enum": [],
+      "sensitive_declared": true,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "location": "2dsphere"
+          }
+        },
+        {
+          "keys": {
+            "user_id": 1,
+            "occurred_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:74"
+    },
+    {
+      "database": "all_in_one",
+      "collection": "telemetry_logs",
+      "field": "retention_until",
+      "bson_type": "date",
+      "required": false,
+      "enum": [],
+      "sensitive_declared": false,
+      "lgpd": "não classificado automaticamente",
+      "classification_basis": "política v1; nenhuma regra automática aplicável",
+      "encryption": "avaliar pelo proprietário do domínio",
+      "masking": "avaliar pelo proprietário do domínio",
+      "retention": "não definida; registrar lacuna",
+      "indexes": [
+        {
+          "keys": {
+            "location": "2dsphere"
+          }
+        },
+        {
+          "keys": {
+            "user_id": 1,
+            "occurred_at": -1
+          }
+        },
+        {
+          "keys": {
+            "retention_until": 1
+          },
+          "options": {
+            "expireAfterSeconds": 0
+          }
+        }
+      ],
+      "evidence": "database/mongodb/init/001_ai_social_telemetry.js:75"
+    }
+  ]
+}

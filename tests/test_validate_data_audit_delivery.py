@@ -29,7 +29,7 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 23
+    assert len(contract["required_complementary"]) == 27
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
@@ -40,6 +40,24 @@ def test_contract_lists_every_complementary_format() -> None:
     assert "artifacts/politica_classificacao_campos.json" in contract["required_complementary"]
     assert "artifacts/cobertura_auditoria.json" in contract["required_complementary"]
     assert "artifacts/relatorio_divergencias.json" in contract["required_complementary"]
+    assert "artifacts/catalogo_mongodb.json" in contract["required_complementary"]
+    assert "artifacts/catalogo_mongodb.csv" in contract["required_complementary"]
+    assert "artifacts/catalogo_sqlite.json" in contract["required_complementary"]
+    assert "artifacts/catalogo_sqlite.csv" in contract["required_complementary"]
+
+
+def test_generated_non_postgres_catalogs_have_field_evidence() -> None:
+    json = __import__("json")
+    artifacts = ROOT / "docs" / "data-audit" / "artifacts"
+    mongodb = json.loads((artifacts / "catalogo_mongodb.json").read_text(encoding="utf-8"))
+    sqlite = json.loads((artifacts / "catalogo_sqlite.json").read_text(encoding="utf-8"))
+
+    assert mongodb["counts"]["mongodb_collections"] == 4
+    assert mongodb["counts"]["mongodb_fields"] == 29
+    assert all(item["evidence"] for item in mongodb["fields"])
+    assert sqlite["counts"]["sqlite_tables"] == 4
+    assert sqlite["counts"]["sqlite_fields"] == 39
+    assert all(item["evidence"] for item in sqlite["fields"])
 
 
 def test_contract_requires_all_completion_dimensions() -> None:

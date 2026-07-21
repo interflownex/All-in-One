@@ -188,6 +188,61 @@ def discover_physical_model() -> tuple[set[str], dict[str, list[Field]], list[st
     return schemas, tables, indexes, [str(path.relative_to(ROOT)) for path in migrations]
 
 
+def discover_mongodb_model() -> list[dict[str, object]]:
+    init_path = ROOT / "database" / "mongodb" / "init" / "001_ai_social_telemetry.js"
+    contract_path = ROOT / "config" / "database" / "mongodb_contract.json"
+    text = init_path.read_text(encoding="utf-8")
+    contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    starts = list(re.finditer(r'createValidatedCollection\("([^"]+)",\s*\{', text))
+    rows: list[dict[str, object]] = []
+    for index, match in enumerate(starts):
+        end = starts[index + 1].start() if index + 1 < len(starts) else len(text)
+        block = text[match.start():end]
+        collection = match.group(1)
+        required_match = re.search(r"required:\s*\[([^]]*)\]", block)
+        required = set(re.findall(r'"([^"]+)"', required_match.group(1))) if required_match else set()
+        properties_match = re.search(r"properties:\s*\{(.*)", block, re.S)
+        properties = properties_match.group(1) if properties_match else ""
+        for field_match in re.finditer(r"^    ([A-Za-z_][\w]*):\s*\{([^\n]*)", properties, re.M):
+            field_name, definition = field_match.groups()
+            type_match = re.search(r'bsonType:\s*"([^"]+)"', definition)
+            enum_match = re.search(r"enum:\s*\[([^]]+)\]", definition)
+            lgpd, basis, encryption, masking, retention = classify_lgpd(field_name)
+            rows.append(
+                {
+                    "database": contract["default_database"],
+                    "collection": collection,
+                    "field": field_name,
+                    "bson_type": type_match.group(1) if type_match else "object/complex",
+                    "required": field_name in required,
+                    "enum": re.findall(r'"([^"]+)"', enum_match.group(1)) if enum_match else [],
+                    "sensitive_declared": field_name in contract["collections"][collection]["sensitive_fields"],
+                    "lgpd": lgpd,
+                    "classification_basis": basis,
+                    "encryption": encryption,
+                    "masking": masking,
+                    "retention": retention,
+                    "indexes": contract["collections"][collection]["indexes"],
+                    "evidence": f"{init_path.relative_to(ROOT)}:{line_number(text, match.start() + properties_match.start(1) + field_match.start())}",
+                }
+            )
+    return rows
+
+
+def discover_sqlite_model() -> list[dict[str, object]]:
+    path = ROOT / "modules" / "shared" / "store.py"
+    text = path.read_text(encoding="utf-8")
+    pattern = re.compile(r"CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS\s+(\w+)\s*\((.*?)\n\s*\);", re.I | re.S)
+    rows: list[dict[str, object]] = []
+    for match in pattern.finditer(text):
+        table, body = match.groups()
+        for definition in split_definitions(body):
+            field = parse_field("local_contract", table, definition, f"{path.relative_to(ROOT)}:{line_number(text, match.start())}")
+            if field:
+                rows.append({**asdict(field), "database": "sqlite_contract_store"})
+    return rows
+
+
 def annotation_name(node: ast.AST | None) -> str:
     return ast.unparse(node) if node is not None else ""
 
@@ -443,6 +498,8 @@ def write_markdown(name: str, title: str, body: str) -> None:
 
 def build_delivery() -> None:
     schemas, tables, indexes, migrations = discover_physical_model()
+    mongodb_fields = discover_mongodb_model()
+    sqlite_fields = discover_sqlite_model()
     fields = [field for table_fields in tables.values() for field in table_fields]
     endpoints = discover_endpoints()
     ui_bindings = discover_ui_bindings(tables)
@@ -455,6 +512,10 @@ def build_delivery() -> None:
         "schemas": len(schemas),
         "tables": len(tables),
         "fields": len(fields),
+        "mongodb_collections": len({row["collection"] for row in mongodb_fields}),
+        "mongodb_fields": len(mongodb_fields),
+        "sqlite_tables": len({row["table"] for row in sqlite_fields}),
+        "sqlite_fields": len(sqlite_fields),
         "relationships": len(relations),
         "indexes": len(indexes),
         "endpoints": len(endpoints),
@@ -507,6 +568,18 @@ def build_delivery() -> None:
     field_rows = [asdict(field) for field in fields]
     write_csv(ARTIFACTS / "dicionario_de_dados.csv", list(Field.__annotations__), field_rows)
     write_json(ARTIFACTS / "dicionario_de_dados.json", {"version": 1, "counts": counts, "fields": field_rows})
+    mongodb_csv_rows = [
+        {**row, "enum": ";".join(row["enum"]), "indexes": json.dumps(row["indexes"], ensure_ascii=False)}
+        for row in mongodb_fields
+    ]
+    write_csv(
+        ARTIFACTS / "catalogo_mongodb.csv",
+        ["database", "collection", "field", "bson_type", "required", "enum", "sensitive_declared", "lgpd", "classification_basis", "encryption", "masking", "retention", "indexes", "evidence"],
+        mongodb_csv_rows,
+    )
+    write_json(ARTIFACTS / "catalogo_mongodb.json", {"version": 1, "counts": counts, "fields": mongodb_fields})
+    write_csv(ARTIFACTS / "catalogo_sqlite.csv", list(Field.__annotations__), sqlite_fields)
+    write_json(ARTIFACTS / "catalogo_sqlite.json", {"version": 1, "counts": counts, "fields": sqlite_fields})
     logical_csv_rows = [
         {**row, "required_fields": ";".join(row["required_fields"]), "unique_fields": ";".join(row["unique_fields"]), "monetary_fields": ";".join(row["monetary_fields"])}
         for row in logical_rules
