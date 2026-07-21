@@ -4,7 +4,7 @@
 
 | Dimensão | Percentual | Evidência/Lacuna |
 | --- | --- | --- |
-| bancos | 60 | registrada no backlog |
+| bancos | 80 | registrada no backlog |
 | schemas | 100 | comprovada |
 | tabelas_colecoes | 85 | registrada no backlog |
 | campos | 75 | registrada no backlog |

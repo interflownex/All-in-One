@@ -1,5 +1,5 @@
 # object-storage
 
-Documentos privados guardam chaves e hashes no banco; conteúdo deve permanecer cifrado em cofre privado. EVIDÊNCIAS: `modules/shared/private_documents.py`, `modules/document/CONTRACT.md`.
+Inventário estático de 4 stores/referências, incluindo cofre privado, documentos, APK público e estado Terraform; buckets e políticas runtime não comprovados. EVIDÊNCIAS: `artifacts/catalogo_object_storage.json`.
 
 **Status:** catálogo parcial; lacuna `AUD-P0-000`.

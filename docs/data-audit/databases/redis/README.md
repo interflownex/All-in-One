@@ -1,5 +1,5 @@
 # redis
 
-Cache e rate limit do API Hub; não é fonte de verdade de domínio. Retenção depende de TTL e configuração operacional. EVIDÊNCIAS: `modules/api_hub/main.py:80`, `infra/terraform/redis.tf`.
+Inventário estático de 1 padrão de chave para rate limit, com TTL e modo de falha; runtime não comprovado. EVIDÊNCIAS: `artifacts/catalogo_redis.json`.
 
 **Status:** catálogo parcial; lacuna `AUD-P0-000`.

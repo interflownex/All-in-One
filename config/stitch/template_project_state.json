@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "coordinate_version": 1,
+  "projects": {
+    "valley_apk_template": {
+      "screens": {
+        "shell_onboarding_identity": {
+          "screen_id": "1511568895846001609",
+          "title": "Shell, onboarding, login, MFA, consentimento e perfil",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T20:47:08.293583+00:00"
+        },
+        "home_discovery_catalog": {
+          "screen_id": "7991828189244187707",
+          "title": "Home, busca, categorias, ofertas, detalhes e favoritos",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T20:48:30.705179+00:00"
+        },
+        "commerce_checkout_wallet": {
+          "screen_id": "5822211568283286468",
+          "title": "Carrinho, pedido, pagamento, wallet, escrow, comprovantes e disputas",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T20:50:26.801014+00:00"
+        },
+        "services_schedule": {
+          "screen_id": "12619039415770892404",
+          "title": "Servicos, profissionais, agenda, cotacao, contrato e avaliacao",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T20:51:35.565062+00:00"
+        },
+        "delivery_tracking": {
+          "screen_id": "11265567037160137271",
+          "title": "Entrega, cotacao, rastreio, prova, seguro e suporte",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T20:52:42.983611+00:00"
+        },
+        "mobility": {
+          "screen_id": "9477456220403860660",
+          "title": "Mobilidade, rotas, paradas, bilhetes e acompanhamento",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T20:53:46.172756+00:00"
+        },
+        "jobs_health_documents": {
+          "screen_id": "6368771062357389771",
+          "title": "Vagas, curriculo, CTPS, saude, documentos e consentimentos",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T20:55:47.547404+00:00"
+        },
+        "notifications_support_settings": {
+          "screen_id": "514665050530320383",
+          "title": "Notificacoes, atendimento, privacidade, seguranca e configuracoes",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T20:57:00.841312+00:00"
+        }
+      },
+      "project_id": "2122145924469811680",
+      "project_name": "VALLEY APK - Template Completo"
+    },
+    "all_in_one_web_mobile_template": {
+      "screens": {
+        "platform_shell": {
+          "screen_id": "10484494162751608483",
+          "title": "Shell global, seletor de tenant/empresa, navegacao, busca e notificacoes",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T20:58:19.760820+00:00"
+        },
+        "identity_business_permissions": {
+          "screen_id": "16542786897894029256",
+          "title": "Identidade, empresas, estabelecimentos, membros, RBAC, ABAC e aprovacoes",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T20:59:24.600925+00:00"
+        },
+        "commerce_finance_operations": {
+          "screen_id": "4786590412936705922",
+          "title": "Marketplace, estoque, pedidos, financeiro, ERP, WMS e TMS",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T21:00:52.578295+00:00"
+        },
+        "people_services": {
+          "screen_id": "2637621236035467599",
+          "title": "CRM, RH, Jobs, servicos, riders, delivery, mobility e saude",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T21:01:16.240745+00:00"
+        },
+        "content_governance": {
+          "screen_id": "11559167608653237029",
+          "title": "Documentos, propriedade, legal, vision, BPM, compliance e auditoria",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T21:02:14.668844+00:00"
+        },
+        "analytics_ai_integrations": {
+          "screen_id": "950644713888708698",
+          "title": "BI, relatorios, analytics, IA, API Hub, webhooks e integracoes",
+          "coordinate_digest": "87e69b6580d99a011d29f9fec4ace57f7ee516e1699c6f4469c133c6678eab94",
+          "updated_at": "2026-07-21T21:03:28.773736+00:00"
+        }
+      },
+      "project_id": "16859913351651834459",
+      "project_name": "ALL IN ONE - Template Web e Mobile Completo"
+    }
+  }
+}

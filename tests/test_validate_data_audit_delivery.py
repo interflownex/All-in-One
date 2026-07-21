@@ -29,7 +29,7 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 27
+    assert len(contract["required_complementary"]) == 34
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
@@ -44,6 +44,10 @@ def test_contract_lists_every_complementary_format() -> None:
     assert "artifacts/catalogo_mongodb.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_sqlite.json" in contract["required_complementary"]
     assert "artifacts/catalogo_sqlite.csv" in contract["required_complementary"]
+    assert "artifacts/catalogo_redis.json" in contract["required_complementary"]
+    assert "artifacts/catalogo_object_storage.json" in contract["required_complementary"]
+    assert "artifacts/catalogo_browser_storage.json" in contract["required_complementary"]
+    assert "artifacts/coordenada_projetos_stitch.json" in contract["required_complementary"]
 
 
 def test_generated_non_postgres_catalogs_have_field_evidence() -> None:
@@ -58,6 +62,38 @@ def test_generated_non_postgres_catalogs_have_field_evidence() -> None:
     assert sqlite["counts"]["sqlite_tables"] == 4
     assert sqlite["counts"]["sqlite_fields"] == 39
     assert all(item["evidence"] for item in sqlite["fields"])
+
+
+def test_ephemeral_and_object_storage_catalogs_are_explicitly_static() -> None:
+    json = __import__("json")
+    artifacts = ROOT / "docs" / "data-audit" / "artifacts"
+    expected = {
+        "catalogo_redis.json": ("redis_key_patterns", 1),
+        "catalogo_object_storage.json": ("object_storage_stores", 4),
+        "catalogo_browser_storage.json": ("browser_storage_key_patterns", 12),
+    }
+    for name, (counter, total) in expected.items():
+        data = json.loads((artifacts / name).read_text(encoding="utf-8"))
+        assert data["status"] == "inventario_estatico"
+        assert data["counts"][counter] == total == len(data["entries"])
+        assert all(item["evidence"] and item["runtime_verified"] is False for item in data["entries"])
+
+
+def test_stitch_coordinate_requires_exactly_three_resumable_product_projects() -> None:
+    coordinate = ROOT / "config" / "stitch" / "template_project_coordinate.json"
+    data = __import__("json").loads(coordinate.read_text(encoding="utf-8"))
+
+    assert [project["id"] for project in data["projects"]] == [
+        "valley_apk_template",
+        "all_in_one_web_mobile_template",
+        "valley_riders_apk_template",
+    ]
+    assert sum(len(project["screen_groups"]) for project in data["projects"]) == 24
+    assert all(len(project["screen_groups"]) == 8 for project in data["projects"])
+    assert data["continuation_policy"]["checkpoint_after_each_remote_operation"]
+    assert data["continuation_policy"]["on_resource_exhausted"] == "registrar_checkpoint_e_retomar_na_proxima_execucao_agendada"
+    assert "prohibited_claim" in data["continuation_policy"]
+    assert all(project["module_scope"] and project["surfaces"] for project in data["projects"])
 
 
 def test_contract_requires_all_completion_dimensions() -> None:

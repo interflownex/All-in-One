@@ -35,7 +35,7 @@
       "priority": "P0",
       "module": "infraestrutura",
       "title": "Persistências não PostgreSQL exigem catálogo e validação operacional",
-      "description": "MongoDB e SQLite possuem inventário estático; Redis, object storage e storage de navegador ainda não têm catálogo estruturado, e nenhuma instância foi confrontada em runtime.",
+      "description": "PostgreSQL, MongoDB, SQLite, Redis, object storage e storage de navegador possuem inventários estáticos estruturados; as instâncias e políticas aplicadas ainda não foram confrontadas integralmente em runtime.",
       "evidence": [
         "infra/docker/docker-compose.yml:69",
         "docs/data-audit/artifacts/catalogo_mongodb.json",

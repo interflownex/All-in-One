@@ -1,5 +1,5 @@
 # mongodb
 
-MongoDB operacional com coleções validadas para memória de IA, vídeos sociais, métricas e telemetria. Campos, índices e retenção devem ser reconciliados entre init e contrato. EVIDÊNCIAS: `database/mongodb/init/001_ai_social_telemetry.js`, `config/database/mongodb_contract.json`.
+Inventário estático de 4 coleções e 29 campos; estado runtime não comprovado. EVIDÊNCIAS: `artifacts/catalogo_mongodb.json`.
 
 **Status:** catálogo parcial; lacuna `AUD-P0-000`.

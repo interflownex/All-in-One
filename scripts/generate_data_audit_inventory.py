@@ -24,6 +24,7 @@ DYNAMIC_FORM_MODEL = ROOT / "config" / "data_audit" / "dynamic_form_model_propos
 PRODUCT_UNITS_TAX_MODEL = ROOT / "config" / "data_audit" / "product_units_tax_model_proposal.json"
 FIELD_CLASSIFICATION_POLICY = ROOT / "config" / "data_audit" / "field_classification_policy.json"
 AUDIT_TRACEABILITY_POLICY = ROOT / "config" / "data_audit" / "audit_traceability_policy.json"
+STITCH_TEMPLATE_COORDINATE = ROOT / "config" / "stitch" / "template_project_coordinate.json"
 
 
 @dataclass(frozen=True)
@@ -241,6 +242,95 @@ def discover_sqlite_model() -> list[dict[str, object]]:
             if field:
                 rows.append({**asdict(field), "database": "sqlite_contract_store"})
     return rows
+
+
+def source_evidence(relative: str, needle: str) -> str:
+    path = ROOT / relative
+    text = path.read_text(encoding="utf-8")
+    offset = text.find(needle)
+    if offset < 0:
+        raise RuntimeError(f"Evidência não localizada em {relative}: {needle}")
+    return f"{relative}:{line_number(text, offset)}"
+
+
+def discover_redis_catalog() -> list[dict[str, object]]:
+    return [
+        {
+            "technology": "Redis 7", "database": "0", "key_pattern": "rate_limit:{ip}",
+            "purpose": "Contador de requisições por endereço IP no API Hub", "owner": "api_hub",
+            "operations": ["GET", "INCR", "EXPIRE"], "value_type": "integer", "ttl_seconds": 60,
+            "limit": 100, "source_of_truth": False, "data_classification": "identificador técnico pseudônimo",
+            "encryption": "trânsito/rede privada dependem do ambiente; não comprovado em runtime",
+            "retention": "TTL deslizante de 60 segundos", "failure_mode": "fail-open quando cliente ou Redis falha",
+            "backup_restore": "não requerido para cache; reconstruído pelo tráfego", "runtime_verified": False,
+            "evidence": source_evidence("modules/api_hub/main.py", 'key = f"rate_limit:{ip}"'),
+            "infrastructure_evidence": [source_evidence("infra/docker/docker-compose.yml", "image: redis:7-alpine"), source_evidence("infra/terraform/redis.tf", 'redis_version = "REDIS_7_0"')],
+        }
+    ]
+
+
+def discover_object_storage_catalog() -> list[dict[str, object]]:
+    return [
+        {
+            "store": "private_document_vault", "provider": "filesystem privado local/fallback", "container": "ALL_IN_ONE_PRIVATE_DOCUMENT_DIR",
+            "object_pattern": "ctps/{sha256_prefix}/{sha256}.pdf.aesgcm", "purpose": "PDFs CTPS e evidências privadas",
+            "owner": "jobs/shared", "access": "backend PrivateDocumentStore", "classification": "crítica",
+            "encryption": "AES-256-GCM com AAD SHA-256", "retention": "não implementada no store; política externa necessária",
+            "versioning": "deduplicação pelo hash; sem versionamento nativo", "backup_restore": "política declara snapshot diário versionado e teste trimestral",
+            "public": False, "runtime_verified": False, "evidence": source_evidence("modules/shared/private_documents.py", 'URI_PREFIX = "private://jobs/"'),
+        },
+        {
+            "store": "document_domain_references", "provider": "private_vault|gcs_kms|s3_kms", "container": "storage_bucket por documento",
+            "object_pattern": "storage_key versionada", "purpose": "Documentos, versões, OCR e assinatura",
+            "owner": "document", "access": "serviço document com autorização", "classification": "crítica conforme documento",
+            "encryption": "KMS obrigatório por contrato", "retention": "retention_policies por domínio; enforcement runtime não comprovado",
+            "versioning": "versions append-only", "backup_restore": "RPO 60 min, RTO 240 min na política declarada",
+            "public": False, "runtime_verified": False, "evidence": source_evidence("modules/document/CONTRACT.md", "storage_key` e `storage_bucket` devem apontar para cofre privado"),
+        },
+        {
+            "store": "mobile_public_artifacts", "provider": "Google Cloud Storage", "container": "all-in-one-public-artifacts",
+            "object_pattern": "valley-latest.apk", "purpose": "Distribuição pública de artefato Android",
+            "owner": "release engineering", "access": "allUsers roles/storage.objectViewer", "classification": "pública",
+            "encryption": "padrão do provedor; não comprovado", "retention": "não declarada", "versioning": "nome latest sobrescrevível; versionamento de bucket não declarado",
+            "backup_restore": "não declarado; artefato pode ser reconstruído", "public": True, "runtime_verified": False,
+            "evidence": source_evidence("scripts/deploy_mobile_artifacts.py", 'DEFAULT_BUCKET = "all-in-one-public-artifacts"'),
+        },
+        {
+            "store": "terraform_state", "provider": "Google Cloud Storage", "container": "all-in-one-tfstate",
+            "object_pattern": "terraform/state/**", "purpose": "Estado da infraestrutura Terraform",
+            "owner": "plataforma", "access": "IAM do bucket; não inventariado neste artefato", "classification": "operacional sensível",
+            "encryption": "padrão do provedor; CMEK não declarada no backend", "retention": "não declarada", "versioning": "não declarado no código",
+            "backup_restore": "não declarado", "public": False, "runtime_verified": False,
+            "evidence": source_evidence("infra/terraform/provider.tf", 'bucket = "all-in-one-tfstate"'),
+        },
+    ]
+
+
+def discover_browser_storage_catalog() -> list[dict[str, object]]:
+    definitions = [
+        ("sessionStorage", "valley.session.token", "token de autenticação da sessão web", "credencial", "até fechar a sessão/clear", "apps/valley/src/App.tsx", "valley.session.token"),
+        ("sessionStorage", "valley.session.user-id", "identificador do usuário autenticado", "dado pessoal pseudônimo", "até fechar a sessão/clear", "apps/valley/src/App.tsx", "valley.session.user-id"),
+        ("sessionStorage", "valley.session.email", "email injetado pelo shell Android", "dado pessoal", "até clear/logout", "apps/valley-android/app/src/main/java/com/example/valley/ui/main/MainScreen.kt", "valley.session.email"),
+        ("sessionStorage", "valley.session.source", "origem da sessão injetada", "metadado técnico", "até clear/logout", "apps/valley-android/app/src/main/java/com/example/valley/ui/main/MainScreen.kt", "valley.session.source"),
+        ("localStorage", "valley.session.mode", "ativa modo de demonstração", "configuração", "sem TTL; remoção explícita", "apps/valley/src/lib/valleyPlatform.ts", "valley.session.mode"),
+        ("localStorage", "valley.demo.users", "usuários simulados", "dado de demonstração potencialmente pessoal", "sem TTL", "apps/valley/src/lib/valleyPlatform.ts", "valley.demo.users"),
+        ("localStorage", "valley.demo.offers", "ofertas simuladas", "dado de demonstração", "sem TTL", "apps/valley/src/lib/valleyPlatform.ts", "valley.demo.offers"),
+        ("localStorage", "valley.demo.orders", "pedidos simulados", "dado transacional de demonstração", "sem TTL", "apps/valley/src/lib/valleyPlatform.ts", "valley.demo.orders"),
+        ("localStorage", "valley.demo.reviews", "avaliações simuladas", "conteúdo de demonstração", "sem TTL", "apps/valley/src/lib/valleyPlatform.ts", "valley.demo.reviews"),
+        ("localStorage", "valley.demo.support", "casos de suporte simulados", "conteúdo de demonstração potencialmente pessoal", "sem TTL", "apps/valley/src/lib/valleyPlatform.ts", "valley.demo.support"),
+        ("localStorage", "valley.catalog.v1.{query}", "cache de páginas do catálogo", "catálogo público e parâmetros de busca", "timestamp cachedAt gravado; expiração não comprovada", "apps/valley/src/lib/valleyPlatform.ts", "valley.catalog.v1."),
+        ("localStorage", "all-in-one:{module}:{resourceType}", "fallback CRUD local por recurso", "pode conter dados de qualquer módulo", "sem TTL", "apps/all-in-one/src/components/SmartCRUD.tsx", "all-in-one:${module}:${resourceType}"),
+    ]
+    return [
+        {
+            "storage": storage, "key_pattern": key, "purpose": purpose, "classification": classification,
+            "retention": retention, "owner": "frontend indicado pela evidência", "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
+            "encryption": "não criptografado pela aplicação", "source_of_truth": False,
+            "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
+            "runtime_verified": False, "evidence": source_evidence(relative, needle),
+        }
+        for storage, key, purpose, classification, retention, relative, needle in definitions
+    ]
 
 
 def annotation_name(node: ast.AST | None) -> str:
@@ -500,6 +590,9 @@ def build_delivery() -> None:
     schemas, tables, indexes, migrations = discover_physical_model()
     mongodb_fields = discover_mongodb_model()
     sqlite_fields = discover_sqlite_model()
+    redis_entries = discover_redis_catalog()
+    object_storage_entries = discover_object_storage_catalog()
+    browser_storage_entries = discover_browser_storage_catalog()
     fields = [field for table_fields in tables.values() for field in table_fields]
     endpoints = discover_endpoints()
     ui_bindings = discover_ui_bindings(tables)
@@ -516,6 +609,9 @@ def build_delivery() -> None:
         "mongodb_fields": len(mongodb_fields),
         "sqlite_tables": len({row["table"] for row in sqlite_fields}),
         "sqlite_fields": len(sqlite_fields),
+        "redis_key_patterns": len(redis_entries),
+        "object_storage_stores": len(object_storage_entries),
+        "browser_storage_key_patterns": len(browser_storage_entries),
         "relationships": len(relations),
         "indexes": len(indexes),
         "endpoints": len(endpoints),
@@ -535,6 +631,7 @@ def build_delivery() -> None:
     product_units_tax_model = json.loads(PRODUCT_UNITS_TAX_MODEL.read_text(encoding="utf-8"))
     field_classification_policy = json.loads(FIELD_CLASSIFICATION_POLICY.read_text(encoding="utf-8"))
     audit_policy = json.loads(AUDIT_TRACEABILITY_POLICY.read_text(encoding="utf-8"))
+    stitch_template_coordinate = json.loads(STITCH_TEMPLATE_COORDINATE.read_text(encoding="utf-8"))
     counts["dynamic_form_entities_proposed"] = len(dynamic_form_model["entities"])
     counts["measurement_entities_proposed"] = len(product_units_tax_model["measurement_entities"])
     counts["fiscal_entities_proposed"] = len(product_units_tax_model["fiscal_entities"])
@@ -620,9 +717,20 @@ def build_delivery() -> None:
         api_csv_rows,
     )
     write_json(ARTIFACTS / "catalogo_apis.json", {"version": 1, "counts": counts, "endpoints": endpoints})
+    for artifact_name, rows in (
+        ("catalogo_redis", redis_entries),
+        ("catalogo_object_storage", object_storage_entries),
+        ("catalogo_browser_storage", browser_storage_entries),
+    ):
+        write_json(ARTIFACTS / f"{artifact_name}.json", {"version": 1, "status": "inventario_estatico", "counts": counts, "entries": rows})
+        csv_rows = []
+        for row in rows:
+            csv_rows.append({key: ";".join(str(item) for item in value) if isinstance(value, list) else value for key, value in row.items()})
+        write_csv(ARTIFACTS / f"{artifact_name}.csv", sorted({key for row in csv_rows for key in row}), csv_rows)
     write_json(ARTIFACTS / "formulario_dinamico_modelo.json", dynamic_form_model)
     write_json(ARTIFACTS / "modelo_unidades_tributacao.json", product_units_tax_model)
     write_json(ARTIFACTS / "politica_classificacao_campos.json", field_classification_policy)
+    write_json(ARTIFACTS / "coordenada_projetos_stitch.json", stitch_template_coordinate)
     write_json(
         ARTIFACTS / "cobertura_auditoria.json",
         {"version": 1, "policy": audit_policy, "counts": counts, "candidate_tables": sorted(audit_tables), "coverage": audit_coverage},
@@ -765,7 +873,7 @@ def build_delivery() -> None:
     gaps = [
         {
             "id": "AUD-P0-000", "priority": "P0", "module": "infraestrutura", "title": "Persistências não PostgreSQL exigem catálogo e validação operacional",
-            "description": "MongoDB e SQLite possuem inventário estático; Redis, object storage e storage de navegador ainda não têm catálogo estruturado, e nenhuma instância foi confrontada em runtime.",
+            "description": "PostgreSQL, MongoDB, SQLite, Redis, object storage e storage de navegador possuem inventários estáticos estruturados; as instâncias e políticas aplicadas ainda não foram confrontadas integralmente em runtime.",
             "evidence": ["infra/docker/docker-compose.yml:69", "docs/data-audit/artifacts/catalogo_mongodb.json", "docs/data-audit/artifacts/catalogo_sqlite.json"],
             "impact": "Retenção, recuperação, ownership e divergências entre configuração e ambiente não são comprovados.", "risk": "Perda, exposição ou inconsistência de dados fora do PostgreSQL.",
             "proposal": "Catalogar chaves, objetos, buckets e políticas; adicionar sondagens não destrutivas e testes por tecnologia.", "dependencies": ["credenciais dos ambientes", "serviços acessíveis"],
@@ -805,7 +913,7 @@ def build_delivery() -> None:
     write_json(ARTIFACTS / "relatorio_divergencias.json", {"version": 2, "status": "em_execucao", "counts": {"total": len(gaps), **gap_counts}, "required_fields": ["id", "title", "module", "description", "evidence", "impact", "risk", "priority", "proposal", "dependencies", "affected_files", "migration", "backend", "frontend", "tests", "documentation", "acceptance", "status"], "gaps": gaps})
 
     coverage_values = {
-        "bancos": 60,
+        "bancos": 80,
         "schemas": 100,
         "tabelas_colecoes": 85,
         "campos": 75,
@@ -874,11 +982,11 @@ def build_delivery() -> None:
         encoding="utf-8",
     )
     persistence_docs = {
-        "mongodb": "MongoDB operacional com coleções validadas para memória de IA, vídeos sociais, métricas e telemetria. Campos, índices e retenção devem ser reconciliados entre init e contrato. EVIDÊNCIAS: `database/mongodb/init/001_ai_social_telemetry.js`, `config/database/mongodb_contract.json`.",
-        "sqlite": "Store local de contrato usado como fallback/desenvolvimento, com resources, unique_attributes, audit_events e domain_events. EVIDÊNCIAS: `modules/shared/store.py:20`.",
-        "redis": "Cache e rate limit do API Hub; não é fonte de verdade de domínio. Retenção depende de TTL e configuração operacional. EVIDÊNCIAS: `modules/api_hub/main.py:80`, `infra/terraform/redis.tf`.",
-        "object-storage": "Documentos privados guardam chaves e hashes no banco; conteúdo deve permanecer cifrado em cofre privado. EVIDÊNCIAS: `modules/shared/private_documents.py`, `modules/document/CONTRACT.md`.",
-        "browser-storage": "Frontends usam localStorage/sessionStorage para cache, demonstração e sessão. Cada chave requer finalidade, retenção e classificação. EVIDÊNCIAS: `apps/all-in-one/src/components/SmartCRUD.tsx:78`, `apps/valley/src/App.tsx:23`.",
+        "mongodb": f"Inventário estático de {counts['mongodb_collections']} coleções e {counts['mongodb_fields']} campos; estado runtime não comprovado. EVIDÊNCIAS: `artifacts/catalogo_mongodb.json`.",
+        "sqlite": f"Inventário estático de {counts['sqlite_tables']} tabelas e {counts['sqlite_fields']} campos do fallback local; instâncias não comprovadas. EVIDÊNCIAS: `artifacts/catalogo_sqlite.json`.",
+        "redis": f"Inventário estático de {counts['redis_key_patterns']} padrão de chave para rate limit, com TTL e modo de falha; runtime não comprovado. EVIDÊNCIAS: `artifacts/catalogo_redis.json`.",
+        "object-storage": f"Inventário estático de {counts['object_storage_stores']} stores/referências, incluindo cofre privado, documentos, APK público e estado Terraform; buckets e políticas runtime não comprovados. EVIDÊNCIAS: `artifacts/catalogo_object_storage.json`.",
+        "browser-storage": f"Inventário estático de {counts['browser_storage_key_patterns']} chaves/famílias de localStorage e sessionStorage, com finalidade, classificação, retenção e risco. EVIDÊNCIAS: `artifacts/catalogo_browser_storage.json`.",
     }
     for store, description in persistence_docs.items():
         path = AUDIT / "databases" / store / "README.md"
@@ -890,7 +998,7 @@ def build_delivery() -> None:
         "Resumo Executivo da Auditoria de Dados",
         f"""**Status:** em execução; conclusão de 100% não declarada.
 
-A varredura física reproduzível encontrou {counts['migrations']} migrations PostgreSQL, {counts['schemas']} schemas, {counts['tables']} tabelas, {counts['fields']} campos, {counts['relationships']} referências, {counts['indexes']} índices e {counts['endpoints']} endpoints candidatos. Também foram identificados MongoDB, Redis, SQLite, armazenamento privado e storage de navegador; esses mecanismos permanecem parcialmente catalogados.
+A varredura física reproduzível encontrou {counts['migrations']} migrations PostgreSQL, {counts['schemas']} schemas, {counts['tables']} tabelas, {counts['fields']} campos, {counts['relationships']} referências, {counts['indexes']} índices e {counts['endpoints']} endpoints candidatos. Também foram catalogados estaticamente {counts['mongodb_collections']} coleções MongoDB, {counts['sqlite_tables']} tabelas SQLite, {counts['redis_key_patterns']} padrão Redis, {counts['object_storage_stores']} stores de objetos e {counts['browser_storage_key_patterns']} chaves/famílias de browser storage. A validação operacional desses mecanismos permanece pendente.
 
 ## Limitações
 
@@ -916,11 +1024,11 @@ Fonte física versionada com {counts['schemas']} schemas e {counts['tables']} ta
 
 | Tecnologia | Uso encontrado | Situação |
 | --- | --- | --- |
-| MongoDB | memória IA, social, métricas e telemetria | parcial |
-| Redis | cache e rate limit | parcial |
-| SQLite | contrato local/fallback | parcial |
-| Object storage | documentos privados e mídia | parcial |
-| Browser storage | cache, demonstração e sessão | parcial |
+| MongoDB | {counts['mongodb_collections']} coleções / {counts['mongodb_fields']} campos | inventário estático; runtime pendente |
+| Redis | {counts['redis_key_patterns']} padrão de chave com TTL | inventário estático; runtime pendente |
+| SQLite | {counts['sqlite_tables']} tabelas / {counts['sqlite_fields']} campos | inventário estático; runtime pendente |
+| Object storage | {counts['object_storage_stores']} stores/referências | inventário estático; buckets e restore pendentes |
+| Browser storage | {counts['browser_storage_key_patterns']} chaves/famílias | inventário estático; comportamento E2E pendente |
 
 EVIDÊNCIAS: `database/postgres/migrations/`, `database/mongodb/init/001_ai_social_telemetry.js`, `modules/shared/store.py`, `modules/api_hub/main.py`, `modules/shared/private_documents.py`.""",
     )

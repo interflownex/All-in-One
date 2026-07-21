@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "status": "inventario_estatico",
+  "counts": {
+    "migrations": 24,
+    "schemas": 31,
+    "tables": 81,
+    "fields": 1189,
+    "mongodb_collections": 4,
+    "mongodb_fields": 29,
+    "sqlite_tables": 4,
+    "sqlite_fields": 39,
+    "redis_key_patterns": 1,
+    "object_storage_stores": 4,
+    "browser_storage_key_patterns": 12,
+    "relationships": 297,
+    "indexes": 48,
+    "endpoints": 99,
+    "endpoints_with_response_model": 8,
+    "api_model_fields": 115,
+    "ui_candidates": 1067,
+    "ui_surfaces": 299,
+    "ui_forms": 129,
+    "logical_entities": 120,
+    "logical_without_physical_table": 62,
+    "logical_without_ui_surface": 46,
+    "event_transitions": 194,
+    "unique_events": 187,
+    "sensitive_candidates": 304,
+    "dynamic_form_entities_proposed": 14,
+    "measurement_entities_proposed": 6,
+    "fiscal_entities_proposed": 5,
+    "audit_candidate_tables": 5,
+    "audit_requirements": 35,
+    "audit_requirements_covered": 18
+  },
+  "entries": [
+    {
+      "technology": "Redis 7",
+      "database": "0",
+      "key_pattern": "rate_limit:{ip}",
+      "purpose": "Contador de requisições por endereço IP no API Hub",
+      "owner": "api_hub",
+      "operations": [
+        "GET",
+        "INCR",
+        "EXPIRE"
+      ],
+      "value_type": "integer",
+      "ttl_seconds": 60,
+      "limit": 100,
+      "source_of_truth": false,
+      "data_classification": "identificador técnico pseudônimo",
+      "encryption": "trânsito/rede privada dependem do ambiente; não comprovado em runtime",
+      "retention": "TTL deslizante de 60 segundos",
+      "failure_mode": "fail-open quando cliente ou Redis falha",
+      "backup_restore": "não requerido para cache; reconstruído pelo tráfego",
+      "runtime_verified": false,
+      "evidence": "modules/api_hub/main.py:353",
+      "infrastructure_evidence": [
+        "infra/docker/docker-compose.yml:80",
+        "infra/terraform/redis.tf:9"
+      ]
+    }
+  ]
+}
