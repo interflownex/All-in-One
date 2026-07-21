@@ -5,9 +5,9 @@ const WalletLedger: React.FC = () => {
   return (
     <SmartCRUD 
       module="finance" 
-      entity="walletledger" 
-      type="form" 
-      title="Wallet Ledger" 
+      entity="valleygoldledgerentries" 
+      type="list" 
+      title="Livro-razão Valley Gold" 
     />
   );
 };

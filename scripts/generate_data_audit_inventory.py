@@ -446,7 +446,15 @@ def discover_logical_rules(tables: dict[str, list[Field]], ui_bindings: list[dic
                 "evidence": f"{path.relative_to(ROOT)}:{value_node.lineno}",
             }
 
-    ui_resources = {(row["module"], row["entity"]) for row in ui_bindings}
+    canonical_by_compact = {
+        (module, entity.replace("_", "")): entity
+        for module, entities in module_entities.items()
+        for entity in entities
+    }
+    ui_resources = {
+        (row["module"], canonical_by_compact.get((row["module"], row["entity"]), row["entity"]))
+        for row in ui_bindings
+    }
     rows: list[dict[str, object]] = []
     for module, entities in module_entities.items():
         for entity in entities:
@@ -530,6 +538,12 @@ def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]
         "form": ("name", "description", "category"),
         "list": ("name", "title", "status", "created_at"),
     }
+    smart_crud_text = (ROOT / "apps" / "all-in-one" / "src" / "components" / "SmartCRUD.tsx").read_text(
+        encoding="utf-8"
+    )
+    resource_aliases = dict(
+        re.findall(r"'([^']+:[^']+)':\s*'([^']+)'", smart_crud_text)
+    )
     app_path = ROOT / "apps" / "all-in-one" / "src" / "App.tsx"
     app_text = app_path.read_text(encoding="utf-8")
     imports = {
@@ -549,14 +563,15 @@ def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]
             props = dict(prop_pattern.findall(match.group(1)))
             if not {"module", "entity", "type"}.issubset(props):
                 continue
-            table_fields = {field.physical_name for field in tables.get(f"{props['module']}.{props['entity']}", [])}
+            entity = resource_aliases.get(f"{props['module']}:{props['entity']}", props["entity"])
+            table_fields = {field.physical_name for field in tables.get(f"{props['module']}.{entity}", [])}
             for field in generic_fields.get(props["type"], ("não identificado",)):
                 binding = "campo físico provável" if field in table_fields else "payload genérico/não comprovado"
                 bindings.append(
                     {
                         "app": "all-in-one",
                         "module": props["module"],
-                        "entity": props["entity"],
+                        "entity": entity,
                         "surface": props["type"],
                         "title": props.get("title", ""),
                         "route": routes_by_file.get(str(path.relative_to(ROOT)), "não localizada"),
@@ -625,8 +640,8 @@ def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, obj
             )
             journey = {
                 ("marketplace", "orders"): ("Autorizar pagamento sandbox", "POST", "/gateway/payments/sandbox/authorize"),
-                ("delivery", "deliveryrequests"): ("Executar jornada de entrega", "POST x3", "/delivery/resources/delivery_requests/{id}/actions/{assign|pickup|complete}"),
-                ("jobs", "jobpostings"): ("Enviar candidatura", "POST x2", "/jobs/resources/{resumes|applications}"),
+                ("delivery", "delivery_requests"): ("Executar jornada de entrega", "POST x3", "/delivery/resources/delivery_requests/{id}/actions/{assign|pickup|complete}"),
+                ("jobs", "job_postings"): ("Enviar candidatura", "POST x2", "/jobs/resources/{resumes|applications}"),
             }.get((module, entity))
             if journey:
                 action, method, endpoint = journey
@@ -1263,7 +1278,7 @@ def build_delivery() -> None:
         },
         {
             "id": "AUD-P1-002", "priority": "P1", "module": "frontend e APIs", "title": "Bindings frontend-backend não estão integralmente comprovados",
-            "description": "Há 299 superfícies e 1067 combinações de campo; 985 bindings são genéricos/não comprovados e somente 82 coincidem provavelmente com campo físico.", "evidence": ["docs/data-audit/artifacts/matriz_formulario_campo.csv", "docs/data-audit/artifacts/coordenadas_stitch.json"], "impact": "Formulários podem omitir, renomear ou enviar campos sem contrato.", "risk": "Perda de dados, validação incompleta e contratos divergentes.", "proposal": "Resolver cada binding por rota e campo e vinculá-lo a DTO, validação, origem, destino e teste.", "dependencies": ["contratos DTO", "rotas frontend"], "affected_files": ["apps/all-in-one/src", "modules"], "migration": "não aplicável", "backend": "tipar payloads e responses", "frontend": "declarar binding e validação", "tests": "integração e E2E por campo", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada campo UI aponta para DTO, endpoint, validação e teste aprovados.", "status": "pendente", "owner_suggestion": "frontend e backend", "dimensions": ["bindings_frontend", "formularios"]
+            "description": "Os 47 aliases de recurso compactado foram ligados aos nomes canônicos do backend e todas as 120 entidades lógicas têm superfície UI; ainda há 932 bindings de campo genéricos/não comprovados e 136 coincidências prováveis com campo físico.", "evidence": ["apps/all-in-one/src/components/SmartCRUD.tsx", "docs/data-audit/artifacts/matriz_formulario_campo.csv", "docs/data-audit/artifacts/coordenadas_stitch.json"], "impact": "Os endpoints agora recebem o recurso canônico, mas formulários genéricos ainda podem omitir campos específicos.", "risk": "Perda de dados ou validação incompleta nos campos ainda genéricos.", "proposal": "Resolver cada binding restante por rota e campo e vinculá-lo a DTO, validação, origem, destino e teste.", "dependencies": ["contratos DTO"], "affected_files": ["apps/all-in-one/src", "modules"], "migration": "não aplicável", "backend": "tipar payloads e responses", "frontend": "aliases resolvidos; declarar bindings específicos restantes", "tests": "contrato canônico aprovado; integração e E2E por campo restantes", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada campo UI aponta para DTO, endpoint, validação e teste aprovados.", "status": "implementacao_parcial", "owner_suggestion": "frontend e backend", "dimensions": ["bindings_frontend", "formularios"]
         },
         {
             "id": "AUD-P1-003", "priority": "P1", "module": "eventos", "title": "Eventos não possuem catálogo integral de payload versionado",
@@ -1278,8 +1293,8 @@ def build_delivery() -> None:
             "description": "Migration reversível, rollback, cálculo Decimal, contratos HTTP, console web e testes de integração foram implementados; faltam integração PostgreSQL viva e homologação por especialista fiscal.", "evidence": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json", "database/postgres/migrations/025_units_tax_governance.sql", "database/postgres/rollbacks/025_units_tax_governance.down.sql", "modules/shared/units_tax.py", "modules/stock/main.py", "modules/erp/main.py", "apps/all-in-one/src/pages/UnitsTaxGovernance.tsx", "tests/test_units_tax_governance.py"], "impact": "Sem os gates externos restantes, compra, estoque, venda, custo e tributação ainda podem divergir em operação.", "risk": "Cálculo financeiro ou fiscal não homologado em ambiente operacional.", "proposal": "Executar integração PostgreSQL viva e homologar cenários com especialista fiscal.", "dependencies": ["especialista fiscal", "ambiente PostgreSQL"], "affected_files": ["database/postgres", "modules/stock", "modules/erp"], "migration": "implementada com rollback; backfill explícito sem inferência", "backend": "Decimal, vigência, aprovação, precisão, arredondamento e contratos HTTP implementados", "frontend": "console responsivo de unidades e cálculo fiscal implementado", "tests": "unitários e contratos HTTP aprovados; PostgreSQL vivo e homologação fiscal pendentes", "documentation": "06_UNIDADES_E_CONVERSOES.md e 07_TRIBUTACAO.md", "acceptance": "Unidades, conversões, perfis fiscais, vigência e cálculos possuem migrations, backend, frontend, integração e homologação aprovados.", "status": "implementacao_parcial", "owner_suggestion": "catálogo, estoque, ERP e fiscal", "dimensions": ["tabelas_colecoes", "campos", "calculos", "unidades", "regras_fiscais", "formularios"]
         },
         {
-            "id": "AUD-P1-006", "priority": "P1", "module": "arquitetura modular", "title": "Entidades lógicas não possuem persistência ou superfície UI correspondente",
-            "description": "O catálogo encontrou entidades sem tabela homônima e sem superfície UI homônima; ausência pode ser legítima, mas ainda não há decisão individual.", "evidence": ["docs/data-audit/artifacts/catalogo_logico.json"], "impact": "Ownership e ciclo de vida ficam ambíguos.", "risk": "Duplicação, persistência implícita ou funcionalidade inacessível.", "proposal": "Classificar cada divergência como alias, agregado, estrutura embutida, entidade futura ou lacuna real.", "dependencies": ["proprietários dos 25 módulos"], "affected_files": ["modules/shared/domain_rules.py", "database/postgres/migrations", "apps/all-in-one/src"], "migration": "somente para lacunas confirmadas", "backend": "registrar persistência e contrato", "frontend": "registrar coordenada ou justificativa", "tests": "teste de contrato por decisão", "documentation": "02_MAPA_DE_DOMINIOS.md", "acceptance": "Cada entidade possui decisão explícita de persistência, ownership e coordenada UI, ou justificativa versionada de ausência.", "status": "pendente_decisao", "owner_suggestion": "arquitetura e responsáveis de domínio", "dimensions": ["tabelas_colecoes", "campos", "relacionamentos", "formularios"]
+            "id": "AUD-P1-006", "priority": "P1", "module": "arquitetura modular", "title": "Entidades lógicas sem decisão de persistência homônima",
+            "description": "Todas as 120 entidades lógicas possuem superfície UI canônica; 62 ainda não possuem tabela PostgreSQL homônima e precisam de decisão individual sobre persistência tipada, agregado ou estrutura compartilhada.", "evidence": ["docs/data-audit/artifacts/catalogo_logico.json", "apps/all-in-one/src/components/SmartCRUD.tsx"], "impact": "O acesso frontend foi resolvido, mas ownership e ciclo de vida físico ainda podem ficar ambíguos.", "risk": "Duplicação ou persistência implícita.", "proposal": "Classificar cada divergência física como agregado, estrutura embutida, persistência compartilhada, entidade futura ou lacuna real.", "dependencies": ["proprietários dos 25 módulos"], "affected_files": ["modules/shared/domain_rules.py", "database/postgres/migrations"], "migration": "somente para lacunas físicas confirmadas", "backend": "registrar persistência e contrato", "frontend": "120 de 120 entidades com superfície canônica", "tests": "contrato UI canônico aprovado; decisão física restante", "documentation": "02_MAPA_DE_DOMINIOS.md", "acceptance": "Cada entidade possui decisão explícita de persistência, ownership e coordenada UI, ou justificativa versionada de ausência.", "status": "implementacao_parcial", "owner_suggestion": "arquitetura e responsáveis de domínio", "dimensions": ["tabelas_colecoes", "campos", "relacionamentos", "formularios"]
         },
         {
             "id": "AUD-P1-007", "priority": "P1", "module": "auditoria e segurança", "title": "Trilhas de auditoria não cobrem todos os atributos mandatórios",

@@ -18,28 +18,28 @@
     "endpoints": 101,
     "endpoints_with_response_model": 8,
     "api_model_fields": 126,
-    "ui_candidates": 1067,
-    "ui_bindings_probable": 82,
-    "ui_bindings_unproven": 985,
+    "ui_candidates": 1068,
+    "ui_bindings_probable": 136,
+    "ui_bindings_unproven": 932,
     "ui_surfaces": 299,
-    "ui_forms": 129,
-    "ui_actions": 1111,
+    "ui_forms": 128,
+    "ui_actions": 1114,
     "ui_actions_incompatible": 0,
-    "ui_actions_without_frontend_permission_gate": 680,
+    "ui_actions_without_frontend_permission_gate": 684,
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 493,
-    "tests_with_assertions": 459,
+    "test_functions": 494,
+    "tests_with_assertions": 460,
     "tests_with_http_calls": 194,
-    "test_functions_in_execution_reports": 468,
-    "test_functions_passed": 435,
+    "test_functions_in_execution_reports": 469,
+    "test_functions_passed": 436,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
     "logical_entities": 120,
     "logical_without_physical_table": 62,
-    "logical_without_ui_surface": 46,
+    "logical_without_ui_surface": 0,
     "event_transitions": 194,
     "unique_events": 187,
     "sensitive_candidates": 332,
@@ -378,10 +378,10 @@
         "tests/test_validate_data_audit_delivery.py::test_ephemeral_and_object_storage_catalogs_are_explicitly_static",
         "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract",
         "tests/test_validate_data_audit_delivery.py::test_every_gap_has_the_mandatory_execution_coordinate",
+        "tests/test_validate_data_audit_delivery.py::test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name",
         "tests/test_validate_data_audit_delivery.py::test_every_physical_field_has_classification_basis_and_retention",
         "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-        "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion",
-        "tests/test_validate_data_audit_delivery.py::test_generated_non_postgres_catalogs_have_field_evidence"
+        "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -400,10 +400,10 @@
         "tests/test_validate_data_audit_delivery.py::test_ephemeral_and_object_storage_catalogs_are_explicitly_static",
         "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract",
         "tests/test_validate_data_audit_delivery.py::test_every_gap_has_the_mandatory_execution_coordinate",
+        "tests/test_validate_data_audit_delivery.py::test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name",
         "tests/test_validate_data_audit_delivery.py::test_every_physical_field_has_classification_basis_and_retention",
         "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-        "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion",
-        "tests/test_validate_data_audit_delivery.py::test_generated_non_postgres_catalogs_have_field_evidence"
+        "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion"
       ],
       "passed_candidate_count": 19,
       "trace_status": "candidatos_localizados",
@@ -1927,9 +1927,9 @@
         "tests/test_validate_data_audit_delivery.py::test_ephemeral_and_object_storage_catalogs_are_explicitly_static",
         "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract",
         "tests/test_validate_data_audit_delivery.py::test_every_gap_has_the_mandatory_execution_coordinate",
+        "tests/test_validate_data_audit_delivery.py::test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name",
         "tests/test_validate_data_audit_delivery.py::test_every_physical_field_has_classification_basis_and_retention",
-        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-        "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion"
+        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -1949,9 +1949,9 @@
         "tests/test_validate_data_audit_delivery.py::test_ephemeral_and_object_storage_catalogs_are_explicitly_static",
         "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract",
         "tests/test_validate_data_audit_delivery.py::test_every_gap_has_the_mandatory_execution_coordinate",
+        "tests/test_validate_data_audit_delivery.py::test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name",
         "tests/test_validate_data_audit_delivery.py::test_every_physical_field_has_classification_basis_and_retention",
-        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-        "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion"
+        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
       "passed_candidate_count": 19,
       "trace_status": "candidatos_localizados",
@@ -1984,7 +1984,7 @@
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_branding_pending_for_legacy_screens",
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_remote_gaps_without_credentials",
         "tests/test_stitch_orchestrator.py::test_versioned_manifest_matches_catalog_generation",
-        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
+        "tests/test_validate_data_audit_delivery.py::test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -2007,7 +2007,7 @@
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_branding_pending_for_legacy_screens",
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_remote_gaps_without_credentials",
         "tests/test_stitch_orchestrator.py::test_versioned_manifest_matches_catalog_generation",
-        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
+        "tests/test_validate_data_audit_delivery.py::test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -2318,18 +2318,20 @@
         "tests/test_frontend_journeys_contract.py::test_frontend_shell_package_names_match_contract",
         "tests/test_frontend_journeys_contract.py::test_phase_4_live_shells_do_not_keep_obsolete_next_steps",
         "tests/test_frontend_journeys_contract.py::test_phase_4_shells_are_wired_to_declared_api_hub_routes",
-        "tests/test_frontend_journeys_contract.py::test_phase_4_shells_have_playwright_coverage_declared"
+        "tests/test_frontend_journeys_contract.py::test_phase_4_shells_have_playwright_coverage_declared",
+        "tests/test_validate_data_audit_delivery.py::test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name"
       ],
-      "candidate_count": 6,
+      "candidate_count": 7,
       "passed_test_candidates": [
         "tests/test_frontend_journeys_contract.py::test_frontend_contract_links_to_existing_e2e_and_pytest_evidence",
         "tests/test_frontend_journeys_contract.py::test_frontend_journeys_contract_covers_phase_4_apps",
         "tests/test_frontend_journeys_contract.py::test_frontend_shell_package_names_match_contract",
         "tests/test_frontend_journeys_contract.py::test_phase_4_live_shells_do_not_keep_obsolete_next_steps",
         "tests/test_frontend_journeys_contract.py::test_phase_4_shells_are_wired_to_declared_api_hub_routes",
-        "tests/test_frontend_journeys_contract.py::test_phase_4_shells_have_playwright_coverage_declared"
+        "tests/test_frontend_journeys_contract.py::test_phase_4_shells_have_playwright_coverage_declared",
+        "tests/test_validate_data_audit_delivery.py::test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name"
       ],
-      "passed_candidate_count": 6,
+      "passed_candidate_count": 7,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",

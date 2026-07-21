@@ -65,7 +65,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CHECK-041 | documentar | Gerar evidências | 11 | 11 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-042 | orientar_stitch | Gerar coordenada por tela | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-043 | orientar_stitch | Gerar campos | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-044 | orientar_stitch | Gerar componentes | 6 | 6 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-044 | orientar_stitch | Gerar componentes | 7 | 7 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-045 | orientar_stitch | Gerar validações | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-046 | orientar_stitch | Gerar ações | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-047 | orientar_stitch | Gerar estados | 6 | 6 | não comprovado; candidatos aprovados exigem revisão de escopo |

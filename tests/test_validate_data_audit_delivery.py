@@ -139,7 +139,7 @@ def test_logical_catalog_exposes_cross_layer_gaps() -> None:
 
     assert data["counts"]["logical_entities"] == 120
     assert data["counts"]["logical_without_physical_table"] > 0
-    assert data["counts"]["logical_without_ui_surface"] > 0
+    assert data["counts"]["logical_without_ui_surface"] == 0
     assert all(item["evidence"] for item in data["entities"])
 
 
@@ -190,9 +190,9 @@ def test_ui_action_matrix_proves_the_generic_save_contract_alignment() -> None:
     data = __import__("json").loads(matrix.read_text(encoding="utf-8"))
     actions = data["actions"]
 
-    assert data["counts"]["ui_actions"] == len(actions) == 1111
+    assert data["counts"]["ui_actions"] == len(actions) == 1114
     assert data["counts"]["ui_actions_incompatible"] == 0
-    assert data["counts"]["ui_actions_without_frontend_permission_gate"] == 680
+    assert data["counts"]["ui_actions_without_frontend_permission_gate"] == 684
     incompatible = [item for item in actions if item["contract_status"] == "incompativel"]
     assert not incompatible
     saves = [item for item in actions if item["action"] == "Salvar Registro"]
@@ -268,6 +268,23 @@ def test_every_physical_field_has_classification_basis_and_retention() -> None:
     assert all(item["masking"] for item in data["fields"])
     assert all(item["retention"] for item in data["fields"])
     assert any(item["lgpd"] == "dado pessoal sensível" for item in data["fields"])
+
+
+def test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name() -> None:
+    catalog = ROOT / "docs" / "data-audit" / "artifacts" / "catalogo_logico.json"
+    data = __import__("json").loads(catalog.read_text(encoding="utf-8"))
+
+    assert data["counts"]["logical_without_ui_surface"] == 0
+    assert all(item["has_ui_surface"] for item in data["entities"])
+
+    smart_crud = (ROOT / "apps" / "all-in-one" / "src" / "components" / "SmartCRUD.tsx").read_text(
+        encoding="utf-8"
+    )
+    for item in data["entities"]:
+        entity = item["entity"]
+        if "_" in entity:
+            compact = entity.replace("_", "")
+            assert f"'{item['module']}:{compact}': '{entity}'" in smart_crud
 
 
 def test_audit_coverage_reports_present_and_missing_requirements() -> None:

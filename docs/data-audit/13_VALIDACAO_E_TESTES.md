@@ -1,6 +1,6 @@
 # Validação e Testes
 
-O inventário AST encontrou 493 funções de teste: 459 contêm `assert` e 194 contêm chamadas HTTP reconhecidas. Os relatórios JUnit registram 468 funções, das quais 435 foram aprovadas; parametrizações são consolidadas por função. A presença de um teste ou candidato aprovado não comprova cobertura integral do requisito.
+O inventário AST encontrou 494 funções de teste: 460 contêm `assert` e 194 contêm chamadas HTTP reconhecidas. Os relatórios JUnit registram 469 funções, das quais 436 foram aprovadas; parametrizações são consolidadas por função. A presença de um teste ou candidato aprovado não comprova cobertura integral do requisito.
 
 Foram extraídos 69 requisitos mandatórios das seções 21 e 24 do memorando; 0 não possuem teste candidato por correspondência semântica conservadora e 69 possuem ao menos um candidato aprovado. Cada vínculo permanece `não comprovado` até revisão de escopo.
 
