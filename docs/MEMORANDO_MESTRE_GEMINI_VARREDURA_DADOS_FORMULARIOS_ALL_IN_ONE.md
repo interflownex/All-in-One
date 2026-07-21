@@ -1,5 +1,7 @@
 # MEMORANDO MESTRE DE VARREDURA EXAUSTIVA DE DADOS, FORMULÁRIOS E TEMPLATES  
+
 ## Projeto All-in-One + Valley  
+
 ### Diretriz mandatória para execução pelo Gemini e demais IAs desenvolvedoras
 
 **Classificação:** Documento técnico interno e mandatório  
