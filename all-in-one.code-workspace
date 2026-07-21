@@ -89,13 +89,13 @@
     "eslint.lintTask.enable": true,
     "workbench.browser.enableRemoteProxy": true,
     "remote.portsAttributes": {
-      
       "443": {
-        "protocol": "https"
+        "protocol": "https",
       },
       "8443": {
-        "protocol": "https"
-      }
+        "protocol": "https",
+      },
     },
+    "workbench.browser.openLocalhostLinks": false,
   },
 }

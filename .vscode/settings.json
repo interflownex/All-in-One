@@ -75,6 +75,7 @@
   "files.trimTrailingWhitespace": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
+  
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.fixAll.ruff": "explicit",

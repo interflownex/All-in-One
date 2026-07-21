@@ -1,7 +1,10 @@
-import logging
 import json
+import logging
 import re
+from datetime import datetime, timezone
 from typing import Any
+
+from .correlation import get_correlation_id
 
 # Padrões para higienização de dados sensíveis (PII)
 PII_PATTERNS = {
@@ -11,12 +14,32 @@ PII_PATTERNS = {
     "jwt": r"ey[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*",
 }
 
+SENSITIVE_KEYS = {
+    "access_token", "authorization", "cookie", "password", "refresh_token",
+    "secret", "set_cookie", "token",
+}
+
+
+def _sanitize_value(value: Any, key: str | None = None) -> Any:
+    if key and key.lower() in SENSITIVE_KEYS:
+        return "[REDACTED]"
+    if isinstance(value, dict):
+        return {str(item_key): _sanitize_value(item, str(item_key)) for item_key, item in value.items()}
+    if isinstance(value, tuple):
+        return tuple(_sanitize_value(item) for item in value)
+    if isinstance(value, list):
+        return [_sanitize_value(item) for item in value]
+    if isinstance(value, str):
+        for name, pattern in PII_PATTERNS.items():
+            value = re.sub(pattern, f"[{name.upper()}_REDACTED]", value)
+    return value
+
 class SensitiveDataFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
-        if isinstance(record.msg, str):
-            record.msg = self.sanitize(record.msg)
-        elif isinstance(record.msg, dict):
-            record.msg = self.sanitize_dict(record.msg)
+        record.msg = _sanitize_value(record.msg)
+        if record.args:
+            record.args = _sanitize_value(record.args)
+        record.correlation_id = getattr(record, "correlation_id", None) or get_correlation_id()
         return True
 
     def sanitize(self, text: str) -> str:
@@ -26,7 +49,21 @@ class SensitiveDataFilter(logging.Filter):
         return sanitized
 
     def sanitize_dict(self, data: dict[str, Any]) -> dict[str, Any]:
-        return json.loads(self.sanitize(json.dumps(data)))
+        return _sanitize_value(data)
+
+
+class StructuredJsonFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        payload: dict[str, Any] = {
+            "timestamp": datetime.fromtimestamp(record.created, timezone.utc).isoformat(),
+            "level": record.levelname,
+            "logger": record.name,
+            "correlation_id": getattr(record, "correlation_id", None) or get_correlation_id(),
+            "message": record.getMessage(),
+        }
+        if record.exc_info:
+            payload["exception"] = self.formatException(record.exc_info)
+        return json.dumps(_sanitize_value(payload), ensure_ascii=False, default=str)
 
 def setup_secure_logging(level: int = logging.INFO):
     logger = logging.getLogger()
@@ -35,9 +72,7 @@ def setup_secure_logging(level: int = logging.INFO):
     # Evitar duplicidade de handlers
     if not logger.handlers:
         handler = logging.StreamHandler()
-        formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - [Correlation: %(correlation_id)s] - %(message)s'
-        )
+        formatter = StructuredJsonFormatter()
         handler.setFormatter(formatter)
         handler.addFilter(SensitiveDataFilter())
         logger.addHandler(handler)
