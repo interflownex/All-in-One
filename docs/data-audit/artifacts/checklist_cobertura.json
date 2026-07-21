@@ -24,6 +24,9 @@
     "ui_actions": 1111,
     "ui_actions_incompatible": 129,
     "ui_actions_without_frontend_permission_gate": 979,
+    "permission_operations": 794,
+    "permission_horizontal_read_gaps": 56,
+    "permission_operations_with_test_candidates": 128,
     "logical_entities": 120,
     "logical_without_physical_table": 62,
     "logical_without_ui_surface": 46,
@@ -125,7 +128,8 @@
       ],
       "lacunas": [
         "AUD-P1-004",
-        "AUD-P1-007"
+        "AUD-P1-007",
+        "AUD-P0-009"
       ],
       "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
@@ -188,12 +192,14 @@
     "permissoes_backend": {
       "percentual": 0,
       "evidencias": [
-        "docs/data-audit/artifacts/matriz_permissao_acao.csv"
+        "docs/data-audit/artifacts/matriz_permissao_acao.csv",
+        "docs/data-audit/artifacts/matriz_enforcement_permissao.json"
       ],
       "lacunas": [
         "AUD-P1-004",
         "AUD-P1-007",
-        "AUD-P1-008"
+        "AUD-P1-008",
+        "AUD-P0-009"
       ],
       "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },

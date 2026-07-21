@@ -29,7 +29,7 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 36
+    assert len(contract["required_complementary"]) == 38
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
@@ -50,6 +50,8 @@ def test_contract_lists_every_complementary_format() -> None:
     assert "artifacts/coordenada_projetos_stitch.json" in contract["required_complementary"]
     assert "artifacts/matriz_acao_ui_backend.json" in contract["required_complementary"]
     assert "artifacts/matriz_acao_ui_backend.csv" in contract["required_complementary"]
+    assert "artifacts/matriz_enforcement_permissao.json" in contract["required_complementary"]
+    assert "artifacts/matriz_enforcement_permissao.csv" in contract["required_complementary"]
 
 
 def test_generated_non_postgres_catalogs_have_field_evidence() -> None:
@@ -190,6 +192,21 @@ def test_ui_action_matrix_exposes_the_generic_save_contract_mismatch() -> None:
     assert all(item["action"] == "Salvar Registro" for item in incompatible)
     assert all("PUT" in item["method"] and "PATCH" in item["backend_contract"] for item in incompatible)
     assert any(item["action"] == "Enviar candidatura" for item in actions)
+
+
+def test_permission_matrix_exposes_horizontal_read_authorization_gaps() -> None:
+    matrix = ROOT / "docs" / "data-audit" / "artifacts" / "matriz_enforcement_permissao.json"
+    data = __import__("json").loads(matrix.read_text(encoding="utf-8"))
+    operations = data["operations"]
+
+    assert data["counts"]["permission_operations"] == len(operations) == 794
+    assert data["counts"]["permission_horizontal_read_gaps"] == 56
+    assert data["counts"]["permission_operations_with_test_candidates"] > 0
+    gaps = [item for item in operations if item["enforcement_status"] == "lacuna_autorizacao_horizontal"]
+    assert len(gaps) == 56
+    assert all(item["operation"] == "read" and item["method"] == "GET" for item in gaps)
+    assert all(not item["sensitive_resource"] and item["module"] != "permissions" for item in gaps)
+    assert any(item["operation"] == "approve" and item["role_enforcement"] for item in operations)
 
 
 def test_units_and_tax_model_covers_precision_and_fiscal_governance() -> None:

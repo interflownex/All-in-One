@@ -2,8 +2,8 @@
   "version": 2,
   "status": "em_execucao",
   "counts": {
-    "total": 9,
-    "P0": 2,
+    "total": 10,
+    "P0": 3,
     "P1": 7,
     "P2": 0,
     "P3": 0,
@@ -357,6 +357,41 @@
         "formularios",
         "acoes_ui",
         "permissoes_backend"
+      ]
+    },
+    {
+      "id": "AUD-P0-009",
+      "priority": "P0",
+      "module": "runtime compartilhado",
+      "title": "Leitura por ID não aplica ownership para recursos não sensíveis",
+      "description": "A rota genérica GET por resource_id autentica o ator, mas _expose só restringe leitura de terceiro quando a regra é sensível. Das 61 entidades não sensíveis, 56 fora do módulo permissions não recebem verificação de proprietário, tenant ou papel nessa rota.",
+      "evidence": [
+        "modules/shared/runtime.py:502",
+        "modules/shared/runtime.py:305",
+        "docs/data-audit/artifacts/matriz_enforcement_permissao.json"
+      ],
+      "impact": "Um usuário autenticado que obtenha UUID alheio pode ler registro não sensível de outro usuário ou contexto.",
+      "risk": "IDOR e quebra de isolamento horizontal/multitenant.",
+      "proposal": "Aplicar autorização owner/operator ou política ABAC/tenant antes de _expose, negar por padrão e criar testes negativos para todas as classes de recurso.",
+      "dependencies": [
+        "contrato de ownership por entidade",
+        "tenant/business context"
+      ],
+      "affected_files": [
+        "modules/shared/runtime.py",
+        "tests"
+      ],
+      "migration": "não aplicável",
+      "backend": "enforcement deny-by-default em get_resource",
+      "frontend": "não confiar em ocultação de links ou UUIDs",
+      "tests": "teste negativo de leitura cruzada para as 56 entidades e teste positivo autorizado",
+      "documentation": "11_PERMISSOES_E_SEGURANCA.md",
+      "acceptance": "Toda leitura por ID valida owner, tenant ou papel/atributo explicitamente autorizado e possui teste negativo/positivo por política.",
+      "status": "incompativel_seguranca",
+      "owner_suggestion": "segurança e plataforma backend",
+      "dimensions": [
+        "permissoes_backend",
+        "auditoria"
       ]
     }
   ]

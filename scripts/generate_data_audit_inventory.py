@@ -617,6 +617,86 @@ def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, obj
     return rows
 
 
+def discover_permission_enforcement(
+    logical_rules: list[dict[str, object]], transitions: list[dict[str, object]]
+) -> list[dict[str, object]]:
+    runtime = "modules/shared/runtime.py"
+    test_sources = [(path, path.read_text(encoding="utf-8", errors="ignore")) for path in sorted((ROOT / "tests").rglob("*.py"))]
+
+    def test_evidence(entity: str, operation: str) -> list[str]:
+        candidates: list[str] = []
+        verb = {"create": "post", "list": "get", "read": "get", "update": "patch", "delete": "delete"}.get(operation, "post")
+        needs_resource_id = operation not in {"create", "list"}
+        suffix = "/" if needs_resource_id else "[\\\"']"
+        endpoint_pattern = re.compile(rf"\.{verb}\(\s*f?[\"']/resources/{re.escape(entity)}{suffix}")
+        for path, text in test_sources:
+            match = endpoint_pattern.search(text)
+            if not match:
+                continue
+            if operation not in {"create", "list", "read", "update", "delete"}:
+                window = text[match.start():match.start() + 500]
+                if f"/actions/{operation}" not in window:
+                    continue
+            candidates.append(f"{path.relative_to(ROOT)}:{line_number(text, match.start())}")
+            if len(candidates) == 3:
+                break
+        return candidates
+
+    rows: list[dict[str, object]] = []
+    generic_operations = (
+        ("create", "POST", "/resources/{resource_type}", "owner_or_operator", "store.create gera audit/event", "X-Idempotency-Key somente transacionais", '@app.post("/resources/{resource_type}"'),
+        ("list", "GET", "/resources/{resource_type}", "lista do actor; user_id de terceiro exige APPROVER_ROLES", "leitura não auditada genericamente", "não aplicável", '@app.get("/resources/{resource_type}")'),
+        ("read", "GET", "/resources/{resource_type}/{resource_id}", "somente _expose para sensíveis; sem ownership para não sensíveis", "leitura não auditada genericamente", "não aplicável", '@app.get("/resources/{resource_type}/{resource_id}")'),
+        ("update", "PATCH", "/resources/{resource_type}/{resource_id}", "owner_or_operator", "store.update gera audit", "não exigida genericamente", '@app.patch("/resources/{resource_type}/{resource_id}")'),
+        ("delete", "DELETE", "/resources/{resource_type}/{resource_id}", "owner_or_operator; sensíveis/imutáveis bloqueados", "soft_delete gera audit", "não aplicável", '@app.delete("/resources/{resource_type}/{resource_id}"'),
+    )
+    for rule in logical_rules:
+        module, entity = str(rule["module"]), str(rule["entity"])
+        sensitive = bool(rule["sensitive"])
+        for operation, method, endpoint, ownership, audit, idempotency, evidence_needle in generic_operations:
+            is_permissions = module == "permissions"
+            horizontal_gap = operation == "read" and not sensitive and not is_permissions
+            role_enforcement = (
+                "SENSITIVE_ROLES para leitura; PERMISSIONS_WRITE_ROLES para escrita"
+                if is_permissions
+                else "papel sensível somente para leitura de terceiro sensível; demais CRUDs usam owner/operator"
+            )
+            rows.append(
+                {
+                    "module": module, "entity": entity, "operation": operation, "method": method,
+                    "endpoint": endpoint.replace("{resource_type}", entity), "authentication": "actor_from_headers obrigatório",
+                    "role_enforcement": role_enforcement, "ownership_enforcement": ownership,
+                    "tenant_enforcement": "não genérico; regras especiais por domínio quando implementadas",
+                    "mfa_enforcement": "permissions em recursos configurados; não genérico nos demais CRUDs",
+                    "sensitive_resource": sensitive, "audit_enforcement": audit, "idempotency": idempotency,
+                    "enforcement_status": "lacuna_autorizacao_horizontal" if horizontal_gap else "parcial_estatico",
+                    "test_evidence": test_evidence(entity, operation),
+                    "evidence": source_evidence(runtime, evidence_needle),
+                }
+            )
+    sensitive_by_resource = {(str(row["module"]), str(row["entity"])): bool(row["sensitive"]) for row in logical_rules}
+    for transition in transitions:
+        module, entity, action = str(transition["module"]), str(transition["entity"]), str(transition["action"])
+        roles = list(transition["roles"])
+        rows.append(
+            {
+                "module": module, "entity": entity, "operation": action, "method": "POST",
+                "endpoint": f"/resources/{entity}/{{resource_id}}/actions/{action}", "authentication": "actor_from_headers obrigatório",
+                "role_enforcement": roles or ["owner_or_operator"],
+                "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
+                "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
+                "mfa_enforcement": bool(transition["requires_mfa"]),
+                "sensitive_resource": sensitive_by_resource.get((module, entity), False),
+                "audit_enforcement": "store.update registra ação e evento de transição",
+                "idempotency": "não exigida genericamente na rota de transição",
+                "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
+                "test_evidence": test_evidence(entity, action),
+                "evidence": transition["evidence"],
+            }
+        )
+    return rows
+
+
 def write_csv(path: Path, columns: list[str], rows: Iterable[dict[str, object]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
@@ -655,6 +735,7 @@ def build_delivery() -> None:
     ui_actions = discover_ui_actions(ui_bindings)
     logical_rules = discover_logical_rules(tables, ui_bindings)
     transitions = discover_transitions(logical_rules)
+    permission_enforcement = discover_permission_enforcement(logical_rules, transitions)
     relations = [field for field in fields if field.reference]
     sensitive = [field for field in fields if field.lgpd != "não classificado automaticamente"]
     counts = {
@@ -680,6 +761,9 @@ def build_delivery() -> None:
         "ui_actions": len(ui_actions),
         "ui_actions_incompatible": sum(row["contract_status"] == "incompativel" for row in ui_actions),
         "ui_actions_without_frontend_permission_gate": sum(row["frontend_permission_gate"] is False for row in ui_actions),
+        "permission_operations": len(permission_enforcement),
+        "permission_horizontal_read_gaps": sum(row["enforcement_status"] == "lacuna_autorizacao_horizontal" for row in permission_enforcement),
+        "permission_operations_with_test_candidates": sum(bool(row["test_evidence"]) for row in permission_enforcement),
         "logical_entities": len(logical_rules),
         "logical_without_physical_table": sum(not row["has_physical_table"] for row in logical_rules),
         "logical_without_ui_surface": sum(not row["has_ui_surface"] for row in logical_rules),
@@ -782,6 +866,19 @@ def build_delivery() -> None:
         ARTIFACTS / "matriz_acao_ui_backend.csv",
         ["module", "entity", "surface", "route", "action", "trigger", "method", "endpoint", "request_contract", "backend_contract", "contract_status", "frontend_permission_gate", "backend_enforcement", "audit", "states", "test_evidence", "evidence", "surface_evidence"],
         ({**row, "states": ";".join(row["states"])} for row in ui_actions),
+    )
+    write_json(ARTIFACTS / "matriz_enforcement_permissao.json", {"version": 1, "status": "auditoria_estatica", "counts": counts, "operations": permission_enforcement})
+    write_csv(
+        ARTIFACTS / "matriz_enforcement_permissao.csv",
+        ["module", "entity", "operation", "method", "endpoint", "authentication", "role_enforcement", "ownership_enforcement", "tenant_enforcement", "mfa_enforcement", "sensitive_resource", "audit_enforcement", "idempotency", "enforcement_status", "test_evidence", "evidence"],
+        (
+            {
+                **row,
+                "role_enforcement": ";".join(row["role_enforcement"]) if isinstance(row["role_enforcement"], list) else row["role_enforcement"],
+                "test_evidence": ";".join(row["test_evidence"]),
+            }
+            for row in permission_enforcement
+        ),
     )
     for artifact_name, rows in (
         ("catalogo_redis", redis_entries),
@@ -984,6 +1081,10 @@ def build_delivery() -> None:
             "id": "AUD-P1-008", "priority": "P1", "module": "frontend e runtime compartilhado", "title": "Salvar Registro é incompatível com o contrato CRUD do backend",
             "description": "Nas 129 superfícies de formulário, a criação envia payload plano sem user_id/payload e a edição usa PUT, enquanto o runtime exige ResourceCreate envelopado no POST e oferece PATCH com ResourcePatch.", "evidence": [source_evidence("apps/all-in-one/src/components/SmartCRUD.tsx", "method: editingRecord?.id ? 'PUT' : 'POST'"), source_evidence("modules/shared/runtime.py", "class ResourceCreate(BaseModel):"), source_evidence("modules/shared/runtime.py", '@app.post("/resources/{resource_type}"'), source_evidence("modules/shared/runtime.py", '@app.patch("/resources/{resource_type}/{resource_id}"'), "docs/data-audit/artifacts/matriz_acao_ui_backend.json"], "impact": "Criação e edição autenticadas podem retornar 422 ou 405 em todas as telas genéricas.", "risk": "Botão principal não conclui a operação e o fallback local mascara a incompatibilidade.", "proposal": "Definir adapter frontend tipado por entidade, usar POST {user_id,payload}, PATCH {payload}, idempotência quando transacional e testes HTTP/E2E por formulário.", "dependencies": ["bindings de campo", "actor autenticado", "contratos por entidade"], "affected_files": ["apps/all-in-one/src/components/SmartCRUD.tsx", "modules/shared/runtime.py"], "migration": "não aplicável", "backend": "manter contratos explícitos e documentar métodos", "frontend": "corrigir envelope, método, idempotência e gates de permissão", "tests": "contrato HTTP e E2E para criação/edição das 129 superfícies", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada formulário cria e edita via contrato backend compatível, com permissão, estados, auditoria e teste aprovado.", "status": "incompativel", "owner_suggestion": "frontend e plataforma backend", "dimensions": ["bindings_frontend", "formularios", "acoes_ui", "permissoes_backend"]
         },
+        {
+            "id": "AUD-P0-009", "priority": "P0", "module": "runtime compartilhado", "title": "Leitura por ID não aplica ownership para recursos não sensíveis",
+            "description": "A rota genérica GET por resource_id autentica o ator, mas _expose só restringe leitura de terceiro quando a regra é sensível. Das 61 entidades não sensíveis, 56 fora do módulo permissions não recebem verificação de proprietário, tenant ou papel nessa rota.", "evidence": [source_evidence("modules/shared/runtime.py", '@app.get("/resources/{resource_type}/{resource_id}"'), source_evidence("modules/shared/runtime.py", "def _expose(item:"), "docs/data-audit/artifacts/matriz_enforcement_permissao.json"], "impact": "Um usuário autenticado que obtenha UUID alheio pode ler registro não sensível de outro usuário ou contexto.", "risk": "IDOR e quebra de isolamento horizontal/multitenant.", "proposal": "Aplicar autorização owner/operator ou política ABAC/tenant antes de _expose, negar por padrão e criar testes negativos para todas as classes de recurso.", "dependencies": ["contrato de ownership por entidade", "tenant/business context"], "affected_files": ["modules/shared/runtime.py", "tests"], "migration": "não aplicável", "backend": "enforcement deny-by-default em get_resource", "frontend": "não confiar em ocultação de links ou UUIDs", "tests": "teste negativo de leitura cruzada para as 56 entidades e teste positivo autorizado", "documentation": "11_PERMISSOES_E_SEGURANCA.md", "acceptance": "Toda leitura por ID valida owner, tenant ou papel/atributo explicitamente autorizado e possui teste negativo/positivo por política.", "status": "incompativel_seguranca", "owner_suggestion": "segurança e plataforma backend", "dimensions": ["permissoes_backend", "auditoria"]
+        },
     ]
     gap_counts = {priority: sum(gap["priority"] == priority for gap in gaps) for priority in ("P0", "P1", "P2", "P3", "P4")}
     write_json(ARTIFACTS / "relatorio_divergencias.json", {"version": 2, "status": "em_execucao", "counts": {"total": len(gaps), **gap_counts}, "required_fields": ["id", "title", "module", "description", "evidence", "impact", "risk", "priority", "proposal", "dependencies", "affected_files", "migration", "backend", "frontend", "tests", "documentation", "acceptance", "status"], "gaps": gaps})
@@ -1013,7 +1114,7 @@ def build_delivery() -> None:
         "auditoria": ["docs/data-audit/artifacts/cobertura_auditoria.json"], "calculos": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json"],
         "unidades": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json"], "regras_fiscais": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json"],
         "formularios": ["docs/data-audit/artifacts/coordenadas_stitch.json"], "acoes_ui": ["docs/data-audit/artifacts/coordenadas_stitch.json"],
-        "permissoes_backend": ["docs/data-audit/artifacts/matriz_permissao_acao.csv"], "lacunas_com_backlog": ["docs/data-audit/artifacts/relatorio_divergencias.json"],
+        "permissoes_backend": ["docs/data-audit/artifacts/matriz_permissao_acao.csv", "docs/data-audit/artifacts/matriz_enforcement_permissao.json"], "lacunas_com_backlog": ["docs/data-audit/artifacts/relatorio_divergencias.json"],
     }
     dimensions = {
         name: {
@@ -1214,7 +1315,9 @@ EVIDÊNCIAS: `config/data_audit/dynamic_form_model_proposal.json`, `artifacts/fo
         "Permissões, Segurança e Privacidade",
         f"""Foram triados {counts['sensitive_candidates']} campos potencialmente pessoais, sensíveis, financeiros, restritos ou pseudônimos vinculáveis. A política versionada registra categoria, padrão que motivou a triagem, criptografia, mascaramento e retenção. A classificação automática exige homologação pelo proprietário do domínio e revisão jurídica/privacidade quando aplicável.
 
-RBAC/ABAC deve ser provado endpoint a endpoint; controle apenas no frontend não é aceito. Campos sem regra automática continuam explicitamente sem classificação e com lacuna de retenção.
+Foram catalogadas {counts['permission_operations']} operações backend: 600 operações CRUD sobre 120 entidades e {counts['event_transitions']} transições. {counts['permission_operations_with_test_candidates']} possuem ao menos um arquivo de teste candidato localizado; isso não equivale a prova positiva/negativa completa por endpoint.
+
+A rota genérica de leitura por ID deixa {counts['permission_horizontal_read_gaps']} entidades não sensíveis fora do módulo `permissions` sem verificação de owner, tenant ou papel depois da autenticação. Essa condição é P0 por risco de IDOR e isolamento horizontal. RBAC/ABAC deve ser provado endpoint a endpoint; controle apenas no frontend não é aceito. Campos sem regra automática continuam explicitamente sem classificação e com lacuna de retenção.
 
 EVIDÊNCIAS: `config/data_audit/field_classification_policy.json`, `artifacts/politica_classificacao_campos.json`, `artifacts/dicionario_de_dados.csv`, `modules/permissions/`, `modules/identity/`.""",
     )

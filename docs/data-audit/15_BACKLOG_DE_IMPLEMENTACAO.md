@@ -11,5 +11,6 @@
 | 7 | AUD-P1-006 | arquitetura e responsáveis de domínio | Cada entidade possui decisão explícita de persistência, ownership e coordenada UI, ou justificativa versionada de ausência. | proprietários dos 25 módulos | pendente_decisao |
 | 8 | AUD-P1-007 | segurança, plataforma e compliance | Os 35 requisitos de auditoria têm implementação ou decisão justificada por operação, com integridade, retenção e testes aprovados. | segurança, compliance, proprietários de domínio | parcial |
 | 9 | AUD-P1-008 | frontend e plataforma backend | Cada formulário cria e edita via contrato backend compatível, com permissão, estados, auditoria e teste aprovado. | bindings de campo, actor autenticado, contratos por entidade | incompativel |
+| 10 | AUD-P0-009 | segurança e plataforma backend | Toda leitura por ID valida owner, tenant ou papel/atributo explicitamente autorizado e possui teste negativo/positivo por política. | contrato de ownership por entidade, tenant/business context | incompativel_seguranca |
 
 A ordem prioriza P0, integridade contratual e funcionalidades P1. EVIDÊNCIAS: `14_REGISTRO_DE_LACUNAS.md`.

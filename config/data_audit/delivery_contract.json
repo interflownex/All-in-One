@@ -53,6 +53,8 @@
     "artifacts/coordenada_projetos_stitch.json",
     "artifacts/matriz_acao_ui_backend.json",
     "artifacts/matriz_acao_ui_backend.csv",
+    "artifacts/matriz_enforcement_permissao.json",
+    "artifacts/matriz_enforcement_permissao.csv",
     "artifacts/erd.mmd",
     "artifacts/matriz_formulario_campo.csv",
     "artifacts/matriz_api_campo.csv",
