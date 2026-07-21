@@ -172,3 +172,31 @@ def test_audit_coverage_reports_present_and_missing_requirements() -> None:
     assert any(item["covered"] for item in data["coverage"])
     assert any(not item["covered"] for item in data["coverage"])
     assert all(item["aliases"] for item in data["coverage"])
+
+
+def test_every_gap_has_the_mandatory_execution_coordinate() -> None:
+    report = ROOT / "docs" / "data-audit" / "artifacts" / "relatorio_divergencias.json"
+    data = __import__("json").loads(report.read_text(encoding="utf-8"))
+
+    required = set(data["required_fields"])
+    assert data["version"] == 2
+    assert data["counts"]["total"] == len(data["gaps"])
+    assert required
+    assert all(required <= set(gap) for gap in data["gaps"])
+    assert all(gap["evidence"] and gap["affected_files"] and gap["dimensions"] for gap in data["gaps"])
+
+
+def test_coverage_links_only_dimension_specific_gaps_and_evidence() -> None:
+    artifacts = ROOT / "docs" / "data-audit" / "artifacts"
+    coverage = __import__("json").loads((artifacts / "checklist_cobertura.json").read_text(encoding="utf-8"))
+    report = __import__("json").loads((artifacts / "relatorio_divergencias.json").read_text(encoding="utf-8"))
+    gaps_by_id = {gap["id"]: gap for gap in report["gaps"]}
+
+    for dimension, item in coverage["dimensoes"].items():
+        assert item["evidencias"]
+        assert item["metodo"]
+        assert all(dimension in gaps_by_id[gap_id]["dimensions"] for gap_id in item["lacunas"])
+    assert coverage["dimensoes"]["bindings_frontend"]["lacunas"] == ["AUD-P1-002"]
+    assert coverage["dimensoes"]["campos_sensiveis"]["lacunas"] == ["AUD-P0-001", "AUD-P1-007"]
+    assert "AUD-P1-007" in coverage["dimensoes"]["auditoria"]["lacunas"]
+    assert not any(item["percentual"] == 100 and item["lacunas"] for item in coverage["dimensoes"].values())

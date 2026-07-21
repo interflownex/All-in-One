@@ -763,18 +763,49 @@ def build_delivery() -> None:
     (ARTIFACTS / "erd.mmd").write_text("\n".join(erd) + "\n", encoding="utf-8")
 
     gaps = [
-        {"id": "AUD-P0-000", "priority": "P0", "title": "Persistências não PostgreSQL exigem catálogo de campo e validação em runtime", "evidence": "infra/docker/docker-compose.yml:69", "acceptance": "MongoDB, SQLite, Redis, object storage e storage de navegador possuem catálogo, retenção, ownership e testes aprovados."},
-        {"id": "AUD-P0-001", "priority": "P0", "title": "Classificação LGPD exige revisão humana por campo", "evidence": "docs/data-audit/artifacts/dicionario_de_dados.csv", "acceptance": "Todos os campos possuem classificação aprovada pelo proprietário do domínio."},
-        {"id": "AUD-P1-002", "priority": "P1", "title": "Bindings frontend-backend não estão integralmente comprovados", "evidence": "docs/data-audit/artifacts/matriz_formulario_campo.csv", "acceptance": "Cada campo UI aponta para DTO, endpoint, regra e teste."},
-        {"id": "AUD-P1-003", "priority": "P1", "title": "Eventos não possuem catálogo de payload versionado", "evidence": "docs/data-audit/artifacts/matriz_evento_campo.csv", "acceptance": "Cada evento possui produtor, consumidor, schema, idempotência e compatibilidade."},
-        {"id": "AUD-P1-004", "priority": "P1", "title": "Construtor de formulários dinâmicos é proposta, não implementação", "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:1583", "acceptance": "Metadados, API, homologação, segurança e testes implementados."},
-        {"id": "AUD-P1-005", "priority": "P1", "title": "Regras fiscais e conversões carecem de modelo completo", "evidence": "database/postgres/migrations/", "acceptance": "Perfis fiscais e conversões versionadas possuem migrations, backend e testes."},
-        {"id": "AUD-P1-006", "priority": "P1", "title": "Entidades lógicas não possuem tabela física ou superfície UI correspondente", "evidence": "docs/data-audit/artifacts/catalogo_logico.csv", "acceptance": "Cada entidade tem decisão explícita de persistência e coordenada UI, ou justificativa de ausência."},
+        {
+            "id": "AUD-P0-000", "priority": "P0", "module": "infraestrutura", "title": "Persistências não PostgreSQL exigem catálogo e validação operacional",
+            "description": "MongoDB e SQLite possuem inventário estático; Redis, object storage e storage de navegador ainda não têm catálogo estruturado, e nenhuma instância foi confrontada em runtime.",
+            "evidence": ["infra/docker/docker-compose.yml:69", "docs/data-audit/artifacts/catalogo_mongodb.json", "docs/data-audit/artifacts/catalogo_sqlite.json"],
+            "impact": "Retenção, recuperação, ownership e divergências entre configuração e ambiente não são comprovados.", "risk": "Perda, exposição ou inconsistência de dados fora do PostgreSQL.",
+            "proposal": "Catalogar chaves, objetos, buckets e políticas; adicionar sondagens não destrutivas e testes por tecnologia.", "dependencies": ["credenciais dos ambientes", "serviços acessíveis"],
+            "affected_files": ["infra/docker/docker-compose.yml", "docs/data-audit/databases"], "migration": "avaliar por tecnologia", "backend": "inventariar clientes e contratos", "frontend": "inventariar chaves de storage", "tests": "testes de contrato e sondagem runtime", "documentation": "03_CATALOGO_DE_BANCOS.md", "acceptance": "MongoDB, SQLite, Redis, object storage e storage de navegador possuem catálogo, retenção, ownership, restore e testes aprovados.", "status": "parcial", "owner_suggestion": "plataforma e dados", "dimensions": ["bancos", "tabelas_colecoes", "campos"]
+        },
+        {
+            "id": "AUD-P0-001", "priority": "P0", "module": "compliance", "title": "Classificação LGPD exige revisão humana por campo",
+            "description": "A classificação atual é heurística e ainda não foi aprovada pelos proprietários dos domínios.", "evidence": ["docs/data-audit/artifacts/politica_classificacao_campos.json", "docs/data-audit/artifacts/dicionario_de_dados.csv"],
+            "impact": "Mascaramento, retenção e acesso podem não refletir finalidade e base legal reais.", "risk": "Tratamento indevido de dados pessoais e sensíveis.", "proposal": "Executar revisão campo a campo com DPO e responsáveis dos domínios, registrando decisão e vigência.", "dependencies": ["DPO", "proprietários de domínio"], "affected_files": ["config/data_audit/field_classification_policy.json"], "migration": "não aplicável até decisão", "backend": "aplicar classificação aprovada", "frontend": "aplicar mascaramento aprovado", "tests": "testar acesso e mascaramento por classe", "documentation": "11_PERMISSOES_E_SEGURANCA.md", "acceptance": "Todos os campos possuem classificação, retenção, criptografia e mascaramento aprovados pelo proprietário do domínio.", "status": "pendente_aprovacao", "owner_suggestion": "DPO e compliance", "dimensions": ["campos_sensiveis"]
+        },
+        {
+            "id": "AUD-P1-002", "priority": "P1", "module": "frontend e APIs", "title": "Bindings frontend-backend não estão integralmente comprovados",
+            "description": "Há 299 superfícies e 1067 combinações de campo, mas a maioria não possui vínculo demonstrado com DTO, endpoint, validação e teste.", "evidence": ["docs/data-audit/artifacts/matriz_formulario_campo.csv", "docs/data-audit/artifacts/coordenadas_stitch.json"], "impact": "Formulários podem omitir, renomear ou enviar campos sem contrato.", "risk": "Botões mortos, perda de dados e contratos divergentes.", "proposal": "Resolver cada binding por rota e campo e ligar ações a endpoints, permissões e testes.", "dependencies": ["contratos DTO", "rotas frontend"], "affected_files": ["apps/all-in-one/src", "modules"], "migration": "não aplicável", "backend": "tipar payloads e responses", "frontend": "declarar binding e estados", "tests": "integração e E2E por superfície", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada campo e ação UI aponta para DTO, endpoint, regra, permissão e teste aprovados.", "status": "pendente", "owner_suggestion": "frontend e backend", "dimensions": ["bindings_frontend", "formularios", "acoes_ui", "permissoes_backend"]
+        },
+        {
+            "id": "AUD-P1-003", "priority": "P1", "module": "eventos", "title": "Eventos não possuem catálogo integral de payload versionado",
+            "description": "As transições identificam nomes e produtores, mas consumidores e contratos completos não são demonstrados para todos os eventos.", "evidence": ["docs/data-audit/artifacts/catalogo_eventos.json", "docs/data-audit/artifacts/matriz_evento_campo.csv"], "impact": "Mudanças podem quebrar consumidores ou impedir replay seguro.", "risk": "Inconsistência assíncrona e duplicidade de processamento.", "proposal": "Versionar schemas, consumidores, idempotência, correlação, retenção e compatibilidade por evento.", "dependencies": ["produtores", "consumidores", "mensageria"], "affected_files": ["modules", "contracts"], "migration": "não aplicável", "backend": "publicar e consumir contrato versionado", "frontend": "não aplicável salvo atualizações em tempo real", "tests": "contrato, idempotência, replay e compatibilidade", "documentation": "12_APIS_EVENTOS_E_INTEGRACOES.md", "acceptance": "Cada evento possui produtor, consumidor, schema, dados proibidos, idempotência, correlação, retenção e compatibilidade testados.", "status": "pendente", "owner_suggestion": "arquitetura de integração", "dimensions": ["campos", "relacionamentos"]
+        },
+        {
+            "id": "AUD-P1-004", "priority": "P1", "module": "formulários dinâmicos", "title": "Construtor de formulários dinâmicos é proposta, não implementação",
+            "description": "O modelo cobre metadados e governança, mas migrations, APIs, UI e enforcement ainda não existem.", "evidence": ["docs/data-audit/artifacts/formulario_dinamico_modelo.json", "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:1583"], "impact": "O produto pago de formulários sob medida não pode ser usado ou homologado.", "risk": "Implementação ad hoc e exposição de tabelas físicas.", "proposal": "Implementar por fases o modelo aprovado, mantendo seleção de tabela e coluna físicas proibida.", "dependencies": ["decisão arquitetural", "modelo de cobrança"], "affected_files": ["database/postgres/migrations", "modules", "apps/all-in-one/src"], "migration": "criar migrations reversíveis após aprovação", "backend": "APIs, regras e homologação", "frontend": "builder, preview e publicação", "tests": "segurança, ciclos, versionamento, tenant e cobrança", "documentation": "10_FORMULARIOS_DINAMICOS.md", "acceptance": "Metadados, API, homologação, segurança, publicação, cobrança, auditoria e testes estão implementados.", "status": "proposta", "owner_suggestion": "produto, arquitetura e engenharia", "dimensions": ["tabelas_colecoes", "campos", "formularios", "acoes_ui", "permissoes_backend", "auditoria", "calculos"]
+        },
+        {
+            "id": "AUD-P1-005", "priority": "P1", "module": "catálogo e fiscal", "title": "Regras fiscais, unidades e conversões carecem de implementação completa",
+            "description": "Existe proposta com precisão e governança, sem comprovação de migrations, cálculo backend e cenários fiscais.", "evidence": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json", "database/postgres/migrations/"], "impact": "Compra, estoque, venda, custo e tributação podem divergir.", "risk": "Cálculo financeiro ou fiscal incorreto.", "proposal": "Aprovar modelo, gerar migrations reversíveis, backfill, APIs e testes de cenários.", "dependencies": ["especialista fiscal", "decisão de produto"], "affected_files": ["database/postgres/migrations", "modules/marketplace", "modules/stock", "modules/erp"], "migration": "pendente, reversível e com backfill", "backend": "cálculos somente com Decimal e regras vigentes", "frontend": "cadastro de unidades e perfil fiscal", "tests": "precisão, arredondamento, conversão e cenários fiscais", "documentation": "06_UNIDADES_E_CONVERSOES.md e 07_TRIBUTACAO.md", "acceptance": "Unidades, conversões, perfis fiscais, vigência e cálculos possuem migrations, backend, frontend e testes aprovados.", "status": "proposta", "owner_suggestion": "catálogo, estoque, ERP e fiscal", "dimensions": ["tabelas_colecoes", "campos", "calculos", "unidades", "regras_fiscais", "formularios"]
+        },
+        {
+            "id": "AUD-P1-006", "priority": "P1", "module": "arquitetura modular", "title": "Entidades lógicas não possuem persistência ou superfície UI correspondente",
+            "description": "O catálogo encontrou entidades sem tabela homônima e sem superfície UI homônima; ausência pode ser legítima, mas ainda não há decisão individual.", "evidence": ["docs/data-audit/artifacts/catalogo_logico.json"], "impact": "Ownership e ciclo de vida ficam ambíguos.", "risk": "Duplicação, persistência implícita ou funcionalidade inacessível.", "proposal": "Classificar cada divergência como alias, agregado, estrutura embutida, entidade futura ou lacuna real.", "dependencies": ["proprietários dos 25 módulos"], "affected_files": ["modules/shared/domain_rules.py", "database/postgres/migrations", "apps/all-in-one/src"], "migration": "somente para lacunas confirmadas", "backend": "registrar persistência e contrato", "frontend": "registrar coordenada ou justificativa", "tests": "teste de contrato por decisão", "documentation": "02_MAPA_DE_DOMINIOS.md", "acceptance": "Cada entidade possui decisão explícita de persistência, ownership e coordenada UI, ou justificativa versionada de ausência.", "status": "pendente_decisao", "owner_suggestion": "arquitetura e responsáveis de domínio", "dimensions": ["tabelas_colecoes", "campos", "relacionamentos", "formularios"]
+        },
+        {
+            "id": "AUD-P1-007", "priority": "P1", "module": "auditoria e segurança", "title": "Trilhas de auditoria não cobrem todos os atributos mandatórios",
+            "description": "A análise de cinco tabelas candidatas encontrou cobertura global de apenas parte dos 35 requisitos; faltam, entre outros, sessão, origem, canal, motivo, causação, integridade, retenção e registros de leitura/exportação.", "evidence": ["docs/data-audit/artifacts/cobertura_auditoria.json", "docs/data-audit/artifacts/cobertura_auditoria.csv"], "impact": "A plataforma não consegue demonstrar integralmente quem acessou ou alterou dados, em qual contexto e por qual motivo.", "risk": "Não repúdio insuficiente, investigação incompleta e descumprimento de auditoria/LGPD.", "proposal": "Aprovar contrato unificado de auditoria, mapear requisito por operação e implementar escrita append-only com testes de integridade e acesso.", "dependencies": ["segurança", "compliance", "proprietários de domínio"], "affected_files": ["database/postgres/migrations", "modules/shared/store.py", "modules"], "migration": "criar ou evoluir trilha com backfill quando tecnicamente possível", "backend": "registrar criação, mudança, leitura sensível, exportação e autorização", "frontend": "enviar motivo quando obrigatório e nunca registrar segredo", "tests": "integração por operação, imutabilidade, autorização e retenção", "documentation": "08_AUDITORIA_E_LOGS.md", "acceptance": "Os 35 requisitos de auditoria têm implementação ou decisão justificada por operação, com integridade, retenção e testes aprovados.", "status": "parcial", "owner_suggestion": "segurança, plataforma e compliance", "dimensions": ["auditoria", "campos_sensiveis", "permissoes_backend"]
+        },
     ]
-    write_json(ARTIFACTS / "relatorio_divergencias.json", {"version": 1, "status": "em_execucao", "gaps": gaps})
+    gap_counts = {priority: sum(gap["priority"] == priority for gap in gaps) for priority in ("P0", "P1", "P2", "P3", "P4")}
+    write_json(ARTIFACTS / "relatorio_divergencias.json", {"version": 2, "status": "em_execucao", "counts": {"total": len(gaps), **gap_counts}, "required_fields": ["id", "title", "module", "description", "evidence", "impact", "risk", "priority", "proposal", "dependencies", "affected_files", "migration", "backend", "frontend", "tests", "documentation", "acceptance", "status"], "gaps": gaps})
 
     coverage_values = {
-        "bancos": 100,
+        "bancos": 60,
         "schemas": 100,
         "tabelas_colecoes": 85,
         "campos": 75,
@@ -790,11 +821,22 @@ def build_delivery() -> None:
         "permissoes_backend": 0,
         "lacunas_com_backlog": 100,
     }
+    evidence_by_dimension = {
+        "bancos": ["docs/data-audit/03_CATALOGO_DE_BANCOS.md"], "schemas": ["docs/data-audit/artifacts/dicionario_de_dados.json"],
+        "tabelas_colecoes": ["docs/data-audit/artifacts/dicionario_de_dados.json", "docs/data-audit/artifacts/catalogo_mongodb.json", "docs/data-audit/artifacts/catalogo_sqlite.json"],
+        "campos": ["docs/data-audit/artifacts/dicionario_de_dados.json"], "relacionamentos": ["docs/data-audit/artifacts/erd.mmd"],
+        "bindings_frontend": ["docs/data-audit/artifacts/matriz_formulario_campo.csv"], "campos_sensiveis": ["docs/data-audit/artifacts/politica_classificacao_campos.json"],
+        "auditoria": ["docs/data-audit/artifacts/cobertura_auditoria.json"], "calculos": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json"],
+        "unidades": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json"], "regras_fiscais": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json"],
+        "formularios": ["docs/data-audit/artifacts/coordenadas_stitch.json"], "acoes_ui": ["docs/data-audit/artifacts/coordenadas_stitch.json"],
+        "permissoes_backend": ["docs/data-audit/artifacts/matriz_permissao_acao.csv"], "lacunas_com_backlog": ["docs/data-audit/artifacts/relatorio_divergencias.json"],
+    }
     dimensions = {
         name: {
             "percentual": value,
-            "evidencias": ["docs/data-audit/artifacts/dicionario_de_dados.json"] if value == 100 else [],
-            "lacunas": [] if value == 100 else [gap["id"] for gap in gaps],
+            "evidencias": evidence_by_dimension[name],
+            "lacunas": [gap["id"] for gap in gaps if name in gap["dimensions"]],
+            "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional",
         }
         for name, value in coverage_values.items()
     }
@@ -1002,9 +1044,9 @@ EVIDÊNCIAS: `config/data_audit/field_classification_policy.json`, `artifacts/po
         "Validação e Testes",
         """O inventário é validado por `scripts/validate_data_audit_delivery.py`. A cobertura funcional permanece incompleta até testar CRUD, rascunho, aprovação, importação, cálculos, unidades, impostos, concorrência, idempotência, autorização e isolamento de tenant.\n\nEVIDÊNCIAS: `tests/test_validate_data_audit_delivery.py`.""",
     )
-    gap_rows = markdown_table(["ID", "Prioridade", "Lacuna", "Evidência", "Aceite"], ([gap["id"], gap["priority"], gap["title"], gap["evidence"], gap["acceptance"]] for gap in gaps))
+    gap_rows = markdown_table(["ID", "Prioridade", "Módulo", "Lacuna", "Risco", "Status", "Aceite"], ([gap["id"], gap["priority"], gap["module"], gap["title"], gap["risk"], gap["status"], gap["acceptance"]] for gap in gaps))
     write_markdown("14_REGISTRO_DE_LACUNAS.md", "Registro de Lacunas", f"{gap_rows}\n\nEVIDÊNCIAS: `artifacts/relatorio_divergencias.json`.")
-    backlog_rows = markdown_table(["Ordem", "ID", "Entrega", "Dependência", "Status"], ([index, gap["id"], gap["acceptance"], gap["evidence"], "pendente"] for index, gap in enumerate(gaps, 1)))
+    backlog_rows = markdown_table(["Ordem", "ID", "Responsável sugerido", "Entrega", "Dependências", "Status"], ([index, gap["id"], gap["owner_suggestion"], gap["acceptance"], ", ".join(gap["dependencies"]), gap["status"]] for index, gap in enumerate(gaps, 1)))
     write_markdown("15_BACKLOG_DE_IMPLEMENTACAO.md", "Backlog de Implementação", f"{backlog_rows}\n\nA ordem prioriza P0, integridade contratual e funcionalidades P1. EVIDÊNCIAS: `14_REGISTRO_DE_LACUNAS.md`.")
     write_markdown(
         "16_COORDENADAS_STITCH.md",

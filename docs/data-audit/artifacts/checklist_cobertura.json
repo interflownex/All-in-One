@@ -33,181 +33,169 @@
   },
   "dimensoes": {
     "bancos": {
-      "percentual": 100,
+      "percentual": 60,
       "evidencias": [
-        "docs/data-audit/artifacts/dicionario_de_dados.json"
+        "docs/data-audit/03_CATALOGO_DE_BANCOS.md"
       ],
-      "lacunas": []
+      "lacunas": [
+        "AUD-P0-000"
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "schemas": {
       "percentual": 100,
       "evidencias": [
         "docs/data-audit/artifacts/dicionario_de_dados.json"
       ],
-      "lacunas": []
+      "lacunas": [],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "tabelas_colecoes": {
       "percentual": 85,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/dicionario_de_dados.json",
+        "docs/data-audit/artifacts/catalogo_mongodb.json",
+        "docs/data-audit/artifacts/catalogo_sqlite.json"
+      ],
       "lacunas": [
         "AUD-P0-000",
-        "AUD-P0-001",
-        "AUD-P1-002",
-        "AUD-P1-003",
         "AUD-P1-004",
         "AUD-P1-005",
         "AUD-P1-006"
-      ]
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "campos": {
       "percentual": 75,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/dicionario_de_dados.json"
+      ],
       "lacunas": [
         "AUD-P0-000",
-        "AUD-P0-001",
-        "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
         "AUD-P1-005",
         "AUD-P1-006"
-      ]
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "relacionamentos": {
       "percentual": 80,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/erd.mmd"
+      ],
       "lacunas": [
-        "AUD-P0-000",
-        "AUD-P0-001",
-        "AUD-P1-002",
         "AUD-P1-003",
-        "AUD-P1-004",
-        "AUD-P1-005",
         "AUD-P1-006"
-      ]
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "bindings_frontend": {
       "percentual": 0,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/matriz_formulario_campo.csv"
+      ],
       "lacunas": [
-        "AUD-P0-000",
-        "AUD-P0-001",
-        "AUD-P1-002",
-        "AUD-P1-003",
-        "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ]
+        "AUD-P1-002"
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "campos_sensiveis": {
       "percentual": 0,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/politica_classificacao_campos.json"
+      ],
       "lacunas": [
-        "AUD-P0-000",
         "AUD-P0-001",
-        "AUD-P1-002",
-        "AUD-P1-003",
-        "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ]
+        "AUD-P1-007"
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "auditoria": {
       "percentual": 40,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/cobertura_auditoria.json"
+      ],
       "lacunas": [
-        "AUD-P0-000",
-        "AUD-P0-001",
-        "AUD-P1-002",
-        "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ]
+        "AUD-P1-007"
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "calculos": {
       "percentual": 0,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/modelo_unidades_tributacao.json"
+      ],
       "lacunas": [
-        "AUD-P0-000",
-        "AUD-P0-001",
-        "AUD-P1-002",
-        "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ]
+        "AUD-P1-005"
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "unidades": {
       "percentual": 0,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/modelo_unidades_tributacao.json"
+      ],
       "lacunas": [
-        "AUD-P0-000",
-        "AUD-P0-001",
-        "AUD-P1-002",
-        "AUD-P1-003",
-        "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ]
+        "AUD-P1-005"
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "regras_fiscais": {
       "percentual": 0,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/modelo_unidades_tributacao.json"
+      ],
       "lacunas": [
-        "AUD-P0-000",
-        "AUD-P0-001",
-        "AUD-P1-002",
-        "AUD-P1-003",
-        "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ]
+        "AUD-P1-005"
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "formularios": {
       "percentual": 10,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/coordenadas_stitch.json"
+      ],
       "lacunas": [
-        "AUD-P0-000",
-        "AUD-P0-001",
         "AUD-P1-002",
-        "AUD-P1-003",
         "AUD-P1-004",
         "AUD-P1-005",
         "AUD-P1-006"
-      ]
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "acoes_ui": {
       "percentual": 0,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/coordenadas_stitch.json"
+      ],
       "lacunas": [
-        "AUD-P0-000",
-        "AUD-P0-001",
         "AUD-P1-002",
-        "AUD-P1-003",
-        "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ]
+        "AUD-P1-004"
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "permissoes_backend": {
       "percentual": 0,
-      "evidencias": [],
+      "evidencias": [
+        "docs/data-audit/artifacts/matriz_permissao_acao.csv"
+      ],
       "lacunas": [
-        "AUD-P0-000",
-        "AUD-P0-001",
         "AUD-P1-002",
-        "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ]
+        "AUD-P1-007"
+      ],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
     "lacunas_com_backlog": {
       "percentual": 100,
       "evidencias": [
-        "docs/data-audit/artifacts/dicionario_de_dados.json"
+        "docs/data-audit/artifacts/relatorio_divergencias.json"
       ],
-      "lacunas": []
+      "lacunas": [],
+      "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     }
   }
 }
