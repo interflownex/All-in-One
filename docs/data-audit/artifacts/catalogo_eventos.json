@@ -1,0 +1,5229 @@
+{
+  "version": 1,
+  "counts": {
+    "migrations": 24,
+    "schemas": 31,
+    "tables": 81,
+    "fields": 1189,
+    "relationships": 297,
+    "indexes": 48,
+    "endpoints": 99,
+    "ui_candidates": 1067,
+    "ui_surfaces": 299,
+    "ui_forms": 129,
+    "logical_entities": 120,
+    "logical_without_physical_table": 62,
+    "logical_without_ui_surface": 46,
+    "event_transitions": 194,
+    "unique_events": 187,
+    "sensitive_candidates": 147
+  },
+  "events": [
+    {
+      "event": "ai.memory.indexed",
+      "version": "não declarada",
+      "module": "ai_core",
+      "entity": "ai_memories",
+      "action": "index",
+      "source_statuses": [
+        "draft",
+        "updated"
+      ],
+      "target_status": "indexed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "memory_key",
+        "summary"
+      ],
+      "producer": "ai_core",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "ai.memory.updated",
+      "version": "não declarada",
+      "module": "ai_core",
+      "entity": "ai_memories",
+      "action": "update",
+      "source_statuses": [
+        "draft",
+        "indexed",
+        "updated"
+      ],
+      "target_status": "updated",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "memory_key",
+        "summary"
+      ],
+      "producer": "ai_core",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "ai.model_run.cost_approved",
+      "version": "não declarada",
+      "module": "ai_core",
+      "entity": "model_runs",
+      "action": "approve_cost",
+      "source_statuses": [
+        "completed"
+      ],
+      "target_status": "cost_approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "provider_adapter",
+        "provider_name",
+        "model_name",
+        "prompt_tokens",
+        "completion_tokens",
+        "estimated_cost_brl",
+        "requested_at"
+      ],
+      "producer": "ai_core",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "ai.model_run.completed",
+      "version": "não declarada",
+      "module": "ai_core",
+      "entity": "model_runs",
+      "action": "complete",
+      "source_statuses": [
+        "requested"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "provider_adapter",
+        "provider_name",
+        "model_name",
+        "prompt_tokens",
+        "completion_tokens",
+        "estimated_cost_brl",
+        "requested_at"
+      ],
+      "producer": "ai_core",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "ai.model_run.failed",
+      "version": "não declarada",
+      "module": "ai_core",
+      "entity": "model_runs",
+      "action": "fail",
+      "source_statuses": [
+        "requested"
+      ],
+      "target_status": "failed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "provider_adapter",
+        "provider_name",
+        "model_name",
+        "prompt_tokens",
+        "completion_tokens",
+        "estimated_cost_brl",
+        "requested_at"
+      ],
+      "producer": "ai_core",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "ai.moderation.approved",
+      "version": "não declarada",
+      "module": "ai_core",
+      "entity": "moderation_decisions",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "module",
+        "risk_score"
+      ],
+      "producer": "ai_core",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "ai.moderation.rejected",
+      "version": "não declarada",
+      "module": "ai_core",
+      "entity": "moderation_decisions",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "module",
+        "risk_score"
+      ],
+      "producer": "ai_core",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "ai.moderation.submitted",
+      "version": "não declarada",
+      "module": "ai_core",
+      "entity": "moderation_decisions",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "module",
+        "risk_score"
+      ],
+      "producer": "ai_core",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.client.approved",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "api_clients",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "client_name",
+        "scopes"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.client.rejected",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "api_clients",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "client_name",
+        "scopes"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.client.submitted",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "api_clients",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "client_name",
+        "scopes"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.key.approved",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "api_keys",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "key_name",
+        "key_hash",
+        "key_hint",
+        "scopes"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.key.rejected",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "api_keys",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "key_name",
+        "key_hash",
+        "key_hint",
+        "scopes"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.key.submitted",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "api_keys",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "key_name",
+        "key_hash",
+        "key_hint",
+        "scopes"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.integration_run.approved",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "integration_runs",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "integration_type",
+        "provider_name"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.integration_run.rejected",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "integration_runs",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "integration_type",
+        "provider_name"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.integration_run.submitted",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "integration_runs",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "integration_type",
+        "provider_name"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.webhook.approved",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "webhooks",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "target_url",
+        "event_patterns",
+        "signing_secret_reference"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.webhook.rejected",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "webhooks",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "target_url",
+        "event_patterns",
+        "signing_secret_reference"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "api.webhook.submitted",
+      "version": "não declarada",
+      "module": "api_hub",
+      "entity": "webhooks",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "target_url",
+        "event_patterns",
+        "signing_secret_reference"
+      ],
+      "producer": "api_hub",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "bi.dashboard.archived",
+      "version": "não declarada",
+      "module": "bi",
+      "entity": "dashboards",
+      "action": "archive",
+      "source_statuses": [
+        "published"
+      ],
+      "target_status": "archived",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "dataset_id",
+        "name",
+        "definition",
+        "allowed_roles"
+      ],
+      "producer": "bi",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "bi.dashboard.published",
+      "version": "não declarada",
+      "module": "bi",
+      "entity": "dashboards",
+      "action": "publish",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "published",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "dataset_id",
+        "name",
+        "definition",
+        "allowed_roles"
+      ],
+      "producer": "bi",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "bi.dataset.published",
+      "version": "não declarada",
+      "module": "bi",
+      "entity": "datasets",
+      "action": "publish",
+      "source_statuses": [
+        "draft",
+        "refreshed"
+      ],
+      "target_status": "published",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "name",
+        "source_module",
+        "source_resource_type",
+        "refresh_mode"
+      ],
+      "producer": "bi",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "bi.dataset.refreshed",
+      "version": "não declarada",
+      "module": "bi",
+      "entity": "datasets",
+      "action": "refresh",
+      "source_statuses": [
+        "draft",
+        "published",
+        "refreshed"
+      ],
+      "target_status": "refreshed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "name",
+        "source_module",
+        "source_resource_type",
+        "refresh_mode"
+      ],
+      "producer": "bi",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "bi.export.completed",
+      "version": "não declarada",
+      "module": "bi",
+      "entity": "exports",
+      "action": "complete",
+      "source_statuses": [
+        "requested"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "dashboard_id",
+        "export_format",
+        "requested_at"
+      ],
+      "producer": "bi",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "bpm.task.completed",
+      "version": "não declarada",
+      "module": "bpm",
+      "entity": "tasks",
+      "action": "complete",
+      "source_statuses": [
+        "escalated",
+        "in_progress",
+        "open"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "workflow_instance_id",
+        "assignee_user_id",
+        "due_at",
+        "sla_policy_id"
+      ],
+      "producer": "bpm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "bpm.task.escalated",
+      "version": "não declarada",
+      "module": "bpm",
+      "entity": "tasks",
+      "action": "escalate",
+      "source_statuses": [
+        "in_progress",
+        "open"
+      ],
+      "target_status": "escalated",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "workflow_instance_id",
+        "assignee_user_id",
+        "due_at",
+        "sla_policy_id"
+      ],
+      "producer": "bpm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "bpm.process.cancelled",
+      "version": "não declarada",
+      "module": "bpm",
+      "entity": "workflow_instances",
+      "action": "cancel",
+      "source_statuses": [
+        "in_progress",
+        "running"
+      ],
+      "target_status": "cancelled",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "process_key",
+        "sla_policy_id",
+        "started_at"
+      ],
+      "producer": "bpm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "bpm.process.completed",
+      "version": "não declarada",
+      "module": "bpm",
+      "entity": "workflow_instances",
+      "action": "complete",
+      "source_statuses": [
+        "in_progress",
+        "running"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "process_key",
+        "sla_policy_id",
+        "started_at"
+      ],
+      "producer": "bpm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "business.catalog_offer.cancelled",
+      "version": "não declarada",
+      "module": "business",
+      "entity": "catalog_offers",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "title",
+        "offer_type",
+        "consumer_category",
+        "company_type",
+        "company_category",
+        "business_activity_id",
+        "source_module",
+        "source_resource_type"
+      ],
+      "producer": "business",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "business.catalog_offer.completed",
+      "version": "não declarada",
+      "module": "business",
+      "entity": "catalog_offers",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "title",
+        "offer_type",
+        "consumer_category",
+        "company_type",
+        "company_category",
+        "business_activity_id",
+        "source_module",
+        "source_resource_type"
+      ],
+      "producer": "business",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "business.catalog_offer.paused",
+      "version": "não declarada",
+      "module": "business",
+      "entity": "catalog_offers",
+      "action": "pause",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "paused",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "title",
+        "offer_type",
+        "consumer_category",
+        "company_type",
+        "company_category",
+        "business_activity_id",
+        "source_module",
+        "source_resource_type"
+      ],
+      "producer": "business",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "valley.catalog.offer.synced",
+      "version": "não declarada",
+      "module": "business",
+      "entity": "catalog_offers",
+      "action": "publish",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "published",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "title",
+        "offer_type",
+        "consumer_category",
+        "company_type",
+        "company_category",
+        "business_activity_id",
+        "source_module",
+        "source_resource_type"
+      ],
+      "producer": "business",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "business.catalog_offer.submitted",
+      "version": "não declarada",
+      "module": "business",
+      "entity": "catalog_offers",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "title",
+        "offer_type",
+        "consumer_category",
+        "company_type",
+        "company_category",
+        "business_activity_id",
+        "source_module",
+        "source_resource_type"
+      ],
+      "producer": "business",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "business.company.approved",
+      "version": "não declarada",
+      "module": "business",
+      "entity": "companies",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "cnpj",
+        "root_cnpj",
+        "legal_name",
+        "legal_representative_user_id"
+      ],
+      "producer": "business",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "business.company.rejected",
+      "version": "não declarada",
+      "module": "business",
+      "entity": "companies",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "cnpj",
+        "root_cnpj",
+        "legal_name",
+        "legal_representative_user_id"
+      ],
+      "producer": "business",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "business.company.submitted",
+      "version": "não declarada",
+      "module": "business",
+      "entity": "companies",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "cnpj",
+        "root_cnpj",
+        "legal_name",
+        "legal_representative_user_id"
+      ],
+      "producer": "business",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "business.role.assigned",
+      "version": "não declarada",
+      "module": "business",
+      "entity": "user_company_memberships",
+      "action": "activate",
+      "source_statuses": [
+        "invited",
+        "pending_review"
+      ],
+      "target_status": "active",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "role"
+      ],
+      "producer": "business",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "business.user.revoked",
+      "version": "não declarada",
+      "module": "business",
+      "entity": "user_company_memberships",
+      "action": "revoke",
+      "source_statuses": [
+        "active",
+        "invited",
+        "pending_review"
+      ],
+      "target_status": "revoked",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "role"
+      ],
+      "producer": "business",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "crm.activity.completed",
+      "version": "não declarada",
+      "module": "crm",
+      "entity": "activities",
+      "action": "complete",
+      "source_statuses": [
+        "scheduled"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "lead_id",
+        "activity_type",
+        "scheduled_at"
+      ],
+      "producer": "crm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "crm.campaign.closed",
+      "version": "não declarada",
+      "module": "crm",
+      "entity": "campaigns",
+      "action": "close",
+      "source_statuses": [
+        "active"
+      ],
+      "target_status": "closed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "campaign_key",
+        "channel"
+      ],
+      "producer": "crm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "crm.campaign.launched",
+      "version": "não declarada",
+      "module": "crm",
+      "entity": "campaigns",
+      "action": "launch",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "active",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "campaign_key",
+        "channel"
+      ],
+      "producer": "crm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "crm.lead.disqualified",
+      "version": "não declarada",
+      "module": "crm",
+      "entity": "leads",
+      "action": "disqualify",
+      "source_statuses": [
+        "contacted",
+        "new",
+        "qualified"
+      ],
+      "target_status": "disqualified",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "name",
+        "source"
+      ],
+      "producer": "crm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "crm.lead.qualified",
+      "version": "não declarada",
+      "module": "crm",
+      "entity": "leads",
+      "action": "qualify",
+      "source_statuses": [
+        "contacted",
+        "new"
+      ],
+      "target_status": "qualified",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "name",
+        "source"
+      ],
+      "producer": "crm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "crm.opportunity.lost",
+      "version": "não declarada",
+      "module": "crm",
+      "entity": "opportunities",
+      "action": "lose",
+      "source_statuses": [
+        "open",
+        "proposal_sent"
+      ],
+      "target_status": "lost",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "lead_id",
+        "title",
+        "expected_value_brl"
+      ],
+      "producer": "crm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "crm.opportunity.proposed",
+      "version": "não declarada",
+      "module": "crm",
+      "entity": "opportunities",
+      "action": "propose",
+      "source_statuses": [
+        "open"
+      ],
+      "target_status": "proposal_sent",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "lead_id",
+        "title",
+        "expected_value_brl"
+      ],
+      "producer": "crm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "crm.opportunity.won",
+      "version": "não declarada",
+      "module": "crm",
+      "entity": "opportunities",
+      "action": "win",
+      "source_statuses": [
+        "proposal_sent"
+      ],
+      "target_status": "won",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "lead_id",
+        "title",
+        "expected_value_brl"
+      ],
+      "producer": "crm",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "delivery.rider.assigned",
+      "version": "não declarada",
+      "module": "delivery",
+      "entity": "delivery_requests",
+      "action": "assign",
+      "source_statuses": [
+        "created",
+        "quoted"
+      ],
+      "target_status": "assigned",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "service_type",
+        "origin",
+        "destination"
+      ],
+      "producer": "delivery",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "delivery.cancelled",
+      "version": "não declarada",
+      "module": "delivery",
+      "entity": "delivery_requests",
+      "action": "cancel",
+      "source_statuses": [
+        "assigned",
+        "created",
+        "quoted"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "service_type",
+        "origin",
+        "destination"
+      ],
+      "producer": "delivery",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "delivery.completed",
+      "version": "não declarada",
+      "module": "delivery",
+      "entity": "delivery_requests",
+      "action": "complete",
+      "source_statuses": [
+        "picked_up"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "service_type",
+        "origin",
+        "destination"
+      ],
+      "producer": "delivery",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "delivery.picked_up",
+      "version": "não declarada",
+      "module": "delivery",
+      "entity": "delivery_requests",
+      "action": "pickup",
+      "source_statuses": [
+        "assigned"
+      ],
+      "target_status": "picked_up",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "service_type",
+        "origin",
+        "destination"
+      ],
+      "producer": "delivery",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "document.cancelled",
+      "version": "não declarada",
+      "module": "document",
+      "entity": "documents",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "storage_provider",
+        "storage_bucket",
+        "storage_key",
+        "file_sha256",
+        "kms_key_version",
+        "filename",
+        "content_type"
+      ],
+      "producer": "document",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "document.completed",
+      "version": "não declarada",
+      "module": "document",
+      "entity": "documents",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "storage_provider",
+        "storage_bucket",
+        "storage_key",
+        "file_sha256",
+        "kms_key_version",
+        "filename",
+        "content_type"
+      ],
+      "producer": "document",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "document.submitted",
+      "version": "não declarada",
+      "module": "document",
+      "entity": "documents",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "storage_provider",
+        "storage_bucket",
+        "storage_key",
+        "file_sha256",
+        "kms_key_version",
+        "filename",
+        "content_type"
+      ],
+      "producer": "document",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "erp.invoice.cancelled",
+      "version": "não declarada",
+      "module": "erp",
+      "entity": "fiscal_documents",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "document_type",
+        "amount_brl"
+      ],
+      "producer": "erp",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "erp.invoice.completed",
+      "version": "não declarada",
+      "module": "erp",
+      "entity": "fiscal_documents",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "document_type",
+        "amount_brl"
+      ],
+      "producer": "erp",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "erp.invoice.submitted",
+      "version": "não declarada",
+      "module": "erp",
+      "entity": "fiscal_documents",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "document_type",
+        "amount_brl"
+      ],
+      "producer": "erp",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "erp.payment.approved",
+      "version": "não declarada",
+      "module": "erp",
+      "entity": "payables",
+      "action": "approve_payment",
+      "source_statuses": [
+        "open"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "supplier_name",
+        "due_at",
+        "amount_brl",
+        "cost_center_id"
+      ],
+      "producer": "erp",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "erp.payable.paid",
+      "version": "não declarada",
+      "module": "erp",
+      "entity": "payables",
+      "action": "settle",
+      "source_statuses": [
+        "approved"
+      ],
+      "target_status": "paid",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "supplier_name",
+        "due_at",
+        "amount_brl",
+        "cost_center_id"
+      ],
+      "producer": "erp",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "erp.receivable.received",
+      "version": "não declarada",
+      "module": "erp",
+      "entity": "receivables",
+      "action": "receive",
+      "source_statuses": [
+        "issued"
+      ],
+      "target_status": "received",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "customer_name",
+        "due_at",
+        "amount_brl",
+        "account_id"
+      ],
+      "producer": "erp",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "erp.receivable.reconciled",
+      "version": "não declarada",
+      "module": "erp",
+      "entity": "receivables",
+      "action": "reconcile",
+      "source_statuses": [
+        "received"
+      ],
+      "target_status": "reconciled",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "customer_name",
+        "due_at",
+        "amount_brl",
+        "account_id"
+      ],
+      "producer": "erp",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "payment.escrow.created",
+      "version": "não declarada",
+      "module": "finance",
+      "entity": "escrows",
+      "action": "capture",
+      "source_statuses": [
+        "authorized"
+      ],
+      "target_status": "held",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "wallet_id",
+        "beneficiary_user_id",
+        "amount_brl"
+      ],
+      "producer": "finance",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "payment.escrow.disputed",
+      "version": "não declarada",
+      "module": "finance",
+      "entity": "escrows",
+      "action": "dispute",
+      "source_statuses": [
+        "held"
+      ],
+      "target_status": "disputed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "wallet_id",
+        "beneficiary_user_id",
+        "amount_brl"
+      ],
+      "producer": "finance",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "payment.refunded",
+      "version": "não declarada",
+      "module": "finance",
+      "entity": "escrows",
+      "action": "refund",
+      "source_statuses": [
+        "authorized",
+        "disputed",
+        "held"
+      ],
+      "target_status": "refunded",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "wallet_id",
+        "beneficiary_user_id",
+        "amount_brl"
+      ],
+      "producer": "finance",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "payment.escrow.released",
+      "version": "não declarada",
+      "module": "finance",
+      "entity": "escrows",
+      "action": "release",
+      "source_statuses": [
+        "held"
+      ],
+      "target_status": "released",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "wallet_id",
+        "beneficiary_user_id",
+        "amount_brl"
+      ],
+      "producer": "finance",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "finance.invoice.cancelled",
+      "version": "não declarada",
+      "module": "finance",
+      "entity": "invoices",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [],
+      "producer": "finance",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "finance.invoice.completed",
+      "version": "não declarada",
+      "module": "finance",
+      "entity": "invoices",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [],
+      "producer": "finance",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "finance.invoice.submitted",
+      "version": "não declarada",
+      "module": "finance",
+      "entity": "invoices",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [],
+      "producer": "finance",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "finance.split.cancelled",
+      "version": "não declarada",
+      "module": "finance",
+      "entity": "splits",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [],
+      "producer": "finance",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "finance.split.completed",
+      "version": "não declarada",
+      "module": "finance",
+      "entity": "splits",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [],
+      "producer": "finance",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "finance.split.submitted",
+      "version": "não declarada",
+      "module": "finance",
+      "entity": "splits",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [],
+      "producer": "finance",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.appointment.cancelled",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "appointments",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "scheduled_at"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.appointment.completed",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "appointments",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "scheduled_at"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.appointment.paused",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "appointments",
+      "action": "pause",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "paused",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "scheduled_at"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "valley.catalog.offer.synced",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "appointments",
+      "action": "publish",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "published",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "scheduled_at"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.appointment.submitted",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "appointments",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "scheduled_at"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.bed.cancelled",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "beds",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "unit"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.bed.completed",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "beds",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "unit"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.bed.submitted",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "beds",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "unit"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.medical_record.approved",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "medical_records",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "patient_id"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.medical_record.rejected",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "medical_records",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "patient_id"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.medical_record.submitted",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "medical_records",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "patient_id"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.prescription.approved",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "prescriptions",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "patient_id"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.prescription.rejected",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "prescriptions",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "patient_id"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "health.prescription.submitted",
+      "version": "não declarada",
+      "module": "health",
+      "entity": "prescriptions",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "patient_id"
+      ],
+      "producer": "health",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "hr.training.completed",
+      "version": "não declarada",
+      "module": "hr",
+      "entity": "courses",
+      "action": "complete",
+      "source_statuses": [
+        "assigned",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "employee_id",
+        "course_code",
+        "title",
+        "due_at"
+      ],
+      "producer": "hr",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "hr.employee.approved",
+      "version": "não declarada",
+      "module": "hr",
+      "entity": "employees",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "employment_type",
+        "admission_date"
+      ],
+      "producer": "hr",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "hr.employee.rejected",
+      "version": "não declarada",
+      "module": "hr",
+      "entity": "employees",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "employment_type",
+        "admission_date"
+      ],
+      "producer": "hr",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "hr.employee.submitted",
+      "version": "não declarada",
+      "module": "hr",
+      "entity": "employees",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "company_id",
+        "employment_type",
+        "admission_date"
+      ],
+      "producer": "hr",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "hr.occupational_record.approved",
+      "version": "não declarada",
+      "module": "hr",
+      "entity": "occupational_records",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "employee_id"
+      ],
+      "producer": "hr",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "hr.occupational_record.rejected",
+      "version": "não declarada",
+      "module": "hr",
+      "entity": "occupational_records",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "employee_id"
+      ],
+      "producer": "hr",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "hr.occupational_record.submitted",
+      "version": "não declarada",
+      "module": "hr",
+      "entity": "occupational_records",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "employee_id"
+      ],
+      "producer": "hr",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "hr.payroll.closed",
+      "version": "não declarada",
+      "module": "hr",
+      "entity": "payroll_runs",
+      "action": "close",
+      "source_statuses": [
+        "approved",
+        "open",
+        "pending_review"
+      ],
+      "target_status": "closed",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "period",
+        "gross_amount_brl"
+      ],
+      "producer": "hr",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "identity.document.approved",
+      "version": "não declarada",
+      "module": "identity",
+      "entity": "documents",
+      "action": "approve",
+      "source_statuses": [
+        "pending_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "document_type",
+        "document_number_hash",
+        "storage_key"
+      ],
+      "producer": "identity",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "identity.document.rejected",
+      "version": "não declarada",
+      "module": "identity",
+      "entity": "documents",
+      "action": "reject",
+      "source_statuses": [
+        "pending_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "document_type",
+        "document_number_hash",
+        "storage_key"
+      ],
+      "producer": "identity",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "identity.kyc.approved",
+      "version": "não declarada",
+      "module": "identity",
+      "entity": "identity_verifications",
+      "action": "approve",
+      "source_statuses": [
+        "PROCESSING"
+      ],
+      "target_status": "APPROVED",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "verification_type"
+      ],
+      "producer": "identity",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "identity.kyc.rejected",
+      "version": "não declarada",
+      "module": "identity",
+      "entity": "identity_verifications",
+      "action": "reject",
+      "source_statuses": [
+        "PROCESSING"
+      ],
+      "target_status": "REJECTED",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "verification_type"
+      ],
+      "producer": "identity",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "identity.kyc.approved",
+      "version": "não declarada",
+      "module": "identity",
+      "entity": "kyc_records",
+      "action": "approve",
+      "source_statuses": [
+        "PROCESSING"
+      ],
+      "target_status": "APPROVED",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [],
+      "producer": "identity",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "identity.kyc.rejected",
+      "version": "não declarada",
+      "module": "identity",
+      "entity": "kyc_records",
+      "action": "reject",
+      "source_statuses": [
+        "PROCESSING"
+      ],
+      "target_status": "REJECTED",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [],
+      "producer": "identity",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "identity.session.revoked",
+      "version": "não declarada",
+      "module": "identity",
+      "entity": "sessions",
+      "action": "revoke",
+      "source_statuses": [
+        "active"
+      ],
+      "target_status": "revoked",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "token_hash",
+        "device_fingerprint",
+        "ip_address",
+        "expires_at"
+      ],
+      "producer": "identity",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "identity.user.verified",
+      "version": "não declarada",
+      "module": "identity",
+      "entity": "users",
+      "action": "verify",
+      "source_statuses": [
+        "PENDING_KYC"
+      ],
+      "target_status": "ACTIVE",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "full_name",
+        "email",
+        "password_hash"
+      ],
+      "producer": "identity",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "jobs.application.rejected",
+      "version": "não declarada",
+      "module": "jobs",
+      "entity": "applications",
+      "action": "reject",
+      "source_statuses": [
+        "shortlisted",
+        "submitted",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "hr_manager",
+        "owner",
+        "recruiter"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "job_posting_id",
+        "resume_id"
+      ],
+      "producer": "jobs",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "jobs.application.reviewed",
+      "version": "não declarada",
+      "module": "jobs",
+      "entity": "applications",
+      "action": "review",
+      "source_statuses": [
+        "submitted"
+      ],
+      "target_status": "under_review",
+      "roles": [
+        "administrator",
+        "auditor",
+        "hr_manager",
+        "owner",
+        "recruiter"
+      ],
+      "requires_mfa": false,
+      "payload_fields": [
+        "job_posting_id",
+        "resume_id"
+      ],
+      "producer": "jobs",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "jobs.application.interview_scheduled",
+      "version": "não declarada",
+      "module": "jobs",
+      "entity": "applications",
+      "action": "schedule_interview",
+      "source_statuses": [
+        "shortlisted"
+      ],
+      "target_status": "interview_scheduled",
+      "roles": [
+        "administrator",
+        "auditor",
+        "hr_manager",
+        "owner",
+        "recruiter"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "job_posting_id",
+        "resume_id"
+      ],
+      "producer": "jobs",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "jobs.application.shortlisted",
+      "version": "não declarada",
+      "module": "jobs",
+      "entity": "applications",
+      "action": "shortlist",
+      "source_statuses": [
+        "submitted",
+        "under_review"
+      ],
+      "target_status": "shortlisted",
+      "roles": [
+        "administrator",
+        "auditor",
+        "hr_manager",
+        "owner",
+        "recruiter"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "job_posting_id",
+        "resume_id"
+      ],
+      "producer": "jobs",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "jobs.application.withdrawn",
+      "version": "não declarada",
+      "module": "jobs",
+      "entity": "applications",
+      "action": "withdraw",
+      "source_statuses": [
+        "submitted",
+        "under_review"
+      ],
+      "target_status": "withdrawn",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "job_posting_id",
+        "resume_id"
+      ],
+      "producer": "jobs",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "jobs.job_posting.closed",
+      "version": "não declarada",
+      "module": "jobs",
+      "entity": "job_postings",
+      "action": "close",
+      "source_statuses": [
+        "published"
+      ],
+      "target_status": "closed",
+      "roles": [
+        "administrator",
+        "auditor",
+        "hr_manager",
+        "owner",
+        "recruiter"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "company_status",
+        "title",
+        "description"
+      ],
+      "producer": "jobs",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "jobs.job_posting.published",
+      "version": "não declarada",
+      "module": "jobs",
+      "entity": "job_postings",
+      "action": "publish",
+      "source_statuses": [
+        "approved",
+        "draft"
+      ],
+      "target_status": "published",
+      "roles": [
+        "administrator",
+        "auditor",
+        "hr_manager",
+        "owner",
+        "recruiter"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "company_status",
+        "title",
+        "description"
+      ],
+      "producer": "jobs",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "legal.case.cancelled",
+      "version": "não declarada",
+      "module": "legal",
+      "entity": "cases",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "case_number",
+        "case_type",
+        "opened_at"
+      ],
+      "producer": "legal",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "legal.case.completed",
+      "version": "não declarada",
+      "module": "legal",
+      "entity": "cases",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "case_number",
+        "case_type",
+        "opened_at"
+      ],
+      "producer": "legal",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "legal.case.submitted",
+      "version": "não declarada",
+      "module": "legal",
+      "entity": "cases",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "case_number",
+        "case_type",
+        "opened_at"
+      ],
+      "producer": "legal",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "legal.deadline.alerted",
+      "version": "não declarada",
+      "module": "legal",
+      "entity": "deadlines",
+      "action": "alert",
+      "source_statuses": [
+        "pending"
+      ],
+      "target_status": "alerted",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "case_id",
+        "deadline_type",
+        "due_at"
+      ],
+      "producer": "legal",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "legal.deadline.completed",
+      "version": "não declarada",
+      "module": "legal",
+      "entity": "deadlines",
+      "action": "complete",
+      "source_statuses": [
+        "alerted",
+        "pending"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "case_id",
+        "deadline_type",
+        "due_at"
+      ],
+      "producer": "legal",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "support.ticket.closed",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "disputes",
+      "action": "close",
+      "source_statuses": [
+        "open",
+        "resolved",
+        "under_review"
+      ],
+      "target_status": "closed",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "order_id",
+        "case_type",
+        "message"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "support.ticket.resolved",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "disputes",
+      "action": "resolve",
+      "source_statuses": [
+        "open",
+        "under_review"
+      ],
+      "target_status": "resolved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "order_id",
+        "case_type",
+        "message"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "support.ticket.triaged",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "disputes",
+      "action": "triage",
+      "source_statuses": [
+        "open"
+      ],
+      "target_status": "under_review",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "order_id",
+        "case_type",
+        "message"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "marketplace.order.cancelled",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "orders",
+      "action": "cancel",
+      "source_statuses": [
+        "created",
+        "paid"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "total_brl"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "marketplace.order.delivered",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "orders",
+      "action": "deliver",
+      "source_statuses": [
+        "paid",
+        "shipped"
+      ],
+      "target_status": "delivered",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "total_brl"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "marketplace.order.paid",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "orders",
+      "action": "pay",
+      "source_statuses": [
+        "created"
+      ],
+      "target_status": "paid",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "total_brl"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "marketplace.product.cancelled",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "products",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "store_id",
+        "sku",
+        "name",
+        "price_brl",
+        "stock_location_type"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "marketplace.product.completed",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "products",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "store_id",
+        "sku",
+        "name",
+        "price_brl",
+        "stock_location_type"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "marketplace.product.paused",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "products",
+      "action": "pause",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "paused",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "store_id",
+        "sku",
+        "name",
+        "price_brl",
+        "stock_location_type"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "valley.catalog.offer.synced",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "products",
+      "action": "publish",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "published",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "store_id",
+        "sku",
+        "name",
+        "price_brl",
+        "stock_location_type"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "marketplace.product.submitted",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "products",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "store_id",
+        "sku",
+        "name",
+        "price_brl",
+        "stock_location_type"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "valley.review.published",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "reviews",
+      "action": "publish",
+      "source_statuses": [
+        "pending_review"
+      ],
+      "target_status": "published",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "order_id",
+        "rating"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "valley.review.rejected",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "reviews",
+      "action": "reject",
+      "source_statuses": [
+        "pending_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "order_id",
+        "rating"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "marketplace.store.approved",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "stores",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "company_status",
+        "name"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "marketplace.store.rejected",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "stores",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "company_status",
+        "name"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "marketplace.store.submitted",
+      "version": "não declarada",
+      "module": "marketplace",
+      "entity": "stores",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "company_id",
+        "company_status",
+        "name"
+      ],
+      "producer": "marketplace",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "mobility.ride.accepted",
+      "version": "não declarada",
+      "module": "mobility",
+      "entity": "rides",
+      "action": "accept",
+      "source_statuses": [
+        "requested"
+      ],
+      "target_status": "accepted",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "origin",
+        "destination",
+        "vehicle_type"
+      ],
+      "producer": "mobility",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "mobility.ride.cancelled",
+      "version": "não declarada",
+      "module": "mobility",
+      "entity": "rides",
+      "action": "cancel",
+      "source_statuses": [
+        "accepted",
+        "requested"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "origin",
+        "destination",
+        "vehicle_type"
+      ],
+      "producer": "mobility",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "mobility.ride.completed",
+      "version": "não declarada",
+      "module": "mobility",
+      "entity": "rides",
+      "action": "complete",
+      "source_statuses": [
+        "accepted",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "origin",
+        "destination",
+        "vehicle_type"
+      ],
+      "producer": "mobility",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "mobility.ticket.used",
+      "version": "não declarada",
+      "module": "mobility",
+      "entity": "tickets",
+      "action": "use",
+      "source_statuses": [
+        "active"
+      ],
+      "target_status": "used",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "route_code",
+        "amount_brl",
+        "qr_token_hash",
+        "nfc_token_hash"
+      ],
+      "producer": "mobility",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "property.lease.activated",
+      "version": "não declarada",
+      "module": "property",
+      "entity": "leases",
+      "action": "activate",
+      "source_statuses": [
+        "draft",
+        "pending"
+      ],
+      "target_status": "active",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "property_id",
+        "tenant_user_id",
+        "starts_at",
+        "rent_amount_brl"
+      ],
+      "producer": "property",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "property.lease.terminated",
+      "version": "não declarada",
+      "module": "property",
+      "entity": "leases",
+      "action": "terminate",
+      "source_statuses": [
+        "active"
+      ],
+      "target_status": "terminated",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "property_id",
+        "tenant_user_id",
+        "starts_at",
+        "rent_amount_brl"
+      ],
+      "producer": "property",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "property.maintenance.completed",
+      "version": "não declarada",
+      "module": "property",
+      "entity": "maintenance_orders",
+      "action": "complete",
+      "source_statuses": [
+        "requested",
+        "scheduled"
+      ],
+      "target_status": "completed",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "property_id",
+        "issue_type",
+        "requested_at"
+      ],
+      "producer": "property",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "property.maintenance.scheduled",
+      "version": "não declarada",
+      "module": "property",
+      "entity": "maintenance_orders",
+      "action": "schedule",
+      "source_statuses": [
+        "requested"
+      ],
+      "target_status": "scheduled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "property_id",
+        "issue_type",
+        "requested_at"
+      ],
+      "producer": "property",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "property.cancelled",
+      "version": "não declarada",
+      "module": "property",
+      "entity": "properties",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "address",
+        "property_type"
+      ],
+      "producer": "property",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "property.completed",
+      "version": "não declarada",
+      "module": "property",
+      "entity": "properties",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "address",
+        "property_type"
+      ],
+      "producer": "property",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "property.paused",
+      "version": "não declarada",
+      "module": "property",
+      "entity": "properties",
+      "action": "pause",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "paused",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "address",
+        "property_type"
+      ],
+      "producer": "property",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "valley.catalog.offer.synced",
+      "version": "não declarada",
+      "module": "property",
+      "entity": "properties",
+      "action": "publish",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "published",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "address",
+        "property_type"
+      ],
+      "producer": "property",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "property.submitted",
+      "version": "não declarada",
+      "module": "property",
+      "entity": "properties",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "address",
+        "property_type"
+      ],
+      "producer": "property",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "rider.approved",
+      "version": "não declarada",
+      "module": "riders",
+      "entity": "rider_profiles",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "cnh_number_hash",
+        "cnh_category",
+        "wallet_id"
+      ],
+      "producer": "riders",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "rider.rejected",
+      "version": "não declarada",
+      "module": "riders",
+      "entity": "rider_profiles",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "cnh_number_hash",
+        "cnh_category",
+        "wallet_id"
+      ],
+      "producer": "riders",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "rider.submitted",
+      "version": "não declarada",
+      "module": "riders",
+      "entity": "rider_profiles",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "cnh_number_hash",
+        "cnh_category",
+        "wallet_id"
+      ],
+      "producer": "riders",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "rider.vehicle.approved",
+      "version": "não declarada",
+      "module": "riders",
+      "entity": "vehicles",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "rider_profile_id",
+        "type",
+        "license_plate"
+      ],
+      "producer": "riders",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "rider.vehicle.rejected",
+      "version": "não declarada",
+      "module": "riders",
+      "entity": "vehicles",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "rider_profile_id",
+        "type",
+        "license_plate"
+      ],
+      "producer": "riders",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "rider.vehicle.submitted",
+      "version": "não declarada",
+      "module": "riders",
+      "entity": "vehicles",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "rider_profile_id",
+        "type",
+        "license_plate"
+      ],
+      "producer": "riders",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "services.provider.cancelled",
+      "version": "não declarada",
+      "module": "services",
+      "entity": "providers",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "category"
+      ],
+      "producer": "services",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "services.provider.completed",
+      "version": "não declarada",
+      "module": "services",
+      "entity": "providers",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "category"
+      ],
+      "producer": "services",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "services.provider.paused",
+      "version": "não declarada",
+      "module": "services",
+      "entity": "providers",
+      "action": "pause",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "paused",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "category"
+      ],
+      "producer": "services",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "valley.catalog.offer.synced",
+      "version": "não declarada",
+      "module": "services",
+      "entity": "providers",
+      "action": "publish",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "published",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "category"
+      ],
+      "producer": "services",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "services.provider.submitted",
+      "version": "não declarada",
+      "module": "services",
+      "entity": "providers",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "category"
+      ],
+      "producer": "services",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "services.contract.created",
+      "version": "não declarada",
+      "module": "services",
+      "entity": "service_contracts",
+      "action": "accept",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "held",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "visit_price_brl"
+      ],
+      "producer": "services",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "services.contract.completed",
+      "version": "não declarada",
+      "module": "services",
+      "entity": "service_contracts",
+      "action": "complete",
+      "source_statuses": [
+        "held",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "visit_price_brl"
+      ],
+      "producer": "services",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "services.contract.disputed",
+      "version": "não declarada",
+      "module": "services",
+      "entity": "service_contracts",
+      "action": "dispute",
+      "source_statuses": [
+        "held",
+        "in_progress"
+      ],
+      "target_status": "disputed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "visit_price_brl"
+      ],
+      "producer": "services",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.catalog_product.cancelled",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "catalog_products",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "supplier_id",
+        "external_sku",
+        "name",
+        "list_price_brl"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.catalog_product.completed",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "catalog_products",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "supplier_id",
+        "external_sku",
+        "name",
+        "list_price_brl"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.catalog_product.paused",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "catalog_products",
+      "action": "pause",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "paused",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "supplier_id",
+        "external_sku",
+        "name",
+        "list_price_brl"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "valley.catalog.offer.synced",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "catalog_products",
+      "action": "publish",
+      "source_statuses": [
+        "active",
+        "approved",
+        "published"
+      ],
+      "target_status": "published",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "supplier_id",
+        "external_sku",
+        "name",
+        "list_price_brl"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.catalog_product.submitted",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "catalog_products",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "supplier_id",
+        "external_sku",
+        "name",
+        "list_price_brl"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.supplier_order.acknowledged",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "supplier_orders",
+      "action": "acknowledge",
+      "source_statuses": [
+        "created"
+      ],
+      "target_status": "acknowledged",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "supplier_id",
+        "catalog_product_id",
+        "external_order_id"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.supplier_order.cancelled",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "supplier_orders",
+      "action": "cancel",
+      "source_statuses": [
+        "acknowledged",
+        "created"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "supplier_id",
+        "catalog_product_id",
+        "external_order_id"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.supplier_order.delivered",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "supplier_orders",
+      "action": "deliver",
+      "source_statuses": [
+        "shipped"
+      ],
+      "target_status": "delivered",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "supplier_id",
+        "catalog_product_id",
+        "external_order_id"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.supplier_order.shipped",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "supplier_orders",
+      "action": "ship",
+      "source_statuses": [
+        "acknowledged"
+      ],
+      "target_status": "shipped",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "supplier_id",
+        "catalog_product_id",
+        "external_order_id"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.supplier.approved",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "suppliers",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "company_status"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.supplier.rejected",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "suppliers",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "company_id",
+        "company_status"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "stock.supplier.submitted",
+      "version": "não declarada",
+      "module": "stock",
+      "entity": "suppliers",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "company_id",
+        "company_status"
+      ],
+      "producer": "stock",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "tms.carrier.approved",
+      "version": "não declarada",
+      "module": "tms",
+      "entity": "carriers",
+      "action": "approve",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "name",
+        "coverage"
+      ],
+      "producer": "tms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "tms.carrier.rejected",
+      "version": "não declarada",
+      "module": "tms",
+      "entity": "carriers",
+      "action": "reject",
+      "source_statuses": [
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "under_review"
+      ],
+      "target_status": "rejected",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "name",
+        "coverage"
+      ],
+      "producer": "tms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "tms.carrier.submitted",
+      "version": "não declarada",
+      "module": "tms",
+      "entity": "carriers",
+      "action": "submit",
+      "source_statuses": [
+        "draft",
+        "pending_documents"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "name",
+        "coverage"
+      ],
+      "producer": "tms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "tms.freight.audit_closed",
+      "version": "não declarada",
+      "module": "tms",
+      "entity": "freight_audits",
+      "action": "close",
+      "source_statuses": [
+        "reviewed"
+      ],
+      "target_status": "closed",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "freight_id",
+        "audit_result",
+        "audited_at"
+      ],
+      "producer": "tms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "tms.freight.approved",
+      "version": "não declarada",
+      "module": "tms",
+      "entity": "freights",
+      "action": "approve",
+      "source_statuses": [
+        "quoted"
+      ],
+      "target_status": "approved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "carrier_id",
+        "route_id",
+        "freight_brl",
+        "scheduled_at"
+      ],
+      "producer": "tms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "tms.freight.completed",
+      "version": "não declarada",
+      "module": "tms",
+      "entity": "freights",
+      "action": "complete",
+      "source_statuses": [
+        "in_transit"
+      ],
+      "target_status": "completed",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "carrier_id",
+        "route_id",
+        "freight_brl",
+        "scheduled_at"
+      ],
+      "producer": "tms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "tms.freight.dispatched",
+      "version": "não declarada",
+      "module": "tms",
+      "entity": "freights",
+      "action": "dispatch",
+      "source_statuses": [
+        "approved"
+      ],
+      "target_status": "in_transit",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "carrier_id",
+        "route_id",
+        "freight_brl",
+        "scheduled_at"
+      ],
+      "producer": "tms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "tms.route.activated",
+      "version": "não declarada",
+      "module": "tms",
+      "entity": "routes",
+      "action": "activate",
+      "source_statuses": [
+        "planned"
+      ],
+      "target_status": "active",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "origin",
+        "destination",
+        "distance_km",
+        "eta_minutes"
+      ],
+      "producer": "tms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "vision.device.cancelled",
+      "version": "não declarada",
+      "module": "vision",
+      "entity": "devices",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "device_fingerprint"
+      ],
+      "producer": "vision",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "vision.device.completed",
+      "version": "não declarada",
+      "module": "vision",
+      "entity": "devices",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "device_fingerprint"
+      ],
+      "producer": "vision",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "vision.device.submitted",
+      "version": "não declarada",
+      "module": "vision",
+      "entity": "devices",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "device_fingerprint"
+      ],
+      "producer": "vision",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "vision.incident.resolved",
+      "version": "não declarada",
+      "module": "vision",
+      "entity": "motion_alerts",
+      "action": "resolve",
+      "source_statuses": [
+        "detected",
+        "under_review"
+      ],
+      "target_status": "resolved",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "device_id",
+        "stream_id",
+        "detected_at",
+        "confidence_score"
+      ],
+      "producer": "vision",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "vision.incident.created",
+      "version": "não declarada",
+      "module": "vision",
+      "entity": "motion_alerts",
+      "action": "triage",
+      "source_statuses": [
+        "detected"
+      ],
+      "target_status": "under_review",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "device_id",
+        "stream_id",
+        "detected_at",
+        "confidence_score"
+      ],
+      "producer": "vision",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "vision.stream.paused",
+      "version": "não declarada",
+      "module": "vision",
+      "entity": "streams",
+      "action": "pause",
+      "source_statuses": [
+        "active"
+      ],
+      "target_status": "paused",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "device_id",
+        "stream_url_hash",
+        "protocol",
+        "started_at"
+      ],
+      "producer": "vision",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "vision.stream.resumed",
+      "version": "não declarada",
+      "module": "vision",
+      "entity": "streams",
+      "action": "resume",
+      "source_statuses": [
+        "paused"
+      ],
+      "target_status": "active",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "device_id",
+        "stream_url_hash",
+        "protocol",
+        "started_at"
+      ],
+      "producer": "vision",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.bin.cancelled",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "bins",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "warehouse_id",
+        "code"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.bin.completed",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "bins",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "warehouse_id",
+        "code"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.bin.submitted",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "bins",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "warehouse_id",
+        "code"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.inventory.allocated",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "inventory",
+      "action": "allocate",
+      "source_statuses": [
+        "received"
+      ],
+      "target_status": "allocated",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "warehouse_id",
+        "sku",
+        "quantity",
+        "received_at"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.inventory.received",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "inventory",
+      "action": "receive",
+      "source_statuses": [
+        "draft",
+        "received"
+      ],
+      "target_status": "received",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "warehouse_id",
+        "sku",
+        "quantity",
+        "received_at"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.picking.closed",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "picking_waves",
+      "action": "close",
+      "source_statuses": [
+        "picked"
+      ],
+      "target_status": "closed",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "warehouse_id",
+        "order_reference",
+        "sku",
+        "quantity"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.picking.completed",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "picking_waves",
+      "action": "pick",
+      "source_statuses": [
+        "open"
+      ],
+      "target_status": "picked",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "warehouse_id",
+        "order_reference",
+        "sku",
+        "quantity"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.shipment.dispatched",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "shipments",
+      "action": "dispatch",
+      "source_statuses": [
+        "ready"
+      ],
+      "target_status": "dispatched",
+      "roles": [
+        "administrator",
+        "auditor",
+        "compliance_officer",
+        "legal_representative",
+        "owner"
+      ],
+      "requires_mfa": true,
+      "payload_fields": [
+        "warehouse_id",
+        "picking_wave_id",
+        "carrier_reference"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.warehouse.cancelled",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "warehouses",
+      "action": "cancel",
+      "source_statuses": [
+        "active",
+        "approved",
+        "draft",
+        "pending_review"
+      ],
+      "target_status": "cancelled",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "name"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.warehouse.completed",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "warehouses",
+      "action": "complete",
+      "source_statuses": [
+        "active",
+        "approved",
+        "in_progress"
+      ],
+      "target_status": "completed",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "name"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    },
+    {
+      "event": "wms.warehouse.submitted",
+      "version": "não declarada",
+      "module": "wms",
+      "entity": "warehouses",
+      "action": "submit",
+      "source_statuses": [
+        "draft"
+      ],
+      "target_status": "pending_review",
+      "roles": [],
+      "requires_mfa": false,
+      "payload_fields": [
+        "name"
+      ],
+      "producer": "wms",
+      "consumers": [],
+      "idempotency_key": "não comprovada no schema do evento",
+      "correlation_id": "exigido pelo runtime compartilhado",
+      "evidence": "modules/shared/domain_rules.py"
+    }
+  ]
+}

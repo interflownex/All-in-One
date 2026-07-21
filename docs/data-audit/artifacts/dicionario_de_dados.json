@@ -14,6 +14,8 @@
     "logical_entities": 120,
     "logical_without_physical_table": 62,
     "logical_without_ui_surface": 46,
+    "event_transitions": 194,
+    "unique_events": 187,
     "sensitive_candidates": 147
   },
   "fields": [

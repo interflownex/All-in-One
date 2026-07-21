@@ -29,6 +29,8 @@
     "artifacts/dicionario_de_dados.json",
     "artifacts/catalogo_logico.csv",
     "artifacts/catalogo_logico.json",
+    "artifacts/catalogo_eventos.csv",
+    "artifacts/catalogo_eventos.json",
     "artifacts/erd.mmd",
     "artifacts/matriz_formulario_campo.csv",
     "artifacts/matriz_api_campo.csv",

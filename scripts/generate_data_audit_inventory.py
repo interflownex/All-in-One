@@ -7,6 +7,8 @@ import csv
 import ast
 import json
 import re
+import sys
+import types
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -251,6 +253,58 @@ def discover_logical_rules(tables: dict[str, list[Field]], ui_bindings: list[dic
     return rows
 
 
+def discover_transitions(logical_rules: list[dict[str, object]]) -> list[dict[str, object]]:
+    modules_root = str(ROOT / "modules")
+    if modules_root not in sys.path:
+        sys.path.insert(0, modules_root)
+    try:
+        from shared.domain_rules import RULE_OVERRIDES  # type: ignore[import-not-found]
+    except ModuleNotFoundError as exc:
+        if exc.name != "fastapi":
+            raise
+        fastapi_stub = types.ModuleType("fastapi")
+
+        class HTTPException(Exception):
+            def __init__(self, *args: object, **kwargs: object) -> None:
+                super().__init__(*args)
+                self.detail = kwargs.get("detail")
+                self.status_code = kwargs.get("status_code")
+
+        fastapi_stub.HTTPException = HTTPException  # type: ignore[attr-defined]
+        sys.modules["fastapi"] = fastapi_stub
+        from shared.domain_rules import RULE_OVERRIDES  # type: ignore[import-not-found,no-redef]
+
+    required_by_resource = {
+        (str(row["module"]), str(row["entity"])): list(row["required_fields"])
+        for row in logical_rules
+    }
+    rows: list[dict[str, object]] = []
+    for (module, entity), rule in sorted(RULE_OVERRIDES.items()):
+        for action, transition in sorted(rule.transitions.items()):
+            if not transition.event:
+                continue
+            rows.append(
+                {
+                    "event": transition.event,
+                    "version": "não declarada",
+                    "module": module,
+                    "entity": entity,
+                    "action": action,
+                    "source_statuses": sorted(transition.source),
+                    "target_status": transition.target,
+                    "roles": sorted(transition.roles),
+                    "requires_mfa": transition.requires_mfa,
+                    "payload_fields": required_by_resource.get((module, entity), []),
+                    "producer": module,
+                    "consumers": [],
+                    "idempotency_key": "não comprovada no schema do evento",
+                    "correlation_id": "exigido pelo runtime compartilhado",
+                    "evidence": "modules/shared/domain_rules.py",
+                }
+            )
+    return rows
+
+
 def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]:
     bindings: list[dict[str, str]] = []
     tag_pattern = re.compile(r"<SmartCRUD\s+(.+?)/>", re.S)
@@ -315,6 +369,7 @@ def build_delivery() -> None:
     endpoints = discover_endpoints()
     ui_bindings = discover_ui_bindings(tables)
     logical_rules = discover_logical_rules(tables, ui_bindings)
+    transitions = discover_transitions(logical_rules)
     relations = [field for field in fields if field.reference]
     sensitive = [field for field in fields if field.lgpd != "não classificado automaticamente"]
     counts = {
@@ -331,6 +386,8 @@ def build_delivery() -> None:
         "logical_entities": len(logical_rules),
         "logical_without_physical_table": sum(not row["has_physical_table"] for row in logical_rules),
         "logical_without_ui_surface": sum(not row["has_ui_surface"] for row in logical_rules),
+        "event_transitions": len(transitions),
+        "unique_events": len({row["event"] for row in transitions}),
         "sensitive_candidates": len(sensitive),
     }
 
@@ -347,6 +404,22 @@ def build_delivery() -> None:
         logical_csv_rows,
     )
     write_json(ARTIFACTS / "catalogo_logico.json", {"version": 1, "counts": counts, "entities": logical_rules})
+    event_csv_rows = [
+        {
+            **row,
+            "source_statuses": ";".join(row["source_statuses"]),
+            "roles": ";".join(row["roles"]),
+            "payload_fields": ";".join(row["payload_fields"]),
+            "consumers": ";".join(row["consumers"]),
+        }
+        for row in transitions
+    ]
+    write_csv(
+        ARTIFACTS / "catalogo_eventos.csv",
+        ["event", "version", "module", "entity", "action", "source_statuses", "target_status", "roles", "requires_mfa", "payload_fields", "producer", "consumers", "idempotency_key", "correlation_id", "evidence"],
+        event_csv_rows,
+    )
+    write_json(ARTIFACTS / "catalogo_eventos.json", {"version": 1, "counts": counts, "events": transitions})
     write_csv(
         ARTIFACTS / "matriz_formulario_campo.csv",
         ["app", "module", "entity", "surface", "title", "field", "binding", "evidence"],
@@ -360,12 +433,34 @@ def build_delivery() -> None:
     write_csv(
         ARTIFACTS / "matriz_evento_campo.csv",
         ["event", "field", "producer", "consumer", "status", "evidence"],
-        [{"event": "não catalogado automaticamente", "field": "payload", "producer": "a definir", "consumer": "a definir", "status": "lacuna", "evidence": "docs/data-audit/04_MAPA_DE_EVENTOS.md"}],
+        (
+            {
+                "event": row["event"],
+                "field": field,
+                "producer": row["producer"],
+                "consumer": "não comprovado",
+                "status": "produtor e campo inferidos; consumidor pendente",
+                "evidence": row["evidence"],
+            }
+            for row in transitions
+            for field in (row["payload_fields"] or ["payload não especificado"])
+        ),
     )
     write_csv(
         ARTIFACTS / "matriz_permissao_acao.csv",
         ["persona", "action", "resource", "backend_enforcement", "status", "evidence"],
-        [{"persona": "papéis dinâmicos", "action": "CRUD por domínio", "resource": "entidade do módulo", "backend_enforcement": "requer verificação endpoint a endpoint", "status": "parcial", "evidence": "docs/data-audit/evidence/03_MAPA_DE_PERSONAS.md"}],
+        (
+            {
+                "persona": role or "sem papel explícito",
+                "action": row["action"],
+                "resource": f"{row['module']}.{row['entity']}",
+                "backend_enforcement": f"Transition roles; MFA={row['requires_mfa']}",
+                "status": "regra de transição comprovada; endpoint exige validação",
+                "evidence": row["evidence"],
+            }
+            for row in transitions
+            for role in (row["roles"] or [""])
+        ),
     )
     write_csv(
         ARTIFACTS / "matriz_risco_controle.csv",
@@ -551,7 +646,7 @@ EVIDÊNCIAS: `database/postgres/migrations/`, `database/mongodb/init/001_ai_soci
     write_markdown(
         "12_APIS_EVENTOS_E_INTEGRACOES.md",
         "APIs, Eventos e Integrações",
-        f"""A varredura sintática localizou {counts['endpoints']} endpoints candidatos. A matriz ainda requer DTOs, campos, scopes, idempotência, erros, eventos, consumidores e testes de contrato.\n\nEVIDÊNCIAS: `artifacts/matriz_api_campo.csv` e `artifacts/matriz_evento_campo.csv`. Lacuna: `AUD-P1-003`.""",
+        f"""A varredura sintática localizou {counts['endpoints']} endpoints candidatos e {counts['event_transitions']} transições com {counts['unique_events']} nomes de evento. Produtor, ação, estados, papéis e MFA vêm das regras do backend; versão, consumidores, payload integral, idempotência e compatibilidade continuam pendentes quando não declarados.\n\nEVIDÊNCIAS: `artifacts/catalogo_eventos.json`, `artifacts/matriz_api_campo.csv`, `artifacts/matriz_evento_campo.csv` e `artifacts/matriz_permissao_acao.csv`. Lacuna: `AUD-P1-003`.""",
     )
     write_markdown(
         "13_VALIDACAO_E_TESTES.md",

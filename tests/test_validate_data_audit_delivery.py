@@ -29,9 +29,10 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 12
+    assert len(contract["required_complementary"]) == 14
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
+    assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
     assert "artifacts/relatorio_divergencias.json" in contract["required_complementary"]
 
 
@@ -70,3 +71,13 @@ def test_logical_catalog_exposes_cross_layer_gaps() -> None:
     assert data["counts"]["logical_without_physical_table"] > 0
     assert data["counts"]["logical_without_ui_surface"] > 0
     assert all(item["evidence"] for item in data["entities"])
+
+
+def test_event_catalog_preserves_backend_transition_contract() -> None:
+    catalog = ROOT / "docs" / "data-audit" / "artifacts" / "catalogo_eventos.json"
+    data = __import__("json").loads(catalog.read_text(encoding="utf-8"))
+
+    assert data["counts"]["event_transitions"] == 194
+    assert data["counts"]["unique_events"] == 187
+    assert all(item["event"] and item["producer"] for item in data["events"])
+    assert any(item["requires_mfa"] for item in data["events"])
