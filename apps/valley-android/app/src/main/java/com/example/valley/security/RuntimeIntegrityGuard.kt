@@ -31,6 +31,7 @@ object RuntimeIntegrityGuard {
     val signals = linkedSetOf<String>()
     if (isDebuggable(context) || Debug.isDebuggerConnected() || Debug.waitingForDebugger()) signals += "debugger"
     if (hasTracer()) signals += "tracer"
+    if (isProbablyEmulator()) signals += "emulator"
     if (Build.TAGS?.contains("test-keys", ignoreCase = true) == true || rootArtifacts.any { File(it).exists() }) {
       signals += "root"
     }
@@ -59,6 +60,29 @@ object RuntimeIntegrityGuard {
         lines.any { line -> instrumentationMarkers.any { marker -> line.contains(marker, ignoreCase = true) } }
       }
     }.getOrDefault(false)
+
+  private fun isProbablyEmulator(): Boolean {
+    val fingerprint = Build.FINGERPRINT.orEmpty()
+    val model = Build.MODEL.orEmpty()
+    val brand = Build.BRAND.orEmpty()
+    val device = Build.DEVICE.orEmpty()
+    val product = Build.PRODUCT.orEmpty()
+    val hardware = Build.HARDWARE.orEmpty()
+    val manufacturer = Build.MANUFACTURER.orEmpty()
+    return fingerprint.startsWith("generic", ignoreCase = true) ||
+      fingerprint.contains("emulator", ignoreCase = true) ||
+      fingerprint.contains("vbox", ignoreCase = true) ||
+      model.contains("google_sdk", ignoreCase = true) ||
+      model.contains("emulator", ignoreCase = true) ||
+      model.contains("android sdk built for x86", ignoreCase = true) ||
+      manufacturer.contains("Genymotion", ignoreCase = true) ||
+      (brand.startsWith("generic", ignoreCase = true) && device.startsWith("generic", ignoreCase = true)) ||
+      hardware.contains("goldfish", ignoreCase = true) ||
+      hardware.contains("ranchu", ignoreCase = true) ||
+      product.contains("sdk", ignoreCase = true) ||
+      product.contains("emulator", ignoreCase = true) ||
+      product.contains("simulator", ignoreCase = true)
+  }
 
   @Suppress("DEPRECATION")
   private fun hasExpectedSigningCertificate(context: Context): Boolean {

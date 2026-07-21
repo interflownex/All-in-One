@@ -13,6 +13,8 @@ val playIntegrityCloudProjectNumber =
   providers.environmentVariable("VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER").orElse("0").get()
 val releaseCertificateSha256 =
   providers.environmentVariable("VALLEY_PLAY_APP_SIGNING_CERT_SHA256").orElse("").get().replace(":", "").lowercase()
+val apiHubPinnedSpkiSha256 =
+  providers.environmentVariable("VALLEY_API_HUB_PINNED_SPKI_SHA256").orElse("").get().trim()
 require(playIntegrityCloudProjectNumber.matches(Regex("[0-9]+"))) {
   "VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER deve conter apenas digitos."
 }
@@ -48,6 +50,19 @@ if (releaseRequested && !releaseCertificateSha256.matches(Regex("(?i)[0-9a-f]{64
     "Build release bloqueado: configure VALLEY_PLAY_APP_SIGNING_CERT_SHA256 com o SHA-256 do certificado Play App Signing.",
   )
 }
+if (releaseRequested) {
+  val pins =
+    apiHubPinnedSpkiSha256
+      .split(',', ';', ' ', '\n', '\t')
+      .map { it.trim() }
+      .filter { it.isNotBlank() }
+      .map { if (it.startsWith("sha256/")) it else "sha256/$it" }
+  if (pins.isEmpty() || pins.any { !it.matches(Regex("sha256/[A-Za-z0-9+/]{43}=")) }) {
+    throw GradleException(
+      "Build release bloqueado: configure VALLEY_API_HUB_PINNED_SPKI_SHA256 com um ou mais pins SPKI (ex: sha256/BASE64...).",
+    )
+  }
+}
 
 android {
     namespace = "com.example.valley"
@@ -61,6 +76,7 @@ android {
         versionName = "1.0"
         buildConfigField("long", "PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER", "${playIntegrityCloudProjectNumber}L")
         buildConfigField("String", "PLAY_APP_SIGNING_CERT_SHA256", "\"${releaseCertificateSha256.lowercase()}\"")
+        buildConfigField("String", "API_HUB_PINNED_SPKI_SHA256", "\"${apiHubPinnedSpkiSha256}\"")
     }
 
     signingConfigs {

@@ -3,6 +3,7 @@ package com.example.valley.ui.main
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
+import android.util.Base64
 import android.webkit.WebChromeClient
 import android.webkit.WebStorage
 import android.webkit.WebView
@@ -70,6 +71,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.valley.BuildConfig
 import com.example.valley.R
 import com.example.valley.observability.ValleyObservability
 import com.example.valley.security.PlayIntegrityAttestor
@@ -85,13 +87,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.security.MessageDigest
+import java.security.cert.X509Certificate
 import java.net.HttpURLConnection
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLPeerUnverifiedException
 import java.net.URL
 import java.util.Locale
 import java.util.UUID
 
 private const val VALLEY_WEB_URL = "file:///android_asset/valley/index.html"
 private const val API_HUB_URL = "https://all-in-one-api-hub.web.app"
+private const val API_HUB_HOST = "all-in-one-api-hub.web.app"
 private data class ValleySession(
   val token: String,
   val refreshToken: String,
@@ -287,7 +293,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
 private suspend fun probeApiAvailability(context: Context) = withContext(Dispatchers.IO) {
   val correlationId = UUID.randomUUID().toString()
   val startedAt = android.os.SystemClock.elapsedRealtime()
-  val connection = (URL("$API_HUB_URL/health").openConnection() as HttpURLConnection).apply {
+  val connection = openApiConnection("$API_HUB_URL/health").apply {
     requestMethod = "GET"
     connectTimeout = 8_000
     readTimeout = 8_000
@@ -296,6 +302,8 @@ private suspend fun probeApiAvailability(context: Context) = withContext(Dispatc
     setRequestProperty("X-Correlation-Id", correlationId)
   }
   try {
+    connection.connect()
+    verifyPinnedPeer(connection)
     val statusCode = connection.responseCode
     ValleyObservability.recordHttpResult(
       correlationId = correlationId,
@@ -772,7 +780,7 @@ private suspend fun postJson(context: Context, url: String, body: JSONObject): J
   val route = URL(url).path.ifBlank { "/" }
   val startedAt = android.os.SystemClock.elapsedRealtime()
   return withContext(Dispatchers.IO) {
-    val connection = (URL(url).openConnection() as HttpURLConnection).apply {
+    val connection = openApiConnection(url).apply {
       requestMethod = "POST"
       connectTimeout = 15_000
       readTimeout = 20_000
@@ -785,6 +793,8 @@ private suspend fun postJson(context: Context, url: String, body: JSONObject): J
       integrityToken?.let { setRequestProperty("X-Play-Integrity-Token", it) }
     }
     try {
+      connection.connect()
+      verifyPinnedPeer(connection)
       connection.outputStream.use { stream ->
         stream.write(body.toString().toByteArray(Charsets.UTF_8))
       }
@@ -825,6 +835,43 @@ private suspend fun postJson(context: Context, url: String, body: JSONObject): J
     } finally {
       connection.disconnect()
     }
+  }
+}
+
+private fun openApiConnection(url: String): HttpURLConnection {
+  val parsed = URL(url)
+  require(parsed.protocol.equals("https", ignoreCase = true)) { "Somente HTTPS e aceito para chamadas criticas." }
+  require(parsed.host.equals(API_HUB_HOST, ignoreCase = true)) { "Host nao autorizado para operacoes criticas." }
+  return parsed.openConnection() as HttpURLConnection
+}
+
+private fun verifyPinnedPeer(connection: HttpURLConnection) {
+  if (connection !is HttpsURLConnection) {
+    throw SSLPeerUnverifiedException("Conexao critica sem TLS.")
+  }
+  val configuredPins =
+    BuildConfig.API_HUB_PINNED_SPKI_SHA256
+      .split(',', ';', ' ', '\n', '\t')
+      .map { it.trim() }
+      .filter { it.isNotBlank() }
+      .map { if (it.startsWith("sha256/")) it.substringAfter("sha256/") else it }
+      .toSet()
+  if (configuredPins.isEmpty()) {
+    if (BuildConfig.DEBUG) return
+    throw SSLPeerUnverifiedException("Pins SPKI nao configurados para build de producao.")
+  }
+  val certs = connection.serverCertificates
+  val pinned =
+    certs
+      .asSequence()
+      .filterIsInstance<X509Certificate>()
+      .map { cert ->
+        val digest = MessageDigest.getInstance("SHA-256").digest(cert.publicKey.encoded)
+        Base64.encodeToString(digest, Base64.NO_WRAP)
+      }
+      .any { configuredPins.contains(it) }
+  if (!pinned) {
+    throw SSLPeerUnverifiedException("Falha de SSL pinning para endpoint critico do Valley.")
   }
 }
 
