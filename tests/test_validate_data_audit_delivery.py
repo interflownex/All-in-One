@@ -157,7 +157,7 @@ def test_api_catalog_exposes_models_and_untyped_payloads() -> None:
     catalog = ROOT / "docs" / "data-audit" / "artifacts" / "catalogo_apis.json"
     data = __import__("json").loads(catalog.read_text(encoding="utf-8"))
 
-    assert data["counts"]["endpoints"] == 99
+    assert data["counts"]["endpoints"] == 101
     assert data["counts"]["api_model_fields"] > 0
     assert all(item["method"] and item["path"] and item["evidence"] for item in data["endpoints"])
     assert any(not item["response_model"] for item in data["endpoints"])
@@ -242,7 +242,10 @@ def test_units_and_tax_model_covers_precision_and_fiscal_governance() -> None:
     model = ROOT / "docs" / "data-audit" / "artifacts" / "modelo_unidades_tributacao.json"
     data = __import__("json").loads(model.read_text(encoding="utf-8"))
 
-    assert data["status"] == "implementado_pendente_frontend_e_homologacao_fiscal"
+    assert data["status"] == "implementado_pendente_homologacao_fiscal_externa"
+    assert data["implementation_gate"]["frontend_implemented"] is True
+    assert data["implementation_gate"]["integration_tests_implemented"] is True
+    assert data["implementation_gate"]["fiscal_homologation"] is False
     assert "product_unit_conversions" in data["measurement_entities"]
     assert "stock_movements" in data["measurement_entities"]
     assert "fiscal_rules" in data["fiscal_entities"]
@@ -253,8 +256,6 @@ def test_units_and_tax_model_covers_precision_and_fiscal_governance() -> None:
     assert data["implementation_gate"]["backfill_defined"]
     assert data["implementation_gate"]["backend_implemented"]
     assert data["implementation_gate"]["unit_tests_implemented"]
-    assert not data["implementation_gate"]["frontend_implemented"]
-    assert not data["implementation_gate"]["integration_tests_implemented"]
     assert not data["implementation_gate"]["fiscal_homologation"]
 
 

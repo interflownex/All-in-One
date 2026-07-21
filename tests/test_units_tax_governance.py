@@ -8,6 +8,9 @@ from pathlib import Path
 import pytest
 
 from modules.shared.units_tax import ConversionRule, TaxRule, calculate_tax, convert_quantity
+from fastapi.testclient import TestClient
+from modules.erp.main import app as erp_app
+from modules.stock.main import app as stock_app
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -151,3 +154,59 @@ def test_tax_calculation_rejects_missing_governance() -> None:
 
     with pytest.raises(ValueError, match="Fundamento"):
         calculate_tax("100", rule)
+
+
+def test_unit_conversion_http_contract_is_backend_authoritative() -> None:
+    start, end = active_window()
+    response = TestClient(stock_app).post(
+        "/calculations/unit-conversion",
+        headers={"X-Actor-User-Id": "auditor-unidades"},
+        json={
+            "quantity": "2.5",
+            "multiplier": "1000",
+            "divisor": "3",
+            "precision": 4,
+            "rounding_mode": "half_up",
+            "source_dimension": "mass",
+            "target_dimension": "mass",
+            "effective_from": start.isoformat(),
+            "effective_to": end.isoformat(),
+            "approved": True,
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["converted_quantity"] == "833.3333"
+    assert response.json()["calculated_by"] == "auditor-unidades"
+
+
+def test_tax_calculation_http_contract_rejects_unapproved_rule() -> None:
+    start, end = active_window()
+    client = TestClient(erp_app)
+    payload = {
+        "taxable_base": "100.00",
+        "rate": "0.18",
+        "base_reduction": "0.10",
+        "precision": 2,
+        "rounding_mode": "half_up",
+        "legal_basis": "Lei de teste versionada",
+        "effective_from": start.isoformat(),
+        "effective_to": end.isoformat(),
+        "approved": False,
+    }
+    response = client.post(
+        "/calculations/tax",
+        headers={"X-Actor-User-Id": "homologador-fiscal"},
+        json=payload,
+    )
+    assert response.status_code == 422
+    assert "aprovada" in response.json()["detail"]
+
+    payload["approved"] = True
+    response = client.post(
+        "/calculations/tax",
+        headers={"X-Actor-User-Id": "homologador-fiscal"},
+        json=payload,
+    )
+    assert response.status_code == 200
+    assert response.json()["reduced_base"] == "90.00"
+    assert response.json()["tax_amount"] == "16.20"

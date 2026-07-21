@@ -13,8 +13,8 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CONCL-007 | criterios_de_conclusao | 100% dos campos sensíveis tiverem classificação | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-008 | criterios_de_conclusao | 100% das alterações relevantes tiverem auditoria | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-009 | criterios_de_conclusao | 100% dos cálculos tiverem fórmula, precisão e teste | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CONCL-010 | criterios_de_conclusao | 100% das unidades tiverem regra | 19 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CONCL-011 | criterios_de_conclusao | 100% das regras fiscais tiverem vigência e contexto | 10 | 10 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CONCL-010 | criterios_de_conclusao | 100% das unidades tiverem regra | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CONCL-011 | criterios_de_conclusao | 100% das regras fiscais tiverem vigência e contexto | 12 | 12 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-012 | criterios_de_conclusao | 100% dos formulários tiverem coordenada de frontend | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-013 | criterios_de_conclusao | 100% dos botões tiverem ação | 5 | 5 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-014 | criterios_de_conclusao | 100% das permissões tiverem enforcement backend | 20 | 18 | não comprovado; candidatos aprovados exigem revisão de escopo |
@@ -38,7 +38,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CHECK-014 | construir | Catalogar campos | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-015 | construir | Catalogar unidades | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-016 | construir | Catalogar impostos | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-017 | construir | Catalogar cálculos | 5 | 5 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-017 | construir | Catalogar cálculos | 6 | 6 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-018 | construir | Catalogar logs | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-019 | construir | Catalogar permissões | 17 | 15 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-020 | construir | Catalogar APIs | 20 | 16 | não comprovado; candidatos aprovados exigem revisão de escopo |
@@ -49,8 +49,8 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CHECK-025 | validar | Validar integridade | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-026 | validar | Validar regras | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-027 | validar | Validar unidades | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-028 | validar | Validar tributos | 10 | 10 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-029 | validar | Validar cálculos | 5 | 5 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-028 | validar | Validar tributos | 12 | 12 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-029 | validar | Validar cálculos | 6 | 6 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-030 | validar | Validar segurança | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-031 | validar | Validar auditoria | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-032 | validar | Validar frontend | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |

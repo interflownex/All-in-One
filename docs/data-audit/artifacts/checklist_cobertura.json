@@ -15,9 +15,9 @@
     "browser_storage_key_patterns": 12,
     "relationships": 348,
     "indexes": 52,
-    "endpoints": 99,
+    "endpoints": 101,
     "endpoints_with_response_model": 8,
-    "api_model_fields": 115,
+    "api_model_fields": 126,
     "ui_candidates": 1067,
     "ui_bindings_probable": 82,
     "ui_bindings_unproven": 985,
@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 491,
-    "tests_with_assertions": 457,
-    "tests_with_http_calls": 192,
-    "test_functions_in_execution_reports": 466,
-    "test_functions_passed": 433,
+    "test_functions": 493,
+    "tests_with_assertions": 459,
+    "tests_with_http_calls": 194,
+    "test_functions_in_execution_reports": 468,
+    "test_functions_passed": 435,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -142,7 +142,7 @@
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "calculos": {
-      "percentual": 60,
+      "percentual": 80,
       "evidencias": [
         "docs/data-audit/artifacts/modelo_unidades_tributacao.json"
       ],
@@ -153,7 +153,7 @@
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "unidades": {
-      "percentual": 67,
+      "percentual": 99,
       "evidencias": [
         "docs/data-audit/artifacts/modelo_unidades_tributacao.json"
       ],
@@ -163,7 +163,7 @@
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "regras_fiscais": {
-      "percentual": 57,
+      "percentual": 86,
       "evidencias": [
         "docs/data-audit/artifacts/modelo_unidades_tributacao.json"
       ],

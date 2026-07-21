@@ -19,10 +19,11 @@ business,POST,/companies/{company_id}/apply-recommendations,apply_recommendation
 business,GET,/companies/{company_id}/modules,get_company_modules,company_id:UUID,,ModuleSettingsResponse,modules/business/module_settings.py:344
 business,PATCH,/companies/{company_id}/modules/{module_slug},patch_company_module,company_id:UUID;module_slug:str;body:ModulePatch,state;reason,CompanyModuleSetting,modules/business/module_settings.py:354
 business,GET,/companies/{company_id}/modules/{module_slug}/change-impact,get_change_impact,company_id:UUID;module_slug:str;next_state:ModuleState,,,modules/business/module_settings.py:391
-erp,GET,/erp/billing/{document_id},get_billing,document_id:str;store:ErpPostgresStore,,,modules/erp/main.py:41
-erp,POST,/erp/billing,create_billing,x_actor_user_id:str;x_actor_company_id:str;x_idempotency_key:Optional[str];store:ErpPostgresStore,,,modules/erp/main.py:52
-erp,POST,/erp/billing/{document_id}/cancel,cancel_billing,document_id:str;x_actor_user_id:str;store:ErpPostgresStore,,,modules/erp/main.py:87
-erp,POST,/integrations/sandbox/fiscal/invoices,sandbox_fiscal_invoice,x_actor_user_id:str,,,modules/erp/main.py:114
+erp,POST,/calculations/tax,calculate_tax_preview,x_actor_user_id:str,,,modules/erp/main.py:54
+erp,GET,/erp/billing/{document_id},get_billing,document_id:str;store:ErpPostgresStore,,,modules/erp/main.py:75
+erp,POST,/erp/billing,create_billing,x_actor_user_id:str;x_actor_company_id:str;x_idempotency_key:Optional[str];store:ErpPostgresStore,,,modules/erp/main.py:86
+erp,POST,/erp/billing/{document_id}/cancel,cancel_billing,document_id:str;x_actor_user_id:str;store:ErpPostgresStore,,,modules/erp/main.py:121
+erp,POST,/integrations/sandbox/fiscal/invoices,sandbox_fiscal_invoice,x_actor_user_id:str,,,modules/erp/main.py:148
 finance,POST,/transfers,transfer,body:TransferRequest;actor:Actor,,,modules/finance/main.py:14
 finance,POST,/pix/out,pix_out,body:PixRequest;actor:Actor,,,modules/finance/main.py:40
 finance,POST,/escrows/hold,hold_funds,body:EscrowRequest;actor:Actor,,,modules/finance/main.py:45
@@ -98,3 +99,4 @@ shared,GET,/valley/catalog/search,valley_catalog_search,q:str | None;category:st
 shared,POST,/valley/orders/{order_id}/pepitas/grants,grant_pepitas,order_id:UUID;body:ValleyPepitaGrant;actor:Actor;x_idempotency_key:str | None,pepitas;customer_user_id;merchant_gold_ledger_id;note,,modules/shared/valley.py:200
 shared,POST,/valley/checkout/discount-options,valley_stock_discount_options,body:ValleyStockDiscountRequest,catalog_product_id;price_brl;user_pepitas_balance,,modules/shared/valley.py:241
 shared,POST,/valley/checkout/discount-quotes,valley_stock_discount_quote,body:ValleyStockDiscountQuoteRequest;actor:Actor;x_idempotency_key:str | None,,,modules/shared/valley.py:263
+stock,POST,/calculations/unit-conversion,calculate_unit_conversion,body:UnitConversionRequest;x_actor_user_id:str,quantity;multiplier;divisor;precision;rounding_mode;source_dimension;target_dimension;effective_from;effective_to;approved;density,,modules/stock/main.py:31

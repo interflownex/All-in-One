@@ -212,31 +212,33 @@
       "priority": "P1",
       "module": "catálogo e fiscal",
       "title": "Regras fiscais, unidades e conversões carecem de implementação completa",
-      "description": "Migration reversível, rollback, cálculo Decimal e testes unitários foram implementados; faltam frontend, integração PostgreSQL viva e homologação fiscal.",
+      "description": "Migration reversível, rollback, cálculo Decimal, contratos HTTP, console web e testes de integração foram implementados; faltam integração PostgreSQL viva e homologação por especialista fiscal.",
       "evidence": [
         "docs/data-audit/artifacts/modelo_unidades_tributacao.json",
         "database/postgres/migrations/025_units_tax_governance.sql",
         "database/postgres/rollbacks/025_units_tax_governance.down.sql",
         "modules/shared/units_tax.py",
+        "modules/stock/main.py",
+        "modules/erp/main.py",
+        "apps/all-in-one/src/pages/UnitsTaxGovernance.tsx",
         "tests/test_units_tax_governance.py"
       ],
-      "impact": "Sem os gates restantes, compra, estoque, venda, custo e tributação ainda podem divergir em operação.",
-      "risk": "Cálculo financeiro ou fiscal não homologado.",
-      "proposal": "Conectar APIs/UI, executar integração PostgreSQL e homologar cenários com especialista fiscal.",
+      "impact": "Sem os gates externos restantes, compra, estoque, venda, custo e tributação ainda podem divergir em operação.",
+      "risk": "Cálculo financeiro ou fiscal não homologado em ambiente operacional.",
+      "proposal": "Executar integração PostgreSQL viva e homologar cenários com especialista fiscal.",
       "dependencies": [
         "especialista fiscal",
-        "ambiente PostgreSQL",
-        "frontend"
+        "ambiente PostgreSQL"
       ],
       "affected_files": [
-        "apps/all-in-one/src",
+        "database/postgres",
         "modules/stock",
         "modules/erp"
       ],
       "migration": "implementada com rollback; backfill explícito sem inferência",
-      "backend": "Decimal, vigência, aprovação, precisão e arredondamento implementados",
-      "frontend": "cadastro de unidades e perfil fiscal pendente",
-      "tests": "unitários aprovados; integração e homologação pendentes",
+      "backend": "Decimal, vigência, aprovação, precisão, arredondamento e contratos HTTP implementados",
+      "frontend": "console responsivo de unidades e cálculo fiscal implementado",
+      "tests": "unitários e contratos HTTP aprovados; PostgreSQL vivo e homologação fiscal pendentes",
       "documentation": "06_UNIDADES_E_CONVERSOES.md e 07_TRIBUTACAO.md",
       "acceptance": "Unidades, conversões, perfis fiscais, vigência e cálculos possuem migrations, backend, frontend, integração e homologação aprovados.",
       "status": "implementacao_parcial",

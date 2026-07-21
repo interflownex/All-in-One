@@ -27,6 +27,38 @@ body {
   min-height: 100vh;
 }
 
+.governance-page { padding: 32px; max-width: 1280px; margin: 0 auto; }
+.governance-hero { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr); gap: 28px; align-items: end; margin-bottom: 28px; }
+.governance-hero h1 { margin: 6px 0 10px; font-size: clamp(32px, 4vw, 52px); line-height: 1; }
+.governance-hero p, .governance-card p { color: #626b8e; line-height: 1.6; }
+.eyebrow { color: #236cff; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.governance-kpis { display: grid; grid-template-columns: repeat(3, 1fr); overflow: hidden; background: #11142a; border-radius: 12px; }
+.governance-kpis article { min-height: 110px; padding: 20px 16px; color: white; border-right: 1px solid #343852; }
+.governance-kpis article:last-child { border-right: 0; }
+.governance-kpis strong, .governance-kpis span { display: block; }
+.governance-kpis strong { font-size: 23px; margin-bottom: 8px; }
+.governance-kpis span { color: #c9cee7; font-size: 12px; line-height: 1.35; }
+.governance-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.governance-tabs button { min-height: 44px; padding: 0 18px; color: #626b8e; background: transparent; border: 0; border-bottom: 3px solid transparent; font-weight: 800; }
+.governance-tabs button.active { color: #236cff; border-color: #236cff; }
+.governance-card { padding: 28px; background: white; border: 1px solid #dce3df; border-radius: 12px; box-shadow: 0 16px 45px rgba(17, 20, 42, .07); }
+.governance-card > header { display: flex; justify-content: space-between; gap: 18px; align-items: start; padding-bottom: 22px; border-bottom: 1px solid #e5e8f2; }
+.governance-card h2 { margin-bottom: 4px; font-size: 24px; }
+.status-chip { padding: 7px 10px; color: #126b45; background: #e8f8ef; border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+.status-chip.fiscal { color: #7d4c00; background: #fff3d8; }
+.governance-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; padding: 24px 0; }
+.governance-grid label { display: grid; gap: 7px; align-content: start; font-size: 13px; font-weight: 800; }
+.governance-grid .wide { grid-column: span 2; }
+.approval-check { display: flex; gap: 10px; align-items: center; width: fit-content; font-weight: 700; }
+.approval-check input { width: 18px; min-height: 18px; accent-color: #236cff; }
+.governance-card footer { display: flex; gap: 18px; align-items: center; min-height: 64px; margin-top: 22px; padding-top: 20px; border-top: 1px solid #e5e8f2; }
+.governance-feedback { font-size: 14px; font-weight: 700; }
+.governance-feedback.success { color: #126b45; }
+.governance-feedback.error { color: #b42318; }
+.governance-feedback.loading { color: #236cff; }
+@media (max-width: 900px) { .governance-hero { grid-template-columns: 1fr; } .governance-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .governance-page { padding: 20px 16px; } .governance-kpis, .governance-grid { grid-template-columns: 1fr; } .governance-grid .wide { grid-column: span 1; } .governance-card > header, .governance-card footer { align-items: stretch; flex-direction: column; } }
+
 header {
   position: sticky;
   top: 0;

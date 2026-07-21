@@ -15,9 +15,9 @@
     "browser_storage_key_patterns": 12,
     "relationships": 348,
     "indexes": 52,
-    "endpoints": 99,
+    "endpoints": 101,
     "endpoints_with_response_model": 8,
-    "api_model_fields": 115,
+    "api_model_fields": 126,
     "ui_candidates": 1067,
     "ui_bindings_probable": 82,
     "ui_bindings_unproven": 985,
@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 491,
-    "tests_with_assertions": 457,
-    "tests_with_http_calls": 192,
-    "test_functions_in_execution_reports": 466,
-    "test_functions_passed": 433,
+    "test_functions": 493,
+    "tests_with_assertions": 459,
+    "tests_with_http_calls": 194,
+    "test_functions_in_execution_reports": 468,
+    "test_functions_passed": 435,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -8414,7 +8414,7 @@
       "test_id": "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
       "file": "tests/test_units_tax_governance.py",
       "function": "test_conversion_rejects_float_unapproved_and_expired_rules",
-      "line": 99,
+      "line": 102,
       "async": false,
       "assertions": 0,
       "status_code_assertions": 0,
@@ -8426,13 +8426,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_units_tax_governance.py:99"
+      "evidence": "tests/test_units_tax_governance.py:102"
     },
     {
       "test_id": "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
       "file": "tests/test_units_tax_governance.py",
       "function": "test_cross_dimension_conversion_requires_positive_density",
-      "line": 81,
+      "line": 84,
       "async": false,
       "assertions": 0,
       "status_code_assertions": 0,
@@ -8444,13 +8444,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_units_tax_governance.py:81"
+      "evidence": "tests/test_units_tax_governance.py:84"
     },
     {
       "test_id": "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
       "file": "tests/test_units_tax_governance.py",
       "function": "test_decimal_conversion_preserves_precision_and_rounding",
-      "line": 64,
+      "line": 67,
       "async": false,
       "assertions": 1,
       "status_code_assertions": 0,
@@ -8462,13 +8462,35 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_units_tax_governance.py:64"
+      "evidence": "tests/test_units_tax_governance.py:67"
+    },
+    {
+      "test_id": "tests/test_units_tax_governance.py::test_tax_calculation_http_contract_rejects_unapproved_rule",
+      "file": "tests/test_units_tax_governance.py",
+      "function": "test_tax_calculation_http_contract_rejects_unapproved_rule",
+      "line": 182,
+      "async": false,
+      "assertions": 5,
+      "status_code_assertions": 2,
+      "http_methods": [
+        "POST"
+      ],
+      "endpoint_literals": [
+        "/calculations/tax"
+      ],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_units_tax_governance.py:182"
     },
     {
       "test_id": "tests/test_units_tax_governance.py::test_tax_calculation_rejects_missing_governance",
       "file": "tests/test_units_tax_governance.py",
       "function": "test_tax_calculation_rejects_missing_governance",
-      "line": 139,
+      "line": 142,
       "async": false,
       "assertions": 0,
       "status_code_assertions": 0,
@@ -8480,13 +8502,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_units_tax_governance.py:139"
+      "evidence": "tests/test_units_tax_governance.py:142"
     },
     {
       "test_id": "tests/test_units_tax_governance.py::test_tax_calculation_uses_reduction_rate_and_declared_rounding",
       "file": "tests/test_units_tax_governance.py",
       "function": "test_tax_calculation_uses_reduction_rate_and_declared_rounding",
-      "line": 120,
+      "line": 123,
       "async": false,
       "assertions": 2,
       "status_code_assertions": 0,
@@ -8498,13 +8520,35 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_units_tax_governance.py:120"
+      "evidence": "tests/test_units_tax_governance.py:123"
+    },
+    {
+      "test_id": "tests/test_units_tax_governance.py::test_unit_conversion_http_contract_is_backend_authoritative",
+      "file": "tests/test_units_tax_governance.py",
+      "function": "test_unit_conversion_http_contract_is_backend_authoritative",
+      "line": 159,
+      "async": false,
+      "assertions": 3,
+      "status_code_assertions": 1,
+      "http_methods": [
+        "POST"
+      ],
+      "endpoint_literals": [
+        "/calculations/unit-conversion"
+      ],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_units_tax_governance.py:159"
     },
     {
       "test_id": "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback",
       "file": "tests/test_units_tax_governance.py",
       "function": "test_units_tax_migration_implements_every_proposed_entity_and_rollback",
-      "line": 23,
+      "line": 26,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -8516,13 +8560,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_units_tax_governance.py:23"
+      "evidence": "tests/test_units_tax_governance.py:26"
     },
     {
       "test_id": "tests/test_units_tax_governance.py::test_units_tax_physical_catalog_covers_every_proposed_field",
       "file": "tests/test_units_tax_governance.py",
       "function": "test_units_tax_physical_catalog_covers_every_proposed_field",
-      "line": 47,
+      "line": 50,
       "async": false,
       "assertions": 2,
       "status_code_assertions": 0,
@@ -8534,7 +8578,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_units_tax_governance.py:47"
+      "evidence": "tests/test_units_tax_governance.py:50"
     },
     {
       "test_id": "tests/test_user_marketplace_journey.py::test_user_identity_wallet_marketplace_order_journey",

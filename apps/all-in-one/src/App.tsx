@@ -40,6 +40,7 @@ const PropertyPropertyOverview = lazy(() => import('./pages/property/PropertyOve
 const BiBiOverview = lazy(() => import('./pages/bi/BiOverview'));
 const Ai_coreAi_coreOverview = lazy(() => import('./pages/ai_core/Ai_coreOverview'));
 const Api_hubApi_hubOverview = lazy(() => import('./pages/api_hub/Api_hubOverview'));
+const UnitsTaxGovernance = lazy(() => import('./pages/UnitsTaxGovernance'));
 
 const BpmProcessesList = lazy(() => import('./pages/bpm/ProcessesList'));
 const BpmProcessesForm = lazy(() => import('./pages/bpm/ProcessesForm'));
@@ -337,6 +338,7 @@ function App() {
               <Route path="/jobs/vacancy-search" element={JobsVacancySearch ? <JobsVacancySearch /> : <div>Carregando...</div>} />
               <Route path="/jobs/recruiter-resume-review" element={JobsRecruiterResumeReview ? <JobsRecruiterResumeReview /> : <div>Carregando...</div>} />
               <Route path="/erp" element={ErpErpOverview ? <ErpErpOverview /> : <div>Carregando...</div>} />
+              <Route path="/governance/units-tax" element={<UnitsTaxGovernance />} />
               <Route path="/wms" element={WmsWmsOverview ? <WmsWmsOverview /> : <div>Carregando...</div>} />
               <Route path="/tms" element={TmsTmsOverview ? <TmsTmsOverview /> : <div>Carregando...</div>} />
               <Route path="/crm" element={CrmCrmOverview ? <CrmCrmOverview /> : <div>Carregando...</div>} />
