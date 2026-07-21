@@ -29,10 +29,11 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 14
+    assert len(contract["required_complementary"]) == 16
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
+    assert "artifacts/catalogo_apis.json" in contract["required_complementary"]
     assert "artifacts/relatorio_divergencias.json" in contract["required_complementary"]
 
 
@@ -81,3 +82,13 @@ def test_event_catalog_preserves_backend_transition_contract() -> None:
     assert data["counts"]["unique_events"] == 187
     assert all(item["event"] and item["producer"] for item in data["events"])
     assert any(item["requires_mfa"] for item in data["events"])
+
+
+def test_api_catalog_exposes_models_and_untyped_payloads() -> None:
+    catalog = ROOT / "docs" / "data-audit" / "artifacts" / "catalogo_apis.json"
+    data = __import__("json").loads(catalog.read_text(encoding="utf-8"))
+
+    assert data["counts"]["endpoints"] == 99
+    assert data["counts"]["api_model_fields"] > 0
+    assert all(item["method"] and item["path"] and item["evidence"] for item in data["endpoints"])
+    assert any(not item["response_model"] for item in data["endpoints"])

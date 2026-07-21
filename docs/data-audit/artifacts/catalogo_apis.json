@@ -1,0 +1,2261 @@
+{
+  "version": 1,
+  "counts": {
+    "migrations": 24,
+    "schemas": 31,
+    "tables": 81,
+    "fields": 1189,
+    "relationships": 297,
+    "indexes": 48,
+    "endpoints": 99,
+    "endpoints_with_response_model": 8,
+    "api_model_fields": 115,
+    "ui_candidates": 1067,
+    "ui_surfaces": 299,
+    "ui_forms": 129,
+    "logical_entities": 120,
+    "logical_without_physical_table": 62,
+    "logical_without_ui_surface": 46,
+    "event_transitions": 194,
+    "unique_events": 187,
+    "sensitive_candidates": 147
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/gateway/security/response-signing-key",
+      "module": "api_hub",
+      "function": "response_signing_key",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:63"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/{path:path}",
+      "module": "api_hub",
+      "function": "auth_proxy",
+      "parameters": [
+        {
+          "name": "path",
+          "annotation": "str",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:500"
+    },
+    {
+      "method": "POST",
+      "path": "/registrations",
+      "module": "api_hub",
+      "function": "registrations_proxy",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:504"
+    },
+    {
+      "method": "GET",
+      "path": "/gateway/catalog/offers",
+      "module": "api_hub",
+      "function": "aggregate_catalog_offers",
+      "parameters": [
+        {
+          "name": "limit",
+          "annotation": "int",
+          "model_fields": []
+        },
+        {
+          "name": "offset",
+          "annotation": "int",
+          "model_fields": []
+        },
+        {
+          "name": "q",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "category",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "offer_type",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "lat",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "lng",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "company_type",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "company_category",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "business_activity",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "price_min",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "price_max",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "availability",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "verified_only",
+          "annotation": "bool",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:508"
+    },
+    {
+      "method": "GET",
+      "path": "/gateway/consumer/orders",
+      "module": "api_hub",
+      "function": "get_consumer_orders",
+      "parameters": [
+        {
+          "name": "token_payload",
+          "annotation": "dict[str, Any]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:591"
+    },
+    {
+      "method": "POST",
+      "path": "/gateway/consumer/orders/{order_id}/support",
+      "module": "api_hub",
+      "function": "create_order_support_case",
+      "parameters": [
+        {
+          "name": "order_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "SupportCaseRequest",
+          "model_fields": [
+            "kind",
+            "subject",
+            "message",
+            "desired_resolution",
+            "idempotency_key"
+          ]
+        },
+        {
+          "name": "token_payload",
+          "annotation": "dict[str, Any]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:661"
+    },
+    {
+      "method": "POST",
+      "path": "/gateway/consumer/orders/{order_id}/reviews",
+      "module": "api_hub",
+      "function": "create_consumer_review",
+      "parameters": [
+        {
+          "name": "order_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ConsumerReviewRequest",
+          "model_fields": [
+            "rating",
+            "comment",
+            "idempotency_key"
+          ]
+        },
+        {
+          "name": "token_payload",
+          "annotation": "dict[str, Any]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:715"
+    },
+    {
+      "method": "GET",
+      "path": "/gateway/insights/commercial",
+      "module": "api_hub",
+      "function": "commercial_insights",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:772"
+    },
+    {
+      "method": "POST",
+      "path": "/gateway/catalog/actions",
+      "module": "api_hub",
+      "function": "create_catalog_action",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "CatalogActionRequest",
+          "model_fields": [
+            "offer_id",
+            "action",
+            "customer_user_id",
+            "idempotency_key",
+            "scheduled_at",
+            "note",
+            "quantity"
+          ]
+        },
+        {
+          "name": "token_payload",
+          "annotation": "dict[str, Any]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:825"
+    },
+    {
+      "method": "POST",
+      "path": "/gateway/payments/sandbox/authorize",
+      "module": "api_hub",
+      "function": "authorize_catalog_payment",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "CatalogPaymentRequest",
+          "model_fields": [
+            "order_id",
+            "idempotency_key",
+            "method"
+          ]
+        },
+        {
+          "name": "token_payload",
+          "annotation": "dict[str, Any]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:946"
+    },
+    {
+      "method": "GET",
+      "path": "/gateway/telemetry/outbox",
+      "module": "api_hub",
+      "function": "outbox_telemetry",
+      "parameters": [
+        {
+          "name": "limit",
+          "annotation": "int",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:1032"
+    },
+    {
+      "method": "GET",
+      "path": "/gateway/status",
+      "module": "api_hub",
+      "function": "gateway_status",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:1069"
+    },
+    {
+      "method": "GET",
+      "path": "/gateway/api-key/check",
+      "module": "api_hub",
+      "function": "gateway_api_key_check",
+      "parameters": [
+        {
+          "name": "key_info",
+          "annotation": "dict",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:1080"
+    },
+    {
+      "method": "POST",
+      "path": "/gateway/webhooks/verify",
+      "module": "api_hub",
+      "function": "gateway_webhook_verify",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:1089"
+    },
+    {
+      "method": "POST",
+      "path": "/recommendations",
+      "module": "business",
+      "function": "preview_recommendations",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "BusinessClassificationInput",
+          "model_fields": [
+            "business_kind",
+            "cnae_primary",
+            "cnae_secondary",
+            "has_physical_stock",
+            "sells_online",
+            "performs_delivery",
+            "hires_people",
+            "issues_fiscal_documents",
+            "operates_fleet",
+            "has_warehouse"
+          ]
+        }
+      ],
+      "response_model": "list[ModuleRecommendation]",
+      "evidence": "modules/business/module_settings.py:304"
+    },
+    {
+      "method": "POST",
+      "path": "/companies/{company_id}/classification",
+      "module": "business",
+      "function": "classify_company",
+      "parameters": [
+        {
+          "name": "company_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "BusinessClassificationInput",
+          "model_fields": [
+            "business_kind",
+            "cnae_primary",
+            "cnae_secondary",
+            "has_physical_stock",
+            "sells_online",
+            "performs_delivery",
+            "hires_people",
+            "issues_fiscal_documents",
+            "operates_fleet",
+            "has_warehouse"
+          ]
+        }
+      ],
+      "response_model": "BusinessClassificationRecord",
+      "evidence": "modules/business/module_settings.py:309"
+    },
+    {
+      "method": "POST",
+      "path": "/companies/{company_id}/apply-recommendations",
+      "module": "business",
+      "function": "apply_recommendations",
+      "parameters": [
+        {
+          "name": "company_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ApplyRecommendationsPayload",
+          "model_fields": [
+            "classification",
+            "actor_id"
+          ]
+        }
+      ],
+      "response_model": "ModuleSettingsResponse",
+      "evidence": "modules/business/module_settings.py:317"
+    },
+    {
+      "method": "GET",
+      "path": "/companies/{company_id}/modules",
+      "module": "business",
+      "function": "get_company_modules",
+      "parameters": [
+        {
+          "name": "company_id",
+          "annotation": "UUID",
+          "model_fields": []
+        }
+      ],
+      "response_model": "ModuleSettingsResponse",
+      "evidence": "modules/business/module_settings.py:344"
+    },
+    {
+      "method": "PATCH",
+      "path": "/companies/{company_id}/modules/{module_slug}",
+      "module": "business",
+      "function": "patch_company_module",
+      "parameters": [
+        {
+          "name": "company_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "module_slug",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ModulePatch",
+          "model_fields": [
+            "state",
+            "reason"
+          ]
+        }
+      ],
+      "response_model": "CompanyModuleSetting",
+      "evidence": "modules/business/module_settings.py:354"
+    },
+    {
+      "method": "GET",
+      "path": "/companies/{company_id}/modules/{module_slug}/change-impact",
+      "module": "business",
+      "function": "get_change_impact",
+      "parameters": [
+        {
+          "name": "company_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "module_slug",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "next_state",
+          "annotation": "ModuleState",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/business/module_settings.py:391"
+    },
+    {
+      "method": "GET",
+      "path": "/erp/billing/{document_id}",
+      "module": "erp",
+      "function": "get_billing",
+      "parameters": [
+        {
+          "name": "document_id",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "ErpPostgresStore",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/erp/main.py:41"
+    },
+    {
+      "method": "POST",
+      "path": "/erp/billing",
+      "module": "erp",
+      "function": "create_billing",
+      "parameters": [
+        {
+          "name": "x_actor_user_id",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "x_actor_company_id",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "x_idempotency_key",
+          "annotation": "Optional[str]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "ErpPostgresStore",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/erp/main.py:52"
+    },
+    {
+      "method": "POST",
+      "path": "/erp/billing/{document_id}/cancel",
+      "module": "erp",
+      "function": "cancel_billing",
+      "parameters": [
+        {
+          "name": "document_id",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "x_actor_user_id",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "ErpPostgresStore",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/erp/main.py:87"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/fiscal/invoices",
+      "module": "erp",
+      "function": "sandbox_fiscal_invoice",
+      "parameters": [
+        {
+          "name": "x_actor_user_id",
+          "annotation": "str",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/erp/main.py:114"
+    },
+    {
+      "method": "POST",
+      "path": "/transfers",
+      "module": "finance",
+      "function": "transfer",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "TransferRequest",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/finance/main.py:14"
+    },
+    {
+      "method": "POST",
+      "path": "/pix/out",
+      "module": "finance",
+      "function": "pix_out",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "PixRequest",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/finance/main.py:40"
+    },
+    {
+      "method": "POST",
+      "path": "/escrows/hold",
+      "module": "finance",
+      "function": "hold_funds",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "EscrowRequest",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/finance/main.py:45"
+    },
+    {
+      "method": "POST",
+      "path": "/escrows/{escrow_id}/release",
+      "module": "finance",
+      "function": "release_funds",
+      "parameters": [
+        {
+          "name": "escrow_id",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/finance/main.py:61"
+    },
+    {
+      "method": "GET",
+      "path": "/wallets/{user_id}",
+      "module": "finance",
+      "function": "get_user_wallets",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/finance/main.py:69"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/gold/balance",
+      "module": "finance",
+      "function": "valley_gold_balance",
+      "parameters": [
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/finance/main.py:76"
+    },
+    {
+      "method": "POST",
+      "path": "/webhooks/cash-in",
+      "module": "finance",
+      "function": "mock_cash_in",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "dict",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/finance/main.py:95"
+    },
+    {
+      "method": "POST",
+      "path": "/gateways/cash-out",
+      "module": "finance",
+      "function": "mock_cash_out",
+      "parameters": [
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "dict",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/finance/main.py:114"
+    },
+    {
+      "method": "POST",
+      "path": "/kyc/submit",
+      "module": "identity",
+      "function": "submit_kyc",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "KYCSubmission",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/identity/main.py:157"
+    },
+    {
+      "method": "GET",
+      "path": "/kyc/status/{user_id}",
+      "module": "identity",
+      "function": "get_kyc_status",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "model_fields": []
+        }
+      ],
+      "response_model": "KYCStatus",
+      "evidence": "modules/identity/main.py:199"
+    },
+    {
+      "method": "POST",
+      "path": "/mfa/setup",
+      "module": "identity",
+      "function": "setup_mfa",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "MFASetup",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/identity/main.py:217"
+    },
+    {
+      "method": "POST",
+      "path": "/mfa/verify",
+      "module": "identity",
+      "function": "verify_mfa",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "MFAVerification",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/identity/main.py:254"
+    },
+    {
+      "method": "POST",
+      "path": "/kyc/ocr-validate",
+      "module": "identity",
+      "function": "kyc_ocr_validate",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "dict",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/identity/main.py:309"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "module": "identity",
+      "function": "login",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "LoginRequest",
+          "model_fields": []
+        },
+        {
+          "name": "_integrity",
+          "annotation": "IntegrityDecision",
+          "model_fields": []
+        }
+      ],
+      "response_model": "TokenResponse",
+      "evidence": "modules/identity/main.py:332"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/refresh",
+      "module": "identity",
+      "function": "refresh_session",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "RefreshTokenRequest",
+          "model_fields": []
+        },
+        {
+          "name": "_integrity",
+          "annotation": "IntegrityDecision",
+          "model_fields": []
+        }
+      ],
+      "response_model": "TokenResponse",
+      "evidence": "modules/identity/main.py:366"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "module": "identity",
+      "function": "logout",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "RefreshTokenRequest",
+          "model_fields": []
+        },
+        {
+          "name": "_integrity",
+          "annotation": "IntegrityDecision",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/identity/main.py:400"
+    },
+    {
+      "method": "POST",
+      "path": "/registrations",
+      "module": "identity",
+      "function": "register_user_with_hash",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "dict[str, Any]",
+          "model_fields": []
+        },
+        {
+          "name": "_integrity",
+          "annotation": "IntegrityDecision",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/identity/main.py:420"
+    },
+    {
+      "method": "POST",
+      "path": "/valley/orders/{order_id}/support",
+      "module": "marketplace",
+      "function": "create_order_support_case",
+      "parameters": [
+        {
+          "name": "order_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "SupportCaseRequest",
+          "model_fields": [
+            "kind",
+            "subject",
+            "message",
+            "desired_resolution",
+            "idempotency_key"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:26"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/insights/commercial",
+      "module": "marketplace",
+      "function": "commercial_insights",
+      "parameters": [
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:71"
+    },
+    {
+      "method": "GET",
+      "path": "/providers/{provider_id}/time-slots",
+      "module": "services",
+      "function": "get_time_slots",
+      "parameters": [
+        {
+          "name": "provider_id",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "date",
+          "annotation": "str",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/services/main.py:12"
+    },
+    {
+      "method": "POST",
+      "path": "/providers/{provider_id}/reserve-slot",
+      "module": "services",
+      "function": "reserve_slot",
+      "parameters": [
+        {
+          "name": "provider_id",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "dict",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/services/main.py:26"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "module": "shared",
+      "function": "health",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:417"
+    },
+    {
+      "method": "GET",
+      "path": "/version",
+      "module": "shared",
+      "function": "get_version",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:421"
+    },
+    {
+      "method": "GET",
+      "path": "/status",
+      "module": "shared",
+      "function": "status",
+      "parameters": [
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:425"
+    },
+    {
+      "method": "GET",
+      "path": "/metrics",
+      "module": "shared",
+      "function": "metrics",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:437"
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "module": "shared",
+      "function": "catalog",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:447"
+    },
+    {
+      "method": "POST",
+      "path": "/resources/{resource_type}",
+      "module": "shared",
+      "function": "create_resource",
+      "parameters": [
+        {
+          "name": "resource_type",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ResourceCreate",
+          "model_fields": [
+            "user_id",
+            "entity_id",
+            "payload"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_idempotency_key",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:479"
+    },
+    {
+      "method": "GET",
+      "path": "/resources/{resource_type}",
+      "module": "shared",
+      "function": "list_resources",
+      "parameters": [
+        {
+          "name": "resource_type",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "user_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:489"
+    },
+    {
+      "method": "GET",
+      "path": "/resources/{resource_type}/{resource_id}",
+      "module": "shared",
+      "function": "get_resource",
+      "parameters": [
+        {
+          "name": "resource_type",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "resource_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:502"
+    },
+    {
+      "method": "PATCH",
+      "path": "/resources/{resource_type}/{resource_id}",
+      "module": "shared",
+      "function": "patch_resource",
+      "parameters": [
+        {
+          "name": "resource_type",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "resource_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ResourcePatch",
+          "model_fields": [
+            "payload"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:512"
+    },
+    {
+      "method": "DELETE",
+      "path": "/resources/{resource_type}/{resource_id}",
+      "module": "shared",
+      "function": "delete_resource",
+      "parameters": [
+        {
+          "name": "resource_type",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "resource_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:533"
+    },
+    {
+      "method": "POST",
+      "path": "/resources/{resource_type}/{resource_id}/actions/{action}",
+      "module": "shared",
+      "function": "transition_resource",
+      "parameters": [
+        {
+          "name": "resource_type",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "resource_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "action",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ActionPayload",
+          "model_fields": [
+            "reason",
+            "payload"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:550"
+    },
+    {
+      "method": "GET",
+      "path": "/audit/events",
+      "module": "shared",
+      "function": "audit_events",
+      "parameters": [
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:587"
+    },
+    {
+      "method": "GET",
+      "path": "/events/outbox",
+      "module": "shared",
+      "function": "outbox",
+      "parameters": [
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:593"
+    },
+    {
+      "method": "POST",
+      "path": "/create",
+      "module": "shared",
+      "function": "create_record",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "CreatePayload",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_idempotency_key",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:995"
+    },
+    {
+      "method": "GET",
+      "path": "/list",
+      "module": "shared",
+      "function": "list_records",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:1017"
+    },
+    {
+      "method": "POST",
+      "path": "/approve",
+      "module": "shared",
+      "function": "approve",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "DecisionPayload",
+          "model_fields": [
+            "id",
+            "reason"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:1023"
+    },
+    {
+      "method": "POST",
+      "path": "/reject",
+      "module": "shared",
+      "function": "reject",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "DecisionPayload",
+          "model_fields": [
+            "id",
+            "reason"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:1035"
+    },
+    {
+      "method": "POST",
+      "path": "/audit",
+      "module": "shared",
+      "function": "audit",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "AuditPayload",
+          "model_fields": [
+            "action",
+            "resource_type",
+            "resource_id",
+            "payload"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:1047"
+    },
+    {
+      "method": "GET",
+      "path": "/{resource_id}",
+      "module": "shared",
+      "function": "get_record",
+      "parameters": [
+        {
+          "name": "resource_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:1057"
+    },
+    {
+      "method": "PATCH",
+      "path": "/{resource_id}",
+      "module": "shared",
+      "function": "patch_record",
+      "parameters": [
+        {
+          "name": "resource_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "PatchPayload",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:1064"
+    },
+    {
+      "method": "DELETE",
+      "path": "/{resource_id}",
+      "module": "shared",
+      "function": "delete_record",
+      "parameters": [
+        {
+          "name": "resource_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:1083"
+    },
+    {
+      "method": "POST",
+      "path": "/registrations",
+      "module": "shared",
+      "function": "register_user",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "IdentityRegistration",
+          "model_fields": [
+            "full_name",
+            "email",
+            "password_hash",
+            "document_cpf",
+            "cpf_document",
+            "terms_accepted_at",
+            "lgpd_consent_at"
+          ]
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:452"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/kyc/person",
+      "module": "shared",
+      "function": "sandbox_kyc_person",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxKycPersonPayload",
+          "model_fields": [
+            "user_id",
+            "document",
+            "full_name",
+            "selfie_hash"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:600"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/kyb/business",
+      "module": "shared",
+      "function": "sandbox_kyb_business",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxKybBusinessPayload",
+          "model_fields": [
+            "company_id",
+            "cnpj",
+            "legal_name"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:616"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/psp/pix/authorize",
+      "module": "shared",
+      "function": "sandbox_pix_authorize",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxPixPayload",
+          "model_fields": [
+            "payment_id",
+            "payer_id",
+            "amount_brl",
+            "idempotency_key"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:631"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/psp/escrows",
+      "module": "shared",
+      "function": "sandbox_escrow_create",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxEscrowPayload",
+          "model_fields": [
+            "escrow_id",
+            "payer_id",
+            "beneficiary_id",
+            "amount_brl"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:646"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/psp/escrows/release",
+      "module": "shared",
+      "function": "sandbox_escrow_release",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxEscrowReleasePayload",
+          "model_fields": [
+            "escrow_id",
+            "amount_brl"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:661"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/fiscal/invoices",
+      "module": "shared",
+      "function": "sandbox_fiscal_invoice",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxFiscalInvoicePayload",
+          "model_fields": [
+            "invoice_id",
+            "document_type",
+            "amount_brl",
+            "issuer_document"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:670"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/ctps/classify",
+      "module": "shared",
+      "function": "sandbox_ctps_classify",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxCtpsPayload",
+          "model_fields": [
+            "resume_id",
+            "pdf_text"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:686"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/maps/route",
+      "module": "shared",
+      "function": "sandbox_maps_route",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxRoutePayload",
+          "model_fields": [
+            "route_id",
+            "origin",
+            "destination",
+            "vehicle_type"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:695"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/health/consents",
+      "module": "shared",
+      "function": "sandbox_health_consent",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxClinicalConsentPayload",
+          "model_fields": [
+            "patient_id",
+            "professional_id",
+            "purpose",
+            "ttl_days"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:711"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/api-hub/webhooks/sign",
+      "module": "shared",
+      "function": "sandbox_api_hub_webhook_sign",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxWebhookSignPayload",
+          "model_fields": [
+            "webhook_id",
+            "payload",
+            "secret"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:727"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/api-hub/api-key/verify",
+      "module": "shared",
+      "function": "sandbox_api_hub_api_key_verify",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxApiKeyVerifyPayload",
+          "model_fields": [
+            "api_key",
+            "allowed_hashes"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:735"
+    },
+    {
+      "method": "POST",
+      "path": "/integrations/sandbox/suppliers/products",
+      "module": "shared",
+      "function": "sandbox_supplier_product",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "SandboxSupplierProductPayload",
+          "model_fields": [
+            "supplier_id",
+            "external_sku",
+            "cost_brl",
+            "available_quantity"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:744"
+    },
+    {
+      "method": "POST",
+      "path": "/pricing/quote",
+      "module": "shared",
+      "function": "calculate_delivery_quote",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "DeliveryQuoteRequest",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:760"
+    },
+    {
+      "method": "POST",
+      "path": "/pricing/fare",
+      "module": "shared",
+      "function": "calculate_mobility_fare",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "MobilityFareRequest",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:765"
+    },
+    {
+      "method": "POST",
+      "path": "/pricing/commission",
+      "module": "shared",
+      "function": "calculate_marketplace_commission",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "CommissionRequest",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:770"
+    },
+    {
+      "method": "POST",
+      "path": "/resumes/{resume_id}/imports/ctps-digital",
+      "module": "shared",
+      "function": "import_ctps_digital",
+      "parameters": [
+        {
+          "name": "resume_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "document",
+          "annotation": "bytes",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:825"
+    },
+    {
+      "method": "GET",
+      "path": "/resumes/{resume_id}/documents/{document_id}/content",
+      "module": "shared",
+      "function": "own_resume_document",
+      "parameters": [
+        {
+          "name": "resume_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "document_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:885"
+    },
+    {
+      "method": "GET",
+      "path": "/resumes/{resume_id}/complete",
+      "module": "shared",
+      "function": "own_complete_resume",
+      "parameters": [
+        {
+          "name": "resume_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:920"
+    },
+    {
+      "method": "GET",
+      "path": "/vacancies",
+      "module": "shared",
+      "function": "vacancies",
+      "parameters": [
+        {
+          "name": "q",
+          "annotation": "str | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:927"
+    },
+    {
+      "method": "GET",
+      "path": "/recruiting/resumes",
+      "module": "shared",
+      "function": "candidate_resumes",
+      "parameters": [
+        {
+          "name": "q",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:939"
+    },
+    {
+      "method": "GET",
+      "path": "/recruiting/resumes/{resume_id}",
+      "module": "shared",
+      "function": "recruiter_resume_view",
+      "parameters": [
+        {
+          "name": "resume_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "purpose",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/runtime.py:967"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/catalog/modules",
+      "module": "shared",
+      "function": "valley_catalog_modules",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:109"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/catalog/categories",
+      "module": "shared",
+      "function": "valley_catalog_categories",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:113"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/catalog/business-activities",
+      "module": "shared",
+      "function": "valley_catalog_business_activities",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:117"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/catalog/facets",
+      "module": "shared",
+      "function": "valley_catalog_facets",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:121"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/catalog",
+      "module": "shared",
+      "function": "valley_catalog_home",
+      "parameters": [
+        {
+          "name": "q",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "category",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "offer_type",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "lat",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "lng",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "company_type",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "company_category",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "business_activity",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "price_min",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "price_max",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "availability",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "verified_only",
+          "annotation": "bool",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:125"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/catalog/offers",
+      "module": "shared",
+      "function": "valley_catalog_offers",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:156"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/catalog/offers/{offer_id}",
+      "module": "shared",
+      "function": "valley_catalog_offer_detail",
+      "parameters": [
+        {
+          "name": "offer_id",
+          "annotation": "str",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:160"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/catalog/search",
+      "module": "shared",
+      "function": "valley_catalog_search",
+      "parameters": [
+        {
+          "name": "q",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "category",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "offer_type",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "lat",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "lng",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "company_type",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "company_category",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "business_activity",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "price_min",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "price_max",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "availability",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "verified_only",
+          "annotation": "bool",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:167"
+    },
+    {
+      "method": "POST",
+      "path": "/valley/orders/{order_id}/pepitas/grants",
+      "module": "shared",
+      "function": "grant_pepitas",
+      "parameters": [
+        {
+          "name": "order_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ValleyPepitaGrant",
+          "model_fields": [
+            "pepitas",
+            "customer_user_id",
+            "merchant_gold_ledger_id",
+            "note"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_idempotency_key",
+          "annotation": "str | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:200"
+    },
+    {
+      "method": "POST",
+      "path": "/valley/checkout/discount-options",
+      "module": "shared",
+      "function": "valley_stock_discount_options",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "ValleyStockDiscountRequest",
+          "model_fields": [
+            "catalog_product_id",
+            "price_brl",
+            "user_pepitas_balance"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:241"
+    },
+    {
+      "method": "POST",
+      "path": "/valley/checkout/discount-quotes",
+      "module": "shared",
+      "function": "valley_stock_discount_quote",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "ValleyStockDiscountQuoteRequest",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_idempotency_key",
+          "annotation": "str | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/valley.py:263"
+    }
+  ]
+}

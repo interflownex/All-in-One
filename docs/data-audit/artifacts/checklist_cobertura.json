@@ -9,6 +9,8 @@
     "relationships": 297,
     "indexes": 48,
     "endpoints": 99,
+    "endpoints_with_response_model": 8,
+    "api_model_fields": 115,
     "ui_candidates": 1067,
     "ui_surfaces": 299,
     "ui_forms": 129,

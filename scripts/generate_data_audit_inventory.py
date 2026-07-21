@@ -166,20 +166,63 @@ def discover_physical_model() -> tuple[set[str], dict[str, list[Field]], list[st
     return schemas, tables, indexes, [str(path.relative_to(ROOT)) for path in migrations]
 
 
-def discover_endpoints() -> list[dict[str, str]]:
-    endpoints: list[dict[str, str]] = []
-    pattern = re.compile(r'@(?:app|router)\.(get|post|put|patch|delete)\(\s*["\']([^"\']+)')
+def annotation_name(node: ast.AST | None) -> str:
+    return ast.unparse(node) if node is not None else ""
+
+
+def discover_endpoints() -> list[dict[str, object]]:
+    endpoints: list[dict[str, object]] = []
     for path in sorted((ROOT / "modules").rglob("*.py")):
         text = path.read_text(encoding="utf-8")
-        for match in pattern.finditer(text):
-            endpoints.append(
-                {
-                    "method": match.group(1).upper(),
-                    "path": match.group(2),
-                    "module": path.relative_to(ROOT).parts[1],
-                    "evidence": f"{path.relative_to(ROOT)}:{line_number(text, match.start())}",
-                }
-            )
+        try:
+            tree = ast.parse(text)
+        except SyntaxError:
+            continue
+        models: dict[str, list[str]] = {}
+        for node in tree.body:
+            if not isinstance(node, ast.ClassDef) or not any(annotation_name(base).endswith("BaseModel") for base in node.bases):
+                continue
+            models[node.name] = [item.target.id for item in node.body if isinstance(item, ast.AnnAssign) and isinstance(item.target, ast.Name)]
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            for decorator in node.decorator_list:
+                if not isinstance(decorator, ast.Call) or not isinstance(decorator.func, ast.Attribute):
+                    continue
+                method = decorator.func.attr.lower()
+                if method not in {"get", "post", "put", "patch", "delete"} or not decorator.args:
+                    continue
+                route_node = decorator.args[0]
+                if not isinstance(route_node, ast.Constant) or not isinstance(route_node.value, str):
+                    continue
+                response_model = ""
+                for keyword in decorator.keywords:
+                    if keyword.arg == "response_model":
+                        response_model = annotation_name(keyword.value)
+                parameters: list[dict[str, object]] = []
+                for argument in (*node.args.posonlyargs, *node.args.args, *node.args.kwonlyargs):
+                    annotation = annotation_name(argument.annotation)
+                    if argument.arg in {"self", "request"}:
+                        continue
+                    model_name = annotation.split("[")[-1].rstrip("]") if "[" in annotation else annotation
+                    parameters.append(
+                        {
+                            "name": argument.arg,
+                            "annotation": annotation,
+                            "model_fields": models.get(model_name, []),
+                        }
+                    )
+                endpoints.append(
+                    {
+                        "method": method.upper(),
+                        "path": route_node.value,
+                        "module": path.relative_to(ROOT).parts[1],
+                        "function": node.name,
+                        "parameters": parameters,
+                        "response_model": response_model,
+                        "evidence": f"{path.relative_to(ROOT)}:{decorator.lineno}",
+                    }
+                )
     return endpoints
 
 
@@ -380,6 +423,8 @@ def build_delivery() -> None:
         "relationships": len(relations),
         "indexes": len(indexes),
         "endpoints": len(endpoints),
+        "endpoints_with_response_model": sum(bool(row["response_model"]) for row in endpoints),
+        "api_model_fields": sum(len(parameter["model_fields"]) for row in endpoints for parameter in row["parameters"]),
         "ui_candidates": len(ui_bindings),
         "ui_surfaces": len({row["evidence"] for row in ui_bindings}),
         "ui_forms": len({row["evidence"] for row in ui_bindings if row["surface"] == "form"}),
@@ -420,6 +465,20 @@ def build_delivery() -> None:
         event_csv_rows,
     )
     write_json(ARTIFACTS / "catalogo_eventos.json", {"version": 1, "counts": counts, "events": transitions})
+    api_csv_rows = [
+        {
+            **row,
+            "parameters": ";".join(f"{parameter['name']}:{parameter['annotation']}" for parameter in row["parameters"]),
+            "request_fields": ";".join(field for parameter in row["parameters"] for field in parameter["model_fields"]),
+        }
+        for row in endpoints
+    ]
+    write_csv(
+        ARTIFACTS / "catalogo_apis.csv",
+        ["module", "method", "path", "function", "parameters", "request_fields", "response_model", "evidence"],
+        api_csv_rows,
+    )
+    write_json(ARTIFACTS / "catalogo_apis.json", {"version": 1, "counts": counts, "endpoints": endpoints})
     write_csv(
         ARTIFACTS / "matriz_formulario_campo.csv",
         ["app", "module", "entity", "surface", "title", "field", "binding", "evidence"],
@@ -428,7 +487,25 @@ def build_delivery() -> None:
     write_csv(
         ARTIFACTS / "matriz_api_campo.csv",
         ["module", "method", "path", "field", "status", "evidence"],
-        ({**endpoint, "field": "requer inspeção de DTO", "status": "parcial"} for endpoint in endpoints),
+        (
+            {
+                "module": endpoint["module"],
+                "method": endpoint["method"],
+                "path": endpoint["path"],
+                "field": field,
+                "status": status,
+                "evidence": endpoint["evidence"],
+            }
+            for endpoint in endpoints
+            for field, status in (
+                [
+                    (field, "campo de modelo Pydantic comprovado")
+                    for parameter in endpoint["parameters"]
+                    for field in parameter["model_fields"]
+                ]
+                or [("payload sem modelo local comprovado", "lacuna")]
+            )
+        ),
     )
     write_csv(
         ARTIFACTS / "matriz_evento_campo.csv",
@@ -646,7 +723,7 @@ EVIDÊNCIAS: `database/postgres/migrations/`, `database/mongodb/init/001_ai_soci
     write_markdown(
         "12_APIS_EVENTOS_E_INTEGRACOES.md",
         "APIs, Eventos e Integrações",
-        f"""A varredura sintática localizou {counts['endpoints']} endpoints candidatos e {counts['event_transitions']} transições com {counts['unique_events']} nomes de evento. Produtor, ação, estados, papéis e MFA vêm das regras do backend; versão, consumidores, payload integral, idempotência e compatibilidade continuam pendentes quando não declarados.\n\nEVIDÊNCIAS: `artifacts/catalogo_eventos.json`, `artifacts/matriz_api_campo.csv`, `artifacts/matriz_evento_campo.csv` e `artifacts/matriz_permissao_acao.csv`. Lacuna: `AUD-P1-003`.""",
+        f"""A varredura AST localizou {counts['endpoints']} endpoints, {counts['endpoints_with_response_model']} declarações de `response_model` e {counts['api_model_fields']} ocorrências de campo em modelos Pydantic locais. Também foram encontradas {counts['event_transitions']} transições com {counts['unique_events']} nomes de evento. Produtor, ação, estados, papéis e MFA vêm das regras do backend; versão, consumidores, payload integral, idempotência e compatibilidade continuam pendentes quando não declarados.\n\nEVIDÊNCIAS: `artifacts/catalogo_apis.json`, `artifacts/catalogo_eventos.json`, `artifacts/matriz_api_campo.csv`, `artifacts/matriz_evento_campo.csv` e `artifacts/matriz_permissao_acao.csv`. Lacuna: `AUD-P1-003`.""",
     )
     write_markdown(
         "13_VALIDACAO_E_TESTES.md",
