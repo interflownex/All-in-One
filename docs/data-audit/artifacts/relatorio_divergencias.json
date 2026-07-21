@@ -2,9 +2,9 @@
   "version": 2,
   "status": "em_execucao",
   "counts": {
-    "total": 8,
+    "total": 9,
     "P0": 2,
-    "P1": 6,
+    "P1": 7,
     "P2": 0,
     "P3": 0,
     "P4": 0
@@ -103,14 +103,14 @@
       "priority": "P1",
       "module": "frontend e APIs",
       "title": "Bindings frontend-backend não estão integralmente comprovados",
-      "description": "Há 299 superfícies e 1067 combinações de campo, mas a maioria não possui vínculo demonstrado com DTO, endpoint, validação e teste.",
+      "description": "Há 299 superfícies e 1067 combinações de campo; 985 bindings são genéricos/não comprovados e somente 82 coincidem provavelmente com campo físico.",
       "evidence": [
         "docs/data-audit/artifacts/matriz_formulario_campo.csv",
         "docs/data-audit/artifacts/coordenadas_stitch.json"
       ],
       "impact": "Formulários podem omitir, renomear ou enviar campos sem contrato.",
-      "risk": "Botões mortos, perda de dados e contratos divergentes.",
-      "proposal": "Resolver cada binding por rota e campo e ligar ações a endpoints, permissões e testes.",
+      "risk": "Perda de dados, validação incompleta e contratos divergentes.",
+      "proposal": "Resolver cada binding por rota e campo e vinculá-lo a DTO, validação, origem, destino e teste.",
       "dependencies": [
         "contratos DTO",
         "rotas frontend"
@@ -121,17 +121,15 @@
       ],
       "migration": "não aplicável",
       "backend": "tipar payloads e responses",
-      "frontend": "declarar binding e estados",
-      "tests": "integração e E2E por superfície",
+      "frontend": "declarar binding e validação",
+      "tests": "integração e E2E por campo",
       "documentation": "09_FORMULARIOS_FRONTEND.md",
-      "acceptance": "Cada campo e ação UI aponta para DTO, endpoint, regra, permissão e teste aprovados.",
+      "acceptance": "Cada campo UI aponta para DTO, endpoint, validação e teste aprovados.",
       "status": "pendente",
       "owner_suggestion": "frontend e backend",
       "dimensions": [
         "bindings_frontend",
-        "formularios",
-        "acoes_ui",
-        "permissoes_backend"
+        "formularios"
       ]
     },
     {
@@ -318,6 +316,46 @@
       "dimensions": [
         "auditoria",
         "campos_sensiveis",
+        "permissoes_backend"
+      ]
+    },
+    {
+      "id": "AUD-P1-008",
+      "priority": "P1",
+      "module": "frontend e runtime compartilhado",
+      "title": "Salvar Registro é incompatível com o contrato CRUD do backend",
+      "description": "Nas 129 superfícies de formulário, a criação envia payload plano sem user_id/payload e a edição usa PUT, enquanto o runtime exige ResourceCreate envelopado no POST e oferece PATCH com ResourcePatch.",
+      "evidence": [
+        "apps/all-in-one/src/components/SmartCRUD.tsx:241",
+        "modules/shared/runtime.py:101",
+        "modules/shared/runtime.py:479",
+        "modules/shared/runtime.py:512",
+        "docs/data-audit/artifacts/matriz_acao_ui_backend.json"
+      ],
+      "impact": "Criação e edição autenticadas podem retornar 422 ou 405 em todas as telas genéricas.",
+      "risk": "Botão principal não conclui a operação e o fallback local mascara a incompatibilidade.",
+      "proposal": "Definir adapter frontend tipado por entidade, usar POST {user_id,payload}, PATCH {payload}, idempotência quando transacional e testes HTTP/E2E por formulário.",
+      "dependencies": [
+        "bindings de campo",
+        "actor autenticado",
+        "contratos por entidade"
+      ],
+      "affected_files": [
+        "apps/all-in-one/src/components/SmartCRUD.tsx",
+        "modules/shared/runtime.py"
+      ],
+      "migration": "não aplicável",
+      "backend": "manter contratos explícitos e documentar métodos",
+      "frontend": "corrigir envelope, método, idempotência e gates de permissão",
+      "tests": "contrato HTTP e E2E para criação/edição das 129 superfícies",
+      "documentation": "09_FORMULARIOS_FRONTEND.md",
+      "acceptance": "Cada formulário cria e edita via contrato backend compatível, com permissão, estados, auditoria e teste aprovado.",
+      "status": "incompativel",
+      "owner_suggestion": "frontend e plataforma backend",
+      "dimensions": [
+        "bindings_frontend",
+        "formularios",
+        "acoes_ui",
         "permissoes_backend"
       ]
     }

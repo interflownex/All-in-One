@@ -51,6 +51,8 @@
     "artifacts/catalogo_browser_storage.json",
     "artifacts/catalogo_browser_storage.csv",
     "artifacts/coordenada_projetos_stitch.json",
+    "artifacts/matriz_acao_ui_backend.json",
+    "artifacts/matriz_acao_ui_backend.csv",
     "artifacts/erd.mmd",
     "artifacts/matriz_formulario_campo.csv",
     "artifacts/matriz_api_campo.csv",

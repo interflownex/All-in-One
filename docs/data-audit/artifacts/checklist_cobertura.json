@@ -21,6 +21,9 @@
     "ui_candidates": 1067,
     "ui_surfaces": 299,
     "ui_forms": 129,
+    "ui_actions": 1111,
+    "ui_actions_incompatible": 129,
+    "ui_actions_without_frontend_permission_gate": 979,
     "logical_entities": 120,
     "logical_without_physical_table": 62,
     "logical_without_ui_surface": 46,
@@ -99,7 +102,8 @@
         "docs/data-audit/artifacts/matriz_formulario_campo.csv"
       ],
       "lacunas": [
-        "AUD-P1-002"
+        "AUD-P1-002",
+        "AUD-P1-008"
       ],
       "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
@@ -165,7 +169,8 @@
         "AUD-P1-002",
         "AUD-P1-004",
         "AUD-P1-005",
-        "AUD-P1-006"
+        "AUD-P1-006",
+        "AUD-P1-008"
       ],
       "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
@@ -175,8 +180,8 @@
         "docs/data-audit/artifacts/coordenadas_stitch.json"
       ],
       "lacunas": [
-        "AUD-P1-002",
-        "AUD-P1-004"
+        "AUD-P1-004",
+        "AUD-P1-008"
       ],
       "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },
@@ -186,9 +191,9 @@
         "docs/data-audit/artifacts/matriz_permissao_acao.csv"
       ],
       "lacunas": [
-        "AUD-P1-002",
         "AUD-P1-004",
-        "AUD-P1-007"
+        "AUD-P1-007",
+        "AUD-P1-008"
       ],
       "metodo": "percentual conservador de evidência estática; não equivale a aceite operacional"
     },

@@ -561,6 +561,62 @@ def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]
     return bindings
 
 
+def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, object]]:
+    source = "apps/all-in-one/src/components/SmartCRUD.tsx"
+    surfaces = {
+        (row["evidence"], row["module"], row["entity"], row["surface"], row["route"])
+        for row in ui_bindings
+    }
+    aliases = {
+        ("identity", "identity"): "users",
+        ("delivery", "deliveryrequests"): "delivery_requests",
+        ("jobs", "jobpostings"): "job_postings",
+    }
+    rows: list[dict[str, object]] = []
+    for surface_evidence, module, entity, surface, route in sorted(surfaces):
+        resource = aliases.get((module, entity), entity)
+        base = f"/{module}/resources/{resource}"
+        common = {"module": module, "entity": entity, "surface": surface, "route": route, "surface_evidence": surface_evidence}
+        if surface == "form":
+            rows.extend(
+                [
+                    {
+                        **common, "action": "Cancelar", "trigger": "click", "method": "local", "endpoint": "navigate(-1)",
+                        "request_contract": "não aplicável", "backend_contract": "não aplicável", "contract_status": "comprovado_local",
+                        "frontend_permission_gate": "não aplicável", "backend_enforcement": "não aplicável", "audit": "não aplicável",
+                        "states": ["idle"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, "navigate(-1)"),
+                    },
+                    {
+                        **common, "action": "Salvar Registro", "trigger": "submit", "method": "POST (criação) / PUT (edição)", "endpoint": base,
+                        "request_contract": "payload plano {name,description,category,status,updated_at,image,video}",
+                        "backend_contract": "POST exige ResourceCreate {user_id,entity_id?,payload}; edição aceita PATCH ResourcePatch {payload}, não PUT",
+                        "contract_status": "incompativel", "frontend_permission_gate": False, "backend_enforcement": True,
+                        "audit": "backend somente se requisição for aceita", "states": ["saving", "saved", "failed"],
+                        "test_evidence": "divergência estática; E2E por superfície não localizado", "evidence": source_evidence(source, "method: editingRecord?.id ? 'PUT' : 'POST'"),
+                    },
+                ]
+            )
+        else:
+            rows.extend(
+                [
+                    {**common, "action": "Pesquisar", "trigger": "click", "method": "GET", "endpoint": base, "request_contract": "query/limit", "backend_contract": "lista protegida por actor_from_headers", "contract_status": "parcial_com_fallback_local", "frontend_permission_gate": False, "backend_enforcement": True, "audit": "leitura sensível não comprovada por superfície", "states": ["loading", "erro", "sucesso"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, "onClick={fetchData}")},
+                    {**common, "action": "Novo registro", "trigger": "click", "method": "local", "endpoint": f"/{module}/{entity}-form", "request_contract": "navegação", "backend_contract": "não aplicável até salvar", "contract_status": "comprovado_local", "frontend_permission_gate": False, "backend_enforcement": "não aplicável", "audit": "não aplicável", "states": ["idle"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, "Novo registro")},
+                    {**common, "action": "Ver detalhes", "trigger": "click", "method": "local", "endpoint": "modal em memória", "request_contract": "registro já carregado", "backend_contract": "não consulta GET de detalhe", "contract_status": "comprovado_local_sem_refresh", "frontend_permission_gate": False, "backend_enforcement": False, "audit": "leitura de detalhe não auditada no clique", "states": ["aberto", "fechado"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, "setSelectedMedia(item)")},
+                    {**common, "action": "Editar", "trigger": "click", "method": "local", "endpoint": f"/{module}/{entity}-form", "request_contract": "registro em location.state", "backend_contract": "salvamento posterior incompatível com PATCH", "contract_status": "parcial_edicao_incompativel", "frontend_permission_gate": False, "backend_enforcement": "somente no salvamento", "audit": "não aplicável até salvar", "states": ["idle"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, ">Editar</button>")},
+                    {**common, "action": "Excluir", "trigger": "click", "method": "DELETE", "endpoint": f"{base}/{{id}}", "request_contract": "UUID e confirmação", "backend_contract": "soft delete; imutáveis/sensíveis retornam 409", "contract_status": "parcial_com_fallback_local", "frontend_permission_gate": False, "backend_enforcement": True, "audit": "backend audita somente chamada remota aceita", "states": ["running", "completed", "failed"], "test_evidence": "não localizado por superfície", "evidence": source_evidence(source, "onClick={() => deleteRecord(item)}")},
+                ]
+            )
+            journey = {
+                ("marketplace", "orders"): ("Autorizar pagamento sandbox", "POST", "/gateway/payments/sandbox/authorize"),
+                ("delivery", "deliveryrequests"): ("Executar jornada de entrega", "POST x3", "/delivery/resources/delivery_requests/{id}/actions/{assign|pickup|complete}"),
+                ("jobs", "jobpostings"): ("Enviar candidatura", "POST x2", "/jobs/resources/{resumes|applications}"),
+            }.get((module, entity))
+            if journey:
+                action, method, endpoint = journey
+                rows.append({**common, "action": action, "trigger": "click", "method": method, "endpoint": endpoint, "request_contract": "contrato específico implementado no SmartCRUD", "backend_contract": "rotas específicas com actor/autorização", "contract_status": "implementado_requer_e2e_vivo", "frontend_permission_gate": "token e presença de dados; papel não verificado", "backend_enforcement": True, "audit": "backend conforme transições", "states": ["running", "completed", "failed"], "test_evidence": "testes de jornada existem, cobertura por tela requer confirmação", "evidence": source_evidence(source, "const runJourneyAction = async () =>")})
+    return rows
+
+
 def write_csv(path: Path, columns: list[str], rows: Iterable[dict[str, object]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
@@ -596,6 +652,7 @@ def build_delivery() -> None:
     fields = [field for table_fields in tables.values() for field in table_fields]
     endpoints = discover_endpoints()
     ui_bindings = discover_ui_bindings(tables)
+    ui_actions = discover_ui_actions(ui_bindings)
     logical_rules = discover_logical_rules(tables, ui_bindings)
     transitions = discover_transitions(logical_rules)
     relations = [field for field in fields if field.reference]
@@ -620,6 +677,9 @@ def build_delivery() -> None:
         "ui_candidates": len(ui_bindings),
         "ui_surfaces": len({row["evidence"] for row in ui_bindings}),
         "ui_forms": len({row["evidence"] for row in ui_bindings if row["surface"] == "form"}),
+        "ui_actions": len(ui_actions),
+        "ui_actions_incompatible": sum(row["contract_status"] == "incompativel" for row in ui_actions),
+        "ui_actions_without_frontend_permission_gate": sum(row["frontend_permission_gate"] is False for row in ui_actions),
         "logical_entities": len(logical_rules),
         "logical_without_physical_table": sum(not row["has_physical_table"] for row in logical_rules),
         "logical_without_ui_surface": sum(not row["has_ui_surface"] for row in logical_rules),
@@ -717,6 +777,12 @@ def build_delivery() -> None:
         api_csv_rows,
     )
     write_json(ARTIFACTS / "catalogo_apis.json", {"version": 1, "counts": counts, "endpoints": endpoints})
+    write_json(ARTIFACTS / "matriz_acao_ui_backend.json", {"version": 1, "status": "auditoria_estatica", "counts": counts, "actions": ui_actions})
+    write_csv(
+        ARTIFACTS / "matriz_acao_ui_backend.csv",
+        ["module", "entity", "surface", "route", "action", "trigger", "method", "endpoint", "request_contract", "backend_contract", "contract_status", "frontend_permission_gate", "backend_enforcement", "audit", "states", "test_evidence", "evidence", "surface_evidence"],
+        ({**row, "states": ";".join(row["states"])} for row in ui_actions),
+    )
     for artifact_name, rows in (
         ("catalogo_redis", redis_entries),
         ("catalogo_object_storage", object_storage_entries),
@@ -749,6 +815,11 @@ def build_delivery() -> None:
         ),
     )
     surfaces: dict[str, dict[str, object]] = {}
+    actions_by_surface: dict[str, list[dict[str, object]]] = defaultdict(list)
+    for action in ui_actions:
+        actions_by_surface[str(action["surface_evidence"])].append(
+            {key: value for key, value in action.items() if key not in {"surface_evidence", "surface", "route", "module", "entity"}}
+        )
     required_states = ["loading", "vazio", "erro", "sucesso", "sem_permissao", "conflito", "dados_desatualizados"]
     for row in ui_bindings:
         evidence = row["evidence"]
@@ -763,6 +834,7 @@ def build_delivery() -> None:
                 "persona": "papel autorizado do módulo; requer detalhamento",
                 "fields": [],
                 "primary_action": "Salvar registro" if row["surface"] == "form" else "Abrir detalhes",
+                "actions": actions_by_surface[evidence],
                 "endpoint": f"/{row['module']}/resources/{row['entity']}",
                 "permissions": "enforcement backend requer validação",
                 "states": required_states,
@@ -886,7 +958,7 @@ def build_delivery() -> None:
         },
         {
             "id": "AUD-P1-002", "priority": "P1", "module": "frontend e APIs", "title": "Bindings frontend-backend não estão integralmente comprovados",
-            "description": "Há 299 superfícies e 1067 combinações de campo, mas a maioria não possui vínculo demonstrado com DTO, endpoint, validação e teste.", "evidence": ["docs/data-audit/artifacts/matriz_formulario_campo.csv", "docs/data-audit/artifacts/coordenadas_stitch.json"], "impact": "Formulários podem omitir, renomear ou enviar campos sem contrato.", "risk": "Botões mortos, perda de dados e contratos divergentes.", "proposal": "Resolver cada binding por rota e campo e ligar ações a endpoints, permissões e testes.", "dependencies": ["contratos DTO", "rotas frontend"], "affected_files": ["apps/all-in-one/src", "modules"], "migration": "não aplicável", "backend": "tipar payloads e responses", "frontend": "declarar binding e estados", "tests": "integração e E2E por superfície", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada campo e ação UI aponta para DTO, endpoint, regra, permissão e teste aprovados.", "status": "pendente", "owner_suggestion": "frontend e backend", "dimensions": ["bindings_frontend", "formularios", "acoes_ui", "permissoes_backend"]
+            "description": "Há 299 superfícies e 1067 combinações de campo; 985 bindings são genéricos/não comprovados e somente 82 coincidem provavelmente com campo físico.", "evidence": ["docs/data-audit/artifacts/matriz_formulario_campo.csv", "docs/data-audit/artifacts/coordenadas_stitch.json"], "impact": "Formulários podem omitir, renomear ou enviar campos sem contrato.", "risk": "Perda de dados, validação incompleta e contratos divergentes.", "proposal": "Resolver cada binding por rota e campo e vinculá-lo a DTO, validação, origem, destino e teste.", "dependencies": ["contratos DTO", "rotas frontend"], "affected_files": ["apps/all-in-one/src", "modules"], "migration": "não aplicável", "backend": "tipar payloads e responses", "frontend": "declarar binding e validação", "tests": "integração e E2E por campo", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada campo UI aponta para DTO, endpoint, validação e teste aprovados.", "status": "pendente", "owner_suggestion": "frontend e backend", "dimensions": ["bindings_frontend", "formularios"]
         },
         {
             "id": "AUD-P1-003", "priority": "P1", "module": "eventos", "title": "Eventos não possuem catálogo integral de payload versionado",
@@ -907,6 +979,10 @@ def build_delivery() -> None:
         {
             "id": "AUD-P1-007", "priority": "P1", "module": "auditoria e segurança", "title": "Trilhas de auditoria não cobrem todos os atributos mandatórios",
             "description": "A análise de cinco tabelas candidatas encontrou cobertura global de apenas parte dos 35 requisitos; faltam, entre outros, sessão, origem, canal, motivo, causação, integridade, retenção e registros de leitura/exportação.", "evidence": ["docs/data-audit/artifacts/cobertura_auditoria.json", "docs/data-audit/artifacts/cobertura_auditoria.csv"], "impact": "A plataforma não consegue demonstrar integralmente quem acessou ou alterou dados, em qual contexto e por qual motivo.", "risk": "Não repúdio insuficiente, investigação incompleta e descumprimento de auditoria/LGPD.", "proposal": "Aprovar contrato unificado de auditoria, mapear requisito por operação e implementar escrita append-only com testes de integridade e acesso.", "dependencies": ["segurança", "compliance", "proprietários de domínio"], "affected_files": ["database/postgres/migrations", "modules/shared/store.py", "modules"], "migration": "criar ou evoluir trilha com backfill quando tecnicamente possível", "backend": "registrar criação, mudança, leitura sensível, exportação e autorização", "frontend": "enviar motivo quando obrigatório e nunca registrar segredo", "tests": "integração por operação, imutabilidade, autorização e retenção", "documentation": "08_AUDITORIA_E_LOGS.md", "acceptance": "Os 35 requisitos de auditoria têm implementação ou decisão justificada por operação, com integridade, retenção e testes aprovados.", "status": "parcial", "owner_suggestion": "segurança, plataforma e compliance", "dimensions": ["auditoria", "campos_sensiveis", "permissoes_backend"]
+        },
+        {
+            "id": "AUD-P1-008", "priority": "P1", "module": "frontend e runtime compartilhado", "title": "Salvar Registro é incompatível com o contrato CRUD do backend",
+            "description": "Nas 129 superfícies de formulário, a criação envia payload plano sem user_id/payload e a edição usa PUT, enquanto o runtime exige ResourceCreate envelopado no POST e oferece PATCH com ResourcePatch.", "evidence": [source_evidence("apps/all-in-one/src/components/SmartCRUD.tsx", "method: editingRecord?.id ? 'PUT' : 'POST'"), source_evidence("modules/shared/runtime.py", "class ResourceCreate(BaseModel):"), source_evidence("modules/shared/runtime.py", '@app.post("/resources/{resource_type}"'), source_evidence("modules/shared/runtime.py", '@app.patch("/resources/{resource_type}/{resource_id}"'), "docs/data-audit/artifacts/matriz_acao_ui_backend.json"], "impact": "Criação e edição autenticadas podem retornar 422 ou 405 em todas as telas genéricas.", "risk": "Botão principal não conclui a operação e o fallback local mascara a incompatibilidade.", "proposal": "Definir adapter frontend tipado por entidade, usar POST {user_id,payload}, PATCH {payload}, idempotência quando transacional e testes HTTP/E2E por formulário.", "dependencies": ["bindings de campo", "actor autenticado", "contratos por entidade"], "affected_files": ["apps/all-in-one/src/components/SmartCRUD.tsx", "modules/shared/runtime.py"], "migration": "não aplicável", "backend": "manter contratos explícitos e documentar métodos", "frontend": "corrigir envelope, método, idempotência e gates de permissão", "tests": "contrato HTTP e E2E para criação/edição das 129 superfícies", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada formulário cria e edita via contrato backend compatível, com permissão, estados, auditoria e teste aprovado.", "status": "incompativel", "owner_suggestion": "frontend e plataforma backend", "dimensions": ["bindings_frontend", "formularios", "acoes_ui", "permissoes_backend"]
         },
     ]
     gap_counts = {priority: sum(gap["priority"] == priority for gap in gaps) for priority in ("P0", "P1", "P2", "P3", "P4")}
@@ -1102,7 +1178,7 @@ EVIDÊNCIAS: `config/data_audit/audit_traceability_policy.json`, `artifacts/cobe
     write_markdown(
         "09_FORMULARIOS_FRONTEND.md",
         "Formulários, Tabelas, Filtros e Dashboards",
-        f"""A varredura localizou {counts['ui_surfaces']} superfícies SmartCRUD, sendo {counts['ui_forms']} formulários, e {counts['ui_candidates']} combinações superfície/campo. O componente genérico atualmente oferece somente `name`, `description` e `category` nos formulários; isso não satisfaz os campos específicos declarados pelas entidades. Cada linha deve ser vinculada a DTO, endpoint, permissão, validação, auditoria e teste.\n\nEVIDÊNCIAS: `apps/all-in-one/src/components/SmartCRUD.tsx`, `artifacts/matriz_formulario_campo.csv`. Lacuna: `AUD-P1-002`.""",
+        f"""A varredura localizou {counts['ui_surfaces']} superfícies SmartCRUD, sendo {counts['ui_forms']} formulários, {counts['ui_candidates']} combinações superfície/campo e {counts['ui_actions']} ocorrências de ação. O componente genérico oferece somente `name`, `description` e `category` nos formulários; 985 bindings são genéricos/não comprovados e apenas 82 coincidem provavelmente com campo físico.\n\nA matriz de ações encontrou {counts['ui_actions_incompatible']} botões `Salvar Registro` incompatíveis: criação envia payload plano sem o envelope `ResourceCreate`, e edição usa `PUT` embora o backend ofereça `PATCH`. Há {counts['ui_actions_without_frontend_permission_gate']} ocorrências de ação sem gate explícito de permissão no frontend; autorização backend ou fallback local deve ser analisado por ação.\n\nEVIDÊNCIAS: `apps/all-in-one/src/components/SmartCRUD.tsx`, `modules/shared/runtime.py`, `artifacts/matriz_formulario_campo.csv`, `artifacts/matriz_acao_ui_backend.json`. Lacunas: `AUD-P1-002` e `AUD-P1-008`.""",
     )
     write_markdown(
         "10_FORMULARIOS_DINAMICOS.md",

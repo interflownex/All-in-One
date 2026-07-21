@@ -29,7 +29,7 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 34
+    assert len(contract["required_complementary"]) == 36
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
@@ -48,6 +48,8 @@ def test_contract_lists_every_complementary_format() -> None:
     assert "artifacts/catalogo_object_storage.json" in contract["required_complementary"]
     assert "artifacts/catalogo_browser_storage.json" in contract["required_complementary"]
     assert "artifacts/coordenada_projetos_stitch.json" in contract["required_complementary"]
+    assert "artifacts/matriz_acao_ui_backend.json" in contract["required_complementary"]
+    assert "artifacts/matriz_acao_ui_backend.csv" in contract["required_complementary"]
 
 
 def test_generated_non_postgres_catalogs_have_field_evidence() -> None:
@@ -171,7 +173,23 @@ def test_every_smartcrud_surface_has_a_stitch_coordinate_and_route() -> None:
     assert len(data["coordinates"]) == data["counts"]["ui_surfaces"] == 299
     assert all(item["route"].startswith("/") for item in data["coordinates"])
     assert all(item["states"] and item["accessibility"] for item in data["coordinates"])
+    assert all(item["actions"] for item in data["coordinates"])
     assert all(item["binding_status"] == "parcial" for item in data["coordinates"])
+
+
+def test_ui_action_matrix_exposes_the_generic_save_contract_mismatch() -> None:
+    matrix = ROOT / "docs" / "data-audit" / "artifacts" / "matriz_acao_ui_backend.json"
+    data = __import__("json").loads(matrix.read_text(encoding="utf-8"))
+    actions = data["actions"]
+
+    assert data["counts"]["ui_actions"] == len(actions) == 1111
+    assert data["counts"]["ui_actions_incompatible"] == 129
+    assert data["counts"]["ui_actions_without_frontend_permission_gate"] == 979
+    incompatible = [item for item in actions if item["contract_status"] == "incompativel"]
+    assert len(incompatible) == data["counts"]["ui_forms"]
+    assert all(item["action"] == "Salvar Registro" for item in incompatible)
+    assert all("PUT" in item["method"] and "PATCH" in item["backend_contract"] for item in incompatible)
+    assert any(item["action"] == "Enviar candidatura" for item in actions)
 
 
 def test_units_and_tax_model_covers_precision_and_fiscal_governance() -> None:
@@ -232,7 +250,7 @@ def test_coverage_links_only_dimension_specific_gaps_and_evidence() -> None:
         assert item["evidencias"]
         assert item["metodo"]
         assert all(dimension in gaps_by_id[gap_id]["dimensions"] for gap_id in item["lacunas"])
-    assert coverage["dimensoes"]["bindings_frontend"]["lacunas"] == ["AUD-P1-002"]
+    assert coverage["dimensoes"]["bindings_frontend"]["lacunas"] == ["AUD-P1-002", "AUD-P1-008"]
     assert coverage["dimensoes"]["campos_sensiveis"]["lacunas"] == ["AUD-P0-001", "AUD-P1-007"]
     assert "AUD-P1-007" in coverage["dimensoes"]["auditoria"]["lacunas"]
     assert not any(item["percentual"] == 100 and item["lacunas"] for item in coverage["dimensoes"].values())
