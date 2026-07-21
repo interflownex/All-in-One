@@ -1,5 +1,9 @@
 # Auditoria, Logs e Rastreabilidade
 
-O schema `audit` e eventos versionados são a base encontrada. A validação deve separar auditoria de alteração, leitura sensível, segurança, negócio, métrica e trace, sem gravar segredos. A cobertura permanece parcial até provar retenção, imutabilidade e correlação em todos os módulos.
+O inventário encontrou 5 tabelas candidatas de auditoria/log/evento. O contrato possui 35 requisitos de alteração e leitura; 18 possuem ao menos um alias físico em alguma tabela candidata.
 
-EVIDÊNCIAS: `database/postgres/migrations/005_audit_events_api_security.sql`, `modules/shared/`.
+Essa cobertura global não prova que cada operação ou dado sensível seja auditado. Requisitos ausentes, retenção, imutabilidade, correlação e enforcement por módulo permanecem lacunas até testes de integração.
+
+Logs técnicos, segurança, auditoria, negócio, métricas, traces e eventos de integração devem permanecer separados e correlacionados. Segredos e valores sensíveis não podem ser gravados em texto aberto.
+
+EVIDÊNCIAS: `config/data_audit/audit_traceability_policy.json`, `artifacts/cobertura_auditoria.json`, `database/postgres/migrations/005_audit_events_api_security.sql`, `modules/shared/`.

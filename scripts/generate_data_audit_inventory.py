@@ -23,6 +23,7 @@ DATABASE = AUDIT / "databases" / "postgresql"
 DYNAMIC_FORM_MODEL = ROOT / "config" / "data_audit" / "dynamic_form_model_proposal.json"
 PRODUCT_UNITS_TAX_MODEL = ROOT / "config" / "data_audit" / "product_units_tax_model_proposal.json"
 FIELD_CLASSIFICATION_POLICY = ROOT / "config" / "data_audit" / "field_classification_policy.json"
+AUDIT_TRACEABILITY_POLICY = ROOT / "config" / "data_audit" / "audit_traceability_policy.json"
 
 
 @dataclass(frozen=True)
@@ -472,9 +473,36 @@ def build_delivery() -> None:
     dynamic_form_model = json.loads(DYNAMIC_FORM_MODEL.read_text(encoding="utf-8"))
     product_units_tax_model = json.loads(PRODUCT_UNITS_TAX_MODEL.read_text(encoding="utf-8"))
     field_classification_policy = json.loads(FIELD_CLASSIFICATION_POLICY.read_text(encoding="utf-8"))
+    audit_policy = json.loads(AUDIT_TRACEABILITY_POLICY.read_text(encoding="utf-8"))
     counts["dynamic_form_entities_proposed"] = len(dynamic_form_model["entities"])
     counts["measurement_entities_proposed"] = len(product_units_tax_model["measurement_entities"])
     counts["fiscal_entities_proposed"] = len(product_units_tax_model["fiscal_entities"])
+    audit_tables = {
+        key: {field.physical_name for field in table_fields}
+        for key, table_fields in tables.items()
+        if key.startswith("audit.") or any(token in key for token in ("audit", "_logs", "events"))
+    }
+    audit_coverage: list[dict[str, object]] = []
+    for audit_type in ("change_audit", "read_audit"):
+        for requirement, aliases in audit_policy[audit_type].items():
+            matches = {
+                table: sorted(set(aliases) & field_names)
+                for table, field_names in audit_tables.items()
+                if set(aliases) & field_names
+            }
+            audit_coverage.append(
+                {
+                    "audit_type": audit_type,
+                    "requirement": requirement,
+                    "aliases": aliases,
+                    "covered": bool(matches),
+                    "matching_tables": matches,
+                    "evidence": [f"docs/data-audit/databases/postgresql/tables/{table}.md" for table in matches],
+                }
+            )
+    counts["audit_candidate_tables"] = len(audit_tables)
+    counts["audit_requirements"] = len(audit_coverage)
+    counts["audit_requirements_covered"] = sum(bool(row["covered"]) for row in audit_coverage)
 
     field_rows = [asdict(field) for field in fields]
     write_csv(ARTIFACTS / "dicionario_de_dados.csv", list(Field.__annotations__), field_rows)
@@ -522,6 +550,23 @@ def build_delivery() -> None:
     write_json(ARTIFACTS / "formulario_dinamico_modelo.json", dynamic_form_model)
     write_json(ARTIFACTS / "modelo_unidades_tributacao.json", product_units_tax_model)
     write_json(ARTIFACTS / "politica_classificacao_campos.json", field_classification_policy)
+    write_json(
+        ARTIFACTS / "cobertura_auditoria.json",
+        {"version": 1, "policy": audit_policy, "counts": counts, "candidate_tables": sorted(audit_tables), "coverage": audit_coverage},
+    )
+    write_csv(
+        ARTIFACTS / "cobertura_auditoria.csv",
+        ["audit_type", "requirement", "aliases", "covered", "matching_tables", "evidence"],
+        (
+            {
+                **row,
+                "aliases": ";".join(row["aliases"]),
+                "matching_tables": ";".join(row["matching_tables"]),
+                "evidence": ";".join(row["evidence"]),
+            }
+            for row in audit_coverage
+        ),
+    )
     surfaces: dict[str, dict[str, object]] = {}
     required_states = ["loading", "vazio", "erro", "sucesso", "sem_permissao", "conflito", "dados_desatualizados"]
     for row in ui_bindings:
@@ -823,7 +868,13 @@ EVIDÊNCIAS: `config/data_audit/product_units_tax_model_proposal.json`, `artifac
     write_markdown(
         "08_AUDITORIA_E_LOGS.md",
         "Auditoria, Logs e Rastreabilidade",
-        """O schema `audit` e eventos versionados são a base encontrada. A validação deve separar auditoria de alteração, leitura sensível, segurança, negócio, métrica e trace, sem gravar segredos. A cobertura permanece parcial até provar retenção, imutabilidade e correlação em todos os módulos.\n\nEVIDÊNCIAS: `database/postgres/migrations/005_audit_events_api_security.sql`, `modules/shared/`.""",
+        f"""O inventário encontrou {counts['audit_candidate_tables']} tabelas candidatas de auditoria/log/evento. O contrato possui {counts['audit_requirements']} requisitos de alteração e leitura; {counts['audit_requirements_covered']} possuem ao menos um alias físico em alguma tabela candidata.
+
+Essa cobertura global não prova que cada operação ou dado sensível seja auditado. Requisitos ausentes, retenção, imutabilidade, correlação e enforcement por módulo permanecem lacunas até testes de integração.
+
+Logs técnicos, segurança, auditoria, negócio, métricas, traces e eventos de integração devem permanecer separados e correlacionados. Segredos e valores sensíveis não podem ser gravados em texto aberto.
+
+EVIDÊNCIAS: `config/data_audit/audit_traceability_policy.json`, `artifacts/cobertura_auditoria.json`, `database/postgres/migrations/005_audit_events_api_security.sql`, `modules/shared/`.""",
     )
     write_markdown(
         "09_FORMULARIOS_FRONTEND.md",

@@ -29,7 +29,7 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 21
+    assert len(contract["required_complementary"]) == 23
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
@@ -38,6 +38,7 @@ def test_contract_lists_every_complementary_format() -> None:
     assert "artifacts/coordenadas_stitch.json" in contract["required_complementary"]
     assert "artifacts/modelo_unidades_tributacao.json" in contract["required_complementary"]
     assert "artifacts/politica_classificacao_campos.json" in contract["required_complementary"]
+    assert "artifacts/cobertura_auditoria.json" in contract["required_complementary"]
     assert "artifacts/relatorio_divergencias.json" in contract["required_complementary"]
 
 
@@ -142,3 +143,14 @@ def test_every_physical_field_has_classification_basis_and_retention() -> None:
     assert all(item["masking"] for item in data["fields"])
     assert all(item["retention"] for item in data["fields"])
     assert any(item["lgpd"] == "dado pessoal sensível" for item in data["fields"])
+
+
+def test_audit_coverage_reports_present_and_missing_requirements() -> None:
+    report = ROOT / "docs" / "data-audit" / "artifacts" / "cobertura_auditoria.json"
+    data = __import__("json").loads(report.read_text(encoding="utf-8"))
+
+    assert data["counts"]["audit_candidate_tables"] > 0
+    assert data["counts"]["audit_requirements"] == len(data["coverage"])
+    assert any(item["covered"] for item in data["coverage"])
+    assert any(not item["covered"] for item in data["coverage"])
+    assert all(item["aliases"] for item in data["coverage"])

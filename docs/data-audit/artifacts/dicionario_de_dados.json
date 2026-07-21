@@ -21,7 +21,10 @@
     "sensitive_candidates": 304,
     "dynamic_form_entities_proposed": 14,
     "measurement_entities_proposed": 6,
-    "fiscal_entities_proposed": 5
+    "fiscal_entities_proposed": 5,
+    "audit_candidate_tables": 5,
+    "audit_requirements": 35,
+    "audit_requirements_covered": 18
   },
   "fields": [
     {

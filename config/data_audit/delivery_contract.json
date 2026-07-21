@@ -38,6 +38,8 @@
     "artifacts/coordenadas_stitch.json",
     "artifacts/modelo_unidades_tributacao.json",
     "artifacts/politica_classificacao_campos.json",
+    "artifacts/cobertura_auditoria.json",
+    "artifacts/cobertura_auditoria.csv",
     "artifacts/erd.mmd",
     "artifacts/matriz_formulario_campo.csv",
     "artifacts/matriz_api_campo.csv",
