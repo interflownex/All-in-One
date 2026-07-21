@@ -97,5 +97,6 @@
       },
     },
     "workbench.browser.openLocalhostLinks": false,
+    "editor.codeActions.triggerOnFocusChange": true,
   },
 }

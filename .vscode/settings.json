@@ -75,7 +75,7 @@
   "files.trimTrailingWhitespace": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-  
+
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.fixAll.ruff": "explicit",
@@ -166,5 +166,6 @@
   "geminicodeassist.telemetry.enable": false,
   "google.datacloud.enableTelemetry": false,
   "java.configuration.updateBuildConfiguration": "automatic",
-  "java.jdt.ls.java.home": "/home/eretazan/.vscode-server/extensions/redhat.java-1.55.0-linux-x64/jre/21.0.11-linux-x86_64"
+  "java.jdt.ls.java.home": "/home/eretazan/.vscode-server/extensions/redhat.java-1.55.0-linux-x64/jre/21.0.11-linux-x86_64",
+  "editor.codeActions.triggerOnFocusChange": true
 }
