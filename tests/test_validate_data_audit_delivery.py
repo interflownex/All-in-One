@@ -29,7 +29,7 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 43
+    assert len(contract["required_complementary"]) == 44
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
@@ -57,6 +57,7 @@ def test_contract_lists_every_complementary_format() -> None:
     assert "artifacts/matriz_requisito_teste.json" in contract["required_complementary"]
     assert "artifacts/matriz_requisito_teste.csv" in contract["required_complementary"]
     assert "artifacts/pytest_unit_results.xml" in contract["required_complementary"]
+    assert "artifacts/pytest_identity_e2e_results.xml" in contract["required_complementary"]
 
 
 def test_generated_non_postgres_catalogs_have_field_evidence() -> None:
@@ -221,13 +222,14 @@ def test_requirement_test_matrix_does_not_promote_candidates_to_proof() -> None:
     test_ids = {item["test_id"] for item in catalog["tests"]}
 
     assert catalog["counts"]["test_functions"] == len(catalog["tests"])
-    assert catalog["counts"]["test_functions_in_unit_report"] > 0
+    assert catalog["counts"]["test_functions_in_execution_reports"] > 0
     assert catalog["counts"]["test_functions_passed"] > 0
     assert catalog["counts"]["test_functions"] >= 360
     assert catalog["counts"]["tests_with_assertions"] < catalog["counts"]["test_functions"]
     assert catalog["counts"]["tests_with_http_calls"] > 0
     assert matrix["counts"]["memo_requirements_traced"] == len(matrix["requirements"]) == 69
-    assert matrix["counts"]["memo_requirements_without_test_candidates"] > 0
+    assert matrix["counts"]["memo_requirements_without_test_candidates"] == 0
+    assert all(item["test_candidates"] for item in matrix["requirements"])
     assert all(candidate in test_ids for item in matrix["requirements"] for candidate in item["test_candidates"])
     assert all(item["proof_status"].startswith("não comprovado") for item in matrix["requirements"])
     assert any(item["passed_test_candidates"] for item in matrix["requirements"])

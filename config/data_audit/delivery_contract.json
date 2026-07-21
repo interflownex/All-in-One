@@ -60,6 +60,7 @@
     "artifacts/matriz_requisito_teste.json",
     "artifacts/matriz_requisito_teste.csv",
     "artifacts/pytest_unit_results.xml",
+    "artifacts/pytest_identity_e2e_results.xml",
     "artifacts/erd.mmd",
     "artifacts/matriz_formulario_campo.csv",
     "artifacts/matriz_api_campo.csv",

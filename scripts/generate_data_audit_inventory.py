@@ -28,7 +28,10 @@ FIELD_CLASSIFICATION_POLICY = ROOT / "config" / "data_audit" / "field_classifica
 AUDIT_TRACEABILITY_POLICY = ROOT / "config" / "data_audit" / "audit_traceability_policy.json"
 STITCH_TEMPLATE_COORDINATE = ROOT / "config" / "stitch" / "template_project_coordinate.json"
 MASTER_MEMO = ROOT / "docs" / "MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md"
-PYTEST_UNIT_REPORT = ARTIFACTS / "pytest_unit_results.xml"
+PYTEST_EXECUTION_REPORTS = (
+    ARTIFACTS / "pytest_unit_results.xml",
+    ARTIFACTS / "pytest_identity_e2e_results.xml",
+)
 
 
 @dataclass(frozen=True)
@@ -707,33 +710,43 @@ def normalized_words(value: str) -> set[str]:
 
 
 def discover_test_execution() -> dict[str, dict[str, object]]:
-    if not PYTEST_UNIT_REPORT.is_file():
-        return {}
-    outcomes: defaultdict[str, list[str]] = defaultdict(list)
-    try:
-        root = ET.parse(PYTEST_UNIT_REPORT).getroot()
-    except (ET.ParseError, OSError):
-        return {}
-    for case in root.iter("testcase"):
-        classname = case.attrib.get("classname", "")
-        function = case.attrib.get("name", "").split("[", 1)[0]
-        path = classname.replace(".", "/") + ".py"
-        test_id = f"{path}::{function}"
-        outcome = "aprovado"
-        if case.find("error") is not None:
-            outcome = "erro"
-        elif case.find("failure") is not None:
-            outcome = "falhou"
-        elif case.find("skipped") is not None:
-            outcome = "ignorado"
-        outcomes[test_id].append(outcome)
+    outcomes: defaultdict[str, list[tuple[str, str]]] = defaultdict(list)
+    for report in PYTEST_EXECUTION_REPORTS:
+        if not report.is_file():
+            continue
+        try:
+            root = ET.parse(report).getroot()
+        except (ET.ParseError, OSError):
+            continue
+        for case in root.iter("testcase"):
+            classname = case.attrib.get("classname", "")
+            function = case.attrib.get("name", "").split("[", 1)[0]
+            path = classname.replace(".", "/") + ".py"
+            test_id = f"{path}::{function}"
+            outcome = "aprovado"
+            if case.find("error") is not None:
+                outcome = "erro"
+            elif case.find("failure") is not None:
+                outcome = "falhou"
+            elif case.find("skipped") is not None:
+                outcome = "ignorado"
+            outcomes[test_id].append((outcome, str(report.relative_to(ROOT))))
     result: dict[str, dict[str, object]] = {}
-    priority = {"erro": 4, "falhou": 3, "ignorado": 2, "aprovado": 1}
-    for test_id, cases in outcomes.items():
+    for test_id, observations in outcomes.items():
+        cases = [outcome for outcome, _ in observations]
+        if "erro" in cases:
+            aggregate_status = "erro"
+        elif "falhou" in cases:
+            aggregate_status = "falhou"
+        elif "aprovado" in cases:
+            aggregate_status = "aprovado"
+        else:
+            aggregate_status = "ignorado"
         result[test_id] = {
-            "status": max(cases, key=lambda item: priority[item]),
+            "status": aggregate_status,
             "cases": len(cases),
             "passed_cases": cases.count("aprovado"),
+            "evidence": ";".join(sorted({evidence for _, evidence in observations})),
         }
     return result
 
@@ -778,10 +791,10 @@ def discover_test_catalog() -> list[dict[str, object]]:
                     "http_methods": methods, "endpoint_literals": endpoints,
                     "parametrized": any("parametrize" in decorator for decorator in decorators),
                     "decorators": decorators,
-                    "execution_status": executed["status"] if executed else "não consta no relatório unitário",
+                    "execution_status": executed["status"] if executed else "não consta nos relatórios de execução",
                     "execution_cases": executed["cases"] if executed else 0,
                     "passed_cases": executed["passed_cases"] if executed else 0,
-                    "execution_evidence": str(PYTEST_UNIT_REPORT.relative_to(ROOT)) if executed else "",
+                    "execution_evidence": executed["evidence"] if executed else "",
                     "evidence": f"{path.relative_to(ROOT)}:{node.lineno}",
                 }
             )
@@ -928,7 +941,7 @@ def build_delivery() -> None:
         "test_functions": len(test_catalog),
         "tests_with_assertions": sum(bool(row["assertions"]) for row in test_catalog),
         "tests_with_http_calls": sum(bool(row["http_methods"]) for row in test_catalog),
-        "test_functions_in_unit_report": sum(row["execution_status"] != "não consta no relatório unitário" for row in test_catalog),
+        "test_functions_in_execution_reports": sum(row["execution_status"] != "não consta nos relatórios de execução" for row in test_catalog),
         "test_functions_passed": sum(row["execution_status"] == "aprovado" for row in test_catalog),
         "memo_requirements_traced": len(memo_requirements),
         "memo_requirements_without_test_candidates": sum(not row["test_candidates"] for row in memo_requirements),
@@ -1510,13 +1523,13 @@ EVIDÊNCIAS: `config/data_audit/field_classification_policy.json`, `artifacts/po
     write_markdown(
         "13_VALIDACAO_E_TESTES.md",
         "Validação e Testes",
-        f"""O inventário AST encontrou {counts['test_functions']} funções de teste: {counts['tests_with_assertions']} contêm `assert` e {counts['tests_with_http_calls']} contêm chamadas HTTP reconhecidas. O relatório JUnit unitário registra {counts['test_functions_in_unit_report']} funções, das quais {counts['test_functions_passed']} foram aprovadas; parametrizações são consolidadas por função. A presença de um teste ou candidato aprovado não comprova cobertura integral do requisito.
+        f"""O inventário AST encontrou {counts['test_functions']} funções de teste: {counts['tests_with_assertions']} contêm `assert` e {counts['tests_with_http_calls']} contêm chamadas HTTP reconhecidas. Os relatórios JUnit registram {counts['test_functions_in_execution_reports']} funções, das quais {counts['test_functions_passed']} foram aprovadas; parametrizações são consolidadas por função. A presença de um teste ou candidato aprovado não comprova cobertura integral do requisito.
 
 Foram extraídos {counts['memo_requirements_traced']} requisitos mandatórios das seções 21 e 24 do memorando; {counts['memo_requirements_without_test_candidates']} não possuem teste candidato por correspondência semântica conservadora e {counts['memo_requirements_with_passed_candidates']} possuem ao menos um candidato aprovado. Cada vínculo permanece `não comprovado` até revisão de escopo.
 
 A cobertura funcional continua incompleta para CRUD, rascunho, aprovação, importação, cálculos, unidades, impostos, concorrência, idempotência, autorização e isolamento de tenant.
 
-EVIDÊNCIAS: `artifacts/pytest_unit_results.xml`, `artifacts/catalogo_testes.json`, `artifacts/matriz_requisito_teste.json`, `tests/test_validate_data_audit_delivery.py`.""",
+EVIDÊNCIAS: `artifacts/pytest_unit_results.xml`, `artifacts/pytest_identity_e2e_results.xml`, `artifacts/catalogo_testes.json`, `artifacts/matriz_requisito_teste.json`, `tests/test_validate_data_audit_delivery.py`.""",
     )
     gap_rows = markdown_table(["ID", "Prioridade", "Módulo", "Lacuna", "Risco", "Status", "Aceite"], ([gap["id"], gap["priority"], gap["module"], gap["title"], gap["risk"], gap["status"], gap["acceptance"]] for gap in gaps))
     write_markdown("14_REGISTRO_DE_LACUNAS.md", "Registro de Lacunas", f"{gap_rows}\n\nEVIDÊNCIAS: `artifacts/relatorio_divergencias.json`.")

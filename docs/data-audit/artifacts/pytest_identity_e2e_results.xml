@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="0.316" timestamp="2026-07-21T19:59:57.817368-03:00" hostname="all-in-one"><testcase classname="modules.identity.tests.test_e2e_identity" name="test_identity_e2e_flow" time="0.151" /></testsuite></testsuites>

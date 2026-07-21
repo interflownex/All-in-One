@@ -27,14 +27,14 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 56,
     "permission_operations_with_test_candidates": 128,
-    "test_functions": 474,
-    "tests_with_assertions": 443,
+    "test_functions": 482,
+    "tests_with_assertions": 451,
     "tests_with_http_calls": 191,
-    "test_functions_in_unit_report": 449,
-    "test_functions_passed": 415,
+    "test_functions_in_execution_reports": 457,
+    "test_functions_passed": 424,
     "memo_requirements_traced": 69,
-    "memo_requirements_without_test_candidates": 22,
-    "memo_requirements_with_passed_candidates": 46,
+    "memo_requirements_without_test_candidates": 0,
+    "memo_requirements_with_passed_candidates": 69,
     "logical_entities": 120,
     "logical_without_physical_table": 62,
     "logical_without_ui_surface": 46,
@@ -226,12 +226,18 @@
       "section": "conclusao",
       "subsection": "criterios_de_conclusao",
       "requirement": "100% dos relacionamentos forem descritos",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes",
+        "tests/test_master_memo_completion_contract.py::test_todos_relacionamentos_descritos_no_dicionario_e_erd"
+      ],
+      "candidate_count": 2,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes",
+        "tests/test_master_memo_completion_contract.py::test_todos_relacionamentos_descritos_no_dicionario_e_erd"
+      ],
+      "passed_candidate_count": 2,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2664"
     },
@@ -512,14 +518,16 @@
       "requirement": "100% das regras fiscais tiverem vigência e contexto",
       "test_candidates": [
         "tests/test_integration_sandbox_adapters.py::test_psp_fiscal_and_supplier_sandboxes_emit_domain_events",
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "candidate_count": 2,
+      "candidate_count": 3,
       "passed_test_candidates": [
         "tests/test_integration_sandbox_adapters.py::test_psp_fiscal_and_supplier_sandboxes_emit_domain_events",
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "passed_candidate_count": 2,
+      "passed_candidate_count": 3,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -538,6 +546,8 @@
         "tests/test_frontend_journeys_contract.py::test_phase_4_live_shells_do_not_keep_obsolete_next_steps",
         "tests/test_frontend_journeys_contract.py::test_phase_4_shells_are_wired_to_declared_api_hub_routes",
         "tests/test_frontend_journeys_contract.py::test_phase_4_shells_have_playwright_coverage_declared",
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite",
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes",
         "tests/test_stitch_orchestrator.py::test_manifest_creates_one_project_per_microservice_and_jobs_surfaces",
         "tests/test_stitch_orchestrator.py::test_non_valley_prompt_keeps_platform_brand_without_valley_logo",
         "tests/test_stitch_orchestrator.py::test_prompts_apply_all_in_one_and_valley_official_branding",
@@ -548,9 +558,7 @@
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_remote_gaps_without_credentials",
         "tests/test_stitch_orchestrator.py::test_versioned_manifest_matches_catalog_generation",
         "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
-        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-        "tests/test_validate_data_audit_delivery.py::test_stitch_coordinate_requires_exactly_three_resumable_product_projects",
-        "tests/test_validate_stitch_mcp_config.py::test_accepts_expected_env_header_config"
+        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -561,6 +569,8 @@
         "tests/test_frontend_journeys_contract.py::test_phase_4_live_shells_do_not_keep_obsolete_next_steps",
         "tests/test_frontend_journeys_contract.py::test_phase_4_shells_are_wired_to_declared_api_hub_routes",
         "tests/test_frontend_journeys_contract.py::test_phase_4_shells_have_playwright_coverage_declared",
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite",
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes",
         "tests/test_stitch_orchestrator.py::test_manifest_creates_one_project_per_microservice_and_jobs_surfaces",
         "tests/test_stitch_orchestrator.py::test_non_valley_prompt_keeps_platform_brand_without_valley_logo",
         "tests/test_stitch_orchestrator.py::test_prompts_apply_all_in_one_and_valley_official_branding",
@@ -571,9 +581,7 @@
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_remote_gaps_without_credentials",
         "tests/test_stitch_orchestrator.py::test_versioned_manifest_matches_catalog_generation",
         "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
-        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-        "tests/test_validate_data_audit_delivery.py::test_stitch_coordinate_requires_exactly_three_resumable_product_projects",
-        "tests/test_validate_stitch_mcp_config.py::test_accepts_expected_env_header_config"
+        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -844,12 +852,16 @@
       "section": "checklist",
       "subsection": "idealizar",
       "requirement": "Mapear ecossistema",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2745"
     },
@@ -916,16 +928,18 @@
       "requirement": "Mapear personas",
       "test_candidates": [
         "modules/business/tests/test_create_flow.py::test_business_membership_invite_and_role_assignment_flow",
+        "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_runtime_denies_common_user_role_management",
         "tests/test_postgres_priority_stores_integration.py::test_permissions_role_create_update_and_soft_delete",
         "tests/test_sensitive_permissions_review.py::test_sensitive_permissions_review_matches_runtime_role_sets"
       ],
-      "candidate_count": 4,
+      "candidate_count": 5,
       "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_runtime_denies_common_user_role_management",
         "tests/test_sensitive_permissions_review.py::test_sensitive_permissions_review_matches_runtime_role_sets"
       ],
-      "passed_candidate_count": 2,
+      "passed_candidate_count": 3,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -945,6 +959,7 @@
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
         "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events",
         "tests/test_jobs_event_catalog.py::test_jobs_catalog_declares_runtime_domain_events",
+        "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
         "tests/test_outbox_alerts.py::test_outbox_alert_expressions_reference_exported_metrics",
         "tests/test_outbox_alerts.py::test_outbox_alerting_manifest_is_included_in_base_kustomization",
         "tests/test_outbox_alerts.py::test_outbox_alerts_are_materialized_as_prometheus_rule_and_alertmanager_route",
@@ -955,8 +970,7 @@
         "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
         "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_core_finance_publication_omits_balances_and_user_identifiers",
-        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads",
-        "tests/test_outbox_dispatcher_unit.py::test_core_operations_publication_uses_safe_payloads"
+        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -968,6 +982,7 @@
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
         "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events",
         "tests/test_jobs_event_catalog.py::test_jobs_catalog_declares_runtime_domain_events",
+        "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
         "tests/test_outbox_alerts.py::test_outbox_alert_expressions_reference_exported_metrics",
         "tests/test_outbox_alerts.py::test_outbox_alerting_manifest_is_included_in_base_kustomization",
         "tests/test_outbox_alerts.py::test_outbox_alerts_are_materialized_as_prometheus_rule_and_alertmanager_route",
@@ -978,8 +993,7 @@
         "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
         "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_core_finance_publication_omits_balances_and_user_identifiers",
-        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads",
-        "tests/test_outbox_dispatcher_unit.py::test_core_operations_publication_uses_safe_payloads"
+        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -992,12 +1006,16 @@
       "section": "checklist",
       "subsection": "idealizar",
       "requirement": "Mapear fontes de verdade",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2749"
     },
@@ -1019,12 +1037,13 @@
         "tests/test_identity_session_security.py::test_refresh_revokes_session_when_device_fingerprint_changes",
         "tests/test_identity_session_security.py::test_refresh_rotates_token_rejects_replay_and_logout_revokes_session",
         "tests/test_identity_session_security.py::test_totp_setup_encrypts_secret_verifies_real_code_and_rejects_replay",
+        "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
         "tests/test_security_workflow_contract.py::test_security_workflow_keeps_python_and_javascript_scans_blocking",
         "tests/test_valley_security_pipeline.py::test_security_workflows_cover_android_sast_sca_and_active_dast",
         "tests/test_valley_security_pipeline.py::test_zap_gate_accepts_medium_and_reports_counts",
         "tests/test_valley_security_pipeline.py::test_zap_gate_blocks_high_findings_and_sanitizes_urls"
       ],
-      "candidate_count": 16,
+      "candidate_count": 17,
       "passed_test_candidates": [
         "modules/api_hub/tests/test_gateway_security.py::test_api_key_check_accepts_configured_key",
         "modules/api_hub/tests/test_gateway_security.py::test_api_key_check_rejects_missing_invalid_and_unscoped_keys",
@@ -1038,12 +1057,13 @@
         "tests/test_identity_session_security.py::test_refresh_revokes_session_when_device_fingerprint_changes",
         "tests/test_identity_session_security.py::test_refresh_rotates_token_rejects_replay_and_logout_revokes_session",
         "tests/test_identity_session_security.py::test_totp_setup_encrypts_secret_verifies_real_code_and_rejects_replay",
+        "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
         "tests/test_security_workflow_contract.py::test_security_workflow_keeps_python_and_javascript_scans_blocking",
         "tests/test_valley_security_pipeline.py::test_security_workflows_cover_android_sast_sca_and_active_dast",
         "tests/test_valley_security_pipeline.py::test_zap_gate_accepts_medium_and_reports_counts",
         "tests/test_valley_security_pipeline.py::test_zap_gate_blocks_high_findings_and_sanitizes_urls"
       ],
-      "passed_candidate_count": 16,
+      "passed_candidate_count": 17,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1054,12 +1074,16 @@
       "section": "checklist",
       "subsection": "planejar",
       "requirement": "Definir ordem de leitura",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2754"
     },
@@ -1068,12 +1092,16 @@
       "section": "checklist",
       "subsection": "planejar",
       "requirement": "Definir matriz de comparação",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2755"
     },
@@ -1082,12 +1110,16 @@
       "section": "checklist",
       "subsection": "planejar",
       "requirement": "Definir prioridades",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2756"
     },
@@ -1096,12 +1128,16 @@
       "section": "checklist",
       "subsection": "planejar",
       "requirement": "Definir entregáveis",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2757"
     },
@@ -1110,12 +1146,18 @@
       "section": "checklist",
       "subsection": "planejar",
       "requirement": "Definir critérios de aceite",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite",
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "candidate_count": 2,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite",
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "passed_candidate_count": 2,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2758"
     },
@@ -1127,6 +1169,7 @@
       "test_candidates": [
         "tests/test_compose_health_gate.py::test_compose_postgres_healthcheck_allows_cold_initdb",
         "tests/test_jobs_postgres_integration.py::test_jobs_postgres_typed_store_and_private_ctps",
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_mongodb_contract.py::test_mongodb_contract_declares_expected_collections_and_retention",
         "tests/test_mongodb_contract.py::test_mongodb_init_script_declares_all_contract_indexes",
         "tests/test_mongodb_contract.py::test_mongodb_init_script_matches_collection_contract",
@@ -1143,12 +1186,12 @@
         "tests/test_postgres_priority_stores_integration.py::test_api_hub_client_create_update_and_soft_delete",
         "tests/test_postgres_priority_stores_integration.py::test_bi_dataset_create_update_and_soft_delete",
         "tests/test_postgres_priority_stores_integration.py::test_bpm_process_create_update_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_business_company_create_get_list_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_crm_lead_create_update_and_soft_delete"
+        "tests/test_postgres_priority_stores_integration.py::test_business_company_create_get_list_and_soft_delete"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
         "tests/test_compose_health_gate.py::test_compose_postgres_healthcheck_allows_cold_initdb",
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_mongodb_contract.py::test_mongodb_contract_declares_expected_collections_and_retention",
         "tests/test_mongodb_contract.py::test_mongodb_init_script_declares_all_contract_indexes",
         "tests/test_mongodb_contract.py::test_mongodb_init_script_matches_collection_contract",
@@ -1161,7 +1204,7 @@
         "tests/test_postgres_contract_static.py::test_postgres_priority_store_event_prefix_aliases_are_documented",
         "tests/test_postgres_contract_static.py::test_user_reference_columns_are_not_treated_as_business_entities"
       ],
-      "passed_candidate_count": 12,
+      "passed_candidate_count": 13,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1174,6 +1217,7 @@
       "requirement": "Catalogar tabelas",
       "test_candidates": [
         "tests/test_jobs_postgres_integration.py::test_jobs_postgres_typed_store_and_private_ctps",
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_postgres_contract_static.py::test_identity_priority_store_phone_does_not_collide_with_dsn_validator",
         "tests/test_postgres_contract_static.py::test_postgres_priority_store_event_prefix_aliases_are_documented",
         "tests/test_postgres_priority_stores_integration.py::test_marketplace_store_create_get_list_and_outbox",
@@ -1190,8 +1234,9 @@
         "tests/test_runtime_postgres_store_resolution.py::test_store_for_rejects_fallback_to_generic_postgres_for_known_module",
         "tests/test_runtime_postgres_store_resolution.py::test_store_for_resolves_typed_postgres_store_for_all_known_modules"
       ],
-      "candidate_count": 16,
+      "candidate_count": 17,
       "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_postgres_contract_static.py::test_identity_priority_store_phone_does_not_collide_with_dsn_validator",
         "tests/test_postgres_contract_static.py::test_postgres_priority_store_event_prefix_aliases_are_documented",
         "tests/test_postgres_stores_matrix.py::test_postgres_store_declares_structural_contract",
@@ -1204,7 +1249,7 @@
         "tests/test_runtime_postgres_store_resolution.py::test_store_for_rejects_fallback_to_generic_postgres_for_known_module",
         "tests/test_runtime_postgres_store_resolution.py::test_store_for_resolves_typed_postgres_store_for_all_known_modules"
       ],
-      "passed_candidate_count": 11,
+      "passed_candidate_count": 12,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1271,6 +1316,7 @@
       "subsection": "construir",
       "requirement": "Catalogar unidades",
       "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
         "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
@@ -1288,8 +1334,9 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload"
       ],
-      "candidate_count": 16,
+      "candidate_count": 17,
       "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
         "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
@@ -1307,7 +1354,7 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload"
       ],
-      "passed_candidate_count": 16,
+      "passed_candidate_count": 17,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1318,12 +1365,16 @@
       "section": "checklist",
       "subsection": "construir",
       "requirement": "Catalogar impostos",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2766"
     },
@@ -1333,13 +1384,15 @@
       "subsection": "construir",
       "requirement": "Catalogar cálculos",
       "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "candidate_count": 1,
+      "candidate_count": 2,
       "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "passed_candidate_count": 1,
+      "passed_candidate_count": 2,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1350,12 +1403,16 @@
       "section": "checklist",
       "subsection": "construir",
       "requirement": "Catalogar logs",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2768"
     },
@@ -1366,6 +1423,7 @@
       "requirement": "Catalogar permissões",
       "test_candidates": [
         "modules/business/tests/test_create_flow.py::test_business_membership_invite_and_role_assignment_flow",
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_finance_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_identity_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_uses_medical_roles_for_health_sensitive_read",
@@ -1381,8 +1439,9 @@
         "tests/test_validate_data_audit_delivery.py::test_permission_matrix_exposes_horizontal_read_authorization_gaps",
         "tests/test_valley_catalog.py::test_valley_catalog_hides_business_offers_without_publication_authorization"
       ],
-      "candidate_count": 15,
+      "candidate_count": 16,
       "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_finance_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_identity_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_uses_medical_roles_for_health_sensitive_read",
@@ -1397,7 +1456,7 @@
         "tests/test_validate_data_audit_delivery.py::test_permission_matrix_exposes_horizontal_read_authorization_gaps",
         "tests/test_valley_catalog.py::test_valley_catalog_hides_business_offers_without_publication_authorization"
       ],
-      "passed_candidate_count": 13,
+      "passed_candidate_count": 14,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1469,6 +1528,7 @@
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
         "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events",
         "tests/test_jobs_event_catalog.py::test_jobs_catalog_declares_runtime_domain_events",
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_outbox_alerts.py::test_outbox_alert_expressions_reference_exported_metrics",
         "tests/test_outbox_alerts.py::test_outbox_alerting_manifest_is_included_in_base_kustomization",
         "tests/test_outbox_alerts.py::test_outbox_alerts_are_materialized_as_prometheus_rule_and_alertmanager_route",
@@ -1479,8 +1539,7 @@
         "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
         "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_core_finance_publication_omits_balances_and_user_identifiers",
-        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads",
-        "tests/test_outbox_dispatcher_unit.py::test_core_operations_publication_uses_safe_payloads"
+        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -1492,6 +1551,7 @@
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
         "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events",
         "tests/test_jobs_event_catalog.py::test_jobs_catalog_declares_runtime_domain_events",
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_outbox_alerts.py::test_outbox_alert_expressions_reference_exported_metrics",
         "tests/test_outbox_alerts.py::test_outbox_alerting_manifest_is_included_in_base_kustomization",
         "tests/test_outbox_alerts.py::test_outbox_alerts_are_materialized_as_prometheus_rule_and_alertmanager_route",
@@ -1502,8 +1562,7 @@
         "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
         "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_core_finance_publication_omits_balances_and_user_identifiers",
-        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads",
-        "tests/test_outbox_dispatcher_unit.py::test_core_operations_publication_uses_safe_payloads"
+        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -1517,15 +1576,17 @@
       "subsection": "construir",
       "requirement": "Catalogar formulários",
       "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
         "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
-      "candidate_count": 2,
+      "candidate_count": 3,
       "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
         "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
-      "passed_candidate_count": 2,
+      "passed_candidate_count": 3,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1557,13 +1618,15 @@
       "subsection": "validar",
       "requirement": "Validar schema",
       "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables"
       ],
-      "candidate_count": 1,
+      "candidate_count": 2,
       "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables"
       ],
-      "passed_candidate_count": 1,
+      "passed_candidate_count": 2,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1574,12 +1637,16 @@
       "section": "checklist",
       "subsection": "validar",
       "requirement": "Validar integridade",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2778"
     },
@@ -1588,12 +1655,16 @@
       "section": "checklist",
       "subsection": "validar",
       "requirement": "Validar regras",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2779"
     },
@@ -1603,6 +1674,7 @@
       "subsection": "validar",
       "requirement": "Validar unidades",
       "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
         "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
@@ -1620,8 +1692,9 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload"
       ],
-      "candidate_count": 16,
+      "candidate_count": 17,
       "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
         "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
@@ -1639,7 +1712,7 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload"
       ],
-      "passed_candidate_count": 16,
+      "passed_candidate_count": 17,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1652,14 +1725,16 @@
       "requirement": "Validar tributos",
       "test_candidates": [
         "tests/test_integration_sandbox_adapters.py::test_psp_fiscal_and_supplier_sandboxes_emit_domain_events",
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "candidate_count": 2,
+      "candidate_count": 3,
       "passed_test_candidates": [
         "tests/test_integration_sandbox_adapters.py::test_psp_fiscal_and_supplier_sandboxes_emit_domain_events",
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "passed_candidate_count": 2,
+      "passed_candidate_count": 3,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1671,13 +1746,15 @@
       "subsection": "validar",
       "requirement": "Validar cálculos",
       "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "candidate_count": 1,
+      "candidate_count": 2,
       "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "passed_candidate_count": 1,
+      "passed_candidate_count": 2,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1746,6 +1823,7 @@
       "requirement": "Validar auditoria",
       "test_candidates": [
         "tests/test_integration_sandbox_adapters.py::test_sandbox_results_include_audit_record_without_raw_sensitive_input",
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_postgres_contract_static.py::test_operational_user_references_do_not_become_audit_entity_ids",
         "tests/test_postgres_stores_matrix.py::test_audit_outbox_integration",
         "tests/test_secure_logging.py::test_structured_log_always_contains_correlation_and_core_fields",
@@ -1763,12 +1841,12 @@
         "tests/test_validate_data_audit_delivery.py::test_every_gap_has_the_mandatory_execution_coordinate",
         "tests/test_validate_data_audit_delivery.py::test_every_physical_field_has_classification_basis_and_retention",
         "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-        "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion",
-        "tests/test_validate_data_audit_delivery.py::test_generated_non_postgres_catalogs_have_field_evidence"
+        "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
         "tests/test_integration_sandbox_adapters.py::test_sandbox_results_include_audit_record_without_raw_sensitive_input",
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_postgres_contract_static.py::test_operational_user_references_do_not_become_audit_entity_ids",
         "tests/test_secure_logging.py::test_structured_log_always_contains_correlation_and_core_fields",
         "tests/test_secure_logging.py::test_structured_log_redacts_pii_and_secret_keys",
@@ -1785,8 +1863,7 @@
         "tests/test_validate_data_audit_delivery.py::test_every_gap_has_the_mandatory_execution_coordinate",
         "tests/test_validate_data_audit_delivery.py::test_every_physical_field_has_classification_basis_and_retention",
         "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-        "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion",
-        "tests/test_validate_data_audit_delivery.py::test_generated_non_postgres_catalogs_have_field_evidence"
+        "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion"
       ],
       "passed_candidate_count": 19,
       "trace_status": "candidatos_localizados",
@@ -1807,6 +1884,9 @@
         "tests/test_frontend_journeys_contract.py::test_phase_4_live_shells_do_not_keep_obsolete_next_steps",
         "tests/test_frontend_journeys_contract.py::test_phase_4_shells_are_wired_to_declared_api_hub_routes",
         "tests/test_frontend_journeys_contract.py::test_phase_4_shells_have_playwright_coverage_declared",
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite",
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes",
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_stitch_orchestrator.py::test_manifest_creates_one_project_per_microservice_and_jobs_surfaces",
         "tests/test_stitch_orchestrator.py::test_non_valley_prompt_keeps_platform_brand_without_valley_logo",
         "tests/test_stitch_orchestrator.py::test_prompts_apply_all_in_one_and_valley_official_branding",
@@ -1816,10 +1896,7 @@
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_branding_pending_for_legacy_screens",
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_remote_gaps_without_credentials",
         "tests/test_stitch_orchestrator.py::test_versioned_manifest_matches_catalog_generation",
-        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-        "tests/test_validate_data_audit_delivery.py::test_stitch_coordinate_requires_exactly_three_resumable_product_projects",
-        "tests/test_validate_stitch_mcp_config.py::test_accepts_expected_env_header_config",
-        "tests/test_validate_stitch_mcp_config.py::test_rejects_literal_api_key_header"
+        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -1830,6 +1907,9 @@
         "tests/test_frontend_journeys_contract.py::test_phase_4_live_shells_do_not_keep_obsolete_next_steps",
         "tests/test_frontend_journeys_contract.py::test_phase_4_shells_are_wired_to_declared_api_hub_routes",
         "tests/test_frontend_journeys_contract.py::test_phase_4_shells_have_playwright_coverage_declared",
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite",
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes",
+        "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_stitch_orchestrator.py::test_manifest_creates_one_project_per_microservice_and_jobs_surfaces",
         "tests/test_stitch_orchestrator.py::test_non_valley_prompt_keeps_platform_brand_without_valley_logo",
         "tests/test_stitch_orchestrator.py::test_prompts_apply_all_in_one_and_valley_official_branding",
@@ -1839,10 +1919,7 @@
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_branding_pending_for_legacy_screens",
         "tests/test_stitch_orchestrator.py::test_sync_summary_reports_remote_gaps_without_credentials",
         "tests/test_stitch_orchestrator.py::test_versioned_manifest_matches_catalog_generation",
-        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-        "tests/test_validate_data_audit_delivery.py::test_stitch_coordinate_requires_exactly_three_resumable_product_projects",
-        "tests/test_validate_stitch_mcp_config.py::test_accepts_expected_env_header_config",
-        "tests/test_validate_stitch_mcp_config.py::test_rejects_literal_api_key_header"
+        "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -1878,10 +1955,12 @@
         "tests/e2e/test_valley_business.py::test_valley_business_navigation"
       ],
       "candidate_count": 20,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
+      "passed_test_candidates": [
+        "modules/identity/tests/test_e2e_identity.py::test_identity_e2e_flow"
+      ],
+      "passed_candidate_count": 1,
       "trace_status": "candidatos_localizados",
-      "execution_status": "sem_candidato_aprovado",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2786"
     },
@@ -1910,12 +1989,16 @@
       "section": "checklist",
       "subsection": "documentar",
       "requirement": "Gerar CSV",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2791"
     },
@@ -1924,12 +2007,16 @@
       "section": "checklist",
       "subsection": "documentar",
       "requirement": "Gerar JSON",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2792"
     },
@@ -1938,12 +2025,18 @@
       "section": "checklist",
       "subsection": "documentar",
       "requirement": "Gerar ERD",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes",
+        "tests/test_master_memo_completion_contract.py::test_todos_relacionamentos_descritos_no_dicionario_e_erd"
+      ],
+      "candidate_count": 2,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes",
+        "tests/test_master_memo_completion_contract.py::test_todos_relacionamentos_descritos_no_dicionario_e_erd"
+      ],
+      "passed_candidate_count": 2,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2793"
     },
@@ -1952,12 +2045,16 @@
       "section": "checklist",
       "subsection": "documentar",
       "requirement": "Gerar matrizes",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2794"
     },
@@ -2054,12 +2151,16 @@
       "section": "checklist",
       "subsection": "orientar_stitch",
       "requirement": "Gerar coordenada por tela",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2801"
     },
@@ -2151,12 +2252,16 @@
       "section": "checklist",
       "subsection": "orientar_stitch",
       "requirement": "Gerar validações",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2804"
     },
@@ -2165,12 +2270,16 @@
       "section": "checklist",
       "subsection": "orientar_stitch",
       "requirement": "Gerar ações",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2805"
     },
@@ -2234,12 +2343,16 @@
       "section": "checklist",
       "subsection": "orientar_stitch",
       "requirement": "Gerar acessibilidade",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2808"
     },
@@ -2248,12 +2361,16 @@
       "section": "checklist",
       "subsection": "orientar_stitch",
       "requirement": "Gerar integração",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite"
+      ],
+      "candidate_count": 1,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite"
+      ],
+      "passed_candidate_count": 1,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2809"
     },
@@ -2262,12 +2379,18 @@
       "section": "checklist",
       "subsection": "orientar_stitch",
       "requirement": "Gerar critérios de aceite",
-      "test_candidates": [],
-      "candidate_count": 0,
-      "passed_test_candidates": [],
-      "passed_candidate_count": 0,
-      "trace_status": "sem_teste_localizado",
-      "execution_status": "sem_candidato_aprovado",
+      "test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite",
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "candidate_count": 2,
+      "passed_test_candidates": [
+        "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite",
+        "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite"
+      ],
+      "passed_candidate_count": 2,
+      "trace_status": "candidatos_localizados",
+      "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
       "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2810"
     }
