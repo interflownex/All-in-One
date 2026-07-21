@@ -16,5 +16,5 @@
 | created_at | TIMESTAMPTZ | False | False |  | não classificado automaticamente | database/postgres/migrations/016_compliance_retention_jobs.sql:16 |
 | updated_at | TIMESTAMPTZ | False | False |  | não classificado automaticamente | database/postgres/migrations/016_compliance_retention_jobs.sql:17 |
 | locked_at | TIMESTAMPTZ | True | False |  | não classificado automaticamente | database/postgres/migrations/016_compliance_retention_jobs.sql:18 |
-| created_by | UUID | True | False | identity.users.id | não classificado automaticamente | database/postgres/migrations/016_compliance_retention_jobs.sql:19 |
-| updated_by | UUID | True | False | identity.users.id | não classificado automaticamente | database/postgres/migrations/016_compliance_retention_jobs.sql:20 |
+| created_by | UUID | True | False | identity.users.id | pseudônimo vinculável | database/postgres/migrations/016_compliance_retention_jobs.sql:19 |
+| updated_by | UUID | True | False | identity.users.id | pseudônimo vinculável | database/postgres/migrations/016_compliance_retention_jobs.sql:20 |

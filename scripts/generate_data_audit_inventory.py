@@ -22,6 +22,7 @@ ARTIFACTS = AUDIT / "artifacts"
 DATABASE = AUDIT / "databases" / "postgresql"
 DYNAMIC_FORM_MODEL = ROOT / "config" / "data_audit" / "dynamic_form_model_proposal.json"
 PRODUCT_UNITS_TAX_MODEL = ROOT / "config" / "data_audit" / "product_units_tax_model_proposal.json"
+FIELD_CLASSIFICATION_POLICY = ROOT / "config" / "data_audit" / "field_classification_policy.json"
 
 
 @dataclass(frozen=True)
@@ -38,7 +39,10 @@ class Field:
     unique: bool
     reference: str
     lgpd: str
+    classification_basis: str
+    encryption: str
     masking: str
+    retention: str
     status: str
     evidence: str
 
@@ -68,15 +72,27 @@ def split_definitions(body: str) -> list[str]:
     return parts
 
 
-def classify_lgpd(name: str) -> tuple[str, str]:
+def classify_lgpd(name: str) -> tuple[str, str, str, str, str]:
+    policy = json.loads(FIELD_CLASSIFICATION_POLICY.read_text(encoding="utf-8"))
     lowered = name.lower()
-    critical = ("password", "token", "secret", "biometric", "document_number", "cpf", "cnpj")
-    personal = ("email", "phone", "address", "birth", "name", "ip", "device", "user_id")
-    if any(item in lowered for item in critical):
-        return "sensível/restrito", "mascarar e criptografar conforme finalidade"
-    if any(item in lowered for item in personal):
-        return "pessoal", "mascarar em logs e restringir por finalidade"
-    return "não classificado automaticamente", "avaliar pelo proprietário do domínio"
+    for category in policy["categories"]:
+        matched = [pattern for pattern in category["patterns"] if pattern in lowered]
+        if matched:
+            return (
+                category["classification"],
+                f"política v{policy['version']} categoria {category['id']}; padrões: {', '.join(matched)}",
+                category["encryption"],
+                category["masking"],
+                category["retention"],
+            )
+    default = policy["default"]
+    return (
+        default["classification"],
+        f"política v{policy['version']}; nenhuma regra automática aplicável",
+        default["encryption"],
+        default["masking"],
+        default["retention"],
+    )
 
 
 def parse_field(schema: str, table: str, definition: str, evidence: str) -> Field | None:
@@ -95,7 +111,7 @@ def parse_field(schema: str, table: str, definition: str, evidence: str) -> Fiel
     physical_type = type_match.group(1).strip() if type_match else remainder
     default_match = re.search(r"\bDEFAULT\s+(.+?)(?=\s+(?:NOT\s+NULL|NULL|PRIMARY\s+KEY|UNIQUE|REFERENCES|CHECK)\b|$)", remainder, re.I)
     reference_match = re.search(r"\bREFERENCES\s+([\w.\"]+)\s*\(([^)]+)\)", remainder, re.I)
-    lgpd, masking = classify_lgpd(name)
+    lgpd, classification_basis, encryption, masking, retention = classify_lgpd(name)
     return Field(
         database="postgresql",
         schema=schema,
@@ -109,7 +125,10 @@ def parse_field(schema: str, table: str, definition: str, evidence: str) -> Fiel
         unique="UNIQUE" in remainder.upper(),
         reference=".".join(part.strip('" ') for part in reference_match.groups()) if reference_match else "",
         lgpd=lgpd,
+        classification_basis=classification_basis,
+        encryption=encryption,
         masking=masking,
+        retention=retention,
         status="existente",
         evidence=evidence,
     )
@@ -452,6 +471,7 @@ def build_delivery() -> None:
     }
     dynamic_form_model = json.loads(DYNAMIC_FORM_MODEL.read_text(encoding="utf-8"))
     product_units_tax_model = json.loads(PRODUCT_UNITS_TAX_MODEL.read_text(encoding="utf-8"))
+    field_classification_policy = json.loads(FIELD_CLASSIFICATION_POLICY.read_text(encoding="utf-8"))
     counts["dynamic_form_entities_proposed"] = len(dynamic_form_model["entities"])
     counts["measurement_entities_proposed"] = len(product_units_tax_model["measurement_entities"])
     counts["fiscal_entities_proposed"] = len(product_units_tax_model["fiscal_entities"])
@@ -501,6 +521,7 @@ def build_delivery() -> None:
     write_json(ARTIFACTS / "catalogo_apis.json", {"version": 1, "counts": counts, "endpoints": endpoints})
     write_json(ARTIFACTS / "formulario_dinamico_modelo.json", dynamic_form_model)
     write_json(ARTIFACTS / "modelo_unidades_tributacao.json", product_units_tax_model)
+    write_json(ARTIFACTS / "politica_classificacao_campos.json", field_classification_policy)
     surfaces: dict[str, dict[str, object]] = {}
     required_states = ["loading", "vazio", "erro", "sucesso", "sem_permissao", "conflito", "dados_desatualizados"]
     for row in ui_bindings:
@@ -841,7 +862,11 @@ EVIDÊNCIAS: `config/data_audit/dynamic_form_model_proposal.json`, `artifacts/fo
     write_markdown(
         "11_PERMISSOES_E_SEGURANCA.md",
         "Permissões, Segurança e Privacidade",
-        f"""Foram triados {counts['sensitive_candidates']} campos potencialmente pessoais ou sensíveis. A classificação é conservadora e exige confirmação. RBAC/ABAC deve ser provado endpoint a endpoint; controle apenas no frontend não é aceito.\n\nEVIDÊNCIAS: `artifacts/dicionario_de_dados.csv`, `modules/permissions/`, `modules/identity/`.""",
+        f"""Foram triados {counts['sensitive_candidates']} campos potencialmente pessoais, sensíveis, financeiros, restritos ou pseudônimos vinculáveis. A política versionada registra categoria, padrão que motivou a triagem, criptografia, mascaramento e retenção. A classificação automática exige homologação pelo proprietário do domínio e revisão jurídica/privacidade quando aplicável.
+
+RBAC/ABAC deve ser provado endpoint a endpoint; controle apenas no frontend não é aceito. Campos sem regra automática continuam explicitamente sem classificação e com lacuna de retenção.
+
+EVIDÊNCIAS: `config/data_audit/field_classification_policy.json`, `artifacts/politica_classificacao_campos.json`, `artifacts/dicionario_de_dados.csv`, `modules/permissions/`, `modules/identity/`.""",
     )
     write_markdown(
         "12_APIS_EVENTOS_E_INTEGRACOES.md",

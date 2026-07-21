@@ -3,7 +3,7 @@
 | Campo | Tipo | Nulo | PK | FK | LGPD | Evidência |
 | --- | --- | --- | --- | --- | --- | --- |
 | id | UUID | False | True |  | não classificado automaticamente | database/postgres/migrations/002_business_permissions_finance.sql:122 |
-| user_id | UUID | False | False | identity.users.id | pessoal | database/postgres/migrations/002_business_permissions_finance.sql:123 |
+| user_id | UUID | False | False | identity.users.id | pseudônimo vinculável | database/postgres/migrations/002_business_permissions_finance.sql:123 |
 | company_id | UUID | True | False | business.companies.id | não classificado automaticamente | database/postgres/migrations/002_business_permissions_finance.sql:124 |
 | role_id | UUID | True | False | permissions.roles.id | não classificado automaticamente | database/postgres/migrations/002_business_permissions_finance.sql:125 |
 | limit_brl | NUMERIC(18, 4) | True | False |  | não classificado automaticamente | database/postgres/migrations/002_business_permissions_finance.sql:126 |
@@ -14,5 +14,5 @@
 | created_at | TIMESTAMPTZ | False | False |  | não classificado automaticamente | database/postgres/migrations/002_business_permissions_finance.sql:131 |
 | updated_at | TIMESTAMPTZ | False | False |  | não classificado automaticamente | database/postgres/migrations/002_business_permissions_finance.sql:132 |
 | deleted_at | TIMESTAMPTZ | True | False |  | não classificado automaticamente | database/postgres/migrations/002_business_permissions_finance.sql:133 |
-| created_by | UUID | True | False | identity.users.id | não classificado automaticamente | database/postgres/migrations/002_business_permissions_finance.sql:134 |
-| updated_by | UUID | True | False | identity.users.id | não classificado automaticamente | database/postgres/migrations/002_business_permissions_finance.sql:135 |
+| created_by | UUID | True | False | identity.users.id | pseudônimo vinculável | database/postgres/migrations/002_business_permissions_finance.sql:134 |
+| updated_by | UUID | True | False | identity.users.id | pseudônimo vinculável | database/postgres/migrations/002_business_permissions_finance.sql:135 |

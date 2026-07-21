@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "status": "triagem_automatica_requer_homologacao",
+  "categories": [
+    {
+      "id": "credencial_segredo",
+      "patterns": [
+        "password",
+        "token",
+        "secret",
+        "credential",
+        "key_hash",
+        "refresh"
+      ],
+      "classification": "restrito",
+      "encryption": "obrigatória em trânsito e repouso; preferir hash não reversível quando aplicável",
+      "masking": "nunca retornar valor integral nem registrar em logs",
+      "retention": "mínima necessária; revogação e expurgo definidos por política de segurança"
+    },
+    {
+      "id": "biometria_saude",
+      "patterns": [
+        "biometric",
+        "biometry",
+        "face_hash",
+        "medical",
+        "health",
+        "prescription",
+        "patient"
+      ],
+      "classification": "dado pessoal sensível",
+      "encryption": "obrigatória com chave gerenciada e segregação de acesso",
+      "masking": "não exibir sem finalidade e autorização reforçada",
+      "retention": "definir por obrigação legal, finalidade clínica e consentimento"
+    },
+    {
+      "id": "documento_identificador",
+      "patterns": [
+        "document_number",
+        "document_cpf",
+        "cpf",
+        "cnpj",
+        "passport",
+        "tax_id"
+      ],
+      "classification": "dado pessoal identificador",
+      "encryption": "criptografar ou armazenar hash conforme necessidade de recuperação",
+      "masking": "exibir parcialmente por padrão",
+      "retention": "vinculada à finalidade, obrigação fiscal/legal e direitos do titular"
+    },
+    {
+      "id": "financeiro",
+      "patterns": [
+        "wallet",
+        "account",
+        "amount",
+        "balance",
+        "price",
+        "cost",
+        "commission",
+        "tax",
+        "salary"
+      ],
+      "classification": "financeiro confidencial",
+      "encryption": "obrigatória em trânsito e repouso",
+      "masking": "restringir por papel e finalidade; não registrar valor sensível desnecessário",
+      "retention": "definir por obrigação contábil, fiscal e prevenção a fraude"
+    },
+    {
+      "id": "contato_localizacao",
+      "patterns": [
+        "email",
+        "phone",
+        "address",
+        "postal",
+        "latitude",
+        "longitude",
+        "location",
+        "ip_address",
+        "device"
+      ],
+      "classification": "dado pessoal",
+      "encryption": "criptografar quando associado a pessoa identificada ou rastreamento",
+      "masking": "mascarar em logs, listagens e exportações não autorizadas",
+      "retention": "limitar à finalidade operacional e consentimento aplicável"
+    },
+    {
+      "id": "identidade_relacional",
+      "patterns": [
+        "user_id",
+        "person_id",
+        "customer_id",
+        "beneficiary",
+        "created_by",
+        "updated_by",
+        "approved_by"
+      ],
+      "classification": "pseudônimo vinculável",
+      "encryption": "controle de acesso e segregação por tenant; criptografia do banco",
+      "masking": "não expor identificadores internos sem necessidade",
+      "retention": "acompanha entidade e trilha de auditoria com política de anonimização"
+    }
+  ],
+  "default": {
+    "classification": "não classificado automaticamente",
+    "encryption": "avaliar pelo proprietário do domínio",
+    "masking": "avaliar pelo proprietário do domínio",
+    "retention": "não definida; registrar lacuna"
+  }
+}

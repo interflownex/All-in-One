@@ -29,7 +29,7 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 20
+    assert len(contract["required_complementary"]) == 21
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
@@ -37,6 +37,7 @@ def test_contract_lists_every_complementary_format() -> None:
     assert "artifacts/formulario_dinamico_modelo.json" in contract["required_complementary"]
     assert "artifacts/coordenadas_stitch.json" in contract["required_complementary"]
     assert "artifacts/modelo_unidades_tributacao.json" in contract["required_complementary"]
+    assert "artifacts/politica_classificacao_campos.json" in contract["required_complementary"]
     assert "artifacts/relatorio_divergencias.json" in contract["required_complementary"]
 
 
@@ -130,3 +131,14 @@ def test_units_and_tax_model_covers_precision_and_fiscal_governance() -> None:
     assert data["conversion_rules"]["binary_float_forbidden"]
     assert data["calculation_contract"]["tax_calculation_backend_only"]
     assert not any(data["implementation_gate"].values())
+
+
+def test_every_physical_field_has_classification_basis_and_retention() -> None:
+    catalog = ROOT / "docs" / "data-audit" / "artifacts" / "dicionario_de_dados.json"
+    data = __import__("json").loads(catalog.read_text(encoding="utf-8"))
+
+    assert all(item["classification_basis"] for item in data["fields"])
+    assert all(item["encryption"] for item in data["fields"])
+    assert all(item["masking"] for item in data["fields"])
+    assert all(item["retention"] for item in data["fields"])
+    assert any(item["lgpd"] == "dado pessoal sensível" for item in data["fields"])
