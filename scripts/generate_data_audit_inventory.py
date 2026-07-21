@@ -20,6 +20,7 @@ MIGRATIONS = ROOT / "database" / "postgres" / "migrations"
 AUDIT = ROOT / "docs" / "data-audit"
 ARTIFACTS = AUDIT / "artifacts"
 DATABASE = AUDIT / "databases" / "postgresql"
+DYNAMIC_FORM_MODEL = ROOT / "config" / "data_audit" / "dynamic_form_model_proposal.json"
 
 
 @dataclass(frozen=True)
@@ -435,6 +436,8 @@ def build_delivery() -> None:
         "unique_events": len({row["event"] for row in transitions}),
         "sensitive_candidates": len(sensitive),
     }
+    dynamic_form_model = json.loads(DYNAMIC_FORM_MODEL.read_text(encoding="utf-8"))
+    counts["dynamic_form_entities_proposed"] = len(dynamic_form_model["entities"])
 
     field_rows = [asdict(field) for field in fields]
     write_csv(ARTIFACTS / "dicionario_de_dados.csv", list(Field.__annotations__), field_rows)
@@ -479,6 +482,7 @@ def build_delivery() -> None:
         api_csv_rows,
     )
     write_json(ARTIFACTS / "catalogo_apis.json", {"version": 1, "counts": counts, "endpoints": endpoints})
+    write_json(ARTIFACTS / "formulario_dinamico_modelo.json", dynamic_form_model)
     write_csv(
         ARTIFACTS / "matriz_formulario_campo.csv",
         ["app", "module", "entity", "surface", "title", "field", "binding", "evidence"],
@@ -713,7 +717,31 @@ EVIDÊNCIAS: `database/postgres/migrations/`, `database/mongodb/init/001_ai_soci
     write_markdown(
         "10_FORMULARIOS_DINAMICOS.md",
         "Construtor de Formulários Dinâmicos",
-        """**Status:** proposta mandatória, ainda não comprovada como implementação. A arquitetura exige definições, versões imutáveis, blocos, catálogo allowlist, bindings lógicos, cálculos declarativos seguros, validações backend, homologação, publicação, submissões, cobrança configurável e auditoria.\n\nA seleção arbitrária de tabela/coluna, SQL, JavaScript ou shell é proibida.\n\nEVIDÊNCIAS: `docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:1583`. Lacuna: `AUD-P1-004`.""",
+        f"""**Status:** proposta mandatória, ainda não comprovada como implementação.
+
+## Modelo versionado
+
+A proposta contém {counts['dynamic_form_entities_proposed']} estruturas: {', '.join(f'`{name}`' for name in dynamic_form_model['entities'])}. Cada campo está enumerado em `artifacts/formulario_dinamico_modelo.json`.
+
+## Ciclo de vida
+
+{', '.join(f'`{state}`' for state in dynamic_form_model['lifecycle'])}. Uma versão publicada é imutável; qualquer alteração cria nova versão e passa novamente por homologação.
+
+## Segurança
+
+O modelo exige allowlists de campo, componente e operador; parser seguro; validação e recálculo backend; limite de complexidade; detecção de ciclos; isolamento por tenant; RBAC; ABAC; checksum; auditoria; rollback e sandbox de prévia.
+
+São proibidos seleção arbitrária de tabela/coluna, SQL, JavaScript, shell, desativação de auditoria, enfraquecimento de validação e publicação sem homologação.
+
+## Cobrança
+
+Eventos faturáveis estão separados de autosave e rascunho. Valores e estratégia comercial não são expostos; dependem de aprovação formal.
+
+## Gate de implementação
+
+Migration reversível, backend, frontend, testes de segurança e homologação permanecem `false`. Portanto, este documento é modelagem e não afirma funcionalidade existente.
+
+EVIDÊNCIAS: `config/data_audit/dynamic_form_model_proposal.json`, `artifacts/formulario_dinamico_modelo.json`, `docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:1583`. Lacuna: `AUD-P1-004`.""",
     )
     write_markdown(
         "11_PERMISSOES_E_SEGURANCA.md",

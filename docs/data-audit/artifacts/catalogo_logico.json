@@ -18,7 +18,8 @@
     "logical_without_ui_surface": 46,
     "event_transitions": 194,
     "unique_events": 187,
-    "sensitive_candidates": 147
+    "sensitive_candidates": 147,
+    "dynamic_form_entities_proposed": 14
   },
   "entities": [
     {

@@ -29,11 +29,12 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 16
+    assert len(contract["required_complementary"]) == 17
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
     assert "artifacts/catalogo_apis.json" in contract["required_complementary"]
+    assert "artifacts/formulario_dinamico_modelo.json" in contract["required_complementary"]
     assert "artifacts/relatorio_divergencias.json" in contract["required_complementary"]
 
 
@@ -92,3 +93,14 @@ def test_api_catalog_exposes_models_and_untyped_payloads() -> None:
     assert data["counts"]["api_model_fields"] > 0
     assert all(item["method"] and item["path"] and item["evidence"] for item in data["endpoints"])
     assert any(not item["response_model"] for item in data["endpoints"])
+
+
+def test_dynamic_form_model_is_explicitly_a_non_implemented_proposal() -> None:
+    model = ROOT / "docs" / "data-audit" / "artifacts" / "formulario_dinamico_modelo.json"
+    data = __import__("json").loads(model.read_text(encoding="utf-8"))
+
+    assert data["status"] == "proposta"
+    assert len(data["entities"]) == 14
+    assert "field_bindings" in data["entities"]
+    assert "physical_table_selection" in data["forbidden"]
+    assert not any(data["implementation_gate"].values())
