@@ -357,6 +357,18 @@ def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]
         "form": ("name", "description", "category"),
         "list": ("name", "title", "status", "created_at"),
     }
+    app_path = ROOT / "apps" / "all-in-one" / "src" / "App.tsx"
+    app_text = app_path.read_text(encoding="utf-8")
+    imports = {
+        component: str((app_path.parent / f"{relative}.tsx").relative_to(ROOT))
+        for component, relative in re.findall(
+            r"const\s+(\w+)\s*=\s*lazy\(\(\)\s*=>\s*import\('([^']+)'\)\)", app_text
+        )
+    }
+    routes_by_file: dict[str, str] = {}
+    for route, component in re.findall(r'<Route\s+path="([^"]+)"\s+element=\{(\w+)', app_text):
+        if component in imports:
+            routes_by_file[imports[component]] = route
     pages = ROOT / "apps" / "all-in-one" / "src" / "pages"
     for path in sorted(pages.rglob("*.tsx")):
         text = path.read_text(encoding="utf-8", errors="ignore")
@@ -374,6 +386,7 @@ def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]
                         "entity": props["entity"],
                         "surface": props["type"],
                         "title": props.get("title", ""),
+                        "route": routes_by_file.get(str(path.relative_to(ROOT)), "não localizada"),
                         "field": field,
                         "binding": binding,
                         "evidence": f"{path.relative_to(ROOT)}:{line_number(text, match.start())}",
@@ -483,10 +496,51 @@ def build_delivery() -> None:
     )
     write_json(ARTIFACTS / "catalogo_apis.json", {"version": 1, "counts": counts, "endpoints": endpoints})
     write_json(ARTIFACTS / "formulario_dinamico_modelo.json", dynamic_form_model)
+    surfaces: dict[str, dict[str, object]] = {}
+    required_states = ["loading", "vazio", "erro", "sucesso", "sem_permissao", "conflito", "dados_desatualizados"]
+    for row in ui_bindings:
+        evidence = row["evidence"]
+        surface = surfaces.setdefault(
+            evidence,
+            {
+                "module": row["module"],
+                "entity": row["entity"],
+                "title": row["title"],
+                "surface": row["surface"],
+                "route": row["route"],
+                "persona": "papel autorizado do módulo; requer detalhamento",
+                "fields": [],
+                "primary_action": "Salvar registro" if row["surface"] == "form" else "Abrir detalhes",
+                "endpoint": f"/{row['module']}/resources/{row['entity']}",
+                "permissions": "enforcement backend requer validação",
+                "states": required_states,
+                "responsive": ["desktop", "tablet", "mobile"],
+                "accessibility": ["label", "foco visível", "teclado", "leitor de tela", "contraste"],
+                "binding_status": "parcial",
+                "evidence": evidence,
+            },
+        )
+        surface["fields"].append({"name": row["field"], "binding": row["binding"]})
+    coordinate_rows = [
+        {
+            **surface,
+            "fields": ";".join(f"{item['name']}:{item['binding']}" for item in surface["fields"]),
+            "states": ";".join(surface["states"]),
+            "responsive": ";".join(surface["responsive"]),
+            "accessibility": ";".join(surface["accessibility"]),
+        }
+        for surface in surfaces.values()
+    ]
+    write_csv(
+        ARTIFACTS / "coordenadas_stitch.csv",
+        ["module", "entity", "title", "surface", "route", "persona", "fields", "primary_action", "endpoint", "permissions", "states", "responsive", "accessibility", "binding_status", "evidence"],
+        coordinate_rows,
+    )
+    write_json(ARTIFACTS / "coordenadas_stitch.json", {"version": 1, "counts": counts, "coordinates": list(surfaces.values())})
     write_csv(
         ARTIFACTS / "matriz_formulario_campo.csv",
-        ["app", "module", "entity", "surface", "title", "field", "binding", "evidence"],
-        ui_bindings or [{"app": "não localizado", "module": "", "entity": "", "surface": "", "title": "", "field": "não localizado", "binding": "lacuna", "evidence": "apps/"}],
+        ["app", "module", "entity", "surface", "title", "route", "field", "binding", "evidence"],
+        ui_bindings or [{"app": "não localizado", "module": "", "entity": "", "surface": "", "title": "", "route": "", "field": "não localizado", "binding": "lacuna", "evidence": "apps/"}],
     )
     write_csv(
         ARTIFACTS / "matriz_api_campo.csv",
@@ -765,7 +819,24 @@ EVIDÊNCIAS: `config/data_audit/dynamic_form_model_proposal.json`, `artifacts/fo
     write_markdown(
         "16_COORDENADAS_STITCH.md",
         "Coordenadas para Templates Stitch",
-        """## TEMPLATE: Catálogo de dados\n\n- Módulo: Administração interna\n- Persona: auditor e proprietário de domínio\n- Rota: `/admin/data-audit` (proposta)\n- Dados: dicionário, lacunas, cobertura e evidências\n- Ações: filtrar, abrir evidência, atribuir lacuna e homologar classificação\n- Estados: loading, vazio, erro, conflito, sem permissão e sucesso\n- Responsividade: desktop, tablet e mobile\n- Acessibilidade: teclado, foco, labels e contraste\n\nNenhuma rota ou ação acima é apresentada como existente. EVIDÊNCIAS: `docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2545`.""",
+        f"""## Cobertura gerada
+
+Foram geradas {counts['ui_surfaces']} coordenadas a partir de rotas e superfícies reais. Cada registro contém módulo, entidade, título, tipo, rota, persona pendente, campos, ação primária, endpoint lógico, permissões, estados, responsividade, acessibilidade e evidência.
+
+As coordenadas estão em `artifacts/coordenadas_stitch.csv` e `artifacts/coordenadas_stitch.json`. O status de binding permanece parcial porque o `SmartCRUD` genérico não implementa todos os campos específicos.
+
+## TEMPLATE adicional: Catálogo de dados
+
+- Módulo: Administração interna
+- Persona: auditor e proprietário de domínio
+- Rota: `/admin/data-audit` (proposta)
+- Dados: dicionário, lacunas, cobertura e evidências
+- Ações: filtrar, abrir evidência, atribuir lacuna e homologar classificação
+- Estados: loading, vazio, erro, conflito, sem permissão e sucesso
+- Responsividade: desktop, tablet e mobile
+- Acessibilidade: teclado, foco, labels e contraste
+
+Nenhuma rota proposta é apresentada como existente. EVIDÊNCIAS: `apps/all-in-one/src/App.tsx`, `artifacts/coordenadas_stitch.json`, `docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:2545`.""",
     )
     write_markdown(
         "17_DECISOES_ARQUITETURAIS.md",

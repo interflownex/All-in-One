@@ -29,12 +29,13 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 17
+    assert len(contract["required_complementary"]) == 19
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
     assert "artifacts/catalogo_apis.json" in contract["required_complementary"]
     assert "artifacts/formulario_dinamico_modelo.json" in contract["required_complementary"]
+    assert "artifacts/coordenadas_stitch.json" in contract["required_complementary"]
     assert "artifacts/relatorio_divergencias.json" in contract["required_complementary"]
 
 
@@ -104,3 +105,13 @@ def test_dynamic_form_model_is_explicitly_a_non_implemented_proposal() -> None:
     assert "field_bindings" in data["entities"]
     assert "physical_table_selection" in data["forbidden"]
     assert not any(data["implementation_gate"].values())
+
+
+def test_every_smartcrud_surface_has_a_stitch_coordinate_and_route() -> None:
+    coordinates = ROOT / "docs" / "data-audit" / "artifacts" / "coordenadas_stitch.json"
+    data = __import__("json").loads(coordinates.read_text(encoding="utf-8"))
+
+    assert len(data["coordinates"]) == data["counts"]["ui_surfaces"] == 299
+    assert all(item["route"].startswith("/") for item in data["coordinates"])
+    assert all(item["states"] and item["accessibility"] for item in data["coordinates"])
+    assert all(item["binding_status"] == "parcial" for item in data["coordinates"])
