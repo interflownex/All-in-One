@@ -12,9 +12,9 @@
 | bindings_frontend | 8 | AUD-P1-002 |
 | campos_sensiveis | 0 | AUD-P0-001; AUD-P1-007 |
 | auditoria | 51 | AUD-P1-004; AUD-P1-007 |
-| calculos | 0 | AUD-P1-004; AUD-P1-005 |
-| unidades | 0 | AUD-P1-005 |
-| regras_fiscais | 0 | AUD-P1-005 |
+| calculos | 60 | AUD-P1-004; AUD-P1-005 |
+| unidades | 67 | AUD-P1-005 |
+| regras_fiscais | 57 | AUD-P1-005 |
 | formularios | 99 | AUD-P1-002; AUD-P1-004; AUD-P1-005; AUD-P1-006 |
 | acoes_ui | 99 | AUD-P1-004 |
 | permissoes_backend | 99 | AUD-P1-004; AUD-P1-007 |

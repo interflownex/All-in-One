@@ -1,6 +1,6 @@
 # Tributação e Perfis Fiscais
 
-**Status:** proposta; implementação e homologação fiscal não comprovadas.
+**Status:** persistência, cálculo e testes unitários implementados; frontend, integração e homologação fiscal pendentes.
 
 ## Estruturas
 
@@ -16,6 +16,6 @@ Cada snapshot preserva regra, classificação, base, alíquota, valor, moeda, pr
 
 ## Gate
 
-Migration, backfill, backend, frontend, testes e homologação fiscal permanecem não implementados.
+Migration reversível, rollback, estratégia de backfill sem inferência, cálculo Decimal, vigência, aprovação e testes unitários estão implementados. Frontend, integração PostgreSQL viva e homologação por cenários permanecem pendentes.
 
-EVIDÊNCIAS: `config/data_audit/product_units_tax_model_proposal.json`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.
+EVIDÊNCIAS: `database/postgres/migrations/025_units_tax_governance.sql`, `database/postgres/rollbacks/025_units_tax_governance.down.sql`, `modules/shared/units_tax.py`, `tests/test_units_tax_governance.py`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.

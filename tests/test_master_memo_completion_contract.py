@@ -18,7 +18,7 @@ def test_todos_relacionamentos_descritos_no_dicionario_e_erd() -> None:
     relationships = [field for field in dictionary["fields"] if field["reference"]]
     erd = (ARTIFACTS / "erd.mmd").read_text(encoding="utf-8")
 
-    assert len(relationships) == dictionary["counts"]["relationships"] == 297
+    assert len(relationships) == dictionary["counts"]["relationships"] == 348
     assert erd.count("}o--||") == len(relationships)
     assert all(field["evidence"] and field["reference"].count(".") == 2 for field in relationships)
     for field in relationships:

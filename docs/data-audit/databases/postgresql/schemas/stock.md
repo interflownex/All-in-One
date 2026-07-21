@@ -1,5 +1,5 @@
 # Schema `stock`
 
-Tabelas catalogadas: 3.
+Tabelas catalogadas: 9.
 
 EVIDÊNCIAS: `database/postgres/migrations/`.

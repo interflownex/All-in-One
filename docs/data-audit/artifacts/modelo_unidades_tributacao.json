@@ -1,6 +1,12 @@
 {
   "version": 1,
-  "status": "proposta",
+  "status": "implementado_pendente_frontend_e_homologacao_fiscal",
+  "implementation_evidence": [
+    "database/postgres/migrations/025_units_tax_governance.sql",
+    "database/postgres/rollbacks/025_units_tax_governance.down.sql",
+    "modules/shared/units_tax.py",
+    "tests/test_units_tax_governance.py"
+  ],
   "source": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md#9",
   "measurement_entities": {
     "measurement_units": [
@@ -402,12 +408,14 @@
     "null_and_division_by_zero_policy_required": true
   },
   "implementation_gate": {
-    "migration_reversible": false,
-    "backfill_defined": false,
-    "backend_implemented": false,
+    "migration_reversible": true,
+    "backfill_defined": true,
+    "backend_implemented": true,
     "frontend_implemented": false,
-    "unit_tests_implemented": false,
+    "unit_tests_implemented": true,
     "integration_tests_implemented": false,
     "fiscal_homologation": false
-  }
+  },
+  "backfill_strategy": "Tabelas novas iniciam vazias; produtos existentes permanecem com campos legados até migração explícita e idempotente por tenant, sem inferir unidade ou classificação fiscal.",
+  "rollback": "database/postgres/rollbacks/025_units_tax_governance.down.sql"
 }

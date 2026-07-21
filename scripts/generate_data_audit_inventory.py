@@ -1275,7 +1275,7 @@ def build_delivery() -> None:
         },
         {
             "id": "AUD-P1-005", "priority": "P1", "module": "catálogo e fiscal", "title": "Regras fiscais, unidades e conversões carecem de implementação completa",
-            "description": "Existe proposta com precisão e governança, sem comprovação de migrations, cálculo backend e cenários fiscais.", "evidence": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json", "database/postgres/migrations/"], "impact": "Compra, estoque, venda, custo e tributação podem divergir.", "risk": "Cálculo financeiro ou fiscal incorreto.", "proposal": "Aprovar modelo, gerar migrations reversíveis, backfill, APIs e testes de cenários.", "dependencies": ["especialista fiscal", "decisão de produto"], "affected_files": ["database/postgres/migrations", "modules/marketplace", "modules/stock", "modules/erp"], "migration": "pendente, reversível e com backfill", "backend": "cálculos somente com Decimal e regras vigentes", "frontend": "cadastro de unidades e perfil fiscal", "tests": "precisão, arredondamento, conversão e cenários fiscais", "documentation": "06_UNIDADES_E_CONVERSOES.md e 07_TRIBUTACAO.md", "acceptance": "Unidades, conversões, perfis fiscais, vigência e cálculos possuem migrations, backend, frontend e testes aprovados.", "status": "proposta", "owner_suggestion": "catálogo, estoque, ERP e fiscal", "dimensions": ["tabelas_colecoes", "campos", "calculos", "unidades", "regras_fiscais", "formularios"]
+            "description": "Migration reversível, rollback, cálculo Decimal e testes unitários foram implementados; faltam frontend, integração PostgreSQL viva e homologação fiscal.", "evidence": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json", "database/postgres/migrations/025_units_tax_governance.sql", "database/postgres/rollbacks/025_units_tax_governance.down.sql", "modules/shared/units_tax.py", "tests/test_units_tax_governance.py"], "impact": "Sem os gates restantes, compra, estoque, venda, custo e tributação ainda podem divergir em operação.", "risk": "Cálculo financeiro ou fiscal não homologado.", "proposal": "Conectar APIs/UI, executar integração PostgreSQL e homologar cenários com especialista fiscal.", "dependencies": ["especialista fiscal", "ambiente PostgreSQL", "frontend"], "affected_files": ["apps/all-in-one/src", "modules/stock", "modules/erp"], "migration": "implementada com rollback; backfill explícito sem inferência", "backend": "Decimal, vigência, aprovação, precisão e arredondamento implementados", "frontend": "cadastro de unidades e perfil fiscal pendente", "tests": "unitários aprovados; integração e homologação pendentes", "documentation": "06_UNIDADES_E_CONVERSOES.md e 07_TRIBUTACAO.md", "acceptance": "Unidades, conversões, perfis fiscais, vigência e cálculos possuem migrations, backend, frontend, integração e homologação aprovados.", "status": "implementacao_parcial", "owner_suggestion": "catálogo, estoque, ERP e fiscal", "dimensions": ["tabelas_colecoes", "campos", "calculos", "unidades", "regras_fiscais", "formularios"]
         },
         {
             "id": "AUD-P1-006", "priority": "P1", "module": "arquitetura modular", "title": "Entidades lógicas não possuem persistência ou superfície UI correspondente",
@@ -1304,6 +1304,10 @@ def build_delivery() -> None:
     def coverage_ratio(covered: int, total: int) -> int:
         return round(100 * covered / total) if total else 0
 
+    units_gate = product_units_tax_model["implementation_gate"]
+    calculations_gate_names = ("migration_reversible", "backend_implemented", "unit_tests_implemented", "integration_tests_implemented", "fiscal_homologation")
+    units_gate_names = ("migration_reversible", "backfill_defined", "backend_implemented", "frontend_implemented", "unit_tests_implemented", "integration_tests_implemented")
+    fiscal_gate_names = tuple(units_gate)
     coverage_values = {
         "bancos": 80,
         "schemas": 100,
@@ -1313,9 +1317,9 @@ def build_delivery() -> None:
         "bindings_frontend": coverage_ratio(counts["ui_bindings_probable"], counts["ui_candidates"]),
         "campos_sensiveis": 0,
         "auditoria": coverage_ratio(counts["audit_requirements_covered"], counts["audit_requirements"]),
-        "calculos": 0,
-        "unidades": 0,
-        "regras_fiscais": 0,
+        "calculos": coverage_ratio(sum(bool(units_gate[name]) for name in calculations_gate_names), len(calculations_gate_names)),
+        "unidades": coverage_ratio(sum(bool(units_gate[name]) for name in units_gate_names), len(units_gate_names)),
+        "regras_fiscais": coverage_ratio(sum(bool(units_gate[name]) for name in fiscal_gate_names), len(fiscal_gate_names)),
         "formularios": coverage_ratio(counts["ui_surfaces"], counts["ui_surfaces"]),
         "acoes_ui": coverage_ratio(counts["ui_actions"] - counts["ui_actions_incompatible"], counts["ui_actions"]),
         "permissoes_backend": coverage_ratio(counts["permission_operations"] - counts["permission_horizontal_read_gaps"], counts["permission_operations"]),
@@ -1437,7 +1441,7 @@ EVIDÊNCIAS: `database/postgres/migrations/`, `database/mongodb/init/001_ai_soci
     write_markdown(
         "06_UNIDADES_E_CONVERSOES.md",
         "Unidades, Conversões, Precisão e Arredondamento",
-        f"""**Status:** proposta; implementação não comprovada.
+        f"""**Status:** implementação parcial comprovada; frontend, integração PostgreSQL viva e homologação pendentes.
 
 ## Estruturas
 
@@ -1453,14 +1457,14 @@ Foram modeladas {counts['measurement_entities_proposed']} estruturas: {', '.join
 
 ## Gate
 
-Migration, backfill, backend, frontend e testes permanecem não implementados. Nenhuma migration é aplicada por este documento.
+Migration reversível, rollback, estratégia de backfill sem inferência, cálculo Decimal e testes unitários estão implementados. Frontend, integração PostgreSQL viva e homologação permanecem pendentes. A migration não é aplicada por este documento.
 
-EVIDÊNCIAS: `config/data_audit/product_units_tax_model_proposal.json`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.""",
+EVIDÊNCIAS: `database/postgres/migrations/025_units_tax_governance.sql`, `database/postgres/rollbacks/025_units_tax_governance.down.sql`, `modules/shared/units_tax.py`, `tests/test_units_tax_governance.py`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.""",
     )
     write_markdown(
         "07_TRIBUTACAO.md",
         "Tributação e Perfis Fiscais",
-        f"""**Status:** proposta; implementação e homologação fiscal não comprovadas.
+        f"""**Status:** persistência, cálculo e testes unitários implementados; frontend, integração e homologação fiscal pendentes.
 
 ## Estruturas
 
@@ -1476,9 +1480,9 @@ Cada snapshot preserva regra, classificação, base, alíquota, valor, moeda, pr
 
 ## Gate
 
-Migration, backfill, backend, frontend, testes e homologação fiscal permanecem não implementados.
+Migration reversível, rollback, estratégia de backfill sem inferência, cálculo Decimal, vigência, aprovação e testes unitários estão implementados. Frontend, integração PostgreSQL viva e homologação por cenários permanecem pendentes.
 
-EVIDÊNCIAS: `config/data_audit/product_units_tax_model_proposal.json`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.""",
+EVIDÊNCIAS: `database/postgres/migrations/025_units_tax_governance.sql`, `database/postgres/rollbacks/025_units_tax_governance.down.sql`, `modules/shared/units_tax.py`, `tests/test_units_tax_governance.py`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.""",
     )
     write_markdown(
         "08_AUDITORIA_E_LOGS.md",

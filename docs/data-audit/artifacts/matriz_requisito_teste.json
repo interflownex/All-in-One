@@ -2,10 +2,10 @@
   "version": 1,
   "status": "rastreabilidade_estatica",
   "counts": {
-    "migrations": 24,
+    "migrations": 25,
     "schemas": 31,
-    "tables": 81,
-    "fields": 1189,
+    "tables": 92,
+    "fields": 1414,
     "mongodb_collections": 4,
     "mongodb_fields": 29,
     "sqlite_tables": 4,
@@ -13,8 +13,8 @@
     "redis_key_patterns": 1,
     "object_storage_stores": 4,
     "browser_storage_key_patterns": 12,
-    "relationships": 297,
-    "indexes": 48,
+    "relationships": 348,
+    "indexes": 52,
     "endpoints": 99,
     "endpoints_with_response_model": 8,
     "api_model_fields": 115,
@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 484,
-    "tests_with_assertions": 453,
+    "test_functions": 491,
+    "tests_with_assertions": 457,
     "tests_with_http_calls": 192,
-    "test_functions_in_execution_reports": 459,
-    "test_functions_passed": 426,
+    "test_functions_in_execution_reports": 466,
+    "test_functions_passed": 433,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -42,7 +42,7 @@
     "logical_without_ui_surface": 46,
     "event_transitions": 194,
     "unique_events": 187,
-    "sensitive_candidates": 304,
+    "sensitive_candidates": 332,
     "dynamic_form_entities_proposed": 14,
     "measurement_entities_proposed": 6,
     "fiscal_entities_proposed": 5,
@@ -105,13 +105,15 @@
       "subsection": "criterios_de_conclusao",
       "requirement": "100% dos schemas forem catalogados",
       "test_candidates": [
-        "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables"
+        "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables",
+        "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback"
       ],
-      "candidate_count": 1,
+      "candidate_count": 2,
       "passed_test_candidates": [
-        "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables"
+        "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables",
+        "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback"
       ],
-      "passed_candidate_count": 1,
+      "passed_candidate_count": 2,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -486,9 +488,12 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_catalog_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload"
+        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
       ],
-      "candidate_count": 16,
+      "candidate_count": 19,
       "passed_test_candidates": [
         "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
@@ -505,9 +510,12 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_catalog_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload"
+        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
       ],
-      "passed_candidate_count": 16,
+      "passed_candidate_count": 19,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -521,15 +529,29 @@
       "test_candidates": [
         "tests/test_integration_sandbox_adapters.py::test_psp_fiscal_and_supplier_sandboxes_emit_domain_events",
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
+        "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
+        "tests/test_units_tax_governance.py::test_tax_calculation_rejects_missing_governance",
+        "tests/test_units_tax_governance.py::test_tax_calculation_uses_reduction_rate_and_declared_rounding",
+        "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback",
+        "tests/test_units_tax_governance.py::test_units_tax_physical_catalog_covers_every_proposed_field",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "candidate_count": 3,
+      "candidate_count": 10,
       "passed_test_candidates": [
         "tests/test_integration_sandbox_adapters.py::test_psp_fiscal_and_supplier_sandboxes_emit_domain_events",
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
+        "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
+        "tests/test_units_tax_governance.py::test_tax_calculation_rejects_missing_governance",
+        "tests/test_units_tax_governance.py::test_tax_calculation_uses_reduction_rate_and_declared_rounding",
+        "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback",
+        "tests/test_units_tax_governance.py::test_units_tax_physical_catalog_covers_every_proposed_field",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "passed_candidate_count": 3,
+      "passed_candidate_count": 10,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1236,9 +1258,10 @@
         "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables",
         "tests/test_runtime_postgres_store_resolution.py::test_store_for_keeps_generic_fallback_outside_typed_matrix",
         "tests/test_runtime_postgres_store_resolution.py::test_store_for_rejects_fallback_to_generic_postgres_for_known_module",
-        "tests/test_runtime_postgres_store_resolution.py::test_store_for_resolves_typed_postgres_store_for_all_known_modules"
+        "tests/test_runtime_postgres_store_resolution.py::test_store_for_resolves_typed_postgres_store_for_all_known_modules",
+        "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback"
       ],
-      "candidate_count": 17,
+      "candidate_count": 18,
       "passed_test_candidates": [
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_postgres_contract_static.py::test_identity_priority_store_phone_does_not_collide_with_dsn_validator",
@@ -1251,9 +1274,10 @@
         "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables",
         "tests/test_runtime_postgres_store_resolution.py::test_store_for_keeps_generic_fallback_outside_typed_matrix",
         "tests/test_runtime_postgres_store_resolution.py::test_store_for_rejects_fallback_to_generic_postgres_for_known_module",
-        "tests/test_runtime_postgres_store_resolution.py::test_store_for_resolves_typed_postgres_store_for_all_known_modules"
+        "tests/test_runtime_postgres_store_resolution.py::test_store_for_resolves_typed_postgres_store_for_all_known_modules",
+        "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback"
       ],
-      "passed_candidate_count": 12,
+      "passed_candidate_count": 13,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1336,9 +1360,12 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_catalog_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload"
+        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
       ],
-      "candidate_count": 17,
+      "candidate_count": 20,
       "passed_test_candidates": [
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
@@ -1356,9 +1383,12 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_catalog_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload"
+        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
       ],
-      "passed_candidate_count": 17,
+      "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1389,14 +1419,20 @@
       "requirement": "Catalogar cálculos",
       "test_candidates": [
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
+        "tests/test_units_tax_governance.py::test_tax_calculation_rejects_missing_governance",
+        "tests/test_units_tax_governance.py::test_tax_calculation_uses_reduction_rate_and_declared_rounding",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "candidate_count": 2,
+      "candidate_count": 5,
       "passed_test_candidates": [
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
+        "tests/test_units_tax_governance.py::test_tax_calculation_rejects_missing_governance",
+        "tests/test_units_tax_governance.py::test_tax_calculation_uses_reduction_rate_and_declared_rounding",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "passed_candidate_count": 2,
+      "passed_candidate_count": 5,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1629,14 +1665,16 @@
       "requirement": "Validar schema",
       "test_candidates": [
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
-        "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables"
+        "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables",
+        "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback"
       ],
-      "candidate_count": 2,
+      "candidate_count": 3,
       "passed_test_candidates": [
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
-        "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables"
+        "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables",
+        "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback"
       ],
-      "passed_candidate_count": 2,
+      "passed_candidate_count": 3,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1700,9 +1738,12 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_catalog_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload"
+        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
       ],
-      "candidate_count": 17,
+      "candidate_count": 20,
       "passed_test_candidates": [
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
@@ -1720,9 +1761,12 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_catalog_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload"
+        "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
       ],
-      "passed_candidate_count": 17,
+      "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1736,15 +1780,29 @@
       "test_candidates": [
         "tests/test_integration_sandbox_adapters.py::test_psp_fiscal_and_supplier_sandboxes_emit_domain_events",
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
+        "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
+        "tests/test_units_tax_governance.py::test_tax_calculation_rejects_missing_governance",
+        "tests/test_units_tax_governance.py::test_tax_calculation_uses_reduction_rate_and_declared_rounding",
+        "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback",
+        "tests/test_units_tax_governance.py::test_units_tax_physical_catalog_covers_every_proposed_field",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "candidate_count": 3,
+      "candidate_count": 10,
       "passed_test_candidates": [
         "tests/test_integration_sandbox_adapters.py::test_psp_fiscal_and_supplier_sandboxes_emit_domain_events",
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
+        "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
+        "tests/test_units_tax_governance.py::test_tax_calculation_rejects_missing_governance",
+        "tests/test_units_tax_governance.py::test_tax_calculation_uses_reduction_rate_and_declared_rounding",
+        "tests/test_units_tax_governance.py::test_units_tax_migration_implements_every_proposed_entity_and_rollback",
+        "tests/test_units_tax_governance.py::test_units_tax_physical_catalog_covers_every_proposed_field",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "passed_candidate_count": 3,
+      "passed_candidate_count": 10,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1757,14 +1815,20 @@
       "requirement": "Validar cálculos",
       "test_candidates": [
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
+        "tests/test_units_tax_governance.py::test_tax_calculation_rejects_missing_governance",
+        "tests/test_units_tax_governance.py::test_tax_calculation_uses_reduction_rate_and_declared_rounding",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "candidate_count": 2,
+      "candidate_count": 5,
       "passed_test_candidates": [
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
+        "tests/test_units_tax_governance.py::test_tax_calculation_rejects_missing_governance",
+        "tests/test_units_tax_governance.py::test_tax_calculation_uses_reduction_rate_and_declared_rounding",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "passed_candidate_count": 2,
+      "passed_candidate_count": 5,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",

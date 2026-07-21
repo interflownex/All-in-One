@@ -120,7 +120,7 @@ def test_generated_coverage_does_not_claim_false_completion() -> None:
     data = __import__("json").loads(coverage.read_text(encoding="utf-8"))
 
     assert data["status"] == "em_execucao"
-    assert data["counts"]["migrations"] == 24
+    assert data["counts"]["migrations"] == 25
     assert data["counts"]["tables"] >= 80
     assert any(item["percentual"] < 100 for item in data["dimensoes"].values())
 
@@ -128,7 +128,7 @@ def test_generated_coverage_does_not_claim_false_completion() -> None:
 def test_generated_summary_is_rendered_markdown() -> None:
     summary = (ROOT / "docs" / "data-audit" / "00_RESUMO_EXECUTIVO.md").read_text(encoding="utf-8")
 
-    assert "24 migrations PostgreSQL" in summary
+    assert "25 migrations PostgreSQL" in summary
     assert 'f"A varredura' not in summary
     assert "conclusão de 100% não declarada" in summary
 
@@ -242,14 +242,20 @@ def test_units_and_tax_model_covers_precision_and_fiscal_governance() -> None:
     model = ROOT / "docs" / "data-audit" / "artifacts" / "modelo_unidades_tributacao.json"
     data = __import__("json").loads(model.read_text(encoding="utf-8"))
 
-    assert data["status"] == "proposta"
+    assert data["status"] == "implementado_pendente_frontend_e_homologacao_fiscal"
     assert "product_unit_conversions" in data["measurement_entities"]
     assert "stock_movements" in data["measurement_entities"]
     assert "fiscal_rules" in data["fiscal_entities"]
     assert "tax_calculation_snapshots" in data["fiscal_entities"]
     assert data["conversion_rules"]["binary_float_forbidden"]
     assert data["calculation_contract"]["tax_calculation_backend_only"]
-    assert not any(data["implementation_gate"].values())
+    assert data["implementation_gate"]["migration_reversible"]
+    assert data["implementation_gate"]["backfill_defined"]
+    assert data["implementation_gate"]["backend_implemented"]
+    assert data["implementation_gate"]["unit_tests_implemented"]
+    assert not data["implementation_gate"]["frontend_implemented"]
+    assert not data["implementation_gate"]["integration_tests_implemented"]
+    assert not data["implementation_gate"]["fiscal_homologation"]
 
 
 def test_every_physical_field_has_classification_basis_and_retention() -> None:

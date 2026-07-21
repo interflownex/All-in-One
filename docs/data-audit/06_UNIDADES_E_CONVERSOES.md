@@ -1,6 +1,6 @@
 # Unidades, Conversões, Precisão e Arredondamento
 
-**Status:** proposta; implementação não comprovada.
+**Status:** implementação parcial comprovada; frontend, integração PostgreSQL viva e homologação pendentes.
 
 ## Estruturas
 
@@ -16,6 +16,6 @@ Foram modeladas 6 estruturas: `measurement_units`, `product_units`, `product_uni
 
 ## Gate
 
-Migration, backfill, backend, frontend e testes permanecem não implementados. Nenhuma migration é aplicada por este documento.
+Migration reversível, rollback, estratégia de backfill sem inferência, cálculo Decimal e testes unitários estão implementados. Frontend, integração PostgreSQL viva e homologação permanecem pendentes. A migration não é aplicada por este documento.
 
-EVIDÊNCIAS: `config/data_audit/product_units_tax_model_proposal.json`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.
+EVIDÊNCIAS: `database/postgres/migrations/025_units_tax_governance.sql`, `database/postgres/rollbacks/025_units_tax_governance.down.sql`, `modules/shared/units_tax.py`, `tests/test_units_tax_governance.py`, `artifacts/modelo_unidades_tributacao.json`, lacuna `AUD-P1-005`.

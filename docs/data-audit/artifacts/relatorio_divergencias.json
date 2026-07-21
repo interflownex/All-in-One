@@ -212,31 +212,34 @@
       "priority": "P1",
       "module": "catálogo e fiscal",
       "title": "Regras fiscais, unidades e conversões carecem de implementação completa",
-      "description": "Existe proposta com precisão e governança, sem comprovação de migrations, cálculo backend e cenários fiscais.",
+      "description": "Migration reversível, rollback, cálculo Decimal e testes unitários foram implementados; faltam frontend, integração PostgreSQL viva e homologação fiscal.",
       "evidence": [
         "docs/data-audit/artifacts/modelo_unidades_tributacao.json",
-        "database/postgres/migrations/"
+        "database/postgres/migrations/025_units_tax_governance.sql",
+        "database/postgres/rollbacks/025_units_tax_governance.down.sql",
+        "modules/shared/units_tax.py",
+        "tests/test_units_tax_governance.py"
       ],
-      "impact": "Compra, estoque, venda, custo e tributação podem divergir.",
-      "risk": "Cálculo financeiro ou fiscal incorreto.",
-      "proposal": "Aprovar modelo, gerar migrations reversíveis, backfill, APIs e testes de cenários.",
+      "impact": "Sem os gates restantes, compra, estoque, venda, custo e tributação ainda podem divergir em operação.",
+      "risk": "Cálculo financeiro ou fiscal não homologado.",
+      "proposal": "Conectar APIs/UI, executar integração PostgreSQL e homologar cenários com especialista fiscal.",
       "dependencies": [
         "especialista fiscal",
-        "decisão de produto"
+        "ambiente PostgreSQL",
+        "frontend"
       ],
       "affected_files": [
-        "database/postgres/migrations",
-        "modules/marketplace",
+        "apps/all-in-one/src",
         "modules/stock",
         "modules/erp"
       ],
-      "migration": "pendente, reversível e com backfill",
-      "backend": "cálculos somente com Decimal e regras vigentes",
-      "frontend": "cadastro de unidades e perfil fiscal",
-      "tests": "precisão, arredondamento, conversão e cenários fiscais",
+      "migration": "implementada com rollback; backfill explícito sem inferência",
+      "backend": "Decimal, vigência, aprovação, precisão e arredondamento implementados",
+      "frontend": "cadastro de unidades e perfil fiscal pendente",
+      "tests": "unitários aprovados; integração e homologação pendentes",
       "documentation": "06_UNIDADES_E_CONVERSOES.md e 07_TRIBUTACAO.md",
-      "acceptance": "Unidades, conversões, perfis fiscais, vigência e cálculos possuem migrations, backend, frontend e testes aprovados.",
-      "status": "proposta",
+      "acceptance": "Unidades, conversões, perfis fiscais, vigência e cálculos possuem migrations, backend, frontend, integração e homologação aprovados.",
+      "status": "implementacao_parcial",
       "owner_suggestion": "catálogo, estoque, ERP e fiscal",
       "dimensions": [
         "tabelas_colecoes",

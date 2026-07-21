@@ -1,5 +1,5 @@
 # Schema `erp`
 
-Tabelas catalogadas: 2.
+Tabelas catalogadas: 7.
 
 EVIDÊNCIAS: `database/postgres/migrations/`.

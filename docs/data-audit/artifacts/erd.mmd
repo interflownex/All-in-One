@@ -459,6 +459,55 @@ erDiagram
     UUID updated_by FK
     VARCHAR(120) idempotency_key
   }
+  erp_fiscal_profiles {
+    UUID id PK
+    UUID tenant_id
+    UUID company_id FK
+    VARCHAR(160) name
+    CHAR(2) country_code
+    VARCHAR(80) tax_regime
+    JSONB jurisdiction_scope
+    VARCHAR(40) status
+    INTEGER version
+    TIMESTAMPTZ effective_from
+    TIMESTAMPTZ effective_to
+    TIMESTAMPTZ approved_at
+    UUID approved_by FK
+  }
+  erp_fiscal_rules {
+    UUID id PK
+    UUID fiscal_profile_id FK
+    INTEGER priority
+    CHAR(2) country_code
+    CHAR(2) state_code
+    VARCHAR(12) city_code
+    VARCHAR(80) operation_nature
+    VARCHAR(40) customer_type
+    VARCHAR(40) taxpayer_status
+    VARCHAR(40) destination_type
+    VARCHAR(40) channel
+    VARCHAR(60) product_type
+    VARCHAR(60) purpose
+    VARCHAR(120) tax_benefit
+    BOOLEAN substitution
+    BOOLEAN single_phase
+    BOOLEAN withholding
+    BOOLEAN exemption
+    BOOLEAN immunity
+    BOOLEAN deferral
+    NUMERIC(9,_6) base_reduction
+    NUMERIC(12,_8) rate
+    VARCHAR(500) base_formula
+    VARCHAR(500) credit_rule
+    VARCHAR(24) rounding_mode
+    TEXT legal_basis
+    TIMESTAMPTZ effective_from
+    TIMESTAMPTZ effective_to
+    VARCHAR(40) status
+    INTEGER version
+    TIMESTAMPTZ approved_at
+    UUID approved_by FK
+  }
   erp_invoice_items {
     UUID id PK
     UUID fiscal_document_id FK
@@ -469,6 +518,63 @@ erDiagram
     NUMERIC(18,_4) tax_amount_brl
     TIMESTAMPTZ created_at
     TIMESTAMPTZ updated_at
+  }
+  erp_product_fiscal_assignments {
+    UUID id PK
+    UUID tenant_id
+    UUID company_id FK
+    UUID branch_id FK
+    UUID product_id FK
+    UUID variant_id
+    UUID fiscal_profile_id FK
+    UUID classification_id FK
+    UUID exception_rule_id FK
+    TIMESTAMPTZ effective_from
+    TIMESTAMPTZ effective_to
+    VARCHAR(40) status
+    TIMESTAMPTZ approved_at
+    UUID approved_by FK
+  }
+  erp_product_tax_classifications {
+    UUID id PK
+    UUID tenant_id
+    UUID product_id FK
+    UUID variant_id
+    VARCHAR(10) ncm
+    VARCHAR(12) cest
+    VARCHAR(4) origin_code
+    VARCHAR(4) cst
+    VARCHAR(4) csosn
+    VARCHAR(20) service_code
+    VARCHAR(12) cnae
+    VARCHAR(20) anp_code
+    VARCHAR(18) gtin
+    UUID tax_unit_id FK
+    VARCHAR(500) tax_quantity_rule
+    TIMESTAMPTZ effective_from
+    TIMESTAMPTZ effective_to
+    VARCHAR(40) status
+    INTEGER version
+  }
+  erp_tax_calculation_snapshots {
+    UUID id PK
+    UUID tenant_id
+    UUID document_id FK
+    UUID item_id FK
+    UUID rule_id FK
+    UUID classification_id FK
+    VARCHAR(32) tax_type
+    NUMERIC(30,_12) tax_base
+    NUMERIC(12,_8) rate
+    NUMERIC(30,_12) tax_amount
+    CHAR(3) currency_code
+    SMALLINT precision
+    VARCHAR(24) rounding_mode
+    TEXT legal_basis
+    TIMESTAMPTZ calculated_at
+    VARCHAR(40) calculation_version
+    VARCHAR(128) input_hash
+    UUID created_by FK
   }
   finance_escrows {
     UUID id PK
@@ -1270,6 +1376,147 @@ erDiagram
     UUID updated_by FK
     VARCHAR(100) idempotency_key
   }
+  stock_measurement_units {
+    UUID id PK
+    VARCHAR(32) code
+    VARCHAR(24) symbol
+    VARCHAR(120) singular_name_pt_br
+    VARCHAR(120) plural_name_pt_br
+    VARCHAR(40) dimension
+    VARCHAR(40) measurement_system
+    SMALLINT precision
+    NUMERIC(30,_12) scale
+    BOOLEAN allows_fraction
+    UUID base_unit_id FK
+    TEXT normative_equivalence
+    JSONB regional_rules
+    VARCHAR(40) status
+    INTEGER version
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+    TIMESTAMPTZ updated_at
+    UUID updated_by FK
+  }
+  stock_product_lots {
+    UUID id PK
+    UUID tenant_id
+    UUID company_id FK
+    UUID product_id FK
+    UUID variant_id
+    VARCHAR(120) lot_number
+    VARCHAR(120) sub_lot
+    DATE manufactured_on
+    DATE expires_on
+    TIMESTAMPTZ received_at
+    UUID supplier_id FK
+    VARCHAR(160) origin
+    VARCHAR(40) quality_status
+    UUID inspection_id
+    TEXT quarantine_reason
+    TIMESTAMPTZ released_at
+    TIMESTAMPTZ blocked_at
+    VARCHAR(40) recall_status
+    VARCHAR(40) cost_method
+    VARCHAR(40) status
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  stock_product_serials {
+    UUID id PK
+    UUID tenant_id
+    UUID product_id FK
+    UUID variant_id
+    UUID lot_id FK
+    VARCHAR(180) serial_number
+    VARCHAR(40) status
+    UUID location_id
+    DATE warranty_until
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+    TIMESTAMPTZ updated_at
+    UUID updated_by FK
+  }
+  stock_product_unit_conversions {
+    UUID id PK
+    UUID tenant_id
+    UUID company_id FK
+    UUID branch_id FK
+    UUID product_id FK
+    UUID variant_id
+    UUID source_unit_id FK
+    UUID target_unit_id FK
+    NUMERIC(30,_12) multiplier
+    NUMERIC(30,_12) divisor
+    VARCHAR(500) safe_formula
+    SMALLINT precision
+    VARCHAR(24) rounding_mode
+    NUMERIC(30,_12) tolerance
+    TIMESTAMPTZ effective_from
+    TIMESTAMPTZ effective_to
+    VARCHAR(80) context
+    UUID supplier_id FK
+    UUID package_id
+    NUMERIC(30,_12) density
+    NUMERIC(12,_4) reference_temperature
+    VARCHAR(40) status
+    INTEGER version
+    TIMESTAMPTZ approved_at
+    UUID approved_by FK
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  stock_product_units {
+    UUID id PK
+    UUID tenant_id
+    UUID company_id FK
+    UUID product_id FK
+    UUID variant_id
+    UUID unit_id FK
+    VARCHAR(40) purpose
+    BOOLEAN is_default
+    NUMERIC(30,_12) minimum_quantity
+    NUMERIC(30,_12) maximum_quantity
+    NUMERIC(30,_12) quantity_step
+    SMALLINT precision
+    VARCHAR(24) rounding_mode
+    TIMESTAMPTZ effective_from
+    TIMESTAMPTZ effective_to
+    VARCHAR(40) status
+    INTEGER version
+    TIMESTAMPTZ approved_at
+    UUID approved_by FK
+  }
+  stock_stock_movements {
+    UUID id PK
+    UUID tenant_id
+    UUID company_id FK
+    UUID branch_id FK
+    UUID product_id FK
+    UUID variant_id
+    UUID lot_id FK
+    UUID serial_id FK
+    UUID source_location_id
+    UUID target_location_id
+    VARCHAR(40) movement_type
+    NUMERIC(30,_12) informed_quantity
+    UUID informed_unit_id FK
+    NUMERIC(30,_12) base_quantity
+    UUID base_unit_id FK
+    UUID conversion_id FK
+    NUMERIC(30,_12) conversion_factor_snapshot
+    NUMERIC(30,_12) previous_balance
+    NUMERIC(30,_12) new_balance
+    NUMERIC(30,_12) unit_cost
+    NUMERIC(30,_12) total_value
+    CHAR(3) currency_code
+    TEXT reason
+    UUID document_id
+    UUID order_id FK
+    UUID correlation_id
+    VARCHAR(120) idempotency_key
+    TIMESTAMPTZ occurred_at
+    UUID created_by FK
+  }
   stock_suppliers {
     UUID id PK
     UUID user_id FK
@@ -1647,3 +1894,54 @@ erDiagram
   delivery_rider_reviews }o--|| identity_users : "reviewer_user_id"
   delivery_rider_reviews }o--|| identity_users : "created_by"
   delivery_rider_reviews }o--|| identity_users : "updated_by"
+  stock_measurement_units }o--|| stock_measurement_units : "base_unit_id"
+  stock_measurement_units }o--|| identity_users : "created_by"
+  stock_measurement_units }o--|| identity_users : "updated_by"
+  stock_product_units }o--|| business_companies : "company_id"
+  stock_product_units }o--|| marketplace_products : "product_id"
+  stock_product_units }o--|| stock_measurement_units : "unit_id"
+  stock_product_units }o--|| identity_users : "approved_by"
+  stock_product_unit_conversions }o--|| business_companies : "company_id"
+  stock_product_unit_conversions }o--|| business_branches : "branch_id"
+  stock_product_unit_conversions }o--|| marketplace_products : "product_id"
+  stock_product_unit_conversions }o--|| stock_measurement_units : "source_unit_id"
+  stock_product_unit_conversions }o--|| stock_measurement_units : "target_unit_id"
+  stock_product_unit_conversions }o--|| stock_suppliers : "supplier_id"
+  stock_product_unit_conversions }o--|| identity_users : "approved_by"
+  stock_product_unit_conversions }o--|| identity_users : "created_by"
+  stock_product_lots }o--|| business_companies : "company_id"
+  stock_product_lots }o--|| marketplace_products : "product_id"
+  stock_product_lots }o--|| stock_suppliers : "supplier_id"
+  stock_product_lots }o--|| identity_users : "created_by"
+  stock_product_serials }o--|| marketplace_products : "product_id"
+  stock_product_serials }o--|| stock_product_lots : "lot_id"
+  stock_product_serials }o--|| identity_users : "created_by"
+  stock_product_serials }o--|| identity_users : "updated_by"
+  stock_stock_movements }o--|| business_companies : "company_id"
+  stock_stock_movements }o--|| business_branches : "branch_id"
+  stock_stock_movements }o--|| marketplace_products : "product_id"
+  stock_stock_movements }o--|| stock_product_lots : "lot_id"
+  stock_stock_movements }o--|| stock_product_serials : "serial_id"
+  stock_stock_movements }o--|| stock_measurement_units : "informed_unit_id"
+  stock_stock_movements }o--|| stock_measurement_units : "base_unit_id"
+  stock_stock_movements }o--|| stock_product_unit_conversions : "conversion_id"
+  stock_stock_movements }o--|| marketplace_orders : "order_id"
+  stock_stock_movements }o--|| identity_users : "created_by"
+  erp_fiscal_profiles }o--|| business_companies : "company_id"
+  erp_fiscal_profiles }o--|| identity_users : "approved_by"
+  erp_fiscal_rules }o--|| erp_fiscal_profiles : "fiscal_profile_id"
+  erp_fiscal_rules }o--|| identity_users : "approved_by"
+  erp_product_tax_classifications }o--|| marketplace_products : "product_id"
+  erp_product_tax_classifications }o--|| stock_measurement_units : "tax_unit_id"
+  erp_product_fiscal_assignments }o--|| business_companies : "company_id"
+  erp_product_fiscal_assignments }o--|| business_branches : "branch_id"
+  erp_product_fiscal_assignments }o--|| marketplace_products : "product_id"
+  erp_product_fiscal_assignments }o--|| erp_fiscal_profiles : "fiscal_profile_id"
+  erp_product_fiscal_assignments }o--|| erp_product_tax_classifications : "classification_id"
+  erp_product_fiscal_assignments }o--|| erp_fiscal_rules : "exception_rule_id"
+  erp_product_fiscal_assignments }o--|| identity_users : "approved_by"
+  erp_tax_calculation_snapshots }o--|| erp_fiscal_documents : "document_id"
+  erp_tax_calculation_snapshots }o--|| erp_invoice_items : "item_id"
+  erp_tax_calculation_snapshots }o--|| erp_fiscal_rules : "rule_id"
+  erp_tax_calculation_snapshots }o--|| erp_product_tax_classifications : "classification_id"
+  erp_tax_calculation_snapshots }o--|| identity_users : "created_by"
