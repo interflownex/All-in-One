@@ -1,16 +1,16 @@
-# MEMORANDO MESTRE DE VARREDURA EXAUSTIVA DE DADOS, FORMULÁRIOS E TEMPLATES  
+# MEMORANDO MESTRE DE VARREDURA EXAUSTIVA DE DADOS, FORMULÁRIOS E TEMPLATES
 
-## Projeto All-in-One + Valley  
+## Projeto All-in-One + Valley
 
 ### Diretriz mandatória para execução pelo Gemini e demais IAs desenvolvedoras
 
-**Classificação:** Documento técnico interno e mandatório  
-**Projeto:** All-in-One + Valley  
-**Destinatário principal:** Gemini  
-**Destinatários complementares:** Codex, Stitch, agentes de arquitetura, banco de dados, backend, frontend, segurança, qualidade e documentação  
-**Idioma obrigatório dos artefatos funcionais:** Português do Brasil  
-**Documento de ordem operacional:** `docs/EXECUTION_PLAN.md`  
-**Princípio de cobertura:** trabalhar pelo excesso de análise, nunca pela falta  
+**Classificação:** Documento técnico interno e mandatório
+**Projeto:** All-in-One + Valley
+**Destinatário principal:** Gemini
+**Destinatários complementares:** Codex, Stitch, agentes de arquitetura, banco de dados, backend, frontend, segurança, qualidade e documentação
+**Idioma obrigatório dos artefatos funcionais:** Português do Brasil
+**Documento de ordem operacional:** `docs/EXECUTION_PLAN.md`
+**Princípio de cobertura:** trabalhar pelo excesso de análise, nunca pela falta
 **Status:** orientação para idealização, planejamento, construção, validação, documentação e geração de templates frontend
 
 ---
@@ -506,16 +506,16 @@ Para cada evento, definir:
 
 Criar uma matriz com:
 
-| Ordem | Área | Caminhos analisados | Evidências esperadas | Resultado |
-|---:|---|---|---|---|
-| 1 | Documentação | README, STATUS, ROADMAP, EXECUTION_PLAN, RFCs | escopo e ordem mandatória | mapa inicial |
-| 2 | Banco | migrations, schemas, models | estruturas físicas | catálogo físico |
-| 3 | Backend | entidades, DTOs, APIs, eventos | contratos e regras | catálogo lógico |
-| 4 | Frontend | telas, forms, filtros, tabelas | campos usados | matriz UI x dados |
-| 5 | Segurança | auth, RBAC, criptografia, logs | restrições | matriz de proteção |
-| 6 | Testes | unitários, integração, E2E | comportamento comprovado | evidências |
-| 7 | Infraestrutura | Docker, Kubernetes, CI/CD | ambientes e dependências | mapa operacional |
-| 8 | Lacunas | comparação cruzada | inconsistências | backlog obrigatório |
+| Ordem | Área           | Caminhos analisados                           | Evidências esperadas      | Resultado           |
+| ----: | -------------- | --------------------------------------------- | ------------------------- | ------------------- |
+|     1 | Documentação   | README, STATUS, ROADMAP, EXECUTION_PLAN, RFCs | escopo e ordem mandatória | mapa inicial        |
+|     2 | Banco          | migrations, schemas, models                   | estruturas físicas        | catálogo físico     |
+|     3 | Backend        | entidades, DTOs, APIs, eventos                | contratos e regras        | catálogo lógico     |
+|     4 | Frontend       | telas, forms, filtros, tabelas                | campos usados             | matriz UI x dados   |
+|     5 | Segurança      | auth, RBAC, criptografia, logs                | restrições                | matriz de proteção  |
+|     6 | Testes         | unitários, integração, E2E                    | comportamento comprovado  | evidências          |
+|     7 | Infraestrutura | Docker, Kubernetes, CI/CD                     | ambientes e dependências  | mapa operacional    |
+|     8 | Lacunas        | comparação cruzada                            | inconsistências           | backlog obrigatório |
 
 ## 7.2 Estratégia de comparação
 
@@ -650,28 +650,28 @@ Para cada tabela ou coleção, documentar:
 
 Para cada campo, criar uma linha contendo, no mínimo:
 
-| Grupo | Informação obrigatória |
-|---|---|
-| Identificação | banco, schema, tabela, campo físico, campo lógico |
-| Semântica | descrição completa, finalidade, contexto |
-| Tipo | tipo físico, tipo lógico, tamanho, precisão, escala |
-| Preenchimento | obrigatório, opcional, condicional, padrão |
-| Domínio | valores permitidos, enumeração, referência |
-| Validação | regras, regex, limites, consistência |
-| Exemplo | valor válido, inválido e caso limite |
-| Relação | PK, FK, unique, índice, dependências |
-| Cálculo | fórmula, operandos, arredondamento, momento do cálculo |
-| Unidade | unidade base, unidade de entrada, unidade de saída, conversão |
-| Fiscal | incidência, classificação, regras tributárias |
-| Segurança | classificação LGPD, criptografia, mascaramento |
-| Acesso | quem vê, quem cria, quem altera, quem aprova |
-| Auditoria | autor, data, hora, IP, sessão, origem, motivo |
-| Ciclo de vida | criação, alteração, exclusão, restauração, retenção |
-| Backend | entidade, DTO, endpoint, serviço, evento |
-| Frontend | formulário, componente, máscara, ajuda, ordem |
-| Testes | unitário, integração, contrato, E2E |
-| Status | existente, parcial, ausente, proposto, legado |
-| Evidência | arquivo e linha, migration, endpoint, tela |
+| Grupo         | Informação obrigatória                                        |
+| ------------- | ------------------------------------------------------------- |
+| Identificação | banco, schema, tabela, campo físico, campo lógico             |
+| Semântica     | descrição completa, finalidade, contexto                      |
+| Tipo          | tipo físico, tipo lógico, tamanho, precisão, escala           |
+| Preenchimento | obrigatório, opcional, condicional, padrão                    |
+| Domínio       | valores permitidos, enumeração, referência                    |
+| Validação     | regras, regex, limites, consistência                          |
+| Exemplo       | valor válido, inválido e caso limite                          |
+| Relação       | PK, FK, unique, índice, dependências                          |
+| Cálculo       | fórmula, operandos, arredondamento, momento do cálculo        |
+| Unidade       | unidade base, unidade de entrada, unidade de saída, conversão |
+| Fiscal        | incidência, classificação, regras tributárias                 |
+| Segurança     | classificação LGPD, criptografia, mascaramento                |
+| Acesso        | quem vê, quem cria, quem altera, quem aprova                  |
+| Auditoria     | autor, data, hora, IP, sessão, origem, motivo                 |
+| Ciclo de vida | criação, alteração, exclusão, restauração, retenção           |
+| Backend       | entidade, DTO, endpoint, serviço, evento                      |
+| Frontend      | formulário, componente, máscara, ajuda, ordem                 |
+| Testes        | unitário, integração, contrato, E2E                           |
+| Status        | existente, parcial, ausente, proposto, legado                 |
+| Evidência     | arquivo e linha, migration, endpoint, tela                    |
 
 ## 8.4 Campos transversais recomendados
 
@@ -2060,28 +2060,28 @@ Definir:
 
 Para cada campo:
 
-| Item | Descrição |
-|---|---|
-| Campo lógico | nome funcional |
-| Rótulo | texto pt-BR |
-| Tipo | texto, número, moeda, data, seleção etc. |
-| Componente | componente visual |
-| Obrigatoriedade | sempre, nunca ou condicional |
-| Máscara | CPF, CNPJ, telefone, CEP, moeda etc. |
-| Ajuda | orientação ao usuário |
-| Placeholder | exemplo de preenchimento |
-| Validação | frontend e backend |
-| Fonte | digitado, API, cálculo, seleção |
-| Dependência | campos condicionantes |
-| Visibilidade | regra |
-| Permissão | papel ou atributo |
-| Unidade | entrada, exibição e conversão |
-| Cálculo | regra |
-| Persistência | binding lógico |
-| Auditoria | evento |
-| Erro | mensagem |
-| Acessibilidade | label, hint, foco, leitor de tela |
-| Testes | casos |
+| Item            | Descrição                                |
+| --------------- | ---------------------------------------- |
+| Campo lógico    | nome funcional                           |
+| Rótulo          | texto pt-BR                              |
+| Tipo            | texto, número, moeda, data, seleção etc. |
+| Componente      | componente visual                        |
+| Obrigatoriedade | sempre, nunca ou condicional             |
+| Máscara         | CPF, CNPJ, telefone, CEP, moeda etc.     |
+| Ajuda           | orientação ao usuário                    |
+| Placeholder     | exemplo de preenchimento                 |
+| Validação       | frontend e backend                       |
+| Fonte           | digitado, API, cálculo, seleção          |
+| Dependência     | campos condicionantes                    |
+| Visibilidade    | regra                                    |
+| Permissão       | papel ou atributo                        |
+| Unidade         | entrada, exibição e conversão            |
+| Cálculo         | regra                                    |
+| Persistência    | binding lógico                           |
+| Auditoria       | evento                                   |
+| Erro            | mensagem                                 |
+| Acessibilidade  | label, hint, foco, leitor de tela        |
+| Testes          | casos                                    |
 
 ## 14.4 Tipos de componentes
 
@@ -2550,6 +2550,7 @@ Para cada tela identificada, gerar um bloco padronizado:
 ## TEMPLATE: Cadastro de Produto
 
 ### Contexto
+
 - Módulo:
 - Persona:
 - Rota:
@@ -2557,12 +2558,14 @@ Para cada tela identificada, gerar um bloco padronizado:
 - Objetivo:
 
 ### Dados
+
 - Tabelas:
 - APIs:
 - Eventos:
 - Permissões:
 
 ### Layout
+
 - Cabeçalho:
 - Abas:
 - Blocos:
@@ -2570,14 +2573,17 @@ Para cada tela identificada, gerar um bloco padronizado:
 - Responsividade:
 
 ### Campos
+
 | Ordem | Campo | Rótulo | Componente | Obrigatório | Validação | Unidade | Cálculo | Binding |
-|---:|---|---|---|---|---|---|---|---|
+| ----: | ----- | ------ | ---------- | ----------- | --------- | ------- | ------- | ------- |
 
 ### Ações
+
 | Ação | Permissão | Endpoint | Confirmação | Log | Estado |
-|---|---|---|---|---|---|
+| ---- | --------- | -------- | ----------- | --- | ------ |
 
 ### Estados
+
 - loading:
 - vazio:
 - erro:
@@ -2586,6 +2592,7 @@ Para cada tela identificada, gerar um bloco padronizado:
 - conflito:
 
 ### Critérios de aceite
+
 - [ ] ...
 ```
 
@@ -2613,8 +2620,8 @@ Criar vínculo entre:
 
 Exemplo:
 
-| Requisito | Tabela | Campo | API | Formulário | Teste | Status |
-|---|---|---|---|---|---|---|
+| Requisito                                       | Tabela                   | Campo             | API                          | Formulário                     | Teste        | Status   |
+| ----------------------------------------------- | ------------------------ | ----------------- | ---------------------------- | ------------------------------ | ------------ | -------- |
 | Produto vendido em unidade diferente do estoque | product_unit_conversions | conversion_factor | `/products/{id}/conversions` | Cadastro de produto > Unidades | E2E-PROD-014 | Pendente |
 
 ---

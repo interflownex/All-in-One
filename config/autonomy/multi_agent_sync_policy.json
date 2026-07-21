@@ -58,7 +58,7 @@
   ],
   "pre_work_commands": [
     "python3 scripts/multi_agent_sync_guard.py preflight --integrate",
-    "python3 scripts/multi_agent_sync_guard.py acquire --agent <agent_id> --activity \"<descricao da atividade>\"",
+    "python3 scripts/multi_agent_sync_guard.py acquire --agent <agent_id> --activity \"<descricao da atividade>\" --scope <escopo>",
     "git status --short --branch",
     "git fetch origin main",
     "git fetch fork main"
@@ -66,23 +66,24 @@
   "closeout_commands": [
     "python3 scripts/validate_repository.py",
     "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -Activity \"<descricao da atividade>\"",
-    "python3 scripts/multi_agent_sync_guard.py release --agent <agent_id>"
+    "python3 scripts/multi_agent_sync_guard.py release --agent <agent_id> --scope <escopo>"
   ],
   "conflict_policy": {
     "on_unmerged_files": "parar_e_reportar",
     "on_diverged_remote": "integrar_primeiro_sem_descartar_mudancas",
     "on_untracked_sensitive_files": "nao_commitir",
     "on_secret_detected": "bloquear_commit",
-    "on_active_agent_lock": "aguardar_ou_integrar_sem_sobrescrever",
+    "on_active_agent_lock": "usar escopo distinto para atividades sem arquivos compartilhados; aguardar quando o escopo coincidir",
     "on_stale_agent_lock": "substituir_apos_ttl_com_auditoria"
   },
   "coordination_guard": {
     "script": "scripts/multi_agent_sync_guard.py",
-    "lock_location": "git_path:all-in-one-agent.lock",
+    "lock_location": "git_path:all-in-one-agent-locks/<escopo>.lock",
     "default_ttl_minutes": 120,
     "required_before_edit": true,
     "required_release_after_sync": true,
-    "remote_strategy": "origin_e_fork_devem_formar_uma_linha_de_ancestralidade; integrar_somente_fast_forward"
+    "remote_strategy": "origin_e_fork_devem_formar_uma_linha_de_ancestralidade; integrar_somente_fast_forward, inclusive com mudancas locais quando nao houver sobreposicao de arquivos",
+    "lock_strategy": "locks sao isolados por escopo; o mesmo agente pode renovar seu lock sem depender do PID do processo"
   },
   "stitch_alignment": {
     "required": true,

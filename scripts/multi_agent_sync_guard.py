@@ -8,6 +8,7 @@ import subprocess
 import sys
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from re import fullmatch
 from typing import Any
 
 
@@ -32,16 +33,18 @@ def git_path(relative: str) -> Path:
     return path if path.is_absolute() else ROOT / path
 
 
-def lock_path() -> Path:
-    return git_path("all-in-one-agent.lock")
+def lock_path(scope: str = "workspace") -> Path:
+    if not fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}", scope):
+        raise RuntimeError("Escopo de lock invalido. Use de 1 a 64 caracteres alfanumericos, '.', '_' ou '-'.")
+    return git_path(f"all-in-one-agent-locks/{scope}.lock")
 
 
 def now_utc() -> datetime:
     return datetime.now(UTC)
 
 
-def read_lock(path: Path | None = None) -> dict[str, Any] | None:
-    target = path or lock_path()
+def read_lock(path: Path | None = None, scope: str = "workspace") -> dict[str, Any] | None:
+    target = path or lock_path(scope)
     if not target.is_file():
         return None
     try:
@@ -62,15 +65,25 @@ def lock_is_stale(payload: dict[str, Any], ttl_minutes: int) -> bool:
     return now_utc() - acquired_at > timedelta(minutes=ttl_minutes)
 
 
-def acquire_lock(agent: str, activity: str, ttl_minutes: int) -> dict[str, Any]:
-    path = lock_path()
+def acquire_lock(agent: str, activity: str, ttl_minutes: int, scope: str = "workspace") -> dict[str, Any]:
+    path = lock_path(scope)
     path.parent.mkdir(parents=True, exist_ok=True)
     existing = read_lock(path)
     if existing and not lock_is_stale(existing, ttl_minutes):
-        if existing.get("agent") == agent and existing.get("pid") == os.getpid():
+        if existing.get("agent") == agent:
+            existing.update(
+                {
+                    "activity": activity,
+                    "pid": os.getpid(),
+                    "host": socket.gethostname(),
+                    "acquired_at": now_utc().isoformat(),
+                    "scope": scope,
+                }
+            )
+            path.write_text(json.dumps(existing, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
             return existing
         raise RuntimeError(
-            "Workspace em uso por "
+            f"Escopo '{scope}' em uso por "
             f"{existing.get('agent', 'agente desconhecido')} desde "
             f"{existing.get('acquired_at', 'horario desconhecido')}: "
             f"{existing.get('activity', 'atividade nao informada')}."
@@ -79,9 +92,10 @@ def acquire_lock(agent: str, activity: str, ttl_minutes: int) -> dict[str, Any]:
         path.unlink(missing_ok=True)
 
     payload = {
-        "version": 1,
+        "version": 2,
         "agent": agent,
         "activity": activity,
+        "scope": scope,
         "pid": os.getpid(),
         "host": socket.gethostname(),
         "acquired_at": now_utc().isoformat(),
@@ -95,8 +109,8 @@ def acquire_lock(agent: str, activity: str, ttl_minutes: int) -> dict[str, Any]:
     return payload
 
 
-def release_lock(agent: str, force: bool = False) -> None:
-    path = lock_path()
+def release_lock(agent: str, force: bool = False, scope: str = "workspace") -> None:
+    path = lock_path(scope)
     existing = read_lock(path)
     if not existing:
         return
@@ -118,6 +132,17 @@ def is_ancestor(older: str, newer: str) -> bool:
 
 def working_tree_clean() -> bool:
     return not run_git("status", "--porcelain", "--untracked-files=all").stdout.strip()
+
+
+def working_tree_paths() -> set[str]:
+    changed = run_git("diff", "--name-only", "HEAD").stdout.splitlines()
+    staged = run_git("diff", "--cached", "--name-only").stdout.splitlines()
+    untracked = run_git("ls-files", "--others", "--exclude-standard").stdout.splitlines()
+    return set(changed) | set(staged) | set(untracked)
+
+
+def changed_paths_between(older: str, newer: str) -> set[str]:
+    return set(run_git("diff", "--name-only", f"{older}..{newer}").stdout.splitlines())
 
 
 def ensure_no_operation_in_progress() -> None:
@@ -159,9 +184,18 @@ def preflight(branch: str, remotes: list[str], integrate: bool) -> dict[str, Any
         if not integrate:
             raise RuntimeError(f"HEAD esta atras de {newest}; execute preflight com --integrate.")
         if not working_tree_clean():
-            raise RuntimeError("HEAD esta atras do remoto, mas o worktree possui mudancas locais.")
+            local_paths = working_tree_paths()
+            remote_paths = changed_paths_between(head, newest)
+            overlap = sorted(local_paths & remote_paths)
+            if overlap:
+                preview = ", ".join(overlap[:5])
+                suffix = "..." if len(overlap) > 5 else ""
+                raise RuntimeError(
+                    "HEAD esta atras do remoto e ha sobreposicao com mudancas locais: "
+                    f"{preview}{suffix}."
+                )
         run_git("merge", "--ff-only", newest)
-        action = f"fast-forward:{newest}"
+        action = f"fast-forward:{newest}" if working_tree_clean() else f"fast-forward-com-mudancas-locais:{newest}"
     elif not is_ancestor(newest, head):
         raise RuntimeError(f"HEAD divergiu de {newest}; integracao manual sem descarte e obrigatoria.")
 
@@ -183,12 +217,15 @@ def parser() -> argparse.ArgumentParser:
     acquire.add_argument("--agent", required=True)
     acquire.add_argument("--activity", required=True)
     acquire.add_argument("--ttl-minutes", type=int, default=DEFAULT_TTL_MINUTES)
+    acquire.add_argument("--scope", default="workspace")
 
     release = subcommands.add_parser("release")
     release.add_argument("--agent", required=True)
     release.add_argument("--force", action="store_true")
+    release.add_argument("--scope", default="workspace")
 
-    subcommands.add_parser("status")
+    status = subcommands.add_parser("status")
+    status.add_argument("--scope", default="workspace")
 
     check = subcommands.add_parser("preflight")
     check.add_argument("--branch", default="main")
@@ -201,7 +238,7 @@ def main() -> int:
     args = parser().parse_args()
     try:
         if args.command == "acquire":
-            result = acquire_lock(args.agent, args.activity, args.ttl_minutes)
+            result = acquire_lock(args.agent, args.activity, args.ttl_minutes, args.scope)
         elif args.command == "release":
             # Higienização mandatória de armazenamento GCP antes de liberar
             hygiene_script = ROOT / "scripts" / "gcp_storage_hygiene.py"
@@ -216,10 +253,14 @@ def main() -> int:
                     # A higiene externa não pode manter o workspace bloqueado
                     # indefinidamente. O próximo ciclo tentará executá-la de novo.
                     pass
-            release_lock(args.agent, args.force)
-            result = {"released": True, "agent": args.agent}
+            release_lock(args.agent, args.force, args.scope)
+            result = {"released": True, "agent": args.agent, "scope": args.scope}
         elif args.command == "status":
-            result = read_lock() or {"locked": False, "path": str(lock_path())}
+            result = read_lock(scope=args.scope) or {
+                "locked": False,
+                "path": str(lock_path(args.scope)),
+                "scope": args.scope,
+            }
         else:
             result = preflight(args.branch, args.remotes, args.integrate)
     except (RuntimeError, subprocess.CalledProcessError, OSError) as exc:

@@ -15,7 +15,7 @@ def test_lock_blocks_a_second_agent(monkeypatch, tmp_path: Path) -> None:
     acquired = guard.acquire_lock("codex_cli", "catalogo Valley", 120)
 
     assert acquired["agent"] == "codex_cli"
-    with pytest.raises(RuntimeError, match="Workspace em uso"):
+    with pytest.raises(RuntimeError, match="Escopo 'workspace' em uso"):
         guard.acquire_lock("antigravity", "outra atividade", 120)
 
 
@@ -47,3 +47,25 @@ def test_release_refuses_another_agent(monkeypatch, tmp_path: Path) -> None:
 
     guard.release_lock("codex_cli")
     assert not path.exists()
+
+
+def test_same_agent_renews_lock_from_another_process(monkeypatch, tmp_path: Path) -> None:
+    path = tmp_path / "agent.lock"
+    monkeypatch.setattr(guard, "lock_path", lambda: path)
+    original = guard.acquire_lock("codex_cli", "primeira etapa", 120)
+    renewed = guard.acquire_lock("codex_cli", "segunda etapa", 120)
+
+    assert renewed["activity"] == "segunda etapa"
+    assert renewed["acquired_at"] >= original["acquired_at"]
+
+
+def test_scoped_locks_allow_independent_activities(monkeypatch, tmp_path: Path) -> None:
+    def scoped_path(scope: str = "workspace") -> Path:
+        return tmp_path / f"{scope}.lock"
+
+    monkeypatch.setattr(guard, "lock_path", scoped_path)
+
+    guard.acquire_lock("codex_cli", "scripts", 120, "scripts")
+    acquired = guard.acquire_lock("antigravity", "frontend", 120, "frontend")
+
+    assert acquired["scope"] == "frontend"
