@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from shared.runtime import create_module_app
-from module_settings import router as module_settings_router
+from business.module_settings import router as module_settings_router
 
 
 app = create_module_app("business")

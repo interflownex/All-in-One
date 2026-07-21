@@ -93,6 +93,22 @@ def database_schema(slug: str) -> str:
 
 
 def render_main(slug: str) -> str:
+    if slug == "business":
+        return dedent(
+            """\
+            from pathlib import Path
+            import sys
+
+            sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+            from shared.runtime import create_module_app
+            from business.module_settings import router as module_settings_router
+
+
+            app = create_module_app("business")
+            app.include_router(module_settings_router)
+            """
+        )
     return dedent(
         f"""\
         from pathlib import Path
@@ -991,6 +1007,7 @@ def render_requirements(slug: str) -> str:
             "PyJWT==2.13.0\n"
             "psycopg[binary]==3.3.4\n"
             "tenacity==9.0.0\n"
+            "cryptography==48.0.1\n"
         )
     if slug == "finance":
         return "fastapi==0.136.1\npsycopg[binary]==3.3.4\nstarlette==1.3.1\nuvicorn[standard]==0.34.2\n"

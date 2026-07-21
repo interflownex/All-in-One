@@ -1,5 +1,9 @@
 # Validação e Testes
 
-O inventário é validado por `scripts/validate_data_audit_delivery.py`. A cobertura funcional permanece incompleta até testar CRUD, rascunho, aprovação, importação, cálculos, unidades, impostos, concorrência, idempotência, autorização e isolamento de tenant.
+O inventário AST encontrou 474 funções de teste: 443 contêm `assert` e 191 contêm chamadas HTTP reconhecidas. O relatório JUnit unitário registra 449 funções, das quais 415 foram aprovadas; parametrizações são consolidadas por função. A presença de um teste ou candidato aprovado não comprova cobertura integral do requisito.
 
-EVIDÊNCIAS: `tests/test_validate_data_audit_delivery.py`.
+Foram extraídos 69 requisitos mandatórios das seções 21 e 24 do memorando; 22 não possuem teste candidato por correspondência semântica conservadora e 46 possuem ao menos um candidato aprovado. Cada vínculo permanece `não comprovado` até revisão de escopo.
+
+A cobertura funcional continua incompleta para CRUD, rascunho, aprovação, importação, cálculos, unidades, impostos, concorrência, idempotência, autorização e isolamento de tenant.
+
+EVIDÊNCIAS: `artifacts/pytest_unit_results.xml`, `artifacts/catalogo_testes.json`, `artifacts/matriz_requisito_teste.json`, `tests/test_validate_data_audit_delivery.py`.

@@ -24,7 +24,7 @@ def test_git_sync_python_gate_compiles() -> None:
     )
 
 
-def test_git_sync_python_gate_accepts_current_origin_alignment() -> None:
+def test_git_sync_python_gate_accepts_an_ahead_explicit_branch_when_allowed() -> None:
     subprocess.run(
         [
             "python3",
@@ -34,6 +34,7 @@ def test_git_sync_python_gate_accepts_current_origin_alignment() -> None:
             "--remotes",
             "origin",
             "--allow-dirty",
+            "--allow-ahead",
             "--no-fetch",
         ],
         cwd=ROOT,

@@ -29,7 +29,7 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 38
+    assert len(contract["required_complementary"]) == 43
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
     assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/catalogo_eventos.json" in contract["required_complementary"]
@@ -52,6 +52,11 @@ def test_contract_lists_every_complementary_format() -> None:
     assert "artifacts/matriz_acao_ui_backend.csv" in contract["required_complementary"]
     assert "artifacts/matriz_enforcement_permissao.json" in contract["required_complementary"]
     assert "artifacts/matriz_enforcement_permissao.csv" in contract["required_complementary"]
+    assert "artifacts/catalogo_testes.json" in contract["required_complementary"]
+    assert "artifacts/catalogo_testes.csv" in contract["required_complementary"]
+    assert "artifacts/matriz_requisito_teste.json" in contract["required_complementary"]
+    assert "artifacts/matriz_requisito_teste.csv" in contract["required_complementary"]
+    assert "artifacts/pytest_unit_results.xml" in contract["required_complementary"]
 
 
 def test_generated_non_postgres_catalogs_have_field_evidence() -> None:
@@ -207,6 +212,25 @@ def test_permission_matrix_exposes_horizontal_read_authorization_gaps() -> None:
     assert all(item["operation"] == "read" and item["method"] == "GET" for item in gaps)
     assert all(not item["sensitive_resource"] and item["module"] != "permissions" for item in gaps)
     assert any(item["operation"] == "approve" and item["role_enforcement"] for item in operations)
+
+
+def test_requirement_test_matrix_does_not_promote_candidates_to_proof() -> None:
+    artifacts = ROOT / "docs" / "data-audit" / "artifacts"
+    catalog = __import__("json").loads((artifacts / "catalogo_testes.json").read_text(encoding="utf-8"))
+    matrix = __import__("json").loads((artifacts / "matriz_requisito_teste.json").read_text(encoding="utf-8"))
+    test_ids = {item["test_id"] for item in catalog["tests"]}
+
+    assert catalog["counts"]["test_functions"] == len(catalog["tests"])
+    assert catalog["counts"]["test_functions_in_unit_report"] > 0
+    assert catalog["counts"]["test_functions_passed"] > 0
+    assert catalog["counts"]["test_functions"] >= 360
+    assert catalog["counts"]["tests_with_assertions"] < catalog["counts"]["test_functions"]
+    assert catalog["counts"]["tests_with_http_calls"] > 0
+    assert matrix["counts"]["memo_requirements_traced"] == len(matrix["requirements"]) == 69
+    assert matrix["counts"]["memo_requirements_without_test_candidates"] > 0
+    assert all(candidate in test_ids for item in matrix["requirements"] for candidate in item["test_candidates"])
+    assert all(item["proof_status"].startswith("não comprovado") for item in matrix["requirements"])
+    assert any(item["passed_test_candidates"] for item in matrix["requirements"])
 
 
 def test_units_and_tax_model_covers_precision_and_fiscal_governance() -> None:

@@ -9,6 +9,8 @@ import json
 import re
 import sys
 import types
+import unicodedata
+import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -25,6 +27,8 @@ PRODUCT_UNITS_TAX_MODEL = ROOT / "config" / "data_audit" / "product_units_tax_mo
 FIELD_CLASSIFICATION_POLICY = ROOT / "config" / "data_audit" / "field_classification_policy.json"
 AUDIT_TRACEABILITY_POLICY = ROOT / "config" / "data_audit" / "audit_traceability_policy.json"
 STITCH_TEMPLATE_COORDINATE = ROOT / "config" / "stitch" / "template_project_coordinate.json"
+MASTER_MEMO = ROOT / "docs" / "MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md"
+PYTEST_UNIT_REPORT = ARTIFACTS / "pytest_unit_results.xml"
 
 
 @dataclass(frozen=True)
@@ -697,6 +701,161 @@ def discover_permission_enforcement(
     return rows
 
 
+def normalized_words(value: str) -> set[str]:
+    folded = unicodedata.normalize("NFKD", value.casefold()).encode("ascii", "ignore").decode("ascii")
+    return {word for word in re.findall(r"[a-z0-9]+", folded) if len(word) >= 3}
+
+
+def discover_test_execution() -> dict[str, dict[str, object]]:
+    if not PYTEST_UNIT_REPORT.is_file():
+        return {}
+    outcomes: defaultdict[str, list[str]] = defaultdict(list)
+    try:
+        root = ET.parse(PYTEST_UNIT_REPORT).getroot()
+    except (ET.ParseError, OSError):
+        return {}
+    for case in root.iter("testcase"):
+        classname = case.attrib.get("classname", "")
+        function = case.attrib.get("name", "").split("[", 1)[0]
+        path = classname.replace(".", "/") + ".py"
+        test_id = f"{path}::{function}"
+        outcome = "aprovado"
+        if case.find("error") is not None:
+            outcome = "erro"
+        elif case.find("failure") is not None:
+            outcome = "falhou"
+        elif case.find("skipped") is not None:
+            outcome = "ignorado"
+        outcomes[test_id].append(outcome)
+    result: dict[str, dict[str, object]] = {}
+    priority = {"erro": 4, "falhou": 3, "ignorado": 2, "aprovado": 1}
+    for test_id, cases in outcomes.items():
+        result[test_id] = {
+            "status": max(cases, key=lambda item: priority[item]),
+            "cases": len(cases),
+            "passed_cases": cases.count("aprovado"),
+        }
+    return result
+
+
+def discover_test_catalog() -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    execution = discover_test_execution()
+    test_paths = set((ROOT / "tests").rglob("*.py"))
+    test_paths.update(ROOT.glob("modules/*/tests/**/*.py"))
+    for path in sorted(test_paths):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        try:
+            tree = ast.parse(text)
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) or not node.name.startswith("test_"):
+                continue
+            assertions = [item for item in ast.walk(node) if isinstance(item, ast.Assert)]
+            calls = [item for item in ast.walk(node) if isinstance(item, ast.Call)]
+            methods = sorted({call.func.attr.upper() for call in calls if isinstance(call.func, ast.Attribute) and call.func.attr.lower() in {"get", "post", "put", "patch", "delete"}})
+            endpoints = sorted(
+                {
+                    value.value
+                    for value in ast.walk(node)
+                    if isinstance(value, ast.Constant) and isinstance(value.value, str) and value.value.startswith("/")
+                }
+            )
+            decorators = [annotation_name(item.func if isinstance(item, ast.Call) else item) for item in node.decorator_list]
+            status_assertions = sum(
+                isinstance(item, ast.Attribute) and item.attr == "status_code"
+                for assertion in assertions
+                for item in ast.walk(assertion)
+            )
+            test_id = f"{path.relative_to(ROOT)}::{node.name}"
+            executed = execution.get(test_id)
+            rows.append(
+                {
+                    "test_id": test_id, "file": str(path.relative_to(ROOT)),
+                    "function": node.name, "line": node.lineno, "async": isinstance(node, ast.AsyncFunctionDef),
+                    "assertions": len(assertions), "status_code_assertions": status_assertions,
+                    "http_methods": methods, "endpoint_literals": endpoints,
+                    "parametrized": any("parametrize" in decorator for decorator in decorators),
+                    "decorators": decorators,
+                    "execution_status": executed["status"] if executed else "não consta no relatório unitário",
+                    "execution_cases": executed["cases"] if executed else 0,
+                    "passed_cases": executed["passed_cases"] if executed else 0,
+                    "execution_evidence": str(PYTEST_UNIT_REPORT.relative_to(ROOT)) if executed else "",
+                    "evidence": f"{path.relative_to(ROOT)}:{node.lineno}",
+                }
+            )
+    return sorted(rows, key=lambda row: str(row["test_id"]))
+
+
+def discover_memo_requirements(test_catalog: list[dict[str, object]]) -> list[dict[str, object]]:
+    text = MASTER_MEMO.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    section = ""
+    subsection = ""
+    counters: Counter[str] = Counter()
+    requirements: list[dict[str, object]] = []
+    keyword_map = {
+        "banc": ["database", "postgres", "mongodb", "sqlite", "redis"], "schema": ["schema", "migration"],
+        "tabel": ["table", "store", "migration"], "cole": ["collection", "mongodb"], "camp": ["field", "payload", "catalog"],
+        "relacion": ["relationship", "foreign", "erd"], "frontend": ["frontend", "ui", "stitch"], "binding": ["binding", "contract"],
+        "sens": ["sensitive", "lgpd", "privacy"], "auditor": ["audit", "log", "trace"], "calcul": ["calculation", "precision", "decimal"],
+        "unidad": ["unit", "conversion"], "tribut": ["tax", "fiscal"], "fisc": ["fiscal", "tax"], "formul": ["form", "smartcrud"],
+        "bot": ["action", "button", "ui"], "permiss": ["permission", "authorization", "enforcement", "role"], "lacuna": ["gap", "coverage", "audit_delivery"],
+        "teste": ["test", "pytest"], "document": ["document", "delivery", "markdown"], "evid": ["evidence", "traceability"],
+        "evento": ["event", "outbox"], "api": ["api", "endpoint", "gateway"], "risco": ["risk", "security"],
+        "persona": ["persona", "role"], "dominio": ["domain", "module"], "stitch": ["stitch"], "erd": ["erd"],
+        "segur": ["security", "permission", "auth"], "e2e": ["e2e", "journey"], "respons": ["responsive", "mobile"],
+        "acess": ["accessibility", "wcag"], "acao": ["action", "transition"], "estado": ["state", "status"], "componente": ["component", "frontend"],
+    }
+    test_words = [(row, normalized_words(str(row["test_id"]))) for row in test_catalog]
+    for number, line in enumerate(lines, 1):
+        if line.startswith("# 21."):
+            section = "conclusao"
+            subsection = "criterios_de_conclusao"
+            continue
+        if line.startswith("# 24."):
+            section = "checklist"
+            subsection = "geral"
+            continue
+        if line.startswith("# 22.") or line.startswith("# 25."):
+            section = ""
+        if section and line.startswith("## "):
+            subsection = re.sub(r"[^a-z0-9]+", "_", unicodedata.normalize("NFKD", line[3:].casefold()).encode("ascii", "ignore").decode("ascii")).strip("_")
+            continue
+        if not section or not line.startswith("- "):
+            continue
+        requirement = re.sub(r"^- (?:\[[ xX]\]\s*)?", "", line).strip().rstrip(";").rstrip(".")
+        counters[section] += 1
+        requirement_id = f"{'CONCL' if section == 'conclusao' else 'CHECK'}-{counters[section]:03d}"
+        words = normalized_words(requirement)
+        match_terms = set(words)
+        for stem, translations in keyword_map.items():
+            if any(word.startswith(stem) for word in words):
+                match_terms.update(translations)
+        candidate_rows = [
+            row
+            for row, candidate_words in test_words
+            if match_terms & candidate_words
+        ][:20]
+        candidates = [str(row["test_id"]) for row in candidate_rows]
+        passed_candidates = [str(row["test_id"]) for row in candidate_rows if row["execution_status"] == "aprovado"]
+        requirements.append(
+            {
+                "requirement_id": requirement_id, "section": section, "subsection": subsection,
+                "requirement": requirement, "test_candidates": candidates,
+                "candidate_count": len(candidates),
+                "passed_test_candidates": passed_candidates,
+                "passed_candidate_count": len(passed_candidates),
+                "trace_status": "candidatos_localizados" if candidates else "sem_teste_localizado",
+                "execution_status": "candidatos_aprovados" if passed_candidates else "sem_candidato_aprovado",
+                "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
+                "evidence": f"{MASTER_MEMO.relative_to(ROOT)}:{number}",
+            }
+        )
+    return requirements
+
+
 def write_csv(path: Path, columns: list[str], rows: Iterable[dict[str, object]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="") as handle:
@@ -736,6 +895,8 @@ def build_delivery() -> None:
     logical_rules = discover_logical_rules(tables, ui_bindings)
     transitions = discover_transitions(logical_rules)
     permission_enforcement = discover_permission_enforcement(logical_rules, transitions)
+    test_catalog = discover_test_catalog()
+    memo_requirements = discover_memo_requirements(test_catalog)
     relations = [field for field in fields if field.reference]
     sensitive = [field for field in fields if field.lgpd != "não classificado automaticamente"]
     counts = {
@@ -764,6 +925,14 @@ def build_delivery() -> None:
         "permission_operations": len(permission_enforcement),
         "permission_horizontal_read_gaps": sum(row["enforcement_status"] == "lacuna_autorizacao_horizontal" for row in permission_enforcement),
         "permission_operations_with_test_candidates": sum(bool(row["test_evidence"]) for row in permission_enforcement),
+        "test_functions": len(test_catalog),
+        "tests_with_assertions": sum(bool(row["assertions"]) for row in test_catalog),
+        "tests_with_http_calls": sum(bool(row["http_methods"]) for row in test_catalog),
+        "test_functions_in_unit_report": sum(row["execution_status"] != "não consta no relatório unitário" for row in test_catalog),
+        "test_functions_passed": sum(row["execution_status"] == "aprovado" for row in test_catalog),
+        "memo_requirements_traced": len(memo_requirements),
+        "memo_requirements_without_test_candidates": sum(not row["test_candidates"] for row in memo_requirements),
+        "memo_requirements_with_passed_candidates": sum(bool(row["passed_test_candidates"]) for row in memo_requirements),
         "logical_entities": len(logical_rules),
         "logical_without_physical_table": sum(not row["has_physical_table"] for row in logical_rules),
         "logical_without_ui_surface": sum(not row["has_ui_surface"] for row in logical_rules),
@@ -879,6 +1048,18 @@ def build_delivery() -> None:
             }
             for row in permission_enforcement
         ),
+    )
+    write_json(ARTIFACTS / "catalogo_testes.json", {"version": 1, "status": "inventario_estatico", "counts": counts, "tests": test_catalog})
+    write_csv(
+        ARTIFACTS / "catalogo_testes.csv",
+        ["test_id", "file", "function", "line", "async", "assertions", "status_code_assertions", "http_methods", "endpoint_literals", "parametrized", "decorators", "execution_status", "execution_cases", "passed_cases", "execution_evidence", "evidence"],
+        ({**row, "http_methods": ";".join(row["http_methods"]), "endpoint_literals": ";".join(row["endpoint_literals"]), "decorators": ";".join(row["decorators"])} for row in test_catalog),
+    )
+    write_json(ARTIFACTS / "matriz_requisito_teste.json", {"version": 1, "status": "rastreabilidade_estatica", "counts": counts, "requirements": memo_requirements})
+    write_csv(
+        ARTIFACTS / "matriz_requisito_teste.csv",
+        ["requirement_id", "section", "subsection", "requirement", "test_candidates", "candidate_count", "passed_test_candidates", "passed_candidate_count", "trace_status", "execution_status", "proof_status", "evidence"],
+        ({**row, "test_candidates": ";".join(row["test_candidates"]), "passed_test_candidates": ";".join(row["passed_test_candidates"])} for row in memo_requirements),
     )
     for artifact_name, rows in (
         ("catalogo_redis", redis_entries),
@@ -1329,7 +1510,13 @@ EVIDÊNCIAS: `config/data_audit/field_classification_policy.json`, `artifacts/po
     write_markdown(
         "13_VALIDACAO_E_TESTES.md",
         "Validação e Testes",
-        """O inventário é validado por `scripts/validate_data_audit_delivery.py`. A cobertura funcional permanece incompleta até testar CRUD, rascunho, aprovação, importação, cálculos, unidades, impostos, concorrência, idempotência, autorização e isolamento de tenant.\n\nEVIDÊNCIAS: `tests/test_validate_data_audit_delivery.py`.""",
+        f"""O inventário AST encontrou {counts['test_functions']} funções de teste: {counts['tests_with_assertions']} contêm `assert` e {counts['tests_with_http_calls']} contêm chamadas HTTP reconhecidas. O relatório JUnit unitário registra {counts['test_functions_in_unit_report']} funções, das quais {counts['test_functions_passed']} foram aprovadas; parametrizações são consolidadas por função. A presença de um teste ou candidato aprovado não comprova cobertura integral do requisito.
+
+Foram extraídos {counts['memo_requirements_traced']} requisitos mandatórios das seções 21 e 24 do memorando; {counts['memo_requirements_without_test_candidates']} não possuem teste candidato por correspondência semântica conservadora e {counts['memo_requirements_with_passed_candidates']} possuem ao menos um candidato aprovado. Cada vínculo permanece `não comprovado` até revisão de escopo.
+
+A cobertura funcional continua incompleta para CRUD, rascunho, aprovação, importação, cálculos, unidades, impostos, concorrência, idempotência, autorização e isolamento de tenant.
+
+EVIDÊNCIAS: `artifacts/pytest_unit_results.xml`, `artifacts/catalogo_testes.json`, `artifacts/matriz_requisito_teste.json`, `tests/test_validate_data_audit_delivery.py`.""",
     )
     gap_rows = markdown_table(["ID", "Prioridade", "Módulo", "Lacuna", "Risco", "Status", "Aceite"], ([gap["id"], gap["priority"], gap["module"], gap["title"], gap["risk"], gap["status"], gap["acceptance"]] for gap in gaps))
     write_markdown("14_REGISTRO_DE_LACUNAS.md", "Registro de Lacunas", f"{gap_rows}\n\nEVIDÊNCIAS: `artifacts/relatorio_divergencias.json`.")
@@ -1363,15 +1550,10 @@ Nenhuma rota proposta é apresentada como existente. EVIDÊNCIAS: `apps/all-in-o
         """1. Migrations versionadas são a fonte do catálogo físico, não prova do banco em execução.\n2. Catálogo lógico e bindings exigem validação cruzada; inferência não equivale a evidência.\n3. Formulários dinâmicos apontam para comandos/DTOs allowlist, nunca para tabela física arbitrária.\n4. Cobertura inferior a 100% impede status concluído.\n5. Propostas de schema exigem migration reversível, backfill, rollback e testes antes de aplicação.\n\nEVIDÊNCIAS: `config/data_audit/delivery_contract.json`.""",
     )
     trace_rows = markdown_table(
-        ["Requisito", "Artefato", "Teste/Evidência", "Status"],
-        [
-            ["Catálogo físico", "04_DICIONARIO_DE_DADOS_MESTRE.md", "artifacts/dicionario_de_dados.json", "comprovado no versionado"],
-            ["Bindings UI", "09_FORMULARIOS_FRONTEND.md", "artifacts/matriz_formulario_campo.csv", "pendente"],
-            ["Eventos", "12_APIS_EVENTOS_E_INTEGRACOES.md", "artifacts/matriz_evento_campo.csv", "pendente"],
-            ["Formulário dinâmico", "10_FORMULARIOS_DINAMICOS.md", "AUD-P1-004", "proposta"],
-        ],
+        ["ID", "Seção", "Requisito", "Candidatos", "Aprovados", "Status"],
+        ([row["requirement_id"], row["subsection"], row["requirement"], row["candidate_count"], row["passed_candidate_count"], row["proof_status"]] for row in memo_requirements),
     )
-    write_markdown("18_MATRIZ_DE_RASTREABILIDADE.md", "Matriz de Rastreabilidade", f"{trace_rows}\n\nEVIDÊNCIAS: artefatos citados em cada linha.")
+    write_markdown("18_MATRIZ_DE_RASTREABILIDADE.md", "Matriz de Rastreabilidade", f"A matriz cobre os {len(memo_requirements)} requisitos explícitos das seções de conclusão e checklist. Candidatos não são promovidos a prova.\n\n{trace_rows}\n\nEVIDÊNCIAS: `artifacts/matriz_requisito_teste.json` e `artifacts/catalogo_testes.json`.")
     acceptance_rows = markdown_table(["Dimensão", "Percentual", "Evidência/Lacuna"], ([name, value, "comprovada" if value == 100 else "registrada no backlog"] for name, value in coverage_values.items()))
     write_markdown(
         "19_CRITERIOS_DE_ACEITE.md",
