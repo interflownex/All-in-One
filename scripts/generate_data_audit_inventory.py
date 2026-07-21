@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import ast
 import json
 import re
 from collections import Counter, defaultdict
@@ -180,20 +181,103 @@ def discover_endpoints() -> list[dict[str, str]]:
     return endpoints
 
 
-def discover_ui_bindings() -> list[dict[str, str]]:
-    bindings: list[dict[str, str]] = []
-    pattern = re.compile(r'(?:name|id)=["\']([A-Za-z_][\w.-]*)["\']')
-    for app in sorted((ROOT / "apps").glob("*/src")):
-        for path in app.rglob("*"):
-            if path.suffix not in {".tsx", ".jsx", ".html"} or not path.is_file():
+def literal_strings(node: ast.AST | None) -> list[str]:
+    if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
+        return [item.value for item in node.elts if isinstance(item, ast.Constant) and isinstance(item.value, str)]
+    return []
+
+
+def discover_logical_rules(tables: dict[str, list[Field]], ui_bindings: list[dict[str, str]]) -> list[dict[str, object]]:
+    path = ROOT / "modules" / "shared" / "domain_rules.py"
+    text = path.read_text(encoding="utf-8")
+    tree = ast.parse(text)
+    module_entities: dict[str, tuple[str, ...]] = {}
+    override_node: ast.Dict | None = None
+    for node in tree.body:
+        target = node.target if isinstance(node, ast.AnnAssign) else node.targets[0] if isinstance(node, ast.Assign) and len(node.targets) == 1 else None
+        if not isinstance(target, ast.Name):
+            continue
+        if target.id == "MODULE_ENTITIES":
+            module_entities = ast.literal_eval(node.value)
+        elif target.id == "RULE_OVERRIDES" and isinstance(node.value, ast.Dict):
+            override_node = node.value
+
+    overrides: dict[tuple[str, str], dict[str, object]] = {}
+    if override_node:
+        for key_node, value_node in zip(override_node.keys, override_node.values):
+            try:
+                key = ast.literal_eval(key_node)
+            except (ValueError, TypeError):
                 continue
-            text = path.read_text(encoding="utf-8", errors="ignore")
-            for match in pattern.finditer(text):
+            if not isinstance(key, tuple) or len(key) != 2 or not isinstance(value_node, ast.Call):
+                continue
+            positional = value_node.args
+            keywords = {item.arg: item.value for item in value_node.keywords if item.arg}
+            required_node = keywords.get("required_fields") or (positional[0] if positional else None)
+            unique_node = keywords.get("unique_fields") or (positional[1] if len(positional) > 1 else None)
+            status_node = keywords.get("initial_status") or (positional[2] if len(positional) > 2 else None)
+            status = status_node.value if isinstance(status_node, ast.Constant) and isinstance(status_node.value, str) else "draft"
+            overrides[(str(key[0]), str(key[1]))] = {
+                "required_fields": literal_strings(required_node),
+                "unique_fields": literal_strings(unique_node),
+                "initial_status": status,
+                "sensitive": isinstance(keywords.get("sensitive"), ast.Constant) and keywords["sensitive"].value is True,
+                "immutable": isinstance(keywords.get("immutable"), ast.Constant) and keywords["immutable"].value is True,
+                "monetary_fields": literal_strings(keywords.get("monetary_fields")),
+                "evidence": f"{path.relative_to(ROOT)}:{value_node.lineno}",
+            }
+
+    ui_resources = {(row["module"], row["entity"]) for row in ui_bindings}
+    rows: list[dict[str, object]] = []
+    for module, entities in module_entities.items():
+        for entity in entities:
+            override = overrides.get((module, entity), {})
+            rows.append(
+                {
+                    "module": module,
+                    "entity": entity,
+                    "required_fields": override.get("required_fields", []),
+                    "unique_fields": override.get("unique_fields", []),
+                    "monetary_fields": override.get("monetary_fields", []),
+                    "initial_status": override.get("initial_status", "draft"),
+                    "sensitive": override.get("sensitive", False),
+                    "immutable": override.get("immutable", False),
+                    "has_rule_override": (module, entity) in overrides,
+                    "has_physical_table": f"{module}.{entity}" in tables,
+                    "has_ui_surface": (module, entity) in ui_resources,
+                    "evidence": override.get("evidence", f"{path.relative_to(ROOT)}:74"),
+                }
+            )
+    return rows
+
+
+def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]:
+    bindings: list[dict[str, str]] = []
+    tag_pattern = re.compile(r"<SmartCRUD\s+(.+?)/>", re.S)
+    prop_pattern = re.compile(r'(module|entity|type|title)=["\']([^"\']+)["\']')
+    generic_fields = {
+        "form": ("name", "description", "category"),
+        "list": ("name", "title", "status", "created_at"),
+    }
+    pages = ROOT / "apps" / "all-in-one" / "src" / "pages"
+    for path in sorted(pages.rglob("*.tsx")):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for match in tag_pattern.finditer(text):
+            props = dict(prop_pattern.findall(match.group(1)))
+            if not {"module", "entity", "type"}.issubset(props):
+                continue
+            table_fields = {field.physical_name for field in tables.get(f"{props['module']}.{props['entity']}", [])}
+            for field in generic_fields.get(props["type"], ("não identificado",)):
+                binding = "campo físico provável" if field in table_fields else "payload genérico/não comprovado"
                 bindings.append(
                     {
-                        "app": app.parent.name,
-                        "field": match.group(1),
-                        "binding": "não comprovado",
+                        "app": "all-in-one",
+                        "module": props["module"],
+                        "entity": props["entity"],
+                        "surface": props["type"],
+                        "title": props.get("title", ""),
+                        "field": field,
+                        "binding": binding,
                         "evidence": f"{path.relative_to(ROOT)}:{line_number(text, match.start())}",
                     }
                 )
@@ -229,7 +313,8 @@ def build_delivery() -> None:
     schemas, tables, indexes, migrations = discover_physical_model()
     fields = [field for table_fields in tables.values() for field in table_fields]
     endpoints = discover_endpoints()
-    ui_bindings = discover_ui_bindings()
+    ui_bindings = discover_ui_bindings(tables)
+    logical_rules = discover_logical_rules(tables, ui_bindings)
     relations = [field for field in fields if field.reference]
     sensitive = [field for field in fields if field.lgpd != "não classificado automaticamente"]
     counts = {
@@ -241,16 +326,31 @@ def build_delivery() -> None:
         "indexes": len(indexes),
         "endpoints": len(endpoints),
         "ui_candidates": len(ui_bindings),
+        "ui_surfaces": len({row["evidence"] for row in ui_bindings}),
+        "ui_forms": len({row["evidence"] for row in ui_bindings if row["surface"] == "form"}),
+        "logical_entities": len(logical_rules),
+        "logical_without_physical_table": sum(not row["has_physical_table"] for row in logical_rules),
+        "logical_without_ui_surface": sum(not row["has_ui_surface"] for row in logical_rules),
         "sensitive_candidates": len(sensitive),
     }
 
     field_rows = [asdict(field) for field in fields]
     write_csv(ARTIFACTS / "dicionario_de_dados.csv", list(Field.__annotations__), field_rows)
     write_json(ARTIFACTS / "dicionario_de_dados.json", {"version": 1, "counts": counts, "fields": field_rows})
+    logical_csv_rows = [
+        {**row, "required_fields": ";".join(row["required_fields"]), "unique_fields": ";".join(row["unique_fields"]), "monetary_fields": ";".join(row["monetary_fields"])}
+        for row in logical_rules
+    ]
+    write_csv(
+        ARTIFACTS / "catalogo_logico.csv",
+        ["module", "entity", "required_fields", "unique_fields", "monetary_fields", "initial_status", "sensitive", "immutable", "has_rule_override", "has_physical_table", "has_ui_surface", "evidence"],
+        logical_csv_rows,
+    )
+    write_json(ARTIFACTS / "catalogo_logico.json", {"version": 1, "counts": counts, "entities": logical_rules})
     write_csv(
         ARTIFACTS / "matriz_formulario_campo.csv",
-        ["app", "field", "binding", "evidence"],
-        ui_bindings or [{"app": "não localizado", "field": "não localizado", "binding": "lacuna", "evidence": "apps/"}],
+        ["app", "module", "entity", "surface", "title", "field", "binding", "evidence"],
+        ui_bindings or [{"app": "não localizado", "module": "", "entity": "", "surface": "", "title": "", "field": "não localizado", "binding": "lacuna", "evidence": "apps/"}],
     )
     write_csv(
         ARTIFACTS / "matriz_api_campo.csv",
@@ -295,6 +395,7 @@ def build_delivery() -> None:
         {"id": "AUD-P1-003", "priority": "P1", "title": "Eventos não possuem catálogo de payload versionado", "evidence": "docs/data-audit/artifacts/matriz_evento_campo.csv", "acceptance": "Cada evento possui produtor, consumidor, schema, idempotência e compatibilidade."},
         {"id": "AUD-P1-004", "priority": "P1", "title": "Construtor de formulários dinâmicos é proposta, não implementação", "evidence": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:1583", "acceptance": "Metadados, API, homologação, segurança e testes implementados."},
         {"id": "AUD-P1-005", "priority": "P1", "title": "Regras fiscais e conversões carecem de modelo completo", "evidence": "database/postgres/migrations/", "acceptance": "Perfis fiscais e conversões versionadas possuem migrations, backend e testes."},
+        {"id": "AUD-P1-006", "priority": "P1", "title": "Entidades lógicas não possuem tabela física ou superfície UI correspondente", "evidence": "docs/data-audit/artifacts/catalogo_logico.csv", "acceptance": "Cada entidade tem decisão explícita de persistência e coordenada UI, ou justificativa de ausência."},
     ]
     write_json(ARTIFACTS / "relatorio_divergencias.json", {"version": 1, "status": "em_execucao", "gaps": gaps})
 
@@ -410,7 +511,7 @@ EVIDÊNCIAS: `database/postgres/migrations/`, `database/mongodb/init/001_ai_soci
     write_markdown(
         "04_DICIONARIO_DE_DADOS_MESTRE.md",
         "Dicionário de Dados Mestre",
-        f"""O dicionário físico contém {counts['fields']} campos. Tipo, nulabilidade, padrão, PK, unique e FK são extraídos das migrations. Nome lógico, LGPD e mascaramento são triagem e requerem homologação.\n\nArquivos canônicos: `artifacts/dicionario_de_dados.csv` e `artifacts/dicionario_de_dados.json`.\n\nEVIDÊNCIAS: {', '.join(f'`{item}`' for item in migrations[:5])} e demais migrations listadas no JSON.""",
+        f"""O dicionário físico contém {counts['fields']} campos. O catálogo lógico contém {counts['logical_entities']} entidades, das quais {counts['logical_without_physical_table']} não possuem tabela física homônima e {counts['logical_without_ui_surface']} não possuem superfície UI homônima. Tipo, nulabilidade, padrão, PK, unique e FK são extraídos das migrations; regras lógicas vêm de `MODULE_ENTITIES` e `RULE_OVERRIDES`. Nome lógico, LGPD e mascaramento são triagem e requerem homologação.\n\nArquivos canônicos: `artifacts/dicionario_de_dados.csv`, `artifacts/dicionario_de_dados.json`, `artifacts/catalogo_logico.csv` e `artifacts/catalogo_logico.json`.\n\nEVIDÊNCIAS: {', '.join(f'`{item}`' for item in migrations[:5])}, `modules/shared/domain_rules.py` e demais migrations listadas no JSON.""",
     )
     write_markdown(
         "05_RELACIONAMENTOS_E_ERD.md",
@@ -435,7 +536,7 @@ EVIDÊNCIAS: `database/postgres/migrations/`, `database/mongodb/init/001_ai_soci
     write_markdown(
         "09_FORMULARIOS_FRONTEND.md",
         "Formulários, Tabelas, Filtros e Dashboards",
-        f"""A varredura localizou {counts['ui_candidates']} candidatos de campo por atributos `name`/`id`; isso não comprova binding. Cada linha deve ser vinculada a DTO, endpoint, permissão, validação, auditoria e teste.\n\nEVIDÊNCIAS: `artifacts/matriz_formulario_campo.csv`. Lacuna: `AUD-P1-002`.""",
+        f"""A varredura localizou {counts['ui_surfaces']} superfícies SmartCRUD, sendo {counts['ui_forms']} formulários, e {counts['ui_candidates']} combinações superfície/campo. O componente genérico atualmente oferece somente `name`, `description` e `category` nos formulários; isso não satisfaz os campos específicos declarados pelas entidades. Cada linha deve ser vinculada a DTO, endpoint, permissão, validação, auditoria e teste.\n\nEVIDÊNCIAS: `apps/all-in-one/src/components/SmartCRUD.tsx`, `artifacts/matriz_formulario_campo.csv`. Lacuna: `AUD-P1-002`.""",
     )
     write_markdown(
         "10_FORMULARIOS_DINAMICOS.md",

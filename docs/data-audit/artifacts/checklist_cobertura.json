@@ -9,7 +9,12 @@
     "relationships": 297,
     "indexes": 48,
     "endpoints": 99,
-    "ui_candidates": 25,
+    "ui_candidates": 1067,
+    "ui_surfaces": 299,
+    "ui_forms": 129,
+    "logical_entities": 120,
+    "logical_without_physical_table": 62,
+    "logical_without_ui_surface": 46,
     "sensitive_candidates": 147
   },
   "dimensoes": {
@@ -36,7 +41,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "campos": {
@@ -48,7 +54,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "relacionamentos": {
@@ -60,7 +67,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "bindings_frontend": {
@@ -72,7 +80,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "campos_sensiveis": {
@@ -84,7 +93,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "auditoria": {
@@ -96,7 +106,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "calculos": {
@@ -108,7 +119,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "unidades": {
@@ -120,7 +132,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "regras_fiscais": {
@@ -132,7 +145,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "formularios": {
@@ -144,7 +158,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "acoes_ui": {
@@ -156,7 +171,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "permissoes_backend": {
@@ -168,7 +184,8 @@
         "AUD-P1-002",
         "AUD-P1-003",
         "AUD-P1-004",
-        "AUD-P1-005"
+        "AUD-P1-005",
+        "AUD-P1-006"
       ]
     },
     "lacunas_com_backlog": {

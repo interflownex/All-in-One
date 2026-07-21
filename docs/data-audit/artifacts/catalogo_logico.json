@@ -1,0 +1,2163 @@
+{
+  "version": 1,
+  "counts": {
+    "migrations": 24,
+    "schemas": 31,
+    "tables": 81,
+    "fields": 1189,
+    "relationships": 297,
+    "indexes": 48,
+    "endpoints": 99,
+    "ui_candidates": 1067,
+    "ui_surfaces": 299,
+    "ui_forms": 129,
+    "logical_entities": 120,
+    "logical_without_physical_table": 62,
+    "logical_without_ui_surface": 46,
+    "sensitive_candidates": 147
+  },
+  "entities": [
+    {
+      "module": "identity",
+      "entity": "users",
+      "required_fields": [
+        "full_name",
+        "email",
+        "password_hash"
+      ],
+      "unique_fields": [
+        "email",
+        "document_cpf"
+      ],
+      "monetary_fields": [],
+      "initial_status": "PENDING_KYC",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:159"
+    },
+    {
+      "module": "identity",
+      "entity": "documents",
+      "required_fields": [
+        "document_type",
+        "document_number_hash",
+        "storage_key"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "pending_review",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:179"
+    },
+    {
+      "module": "identity",
+      "entity": "biometrics",
+      "required_fields": [
+        "face_hash",
+        "consent_recorded_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "captured",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:188"
+    },
+    {
+      "module": "identity",
+      "entity": "sessions",
+      "required_fields": [
+        "token_hash",
+        "device_fingerprint",
+        "ip_address",
+        "expires_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:194"
+    },
+    {
+      "module": "identity",
+      "entity": "identity_verifications",
+      "required_fields": [
+        "verification_type"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "PROCESSING",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:202"
+    },
+    {
+      "module": "identity",
+      "entity": "consent_records",
+      "required_fields": [
+        "consent_type",
+        "policy_version",
+        "accepted_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "accepted",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:211"
+    },
+    {
+      "module": "business",
+      "entity": "companies",
+      "required_fields": [
+        "cnpj",
+        "root_cnpj",
+        "legal_name",
+        "legal_representative_user_id"
+      ],
+      "unique_fields": [
+        "cnpj"
+      ],
+      "monetary_fields": [],
+      "initial_status": "pending_validation",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:217"
+    },
+    {
+      "module": "business",
+      "entity": "branches",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "business",
+      "entity": "company_documents",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "business",
+      "entity": "user_company_memberships",
+      "required_fields": [
+        "company_id",
+        "role"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "invited",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:224"
+    },
+    {
+      "module": "business",
+      "entity": "catalog_offers",
+      "required_fields": [
+        "title",
+        "offer_type",
+        "consumer_category",
+        "company_type",
+        "company_category",
+        "business_activity_id",
+        "source_module",
+        "source_resource_type"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "price_brl",
+        "price_amount"
+      ],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:245"
+    },
+    {
+      "module": "permissions",
+      "entity": "roles",
+      "required_fields": [
+        "name"
+      ],
+      "unique_fields": [
+        "name"
+      ],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:261"
+    },
+    {
+      "module": "permissions",
+      "entity": "permissions",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "permissions",
+      "entity": "user_roles",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "permissions",
+      "entity": "access_policies",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "permissions",
+      "entity": "approval_limits",
+      "required_fields": [
+        "scope",
+        "limit_brl"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "limit_brl"
+      ],
+      "initial_status": "active",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:262"
+    },
+    {
+      "module": "finance",
+      "entity": "wallets",
+      "required_fields": [
+        "wallet_type"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:265"
+    },
+    {
+      "module": "finance",
+      "entity": "ledger_entries",
+      "required_fields": [
+        "wallet_id",
+        "currency",
+        "idempotency_key"
+      ],
+      "unique_fields": [
+        "idempotency_key"
+      ],
+      "monetary_fields": [
+        "amount_brl",
+        "amount_nex"
+      ],
+      "initial_status": "posted",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:266"
+    },
+    {
+      "module": "finance",
+      "entity": "escrows",
+      "required_fields": [
+        "wallet_id",
+        "beneficiary_user_id",
+        "amount_brl"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "amount_brl"
+      ],
+      "initial_status": "created",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:281"
+    },
+    {
+      "module": "finance",
+      "entity": "splits",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [
+        "amount_brl"
+      ],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:294"
+    },
+    {
+      "module": "finance",
+      "entity": "invoices",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [
+        "amount_brl"
+      ],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:295"
+    },
+    {
+      "module": "finance",
+      "entity": "valley_gold_ledger_entries",
+      "required_fields": [
+        "merchant_business_id",
+        "entry_type",
+        "amount_gold_delta",
+        "reference_type"
+      ],
+      "unique_fields": [
+        "idempotency_key"
+      ],
+      "monetary_fields": [],
+      "initial_status": "posted",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:274"
+    },
+    {
+      "module": "marketplace",
+      "entity": "stores",
+      "required_fields": [
+        "company_id",
+        "company_status",
+        "name"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "pending_validation",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:296"
+    },
+    {
+      "module": "marketplace",
+      "entity": "products",
+      "required_fields": [
+        "store_id",
+        "sku",
+        "name",
+        "price_brl",
+        "stock_location_type"
+      ],
+      "unique_fields": [
+        "sku"
+      ],
+      "monetary_fields": [
+        "price_brl"
+      ],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:302"
+    },
+    {
+      "module": "marketplace",
+      "entity": "carts",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "marketplace",
+      "entity": "orders",
+      "required_fields": [
+        "total_brl"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "total_brl"
+      ],
+      "initial_status": "created",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:309"
+    },
+    {
+      "module": "marketplace",
+      "entity": "reviews",
+      "required_fields": [
+        "order_id",
+        "rating"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "pending_review",
+      "sensitive": false,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:320"
+    },
+    {
+      "module": "marketplace",
+      "entity": "disputes",
+      "required_fields": [
+        "order_id",
+        "case_type",
+        "message"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "open",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:342"
+    },
+    {
+      "module": "marketplace",
+      "entity": "pepita_grants",
+      "required_fields": [
+        "order_id",
+        "customer_user_id",
+        "pepitas",
+        "merchant_gold_ledger_id"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "posted",
+      "sensitive": false,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:389"
+    },
+    {
+      "module": "stock",
+      "entity": "suppliers",
+      "required_fields": [
+        "company_id",
+        "company_status"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "pending_validation",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:352"
+    },
+    {
+      "module": "stock",
+      "entity": "catalog_products",
+      "required_fields": [
+        "supplier_id",
+        "external_sku",
+        "name",
+        "list_price_brl"
+      ],
+      "unique_fields": [
+        "external_sku"
+      ],
+      "monetary_fields": [
+        "list_price_brl"
+      ],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:355"
+    },
+    {
+      "module": "stock",
+      "entity": "price_rules",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "stock",
+      "entity": "supplier_orders",
+      "required_fields": [
+        "supplier_id",
+        "catalog_product_id",
+        "external_order_id"
+      ],
+      "unique_fields": [
+        "external_order_id"
+      ],
+      "monetary_fields": [
+        "cost_brl"
+      ],
+      "initial_status": "created",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:361"
+    },
+    {
+      "module": "stock",
+      "entity": "discount_quotes",
+      "required_fields": [
+        "catalog_product_id",
+        "selected_percent",
+        "pepitas_required"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "original_price_brl",
+        "discount_brl",
+        "final_price_brl"
+      ],
+      "initial_status": "quoted",
+      "sensitive": false,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:394"
+    },
+    {
+      "module": "delivery",
+      "entity": "delivery_requests",
+      "required_fields": [
+        "service_type",
+        "origin",
+        "destination"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "quoted_brl"
+      ],
+      "initial_status": "created",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:400"
+    },
+    {
+      "module": "delivery",
+      "entity": "quotes",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "delivery",
+      "entity": "assignments",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "delivery",
+      "entity": "proofs",
+      "required_fields": [
+        "delivery_request_id",
+        "file_sha256",
+        "storage_key",
+        "captured_at"
+      ],
+      "unique_fields": [
+        "file_sha256"
+      ],
+      "monetary_fields": [],
+      "initial_status": "recorded",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:412"
+    },
+    {
+      "module": "delivery",
+      "entity": "insurance_options",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "riders",
+      "entity": "rider_profiles",
+      "required_fields": [
+        "cnh_number_hash",
+        "cnh_category",
+        "wallet_id"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "pending_documents",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:419"
+    },
+    {
+      "module": "riders",
+      "entity": "rider_documents",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "riders",
+      "entity": "vehicles",
+      "required_fields": [
+        "rider_profile_id",
+        "type",
+        "license_plate"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "pending_review",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:425"
+    },
+    {
+      "module": "riders",
+      "entity": "rider_reviews",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "services",
+      "entity": "providers",
+      "required_fields": [
+        "category"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "pending_review",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:428"
+    },
+    {
+      "module": "services",
+      "entity": "visits",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "services",
+      "entity": "quotes",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "services",
+      "entity": "service_contracts",
+      "required_fields": [
+        "visit_price_brl"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "visit_price_brl",
+        "contracted_price_brl"
+      ],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:431"
+    },
+    {
+      "module": "services",
+      "entity": "evidence",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "mobility",
+      "entity": "rides",
+      "required_fields": [
+        "origin",
+        "destination",
+        "vehicle_type"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "fare_brl"
+      ],
+      "initial_status": "requested",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:441"
+    },
+    {
+      "module": "mobility",
+      "entity": "routes",
+      "required_fields": [
+        "origin",
+        "destination",
+        "distance_km",
+        "eta_minutes",
+        "route_polyline_hash"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "quoted",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:452"
+    },
+    {
+      "module": "mobility",
+      "entity": "stops",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "mobility",
+      "entity": "tickets",
+      "required_fields": [
+        "route_code",
+        "amount_brl",
+        "qr_token_hash",
+        "nfc_token_hash"
+      ],
+      "unique_fields": [
+        "qr_token_hash"
+      ],
+      "monetary_fields": [
+        "amount_brl"
+      ],
+      "initial_status": "active",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:458"
+    },
+    {
+      "module": "mobility",
+      "entity": "fare_rules",
+      "required_fields": [
+        "rule_name",
+        "base_fare_brl",
+        "per_km_brl",
+        "vehicle_type"
+      ],
+      "unique_fields": [
+        "rule_name"
+      ],
+      "monetary_fields": [
+        "base_fare_brl",
+        "per_km_brl",
+        "minimum_fare_brl"
+      ],
+      "initial_status": "active",
+      "sensitive": false,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:466"
+    },
+    {
+      "module": "jobs",
+      "entity": "resumes",
+      "required_fields": [
+        "headline",
+        "recruiter_visibility"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:473"
+    },
+    {
+      "module": "jobs",
+      "entity": "employment_records",
+      "required_fields": [
+        "resume_id",
+        "source_type",
+        "employer_name",
+        "started_on"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:478"
+    },
+    {
+      "module": "jobs",
+      "entity": "resume_documents",
+      "required_fields": [
+        "resume_id",
+        "document_type",
+        "sha256",
+        "evidence_status",
+        "official_verification_status"
+      ],
+      "unique_fields": [
+        "sha256"
+      ],
+      "monetary_fields": [],
+      "initial_status": "imported",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:483"
+    },
+    {
+      "module": "jobs",
+      "entity": "job_postings",
+      "required_fields": [
+        "company_id",
+        "company_status",
+        "title",
+        "description"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:490"
+    },
+    {
+      "module": "jobs",
+      "entity": "applications",
+      "required_fields": [
+        "job_posting_id",
+        "resume_id"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "submitted",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:498"
+    },
+    {
+      "module": "jobs",
+      "entity": "resume_access_logs",
+      "required_fields": [
+        "resume_id",
+        "business_id",
+        "purpose"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "recorded",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:510"
+    },
+    {
+      "module": "erp",
+      "entity": "accounts",
+      "required_fields": [
+        "account_code",
+        "name"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:516"
+    },
+    {
+      "module": "erp",
+      "entity": "payables",
+      "required_fields": [
+        "supplier_name",
+        "due_at",
+        "amount_brl",
+        "cost_center_id"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "amount_brl"
+      ],
+      "initial_status": "open",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:526"
+    },
+    {
+      "module": "erp",
+      "entity": "receivables",
+      "required_fields": [
+        "customer_name",
+        "due_at",
+        "amount_brl",
+        "account_id"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "amount_brl"
+      ],
+      "initial_status": "issued",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:546"
+    },
+    {
+      "module": "erp",
+      "entity": "cost_centers",
+      "required_fields": [
+        "cost_center_code",
+        "name"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:521"
+    },
+    {
+      "module": "erp",
+      "entity": "fiscal_documents",
+      "required_fields": [
+        "document_type",
+        "amount_brl"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:566"
+    },
+    {
+      "module": "wms",
+      "entity": "warehouses",
+      "required_fields": [
+        "name"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:571"
+    },
+    {
+      "module": "wms",
+      "entity": "bins",
+      "required_fields": [
+        "warehouse_id",
+        "code"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:576"
+    },
+    {
+      "module": "wms",
+      "entity": "inventory",
+      "required_fields": [
+        "warehouse_id",
+        "sku",
+        "quantity",
+        "received_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "received",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:581"
+    },
+    {
+      "module": "wms",
+      "entity": "picking_waves",
+      "required_fields": [
+        "warehouse_id",
+        "order_reference",
+        "sku",
+        "quantity"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "open",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:597"
+    },
+    {
+      "module": "wms",
+      "entity": "shipments",
+      "required_fields": [
+        "warehouse_id",
+        "picking_wave_id",
+        "carrier_reference"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "ready",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:615"
+    },
+    {
+      "module": "tms",
+      "entity": "carriers",
+      "required_fields": [
+        "name",
+        "coverage"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "pending_review",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:628"
+    },
+    {
+      "module": "tms",
+      "entity": "freights",
+      "required_fields": [
+        "carrier_id",
+        "route_id",
+        "freight_brl",
+        "scheduled_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "freight_brl",
+        "toll_brl"
+      ],
+      "initial_status": "quoted",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:644"
+    },
+    {
+      "module": "tms",
+      "entity": "routes",
+      "required_fields": [
+        "origin",
+        "destination",
+        "distance_km",
+        "eta_minutes"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "planned",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:633"
+    },
+    {
+      "module": "tms",
+      "entity": "proofs_of_delivery",
+      "required_fields": [
+        "freight_id",
+        "file_sha256",
+        "storage_key",
+        "delivered_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "recorded",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:670"
+    },
+    {
+      "module": "tms",
+      "entity": "freight_audits",
+      "required_fields": [
+        "freight_id",
+        "audit_result",
+        "audited_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "reviewed",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:676"
+    },
+    {
+      "module": "crm",
+      "entity": "leads",
+      "required_fields": [
+        "name",
+        "source"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "new",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:690"
+    },
+    {
+      "module": "crm",
+      "entity": "opportunities",
+      "required_fields": [
+        "lead_id",
+        "title",
+        "expected_value_brl"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "expected_value_brl"
+      ],
+      "initial_status": "open",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:707"
+    },
+    {
+      "module": "crm",
+      "entity": "activities",
+      "required_fields": [
+        "lead_id",
+        "activity_type",
+        "scheduled_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "scheduled",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:734"
+    },
+    {
+      "module": "crm",
+      "entity": "campaigns",
+      "required_fields": [
+        "campaign_key",
+        "channel"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:746"
+    },
+    {
+      "module": "bpm",
+      "entity": "processes",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "bpm",
+      "entity": "workflow_instances",
+      "required_fields": [
+        "process_key",
+        "sla_policy_id",
+        "started_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "running",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:764"
+    },
+    {
+      "module": "bpm",
+      "entity": "tasks",
+      "required_fields": [
+        "workflow_instance_id",
+        "assignee_user_id",
+        "due_at",
+        "sla_policy_id"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "open",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:782"
+    },
+    {
+      "module": "bpm",
+      "entity": "sla_policies",
+      "required_fields": [
+        "policy_key",
+        "response_minutes",
+        "escalation_role"
+      ],
+      "unique_fields": [
+        "policy_key"
+      ],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": false,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:800"
+    },
+    {
+      "module": "document",
+      "entity": "folders",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "document",
+      "entity": "documents",
+      "required_fields": [
+        "storage_provider",
+        "storage_bucket",
+        "storage_key",
+        "file_sha256",
+        "kms_key_version",
+        "filename",
+        "content_type"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:806"
+    },
+    {
+      "module": "document",
+      "entity": "versions",
+      "required_fields": [
+        "document_id",
+        "version",
+        "storage_key",
+        "file_sha256",
+        "kms_key_version"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:819"
+    },
+    {
+      "module": "document",
+      "entity": "retention_policies",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "hr",
+      "entity": "employees",
+      "required_fields": [
+        "company_id",
+        "employment_type",
+        "admission_date"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:830"
+    },
+    {
+      "module": "hr",
+      "entity": "payroll_runs",
+      "required_fields": [
+        "company_id",
+        "period",
+        "gross_amount_brl"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "gross_amount_brl",
+        "net_amount_brl"
+      ],
+      "initial_status": "open",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:835"
+    },
+    {
+      "module": "hr",
+      "entity": "candidates",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "hr",
+      "entity": "courses",
+      "required_fields": [
+        "employee_id",
+        "course_code",
+        "title",
+        "due_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "assigned",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:850"
+    },
+    {
+      "module": "hr",
+      "entity": "occupational_records",
+      "required_fields": [
+        "employee_id"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:862"
+    },
+    {
+      "module": "health",
+      "entity": "patients",
+      "required_fields": [
+        "health_identifier"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:863"
+    },
+    {
+      "module": "health",
+      "entity": "appointments",
+      "required_fields": [
+        "scheduled_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:864"
+    },
+    {
+      "module": "health",
+      "entity": "medical_records",
+      "required_fields": [
+        "patient_id"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:865"
+    },
+    {
+      "module": "health",
+      "entity": "prescriptions",
+      "required_fields": [
+        "patient_id"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:866"
+    },
+    {
+      "module": "health",
+      "entity": "beds",
+      "required_fields": [
+        "unit"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:867"
+    },
+    {
+      "module": "vision",
+      "entity": "devices",
+      "required_fields": [
+        "device_fingerprint"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:868"
+    },
+    {
+      "module": "vision",
+      "entity": "streams",
+      "required_fields": [
+        "device_id",
+        "stream_url_hash",
+        "protocol",
+        "started_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "active",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:873"
+    },
+    {
+      "module": "vision",
+      "entity": "recordings",
+      "required_fields": [
+        "stream_id",
+        "storage_key",
+        "file_sha256",
+        "started_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "recorded",
+      "sensitive": true,
+      "immutable": true,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:894"
+    },
+    {
+      "module": "vision",
+      "entity": "motion_alerts",
+      "required_fields": [
+        "device_id",
+        "stream_id",
+        "detected_at",
+        "confidence_score"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "detected",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:900"
+    },
+    {
+      "module": "legal",
+      "entity": "cases",
+      "required_fields": [
+        "case_number",
+        "case_type",
+        "opened_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "risk_brl"
+      ],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:921"
+    },
+    {
+      "module": "legal",
+      "entity": "deadlines",
+      "required_fields": [
+        "case_id",
+        "deadline_type",
+        "due_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "pending",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:927"
+    },
+    {
+      "module": "legal",
+      "entity": "hearings",
+      "required_fields": [
+        "case_id",
+        "scheduled_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "scheduled",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:946"
+    },
+    {
+      "module": "legal",
+      "entity": "legal_contracts",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "property",
+      "entity": "properties",
+      "required_fields": [
+        "address",
+        "property_type"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:951"
+    },
+    {
+      "module": "property",
+      "entity": "units",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "property",
+      "entity": "leases",
+      "required_fields": [
+        "property_id",
+        "tenant_user_id",
+        "starts_at",
+        "rent_amount_brl"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "rent_amount_brl",
+        "deposit_amount_brl"
+      ],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:955"
+    },
+    {
+      "module": "property",
+      "entity": "assemblies",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "property",
+      "entity": "maintenance_orders",
+      "required_fields": [
+        "property_id",
+        "issue_type",
+        "requested_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "estimated_cost_brl"
+      ],
+      "initial_status": "requested",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:976"
+    },
+    {
+      "module": "bi",
+      "entity": "datasets",
+      "required_fields": [
+        "name",
+        "source_module",
+        "source_resource_type",
+        "refresh_mode"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:995"
+    },
+    {
+      "module": "bi",
+      "entity": "dashboards",
+      "required_fields": [
+        "dataset_id",
+        "name",
+        "definition",
+        "allowed_roles"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:1013"
+    },
+    {
+      "module": "bi",
+      "entity": "indicators",
+      "required_fields": [],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": false,
+      "immutable": false,
+      "has_rule_override": false,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:74"
+    },
+    {
+      "module": "bi",
+      "entity": "exports",
+      "required_fields": [
+        "dashboard_id",
+        "export_format",
+        "requested_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "requested",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:1034"
+    },
+    {
+      "module": "ai_core",
+      "entity": "ai_memories",
+      "required_fields": [
+        "memory_key",
+        "summary"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:1046"
+    },
+    {
+      "module": "ai_core",
+      "entity": "moderation_decisions",
+      "required_fields": [
+        "module",
+        "risk_score"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:1063"
+    },
+    {
+      "module": "ai_core",
+      "entity": "model_runs",
+      "required_fields": [
+        "provider_adapter",
+        "provider_name",
+        "model_name",
+        "prompt_tokens",
+        "completion_tokens",
+        "estimated_cost_brl",
+        "requested_at"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [
+        "estimated_cost_brl"
+      ],
+      "initial_status": "requested",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": false,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:1068"
+    },
+    {
+      "module": "api_hub",
+      "entity": "api_clients",
+      "required_fields": [
+        "client_name",
+        "scopes"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:1101"
+    },
+    {
+      "module": "api_hub",
+      "entity": "api_keys",
+      "required_fields": [
+        "key_name",
+        "key_hash",
+        "key_hint",
+        "scopes"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:1102"
+    },
+    {
+      "module": "api_hub",
+      "entity": "webhooks",
+      "required_fields": [
+        "target_url",
+        "event_patterns",
+        "signing_secret_reference"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": true,
+      "evidence": "modules/shared/domain_rules.py:1103"
+    },
+    {
+      "module": "api_hub",
+      "entity": "integration_runs",
+      "required_fields": [
+        "integration_type",
+        "provider_name"
+      ],
+      "unique_fields": [],
+      "monetary_fields": [],
+      "initial_status": "draft",
+      "sensitive": true,
+      "immutable": false,
+      "has_rule_override": true,
+      "has_physical_table": true,
+      "has_ui_surface": false,
+      "evidence": "modules/shared/domain_rules.py:1104"
+    }
+  ]
+}

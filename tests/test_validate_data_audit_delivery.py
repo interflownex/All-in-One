@@ -29,8 +29,9 @@ def test_contract_lists_every_complementary_format() -> None:
     module = load_validator()
     contract = module.load_json(module.CONTRACT_PATH, [])
 
-    assert len(contract["required_complementary"]) == 10
+    assert len(contract["required_complementary"]) == 12
     assert "artifacts/dicionario_de_dados.csv" in contract["required_complementary"]
+    assert "artifacts/catalogo_logico.json" in contract["required_complementary"]
     assert "artifacts/relatorio_divergencias.json" in contract["required_complementary"]
 
 
@@ -59,3 +60,13 @@ def test_generated_summary_is_rendered_markdown() -> None:
     assert "24 migrations PostgreSQL" in summary
     assert 'f"A varredura' not in summary
     assert "conclusão de 100% não declarada" in summary
+
+
+def test_logical_catalog_exposes_cross_layer_gaps() -> None:
+    catalog = ROOT / "docs" / "data-audit" / "artifacts" / "catalogo_logico.json"
+    data = __import__("json").loads(catalog.read_text(encoding="utf-8"))
+
+    assert data["counts"]["logical_entities"] == 120
+    assert data["counts"]["logical_without_physical_table"] > 0
+    assert data["counts"]["logical_without_ui_surface"] > 0
+    assert all(item["evidence"] for item in data["entities"])

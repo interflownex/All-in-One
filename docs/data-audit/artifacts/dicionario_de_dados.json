@@ -8,7 +8,12 @@
     "relationships": 297,
     "indexes": 48,
     "endpoints": 99,
-    "ui_candidates": 25,
+    "ui_candidates": 1067,
+    "ui_surfaces": 299,
+    "ui_forms": 129,
+    "logical_entities": 120,
+    "logical_without_physical_table": 62,
+    "logical_without_ui_surface": 46,
     "sensitive_candidates": 147
   },
   "fields": [

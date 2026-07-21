@@ -8,5 +8,6 @@
 | AUD-P1-003 | P1 | Eventos não possuem catálogo de payload versionado | docs/data-audit/artifacts/matriz_evento_campo.csv | Cada evento possui produtor, consumidor, schema, idempotência e compatibilidade. |
 | AUD-P1-004 | P1 | Construtor de formulários dinâmicos é proposta, não implementação | docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:1583 | Metadados, API, homologação, segurança e testes implementados. |
 | AUD-P1-005 | P1 | Regras fiscais e conversões carecem de modelo completo | database/postgres/migrations/ | Perfis fiscais e conversões versionadas possuem migrations, backend e testes. |
+| AUD-P1-006 | P1 | Entidades lógicas não possuem tabela física ou superfície UI correspondente | docs/data-audit/artifacts/catalogo_logico.csv | Cada entidade tem decisão explícita de persistência e coordenada UI, ou justificativa de ausência. |
 
 EVIDÊNCIAS: `artifacts/relatorio_divergencias.json`.

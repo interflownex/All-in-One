@@ -43,6 +43,13 @@
       "title": "Regras fiscais e conversões carecem de modelo completo",
       "evidence": "database/postgres/migrations/",
       "acceptance": "Perfis fiscais e conversões versionadas possuem migrations, backend e testes."
+    },
+    {
+      "id": "AUD-P1-006",
+      "priority": "P1",
+      "title": "Entidades lógicas não possuem tabela física ou superfície UI correspondente",
+      "evidence": "docs/data-audit/artifacts/catalogo_logico.csv",
+      "acceptance": "Cada entidade tem decisão explícita de persistência e coordenada UI, ou justificativa de ausência."
     }
   ]
 }

@@ -27,6 +27,8 @@
   "required_complementary": [
     "artifacts/dicionario_de_dados.csv",
     "artifacts/dicionario_de_dados.json",
+    "artifacts/catalogo_logico.csv",
+    "artifacts/catalogo_logico.json",
     "artifacts/erd.mmd",
     "artifacts/matriz_formulario_campo.csv",
     "artifacts/matriz_api_campo.csv",
