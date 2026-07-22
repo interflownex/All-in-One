@@ -111,6 +111,7 @@ services:
       SERVICES_SERVICE_URL: ${SERVICES_SERVICE_URL:-http://services:8000}
       HEALTH_SERVICE_URL: ${HEALTH_SERVICE_URL:-http://health:8000}
       DELIVERY_SERVICE_URL: ${DELIVERY_SERVICE_URL:-http://delivery:8000}
+      DYNAMIC_FORMS_SERVICE_URL: ${DYNAMIC_FORMS_SERVICE_URL:-http://dynamic_forms:8000}
       MOBILITY_SERVICE_URL: ${MOBILITY_SERVICE_URL:-http://mobility:8000}
       JOBS_SERVICE_URL: ${JOBS_SERVICE_URL:-http://jobs:8000}
       PROPERTY_SERVICE_URL: ${PROPERTY_SERVICE_URL:-http://property:8000}
@@ -188,6 +189,16 @@ services:
       ALL_IN_ONE_STORAGE_DIR: /data
       ALL_IN_ONE_STOCK_POSTGRES_DSN: ${ALL_IN_ONE_STOCK_POSTGRES_DSN:-postgresql://all_in_one:local-development-only@postgres:5432/all_in_one}
     ports: ["8114:8000"]
+
+  dynamic_forms:
+    <<: *module-common
+    build:
+      context: ../..
+      dockerfile: modules/dynamic_forms/Dockerfile
+    environment:
+      ALL_IN_ONE_STORAGE_DIR: /data
+      ALL_IN_ONE_DYNAMIC_FORMS_POSTGRES_DSN: ${ALL_IN_ONE_DYNAMIC_FORMS_POSTGRES_DSN:-postgresql://all_in_one:local-development-only@postgres:5432/all_in_one}
+    ports: ["8125:8000"]
 
   delivery:
     <<: *module-common

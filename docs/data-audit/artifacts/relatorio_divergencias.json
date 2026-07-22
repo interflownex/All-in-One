@@ -174,29 +174,31 @@
       "priority": "P1",
       "module": "formulários dinâmicos",
       "title": "Construtor de formulários dinâmicos possui persistência, mas ainda não está operacional",
-      "description": "A migration 028 materializa metadados, catálogo, bindings, versões, blocos, campos, cálculos, validações, permissões, homologação, publicação, submissões e eventos faturáveis; APIs, builder web e homologação operacional permanecem pendentes.",
+      "description": "A migration 028 e o serviço dynamic_forms implementam catálogo, bindings, versões, blueprint, cálculos allowlist, homologação segregada, publicação com MFA, submissões idempotentes, eventos e cobrança; builder web e homologação PostgreSQL operacional permanecem pendentes.",
       "evidence": [
         "database/postgres/migrations/028_dynamic_forms_governance.sql",
-        "database/postgres/rollbacks/028_dynamic_forms_governance.down.sql",
-        "tests/test_dynamic_forms_migration.py",
-        "docs/data-audit/artifacts/formulario_dinamico_modelo.json"
+        "modules/dynamic_forms/main.py",
+        "modules/shared/dynamic_forms.py",
+        "modules/shared/dynamic_forms_postgres_store.py",
+        "tests/test_dynamic_forms_api.py",
+        "tests/test_dynamic_forms_domain.py"
       ],
-      "impact": "Sem APIs e UI, o produto pago ainda não pode ser usado de ponta a ponta.",
-      "risk": "Integrações ad hoc podem contornar a governança já materializada.",
-      "proposal": "Implementar store e APIs sobre a migration, builder allowlist, prévia, homologação, publicação e cobrança.",
+      "impact": "Sem UI e validação em PostgreSQL vivo, o produto ainda não pode ser homologado ponta a ponta.",
+      "risk": "Experiência indisponível ao usuário empresarial e comportamento SQL ainda não comprovado em ambiente real.",
+      "proposal": "Implementar builder allowlist e prévia web; executar migration e fluxos completos em PostgreSQL homologado.",
       "dependencies": [
-        "autorização RBAC/ABAC",
-        "API Hub"
+        "builder web",
+        "PostgreSQL de homologação"
       ],
       "affected_files": [
-        "database/postgres/migrations/028_dynamic_forms_governance.sql",
-        "modules",
-        "apps/all-in-one/src"
+        "apps/all-in-one/src",
+        "modules/dynamic_forms",
+        "database/postgres/migrations/028_dynamic_forms_governance.sql"
       ],
       "migration": "implementada e reversível",
-      "backend": "implementar APIs, regras e homologação",
+      "backend": "APIs, RBAC/ABAC, homologação, publicação, submissão e eventos implementados",
       "frontend": "implementar builder, preview e publicação",
-      "tests": "migration aprovada; segurança, ciclos, versionamento, tenant e cobrança runtime pendentes",
+      "tests": "domínio, segurança HTTP, tenant, MFA e idempotência aprovados; PostgreSQL vivo pendente",
       "documentation": "10_FORMULARIOS_DINAMICOS.md",
       "acceptance": "Metadados, API, homologação, segurança, publicação, cobrança, auditoria e testes estão implementados.",
       "status": "implementacao_parcial",

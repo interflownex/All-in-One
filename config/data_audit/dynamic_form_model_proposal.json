@@ -33,9 +33,9 @@
   "billable_events": ["form_request_created", "homologation_submitted", "homologation_approved", "initial_publication", "change_requested", "new_homologation", "new_version_published", "special_maintenance", "technical_support", "advanced_customization"],
   "implementation_gate": {
     "migration_reversible": true,
-    "backend_implemented": false,
+    "backend_implemented": true,
     "frontend_implemented": false,
-    "security_tests_implemented": false,
+    "security_tests_implemented": true,
     "homologated": false
   }
 }

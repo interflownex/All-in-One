@@ -15,9 +15,9 @@
     "browser_storage_key_patterns": 12,
     "relationships": 566,
     "indexes": 118,
-    "endpoints": 101,
+    "endpoints": 111,
     "endpoints_with_response_model": 8,
-    "api_model_fields": 126,
+    "api_model_fields": 150,
     "ui_candidates": 1068,
     "ui_bindings_probable": 250,
     "ui_bindings_unproven": 818,
@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 508,
-    "tests_with_assertions": 474,
-    "tests_with_http_calls": 194,
-    "test_functions_in_execution_reports": 483,
-    "test_functions_passed": 450,
+    "test_functions": 528,
+    "tests_with_assertions": 487,
+    "tests_with_http_calls": 203,
+    "test_functions_in_execution_reports": 503,
+    "test_functions_passed": 470,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -140,6 +140,8 @@
       "subsection": "criterios_de_conclusao",
       "requirement": "100% das tabelas e coleções forem catalogadas",
       "test_candidates": [
+        "tests/test_dynamic_forms_api.py::test_blueprint_tem_limites_pydantic_antes_do_store",
+        "tests/test_dynamic_forms_backend_contract.py::test_store_aplica_tenant_lock_idempotencia_evento_e_persistencia_normalizada",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_enforces_tenant_idempotency_and_review",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_forbids_executable_or_physical_bindings",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_has_safe_calculation_and_component_allowlists",
@@ -157,12 +159,12 @@
         "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_covers_all_workspace_store_modules",
         "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_initialization",
         "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_marks_priority_modules_for_runtime_validation",
-        "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_tables_exist_in_live_database",
-        "tests/test_postgres_stores_matrix.py::test_store_idempotency_behavior",
-        "tests/test_runtime_postgres_store_resolution.py::test_get_config_skips_gcloud_fallback_when_google_mode_is_disabled"
+        "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_tables_exist_in_live_database"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
+        "tests/test_dynamic_forms_api.py::test_blueprint_tem_limites_pydantic_antes_do_store",
+        "tests/test_dynamic_forms_backend_contract.py::test_store_aplica_tenant_lock_idempotencia_evento_e_persistencia_normalizada",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_enforces_tenant_idempotency_and_review",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_forbids_executable_or_physical_bindings",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_has_safe_calculation_and_component_allowlists",
@@ -176,10 +178,9 @@
         "tests/test_postgres_contract_static.py::test_postgres_priority_store_event_prefix_aliases_are_documented",
         "tests/test_postgres_stores_matrix.py::test_postgres_store_declares_structural_contract",
         "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_covers_all_workspace_store_modules",
-        "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_marks_priority_modules_for_runtime_validation",
-        "tests/test_runtime_postgres_store_resolution.py::test_get_config_skips_gcloud_fallback_when_google_mode_is_disabled"
+        "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_marks_priority_modules_for_runtime_validation"
       ],
-      "passed_candidate_count": 15,
+      "passed_candidate_count": 16,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -544,6 +545,7 @@
       "subsection": "criterios_de_conclusao",
       "requirement": "100% das regras fiscais tiverem vigência e contexto",
       "test_candidates": [
+        "tests/test_dynamic_forms_api.py::test_api_rejeita_tenant_divergente_do_contexto_empresarial",
         "tests/test_integration_sandbox_adapters.py::test_psp_fiscal_and_supplier_sandboxes_emit_domain_events",
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
@@ -557,8 +559,9 @@
         "tests/test_units_tax_governance.py::test_units_tax_physical_catalog_covers_every_proposed_field",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "candidate_count": 12,
+      "candidate_count": 13,
       "passed_test_candidates": [
+        "tests/test_dynamic_forms_api.py::test_api_rejeita_tenant_divergente_do_contexto_empresarial",
         "tests/test_integration_sandbox_adapters.py::test_psp_fiscal_and_supplier_sandboxes_emit_domain_events",
         "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
         "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
@@ -572,7 +575,7 @@
         "tests/test_units_tax_governance.py::test_units_tax_physical_catalog_covers_every_proposed_field",
         "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance"
       ],
-      "passed_candidate_count": 12,
+      "passed_candidate_count": 13,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -671,6 +674,11 @@
         "tests/test_business_module_settings_backend.py::test_apply_and_patch_company_modules_endpoint",
         "tests/test_business_module_settings_backend.py::test_mandatory_module_cannot_be_hidden",
         "tests/test_business_module_settings_backend.py::test_recommend_business_modules_for_ecommerce",
+        "tests/test_dynamic_forms_api.py::test_catalogo_exige_role_e_escopo",
+        "tests/test_dynamic_forms_api.py::test_publicacao_exige_role_escopo_mfa_e_idempotencia",
+        "tests/test_dynamic_forms_backend_contract.py::test_api_hub_e_compose_publicam_servico_sem_segredo_versionado",
+        "tests/test_dynamic_forms_backend_contract.py::test_openapi_expoe_ciclo_governado_com_modelos_de_request",
+        "tests/test_dynamic_forms_backend_contract.py::test_store_aplica_tenant_lock_idempotencia_evento_e_persistencia_normalizada",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_finance_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_identity_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_non_sensitive_read",
@@ -680,12 +688,7 @@
         "tests/test_permissions_enforcement_matrix.py::test_permissions_matrix_links_domain_consumers_to_sensitive_runtime",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_runtime_allows_auditor_read_but_denies_write",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_runtime_denies_common_user_role_management",
-        "tests/test_play_integrity_route_enforcement.py::test_login_rejects_before_authentication_when_integrity_fails",
-        "tests/test_play_integrity_route_enforcement.py::test_login_route_forwards_opaque_token_and_exact_body_to_verifier",
-        "tests/test_postgres_priority_stores_integration.py::test_permissions_role_create_update_and_soft_delete",
-        "tests/test_sensitive_permissions_review.py::test_sensitive_permissions_review_matches_runtime_role_sets",
-        "tests/test_units_tax_governance.py::test_unit_conversion_http_contract_is_backend_authoritative",
-        "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract"
+        "tests/test_play_integrity_route_enforcement.py::test_login_rejects_before_authentication_when_integrity_fails"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -693,6 +696,11 @@
         "tests/test_business_module_settings_backend.py::test_apply_and_patch_company_modules_endpoint",
         "tests/test_business_module_settings_backend.py::test_mandatory_module_cannot_be_hidden",
         "tests/test_business_module_settings_backend.py::test_recommend_business_modules_for_ecommerce",
+        "tests/test_dynamic_forms_api.py::test_catalogo_exige_role_e_escopo",
+        "tests/test_dynamic_forms_api.py::test_publicacao_exige_role_escopo_mfa_e_idempotencia",
+        "tests/test_dynamic_forms_backend_contract.py::test_api_hub_e_compose_publicam_servico_sem_segredo_versionado",
+        "tests/test_dynamic_forms_backend_contract.py::test_openapi_expoe_ciclo_governado_com_modelos_de_request",
+        "tests/test_dynamic_forms_backend_contract.py::test_store_aplica_tenant_lock_idempotencia_evento_e_persistencia_normalizada",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_finance_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_identity_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_non_sensitive_read",
@@ -702,13 +710,9 @@
         "tests/test_permissions_enforcement_matrix.py::test_permissions_matrix_links_domain_consumers_to_sensitive_runtime",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_runtime_allows_auditor_read_but_denies_write",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_runtime_denies_common_user_role_management",
-        "tests/test_play_integrity_route_enforcement.py::test_login_rejects_before_authentication_when_integrity_fails",
-        "tests/test_play_integrity_route_enforcement.py::test_login_route_forwards_opaque_token_and_exact_body_to_verifier",
-        "tests/test_sensitive_permissions_review.py::test_sensitive_permissions_review_matches_runtime_role_sets",
-        "tests/test_units_tax_governance.py::test_unit_conversion_http_contract_is_backend_authoritative",
-        "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract"
+        "tests/test_play_integrity_route_enforcement.py::test_login_rejects_before_authentication_when_integrity_fails"
       ],
-      "passed_candidate_count": 18,
+      "passed_candidate_count": 19,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -863,6 +867,7 @@
       "requirement": "houver evidência de validação",
       "test_candidates": [
         "tests/test_data_subject_rights.py::test_each_right_has_sla_workflow_and_evidence",
+        "tests/test_dynamic_forms_domain.py::test_blueprint_rejeita_enfraquecimento_de_validacao_obrigatoria",
         "tests/test_frontend_journeys_contract.py::test_frontend_contract_links_to_existing_e2e_and_pytest_evidence",
         "tests/test_load_test_plan.py::test_load_test_plan_blocks_promotion_without_homologation_evidence",
         "tests/test_load_test_plan.py::test_load_test_plan_covers_critical_journeys_with_evidence",
@@ -874,9 +879,10 @@
         "tests/test_validate_data_audit_delivery.py::test_coverage_links_only_dimension_specific_gaps_and_evidence",
         "tests/test_validate_data_audit_delivery.py::test_generated_non_postgres_catalogs_have_field_evidence"
       ],
-      "candidate_count": 11,
+      "candidate_count": 12,
       "passed_test_candidates": [
         "tests/test_data_subject_rights.py::test_each_right_has_sla_workflow_and_evidence",
+        "tests/test_dynamic_forms_domain.py::test_blueprint_rejeita_enfraquecimento_de_validacao_obrigatoria",
         "tests/test_frontend_journeys_contract.py::test_frontend_contract_links_to_existing_e2e_and_pytest_evidence",
         "tests/test_load_test_plan.py::test_load_test_plan_blocks_promotion_without_homologation_evidence",
         "tests/test_load_test_plan.py::test_load_test_plan_covers_critical_journeys_with_evidence",
@@ -888,7 +894,7 @@
         "tests/test_validate_data_audit_delivery.py::test_coverage_links_only_dimension_specific_gaps_and_evidence",
         "tests/test_validate_data_audit_delivery.py::test_generated_non_postgres_catalogs_have_field_evidence"
       ],
-      "passed_candidate_count": 11,
+      "passed_candidate_count": 12,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -936,8 +942,8 @@
         "tests/test_crm_domain.py::test_crm_lead_opportunity_activity_and_campaign_journey",
         "tests/test_data_subject_rights.py::test_module_coverage_declares_safe_handling_for_critical_data",
         "tests/test_document_domain.py::test_document_upload_and_version_use_private_storage_contract",
-        "tests/test_erp_domain.py::test_erp_payables_receivables_and_reconciliation_journey",
-        "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events"
+        "tests/test_dynamic_forms_domain.py::test_blueprint_rejeita_binding_de_outro_campo",
+        "tests/test_dynamic_forms_domain.py::test_blueprint_rejeita_ciclo_de_blocos"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -959,8 +965,8 @@
         "tests/test_crm_domain.py::test_crm_lead_opportunity_activity_and_campaign_journey",
         "tests/test_data_subject_rights.py::test_module_coverage_declares_safe_handling_for_critical_data",
         "tests/test_document_domain.py::test_document_upload_and_version_use_private_storage_contract",
-        "tests/test_erp_domain.py::test_erp_payables_receivables_and_reconciliation_journey",
-        "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events"
+        "tests/test_dynamic_forms_domain.py::test_blueprint_rejeita_binding_de_outro_campo",
+        "tests/test_dynamic_forms_domain.py::test_blueprint_rejeita_ciclo_de_blocos"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -975,18 +981,22 @@
       "requirement": "Mapear personas",
       "test_candidates": [
         "modules/business/tests/test_create_flow.py::test_business_membership_invite_and_role_assignment_flow",
+        "tests/test_dynamic_forms_api.py::test_catalogo_exige_role_e_escopo",
+        "tests/test_dynamic_forms_api.py::test_publicacao_exige_role_escopo_mfa_e_idempotencia",
         "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_runtime_denies_common_user_role_management",
         "tests/test_postgres_priority_stores_integration.py::test_permissions_role_create_update_and_soft_delete",
         "tests/test_sensitive_permissions_review.py::test_sensitive_permissions_review_matches_runtime_role_sets"
       ],
-      "candidate_count": 5,
+      "candidate_count": 7,
       "passed_test_candidates": [
+        "tests/test_dynamic_forms_api.py::test_catalogo_exige_role_e_escopo",
+        "tests/test_dynamic_forms_api.py::test_publicacao_exige_role_escopo_mfa_e_idempotencia",
         "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
         "tests/test_permissions_enforcement_matrix.py::test_permissions_runtime_denies_common_user_role_management",
         "tests/test_sensitive_permissions_review.py::test_sensitive_permissions_review_matches_runtime_role_sets"
       ],
-      "passed_candidate_count": 3,
+      "passed_candidate_count": 5,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1264,6 +1274,8 @@
       "subsection": "construir",
       "requirement": "Catalogar tabelas",
       "test_candidates": [
+        "tests/test_dynamic_forms_api.py::test_blueprint_tem_limites_pydantic_antes_do_store",
+        "tests/test_dynamic_forms_backend_contract.py::test_store_aplica_tenant_lock_idempotencia_evento_e_persistencia_normalizada",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_enforces_tenant_idempotency_and_review",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_forbids_executable_or_physical_bindings",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_has_safe_calculation_and_component_allowlists",
@@ -1281,12 +1293,12 @@
         "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_tables_exist_in_live_database",
         "tests/test_postgres_stores_matrix.py::test_store_idempotency_behavior",
         "tests/test_runtime_postgres_store_resolution.py::test_get_config_skips_gcloud_fallback_when_google_mode_is_disabled",
-        "tests/test_runtime_postgres_store_resolution.py::test_get_erp_store_uses_memory_store_without_dsn",
-        "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables",
-        "tests/test_runtime_postgres_store_resolution.py::test_store_for_keeps_generic_fallback_outside_typed_matrix"
+        "tests/test_runtime_postgres_store_resolution.py::test_get_erp_store_uses_memory_store_without_dsn"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
+        "tests/test_dynamic_forms_api.py::test_blueprint_tem_limites_pydantic_antes_do_store",
+        "tests/test_dynamic_forms_backend_contract.py::test_store_aplica_tenant_lock_idempotencia_evento_e_persistencia_normalizada",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_enforces_tenant_idempotency_and_review",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_forbids_executable_or_physical_bindings",
         "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_has_safe_calculation_and_component_allowlists",
@@ -1299,9 +1311,7 @@
         "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_covers_all_workspace_store_modules",
         "tests/test_postgres_stores_matrix.py::test_postgres_store_matrix_marks_priority_modules_for_runtime_validation",
         "tests/test_runtime_postgres_store_resolution.py::test_get_config_skips_gcloud_fallback_when_google_mode_is_disabled",
-        "tests/test_runtime_postgres_store_resolution.py::test_get_erp_store_uses_memory_store_without_dsn",
-        "tests/test_runtime_postgres_store_resolution.py::test_riders_postgres_store_uses_delivery_schema_tables",
-        "tests/test_runtime_postgres_store_resolution.py::test_store_for_keeps_generic_fallback_outside_typed_matrix"
+        "tests/test_runtime_postgres_store_resolution.py::test_get_erp_store_uses_memory_store_without_dsn"
       ],
       "passed_candidate_count": 15,
       "trace_status": "candidatos_localizados",
@@ -1493,6 +1503,8 @@
       "requirement": "Catalogar permissões",
       "test_candidates": [
         "modules/business/tests/test_create_flow.py::test_business_membership_invite_and_role_assignment_flow",
+        "tests/test_dynamic_forms_api.py::test_catalogo_exige_role_e_escopo",
+        "tests/test_dynamic_forms_api.py::test_publicacao_exige_role_escopo_mfa_e_idempotencia",
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_finance_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_identity_read",
@@ -1510,8 +1522,10 @@
         "tests/test_validate_data_audit_delivery.py::test_permission_matrix_proves_horizontal_read_authorization_enforcement",
         "tests/test_valley_catalog.py::test_valley_catalog_hides_business_offers_without_publication_authorization"
       ],
-      "candidate_count": 17,
+      "candidate_count": 19,
       "passed_test_candidates": [
+        "tests/test_dynamic_forms_api.py::test_catalogo_exige_role_e_escopo",
+        "tests/test_dynamic_forms_api.py::test_publicacao_exige_role_escopo_mfa_e_idempotencia",
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_finance_read",
         "tests/test_permissions_enforcement_matrix.py::test_domain_endpoint_denies_third_party_identity_read",
@@ -1528,7 +1542,7 @@
         "tests/test_validate_data_audit_delivery.py::test_permission_matrix_proves_horizontal_read_authorization_enforcement",
         "tests/test_valley_catalog.py::test_valley_catalog_hides_business_offers_without_publication_authorization"
       ],
-      "passed_candidate_count": 15,
+      "passed_candidate_count": 17,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -2278,13 +2292,15 @@
       "subsection": "orientar_stitch",
       "requirement": "Gerar coordenada por tela",
       "test_candidates": [
+        "tests/test_dynamic_forms_domain.py::test_submissao_normaliza_por_catalogo_sem_destino_fisico",
         "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes"
       ],
-      "candidate_count": 1,
+      "candidate_count": 2,
       "passed_test_candidates": [
+        "tests/test_dynamic_forms_domain.py::test_submissao_normaliza_por_catalogo_sem_destino_fisico",
         "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes"
       ],
-      "passed_candidate_count": 1,
+      "passed_candidate_count": 2,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",

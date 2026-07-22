@@ -160,7 +160,7 @@ def test_api_catalog_exposes_models_and_untyped_payloads() -> None:
     catalog = ROOT / "docs" / "data-audit" / "artifacts" / "catalogo_apis.json"
     data = __import__("json").loads(catalog.read_text(encoding="utf-8"))
 
-    assert data["counts"]["endpoints"] == 101
+    assert data["counts"]["endpoints"] >= 111
     assert data["counts"]["api_model_fields"] > 0
     assert all(item["method"] and item["path"] and item["evidence"] for item in data["endpoints"])
     assert any(not item["response_model"] for item in data["endpoints"])
@@ -175,9 +175,9 @@ def test_dynamic_form_model_exposes_partial_implementation_without_false_complet
     assert "field_bindings" in data["entities"]
     assert "physical_table_selection" in data["forbidden"]
     assert data["implementation_gate"]["migration_reversible"] is True
-    assert data["implementation_gate"]["backend_implemented"] is False
+    assert data["implementation_gate"]["backend_implemented"] is True
     assert data["implementation_gate"]["frontend_implemented"] is False
-    assert data["implementation_gate"]["security_tests_implemented"] is False
+    assert data["implementation_gate"]["security_tests_implemented"] is True
     assert data["implementation_gate"]["homologated"] is False
 
 

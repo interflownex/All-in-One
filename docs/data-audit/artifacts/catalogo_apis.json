@@ -14,9 +14,9 @@
     "browser_storage_key_patterns": 12,
     "relationships": 566,
     "indexes": 118,
-    "endpoints": 101,
+    "endpoints": 111,
     "endpoints_with_response_model": 8,
-    "api_model_fields": 126,
+    "api_model_fields": 150,
     "ui_candidates": 1068,
     "ui_bindings_probable": 250,
     "ui_bindings_unproven": 818,
@@ -28,11 +28,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 508,
-    "tests_with_assertions": 474,
-    "tests_with_http_calls": 194,
-    "test_functions_in_execution_reports": 483,
-    "test_functions_passed": 450,
+    "test_functions": 528,
+    "tests_with_assertions": 487,
+    "tests_with_http_calls": 203,
+    "test_functions_in_execution_reports": 503,
+    "test_functions_passed": 470,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -494,6 +494,320 @@
       ],
       "response_model": "",
       "evidence": "modules/business/module_settings.py:391"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "module": "dynamic_forms",
+      "function": "health",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:110"
+    },
+    {
+      "method": "GET",
+      "path": "/catalog",
+      "module": "dynamic_forms",
+      "function": "list_catalog",
+      "parameters": [
+        {
+          "name": "context",
+          "annotation": "Annotated[tuple[str, Actor], Depends(tenant_actor)]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "Annotated[DynamicFormsPostgresStore, Depends(get_store)]",
+          "model_fields": []
+        },
+        {
+          "name": "domain",
+          "annotation": "str | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:115"
+    },
+    {
+      "method": "POST",
+      "path": "/definitions",
+      "module": "dynamic_forms",
+      "function": "create_definition",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "DefinitionCreate",
+          "model_fields": [
+            "company_id",
+            "module_id",
+            "business_context",
+            "name",
+            "description",
+            "change_summary"
+          ]
+        },
+        {
+          "name": "context",
+          "annotation": "Annotated[tuple[str, Actor], Depends(tenant_actor)]",
+          "model_fields": []
+        },
+        {
+          "name": "idempotency_key",
+          "annotation": "Annotated[str, Depends(idempotency_header)]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "Annotated[DynamicFormsPostgresStore, Depends(get_store)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:126"
+    },
+    {
+      "method": "GET",
+      "path": "/definitions",
+      "module": "dynamic_forms",
+      "function": "list_definitions",
+      "parameters": [
+        {
+          "name": "context",
+          "annotation": "Annotated[tuple[str, Actor], Depends(tenant_actor)]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "Annotated[DynamicFormsPostgresStore, Depends(get_store)]",
+          "model_fields": []
+        },
+        {
+          "name": "status",
+          "annotation": "str | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:150"
+    },
+    {
+      "method": "GET",
+      "path": "/versions/{version_id}/blueprint",
+      "module": "dynamic_forms",
+      "function": "get_blueprint",
+      "parameters": [
+        {
+          "name": "version_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "context",
+          "annotation": "Annotated[tuple[str, Actor], Depends(tenant_actor)]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "Annotated[DynamicFormsPostgresStore, Depends(get_store)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:161"
+    },
+    {
+      "method": "PUT",
+      "path": "/versions/{version_id}/blueprint",
+      "module": "dynamic_forms",
+      "function": "replace_blueprint",
+      "parameters": [
+        {
+          "name": "version_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "BlueprintReplace",
+          "model_fields": [
+            "blocks",
+            "fields",
+            "calculations",
+            "validations",
+            "visibility_rules"
+          ]
+        },
+        {
+          "name": "context",
+          "annotation": "Annotated[tuple[str, Actor], Depends(tenant_actor)]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "Annotated[DynamicFormsPostgresStore, Depends(get_store)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:172"
+    },
+    {
+      "method": "POST",
+      "path": "/versions/{version_id}/homologations",
+      "module": "dynamic_forms",
+      "function": "request_homologation",
+      "parameters": [
+        {
+          "name": "version_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "HomologationRequest",
+          "model_fields": [
+            "checklist"
+          ]
+        },
+        {
+          "name": "context",
+          "annotation": "Annotated[tuple[str, Actor], Depends(tenant_actor)]",
+          "model_fields": []
+        },
+        {
+          "name": "idempotency_key",
+          "annotation": "Annotated[str, Depends(idempotency_header)]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "Annotated[DynamicFormsPostgresStore, Depends(get_store)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:184"
+    },
+    {
+      "method": "POST",
+      "path": "/homologations/{homologation_id}/review",
+      "module": "dynamic_forms",
+      "function": "review_homologation",
+      "parameters": [
+        {
+          "name": "homologation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "HomologationReview",
+          "model_fields": [
+            "result",
+            "notes",
+            "problems",
+            "corrections",
+            "evidence"
+          ]
+        },
+        {
+          "name": "context",
+          "annotation": "Annotated[tuple[str, Actor], Depends(tenant_actor)]",
+          "model_fields": []
+        },
+        {
+          "name": "idempotency_key",
+          "annotation": "Annotated[str, Depends(idempotency_header)]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "Annotated[DynamicFormsPostgresStore, Depends(get_store)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:197"
+    },
+    {
+      "method": "POST",
+      "path": "/versions/{version_id}/publish",
+      "module": "dynamic_forms",
+      "function": "publish_version",
+      "parameters": [
+        {
+          "name": "version_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "PublicationRequest",
+          "model_fields": [
+            "environment",
+            "rollout_policy",
+            "tenant_scope",
+            "channels"
+          ]
+        },
+        {
+          "name": "context",
+          "annotation": "Annotated[tuple[str, Actor], Depends(tenant_actor)]",
+          "model_fields": []
+        },
+        {
+          "name": "idempotency_key",
+          "annotation": "Annotated[str, Depends(idempotency_header)]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "Annotated[DynamicFormsPostgresStore, Depends(get_store)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:221"
+    },
+    {
+      "method": "POST",
+      "path": "/forms/{definition_id}/submissions",
+      "module": "dynamic_forms",
+      "function": "submit_form",
+      "parameters": [
+        {
+          "name": "definition_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "FormSubmissionRequest",
+          "model_fields": [
+            "values",
+            "context",
+            "source"
+          ]
+        },
+        {
+          "name": "context_actor",
+          "annotation": "Annotated[tuple[str, Actor], Depends(tenant_actor)]",
+          "model_fields": []
+        },
+        {
+          "name": "idempotency_key",
+          "annotation": "Annotated[str, Depends(idempotency_header)]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "Annotated[DynamicFormsPostgresStore, Depends(get_store)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:244"
     },
     {
       "method": "POST",

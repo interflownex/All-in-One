@@ -22,6 +22,6 @@ Eventos faturáveis estão separados de autosave e rascunho. Valores e estratég
 
 ## Gate de implementação
 
-Migration reversível e testes estáticos de schema estão implementados. Backend, frontend, testes de segurança em runtime e homologação permanecem pendentes; portanto, o produto ainda não é declarado operacional.
+Migration reversível, backend transacional, APIs tipadas e testes de segurança HTTP/domínio estão implementados. Frontend, integração PostgreSQL viva e homologação operacional permanecem pendentes; portanto, o produto ainda não é declarado operacional.
 
-EVIDÊNCIAS: `config/data_audit/dynamic_form_model_proposal.json`, `database/postgres/migrations/028_dynamic_forms_governance.sql`, `database/postgres/rollbacks/028_dynamic_forms_governance.down.sql`, `tests/test_dynamic_forms_migration.py`, `artifacts/formulario_dinamico_modelo.json`. Lacuna parcial: `AUD-P1-004`.
+EVIDÊNCIAS: `config/data_audit/dynamic_form_model_proposal.json`, `database/postgres/migrations/028_dynamic_forms_governance.sql`, `modules/dynamic_forms/main.py`, `modules/shared/dynamic_forms.py`, `modules/shared/dynamic_forms_postgres_store.py`, `tests/test_dynamic_forms_api.py`, `tests/test_dynamic_forms_domain.py`, `tests/test_dynamic_forms_migration.py`, `artifacts/formulario_dinamico_modelo.json`. Lacuna parcial: `AUD-P1-004`.

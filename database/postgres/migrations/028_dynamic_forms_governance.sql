@@ -331,7 +331,25 @@ CREATE OR REPLACE FUNCTION forms.reject_published_version_mutation()
 RETURNS TRIGGER AS $$
 BEGIN
     IF OLD.status = 'published' THEN
-        RAISE EXCEPTION 'Versao publicada e imutavel; crie uma nova versao.';
+        IF TG_OP = 'DELETE' THEN
+            RAISE EXCEPTION 'Versao publicada e imutavel; crie uma nova versao.';
+        END IF;
+        IF NEW.status NOT IN ('suspended', 'retired')
+           OR NEW.form_definition_id IS DISTINCT FROM OLD.form_definition_id
+           OR NEW.version_number IS DISTINCT FROM OLD.version_number
+           OR NEW.schema_version IS DISTINCT FROM OLD.schema_version
+           OR NEW.change_summary IS DISTINCT FROM OLD.change_summary
+           OR NEW.created_by IS DISTINCT FROM OLD.created_by
+           OR NEW.created_at IS DISTINCT FROM OLD.created_at
+           OR NEW.submitted_at IS DISTINCT FROM OLD.submitted_at
+           OR NEW.submitted_by IS DISTINCT FROM OLD.submitted_by
+           OR NEW.approved_at IS DISTINCT FROM OLD.approved_at
+           OR NEW.approved_by IS DISTINCT FROM OLD.approved_by
+           OR NEW.published_at IS DISTINCT FROM OLD.published_at
+           OR NEW.published_by IS DISTINCT FROM OLD.published_by
+           OR NEW.checksum IS DISTINCT FROM OLD.checksum THEN
+            RAISE EXCEPTION 'Versao publicada e imutavel; somente suspensao ou aposentadoria sao permitidas.';
+        END IF;
     END IF;
     RETURN NEW;
 END;

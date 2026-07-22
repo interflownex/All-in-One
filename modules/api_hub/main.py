@@ -66,7 +66,7 @@ async def response_signing_key() -> dict[str, str]:
     return public_key_contract()
 
 MODULES = [
-    "ai_core", "bi", "bpm", "business", "crm", "delivery", "document", "erp",
+    "ai_core", "bi", "bpm", "business", "crm", "delivery", "document", "dynamic_forms", "erp",
     "finance", "health", "hr", "identity", "jobs", "legal", "marketplace",
     "mobility", "permissions", "property", "riders", "services", "stock",
     "tms", "vision", "wms"
