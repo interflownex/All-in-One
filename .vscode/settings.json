@@ -138,7 +138,8 @@
     "DATA_AGENT_KIT_ENABLED": "true",
     "GOOGLE_CLOUD_PROJECT": "all-in-one-498012",
     "GCP_REGION": "southamerica-east1",
-    "BIGQUERY_LOCATION": "southamerica-east1"
+    "BIGQUERY_LOCATION": "southamerica-east1",
+    "MINIKUBE_WANTUPDATENOTIFICATION": "false"
   },
   "terminal.integrated.env.linux": {
     "GOOGLE_INTEGRATIONS_ENABLED": "true",
@@ -151,7 +152,9 @@
     "DATA_AGENT_KIT_ENABLED": "true",
     "GOOGLE_CLOUD_PROJECT": "all-in-one-498012",
     "GCP_REGION": "southamerica-east1",
-    "BIGQUERY_LOCATION": "southamerica-east1"
+    "BIGQUERY_LOCATION": "southamerica-east1",
+    "MINIKUBE_WANTUPDATENOTIFICATION": "false",
+    "PATH": "${env:PATH}:/home/eretazan/.local/bin"
   },
   "terminal.integrated.profiles.windows": {
     "PowerShell": {
