@@ -173,6 +173,7 @@ Write-Host "--------------------------------------------"
 
 $envs = @(
     @{ v="STITCH_API_KEY";               d="Google Stitch MCP" },
+    @{ v="CLOUDFLARE_API_TOKEN";         d="Cloudflare API/MCP" },
     @{ v="GITHUB_PERSONAL_ACCESS_TOKEN"; d="GitHub MCP"        },
     @{ v="GOOGLE_CLOUD_PROJECT";          d="Google Cloud"     },
     @{ v="GOOGLE_APPLICATION_CREDENTIALS"; d="GCP Auth File"  }
