@@ -1,6 +1,6 @@
 # Status da Entrega Total UI/UX - All-in-One A1
 
-**Data:** 2026-07-20  
+**Data:** 2026-07-20
 **Branch:** `feat/data-ui-module-rules`
 
 ## Objetivo
@@ -20,7 +20,7 @@ Executar as diretrizes mandatórias de integridade da logomarca oficial, dashboa
 
 ## Próximas ações mandatórias
 
-1. Substituir usos diretos de `<img src="/assets/brand/all-in-one-logo-light-official.png" />` pelo componente `BrandLogo` onde ainda existirem.
+1. Substituir usos diretos de `<img src="/assets/brand/all-in-one-logo-transparent.svg" />` pelo componente `BrandLogo` onde ainda existirem.
 2. Extrair `modulesData` de `Navigation.tsx` para registro modular adaptativo.
 3. Aplicar títulos pt-BR para todos os módulos e telas.
 4. Implementar `Configurações > Empresa > Módulos e recursos`.

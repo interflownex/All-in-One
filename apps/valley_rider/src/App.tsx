@@ -19,13 +19,13 @@ function App() {
       >
         <div className="brand-group" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <img
-            src="/assets/brand/all-in-one-logo-light-official.png"
+            src="/assets/brand/all-in-one-logo-transparent.svg"
             alt="All-in-One"
             style={{ height: "24px", width: "auto" }}
           />
           <div style={{ width: "1px", height: "16px", background: "rgba(255,255,255,0.3)" }}></div>
           <img
-            src="/assets/brand/valley-logo-official.png"
+            src="/assets/brand/valley-logo-transparent.svg"
             alt="Valley Rider"
             style={{ height: "20px", width: "auto" }}
           />

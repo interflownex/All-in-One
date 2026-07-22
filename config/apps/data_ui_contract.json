@@ -3,7 +3,7 @@
   "locale": "pt-BR",
   "updated_at": "2026-07-20",
   "brand": {
-    "official_asset": "/assets/brand/all-in-one-logo-light-official.png",
+    "official_asset": "/assets/brand/all-in-one-logo-transparent.svg",
     "required_on_every_screen": true,
     "allowed_operations": ["proportional_resize"],
     "prohibited_operations": [

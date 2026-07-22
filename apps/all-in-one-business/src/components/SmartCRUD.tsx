@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 interface SmartCRUDProps {
   module: string;
@@ -428,7 +428,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         }}
       >
         <img
-          src="/assets/brand/all-in-one-logo-light-official.png"
+          src="/assets/brand/all-in-one-logo-transparent.svg"
           alt="Branding"
           style={{ height: "24px", width: "auto" }}
         />

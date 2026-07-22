@@ -1,13 +1,13 @@
 # Diretriz mandatória de marca e interfaces de dados
 
-**Vigência:** 20/07/2026  
+**Vigência:** 20/07/2026
 **Escopo:** todos os aplicativos, shells, páginas públicas, painéis administrativos e builds móveis do ecossistema All-in-One.
 
 ## 1. Logomarca oficial
 
 O único asset autorizado para a marca All-in-One no shell empresarial é:
 
-`/assets/brand/all-in-one-logo-light-official.png`
+`/assets/brand/all-in-one-logo-transparent.svg`
 
 Regras obrigatórias:
 

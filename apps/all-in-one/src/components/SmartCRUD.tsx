@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { demoRecordsFor } from "../lib/demoData";
 import fieldBindings from "../config/entityFieldBindings.generated.json";
+import { demoRecordsFor } from "../lib/demoData";
 import ModuleDashboard from "./ModuleDashboard";
 
 interface SmartCRUDProps {
@@ -15,7 +15,14 @@ interface FieldBinding {
   name: string;
   label: string;
   component:
-    "checkbox" | "date" | "datetime-local" | "email" | "number" | "text" | "textarea" | "url";
+    | "checkbox"
+    | "date"
+    | "datetime-local"
+    | "email"
+    | "number"
+    | "text"
+    | "textarea"
+    | "url";
   logicalType: "boolean" | "date" | "datetime" | "json" | "number" | "string";
   required: boolean;
   readOnly: boolean;
@@ -564,7 +571,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         }}
       >
         <img
-          src="/assets/brand/all-in-one-logo-official.png"
+          src="/assets/brand/all-in-one-logo-transparent.svg"
           alt="Branding"
           style={{ height: "24px", width: "auto" }}
         />

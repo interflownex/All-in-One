@@ -511,7 +511,7 @@ const Navigation: React.FC = () => {
         >
           <Link to="/" className="logo-container" style={{ display: "block" }}>
             <img
-              src="/assets/brand/all-in-one-logo-official.png"
+              src="/assets/brand/all-in-one-logo-transparent.svg"
               alt="All-in-One Logo"
               style={{ width: "100%", maxWidth: "140px", height: "auto", display: "block" }}
             />

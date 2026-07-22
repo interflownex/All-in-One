@@ -21,9 +21,8 @@ expandidas pelo orquestrador a partir do catalogo. `config/stitch/sync_state.jso
 preserva IDs remotos retornados pelo Stitch para evitar duplicacao.
 
 O branding e mandatorio. `config/branding/brand_identity.json` declara os
-ativos oficiais `assets/brand/all-in-one-logo-official.png`,
-`assets/brand/all-in-one-logo-light-official.png` e
-`assets/brand/valley-logo-official.png`. Todo prompt enviado ao Stitch exige a
+ativos oficiais `assets/brand/all-in-one-logo-transparent.svg` e
+`assets/brand/valley-logo-transparent.svg`. Todo prompt enviado ao Stitch exige a
 marca All-in-One no shell/header global; telas que atendem `valley`,
 `valley-business` ou `valley-rider` tambem exigem a logo Valley oficial.
 

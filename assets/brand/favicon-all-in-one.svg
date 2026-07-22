@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" role="img" aria-label="All-in-One favicon">
+  <defs>
+    <linearGradient id="aio-fav-ring" x1="18" y1="14" x2="110" y2="114" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A855F7" />
+      <stop offset="0.48" stop-color="#7C3AED" />
+      <stop offset="1" stop-color="#22D3EE" />
+    </linearGradient>
+    <linearGradient id="aio-fav-fill" x1="28" y1="30" x2="100" y2="98" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F8FAFF" />
+      <stop offset="0.4" stop-color="#EDE9FE" />
+      <stop offset="0.7" stop-color="#7C3AED" />
+      <stop offset="1" stop-color="#0EA5E9" />
+    </linearGradient>
+    <filter id="aio-fav-glow" x="0" y="0" width="128" height="128" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#0F172A" flood-opacity="0.36" />
+    </filter>
+  </defs>
+  <style>
+    .v1 { opacity: .96; }
+    .v2 { opacity: 1; }
+    .v3 { opacity: 0; }
+    @media (prefers-color-scheme: dark) {
+      .v1 { opacity: 0; }
+      .v2 { opacity: 0; }
+      .v3 { opacity: 1; }
+    }
+    @media (prefers-color-scheme: light) {
+      .v1 { opacity: 1; }
+      .v2 { opacity: 0; }
+      .v3 { opacity: 0; }
+    }
+  </style>
+  <g filter="url(#aio-fav-glow)">
+    <circle class="v1" cx="64" cy="64" r="50" stroke="url(#aio-fav-ring)" stroke-width="4" />
+    <circle class="v2" cx="64" cy="64" r="49" stroke="url(#aio-fav-ring)" stroke-width="5" opacity="0.95" />
+    <circle class="v3" cx="64" cy="64" r="51" stroke="url(#aio-fav-ring)" stroke-width="4" opacity="0.95" />
+    <path class="v1" d="M38 88L56 52C59 46 61 44 64 44C67 44 69 46 72 52L90 88" stroke="url(#aio-fav-fill)" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
+    <path class="v2" d="M39 88L54 57C58 50 61 47 64 47C67 47 70 50 74 57L89 88" stroke="url(#aio-fav-fill)" stroke-linecap="round" stroke-linejoin="round" stroke-width="13" />
+    <path class="v3" d="M40 88L56 54C59 49 61 46 64 46C67 46 69 49 72 54L88 88" stroke="url(#aio-fav-fill)" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
+    <path class="v1" d="M46 82L64 59L82 82" stroke="#0F172A" stroke-linecap="round" stroke-linejoin="round" stroke-width="8" opacity="0.95" />
+    <path class="v2" d="M46 82L64 58L82 82" stroke="#0F172A" stroke-linecap="round" stroke-linejoin="round" stroke-width="7" opacity="0.95" />
+    <path class="v3" d="M46 82L64 57L82 82" stroke="#F8FAFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="7" opacity="0.95" />
+    <circle cx="64" cy="84" r="4" fill="#F8FAFF" />
+  </g>
+</svg>

@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
-import "./index.css";
-import CheckoutModal from "./components/CheckoutModal";
-import BookingModal from "./components/BookingModal";
-import LoginModal from "./components/LoginModal";
-import PaymentModal from "./components/PaymentModal";
-import OrdersDrawer from "./components/OrdersDrawer";
 import B2BDashboard from "./components/B2BDashboard";
+import BookingModal from "./components/BookingModal";
+import CheckoutModal from "./components/CheckoutModal";
 import LiveTracking from "./components/LiveTracking";
+import LoginModal from "./components/LoginModal";
+import OrdersDrawer from "./components/OrdersDrawer";
+import PaymentModal from "./components/PaymentModal";
+import "./index.css";
 import {
-  type CatalogActionResponse,
-  type CatalogFacets,
   createCatalogAction,
   isDemoModeEnabled,
   listOffers,
   moduleShowcase,
   safeMediaUrl,
+  type CatalogActionResponse,
+  type CatalogFacets,
   type Offer,
   type PaymentIntent,
 } from "./lib/valleyPlatform";
@@ -182,14 +182,14 @@ function App() {
       >
         <div className="brand-group" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <img
-            src="./assets/brand/all-in-one-logo-light-official.webp"
+            src="/assets/brand/all-in-one-logo-transparent.svg"
             alt="All-in-One"
             decoding="async"
             style={{ height: "32px", width: "auto" }}
           />
           <div style={{ width: "2px", height: "24px", background: "rgba(255,255,255,0.2)" }}></div>
           <img
-            src="./assets/brand/valley-logo-official.webp"
+            src="/assets/brand/valley-logo-transparent.svg"
             alt="Valley"
             decoding="async"
             style={{ height: "28px", width: "auto" }}

@@ -4,6 +4,12 @@
     "name": "All-in-One",
     "logo_asset": "assets/brand/all-in-one-logo-official.png",
     "light_logo_asset": "assets/brand/all-in-one-logo-light-official.png",
+    "transparent_logo_asset": "assets/brand/all-in-one-logo-transparent.svg",
+    "favicon_assets": {
+      "v1": "assets/brand/favicon-all-in-one.svg",
+      "v2": "assets/brand/favicon-all-in-one.svg",
+      "v3": "assets/brand/favicon-all-in-one.svg"
+    },
     "wordmark": "All-in-One",
     "placement": "top-left app shell or authenticated header",
     "minimum_width_px": 120,
@@ -14,6 +20,12 @@
   "valley_brand": {
     "name": "Valley",
     "logo_asset": "assets/brand/valley-logo-official.png",
+    "transparent_logo_asset": "assets/brand/valley-logo-transparent.svg",
+    "favicon_assets": {
+      "v1": "assets/brand/favicon-valley.svg",
+      "v2": "assets/brand/favicon-valley.svg",
+      "v3": "assets/brand/favicon-valley.svg"
+    },
     "wordmark": "Valley",
     "placement": "top-left inside every Valley surface, near the All-in-One platform mark when both brands appear",
     "minimum_width_px": 104,

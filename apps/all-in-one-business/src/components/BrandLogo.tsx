@@ -1,6 +1,6 @@
 import type { CSSProperties, ImgHTMLAttributes } from "react";
 
-const OFFICIAL_LOGO_SRC = "/assets/brand/all-in-one-logo-light-official.png" as const;
+const OFFICIAL_LOGO_SRC = "/assets/brand/all-in-one-logo-transparent.svg" as const;
 
 type BrandLogoProps = Omit<
   ImgHTMLAttributes<HTMLImageElement>,

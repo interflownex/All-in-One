@@ -57,7 +57,7 @@ const Home = () => (
   <div className="aio-home" id="inicio">
     <header className="aio-topbar">
       <a className="aio-brand" href="#inicio" aria-label="All in One - inicio">
-        <img src="/assets/brand/all-in-one-logo-light-official.png" alt="All in One" />
+        <img src="/assets/brand/all-in-one-logo-transparent.svg" alt="All in One" />
       </a>
       <nav aria-label="Navegacao principal">
         <a href="#experiencias">Experiencias</a>
@@ -111,7 +111,7 @@ const Home = () => (
       <div className="aio-hero-mark" aria-hidden="true">
         <div className="aio-orbit aio-orbit-one" />
         <div className="aio-orbit aio-orbit-two" />
-        <img src="/assets/brand/all-in-one-logo-light-official.png" alt="" />
+        <img src="/assets/brand/all-in-one-logo-transparent.svg" alt="" />
       </div>
     </section>
 
@@ -203,7 +203,7 @@ const Home = () => (
       </div>
       <div className="aio-architecture-visual" aria-label="Diagrama da arquitetura All in One">
         <div className="aio-core">
-          <img src="/assets/brand/all-in-one-logo-light-official.png" alt="All in One" />
+          <img src="/assets/brand/all-in-one-logo-transparent.svg" alt="All in One" />
         </div>
         <span className="node one">Identidade</span>
         <span className="node two">Eventos</span>
@@ -213,7 +213,7 @@ const Home = () => (
     </section>
 
     <footer className="aio-footer">
-      <img src="/assets/brand/all-in-one-logo-light-official.png" alt="All in One" />
+      <img src="/assets/brand/all-in-one-logo-transparent.svg" alt="All in One" />
       <p>Todos os sistemas. Uma unica plataforma.</p>
       <a href="#inicio">Voltar ao inicio ↑</a>
     </footer>

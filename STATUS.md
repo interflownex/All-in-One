@@ -4262,7 +4262,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 - TransiÃ§Ãµes de publicaÃ§Ã£o de ofertas comerciais passaram a emitir `valley.catalog.offer.synced` via outbox seguro.
 - `docs/VALLEY_CATALOG.md` e `docs/ORIENTACAO_CODEX_SYNC_MARKETPLACE_VALLEY.md` documentam a regra operacional e linguagem simples do usuÃ¡rio final.
 - Ciclo remoto Stitch concluiu os mÃ³dulos `mobility` e `jobs`, conectando deslocamento, transporte e oportunidades profissionais ao catÃ¡logo Valley por categoria de empresa e ramo de atividade.
-- Logomarcas oficiais incorporadas ao repo em `assets/brand/all-in-one-logo-official.png`, `assets/brand/all-in-one-logo-light-official.png` e `assets/brand/valley-logo-official.png`.
+- Logomarcas oficiais incorporadas ao repo em `assets/brand/all-in-one-logo-transparent.svg` e `assets/brand/valley-logo-transparent.svg`.
 - Criado contrato mandatorio `config/branding/brand_identity.json`, com All-in-One como marca guarda-chuva e Valley obrigatorio para `valley`, `valley-business` e `valley-rider`.
 - `README.md` passou a exibir a imagem oficial All-in-One no topo para apresentacao do projeto no GitHub.
 - Prompts Stitch agora instruem uso padronizado das logos oficiais, proibindo redesenho, distorcao, corte, rotacao ou recoloracao.
