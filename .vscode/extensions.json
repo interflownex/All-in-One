@@ -21,7 +21,6 @@
     "googlecloudtools.cloudcode",
     "google.geminicodeassist",
     "google.gemini-cli-vscode-ide-companion",
-    "openai.chatgpt",
     "GoogleCloudTools.datacloud"
   ]
 }

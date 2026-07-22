@@ -73,9 +73,6 @@
   "files.insertFinalNewline": true,
   "files.autoSave": "afterDelay",
   "files.trimTrailingWhitespace": true,
-  "window.restoreWindows": "all",
-  "workbench.editor.restoreViewState": true,
-  "workbench.editor.enablePreview": false,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
@@ -123,7 +120,6 @@
   "docker.extension.enableComposeLanguageServer": true,
   "docker.lsp.telemetry": "off",
   "java.import.gradle.enabled": true,
-  "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.env.windows": {
     "GOOGLE_INTEGRATIONS_ENABLED": "true",
@@ -154,22 +150,12 @@
     "MINIKUBE_WANTUPDATENOTIFICATION": "false",
     "PATH": "${env:PATH}:/home/eretazan/.local/bin"
   },
-  "terminal.integrated.profiles.windows": {
-    "PowerShell": {
-      "source": "PowerShell"
-    },
-    "Git Bash": {
-      "path": "C:\\Program Files\\Git\\bin\\bash.exe"
-    }
-  },
   "geminicodeassist.outlines.automaticOutlineGeneration": true,
   "geminicodeassist.agentYoloMode": false,
   "geminicodeassist.enable": true,
-  "workbench.editor.preferHistoryBasedLanguageDetection": true,
   "geminicodeassist.codeLens.enable": false,
   "geminicodeassist.telemetry.enable": false,
   "google.datacloud.enableTelemetry": false,
   "java.configuration.updateBuildConfiguration": "automatic",
-  "java.jdt.ls.java.home": "/home/eretazan/.vscode-server/extensions/redhat.java-1.55.0-linux-x64/jre/21.0.11-linux-x86_64",
   "editor.codeActions.triggerOnFocusChange": true
 }
