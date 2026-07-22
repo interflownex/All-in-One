@@ -9,7 +9,6 @@
     "docker.docker",
     "redhat.vscode-yaml",
     "ms-vscode.powershell",
-    "rust-lang.rust-analyzer",
     "fwcd.kotlin",
     "redhat.java",
     "vscjava.vscode-java-debug",

@@ -1,6 +1,5 @@
 {
   "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
-  "powershell.powerShellAdditionalExePaths": ["/mnt/c/Users/ereta/.local/bin/pwsh"],
   "google.cloud.project": "all-in-one-498012",
   "google.cloud.billingQuotaProject": "all-in-one-498012",
   "google.cloud.region": "southamerica-east1",
@@ -123,7 +122,6 @@
   "yaml.validate": true,
   "docker.extension.enableComposeLanguageServer": true,
   "docker.lsp.telemetry": "off",
-  "rust-analyzer.check.command": "clippy",
   "java.import.gradle.enabled": true,
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.defaultProfile.linux": "bash",
