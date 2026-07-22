@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { demoRecordsFor } from '../lib/demoData';
+import fieldBindings from '../config/entityFieldBindings.generated.json';
 import ModuleDashboard from './ModuleDashboard';
 
 interface SmartCRUDProps {
@@ -9,6 +10,26 @@ interface SmartCRUDProps {
   type: 'list' | 'form';
   title: string;
 }
+
+interface FieldBinding {
+  name: string;
+  label: string;
+  component: 'checkbox' | 'date' | 'datetime-local' | 'email' | 'number' | 'text' | 'textarea' | 'url';
+  logicalType: 'boolean' | 'date' | 'datetime' | 'json' | 'number' | 'string';
+  required: boolean;
+  readOnly: boolean;
+  maxLength: number | null;
+  storage: string;
+}
+
+interface EntityFieldContract {
+  immutable: boolean;
+  fields: FieldBinding[];
+  listFields: string[];
+  physicalStorage: string;
+}
+
+const bindingContracts = fieldBindings.contracts as Record<string, EntityFieldContract>;
 
 const API_HUB_URL = (import.meta as any).env?.VITE_API_HUB_URL ?? '';
 const API_HUB_TOKEN = (import.meta as any).env?.VITE_API_HUB_TOKEN ?? '';
@@ -96,10 +117,25 @@ const displayNameFor = (item: any, title: string) =>
   item.payload?.store_id ||
   `${title} #${item.id}`;
 
+const fieldValueFromRecord = (record: any, field: FieldBinding): string | boolean => {
+  const value = record?.payload?.[field.name] ?? record?.[field.name];
+  if (field.logicalType === 'boolean') return Boolean(value);
+  if (field.logicalType === 'json' && value !== undefined && value !== null && typeof value !== 'string') {
+    return JSON.stringify(value, null, 2);
+  }
+  return value === undefined || value === null ? '' : String(value);
+};
+
+const formValuesFor = (record: any, fields: FieldBinding[]) =>
+  Object.fromEntries(fields.map((field) => [field.name, fieldValueFromRecord(record, field)]));
+
 const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const editingRecord = (location.state as { record?: any } | null)?.record;
+  const resourceType = liveResourceFor(module, entity);
+  const fieldContract = bindingContracts[`${module}:${resourceType}`];
+  const boundFields = fieldContract?.fields ?? [];
   const [data, setData] = useState<any[]>(() => API_HUB_TOKEN ? [] : demoRecordsFor(module, entity, title));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -108,16 +144,11 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   const [postApplication, setPostApplication] = useState<any | null>(null);
   const [actionFeedback, setActionFeedback] = useState('');
   const [actionState, setActionState] = useState<'idle' | 'running' | 'completed' | 'failed'>('idle');
-  const [formData, setFormData] = useState({
-    name: editingRecord ? displayNameFor(editingRecord, title) : '',
-    description: editingRecord?.description ?? '',
-    category: editingRecord?.category ?? 'Padrao',
-  });
+  const [formData, setFormData] = useState<Record<string, string | boolean>>(() => formValuesFor(editingRecord, boundFields));
   const [formState, setFormState] = useState<'idle' | 'saving' | 'saved' | 'failed'>('idle');
   const [formFeedback, setFormFeedback] = useState('');
   const [selectedMedia, setSelectedMedia] = useState<any | null>(null);
 
-  const resourceType = liveResourceFor(module, entity);
   const liveResourcePath = `/${module}/resources/${resourceType}`;
   const localStorageKey = `all-in-one:${module}:${resourceType}`;
   const isLiveApiHub = Boolean(API_HUB_TOKEN);
@@ -273,10 +304,29 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
 
   const saveForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!fieldContract || fieldContract.immutable) {
+      setFormState('failed');
+      setFormFeedback(fieldContract?.immutable
+        ? 'Este registro é imutável e só pode ser criado pelo fluxo transacional autorizado.'
+        : 'Contrato de campos indisponível para esta entidade.');
+      return;
+    }
     setFormState('saving');
     setFormFeedback('Salvando registro...');
-    const payload = { ...formData, status: 'Ativo', updated_at: new Date().toISOString(), image: `/assets/demo/modules/${module}.webp`, video: '/assets/demo/platform-overview.mp4' };
     try {
+      const payload = Object.fromEntries(boundFields.map((field) => {
+        const rawValue = formData[field.name];
+        if (field.logicalType === 'json') {
+          if (rawValue === '') return [field.name, null];
+          try {
+            return [field.name, JSON.parse(String(rawValue))];
+          } catch {
+            throw new Error(`O campo ${field.label} deve conter JSON válido.`);
+          }
+        }
+        if (field.logicalType === 'number') return [field.name, rawValue === '' ? null : Number(rawValue)];
+        return [field.name, rawValue];
+      }));
       if (API_HUB_URL && API_HUB_TOKEN) {
         const actorId = actorIdFromToken();
         if (!actorId) throw new Error('Token sem usuario autenticado para salvar o registro.');
@@ -298,7 +348,12 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
       } else {
         const storedRecords = localStorage.getItem(localStorageKey);
         const current = storedRecords === null ? demoRecordsFor(module, entity, title) : JSON.parse(storedRecords);
-        const record = { id: editingRecord?.id ?? crypto.randomUUID(), ...payload, created_at: editingRecord?.created_at ?? payload.updated_at };
+        const record = {
+          id: editingRecord?.id ?? crypto.randomUUID(),
+          payload,
+          created_at: editingRecord?.created_at ?? new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
         const next = editingRecord?.id
           ? current.map((item: any) => item.id === editingRecord.id ? record : item)
           : [...current, record];
@@ -340,26 +395,50 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
       <div className="container">
         <form className="neo-form neo-brutalism" onSubmit={saveForm}>
           <h2 style={{ marginBottom: '24px', color: '#236cff' }}>{title} - {editingRecord ? 'Editar Registro' : 'Novo Registro'}</h2>
-          <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
-            <label htmlFor="record-name" style={{ fontWeight: 800 }}>Nome / Identificador</label>
-            <input id="record-name" type="text" className="neo-input" placeholder="Digite aqui..." required value={formData.name} onChange={(event) => setFormData((current) => ({ ...current, name: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a' }} />
-          </div>
-          <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
-            <label htmlFor="record-description" style={{ fontWeight: 800 }}>Descrição Detalhada</label>
-            <textarea id="record-description" className="neo-input" placeholder="Informacoes adicionais..." value={formData.description} onChange={(event) => setFormData((current) => ({ ...current, description: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a', minHeight: '100px' }}></textarea>
-          </div>
-          <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '24px' }}>
-            <label htmlFor="record-category" style={{ fontWeight: 800 }}>Categoria / Tipo</label>
-            <select id="record-category" className="neo-input" value={formData.category} onChange={(event) => setFormData((current) => ({ ...current, category: event.target.value }))} style={{ padding: '12px', border: '2px solid #11142a' }}>
-              <option value="Padrao">Padrao</option>
-              <option value="Prioritario">Prioritario</option>
-              <option value="Estrategico">Estrategico</option>
-            </select>
-          </div>
+          {fieldContract ? (
+            <p className="notice" role="status">
+              Persistência: <code>{fieldContract.physicalStorage}</code> · {boundFields.length} campos vinculados.
+            </p>
+          ) : null}
+          {fieldContract?.immutable ? (
+            <p className="notice" role="alert">Entidade imutável: use o fluxo transacional autorizado para criar registros.</p>
+          ) : null}
+          {boundFields.map((field) => {
+            const inputId = `record-${field.name}`;
+            const value = formData[field.name] ?? (field.logicalType === 'boolean' ? false : '');
+            const commonProps = {
+              id: inputId,
+              className: 'neo-input',
+              name: field.name,
+              required: field.required,
+              disabled: field.readOnly,
+              'data-storage-binding': field.storage,
+              style: { padding: '12px', border: '2px solid #11142a' },
+            };
+            return (
+              <div key={field.name} className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
+                <label htmlFor={inputId} style={{ fontWeight: 800 }}>
+                  {field.label}{field.required ? ' *' : ''}
+                </label>
+                {field.component === 'textarea' ? (
+                  <textarea {...commonProps} value={String(value)} maxLength={field.maxLength ?? undefined}
+                    onChange={(event) => setFormData((current) => ({ ...current, [field.name]: event.target.value }))}
+                    style={{ ...commonProps.style, minHeight: '100px' }} />
+                ) : field.component === 'checkbox' ? (
+                  <input {...commonProps} type="checkbox" checked={Boolean(value)}
+                    onChange={(event) => setFormData((current) => ({ ...current, [field.name]: event.target.checked }))} />
+                ) : (
+                  <input {...commonProps} type={field.component} value={String(value)} maxLength={field.maxLength ?? undefined}
+                    onChange={(event) => setFormData((current) => ({ ...current, [field.name]: event.target.value }))} />
+                )}
+                <small style={{ color: '#626b8e' }}>{field.storage}</small>
+              </div>
+            );
+          })}
           {formFeedback ? <p className={`action-feedback ${formState === 'failed' ? 'error' : 'success'}`} role="status">{formFeedback}</p> : null}
           <div className="actions-row" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
             <button type="button" className="btn-secondary" onClick={() => navigate(-1)} style={{ padding: '10px 20px' }}>Cancelar</button>
-            <button type="submit" className="btn-primary" disabled={formState === 'saving'} style={{ padding: '10px 20px' }}>{formState === 'saving' ? 'Salvando...' : 'Salvar Registro'}</button>
+            <button type="submit" className="btn-primary" disabled={formState === 'saving' || !fieldContract || fieldContract.immutable} style={{ padding: '10px 20px' }}>{formState === 'saving' ? 'Salvando...' : 'Salvar Registro'}</button>
           </div>
         </form>
       </div>
@@ -452,6 +531,13 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
                 <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{displayNameFor(item, title)}</h3>
                 <p style={{ fontSize: '0.9rem', color: '#626b8e' }}>ID: {item.id} | Criado em: {new Date(item.created_at).toLocaleDateString()}</p>
                 {item.description ? <p className="data-card-description">{item.description}</p> : null}
+                {fieldContract?.listFields.map((fieldName) => {
+                  const field = boundFields.find((candidate) => candidate.name === fieldName);
+                  const value = item.payload?.[fieldName] ?? item[fieldName];
+                  return field && value !== undefined && value !== null ? (
+                    <p key={fieldName} className="data-card-description"><strong>{field.label}:</strong> {typeof value === 'object' ? JSON.stringify(value) : String(value)}</p>
+                  ) : null;
+                })}
               </div>
               <div className="data-card-actions">
                 <span className="badge" style={{ background: item.status === 'Ativo' ? '#eef1ff' : '#fef3c7', color: item.status === 'Ativo' ? '#1a6fb3' : '#92400e', padding: '6px 12px', borderRadius: '4px', fontWeight: 700 }}>

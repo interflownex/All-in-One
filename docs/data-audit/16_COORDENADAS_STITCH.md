@@ -2,7 +2,7 @@
 
 ## Cobertura gerada
 
-Foram geradas 299 coordenadas a partir de rotas e superfícies reais. Cada registro contém módulo, entidade, título, tipo, rota, persona pendente, campos, ação primária, endpoint lógico, permissões, estados, responsividade, acessibilidade e evidência.
+Foram geradas 272 coordenadas a partir de rotas e superfícies reais. Cada registro contém módulo, entidade, título, tipo, rota, persona pendente, campos, ação primária, endpoint lógico, permissões, estados, responsividade, acessibilidade e evidência.
 
 As coordenadas estão em `artifacts/coordenadas_stitch.csv` e `artifacts/coordenadas_stitch.json`. O status de binding permanece parcial porque o `SmartCRUD` genérico não implementa todos os campos específicos.
 

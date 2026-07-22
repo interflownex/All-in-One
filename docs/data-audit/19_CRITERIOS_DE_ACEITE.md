@@ -9,7 +9,7 @@
 | tabelas_colecoes | 85 | AUD-P0-000; AUD-P1-004; AUD-P1-005; AUD-P1-006 |
 | campos | 75 | AUD-P0-000; AUD-P1-003; AUD-P1-004; AUD-P1-005; AUD-P1-006 |
 | relacionamentos | 99 | AUD-P1-003; AUD-P1-006 |
-| bindings_frontend | 23 | AUD-P1-002 |
+| bindings_frontend | 96 | AUD-P1-002 |
 | campos_sensiveis | 0 | AUD-P0-001; AUD-P1-007 |
 | auditoria | 99 | AUD-P1-004; AUD-P1-007 |
 | calculos | 80 | AUD-P1-004; AUD-P1-005 |

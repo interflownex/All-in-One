@@ -11,7 +11,7 @@ business,company_documents,,,,draft,False,False,False,business.company_documents
 business,user_company_memberships,company_id;role,,,invited,True,False,True,business.user_company_memberships,typed_table,True,True,modules/shared/domain_rules.py:224
 business,catalog_offers,title;offer_type;consumer_category;company_type;company_category;business_activity_id;source_module;source_resource_type,,price_brl;price_amount,draft,False,False,True,business.catalog_offers,typed_table,True,True,modules/shared/domain_rules.py:245
 permissions,roles,name,name,,active,False,False,True,permissions.roles,typed_table,True,True,modules/shared/domain_rules.py:261
-permissions,permissions,,,,draft,False,False,False,permissions.permissions,typed_table,True,True,modules/shared/domain_rules.py:74
+permissions,permissions,,,,draft,False,False,False,permissions.permissions,typed_table,True,False,modules/shared/domain_rules.py:74
 permissions,user_roles,,,,draft,False,False,False,permissions.user_roles,typed_table,True,True,modules/shared/domain_rules.py:74
 permissions,access_policies,,,,draft,False,False,False,permissions.access_policies,typed_table,True,True,modules/shared/domain_rules.py:74
 permissions,approval_limits,scope;limit_brl,,limit_brl,active,False,False,True,permissions.approval_limits,typed_table,True,True,modules/shared/domain_rules.py:262

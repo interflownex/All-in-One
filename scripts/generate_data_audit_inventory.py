@@ -572,10 +572,8 @@ def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]
     bindings: list[dict[str, str]] = []
     tag_pattern = re.compile(r"<SmartCRUD\s+(.+?)/>", re.S)
     prop_pattern = re.compile(r'(module|entity|type|title)=["\']([^"\']+)["\']')
-    generic_fields = {
-        "form": ("name", "description", "category"),
-        "list": ("name", "title", "status", "created_at"),
-    }
+    contract_path = ROOT / "apps" / "all-in-one" / "src" / "config" / "entityFieldBindings.generated.json"
+    contracts = json.loads(contract_path.read_text(encoding="utf-8"))["contracts"]
     smart_crud_text = (ROOT / "apps" / "all-in-one" / "src" / "components" / "SmartCRUD.tsx").read_text(
         encoding="utf-8"
     )
@@ -601,10 +599,30 @@ def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]
             props = dict(prop_pattern.findall(match.group(1)))
             if not {"module", "entity", "type"}.issubset(props):
                 continue
+            # SmartCRUD delega páginas de overview ao ModuleDashboard; elas não
+            # renderizam campos CRUD e, portanto, não pertencem à matriz campo.
+            if props["type"] == "list" and props["entity"] == props["module"]:
+                continue
             entity = resource_aliases.get(f"{props['module']}:{props['entity']}", props["entity"])
-            table_fields = {field.physical_name for field in tables.get(f"{props['module']}.{entity}", [])}
-            for field in generic_fields.get(props["type"], ("não identificado",)):
-                binding = "campo físico provável" if field in table_fields else "payload genérico/não comprovado"
+            contract = contracts.get(f"{props['module']}:{entity}")
+            if not contract:
+                bindings.append({
+                    "app": "all-in-one", "module": props["module"], "entity": entity,
+                    "surface": props["type"], "title": props.get("title", ""),
+                    "route": routes_by_file.get(str(path.relative_to(ROOT)), "não localizada"),
+                    "field": "não vinculado", "binding": "sem entidade física/DTO correspondente",
+                    "binding_status": "lacuna_entidade_sem_contrato", "dto": "não localizado",
+                    "endpoint": f"/{props['module']}/resources/{entity}", "physical_storage": "não localizada",
+                    "validation": "não localizada", "contract_evidence": "contrato ausente",
+                    "evidence": f"{path.relative_to(ROOT)}:{line_number(text, match.start())}",
+                })
+                continue
+            contract_fields = {field["name"]: field for field in contract["fields"]}
+            selected_fields = contract["fields"] if props["type"] == "form" else [
+                contract_fields[name] for name in contract["listFields"]
+            ]
+            for field in selected_fields:
+                dto_binding = field["binding"] if props["type"] == "form" else f"response.payload.{field['name']}"
                 bindings.append(
                     {
                         "app": "all-in-one",
@@ -613,8 +631,14 @@ def discover_ui_bindings(tables: dict[str, list[Field]]) -> list[dict[str, str]]
                         "surface": props["type"],
                         "title": props.get("title", ""),
                         "route": routes_by_file.get(str(path.relative_to(ROOT)), "não localizada"),
-                        "field": field,
-                        "binding": binding,
+                        "field": field["name"],
+                        "binding": f"{dto_binding} <-> {field['storage']}",
+                        "binding_status": "comprovado_por_contrato_versionado",
+                        "dto": contract["createDto"] if props["type"] == "form" else "ResourceResponse.payload",
+                        "endpoint": contract["endpoint"],
+                        "physical_storage": field["storage"],
+                        "validation": field["validation"],
+                        "contract_evidence": f"{contract_path.relative_to(ROOT)}; {field['evidence']}",
                         "evidence": f"{path.relative_to(ROOT)}:{line_number(text, match.start())}",
                     }
                 )
@@ -995,8 +1019,8 @@ def build_delivery() -> None:
         "endpoints_with_response_model": sum(bool(row["response_model"]) for row in endpoints),
         "api_model_fields": sum(len(parameter["model_fields"]) for row in endpoints for parameter in row["parameters"]),
         "ui_candidates": len(ui_bindings),
-        "ui_bindings_probable": sum(row["binding"] == "campo físico provável" for row in ui_bindings),
-        "ui_bindings_unproven": sum(row["binding"] != "campo físico provável" for row in ui_bindings),
+        "ui_bindings_probable": sum(row["binding_status"] == "comprovado_por_contrato_versionado" for row in ui_bindings),
+        "ui_bindings_unproven": sum(row["binding_status"] != "comprovado_por_contrato_versionado" for row in ui_bindings),
         "ui_surfaces": len({row["evidence"] for row in ui_bindings}),
         "ui_forms": len({row["evidence"] for row in ui_bindings if row["surface"] == "form"}),
         "ui_actions": len(ui_actions),
@@ -1199,7 +1223,7 @@ def build_delivery() -> None:
                 "states": required_states,
                 "responsive": ["desktop", "tablet", "mobile"],
                 "accessibility": ["label", "foco visível", "teclado", "leitor de tela", "contraste"],
-                "binding_status": "parcial",
+                "binding_status": row["binding_status"],
                 "evidence": evidence,
             },
         )
@@ -1222,8 +1246,8 @@ def build_delivery() -> None:
     write_json(ARTIFACTS / "coordenadas_stitch.json", {"version": 1, "counts": counts, "coordinates": list(surfaces.values())})
     write_csv(
         ARTIFACTS / "matriz_formulario_campo.csv",
-        ["app", "module", "entity", "surface", "title", "route", "field", "binding", "evidence"],
-        ui_bindings or [{"app": "não localizado", "module": "", "entity": "", "surface": "", "title": "", "route": "", "field": "não localizado", "binding": "lacuna", "evidence": "apps/"}],
+        ["app", "module", "entity", "surface", "title", "route", "field", "binding", "binding_status", "dto", "endpoint", "physical_storage", "validation", "contract_evidence", "evidence"],
+        ui_bindings or [{"app": "não localizado", "module": "", "entity": "", "surface": "", "title": "", "route": "", "field": "não localizado", "binding": "lacuna", "binding_status": "lacuna", "dto": "", "endpoint": "", "physical_storage": "", "validation": "", "contract_evidence": "", "evidence": "apps/"}],
     )
     write_csv(
         ARTIFACTS / "matriz_api_campo.csv",
@@ -1317,7 +1341,7 @@ def build_delivery() -> None:
         },
         {
             "id": "AUD-P1-002", "priority": "P1", "module": "frontend e APIs", "title": "Bindings frontend-backend não estão integralmente comprovados",
-            "description": "Os 47 aliases de recurso compactado foram ligados aos nomes canônicos do backend e todas as 120 entidades lógicas têm superfície UI; ainda há 818 bindings de campo genéricos/não comprovados e 250 coincidências prováveis com campo físico.", "evidence": ["apps/all-in-one/src/components/SmartCRUD.tsx", "docs/data-audit/artifacts/matriz_formulario_campo.csv", "docs/data-audit/artifacts/coordenadas_stitch.json"], "impact": "Os endpoints agora recebem o recurso canônico, mas formulários genéricos ainda podem omitir campos específicos.", "risk": "Perda de dados ou validação incompleta nos campos ainda genéricos.", "proposal": "Resolver cada binding restante por rota e campo e vinculá-lo a DTO, validação, origem, destino e teste.", "dependencies": ["contratos DTO"], "affected_files": ["apps/all-in-one/src", "modules"], "migration": "não aplicável", "backend": "tipar payloads e responses", "frontend": "aliases resolvidos; declarar bindings específicos restantes", "tests": "contrato canônico aprovado; integração e E2E por campo restantes", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada campo UI aponta para DTO, endpoint, validação e teste aprovados.", "status": "implementacao_parcial", "owner_suggestion": "frontend e backend", "dimensions": ["bindings_frontend", "formularios"]
+            "description": f"As 120 entidades persistentes possuem contrato UI versionado gerado das migrations e regras de domínio; o SmartCRUD renderiza e envia somente campos vinculados. Há {counts['ui_bindings_unproven']} superfícies/campos legados sem entidade física/DTO correspondente, além da execução E2E autenticada ainda pendente.", "evidence": ["apps/all-in-one/src/config/entityFieldBindings.generated.json", "apps/all-in-one/src/components/SmartCRUD.tsx", "docs/data-audit/artifacts/matriz_formulario_campo.csv"], "impact": "Bindings persistentes estão comprovados, mas superfícies legadas ficam bloqueadas com segurança e integrações específicas ainda podem falhar em runtime.", "risk": "Funcionalidade indisponível nas superfícies sem contrato ou divergência operacional não detectada sem E2E.", "proposal": "Decidir entidade/DTO das superfícies legadas e executar matriz E2E autenticada em homologação.", "dependencies": ["decisão de domínio", "ambiente homologado", "credenciais de teste"], "affected_files": ["apps/all-in-one/src", "modules"], "migration": "avaliar para superfícies legadas", "backend": "DTO genérico versionado com payload validado por regra de domínio", "frontend": "contratos específicos renderizados dinamicamente; superfícies sem contrato bloqueadas", "tests": "build aprovado; contrato estático e E2E por entidade necessários", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada campo UI aponta para DTO, endpoint, validação, coluna e E2E aprovado.", "status": "implementacao_parcial", "owner_suggestion": "frontend e backend", "dimensions": ["bindings_frontend", "formularios"]
         },
         {
             "id": "AUD-P1-003", "priority": "P1", "module": "eventos", "title": "Eventos não possuem catálogo integral de payload versionado",
@@ -1552,7 +1576,7 @@ EVIDÊNCIAS: `config/data_audit/audit_traceability_policy.json`, `artifacts/cobe
     write_markdown(
         "09_FORMULARIOS_FRONTEND.md",
         "Formulários, Tabelas, Filtros e Dashboards",
-        f"""A varredura localizou {counts['ui_surfaces']} superfícies SmartCRUD, sendo {counts['ui_forms']} formulários, {counts['ui_candidates']} combinações superfície/campo e {counts['ui_actions']} ocorrências de ação. O componente genérico oferece somente `name`, `description` e `category` nos formulários; {counts['ui_bindings_unproven']} bindings são genéricos/não comprovados e {counts['ui_bindings_probable']} coincidem provavelmente com campo físico.
+        f"""A varredura localizou {counts['ui_surfaces']} superfícies SmartCRUD, sendo {counts['ui_forms']} formulários, {counts['ui_candidates']} combinações superfície/campo e {counts['ui_actions']} ocorrências de ação. O componente usa contratos versionados gerados das migrations e regras de domínio; {counts['ui_bindings_probable']} bindings apontam para DTO, endpoint e coluna física, e {counts['ui_bindings_unproven']} permanecem sem comprovação estática.
 
 O contrato compartilhado de `Salvar Registro` usa `POST {{user_id,payload}}` na criação e `PATCH {{payload}}` na edição, com correlação e idempotência na criação. A matriz registra {counts['ui_actions_incompatible']} ações incompatíveis. Há {counts['ui_actions_without_frontend_permission_gate']} ocorrências sem gate explícito de permissão no frontend; autorização backend ou fallback local deve ser analisado por ação.
 
