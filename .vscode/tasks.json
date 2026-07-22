@@ -56,6 +56,16 @@
       "problemMatcher": []
     },
     {
+      "label": "healthcheck: completo linux",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "echo \"[1/3] bootstrap linux\" && ./scripts/bootstrap_wsl_dev_environment.sh && echo \"[2/3] validate repository\" && python3 scripts/validate_repository.py && echo \"[3/3] validate openapi\" && python3 scripts/validate_openapi.py"
+      ],
+      "problemMatcher": []
+    },
+    {
       "label": "docker: compose health",
       "type": "shell",
       "command": "powershell",
