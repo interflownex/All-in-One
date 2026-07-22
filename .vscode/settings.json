@@ -119,7 +119,6 @@
   "yaml.validate": true,
   "docker.extension.enableComposeLanguageServer": true,
   "docker.lsp.telemetry": "off",
-  "java.import.gradle.enabled": true,
   "terminal.integrated.defaultProfile.linux": "bash",
   "terminal.integrated.env.windows": {
     "GOOGLE_INTEGRATIONS_ENABLED": "true",
@@ -156,6 +155,5 @@
   "geminicodeassist.codeLens.enable": false,
   "geminicodeassist.telemetry.enable": false,
   "google.datacloud.enableTelemetry": false,
-  "java.configuration.updateBuildConfiguration": "automatic",
   "editor.codeActions.triggerOnFocusChange": true
 }
