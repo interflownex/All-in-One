@@ -74,3 +74,12 @@ def test_requires_secret_when_active_policy_requests_remote_validation(
         config_path=valid_config(tmp_path), require_secret=True, root=Path.cwd()
     )
     assert errors == ["Variavel obrigatoria ausente no ambiente: STITCH_API_KEY"]
+
+
+def test_allows_repository_validation_without_personal_codex_config(tmp_path: Path) -> None:
+    errors = validate_stitch_mcp_config(
+        config_path=tmp_path / "missing-config.toml",
+        require_codex_config=False,
+        root=Path.cwd(),
+    )
+    assert errors == []
