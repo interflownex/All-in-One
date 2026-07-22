@@ -11,7 +11,6 @@ from typing import Any
 import psycopg
 from psycopg.types.json import Jsonb
 
-
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -88,7 +87,9 @@ def _apply_migrations(connection: psycopg.Connection) -> list[str]:
     return applied
 
 
-def _fetch_missing(connection: psycopg.Connection, query: str, expected: set[str]) -> set[str]:
+def _fetch_missing(
+    connection: psycopg.Connection, query: str, expected: set[str]
+) -> set[str]:
     rows = connection.execute(query, (sorted(expected),)).fetchall()
     found = {row[0] for row in rows}
     return expected - found
@@ -165,7 +166,14 @@ def _run_write_checks(connection: psycopg.Connection) -> dict[str, Any]:
             (id, user_id, actor_user_id, routing_key, aggregate_type, aggregate_id, payload, created_by)
         VALUES (%s, %s, %s, 'validation.postgres.checked', 'postgres_real_dsn', %s, %s, %s)
         """,
-        (event_id, actor_id, actor_id, resource_id, Jsonb({"source": "validate_postgres_real_dsn"}), actor_id),
+        (
+            event_id,
+            actor_id,
+            actor_id,
+            resource_id,
+            Jsonb({"source": "validate_postgres_real_dsn"}),
+            actor_id,
+        ),
     )
     connection.execute(
         """
@@ -173,13 +181,21 @@ def _run_write_checks(connection: psycopg.Connection) -> dict[str, Any]:
             (id, user_id, event_id, destination, delivery_status, response_metadata, created_by)
         VALUES (%s, %s, %s, 'postgres-real-dsn-validator', 'pending', %s, %s)
         """,
-        (delivery_id, actor_id, event_id, Jsonb({"source": "validate_postgres_real_dsn"}), actor_id),
+        (
+            delivery_id,
+            actor_id,
+            event_id,
+            Jsonb({"source": "validate_postgres_real_dsn"}),
+            actor_id,
+        ),
     )
     connection.commit()
 
     audit_logs_rejected_update = False
     try:
-        connection.execute("UPDATE audit.logs SET status = 'tampered' WHERE id = %s", (log_id,))
+        connection.execute(
+            "UPDATE audit.logs SET status = 'tampered' WHERE id = %s", (log_id,)
+        )
         connection.commit()
     except psycopg.Error:
         audit_logs_rejected_update = True
@@ -208,7 +224,10 @@ def _run_write_checks(connection: psycopg.Connection) -> dict[str, Any]:
 def validate(args: argparse.Namespace) -> int:
     dsn = args.dsn or os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN")
     if not dsn:
-        print("Erro: informe --dsn ou configure ALL_IN_ONE_POSTGRES_MATRIX_DSN.", file=sys.stderr)
+        print(
+            "Erro: informe --dsn ou configure ALL_IN_ONE_POSTGRES_MATRIX_DSN.",
+            file=sys.stderr,
+        )
         return 2
 
     result: dict[str, Any] = {
@@ -230,7 +249,11 @@ def validate(args: argparse.Namespace) -> int:
             with psycopg.connect(dsn) as connection:
                 result["write_checks"] = _run_write_checks(connection)
     except Exception as exc:
-        print(json.dumps({"ok": False, "error": str(exc), **result}, indent=2, sort_keys=True))
+        print(
+            json.dumps(
+                {"ok": False, "error": str(exc), **result}, indent=2, sort_keys=True
+            )
+        )
         return 1
 
     missing = [
@@ -255,7 +278,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Valida um PostgreSQL real do All-in-One por DSN, sem depender de Docker efemero.",
     )
-    parser.add_argument("--dsn", help="DSN PostgreSQL. Se omitido, usa ALL_IN_ONE_POSTGRES_MATRIX_DSN.")
+    parser.add_argument(
+        "--dsn", help="DSN PostgreSQL. Se omitido, usa ALL_IN_ONE_POSTGRES_MATRIX_DSN."
+    )
     parser.add_argument(
         "--apply-migrations",
         action="store_true",

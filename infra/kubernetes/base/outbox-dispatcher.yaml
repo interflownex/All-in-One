@@ -7,16 +7,16 @@ metadata:
 spec:
   replicas: 2
   selector:
-    matchLabels: {app: outbox-dispatcher}
+    matchLabels: { app: outbox-dispatcher }
   template:
     metadata:
-      labels: {app: outbox-dispatcher}
+      labels: { app: outbox-dispatcher }
     spec:
       containers:
         - name: outbox-dispatcher
           image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/outbox-dispatcher:latest
           imagePullPolicy: Always
-          ports: [{containerPort: 8000}]
+          ports: [{ containerPort: 8000 }]
           readinessProbe:
             exec:
               command:
@@ -26,8 +26,8 @@ spec:
                 - --metrics
             timeoutSeconds: 5
           envFrom:
-            - configMapRef: {name: platform-config}
-            - secretRef: {name: platform-secrets-placeholder}
+            - configMapRef: { name: platform-config }
+            - secretRef: { name: platform-secrets-placeholder }
 ---
 apiVersion: v1
 kind: Service
@@ -35,5 +35,5 @@ metadata:
   name: outbox-dispatcher
   namespace: all-in-one
 spec:
-  selector: {app: outbox-dispatcher}
-  ports: [{port: 80, targetPort: 8000}]
+  selector: { app: outbox-dispatcher }
+  ports: [{ port: 80, targetPort: 8000 }]

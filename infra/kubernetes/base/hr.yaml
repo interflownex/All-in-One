@@ -7,23 +7,23 @@ metadata:
 spec:
   replicas: 2
   selector:
-    matchLabels: {app: hr}
+    matchLabels: { app: hr }
   template:
     metadata:
-      labels: {app: hr}
+      labels: { app: hr }
     spec:
       containers:
         - name: hr
           image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/hr:latest
           imagePullPolicy: IfNotPresent
-          ports: [{containerPort: 8000}]
+          ports: [{ containerPort: 8000 }]
           readinessProbe:
             httpGet:
               path: /health
               port: 8000
           envFrom:
-            - configMapRef: {name: platform-config}
-            - secretRef: {name: platform-secrets-placeholder}
+            - configMapRef: { name: platform-config }
+            - secretRef: { name: platform-secrets-placeholder }
 ---
 apiVersion: v1
 kind: Service
@@ -31,5 +31,5 @@ metadata:
   name: hr
   namespace: all-in-one
 spec:
-  selector: {app: hr}
-  ports: [{port: 80, targetPort: 8000}]
+  selector: { app: hr }
+  ports: [{ port: 80, targetPort: 8000 }]

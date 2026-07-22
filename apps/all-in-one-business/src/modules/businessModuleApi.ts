@@ -1,17 +1,20 @@
-import type { BusinessClassificationInput, ModuleRecommendation } from './moduleRecommendationRules';
+import type {
+  BusinessClassificationInput,
+  ModuleRecommendation,
+} from "./moduleRecommendationRules";
 
-const API_HUB_URL = (import.meta as any).env?.VITE_API_HUB_URL ?? '';
-const API_HUB_TOKEN = (import.meta as any).env?.VITE_API_HUB_TOKEN ?? '';
-const BUSINESS_MODULES_BASE = '/business-modules';
+const API_HUB_URL = (import.meta as any).env?.VITE_API_HUB_URL ?? "";
+const API_HUB_TOKEN = (import.meta as any).env?.VITE_API_HUB_TOKEN ?? "";
+const BUSINESS_MODULES_BASE = "/business-modules";
 
 export type CompanyModuleSetting = {
   id: string;
   company_id: string;
   module_slug: string;
   title_pt_br: string;
-  state: ModuleRecommendation['state'];
-  visibility: 'visible' | 'hidden';
-  source: 'automatic' | 'manual';
+  state: ModuleRecommendation["state"];
+  visibility: "visible" | "hidden";
+  source: "automatic" | "manual";
   recommendation_score: number;
   recommendation_reason: string;
   dependencies: string[];
@@ -46,13 +49,13 @@ function toBackendClassification(input: BusinessClassificationInput) {
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (!businessModulesApiEnabled) {
-    throw new Error('API Hub nao configurado para modulos empresariais.');
+    throw new Error("API Hub nao configurado para modulos empresariais.");
   }
   const response = await fetch(`${API_HUB_URL}${path}`, {
     ...init,
     headers: {
       Authorization: `Bearer ${API_HUB_TOKEN}`,
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(init.headers ?? {}),
     },
   });
@@ -65,29 +68,52 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 export async function previewBusinessModuleRecommendations(input: BusinessClassificationInput) {
   return request<ModuleRecommendation[]>(`${BUSINESS_MODULES_BASE}/recommendations`, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(toBackendClassification(input)),
   });
 }
 
-export async function applyBusinessModuleRecommendations(companyId: string, input: BusinessClassificationInput) {
-  return request<ModuleSettingsResponse>(`${BUSINESS_MODULES_BASE}/companies/${companyId}/apply-recommendations`, {
-    method: 'POST',
-    body: JSON.stringify({ classification: toBackendClassification(input), actor_id: 'business-shell' }),
-  });
+export async function applyBusinessModuleRecommendations(
+  companyId: string,
+  input: BusinessClassificationInput,
+) {
+  return request<ModuleSettingsResponse>(
+    `${BUSINESS_MODULES_BASE}/companies/${companyId}/apply-recommendations`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        classification: toBackendClassification(input),
+        actor_id: "business-shell",
+      }),
+    },
+  );
 }
 
 export async function loadCompanyModules(companyId: string) {
   return request<ModuleSettingsResponse>(`${BUSINESS_MODULES_BASE}/companies/${companyId}/modules`);
 }
 
-export async function patchCompanyModule(companyId: string, moduleSlug: string, state: ModuleRecommendation['state'], reason: string) {
-  return request<CompanyModuleSetting>(`${BUSINESS_MODULES_BASE}/companies/${companyId}/modules/${moduleSlug}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ state, reason }),
-  });
+export async function patchCompanyModule(
+  companyId: string,
+  moduleSlug: string,
+  state: ModuleRecommendation["state"],
+  reason: string,
+) {
+  return request<CompanyModuleSetting>(
+    `${BUSINESS_MODULES_BASE}/companies/${companyId}/modules/${moduleSlug}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ state, reason }),
+    },
+  );
 }
 
-export async function getCompanyModuleChangeImpact(companyId: string, moduleSlug: string, nextState: ModuleRecommendation['state']) {
-  return request<Record<string, unknown>>(`${BUSINESS_MODULES_BASE}/companies/${companyId}/modules/${moduleSlug}/change-impact?next_state=${nextState}`);
+export async function getCompanyModuleChangeImpact(
+  companyId: string,
+  moduleSlug: string,
+  nextState: ModuleRecommendation["state"],
+) {
+  return request<Record<string, unknown>>(
+    `${BUSINESS_MODULES_BASE}/companies/${companyId}/modules/${moduleSlug}/change-impact?next_state=${nextState}`,
+  );
 }

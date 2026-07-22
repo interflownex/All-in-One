@@ -89,7 +89,9 @@ def test_marketplace_opens_support_case_from_paid_order_and_exports_metrics() ->
     )
     assert published.status_code == 200
 
-    insights_after = marketplace.get("/valley/insights/commercial", headers=headers(user_id))
+    insights_after = marketplace.get(
+        "/valley/insights/commercial", headers=headers(user_id)
+    )
     assert insights_after.status_code == 200
     assert insights_after.json()["reviews_pending_moderation"] == 0
     assert insights_after.json()["reviews_published"] == 1

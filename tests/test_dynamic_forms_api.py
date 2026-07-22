@@ -11,7 +11,10 @@ class FakeStore:
 
     def _call(self, operation: str, *args, **kwargs):
         self.calls.append((operation, args, kwargs))
-        return {"operation": operation, "tenant_id": kwargs.get("tenant_id") or (args[0] if args else None)}
+        return {
+            "operation": operation,
+            "tenant_id": kwargs.get("tenant_id") or (args[0] if args else None),
+        }
 
     def list_catalog(self, domain=None):
         self.calls.append(("list_catalog", (domain,), {}))
@@ -56,7 +59,9 @@ ACTOR_ID = str(uuid4())
 TENANT_ID = str(uuid4())
 
 
-def headers(*, roles: str, scopes: str, mfa: bool = False, tenant_id: str = TENANT_ID) -> dict[str, str]:
+def headers(
+    *, roles: str, scopes: str, mfa: bool = False, tenant_id: str = TENANT_ID
+) -> dict[str, str]:
     return {
         "X-Actor-User-Id": ACTOR_ID,
         "X-Actor-Roles": roles,
@@ -77,18 +82,27 @@ def test_api_exige_ator_e_tenant() -> None:
 def test_api_rejeita_tenant_divergente_do_contexto_empresarial() -> None:
     response = client.get(
         "/catalog",
-        headers=headers(roles="form_designer", scopes="forms:read", tenant_id=str(uuid4())),
+        headers=headers(
+            roles="form_designer", scopes="forms:read", tenant_id=str(uuid4())
+        ),
     )
     assert response.status_code == 403
     assert "Tenant" in response.json()["detail"]
 
 
 def test_catalogo_exige_role_e_escopo() -> None:
-    denied_role = client.get("/catalog", headers=headers(roles="viewer", scopes="forms:read"))
+    denied_role = client.get(
+        "/catalog", headers=headers(roles="viewer", scopes="forms:read")
+    )
     assert denied_role.status_code == 403
-    denied_scope = client.get("/catalog", headers=headers(roles="form_designer", scopes=""))
+    denied_scope = client.get(
+        "/catalog", headers=headers(roles="form_designer", scopes="")
+    )
     assert denied_scope.status_code == 403
-    allowed = client.get("/catalog?domain=business", headers=headers(roles="form_designer", scopes="forms:read"))
+    allowed = client.get(
+        "/catalog?domain=business",
+        headers=headers(roles="form_designer", scopes="forms:read"),
+    )
     assert allowed.status_code == 200
     assert allowed.json()[0]["domain"] == "business"
 
@@ -110,9 +124,15 @@ def test_criacao_exige_idempotencia_e_encaminha_tenant_autoritativo() -> None:
         "name": "Cadastro empresarial",
         "change_summary": "Versao inicial",
     }
-    missing = client.post("/definitions", json=body, headers=headers(roles="form_designer", scopes="forms:write"))
+    missing = client.post(
+        "/definitions",
+        json=body,
+        headers=headers(roles="form_designer", scopes="forms:write"),
+    )
     assert missing.status_code == 422
-    allowed_headers = headers(roles="form_designer", scopes="forms:write") | {"X-Idempotency-Key": "definition-request-1"}
+    allowed_headers = headers(roles="form_designer", scopes="forms:write") | {
+        "X-Idempotency-Key": "definition-request-1"
+    }
     response = client.post("/definitions", json=body, headers=allowed_headers)
     assert response.status_code == 201
     assert response.json()["tenant_id"] == TENANT_ID
@@ -129,7 +149,9 @@ def test_blueprint_tem_limites_pydantic_antes_do_store() -> None:
 
 
 def test_homologacao_exige_mfa() -> None:
-    request_headers = headers(roles="form_reviewer", scopes="forms:review") | {"X-Idempotency-Key": "review-request-1"}
+    request_headers = headers(roles="form_reviewer", scopes="forms:review") | {
+        "X-Idempotency-Key": "review-request-1"
+    }
     response = client.post(
         f"/homologations/{uuid4()}/review",
         json={"result": "approved", "evidence": {"testes": "aprovados"}},
@@ -141,9 +163,17 @@ def test_homologacao_exige_mfa() -> None:
 
 def test_publicacao_exige_role_escopo_mfa_e_idempotencia() -> None:
     version_id = uuid4()
-    body = {"environment": "production", "tenant_scope": {"tenant_id": TENANT_ID}, "channels": ["web", "mobile"]}
-    publish_headers = headers(roles="form_publisher", scopes="forms:publish", mfa=True) | {"X-Idempotency-Key": "publish-request-1"}
-    response = client.post(f"/versions/{version_id}/publish", json=body, headers=publish_headers)
+    body = {
+        "environment": "production",
+        "tenant_scope": {"tenant_id": TENANT_ID},
+        "channels": ["web", "mobile"],
+    }
+    publish_headers = headers(
+        roles="form_publisher", scopes="forms:publish", mfa=True
+    ) | {"X-Idempotency-Key": "publish-request-1"}
+    response = client.post(
+        f"/versions/{version_id}/publish", json=body, headers=publish_headers
+    )
     assert response.status_code == 201
     assert response.json()["operation"] == "publish_version"
     assert fake_store.calls[-1][1][0] == TENANT_ID
@@ -151,7 +181,9 @@ def test_publicacao_exige_role_escopo_mfa_e_idempotencia() -> None:
 
 def test_usuario_pode_submeter_somente_com_escopo_e_idempotencia() -> None:
     definition_id = uuid4()
-    submit_headers = headers(roles="form_user", scopes="forms:submit") | {"X-Idempotency-Key": "submission-request-1"}
+    submit_headers = headers(roles="form_user", scopes="forms:submit") | {
+        "X-Idempotency-Key": "submission-request-1"
+    }
     response = client.post(
         f"/forms/{definition_id}/submissions",
         json={"values": {str(uuid4()): "valor"}, "source": "mobile"},

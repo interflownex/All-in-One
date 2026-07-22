@@ -3,7 +3,7 @@
 This is an example of the output format the skill should produce. Adapt the
 content to match actual telemetry findings, but follow this structure exactly.
 
---------------------------------------------------------------------------------
+---
 
 ## Security Posture Assessment: ml-platform-prod-101
 
@@ -41,7 +41,7 @@ Medium | UBLA disabled; versioning off | See B2, B5 |
 ⚠️  2 buckets unclassified; sensitivity inferred, run SDP to confirm
 ```
 
---------------------------------------------------------------------------------
+---
 
 ### Section 3: Action Plan
 
@@ -79,7 +79,7 @@ Legacy ACLs are active and there is no version history if objects are overwritte
 1. Enforce UBLA and recovery: → B2 (UBLA), B5 (versioning)
 ```
 
---------------------------------------------------------------------------------
+---
 
 **Policy Fixes** (org or project-level — may require elevated permissions):
 

@@ -77,13 +77,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -100,12 +95,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -122,12 +113,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -162,13 +149,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -185,12 +167,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/gateway/api-key/check"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/gateway/api-key/check"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -207,12 +185,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/gateway/api-key/check"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/gateway/api-key/check"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -230,10 +204,7 @@
       "assertions": 2,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/health",
-        "/health/resources/patients"
-      ],
+      "endpoint_literals": ["/health", "/health/resources/patients"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -251,10 +222,7 @@
       "assertions": 4,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/resources/rider_profiles",
-        "/riders/resources/rider_profiles"
-      ],
+      "endpoint_literals": ["/resources/rider_profiles", "/riders/resources/rider_profiles"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -289,12 +257,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/gateway/webhooks/verify"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/gateway/webhooks/verify"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -311,12 +275,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -333,12 +293,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -373,13 +329,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -396,12 +347,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -418,12 +365,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -458,13 +401,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -481,12 +419,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -503,12 +437,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -543,10 +473,7 @@
       "async": false,
       "assertions": 14,
       "status_code_assertions": 7,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/activate",
         "/events/outbox",
@@ -569,13 +496,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -592,12 +514,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -614,12 +532,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -654,13 +568,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -677,12 +586,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -699,12 +604,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -739,13 +640,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -762,12 +658,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -784,12 +676,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -824,13 +712,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -847,12 +730,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -869,12 +748,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -891,12 +766,8 @@
       "async": false,
       "assertions": 6,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/erp/billing"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/erp/billing"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -913,13 +784,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/cancel",
-        "/erp/billing/"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/cancel", "/erp/billing/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -936,14 +802,8 @@
       "async": false,
       "assertions": 7,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/cancel",
-        "/erp/billing",
-        "/erp/billing/"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/cancel", "/erp/billing", "/erp/billing/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -978,13 +838,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1001,12 +856,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1023,12 +874,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1063,13 +910,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1086,12 +928,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1108,12 +946,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1148,13 +982,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1171,12 +1000,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1193,12 +1018,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1233,13 +1054,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1256,12 +1072,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1278,12 +1090,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1318,13 +1126,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1359,12 +1162,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1381,12 +1180,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1421,13 +1216,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1444,12 +1234,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1466,12 +1252,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1506,13 +1288,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1529,12 +1306,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1551,12 +1324,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1591,13 +1360,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1614,12 +1378,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1636,12 +1396,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1676,13 +1432,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1699,12 +1450,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1721,12 +1468,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1761,13 +1504,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1784,12 +1522,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1806,12 +1540,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1846,13 +1576,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1869,12 +1594,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1891,12 +1612,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1931,13 +1648,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1954,12 +1666,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -1976,12 +1684,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2016,13 +1720,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2039,12 +1738,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2061,12 +1756,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2101,13 +1792,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2124,12 +1810,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2146,12 +1828,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2186,13 +1864,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2209,12 +1882,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2231,12 +1900,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2271,13 +1936,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2294,12 +1954,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2316,12 +1972,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2356,13 +2008,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/approve",
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/approve", "/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2379,12 +2026,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/health"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/health"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2401,12 +2044,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/create"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/create"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -2424,9 +2063,7 @@
       "assertions": 0,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/jobs/resumeaccesslogs"
-      ],
+      "endpoint_literals": ["/jobs/resumeaccesslogs"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "não consta nos relatórios de execução",
@@ -2557,9 +2194,7 @@
       "http_methods": [],
       "endpoint_literals": [],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.parametrize"],
       "execution_status": "não consta nos relatórios de execução",
       "execution_cases": 0,
       "passed_cases": 0,
@@ -2577,9 +2212,7 @@
       "http_methods": [],
       "endpoint_literals": [],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.parametrize"],
       "execution_status": "não consta nos relatórios de execução",
       "execution_cases": 0,
       "passed_cases": 0,
@@ -2597,9 +2230,7 @@
       "http_methods": [],
       "endpoint_literals": [],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.parametrize"],
       "execution_status": "não consta nos relatórios de execução",
       "execution_cases": 0,
       "passed_cases": 0,
@@ -2651,10 +2282,7 @@
       "assertions": 0,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/delivery/deliveryrequests",
-        "/marketplace/orders"
-      ],
+      "endpoint_literals": ["/delivery/deliveryrequests", "/marketplace/orders"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "não consta nos relatórios de execução",
@@ -2672,10 +2300,7 @@
       "assertions": 0,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/identity/users$",
-        "/identity/users-form"
-      ],
+      "endpoint_literals": ["/identity/users$", "/identity/users-form"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "não consta nos relatórios de execução",
@@ -2693,11 +2318,7 @@
       "assertions": 0,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/finance/wallets",
-        "/finance/wallets$",
-        "/finance/wallets-form$"
-      ],
+      "endpoint_literals": ["/finance/wallets", "/finance/wallets$", "/finance/wallets-form$"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "não consta nos relatórios de execução",
@@ -2715,9 +2336,7 @@
       "assertions": 0,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/marketplace/orders"
-      ],
+      "endpoint_literals": ["/marketplace/orders"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "não consta nos relatórios de execução",
@@ -2735,9 +2354,7 @@
       "assertions": 3,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/"
-      ],
+      "endpoint_literals": ["/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "não consta nos relatórios de execução",
@@ -2773,9 +2390,7 @@
       "assertions": 0,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/jobs/jobpostings"
-      ],
+      "endpoint_literals": ["/jobs/jobpostings"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "não consta nos relatórios de execução",
@@ -2810,10 +2425,7 @@
       "async": false,
       "assertions": 14,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/approve",
         "/resources/catalog_offers",
@@ -2890,10 +2502,7 @@
       "async": false,
       "assertions": 13,
       "status_code_assertions": 7,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/approve_cost",
         "/actions/complete",
@@ -3046,18 +2655,10 @@
       "async": false,
       "assertions": 11,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/catalog",
-        "/health",
-        "/version"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/catalog", "/health", "/version"],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.parametrize"],
       "execution_status": "aprovado",
       "execution_cases": 25,
       "passed_cases": 25,
@@ -3072,16 +2673,10 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/status"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/status"],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.parametrize"],
       "execution_status": "aprovado",
       "execution_cases": 25,
       "passed_cases": 25,
@@ -3096,13 +2691,8 @@
       "async": false,
       "assertions": 18,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/gateway/catalog/offers",
-        "/valley/catalog/search"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/gateway/catalog/offers", "/valley/catalog/search"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -3119,12 +2709,8 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/gateway/catalog/offers"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/gateway/catalog/offers"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -3141,9 +2727,7 @@
       "async": false,
       "assertions": 11,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
+      "http_methods": ["POST"],
       "endpoint_literals": [
         "/actions/pay",
         "/gateway/payments/sandbox/authorize",
@@ -3166,12 +2750,8 @@
       "async": false,
       "assertions": 10,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/gateway/catalog/actions"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/gateway/catalog/actions"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -3188,9 +2768,7 @@
       "async": false,
       "assertions": 7,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
+      "http_methods": ["POST"],
       "endpoint_literals": [
         "/gateway/consumer/orders/00000000-0000-4000-8000-000000000002/reviews"
       ],
@@ -3210,9 +2788,7 @@
       "async": false,
       "assertions": 6,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
+      "http_methods": ["POST"],
       "endpoint_literals": [
         "/gateway/consumer/orders/00000000-0000-4000-8000-000000000002/support"
       ],
@@ -3232,12 +2808,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/gateway/catalog/actions"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/gateway/catalog/actions"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -3254,9 +2826,7 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
+      "http_methods": ["POST"],
       "endpoint_literals": [
         "/gateway/consumer/orders/00000000-0000-4000-8000-000000000001/reviews"
       ],
@@ -3276,12 +2846,8 @@
       "async": false,
       "assertions": 10,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/gateway/insights/commercial"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/gateway/insights/commercial"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -3298,12 +2864,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/gateway/consumer/orders"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/gateway/consumer/orders"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -3320,12 +2882,8 @@
       "async": false,
       "assertions": 6,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/gateway/consumer/orders"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/gateway/consumer/orders"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -3342,9 +2900,7 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -3381,9 +2937,7 @@
       "assertions": 4,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/cryptoKeys/Software"
-      ],
+      "endpoint_literals": ["/cryptoKeys/Software"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -3401,9 +2955,7 @@
       "assertions": 6,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/usr/bin/gcloud"
-      ],
+      "endpoint_literals": ["/usr/bin/gcloud"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -3564,10 +3116,7 @@
       "async": false,
       "assertions": 18,
       "status_code_assertions": 10,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/complete",
         "/actions/publish",
@@ -3614,10 +3163,7 @@
       "async": false,
       "assertions": 12,
       "status_code_assertions": 6,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/complete",
         "/actions/escalate",
@@ -3715,10 +3261,7 @@
       "async": false,
       "assertions": 15,
       "status_code_assertions": 9,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/approve",
         "/actions/publish",
@@ -3747,10 +3290,7 @@
       "async": false,
       "assertions": 9,
       "status_code_assertions": 2,
-      "http_methods": [
-        "PATCH",
-        "POST"
-      ],
+      "http_methods": ["PATCH", "POST"],
       "endpoint_literals": [
         "/apply-recommendations",
         "/business-modules/companies/",
@@ -3772,10 +3312,7 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "PATCH",
-        "POST"
-      ],
+      "http_methods": ["PATCH", "POST"],
       "endpoint_literals": [
         "/apply-recommendations",
         "/business-modules/companies/",
@@ -4013,12 +3550,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/delivery_requests"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/resources/delivery_requests"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4035,14 +3568,8 @@
       "async": false,
       "assertions": 4,
       "status_code_assertions": 2,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/events/outbox",
-        "/resources/orders"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/events/outbox", "/resources/orders"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4059,14 +3586,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/events/outbox",
-        "/resources/providers"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/events/outbox", "/resources/providers"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4083,10 +3604,7 @@
       "async": false,
       "assertions": 24,
       "status_code_assertions": 13,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/close",
         "/actions/complete",
@@ -4264,9 +3782,7 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -4392,16 +3908,8 @@
       "async": false,
       "assertions": 9,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/events/outbox",
-        "/resources/documents",
-        "/resources/versions",
-        "/v1"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/events/outbox", "/resources/documents", "/resources/versions", "/v1"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4418,12 +3926,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 2,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/catalog"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/catalog"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4440,12 +3944,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/catalog"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/catalog"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4462,12 +3962,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/catalog/bindings?catalog_ids="
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/catalog/bindings?catalog_ids="],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4484,13 +3980,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "PUT"
-      ],
-      "endpoint_literals": [
-        "/blueprint",
-        "/versions/"
-      ],
+      "http_methods": ["PUT"],
+      "endpoint_literals": ["/blueprint", "/versions/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4507,13 +3998,8 @@
       "async": false,
       "assertions": 4,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/catalog",
-        "/catalog?domain=business"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/catalog", "/catalog?domain=business"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4530,12 +4016,8 @@
       "async": false,
       "assertions": 4,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/definitions"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/definitions"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4552,13 +4034,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/homologations/",
-        "/review"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/homologations/", "/review"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4575,13 +4052,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/publish",
-        "/versions/"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/publish", "/versions/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4598,13 +4070,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/forms/",
-        "/submissions"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/forms/", "/submissions"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -4639,9 +4106,7 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [
         "/catalog",
         "/catalog/bindings",
@@ -4725,9 +4190,7 @@
       "http_methods": [],
       "endpoint_literals": [],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.parametrize"],
       "execution_status": "aprovado",
       "execution_cases": 3,
       "passed_cases": 3,
@@ -4940,10 +4403,7 @@
       "async": false,
       "assertions": 20,
       "status_code_assertions": 11,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/approve_payment",
         "/actions/receive",
@@ -5136,9 +4596,7 @@
       "assertions": 5,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/"
-      ],
+      "endpoint_literals": ["/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -5246,9 +4704,7 @@
       "assertions": 5,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/usr/bin/gcloud"
-      ],
+      "endpoint_literals": ["/usr/bin/gcloud"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -5304,10 +4760,7 @@
       "async": false,
       "assertions": 13,
       "status_code_assertions": 7,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/close",
         "/actions/complete",
@@ -5370,12 +4823,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/registrations"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/registrations"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -5392,12 +4841,8 @@
       "async": false,
       "assertions": 4,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/registrations"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/registrations"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -5414,10 +4859,7 @@
       "async": false,
       "assertions": 16,
       "status_code_assertions": 8,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/publish",
         "/actions/review",
@@ -5447,10 +4889,7 @@
       "async": false,
       "assertions": 6,
       "status_code_assertions": 2,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/content",
         "/documents/",
@@ -5474,10 +4913,7 @@
       "async": false,
       "assertions": 10,
       "status_code_assertions": 5,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/imports/ctps-digital",
         "/recruiting/resumes/",
@@ -5519,14 +4955,8 @@
       "async": false,
       "assertions": 9,
       "status_code_assertions": 2,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/auth/login",
-        "/resources/sessions"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/auth/login", "/resources/sessions"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -5543,12 +4973,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/mfa/setup"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/mfa/setup"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -5565,13 +4991,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/auth/login",
-        "/auth/refresh"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/auth/login", "/auth/refresh"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -5588,14 +5009,8 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 4,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/auth/login",
-        "/auth/logout",
-        "/auth/refresh"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/auth/login", "/auth/logout", "/auth/refresh"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -5612,10 +5027,7 @@
       "async": false,
       "assertions": 11,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/auth/login",
         "/mfa/setup",
@@ -5710,9 +5122,7 @@
       "async": false,
       "assertions": 19,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -5820,9 +5230,7 @@
       "async": false,
       "assertions": 16,
       "status_code_assertions": 5,
-      "http_methods": [
-        "POST"
-      ],
+      "http_methods": ["POST"],
       "endpoint_literals": [
         "/integrations/sandbox/kyb/business",
         "/integrations/sandbox/kyc/person",
@@ -5845,9 +5253,7 @@
       "async": false,
       "assertions": 17,
       "status_code_assertions": 7,
-      "http_methods": [
-        "POST"
-      ],
+      "http_methods": ["POST"],
       "endpoint_literals": [
         "/integrations/sandbox/api-hub/api-key/verify",
         "/integrations/sandbox/api-hub/webhooks/sign",
@@ -5891,10 +5297,7 @@
       "async": false,
       "assertions": 11,
       "status_code_assertions": 5,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/publish",
         "/health",
@@ -5921,10 +5324,7 @@
       "async": false,
       "assertions": 10,
       "status_code_assertions": 6,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/alert",
         "/actions/complete",
@@ -6003,10 +5403,7 @@
       "async": false,
       "assertions": 17,
       "status_code_assertions": 7,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/pay",
         "/actions/publish",
@@ -6178,9 +5575,7 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -6198,9 +5593,7 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -6344,11 +5737,7 @@
       "async": false,
       "assertions": 17,
       "status_code_assertions": 8,
-      "http_methods": [
-        "DELETE",
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["DELETE", "GET", "POST"],
       "endpoint_literals": [
         "/actions/assign",
         "/actions/complete",
@@ -6377,10 +5766,7 @@
       "async": false,
       "assertions": 10,
       "status_code_assertions": 6,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/approve",
         "/actions/complete",
@@ -6405,10 +5791,7 @@
       "async": false,
       "assertions": 18,
       "status_code_assertions": 9,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/accept",
         "/actions/complete",
@@ -6438,10 +5821,7 @@
       "async": false,
       "assertions": 12,
       "status_code_assertions": 6,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/activate",
         "/actions/approve",
@@ -6467,10 +5847,7 @@
       "async": false,
       "assertions": 11,
       "status_code_assertions": 6,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/accept",
         "/actions/approve",
@@ -6983,14 +6360,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/wallets",
-        "/resources/wallets/"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/resources/wallets", "/resources/wallets/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -7007,14 +6378,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/users",
-        "/resources/users/"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/resources/users", "/resources/users/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -7031,14 +6396,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/branches",
-        "/resources/branches/"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/resources/branches", "/resources/branches/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -7055,15 +6414,8 @@
       "async": false,
       "assertions": 8,
       "status_code_assertions": 4,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/audit/events",
-        "/resources/patients",
-        "/resources/patients/"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/audit/events", "/resources/patients", "/resources/patients/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -7080,12 +6432,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/approval_limits"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/resources/approval_limits"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -7138,13 +6486,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/roles"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/resources/roles"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -7161,13 +6504,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 2,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/roles"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/resources/roles"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -7184,12 +6522,8 @@
       "async": false,
       "assertions": 4,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/auth/login"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/auth/login"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -7206,12 +6540,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/auth/login"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/auth/login"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -7249,9 +6579,7 @@
       "http_methods": [],
       "endpoint_literals": [],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.parametrize"],
       "execution_status": "aprovado",
       "execution_cases": 6,
       "passed_cases": 6,
@@ -7411,13 +6739,9 @@
       "assertions": 4,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/all_in_one"
-      ],
+      "endpoint_literals": ["/all_in_one"],
       "parametrized": false,
-      "decorators": [
-        "pytest.mark.skipif"
-      ],
+      "decorators": ["pytest.mark.skipif"],
       "execution_status": "ignorado",
       "execution_cases": 1,
       "passed_cases": 0,
@@ -7432,9 +6756,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7452,9 +6774,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7472,9 +6792,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7492,9 +6810,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7512,9 +6828,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7532,9 +6846,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7552,9 +6864,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7572,9 +6882,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7610,9 +6918,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7630,9 +6936,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7650,9 +6954,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7670,9 +6972,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7690,9 +6990,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7710,9 +7008,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7730,9 +7026,7 @@
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7750,9 +7044,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7770,9 +7062,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7790,9 +7080,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7810,9 +7098,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7830,9 +7116,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7850,9 +7134,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7870,9 +7152,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7890,9 +7170,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7910,9 +7188,7 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": false,
       "decorators": [],
@@ -7933,10 +7209,7 @@
       "http_methods": [],
       "endpoint_literals": [],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.skipif",
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.skipif", "pytest.mark.parametrize"],
       "execution_status": "ignorado",
       "execution_cases": 9,
       "passed_cases": 0,
@@ -7954,9 +7227,7 @@
       "http_methods": [],
       "endpoint_literals": [],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.parametrize"],
       "execution_status": "aprovado",
       "execution_cases": 25,
       "passed_cases": 25,
@@ -7989,15 +7260,10 @@
       "async": false,
       "assertions": 9,
       "status_code_assertions": 0,
-      "http_methods": [
-        "GET"
-      ],
+      "http_methods": ["GET"],
       "endpoint_literals": [],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.skipif",
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.skipif", "pytest.mark.parametrize"],
       "execution_status": "ignorado",
       "execution_cases": 9,
       "passed_cases": 0,
@@ -8051,10 +7317,7 @@
       "http_methods": [],
       "endpoint_literals": [],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.skipif",
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.skipif", "pytest.mark.parametrize"],
       "execution_status": "ignorado",
       "execution_cases": 9,
       "passed_cases": 0,
@@ -8069,10 +7332,7 @@
       "async": false,
       "assertions": 15,
       "status_code_assertions": 9,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/activate",
         "/actions/complete",
@@ -8571,9 +7831,7 @@
       "http_methods": [],
       "endpoint_literals": [],
       "parametrized": true,
-      "decorators": [
-        "pytest.mark.parametrize"
-      ],
+      "decorators": ["pytest.mark.parametrize"],
       "execution_status": "aprovado",
       "execution_cases": 25,
       "passed_cases": 25,
@@ -8714,12 +7972,8 @@
       "async": false,
       "assertions": 4,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/providers/mock-provider/time-slots?date=2026-06-10"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/providers/mock-provider/time-slots?date=2026-06-10"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -8736,12 +7990,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/providers/mock-provider/reserve-slot"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/providers/mock-provider/reserve-slot"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -8758,12 +8008,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/providers/mock-provider/reserve-slot"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/providers/mock-provider/reserve-slot"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -9068,10 +8314,7 @@
       "async": false,
       "assertions": 22,
       "status_code_assertions": 12,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/approve",
         "/actions/close",
@@ -9301,12 +8544,8 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/calculations/tax"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/calculations/tax"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -9359,12 +8598,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/calculations/unit-conversion"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/calculations/unit-conversion"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -9417,10 +8652,7 @@
       "async": false,
       "assertions": 14,
       "status_code_assertions": 7,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/pay",
         "/events/outbox",
@@ -9664,9 +8896,7 @@
       "assertions": 5,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/"
-      ],
+      "endpoint_literals": ["/"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -10115,10 +9345,7 @@
       "async": false,
       "assertions": 15,
       "status_code_assertions": 4,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/approve",
         "/resources/catalog_offers",
@@ -10142,10 +9369,7 @@
       "async": false,
       "assertions": 9,
       "status_code_assertions": 4,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/approve",
         "/resources/catalog_offers",
@@ -10168,12 +9392,8 @@
       "async": false,
       "assertions": 3,
       "status_code_assertions": 1,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/valley/catalog/business-activities"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/valley/catalog/business-activities"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -10190,14 +9410,8 @@
       "async": false,
       "assertions": 7,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/providers",
-        "/valley/catalog/search"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/resources/providers", "/valley/catalog/search"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -10214,14 +9428,8 @@
       "async": false,
       "assertions": 5,
       "status_code_assertions": 3,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/products",
-        "/valley/catalog/search"
-      ],
+      "http_methods": ["GET", "POST"],
+      "endpoint_literals": ["/resources/products", "/valley/catalog/search"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -10238,13 +9446,8 @@
       "async": false,
       "assertions": 8,
       "status_code_assertions": 2,
-      "http_methods": [
-        "GET"
-      ],
-      "endpoint_literals": [
-        "/valley/catalog/modules",
-        "/valley/catalog/offers"
-      ],
+      "http_methods": ["GET"],
+      "endpoint_literals": ["/valley/catalog/modules", "/valley/catalog/offers"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -10261,10 +9464,7 @@
       "async": false,
       "assertions": 19,
       "status_code_assertions": 7,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/resources/products",
         "/valley/catalog",
@@ -10287,10 +9487,7 @@
       "async": false,
       "assertions": 9,
       "status_code_assertions": 6,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/pay",
         "/events/outbox",
@@ -10315,9 +9512,7 @@
       "async": false,
       "assertions": 8,
       "status_code_assertions": 5,
-      "http_methods": [
-        "POST"
-      ],
+      "http_methods": ["POST"],
       "endpoint_literals": [
         "/resources/catalog_products",
         "/valley/checkout/discount-options",
@@ -10339,10 +9534,7 @@
       "async": false,
       "assertions": 11,
       "status_code_assertions": 5,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/acknowledge",
         "/actions/deliver",
@@ -10367,13 +9559,8 @@
       "async": false,
       "assertions": 4,
       "status_code_assertions": 3,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/branches",
-        "/resources/products"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/resources/branches", "/resources/products"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -10390,12 +9577,8 @@
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/stores"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/resources/stores"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -10430,12 +9613,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 2,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/valley_gold_ledger_entries"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/resources/valley_gold_ledger_entries"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -10452,12 +9631,7 @@
       "async": false,
       "assertions": 14,
       "status_code_assertions": 7,
-      "http_methods": [
-        "DELETE",
-        "GET",
-        "PATCH",
-        "POST"
-      ],
+      "http_methods": ["DELETE", "GET", "PATCH", "POST"],
       "endpoint_literals": [
         "/events/outbox",
         "/resources/valley_gold_ledger_entries",
@@ -10499,10 +9673,7 @@
       "assertions": 1,
       "status_code_assertions": 0,
       "http_methods": [],
-      "endpoint_literals": [
-        "/data/adb/magisk",
-        "/system/xbin/su"
-      ],
+      "endpoint_literals": ["/data/adb/magisk", "/system/xbin/su"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -10663,12 +9834,8 @@
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
-      "http_methods": [
-        "POST"
-      ],
-      "endpoint_literals": [
-        "/resources/reviews"
-      ],
+      "http_methods": ["POST"],
+      "endpoint_literals": ["/resources/reviews"],
       "parametrized": false,
       "decorators": [],
       "execution_status": "aprovado",
@@ -10685,11 +9852,7 @@
       "async": false,
       "assertions": 17,
       "status_code_assertions": 6,
-      "http_methods": [
-        "GET",
-        "PATCH",
-        "POST"
-      ],
+      "http_methods": ["GET", "PATCH", "POST"],
       "endpoint_literals": [
         "/actions/publish",
         "/events/outbox",
@@ -10767,10 +9930,7 @@
       "async": false,
       "assertions": 15,
       "status_code_assertions": 8,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/resolve",
         "/actions/triage",
@@ -10888,10 +10048,7 @@
       "async": false,
       "assertions": 21,
       "status_code_assertions": 11,
-      "http_methods": [
-        "GET",
-        "POST"
-      ],
+      "http_methods": ["GET", "POST"],
       "endpoint_literals": [
         "/actions/allocate",
         "/actions/close",

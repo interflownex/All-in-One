@@ -1,14 +1,14 @@
-import type { CSSProperties, ImgHTMLAttributes } from 'react';
+import type { CSSProperties, ImgHTMLAttributes } from "react";
 
-const OFFICIAL_LOGO_SRC = '/assets/brand/all-in-one-logo-light-official.png' as const;
+const OFFICIAL_LOGO_SRC = "/assets/brand/all-in-one-logo-light-official.png" as const;
 
 type BrandLogoProps = Omit<
   ImgHTMLAttributes<HTMLImageElement>,
-  'src' | 'srcSet' | 'style' | 'width' | 'height'
+  "src" | "srcSet" | "style" | "width" | "height"
 > & {
   /** Tamanho visual autorizado. A proporção original sempre é preservada. */
   maxWidth?: number | string;
-  style?: Pick<CSSProperties, 'display' | 'margin' | 'maxWidth' | 'width'>;
+  style?: Pick<CSSProperties, "display" | "margin" | "maxWidth" | "width">;
 };
 
 /**
@@ -19,21 +19,21 @@ type BrandLogoProps = Omit<
  */
 export function BrandLogo({
   maxWidth = 120,
-  alt = 'All-in-One',
+  alt = "All-in-One",
   className,
-  loading = 'eager',
-  decoding = 'async',
+  loading = "eager",
+  decoding = "async",
   style,
   ...accessibilityProps
 }: BrandLogoProps) {
   const safeStyle: CSSProperties = {
-    display: style?.display ?? 'block',
-    width: style?.width ?? '100%',
+    display: style?.display ?? "block",
+    width: style?.width ?? "100%",
     maxWidth: style?.maxWidth ?? maxWidth,
-    height: 'auto',
+    height: "auto",
     margin: style?.margin,
-    objectFit: 'contain',
-    objectPosition: 'center',
+    objectFit: "contain",
+    objectPosition: "center",
   };
 
   return (

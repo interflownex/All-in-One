@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Any
-from uuid import uuid4
 
 from psycopg import Connection
 from psycopg.types.json import Jsonb
@@ -22,7 +21,9 @@ class JobsPostgresStore(BasePostgresStore):
         "applications": "jobs.applications",
         "resume_access_logs": "jobs.resume_access_logs",
     }
-    soft_deletable = frozenset({"resumes", "employment_records", "job_postings", "applications"})
+    soft_deletable = frozenset(
+        {"resumes", "employment_records", "job_postings", "applications"}
+    )
 
     def verify_active_business_recruiter(self, user_id: str, business_id: str) -> bool:
         row = self.connection.execute(
@@ -55,9 +56,18 @@ class JobsPostgresStore(BasePostgresStore):
                     status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, payload["headline"], payload.get("professional_summary"),
-                    Jsonb(payload.get("skills", [])), Jsonb(payload.get("education", [])),
-                    payload["recruiter_visibility"], status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    payload["headline"],
+                    payload.get("professional_summary"),
+                    Jsonb(payload.get("skills", [])),
+                    Jsonb(payload.get("education", [])),
+                    payload["recruiter_visibility"],
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "resume_documents":
@@ -68,10 +78,22 @@ class JobsPostgresStore(BasePostgresStore):
                     extracted_fields, status, metadata, created_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, payload["resume_id"], payload["document_type"], payload.get("storage_key"),
-                    payload.get("storage_encryption", "AES-256-GCM"), payload["sha256"], payload.get("page_count"),
-                    payload["evidence_status"], payload["official_verification_status"], payload["extraction_status"],
-                    Jsonb(payload), status, metadata, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    payload["resume_id"],
+                    payload["document_type"],
+                    payload.get("storage_key"),
+                    payload.get("storage_encryption", "AES-256-GCM"),
+                    payload["sha256"],
+                    payload.get("page_count"),
+                    payload["evidence_status"],
+                    payload["official_verification_status"],
+                    payload["extraction_status"],
+                    Jsonb(payload),
+                    status,
+                    metadata,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "employment_records":
@@ -84,12 +106,26 @@ class JobsPostgresStore(BasePostgresStore):
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                    RETURNING *""",
                 (
-                    resource_id, user_id, payload["resume_id"], payload.get("source_document_id"),
-                    payload["source_type"], payload["evidence_status"], payload["official_verification_status"],
-                    payload["employer_name"], payload.get("employer_cnpj"), payload.get("role_title"),
-                    _date(payload["started_on"]), _date(payload.get("ended_on")), payload.get("user_activity_description"),
-                    payload.get("is_informal_activity", False), payload.get("visible_to_recruiter", True),
-                    status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    payload["resume_id"],
+                    payload.get("source_document_id"),
+                    payload["source_type"],
+                    payload["evidence_status"],
+                    payload["official_verification_status"],
+                    payload["employer_name"],
+                    payload.get("employer_cnpj"),
+                    payload.get("role_title"),
+                    _date(payload["started_on"]),
+                    _date(payload.get("ended_on")),
+                    payload.get("user_activity_description"),
+                    payload.get("is_informal_activity", False),
+                    payload.get("visible_to_recruiter", True),
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "job_postings":
@@ -100,10 +136,21 @@ class JobsPostgresStore(BasePostgresStore):
                     created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, payload["company_id"], payload["title"], payload["description"],
-                    payload.get("requirements"), payload.get("employment_type"), payload.get("workplace_model"),
-                    payload.get("salary_min_brl"), payload.get("salary_max_brl"), status, metadata,
-                    actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    payload["company_id"],
+                    payload["title"],
+                    payload["description"],
+                    payload.get("requirements"),
+                    payload.get("employment_type"),
+                    payload.get("workplace_model"),
+                    payload.get("salary_min_brl"),
+                    payload.get("salary_max_brl"),
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "applications":
@@ -113,8 +160,16 @@ class JobsPostgresStore(BasePostgresStore):
                     created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, payload["job_posting_id"], payload["resume_id"],
-                    payload.get("cover_letter"), status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    payload["job_posting_id"],
+                    payload["resume_id"],
+                    payload.get("cover_letter"),
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "resume_access_logs":
@@ -124,14 +179,28 @@ class JobsPostgresStore(BasePostgresStore):
                     metadata, created_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, payload["resume_id"], payload["business_id"], actor,
-                    payload["purpose"], status, metadata, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    payload["resume_id"],
+                    payload["business_id"],
+                    actor,
+                    payload["purpose"],
+                    status,
+                    metadata,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         raise ValueError(f"Recurso Jobs desconhecido: {resource_type}")
 
     def _update(
-        self, connection: Connection, resource_type: str, resource_id: str, payload: dict[str, Any], status: str, actor: str
+        self,
+        connection: Connection,
+        resource_type: str,
+        resource_id: str,
+        payload: dict[str, Any],
+        status: str,
+        actor: str,
     ) -> dict[str, Any]:
         metadata = self._metadata(payload)
         if resource_type == "resumes":
@@ -140,8 +209,15 @@ class JobsPostgresStore(BasePostgresStore):
                    education = %s, recruiter_visibility = %s, status = %s, metadata = %s,
                    updated_by = %s, updated_at = NOW() WHERE id = %s RETURNING *""",
                 (
-                    payload["headline"], payload.get("professional_summary"), Jsonb(payload.get("skills", [])),
-                    Jsonb(payload.get("education", [])), payload["recruiter_visibility"], status, metadata, actor, resource_id,
+                    payload["headline"],
+                    payload.get("professional_summary"),
+                    Jsonb(payload.get("skills", [])),
+                    Jsonb(payload.get("education", [])),
+                    payload["recruiter_visibility"],
+                    status,
+                    metadata,
+                    actor,
+                    resource_id,
                 ),
             ).fetchone()
         if resource_type == "employment_records":
@@ -150,8 +226,14 @@ class JobsPostgresStore(BasePostgresStore):
                    user_activity_description = %s, visible_to_recruiter = %s, status = %s,
                    metadata = %s, updated_by = %s, updated_at = NOW() WHERE id = %s RETURNING *""",
                 (
-                    payload.get("role_title"), _date(payload.get("ended_on")), payload.get("user_activity_description"),
-                    payload.get("visible_to_recruiter", True), status, metadata, actor, resource_id,
+                    payload.get("role_title"),
+                    _date(payload.get("ended_on")),
+                    payload.get("user_activity_description"),
+                    payload.get("visible_to_recruiter", True),
+                    status,
+                    metadata,
+                    actor,
+                    resource_id,
                 ),
             ).fetchone()
         if resource_type == "job_postings":
@@ -161,9 +243,18 @@ class JobsPostgresStore(BasePostgresStore):
                    status = %s, published_at = CASE WHEN %s = 'published' AND published_at IS NULL THEN NOW() ELSE published_at END,
                    metadata = %s, updated_by = %s, updated_at = NOW() WHERE id = %s RETURNING *""",
                 (
-                    payload["title"], payload["description"], payload.get("requirements"), payload.get("employment_type"),
-                    payload.get("workplace_model"), payload.get("salary_min_brl"), payload.get("salary_max_brl"),
-                    status, status, metadata, actor, resource_id,
+                    payload["title"],
+                    payload["description"],
+                    payload.get("requirements"),
+                    payload.get("employment_type"),
+                    payload.get("workplace_model"),
+                    payload.get("salary_min_brl"),
+                    payload.get("salary_max_brl"),
+                    status,
+                    status,
+                    metadata,
+                    actor,
+                    resource_id,
                 ),
             ).fetchone()
         if resource_type == "applications":

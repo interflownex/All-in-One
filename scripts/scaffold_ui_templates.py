@@ -1,5 +1,4 @@
 import argparse
-import os
 from pathlib import Path
 
 # Templates boilerplate TSX
@@ -148,10 +147,11 @@ const {name}: React.FC<{name}Props> = ({{ isOpen, onClose, onConfirm }}) => {{
 export default {name};
 """
 
+
 def generate_template(app_name, template_type, component_name, sub_dest):
     root = Path(__file__).resolve().parents[1]
     dest_path = root / "apps" / app_name / "src" / sub_dest
-    
+
     if not dest_path.exists():
         dest_path.mkdir(parents=True)
         print(f"Diretório criado: {dest_path}")
@@ -163,7 +163,7 @@ def generate_template(app_name, template_type, component_name, sub_dest):
         "dashboard": DASHBOARD_TEMPLATE,
         "list": LIST_TEMPLATE,
         "form": FORM_TEMPLATE,
-        "modal": MODAL_TEMPLATE
+        "modal": MODAL_TEMPLATE,
     }
 
     if template_type not in templates:
@@ -171,16 +171,28 @@ def generate_template(app_name, template_type, component_name, sub_dest):
         return
 
     content = templates[template_type].format(name=component_name)
-    
+
     full_path.write_text(content, encoding="utf-8")
     print(f"✅ Componente '{component_name}' criado com sucesso em: {full_path}")
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Scaffold de UI Templates para o Valley")
-    parser.add_argument("--app", required=True, help="Nome da app (valley ou valley_business)")
-    parser.add_argument("--type", required=True, choices=["dashboard", "list", "form", "modal"], help="Tipo de template")
+    parser = argparse.ArgumentParser(
+        description="Scaffold de UI Templates para o Valley"
+    )
+    parser.add_argument(
+        "--app", required=True, help="Nome da app (valley ou valley_business)"
+    )
+    parser.add_argument(
+        "--type",
+        required=True,
+        choices=["dashboard", "list", "form", "modal"],
+        help="Tipo de template",
+    )
     parser.add_argument("--name", required=True, help="Nome do componente")
-    parser.add_argument("--dest", default="components", help="Subdiretório de destino dentro de src/")
+    parser.add_argument(
+        "--dest", default="components", help="Subdiretório de destino dentro de src/"
+    )
 
     args = parser.parse_args()
     generate_template(args.app, args.type, args.name, args.dest)

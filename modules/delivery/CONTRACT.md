@@ -7,6 +7,7 @@
         ## Entidades
 
         - `delivery_requests`
+
 - `quotes`
 - `assignments`
 - `proofs`
@@ -15,6 +16,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -36,7 +38,6 @@
 - `POST /reject`
 - `POST /audit`
 
-
 ## POD e antifraude
 
 - `proofs` exige `delivery_request_id`, `file_sha256`, `storage_key` e `captured_at`.
@@ -44,10 +45,10 @@
 - POD e append-only/sensivel: nao aceita edicao livre nem exclusao logica pelo runtime generico.
 - Arquivos reais devem ficar em storage privado; o payload versionado guarda apenas hash, chave privada e sinais antifraude minimizados.
 
-
         ## Eventos
 
         - `delivery.request.created`
+
 - `delivery.rider.assigned`
 - `delivery.picked_up`
 - `delivery.completed`

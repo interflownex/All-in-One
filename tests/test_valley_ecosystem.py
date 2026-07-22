@@ -14,7 +14,11 @@ def actor_headers(
     valley_master: bool = False,
     scopes: str = "",
 ) -> dict[str, str]:
-    headers = {"X-Actor-User-Id": user_id, "X-Actor-Roles": roles, "X-Actor-Scopes": scopes}
+    headers = {
+        "X-Actor-User-Id": user_id,
+        "X-Actor-Roles": roles,
+        "X-Actor-Scopes": scopes,
+    }
     if business_id:
         headers["X-Business-Id"] = business_id
         headers["X-Business-Status"] = business_status
@@ -93,7 +97,9 @@ def test_valley_business_essential_plan_and_local_inventory_acl() -> None:
     assert local_product.json()["payload"]["stock_location_type"] == "local_physical"
 
 
-def test_stock_global_import_is_master_only_and_discounts_hide_unavailable_tiers() -> None:
+def test_stock_global_import_is_master_only_and_discounts_hide_unavailable_tiers() -> (
+    None
+):
     stock = fresh_client_for("stock")
     user_id = str(uuid4())
 
@@ -132,20 +138,33 @@ def test_stock_global_import_is_master_only_and_discounts_hide_unavailable_tiers
         json={"price_brl": "200.00", "user_pepitas_balance": 250},
     )
     assert options.status_code == 200
-    assert [item["percent"] for item in options.json()["available_discount_options"]] == [10, 20]
+    assert [
+        item["percent"] for item in options.json()["available_discount_options"]
+    ] == [10, 20]
     assert options.json()["hidden_unavailable_options"] == 1
 
     hidden_quote = stock.post(
         "/valley/checkout/discount-quotes",
-        headers={**actor_headers(user_id), "X-Idempotency-Key": f"quote-hidden-{uuid4().hex}"},
-        json={"price_brl": "200.00", "user_pepitas_balance": 250, "selected_percent": 50},
+        headers={
+            **actor_headers(user_id),
+            "X-Idempotency-Key": f"quote-hidden-{uuid4().hex}",
+        },
+        json={
+            "price_brl": "200.00",
+            "user_pepitas_balance": 250,
+            "selected_percent": 50,
+        },
     )
     assert hidden_quote.status_code == 403
 
     quote = stock.post(
         "/valley/checkout/discount-quotes",
         headers={**actor_headers(user_id), "X-Idempotency-Key": f"quote-{uuid4().hex}"},
-        json={"price_brl": "200.00", "user_pepitas_balance": 500, "selected_percent": 50},
+        json={
+            "price_brl": "200.00",
+            "user_pepitas_balance": 500,
+            "selected_percent": 50,
+        },
     )
     assert quote.status_code == 201
     assert quote.json()["payload"]["final_price_brl"] == "100.00"
@@ -290,9 +309,13 @@ def test_merchant_manual_pepita_grant_emits_valley_event() -> None:
     )
     assert blocked_amount.status_code == 422
 
-    outbox = marketplace.get("/events/outbox", headers=actor_headers(merchant_id, "auditor"))
+    outbox = marketplace.get(
+        "/events/outbox", headers=actor_headers(merchant_id, "auditor")
+    )
     assert outbox.status_code == 200
-    assert any(event["routing_key"] == "valley.pepitas.granted" for event in outbox.json())
+    assert any(
+        event["routing_key"] == "valley.pepitas.granted" for event in outbox.json()
+    )
 
 
 def test_valley_essential_plan_blocks_external_integrations() -> None:

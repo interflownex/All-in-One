@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `bi.dataset.created`
+
 - `bi.dataset.refreshed`
 - `bi.dataset.published`
 - `bi.dashboard.created`

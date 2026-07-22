@@ -58,11 +58,7 @@
       "classification": "credencial",
       "retention": "até fechar a sessão/clear",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -76,11 +72,7 @@
       "classification": "dado pessoal pseudônimo",
       "retention": "até fechar a sessão/clear",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -94,11 +86,7 @@
       "classification": "dado pessoal",
       "retention": "até clear/logout",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -112,11 +100,7 @@
       "classification": "metadado técnico",
       "retention": "até clear/logout",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -130,11 +114,7 @@
       "classification": "configuração",
       "retention": "sem TTL; remoção explícita",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -148,11 +128,7 @@
       "classification": "dado de demonstração potencialmente pessoal",
       "retention": "sem TTL",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -166,11 +142,7 @@
       "classification": "dado de demonstração",
       "retention": "sem TTL",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -184,11 +156,7 @@
       "classification": "dado transacional de demonstração",
       "retention": "sem TTL",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -202,11 +170,7 @@
       "classification": "conteúdo de demonstração",
       "retention": "sem TTL",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -220,11 +184,7 @@
       "classification": "conteúdo de demonstração potencialmente pessoal",
       "retention": "sem TTL",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -238,11 +198,7 @@
       "classification": "catálogo público e parâmetros de busca",
       "retention": "timestamp cachedAt gravado; expiração não comprovada",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",
@@ -256,11 +212,7 @@
       "classification": "pode conter dados de qualquer módulo",
       "retention": "sem TTL",
       "owner": "frontend indicado pela evidência",
-      "operations": [
-        "GET",
-        "SET",
-        "REMOVE/CLEAR quando implementado"
-      ],
+      "operations": ["GET", "SET", "REMOVE/CLEAR quando implementado"],
       "encryption": "não criptografado pela aplicação",
       "source_of_truth": false,
       "risk": "acessível a JavaScript/XSS; não usar como fonte oficial nem persistir segredo além da sessão necessária",

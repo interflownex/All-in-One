@@ -36,41 +36,41 @@ opertation status till it is marked DONE.
 
 #### Parameters
 
-| Name                    | Type   | Description     | Required | Default |
-| :---------------------- | :----- | :-------------- | :------- | :------ |
-| project                 | string | The GCP project | No       |         |
-:                         :        : ID. This is     :          :         :
-:                         :        : pre-configured; :          :         :
-:                         :        : do not ask for  :          :         :
-:                         :        : it unless the   :          :         :
-:                         :        : user explicitly :          :         :
-:                         :        : provides a      :          :         :
-:                         :        : different one.  :          :         :
-| sourceInstanceName      | string | The name of the | Yes      |         |
-:                         :        : instance to be  :          :         :
-:                         :        : cloned.         :          :         :
-| destinationInstanceName | string | The name of the | Yes      |         |
-:                         :        : new instance    :          :         :
-:                         :        : that will be    :          :         :
-:                         :        : created by      :          :         :
-:                         :        : cloning the     :          :         :
-:                         :        : source          :          :         :
-:                         :        : instance.       :          :         :
-| pointInTime             | string | The timestamp   | No       |         |
-:                         :        : in RFC 3339     :          :         :
-:                         :        : format to which :          :         :
-:                         :        : the source      :          :         :
-:                         :        : instance should :          :         :
-:                         :        : be cloned.      :          :         :
-| preferredZone           | string | The preferred   | No       |         |
-:                         :        : zone for the    :          :         :
-:                         :        : new instance.   :          :         :
-| preferredSecondaryZone  | string | The preferred   | No       |         |
-:                         :        : secondary zone  :          :         :
-:                         :        : for the new     :          :         :
-:                         :        : instance.       :          :         :
+| Name                        | Type   | Description     | Required | Default |
+| :-------------------------- | :----- | :-------------- | :------- | :------ |
+| project                     | string | The GCP project | No       |         |
+| : : : ID. This is : : :     |
+| : : : pre-configured; : : : |
+| : : : do not ask for : : :  |
+| : : : it unless the : : :   |
+| : : : user explicitly : : : |
+| : : : provides a : : :      |
+| : : : different one. : : :  |
+| sourceInstanceName          | string | The name of the | Yes      |         |
+| : : : instance to be : : :  |
+| : : : cloned. : : :         |
+| destinationInstanceName     | string | The name of the | Yes      |         |
+| : : : new instance : : :    |
+| : : : that will be : : :    |
+| : : : created by : : :      |
+| : : : cloning the : : :     |
+| : : : source : : :          |
+| : : : instance. : : :       |
+| pointInTime                 | string | The timestamp   | No       |         |
+| : : : in RFC 3339 : : :     |
+| : : : format to which : : : |
+| : : : the source : : :      |
+| : : : instance should : : : |
+| : : : be cloned. : : :      |
+| preferredZone               | string | The preferred   | No       |         |
+| : : : zone for the : : :    |
+| : : : new instance. : : :   |
+| preferredSecondaryZone      | string | The preferred   | No       |         |
+| : : : secondary zone : : :  |
+| : : : for the new : : :     |
+| : : : instance. : : :       |
 
---------------------------------------------------------------------------------
+---
 
 ### create_backup
 
@@ -78,46 +78,46 @@ Creates a backup on a Cloud SQL instance.
 
 #### Parameters
 
-| Name               | Type   | Description     | Required | Default |
-| :----------------- | :----- | :-------------- | :------- | :------ |
-| project            | string | The GCP project | No       |         |
-:                    :        : ID. This is     :          :         :
-:                    :        : pre-configured; :          :         :
-:                    :        : do not ask for  :          :         :
-:                    :        : it unless the   :          :         :
-:                    :        : user explicitly :          :         :
-:                    :        : provides a      :          :         :
-:                    :        : different one.  :          :         :
-| instance           | string | Cloud SQL       | Yes      |         |
-:                    :        : instance ID.    :          :         :
-:                    :        : This does not   :          :         :
-:                    :        : include the     :          :         :
-:                    :        : project ID.     :          :         :
-| location           | string | Location of the | No       |         |
-:                    :        : backup run.     :          :         :
-| backup_description | string | The description | No       |         |
-:                    :        : of this backup  :          :         :
-:                    :        : run.            :          :         :
+| Name                        | Type   | Description     | Required | Default |
+| :-------------------------- | :----- | :-------------- | :------- | :------ |
+| project                     | string | The GCP project | No       |         |
+| : : : ID. This is : : :     |
+| : : : pre-configured; : : : |
+| : : : do not ask for : : :  |
+| : : : it unless the : : :   |
+| : : : user explicitly : : : |
+| : : : provides a : : :      |
+| : : : different one. : : :  |
+| instance                    | string | Cloud SQL       | Yes      |         |
+| : : : instance ID. : : :    |
+| : : : This does not : : :   |
+| : : : include the : : :     |
+| : : : project ID. : : :     |
+| location                    | string | Location of the | No       |         |
+| : : : backup run. : : :     |
+| backup_description          | string | The description | No       |         |
+| : : : of this backup : : :  |
+| : : : run. : : :            |
 
---------------------------------------------------------------------------------
+---
 
 ### get_instance
 
 #### Parameters
 
-| Name       | Type   | Description     | Required | Default |
-| :--------- | :----- | :-------------- | :------- | :------ |
-| projectId  | string | The GCP project | No       |         |
-:            :        : ID. This is     :          :         :
-:            :        : pre-configured; :          :         :
-:            :        : do not ask for  :          :         :
-:            :        : it unless the   :          :         :
-:            :        : user explicitly :          :         :
-:            :        : provides a      :          :         :
-:            :        : different one.  :          :         :
-| instanceId | string | The instance ID | Yes      |         |
+| Name                        | Type   | Description     | Required | Default |
+| :-------------------------- | :----- | :-------------- | :------- | :------ |
+| projectId                   | string | The GCP project | No       |         |
+| : : : ID. This is : : :     |
+| : : : pre-configured; : : : |
+| : : : do not ask for : : :  |
+| : : : it unless the : : :   |
+| : : : user explicitly : : : |
+| : : : provides a : : :      |
+| : : : different one. : : :  |
+| instanceId                  | string | The instance ID | Yes      |         |
 
---------------------------------------------------------------------------------
+---
 
 ### list_instances
 
@@ -125,18 +125,18 @@ Lists all type of Cloud SQL instances for a project.
 
 #### Parameters
 
-| Name    | Type   | Description     | Required | Default |
-| :------ | :----- | :-------------- | :------- | :------ |
-| project | string | The GCP project | No       |         |
-:         :        : ID. This is     :          :         :
-:         :        : pre-configured; :          :         :
-:         :        : do not ask for  :          :         :
-:         :        : it unless the   :          :         :
-:         :        : user explicitly :          :         :
-:         :        : provides a      :          :         :
-:         :        : different one.  :          :         :
+| Name                        | Type   | Description     | Required | Default |
+| :-------------------------- | :----- | :-------------- | :------- | :------ |
+| project                     | string | The GCP project | No       |         |
+| : : : ID. This is : : :     |
+| : : : pre-configured; : : : |
+| : : : do not ask for : : :  |
+| : : : it unless the : : :   |
+| : : : user explicitly : : : |
+| : : : provides a : : :      |
+| : : : different one. : : :  |
 
---------------------------------------------------------------------------------
+---
 
 ### restore_backup
 
@@ -144,70 +144,70 @@ Restores a backup on a Cloud SQL instance.
 
 #### Parameters
 
-| Name            | Type   | Description     | Required | Default |
-| :-------------- | :----- | :-------------- | :------- | :------ |
-| target_project  | string | The GCP project | No       |         |
-:                 :        : ID. This is     :          :         :
-:                 :        : pre-configured; :          :         :
-:                 :        : do not ask for  :          :         :
-:                 :        : it unless the   :          :         :
-:                 :        : user explicitly :          :         :
-:                 :        : provides a      :          :         :
-:                 :        : different one.  :          :         :
-| target_instance | string | Cloud SQL       | Yes      |         |
-:                 :        : instance ID of  :          :         :
-:                 :        : the target      :          :         :
-:                 :        : instance. This  :          :         :
-:                 :        : does not        :          :         :
-:                 :        : include the     :          :         :
-:                 :        : project ID.     :          :         :
-| backup_id       | string | Identifier of   | Yes      |         |
-:                 :        : the backup      :          :         :
-:                 :        : being restored. :          :         :
-:                 :        : Can be a        :          :         :
-:                 :        : BackupRun ID,   :          :         :
-:                 :        : backup name, or :          :         :
-:                 :        : BackupDR backup :          :         :
-:                 :        : name. Use the   :          :         :
-:                 :        : full backup ID  :          :         :
-:                 :        : as provided, do :          :         :
-:                 :        : not try to      :          :         :
-:                 :        : parse it        :          :         :
-| source_project  | string | GCP project ID  | No       |         |
-:                 :        : of the instance :          :         :
-:                 :        : that the backup :          :         :
-:                 :        : belongs to.     :          :         :
-:                 :        : Only required   :          :         :
-:                 :        : if the          :          :         :
-:                 :        : backup_id is a  :          :         :
-:                 :        : BackupRun ID.   :          :         :
-| source_instance | string | Cloud SQL       | No       |         |
-:                 :        : instance ID of  :          :         :
-:                 :        : the instance    :          :         :
-:                 :        : that the backup :          :         :
-:                 :        : belongs to.     :          :         :
-:                 :        : Only required   :          :         :
-:                 :        : if the          :          :         :
-:                 :        : backup_id is a  :          :         :
-:                 :        : BackupRun ID.   :          :         :
+| Name                        | Type   | Description     | Required | Default |
+| :-------------------------- | :----- | :-------------- | :------- | :------ |
+| target_project              | string | The GCP project | No       |         |
+| : : : ID. This is : : :     |
+| : : : pre-configured; : : : |
+| : : : do not ask for : : :  |
+| : : : it unless the : : :   |
+| : : : user explicitly : : : |
+| : : : provides a : : :      |
+| : : : different one. : : :  |
+| target_instance             | string | Cloud SQL       | Yes      |         |
+| : : : instance ID of : : :  |
+| : : : the target : : :      |
+| : : : instance. This : : :  |
+| : : : does not : : :        |
+| : : : include the : : :     |
+| : : : project ID. : : :     |
+| backup_id                   | string | Identifier of   | Yes      |         |
+| : : : the backup : : :      |
+| : : : being restored. : : : |
+| : : : Can be a : : :        |
+| : : : BackupRun ID, : : :   |
+| : : : backup name, or : : : |
+| : : : BackupDR backup : : : |
+| : : : name. Use the : : :   |
+| : : : full backup ID : : :  |
+| : : : as provided, do : : : |
+| : : : not try to : : :      |
+| : : : parse it : : :        |
+| source_project              | string | GCP project ID  | No       |         |
+| : : : of the instance : : : |
+| : : : that the backup : : : |
+| : : : belongs to. : : :     |
+| : : : Only required : : :   |
+| : : : if the : : :          |
+| : : : backup_id is a : : :  |
+| : : : BackupRun ID. : : :   |
+| source_instance             | string | Cloud SQL       | No       |         |
+| : : : instance ID of : : :  |
+| : : : the instance : : :    |
+| : : : that the backup : : : |
+| : : : belongs to. : : :     |
+| : : : Only required : : :   |
+| : : : if the : : :          |
+| : : : backup_id is a : : :  |
+| : : : BackupRun ID. : : :   |
 
---------------------------------------------------------------------------------
+---
 
 ### wait_for_operation
 
 #### Parameters
 
-| Name      | Type   | Description     | Required | Default |
-| :-------- | :----- | :-------------- | :------- | :------ |
-| project   | string | The GCP project | No       |         |
-:           :        : ID. This is     :          :         :
-:           :        : pre-configured; :          :         :
-:           :        : do not ask for  :          :         :
-:           :        : it unless the   :          :         :
-:           :        : user explicitly :          :         :
-:           :        : provides a      :          :         :
-:           :        : different one.  :          :         :
-| operation | string | The operation   | Yes      |         |
-:           :        : ID              :          :         :
+| Name                        | Type   | Description     | Required | Default |
+| :-------------------------- | :----- | :-------------- | :------- | :------ |
+| project                     | string | The GCP project | No       |         |
+| : : : ID. This is : : :     |
+| : : : pre-configured; : : : |
+| : : : do not ask for : : :  |
+| : : : it unless the : : :   |
+| : : : user explicitly : : : |
+| : : : provides a : : :      |
+| : : : different one. : : :  |
+| operation                   | string | The operation   | Yes      |         |
+| : : : ID : : :              |
 
---------------------------------------------------------------------------------
+---

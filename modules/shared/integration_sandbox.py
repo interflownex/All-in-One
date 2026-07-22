@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
-from decimal import Decimal, ROUND_HALF_UP
 import hashlib
 import hmac
 import json
 import math
+from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from typing import Any
-from uuid import uuid5, NAMESPACE_URL
-
+from uuid import NAMESPACE_URL, uuid5
 
 ROOT = Path(__file__).resolve().parents[2]
 MATRIX_PATH = ROOT / "config" / "integrations" / "provider_matrix.json"
@@ -52,10 +51,14 @@ def sandbox_audit_record(
     payload: dict[str, Any],
     events: tuple[dict[str, Any], ...] = (),
 ) -> dict[str, Any]:
-    payload_sha256 = _digest("sandbox-payload", json.dumps(payload, sort_keys=True, default=str))
+    payload_sha256 = _digest(
+        "sandbox-payload", json.dumps(payload, sort_keys=True, default=str)
+    )
     event_keys = [str(event.get("routing_key", "")) for event in events]
     return {
-        "audit_id": _stable_id("sandbox_audit", provider_key, adapter, reference_id, payload_sha256),
+        "audit_id": _stable_id(
+            "sandbox_audit", provider_key, adapter, reference_id, payload_sha256
+        ),
         "provider_key": provider_key,
         "adapter": adapter,
         "provider_environment": "sandbox",
@@ -120,7 +123,11 @@ class IdentityVerificationSandbox:
         full_name: str,
         selfie_hash: str | None = None,
     ) -> SandboxResult:
-        status = "approved" if document and full_name and not document.endswith("0000") else "manual_review"
+        status = (
+            "approved"
+            if document and full_name and not document.endswith("0000")
+            else "manual_review"
+        )
         score = 0.97 if status == "approved" else 0.61
         payload = {
             "user_id": user_id,
@@ -131,12 +138,29 @@ class IdentityVerificationSandbox:
             "provider_environment": "sandbox",
             "manual_review_required": status != "approved",
         }
-        events = (_event("identity.user.verified", {"user_id": user_id, "status": status}),) if status == "approved" else ()
-        return SandboxResult(self.provider_key, self.adapter, status, _stable_id("kyc", user_id, document), payload, events)
+        events = (
+            (_event("identity.user.verified", {"user_id": user_id, "status": status}),)
+            if status == "approved"
+            else ()
+        )
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            status,
+            _stable_id("kyc", user_id, document),
+            payload,
+            events,
+        )
 
-    def verify_business(self, company_id: str, cnpj: str, legal_name: str) -> SandboxResult:
+    def verify_business(
+        self, company_id: str, cnpj: str, legal_name: str
+    ) -> SandboxResult:
         digits = "".join(char for char in cnpj if char.isdigit())
-        status = "approved" if len(digits) == 14 and not digits.endswith("0000") else "manual_review"
+        status = (
+            "approved"
+            if len(digits) == 14 and not digits.endswith("0000")
+            else "manual_review"
+        )
         payload = {
             "company_id": company_id,
             "cnpj_hash": _digest("cnpj", digits),
@@ -144,15 +168,33 @@ class IdentityVerificationSandbox:
             "provider_environment": "sandbox",
             "manual_review_required": status != "approved",
         }
-        events = (_event("business.company.approved", {"company_id": company_id, "status": status}),) if status == "approved" else ()
-        return SandboxResult(self.provider_key, self.adapter, status, _stable_id("kyb", company_id, digits), payload, events)
+        events = (
+            (
+                _event(
+                    "business.company.approved",
+                    {"company_id": company_id, "status": status},
+                ),
+            )
+            if status == "approved"
+            else ()
+        )
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            status,
+            _stable_id("kyb", company_id, digits),
+            payload,
+            events,
+        )
 
 
 class PspLedgerSandbox:
     provider_key = "finance_pix_psp"
     adapter = "local_psp_ledger_simulator"
 
-    def authorize_pix(self, payment_id: str, payer_id: str, amount_brl: str, idempotency_key: str) -> SandboxResult:
+    def authorize_pix(
+        self, payment_id: str, payer_id: str, amount_brl: str, idempotency_key: str
+    ) -> SandboxResult:
         amount = _money(amount_brl)
         status = "authorized" if amount > Decimal("0") else "rejected"
         payload = {
@@ -163,11 +205,23 @@ class PspLedgerSandbox:
             "end_to_end_id": _stable_id("pix", payment_id, idempotency_key),
             "provider_environment": "sandbox",
         }
-        return SandboxResult(self.provider_key, self.adapter, status, _stable_id("psp", payment_id, idempotency_key), payload)
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            status,
+            _stable_id("psp", payment_id, idempotency_key),
+            payload,
+        )
 
-    def create_escrow(self, escrow_id: str, payer_id: str, beneficiary_id: str, amount_brl: str) -> SandboxResult:
+    def create_escrow(
+        self, escrow_id: str, payer_id: str, beneficiary_id: str, amount_brl: str
+    ) -> SandboxResult:
         amount = _money(amount_brl)
-        status = "held" if amount > Decimal("0") and payer_id != beneficiary_id else "rejected"
+        status = (
+            "held"
+            if amount > Decimal("0") and payer_id != beneficiary_id
+            else "rejected"
+        )
         payload = {
             "escrow_id": escrow_id,
             "payer_id": payer_id,
@@ -175,8 +229,17 @@ class PspLedgerSandbox:
             "amount_brl": str(amount),
             "provider_environment": "sandbox",
         }
-        events = (_event("payment.escrow.created", payload),) if status == "held" else ()
-        return SandboxResult(self.provider_key, self.adapter, status, _stable_id("escrow", escrow_id, amount), payload, events)
+        events = (
+            (_event("payment.escrow.created", payload),) if status == "held" else ()
+        )
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            status,
+            _stable_id("escrow", escrow_id, amount),
+            payload,
+            events,
+        )
 
     def release_escrow(self, escrow_id: str, amount_brl: str) -> SandboxResult:
         payload = {
@@ -198,19 +261,34 @@ class FiscalDocumentSandbox:
     provider_key = "fiscal_nfse_nfe"
     adapter = "local_fiscal_document_simulator"
 
-    def issue_invoice(self, invoice_id: str, document_type: str, amount_brl: str, issuer_document: str) -> SandboxResult:
+    def issue_invoice(
+        self, invoice_id: str, document_type: str, amount_brl: str, issuer_document: str
+    ) -> SandboxResult:
         amount = _money(amount_brl)
-        status = "issued" if amount > Decimal("0") and document_type in {"nfse", "nfe", "receipt"} else "rejected"
+        status = (
+            "issued"
+            if amount > Decimal("0") and document_type in {"nfse", "nfe", "receipt"}
+            else "rejected"
+        )
         payload = {
             "invoice_id": invoice_id,
             "document_type": document_type,
             "amount_brl": str(amount),
             "issuer_document_hash": _digest("issuer", issuer_document),
-            "authorization_code": _digest("fiscal", invoice_id, document_type, amount)[:16].upper(),
+            "authorization_code": _digest("fiscal", invoice_id, document_type, amount)[
+                :16
+            ].upper(),
             "provider_environment": "sandbox",
         }
         events = (_event("erp.invoice.created", payload),) if status == "issued" else ()
-        return SandboxResult(self.provider_key, self.adapter, status, _stable_id("fiscal", invoice_id, document_type), payload, events)
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            status,
+            _stable_id("fiscal", invoice_id, document_type),
+            payload,
+            events,
+        )
 
 
 def local_fiscal_document_simulator(
@@ -234,7 +312,9 @@ def local_fiscal_document_simulator(
         "adapter": FiscalDocumentSandbox.adapter,
         "status": status,
         "reference_id": _stable_id("fiscal", document_id, action),
-        "auth_code": _digest("fiscal", document_id, action, material["amount_brl"])[:16].upper(),
+        "auth_code": _digest("fiscal", document_id, action, material["amount_brl"])[
+            :16
+        ].upper(),
         "payload": material,
         "audit": sandbox_audit_record(
             FiscalDocumentSandbox.provider_key,
@@ -252,28 +332,52 @@ class CtpsSandbox:
 
     def classify_pdf(self, resume_id: str, pdf_bytes: bytes) -> SandboxResult:
         sha256 = hashlib.sha256(pdf_bytes).hexdigest()
-        status = "hash_preserved" if pdf_bytes.startswith(b"%PDF") else "invalid_document"
+        status = (
+            "hash_preserved" if pdf_bytes.startswith(b"%PDF") else "invalid_document"
+        )
         payload = {
             "resume_id": resume_id,
             "sha256": sha256,
             "official_verification_status": "not_verified_externally",
             "provider_environment": "sandbox",
         }
-        events = (_event("jobs.resume.ctps_imported", payload),) if status == "hash_preserved" else ()
-        return SandboxResult(self.provider_key, self.adapter, status, _stable_id("ctps", resume_id, sha256), payload, events)
+        events = (
+            (_event("jobs.resume.ctps_imported", payload),)
+            if status == "hash_preserved"
+            else ()
+        )
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            status,
+            _stable_id("ctps", resume_id, sha256),
+            payload,
+            events,
+        )
 
 
 class MapsRoutingSandbox:
     provider_key = "maps_routing_tracking"
     adapter = "local_distance_eta_calculator"
 
-    def route(self, route_id: str, origin: dict[str, float], destination: dict[str, float], vehicle_type: str = "car") -> SandboxResult:
+    def route(
+        self,
+        route_id: str,
+        origin: dict[str, float],
+        destination: dict[str, float],
+        vehicle_type: str = "car",
+    ) -> SandboxResult:
         lat1 = math.radians(float(origin["lat"]))
         lat2 = math.radians(float(destination["lat"]))
         delta_lat = lat2 - lat1
         delta_lng = math.radians(float(destination["lng"]) - float(origin["lng"]))
-        a = math.sin(delta_lat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(delta_lng / 2) ** 2
-        distance_km = Decimal(str(6371 * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a)))).quantize(Decimal("0.001"))
+        a = (
+            math.sin(delta_lat / 2) ** 2
+            + math.cos(lat1) * math.cos(lat2) * math.sin(delta_lng / 2) ** 2
+        )
+        distance_km = Decimal(
+            str(6371 * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a)))
+        ).quantize(Decimal("0.001"))
         speed = {
             "bicycle": Decimal("18"),
             "motorcycle": Decimal("32"),
@@ -281,7 +385,9 @@ class MapsRoutingSandbox:
             "van": Decimal("24"),
             "truck": Decimal("20"),
         }.get(vehicle_type, Decimal("28"))
-        eta_minutes = (distance_km / speed * Decimal("60")).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
+        eta_minutes = (distance_km / speed * Decimal("60")).quantize(
+            Decimal("0.1"), rounding=ROUND_HALF_UP
+        )
         payload = {
             "route_id": route_id,
             "distance_km": str(distance_km),
@@ -289,57 +395,99 @@ class MapsRoutingSandbox:
             "vehicle_type": vehicle_type,
             "provider_environment": "sandbox",
         }
-        return SandboxResult(self.provider_key, self.adapter, "calculated", _stable_id("route", route_id, origin, destination), payload)
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            "calculated",
+            _stable_id("route", route_id, origin, destination),
+            payload,
+        )
 
 
 class ClinicalConsentSandbox:
     provider_key = "health_telemedicine_prescription"
     adapter = "local_clinical_consent_simulator"
 
-    def record_consent(self, patient_id: str, professional_id: str, purpose: str, ttl_days: int = 180) -> SandboxResult:
+    def record_consent(
+        self, patient_id: str, professional_id: str, purpose: str, ttl_days: int = 180
+    ) -> SandboxResult:
         issued_at = datetime.now(UTC)
         expires_at = issued_at + timedelta(days=ttl_days)
         payload = {
             "patient_id": patient_id,
             "professional_id": professional_id,
             "purpose": purpose,
-            "consent_hash": _digest("health-consent", patient_id, professional_id, purpose, issued_at.date()),
+            "consent_hash": _digest(
+                "health-consent", patient_id, professional_id, purpose, issued_at.date()
+            ),
             "issued_at": issued_at.isoformat(),
             "expires_at": expires_at.isoformat(),
             "provider_environment": "sandbox",
         }
-        return SandboxResult(self.provider_key, self.adapter, "active", _stable_id("health_consent", patient_id, purpose), payload)
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            "active",
+            _stable_id("health_consent", patient_id, purpose),
+            payload,
+        )
 
 
 class ApiHubSandbox:
     provider_key = "api_hub_oauth_webhooks"
     adapter = "local_gateway_signature_and_api_key_validator"
 
-    def sign_webhook(self, webhook_id: str, payload: dict[str, Any], secret: str) -> SandboxResult:
+    def sign_webhook(
+        self, webhook_id: str, payload: dict[str, Any], secret: str
+    ) -> SandboxResult:
         body = json.dumps(payload, sort_keys=True, separators=(",", ":"))
-        signature = hmac.new(secret.encode("utf-8"), body.encode("utf-8"), hashlib.sha256).hexdigest()
+        signature = hmac.new(
+            secret.encode("utf-8"), body.encode("utf-8"), hashlib.sha256
+        ).hexdigest()
         response = {
             "webhook_id": webhook_id,
             "payload_sha256": hashlib.sha256(body.encode("utf-8")).hexdigest(),
             "signature_sha256": signature,
             "provider_environment": "sandbox",
         }
-        return SandboxResult(self.provider_key, self.adapter, "signed", _stable_id("webhook", webhook_id, response["payload_sha256"]), response)
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            "signed",
+            _stable_id("webhook", webhook_id, response["payload_sha256"]),
+            response,
+        )
 
     def verify_api_key(self, api_key: str, allowed_hashes: set[str]) -> SandboxResult:
         api_key_hash = hashlib.sha256(api_key.encode("utf-8")).hexdigest()
         status = "accepted" if api_key_hash in allowed_hashes else "rejected"
         payload = {"api_key_hash": api_key_hash, "provider_environment": "sandbox"}
-        return SandboxResult(self.provider_key, self.adapter, status, _stable_id("api_key", api_key_hash), payload)
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            status,
+            _stable_id("api_key", api_key_hash),
+            payload,
+        )
 
 
 class SupplierCatalogSandbox:
     provider_key = "stock_supplier_catalog"
     adapter = "local_supplier_catalog_fixture"
 
-    def import_product(self, supplier_id: str, external_sku: str, cost_brl: str, available_quantity: int) -> SandboxResult:
+    def import_product(
+        self,
+        supplier_id: str,
+        external_sku: str,
+        cost_brl: str,
+        available_quantity: int,
+    ) -> SandboxResult:
         cost = _money(cost_brl)
-        status = "available" if cost > Decimal("0") and available_quantity > 0 else "unavailable"
+        status = (
+            "available"
+            if cost > Decimal("0") and available_quantity > 0
+            else "unavailable"
+        )
         payload = {
             "supplier_id": supplier_id,
             "external_sku": external_sku,
@@ -347,15 +495,28 @@ class SupplierCatalogSandbox:
             "available_quantity": available_quantity,
             "provider_environment": "sandbox",
         }
-        events = (_event("stock.product.imported", payload),) if status == "available" else ()
-        return SandboxResult(self.provider_key, self.adapter, status, _stable_id("supplier_product", supplier_id, external_sku), payload, events)
+        events = (
+            (_event("stock.product.imported", payload),)
+            if status == "available"
+            else ()
+        )
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            status,
+            _stable_id("supplier_product", supplier_id, external_sku),
+            payload,
+            events,
+        )
 
 
 class AiAgentSandbox:
     provider_key = "ai_agent_superdesign"
     adapter = "local_mock_ai_response"
 
-    def run_prompt(self, run_id: str, prompt: str, module: str = "ai_core") -> SandboxResult:
+    def run_prompt(
+        self, run_id: str, prompt: str, module: str = "ai_core"
+    ) -> SandboxResult:
         payload = {
             "run_id": run_id,
             "module": module,

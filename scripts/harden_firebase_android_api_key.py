@@ -10,7 +10,6 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "config/autonomy/firebase_auth_policy.json"
 GCLOUD = Path.home() / "google-cloud-sdk/bin/gcloud"
@@ -83,8 +82,12 @@ def main() -> int:
         result = request_json(operation_url, token, project_id)
         if result.get("done"):
             if result.get("error"):
-                raise RuntimeError(f"Falha ao restringir chave Firebase: {result['error']}")
-            print("Chave Firebase Android restrita ao pacote Valley e aos certificados debug/release.")
+                raise RuntimeError(
+                    f"Falha ao restringir chave Firebase: {result['error']}"
+                )
+            print(
+                "Chave Firebase Android restrita ao pacote Valley e aos certificados debug/release."
+            )
             return 0
         time.sleep(2)
     raise RuntimeError("Timeout ao aguardar restricao da chave Firebase.")

@@ -28,12 +28,12 @@ For each bucket, you MUST:
 
 ## Severity Labels
 
-Label    | Meaning
--------- | ---------------------------------------------------------------
-Critical | Active exposure or full-chain attack path. Immediate action
-High     | Significant gaps that enable serious attack scenarios. Urgent
-Medium   | Notable gaps that weaken posture but require additional factors
-Low      | Minor gaps, typically integrity/availability risks on
+| Label    | Meaning                                                         |
+| -------- | --------------------------------------------------------------- |
+| Critical | Active exposure or full-chain attack path. Immediate action     |
+| High     | Significant gaps that enable serious attack scenarios. Urgent   |
+| Medium   | Notable gaps that weaken posture but require additional factors |
+| Low      | Minor gaps, typically integrity/availability risks on           |
 
 Severity is modulated by bucket classification. The same toxic combination on a
 High-sensitivity bucket may be Critical, but Medium on a Low-sensitivity bucket.

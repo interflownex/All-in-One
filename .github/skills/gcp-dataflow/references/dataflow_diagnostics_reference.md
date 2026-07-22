@@ -11,41 +11,41 @@
 
 Key metrics to look at for Streaming jobs:
 
-*   **Data Freshness**:
-    *   `job/per_stage_data_watermark_age` (Filters: `job_id`, `stage`)
-    *   `job/data_watermark_age` (Filters: `job_id`)
-*   **Throughput**:
-    *   `job/elements_produced_count` (Filters: `job_id`, `pcollection`,
-        `ptransform`)
-    *   `job/estimated_bytes_produced_count` (Filters: `job_id`, `pcollection`,
-        `ptransform`)
-*   **Backlog**:
-    *   `job/estimated_backlog_processing_time` (Filters: `job_id`, `stage`)
-    *   `job/backlog_bytes` (Filters: `job_id`, `stage`)
-*   **System Latency**:
-    *   `job/per_stage_system_lag` (Filters: `job_id`, `stage`)
-    *   `job/system_lag` (Filters: `job_id`)
-*   **Autoscaling**:
-    *   `job/horizontal_worker_scaling` (Filters: `job_id`, `rationale`,
-        `direction`)
-*   **Bottleneck**:
-    *   `job/is_bottleneck` (Filters: `job_id`, `stage`, `likely_cause`,
-        `bottleneck_kind`)
-    *   `job/backlogged_keys` (Filters: `job_id`, `stage`)
-*   **Resource Utilization (CPU/Memory)**:
-    *   `compute.googleapis.com/instance/cpu/utilization`
-    *   `compute.googleapis.com/guest/memory/bytes_used`
+- **Data Freshness**:
+  - `job/per_stage_data_watermark_age` (Filters: `job_id`, `stage`)
+  - `job/data_watermark_age` (Filters: `job_id`)
+- **Throughput**:
+  - `job/elements_produced_count` (Filters: `job_id`, `pcollection`,
+    `ptransform`)
+  - `job/estimated_bytes_produced_count` (Filters: `job_id`, `pcollection`,
+    `ptransform`)
+- **Backlog**:
+  - `job/estimated_backlog_processing_time` (Filters: `job_id`, `stage`)
+  - `job/backlog_bytes` (Filters: `job_id`, `stage`)
+- **System Latency**:
+  - `job/per_stage_system_lag` (Filters: `job_id`, `stage`)
+  - `job/system_lag` (Filters: `job_id`)
+- **Autoscaling**:
+  - `job/horizontal_worker_scaling` (Filters: `job_id`, `rationale`,
+    `direction`)
+- **Bottleneck**:
+  - `job/is_bottleneck` (Filters: `job_id`, `stage`, `likely_cause`,
+    `bottleneck_kind`)
+  - `job/backlogged_keys` (Filters: `job_id`, `stage`)
+- **Resource Utilization (CPU/Memory)**:
+  - `compute.googleapis.com/instance/cpu/utilization`
+  - `compute.googleapis.com/guest/memory/bytes_used`
 
 ### Batch Jobs
 
 Key metrics to look at for Batch jobs:
 
-*   **Resource Utilization (CPU/Memory)**:
-    *   `compute.googleapis.com/instance/cpu/utilization`
-    *   `compute.googleapis.com/guest/memory/bytes_used`
-*   **Throughput**:
-    *   `job/elements_produced_count` (Filters: `job_id`, `pcollection`,
-        `ptransform`) *(Throughput is the primary indicator for Batch jobs)*
+- **Resource Utilization (CPU/Memory)**:
+  - `compute.googleapis.com/instance/cpu/utilization`
+  - `compute.googleapis.com/guest/memory/bytes_used`
+- **Throughput**:
+  - `job/elements_produced_count` (Filters: `job_id`, `pcollection`,
+    `ptransform`) _(Throughput is the primary indicator for Batch jobs)_
 
 ### Monitoring API Request
 
@@ -79,10 +79,11 @@ Bearer $(gcloud auth print-access-token)" \
 "https://dataflow.googleapis.com/v1b3/projects/<PROJECT_ID>/locations/<REGION>/jobs/<JOB_ID>/messages"`
 
 ## 4. Additional Dataflow Metrics
+
 Only when you need more metrics not covered by the above sections, or want to
 check source/sink based performance, refer to:
 
-* [Core Job Metrics](dataflow_metrics_core_job.md)
-* [Pub/Sub Metrics](dataflow_metrics_pubsub.md)
-* [BigQuery Metrics](dataflow_metrics_bigquery.md)
-* [Streaming Engine Metrics](dataflow_metrics_streaming_engine.md)
+- [Core Job Metrics](dataflow_metrics_core_job.md)
+- [Pub/Sub Metrics](dataflow_metrics_pubsub.md)
+- [BigQuery Metrics](dataflow_metrics_bigquery.md)
+- [Streaming Engine Metrics](dataflow_metrics_streaming_engine.md)

@@ -12,7 +12,6 @@ import psycopg
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
-
 SAFE_PAYLOAD_FIELDS: dict[str, frozenset[str]] = {
     "api_clients": frozenset({"client_name", "scopes"}),
     "carriers": frozenset({"coverage", "name"}),
@@ -47,7 +46,9 @@ SAFE_PAYLOAD_FIELDS: dict[str, frozenset[str]] = {
             "visible_to_recruiter",
         }
     ),
-    "job_postings": frozenset({"company_id", "title", "employment_type", "workplace_model"}),
+    "job_postings": frozenset(
+        {"company_id", "title", "employment_type", "workplace_model"}
+    ),
     "applications": frozenset({"job_posting_id", "resume_id"}),
     "resume_access_logs": frozenset({"resume_id", "business_id"}),
     "stores": frozenset({"name"}),
@@ -190,7 +191,7 @@ class OutboxSettings:
     retry_max_seconds: int = 300
 
     @classmethod
-    def from_environment(cls) -> "OutboxSettings":
+    def from_environment(cls) -> OutboxSettings:
         postgres_dsn = (
             os.getenv("ALL_IN_ONE_OUTBOX_POSTGRES_DSN")
             or os.getenv("ALL_IN_ONE_JOBS_POSTGRES_DSN")
@@ -206,9 +207,15 @@ class OutboxSettings:
             rabbitmq_url=rabbitmq_url,
             exchange=os.getenv("ALL_IN_ONE_OUTBOX_EXCHANGE", "all-in-one.domain"),
             batch_size=max(1, int(os.getenv("ALL_IN_ONE_OUTBOX_BATCH_SIZE", "100"))),
-            poll_seconds=max(0.1, float(os.getenv("ALL_IN_ONE_OUTBOX_POLL_SECONDS", "1"))),
-            retry_base_seconds=max(1, int(os.getenv("ALL_IN_ONE_OUTBOX_RETRY_BASE_SECONDS", "5"))),
-            retry_max_seconds=max(1, int(os.getenv("ALL_IN_ONE_OUTBOX_RETRY_MAX_SECONDS", "300"))),
+            poll_seconds=max(
+                0.1, float(os.getenv("ALL_IN_ONE_OUTBOX_POLL_SECONDS", "1"))
+            ),
+            retry_base_seconds=max(
+                1, int(os.getenv("ALL_IN_ONE_OUTBOX_RETRY_BASE_SECONDS", "5"))
+            ),
+            retry_max_seconds=max(
+                1, int(os.getenv("ALL_IN_ONE_OUTBOX_RETRY_MAX_SECONDS", "300"))
+            ),
         )
 
 
@@ -231,8 +238,14 @@ class OutboxMetrics:
 
 def publication_message(event: dict[str, Any]) -> dict[str, Any]:
     stored_payload = event.get("payload") or {}
-    is_envelope = isinstance(stored_payload, dict) and "event_id" in stored_payload and "payload" in stored_payload
-    source_payload = stored_payload.get("payload") or {} if is_envelope else stored_payload
+    is_envelope = (
+        isinstance(stored_payload, dict)
+        and "event_id" in stored_payload
+        and "payload" in stored_payload
+    )
+    source_payload = (
+        stored_payload.get("payload") or {} if is_envelope else stored_payload
+    )
     safe_fields = SAFE_PAYLOAD_FIELDS.get(event["aggregate_type"], frozenset())
     message = {
         "event_id": str(event["id"]),
@@ -242,8 +255,14 @@ def publication_message(event: dict[str, Any]) -> dict[str, Any]:
         "aggregate_id": str(event["aggregate_id"]),
         "correlation_id": str(event["correlation_id"]),
         "entity_id": str(event["entity_id"]) if event.get("entity_id") else None,
-        "payload": {key: source_payload[key] for key in sorted(safe_fields) if key in source_payload},
-        "occurred_at": stored_payload.get("occurred_at") if is_envelope else event["created_at"].isoformat(),
+        "payload": {
+            key: source_payload[key]
+            for key in sorted(safe_fields)
+            if key in source_payload
+        },
+        "occurred_at": stored_payload.get("occurred_at")
+        if is_envelope
+        else event["created_at"].isoformat(),
     }
     if is_envelope:
         message.update(
@@ -273,10 +292,18 @@ def prometheus_metrics(metrics: OutboxMetrics) -> str:
     return "".join(f"{name} {value}\n" for name, value in values.items())
 
 
-def retry_observation(event: dict[str, Any], error: Exception, settings: OutboxSettings, now: datetime | None = None) -> dict[str, Any]:
+def retry_observation(
+    event: dict[str, Any],
+    error: Exception,
+    settings: OutboxSettings,
+    now: datetime | None = None,
+) -> dict[str, Any]:
     metadata = event.get("metadata") or {}
     retry_count = int(metadata.get("retry_count") or 0) + 1
-    delay_seconds = min(settings.retry_max_seconds, settings.retry_base_seconds * (2 ** (retry_count - 1)))
+    delay_seconds = min(
+        settings.retry_max_seconds,
+        settings.retry_base_seconds * (2 ** (retry_count - 1)),
+    )
     observed_at = now or datetime.now(UTC)
     next_retry_at = observed_at + timedelta(seconds=delay_seconds)
     return {
@@ -306,9 +333,13 @@ class OutboxDispatcher:
     def _publisher_channel(self) -> pika.adapters.blocking_connection.BlockingChannel:
         if self._channel and self._channel.is_open:
             return self._channel
-        self._rabbit_connection = pika.BlockingConnection(pika.URLParameters(self.settings.rabbitmq_url))
+        self._rabbit_connection = pika.BlockingConnection(
+            pika.URLParameters(self.settings.rabbitmq_url)
+        )
         self._channel = self._rabbit_connection.channel()
-        self._channel.exchange_declare(exchange=self.settings.exchange, exchange_type="topic", durable=True)
+        self._channel.exchange_declare(
+            exchange=self.settings.exchange, exchange_type="topic", durable=True
+        )
         self._channel.confirm_delivery()
         return self._channel
 
@@ -318,7 +349,9 @@ class OutboxDispatcher:
         accepted = channel.basic_publish(
             exchange=self.settings.exchange,
             routing_key=event["routing_key"],
-            body=json.dumps(publication_message(event), default=_json_default, separators=(",", ":")).encode("utf-8"),
+            body=json.dumps(
+                publication_message(event), default=_json_default, separators=(",", ":")
+            ).encode("utf-8"),
             properties=pika.BasicProperties(
                 content_type="application/json",
                 content_encoding="utf-8",
@@ -339,7 +372,9 @@ class OutboxDispatcher:
         }
 
     def collect_metrics(self) -> OutboxMetrics:
-        with psycopg.connect(self.settings.postgres_dsn, row_factory=dict_row) as connection:
+        with psycopg.connect(
+            self.settings.postgres_dsn, row_factory=dict_row
+        ) as connection:
             row = connection.execute(
                 """SELECT
                        COUNT(*) FILTER (WHERE status = 'pending' AND published_at IS NULL) AS pending,
@@ -375,7 +410,9 @@ class OutboxDispatcher:
 
     def publish_batch(self) -> DispatchSummary:
         summary = DispatchSummary()
-        with psycopg.connect(self.settings.postgres_dsn, row_factory=dict_row) as connection:
+        with psycopg.connect(
+            self.settings.postgres_dsn, row_factory=dict_row
+        ) as connection:
             for _ in range(self.settings.batch_size):
                 stop_after_failure = False
                 with connection.transaction():
@@ -399,7 +436,9 @@ class OutboxDispatcher:
                         response_metadata = self._publish_event(event)
                     except Exception as error:
                         self.close()
-                        response_metadata = retry_observation(event, error, self.settings)
+                        response_metadata = retry_observation(
+                            event, error, self.settings
+                        )
                         connection.execute(
                             """INSERT INTO audit.event_deliveries
                                (user_id, event_id, destination, delivery_status, response_metadata, created_by)

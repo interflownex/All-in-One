@@ -1,28 +1,28 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'build-android-builder'
+  - name: "gcr.io/cloud-builders/docker"
+    id: "build-android-builder"
     args:
-      - 'build'
-      - '--tag'
-      - 'android-builder'
-      - '--file'
-      - 'infra/docker/android-builder.Dockerfile'
-      - '.'
+      - "build"
+      - "--tag"
+      - "android-builder"
+      - "--file"
+      - "infra/docker/android-builder.Dockerfile"
+      - "."
 
-  - name: 'android-builder'
-    id: 'assemble-debug-apk'
-    entrypoint: 'bash'
-    args: ['./gradlew', '--no-daemon', 'assembleDebug']
-    dir: 'apps/valley-android'
+  - name: "android-builder"
+    id: "assemble-debug-apk"
+    entrypoint: "bash"
+    args: ["./gradlew", "--no-daemon", "assembleDebug"]
+    dir: "apps/valley-android"
 
 artifacts:
   objects:
-    location: 'gs://all-in-one-public-artifacts/builds/$BUILD_ID/'
+    location: "gs://all-in-one-public-artifacts/builds/$BUILD_ID/"
     paths:
-      - 'apps/valley-android/app/build/outputs/apk/debug/app-debug.apk'
+      - "apps/valley-android/app/build/outputs/apk/debug/app-debug.apk"
 
 options:
   logging: CLOUD_LOGGING_ONLY
-  machineType: 'E2_HIGHCPU_8'
+  machineType: "E2_HIGHCPU_8"
 
-timeout: '1800s'
+timeout: "1800s"

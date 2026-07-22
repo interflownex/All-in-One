@@ -82,16 +82,16 @@ uvicorn main:app --port 8000
 
 ## Organizacao
 
-| Caminho | Conteudo |
-| --- | --- |
-| `apps/` | Contratos das seis experiencias cliente |
-| `modules/` | Microservicos funcionais e testes |
-| `contracts/` | Contratos de dominio espelhados e versionaveis |
-| `database/` | Migracoes PostgreSQL e validacoes MongoDB |
-| `docs/` | Arquitetura, seguranca, eventos, operacao e roadmap |
-| `infra/` | Docker, Kubernetes e Terraform inicial |
-| `workers/` | Dispatchers e consumidores assincronos da plataforma |
-| `.github/workflows/` | Gates e automacoes de entrega |
+| Caminho              | Conteudo                                             |
+| -------------------- | ---------------------------------------------------- |
+| `apps/`              | Contratos das seis experiencias cliente              |
+| `modules/`           | Microservicos funcionais e testes                    |
+| `contracts/`         | Contratos de dominio espelhados e versionaveis       |
+| `database/`          | Migracoes PostgreSQL e validacoes MongoDB            |
+| `docs/`              | Arquitetura, seguranca, eventos, operacao e roadmap  |
+| `infra/`             | Docker, Kubernetes e Terraform inicial               |
+| `workers/`           | Dispatchers e consumidores assincronos da plataforma |
+| `.github/workflows/` | Gates e automacoes de entrega                        |
 
 ## Estado
 

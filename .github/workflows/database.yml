@@ -4,9 +4,39 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["database/**", "modules/shared/**", "workers/**", "infra/docker/docker-compose.yml", "tests/test_jobs_postgres_integration.py", "tests/test_outbox_rabbitmq_integration.py", "tests/test_postgres_contract_static.py", "tests/test_postgres_priority_stores_integration.py", "tests/test_postgres_stores_matrix.py", "scripts/validate_postgres_real_dsn.py", "scripts/verify_pg_indexes.py", "requirements-dev.txt", ".github/workflows/database.yml"]
+    paths:
+      [
+        "database/**",
+        "modules/shared/**",
+        "workers/**",
+        "infra/docker/docker-compose.yml",
+        "tests/test_jobs_postgres_integration.py",
+        "tests/test_outbox_rabbitmq_integration.py",
+        "tests/test_postgres_contract_static.py",
+        "tests/test_postgres_priority_stores_integration.py",
+        "tests/test_postgres_stores_matrix.py",
+        "scripts/validate_postgres_real_dsn.py",
+        "scripts/verify_pg_indexes.py",
+        "requirements-dev.txt",
+        ".github/workflows/database.yml",
+      ]
   pull_request:
-    paths: ["database/**", "modules/shared/**", "workers/**", "infra/docker/docker-compose.yml", "tests/test_jobs_postgres_integration.py", "tests/test_outbox_rabbitmq_integration.py", "tests/test_postgres_contract_static.py", "tests/test_postgres_priority_stores_integration.py", "tests/test_postgres_stores_matrix.py", "scripts/validate_postgres_real_dsn.py", "scripts/verify_pg_indexes.py", "requirements-dev.txt", ".github/workflows/database.yml"]
+    paths:
+      [
+        "database/**",
+        "modules/shared/**",
+        "workers/**",
+        "infra/docker/docker-compose.yml",
+        "tests/test_jobs_postgres_integration.py",
+        "tests/test_outbox_rabbitmq_integration.py",
+        "tests/test_postgres_contract_static.py",
+        "tests/test_postgres_priority_stores_integration.py",
+        "tests/test_postgres_stores_matrix.py",
+        "scripts/validate_postgres_real_dsn.py",
+        "scripts/verify_pg_indexes.py",
+        "requirements-dev.txt",
+        ".github/workflows/database.yml",
+      ]
 
 jobs:
   migrations:

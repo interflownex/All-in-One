@@ -99,9 +99,5 @@
     "permissoes_backend",
     "lacunas_com_backlog"
   ],
-  "evidence_prefixes": [
-    "EVIDÊNCIA:",
-    "EVIDENCIAS:",
-    "EVIDÊNCIAS:"
-  ]
+  "evidence_prefixes": ["EVIDÊNCIA:", "EVIDENCIAS:", "EVIDÊNCIAS:"]
 }

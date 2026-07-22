@@ -1,14 +1,9 @@
-import React from 'react';
-import SmartCRUD from '../../components/SmartCRUD';
+import React from "react";
+import SmartCRUD from "../../components/SmartCRUD";
 
 const OccupationalRecordsList: React.FC = () => {
   return (
-    <SmartCRUD 
-      module="hr" 
-      entity="occupationalrecords" 
-      type="list" 
-      title="Occupational Records" 
-    />
+    <SmartCRUD module="hr" entity="occupationalrecords" type="list" title="Occupational Records" />
   );
 };
 

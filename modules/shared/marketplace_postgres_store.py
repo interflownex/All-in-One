@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Any, Iterator
+from typing import Any
 from uuid import uuid4
 
 import psycopg
@@ -13,9 +14,8 @@ from psycopg.types.json import Jsonb
 from .audit_contract import insert_postgres_audit
 from .correlation import get_correlation_id
 from .event_contract import EVENT_SCHEMA_VERSION, build_event_envelope
-from .store import DuplicateValueError
 from .generic_postgres_resource import insert_generic_resource, update_generic_resource
-
+from .store import DuplicateValueError
 
 TABLES = {
     "stores": "marketplace.stores",
@@ -56,25 +56,37 @@ class MarketplacePostgresStore:
     def _payload(row: dict[str, Any]) -> dict[str, Any]:
         return dict((row.get("metadata") or {}).get("runtime_payload", {}))
 
-    def _resource(self, resource_type: str, row: dict[str, Any] | None) -> dict[str, Any] | None:
+    def _resource(
+        self, resource_type: str, row: dict[str, Any] | None
+    ) -> dict[str, Any] | None:
         if row is None:
             return None
         created_at = row.get("created_at")
         if created_at is None:
-            raise RuntimeError(f"PostgreSQL nao retornou timestamp para {resource_type}.")
+            raise RuntimeError(
+                f"PostgreSQL nao retornou timestamp para {resource_type}."
+            )
         return {
             "id": str(row["id"]),
             "module": self.module,
             "resource_type": resource_type,
             "user_id": str(row["user_id"]),
-            "entity_id": str(row.get("store_id") or row.get("company_id")) if row.get("store_id") or row.get("company_id") else None,
+            "entity_id": str(row.get("store_id") or row.get("company_id"))
+            if row.get("store_id") or row.get("company_id")
+            else None,
             "status": row["status"],
             "payload": self._payload(row),
-            "created_by": str(row["created_by"]) if row.get("created_by") else str(row["user_id"]),
-            "updated_by": str(row.get("updated_by") or row.get("created_by") or row["user_id"]),
+            "created_by": str(row["created_by"])
+            if row.get("created_by")
+            else str(row["user_id"]),
+            "updated_by": str(
+                row.get("updated_by") or row.get("created_by") or row["user_id"]
+            ),
             "created_at": created_at.isoformat(),
             "updated_at": (row.get("updated_at") or created_at).isoformat(),
-            "deleted_at": row.get("deleted_at").isoformat() if row.get("deleted_at") else None,
+            "deleted_at": row.get("deleted_at").isoformat()
+            if row.get("deleted_at")
+            else None,
             "idempotency_key": row.get("idempotency_key"),
         }
 
@@ -82,11 +94,15 @@ class MarketplacePostgresStore:
     def _metadata(payload: dict[str, Any]) -> Jsonb:
         return Jsonb({"runtime_payload": payload})
 
-    def find_idempotent(self, resource_type: str, key: str | None) -> dict[str, Any] | None:
+    def find_idempotent(
+        self, resource_type: str, key: str | None
+    ) -> dict[str, Any] | None:
         if not key:
             return None
         row = self.connection.execute(
-            sql.SQL("SELECT * FROM {} WHERE idempotency_key = %s").format(self._table(resource_type)),
+            sql.SQL("SELECT * FROM {} WHERE idempotency_key = %s").format(
+                self._table(resource_type)
+            ),
             (key,),
         ).fetchone()
         return self._resource(resource_type, row)
@@ -110,11 +126,33 @@ class MarketplacePostgresStore:
         resource_id = str(uuid4())
         try:
             with self.transaction() as connection:
-                row = self._insert(connection, resource_type, resource_id, user_id, entity_id, status, payload, actor, idempotency_key)
+                row = self._insert(
+                    connection,
+                    resource_type,
+                    resource_id,
+                    user_id,
+                    entity_id,
+                    status,
+                    payload,
+                    actor,
+                    idempotency_key,
+                )
                 item = self._resource(resource_type, row)
                 if item is None:
-                    raise RuntimeError("PostgreSQL nao retornou recurso Marketplace criado.")
-                self._audit(connection, actor, "create", resource_type, resource_id, None, item, user_id, entity_id)
+                    raise RuntimeError(
+                        "PostgreSQL nao retornou recurso Marketplace criado."
+                    )
+                self._audit(
+                    connection,
+                    actor,
+                    "create",
+                    resource_type,
+                    resource_id,
+                    None,
+                    item,
+                    user_id,
+                    entity_id,
+                )
                 self._event(connection, event, actor, item)
                 return item
         except UniqueViolation as exc:
@@ -138,7 +176,17 @@ class MarketplacePostgresStore:
                 """INSERT INTO marketplace.stores
                    (id, user_id, company_id, name, status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
-                (resource_id, user_id, payload["company_id"], payload["name"], status, metadata, actor, actor, idempotency_key),
+                (
+                    resource_id,
+                    user_id,
+                    payload["company_id"],
+                    payload["name"],
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
+                ),
             ).fetchone()
         if resource_type == "products":
             return connection.execute(
@@ -146,8 +194,18 @@ class MarketplacePostgresStore:
                    (id, user_id, store_id, sku, name, price_brl, stock_quantity, status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, payload["store_id"], payload["sku"], payload["name"],
-                    payload["price_brl"], payload.get("stock_quantity", 0), status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    payload["store_id"],
+                    payload["sku"],
+                    payload["name"],
+                    payload["price_brl"],
+                    payload.get("stock_quantity", 0),
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "orders":
@@ -156,9 +214,19 @@ class MarketplacePostgresStore:
                    (id, user_id, store_id, escrow_id, total_brl, commission_brl, status, metadata, created_by, updated_by, idempotency_key, offer_id, company_id)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, payload.get("store_id"), payload.get("escrow_id"), payload.get("total_brl", 0),
-                    payload.get("commission_brl", 0), status, metadata, actor, actor, idempotency_key,
-                    payload.get("offer_id"), payload.get("company_id")
+                    resource_id,
+                    user_id,
+                    payload.get("store_id"),
+                    payload.get("escrow_id"),
+                    payload.get("total_brl", 0),
+                    payload.get("commission_brl", 0),
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
+                    payload.get("offer_id"),
+                    payload.get("company_id"),
                 ),
             ).fetchone()
         if resource_type == "reviews":
@@ -213,24 +281,54 @@ class MarketplacePostgresStore:
                    (id, user_id, company_id, order_id, customer_user_id, pepitas, merchant_gold_ledger_id, status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, entity_id, payload["order_id"], payload["customer_user_id"],
-                    payload["pepitas"], payload["merchant_gold_ledger_id"], status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    entity_id,
+                    payload["order_id"],
+                    payload["customer_user_id"],
+                    payload["pepitas"],
+                    payload["merchant_gold_ledger_id"],
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         return insert_generic_resource(
-            connection, TABLES[resource_type], resource_id, user_id, entity_id, status, payload, actor, idempotency_key
+            connection,
+            TABLES[resource_type],
+            resource_id,
+            user_id,
+            entity_id,
+            status,
+            payload,
+            actor,
+            idempotency_key,
         )
 
     def get(self, resource_type: str, resource_id: str) -> dict[str, Any] | None:
-        deleted = sql.SQL(" AND deleted_at IS NULL") if resource_type in SOFT_DELETABLE else sql.SQL("")
+        deleted = (
+            sql.SQL(" AND deleted_at IS NULL")
+            if resource_type in SOFT_DELETABLE
+            else sql.SQL("")
+        )
         row = self.connection.execute(
-            sql.SQL("SELECT * FROM {} WHERE id = %s{}").format(self._table(resource_type), deleted),
+            sql.SQL("SELECT * FROM {} WHERE id = %s{}").format(
+                self._table(resource_type), deleted
+            ),
             (resource_id,),
         ).fetchone()
         return self._resource(resource_type, row)
 
-    def list(self, resource_type: str, user_id: str | None = None) -> list[dict[str, Any]]:
-        conditions = sql.SQL("deleted_at IS NULL") if resource_type in SOFT_DELETABLE else sql.SQL("TRUE")
+    def list(
+        self, resource_type: str, user_id: str | None = None
+    ) -> list[dict[str, Any]]:
+        conditions = (
+            sql.SQL("deleted_at IS NULL")
+            if resource_type in SOFT_DELETABLE
+            else sql.SQL("TRUE")
+        )
         parameters: list[Any] = []
         if user_id:
             conditions = conditions + sql.SQL(" AND user_id = %s")
@@ -241,7 +339,11 @@ class MarketplacePostgresStore:
             ),
             parameters,
         ).fetchall()
-        return [item for row in rows if (item := self._resource(resource_type, row)) is not None]
+        return [
+            item
+            for row in rows
+            if (item := self._resource(resource_type, row)) is not None
+        ]
 
     def update(
         self,
@@ -254,30 +356,65 @@ class MarketplacePostgresStore:
     ) -> dict[str, Any]:
         before = {**item, "payload": dict(item["payload"])}
         with self.transaction() as connection:
-            row = self._update(connection, item["resource_type"], item["id"], payload, status, actor)
+            row = self._update(
+                connection, item["resource_type"], item["id"], payload, status, actor
+            )
             updated = self._resource(item["resource_type"], row)
             if updated is None:
-                raise RuntimeError("PostgreSQL nao retornou recurso Marketplace atualizado.")
-            self._audit(connection, actor, action, item["resource_type"], item["id"], before, updated, item["user_id"], item["entity_id"])
+                raise RuntimeError(
+                    "PostgreSQL nao retornou recurso Marketplace atualizado."
+                )
+            self._audit(
+                connection,
+                actor,
+                action,
+                item["resource_type"],
+                item["id"],
+                before,
+                updated,
+                item["user_id"],
+                item["entity_id"],
+            )
             if event:
                 self._event(connection, event, actor, updated)
             return updated
 
     def _update(
-        self, connection: Connection, resource_type: str, resource_id: str, payload: dict[str, Any], status: str, actor: str
+        self,
+        connection: Connection,
+        resource_type: str,
+        resource_id: str,
+        payload: dict[str, Any],
+        status: str,
+        actor: str,
     ) -> dict[str, Any]:
         metadata = self._metadata(payload)
         if resource_type == "stores":
             return connection.execute(
                 """UPDATE marketplace.stores SET name = %s, published_at = %s, status = %s, metadata = %s, updated_by = %s, updated_at = NOW()
                    WHERE id = %s RETURNING *""",
-                (payload["name"], payload.get("published_at"), status, metadata, actor, resource_id),
+                (
+                    payload["name"],
+                    payload.get("published_at"),
+                    status,
+                    metadata,
+                    actor,
+                    resource_id,
+                ),
             ).fetchone()
         if resource_type == "products":
             return connection.execute(
                 """UPDATE marketplace.products SET name = %s, price_brl = %s, stock_quantity = %s, status = %s, metadata = %s, updated_by = %s, updated_at = NOW()
                    WHERE id = %s RETURNING *""",
-                (payload["name"], payload["price_brl"], payload["stock_quantity"], status, metadata, actor, resource_id),
+                (
+                    payload["name"],
+                    payload["price_brl"],
+                    payload["stock_quantity"],
+                    status,
+                    metadata,
+                    actor,
+                    resource_id,
+                ),
             ).fetchone()
         if resource_type == "orders":
             return connection.execute(
@@ -305,7 +442,9 @@ class MarketplacePostgresStore:
                    WHERE id = %s RETURNING *""",
                 (status, metadata, actor, resource_id),
             ).fetchone()
-        return update_generic_resource(connection, TABLES[resource_type], resource_id, payload, status, actor)
+        return update_generic_resource(
+            connection, TABLES[resource_type], resource_id, payload, status, actor
+        )
 
     def soft_delete(self, item: dict[str, Any], actor: str) -> None:
         with self.transaction() as connection:
@@ -315,11 +454,38 @@ class MarketplacePostgresStore:
                 ).format(self._table(item["resource_type"])),
                 (actor, item["id"]),
             )
-            self._audit(connection, actor, "soft_delete", item["resource_type"], item["id"], item, None, item["user_id"], item["entity_id"])
+            self._audit(
+                connection,
+                actor,
+                "soft_delete",
+                item["resource_type"],
+                item["id"],
+                item,
+                None,
+                item["user_id"],
+                item["entity_id"],
+            )
 
-    def audit_external(self, actor: str, action: str, resource_type: str, resource_id: str, data: dict[str, Any]) -> dict[str, Any]:
+    def audit_external(
+        self,
+        actor: str,
+        action: str,
+        resource_type: str,
+        resource_id: str,
+        data: dict[str, Any],
+    ) -> dict[str, Any]:
         with self.transaction() as connection:
-            return self._audit(connection, actor, action, resource_type, resource_id, None, data, data.get("user_id"), data.get("store_id"))
+            return self._audit(
+                connection,
+                actor,
+                action,
+                resource_type,
+                resource_id,
+                None,
+                data,
+                data.get("user_id"),
+                data.get("store_id"),
+            )
 
     def _audit(
         self,
@@ -333,13 +499,30 @@ class MarketplacePostgresStore:
         user_id: str | None,
         entity_id: str | None,
     ) -> dict[str, Any]:
-        return insert_postgres_audit(connection, module="marketplace", actor_user_id=actor, action=action,
-            resource_type=resource_type, resource_id=resource_id, before=before, after=after,
-            user_id=user_id, company_id=entity_id)
+        return insert_postgres_audit(
+            connection,
+            module="marketplace",
+            actor_user_id=actor,
+            action=action,
+            resource_type=resource_type,
+            resource_id=resource_id,
+            before=before,
+            after=after,
+            user_id=user_id,
+            company_id=entity_id,
+        )
 
-    def _event(self, connection: Connection, routing_key: str, actor: str, item: dict[str, Any]) -> None:
+    def _event(
+        self, connection: Connection, routing_key: str, actor: str, item: dict[str, Any]
+    ) -> None:
         correlation_id = get_correlation_id()
-        envelope = build_event_envelope(module=self.module, routing_key=routing_key, actor_user_id=actor, item=item, correlation_id=correlation_id)
+        envelope = build_event_envelope(
+            module=self.module,
+            routing_key=routing_key,
+            actor_user_id=actor,
+            item=item,
+            correlation_id=correlation_id,
+        )
         connection.execute(
             """INSERT INTO audit.domain_events
                (id, user_id, actor_user_id, entity_id, routing_key, aggregate_type, aggregate_id, correlation_id, schema_version, payload, created_by)
@@ -360,23 +543,33 @@ class MarketplacePostgresStore:
         )
 
     def audit_log(self) -> list[dict[str, Any]]:
-        return [dict(row) for row in self.connection.execute(
-            "SELECT * FROM audit.logs WHERE module = 'marketplace' ORDER BY created_at DESC"
-        ).fetchall()]
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                "SELECT * FROM audit.logs WHERE module = 'marketplace' ORDER BY created_at DESC"
+            ).fetchall()
+        ]
 
     def outbox(self) -> list[dict[str, Any]]:
-        return [dict(row) for row in self.connection.execute(
-            "SELECT * FROM audit.domain_events WHERE routing_key LIKE 'marketplace.%' OR routing_key LIKE 'valley.%' ORDER BY created_at DESC"
-        ).fetchall()]
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                "SELECT * FROM audit.domain_events WHERE routing_key LIKE 'marketplace.%' OR routing_key LIKE 'valley.%' ORDER BY created_at DESC"
+            ).fetchall()
+        ]
 
     def metrics(self) -> tuple[int, int, int]:
         records = sum(
             self.connection.execute(
-                sql.SQL("SELECT COUNT(*) AS count FROM {}").format(self._table(resource_type))
+                sql.SQL("SELECT COUNT(*) AS count FROM {}").format(
+                    self._table(resource_type)
+                )
             ).fetchone()["count"]
             for resource_type in TABLES
         )
-        audits = self.connection.execute("SELECT COUNT(*) AS count FROM audit.logs WHERE module = 'marketplace'").fetchone()["count"]
+        audits = self.connection.execute(
+            "SELECT COUNT(*) AS count FROM audit.logs WHERE module = 'marketplace'"
+        ).fetchone()["count"]
         events = self.connection.execute(
             "SELECT COUNT(*) AS count FROM audit.domain_events WHERE routing_key LIKE 'marketplace.%' OR routing_key LIKE 'valley.%'"
         ).fetchone()["count"]

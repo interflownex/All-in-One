@@ -33,18 +33,18 @@ are dangerous in context.
 >
 > Additional risk factors that qualify a bucket for archetype matching:
 >
-> -   **Over-permissioned IAM** — service accounts or users holding
->     `roles/storage.admin` or `roles/storage.objectAdmin` where a viewer-tier
->     role would suffice.
-> -   **Public access enabled** — `allUsers` or `allAuthenticatedUsers` holds a
->     role on the bucket or its objects.
-> -   **Data-residency mismatch** — bucket location is a multi-region (or
->     non-compliant region) containing data subject to regional regulations, AND
->     no org policy constrains resource locations.
-> -   **AI-agent workload context** — Model Armor API enabled in the project
->     (signaling Vertex AI Agent Engine / Agent Builder usage), combined with
->     agent-side configuration like a service account holding broad storage
->     roles.
+> - **Over-permissioned IAM** — service accounts or users holding
+>   `roles/storage.admin` or `roles/storage.objectAdmin` where a viewer-tier
+>   role would suffice.
+> - **Public access enabled** — `allUsers` or `allAuthenticatedUsers` holds a
+>   role on the bucket or its objects.
+> - **Data-residency mismatch** — bucket location is a multi-region (or
+>   non-compliant region) containing data subject to regional regulations, AND
+>   no org policy constrains resource locations.
+> - **AI-agent workload context** — Model Armor API enabled in the project
+>   (signaling Vertex AI Agent Engine / Agent Builder usage), combined with
+>   agent-side configuration like a service account holding broad storage
+>   roles.
 >
 > A bucket failing only baseline controls is reported in the Section 2 baseline
 > rollups and labeled "Baseline failures" in per-bucket cards — not with any
@@ -52,7 +52,7 @@ are dangerous in context.
 
 A single bucket may match multiple archetypes. Report all matches.
 
---------------------------------------------------------------------------------
+---
 
 ## Public Data Pipeline
 
@@ -60,12 +60,12 @@ A single bucket may match multiple archetypes. Report all matches.
 
 **Telemetry Pattern:**
 
--   Bucket/Object classified as sensitive (or unclassified)
--   Bucket is publicly accessible (has public read or public write objects)
--   UBLA disabled (ACLs active alongside IAM)
--   Object encryption is managed with Google-default (GMEK), no CMEK
--   No VPC-SC perimeter
--   Data Access audit logs disabled
+- Bucket/Object classified as sensitive (or unclassified)
+- Bucket is publicly accessible (has public read or public write objects)
+- UBLA disabled (ACLs active alongside IAM)
+- Object encryption is managed with Google-default (GMEK), no CMEK
+- No VPC-SC perimeter
+- Data Access audit logs disabled
 
 **Required Reasoning:** UBLA being disabled means ACLs operate alongside IAM,
 creating a shadow access path. The allUsers ACL grants public read access to
@@ -83,22 +83,22 @@ Sensitive Data Disclosure
 
 **Remediation:**
 
--   Enforce Uniform Bucket-Level Access: `gcloud storage buckets update
-    gs://BUCKET --uniform-bucket-level-access`
--   Block public access: `gcloud storage buckets update gs://BUCKET
-    --public-access-prevention`
--   Enable CMEK: See GCS CMEK documentation —
-    https://cloud.google.com/storage/docs/encryption/customer-managed-keys
-    -   Rewrite existing objects with CMEK key to update encryption of existing
-        objects
--   Create VPC-SC perimeter: `gcloud access-context-manager perimeters create
-    PERIMETER_NAME --title='AI Assets Perimeter'
-    --resources=projects/PROJECT_NUMBER
-    --restricted-services=storage.googleapis.com --policy=POLICY_ID`
--   Enable Data Access audit logs: Update project audit config for
-    `storage.googleapis.com` with DATA_READ and DATA_WRITE
+- Enforce Uniform Bucket-Level Access: `gcloud storage buckets update
+gs://BUCKET --uniform-bucket-level-access`
+- Block public access: `gcloud storage buckets update gs://BUCKET
+--public-access-prevention`
+- Enable CMEK: See GCS CMEK documentation —
+  https://cloud.google.com/storage/docs/encryption/customer-managed-keys
+  - Rewrite existing objects with CMEK key to update encryption of existing
+    objects
+- Create VPC-SC perimeter: `gcloud access-context-manager perimeters create
+PERIMETER_NAME --title='AI Assets Perimeter'
+--resources=projects/PROJECT_NUMBER
+--restricted-services=storage.googleapis.com --policy=POLICY_ID`
+- Enable Data Access audit logs: Update project audit config for
+  `storage.googleapis.com` with DATA_READ and DATA_WRITE
 
---------------------------------------------------------------------------------
+---
 
 ## Silent Data Theft
 
@@ -106,14 +106,14 @@ Sensitive Data Disclosure
 
 **Telemetry Pattern:**
 
--   Over-permissioned service account (e.g., `roles/storage.admin` when
-    `roles/storage.objectViewer` suffices)
--   No VPC-SC perimeter
--   Data Access audit logs disabled
--   Bucket is private (no public read or public write objects) — this is a
-    positive signal that creates false confidence
--   CMEK configured for objects in the bucket — another positive signal that
-    creates false confidence
+- Over-permissioned service account (e.g., `roles/storage.admin` when
+  `roles/storage.objectViewer` suffices)
+- No VPC-SC perimeter
+- Data Access audit logs disabled
+- Bucket is private (no public read or public write objects) — this is a
+  positive signal that creates false confidence
+- CMEK configured for objects in the bucket — another positive signal that
+  creates false confidence
 
 **Required Reasoning:** While some controls are properly configured (no public
 access, CMEK enabled), the combination of missing controls creates an invisible
@@ -131,20 +131,20 @@ and completely invisible.
 
 **Remediation:**
 
--   Reduce service account to least privilege: `gcloud projects
-    add-iam-policy-binding PROJECT_ID --member='serviceAccount:SA_EMAIL'
-    --role='roles/storage.objectViewer'` then `gcloud projects
-    remove-iam-policy-binding PROJECT_ID --member='serviceAccount:SA_EMAIL'
-    --role='roles/storage.admin'`
--   Create VPC-SC perimeter: `gcloud access-context-manager perimeters create
-    PERIMETER_NAME --title='AI Assets Perimeter'
-    --resources=projects/PROJECT_NUMBER
-    --restricted-services=storage.googleapis.com --policy=POLICY_ID`
--   Enable Data Access audit logs: Update project audit config for
-    `storage.googleapis.com` with DATA_READ and DATA_WRITE. Scope to high-value
-    buckets.
+- Reduce service account to least privilege: `gcloud projects
+add-iam-policy-binding PROJECT_ID --member='serviceAccount:SA_EMAIL'
+--role='roles/storage.objectViewer'` then `gcloud projects
+remove-iam-policy-binding PROJECT_ID --member='serviceAccount:SA_EMAIL'
+--role='roles/storage.admin'`
+- Create VPC-SC perimeter: `gcloud access-context-manager perimeters create
+PERIMETER_NAME --title='AI Assets Perimeter'
+--resources=projects/PROJECT_NUMBER
+--restricted-services=storage.googleapis.com --policy=POLICY_ID`
+- Enable Data Access audit logs: Update project audit config for
+  `storage.googleapis.com` with DATA_READ and DATA_WRITE. Scope to high-value
+  buckets.
 
---------------------------------------------------------------------------------
+---
 
 ## Irreversible Data Corruption
 
@@ -152,11 +152,11 @@ and completely invisible.
 
 **Telemetry Pattern:**
 
--   Object versioning disabled
--   Soft delete disabled (0-day retention)
--   Over-permissioned IAM (multiple users with `roles/storage.objectAdmin`)
--   Encryption is Google-default (GMEK), no CMEK
--   Data Access audit logs disabled
+- Object versioning disabled
+- Soft delete disabled (0-day retention)
+- Over-permissioned IAM (multiple users with `roles/storage.objectAdmin`)
+- Encryption is Google-default (GMEK), no CMEK
+- Data Access audit logs disabled
 
 **Required Reasoning:** Without object versioning, any modification overwrites
 the original with no rollback. Without soft delete, deletion is permanent and
@@ -172,22 +172,22 @@ trail = **undetectable and unrecoverable** data tampering.
 
 **Remediation:**
 
--   Enable object versioning: `gcloud storage buckets update gs://BUCKET
-    --versioning`
--   Enable soft delete: `gcloud storage buckets update gs://BUCKET
-    --soft-delete-duration=7d`
--   Enable CMEK: See GCS CMEK documentation —
-    https://cloud.google.com/storage/docs/encryption/customer-managed-keys
--   Reduce write permissions: Grant `roles/storage.objectViewer` or
-    `roles/storage.objectCreator` instead of `roles/storage.objectAdmin`.
-    `gcloud storage buckets add-iam-policy-binding gs://BUCKET
-    --member='user:USER_EMAIL' --role='roles/storage.objectViewer'` then `gcloud
-    storage buckets remove-iam-policy-binding gs://BUCKET
-    --member='user:USER_EMAIL' --role='roles/storage.objectAdmin'`
--   Enable Data Access audit logs: Update project audit config for
-    `storage.googleapis.com` with DATA_READ and DATA_WRITE.
+- Enable object versioning: `gcloud storage buckets update gs://BUCKET
+--versioning`
+- Enable soft delete: `gcloud storage buckets update gs://BUCKET
+--soft-delete-duration=7d`
+- Enable CMEK: See GCS CMEK documentation —
+  https://cloud.google.com/storage/docs/encryption/customer-managed-keys
+- Reduce write permissions: Grant `roles/storage.objectViewer` or
+  `roles/storage.objectCreator` instead of `roles/storage.objectAdmin`.
+  `gcloud storage buckets add-iam-policy-binding gs://BUCKET
+--member='user:USER_EMAIL' --role='roles/storage.objectViewer'` then `gcloud
+storage buckets remove-iam-policy-binding gs://BUCKET
+--member='user:USER_EMAIL' --role='roles/storage.objectAdmin'`
+- Enable Data Access audit logs: Update project audit config for
+  `storage.googleapis.com` with DATA_READ and DATA_WRITE.
 
---------------------------------------------------------------------------------
+---
 
 ## Intentional Public Data
 
@@ -195,12 +195,12 @@ trail = **undetectable and unrecoverable** data tampering.
 
 **Telemetry Pattern:**
 
--   Bucket classified as non-sensitive (via tags, labels, or naming heuristics)
--   Public access enabled — **intentional and expected**
--   UBLA enabled
--   Object versioning disabled
--   Soft delete disabled
--   Data Access audit logs disabled
+- Bucket classified as non-sensitive (via tags, labels, or naming heuristics)
+- Public access enabled — **intentional and expected**
+- UBLA enabled
+- Object versioning disabled
+- Soft delete disabled
+- Data Access audit logs disabled
 
 > [!CAUTION]
 > This archetype ONLY applies when the bucket is classified as
@@ -223,16 +223,16 @@ pipelines)
 
 **Remediation:**
 
--   Enable object versioning for defacement protection: `gcloud storage buckets
-    update gs://BUCKET --versioning`
--   Enable soft delete for deletion recovery: `gcloud storage buckets update
-    gs://BUCKET --soft-delete-duration=7d`
--   Enable Data Access audit logs for write operations: Update project audit
-    config for `storage.googleapis.com` with DATA_WRITE.
--   **NOTE: Public access is recognized as intentional. No changes to access
-    controls are recommended.**
+- Enable object versioning for defacement protection: `gcloud storage buckets
+update gs://BUCKET --versioning`
+- Enable soft delete for deletion recovery: `gcloud storage buckets update
+gs://BUCKET --soft-delete-duration=7d`
+- Enable Data Access audit logs for write operations: Update project audit
+  config for `storage.googleapis.com` with DATA_WRITE.
+- **NOTE: Public access is recognized as intentional. No changes to access
+  controls are recommended.**
 
---------------------------------------------------------------------------------
+---
 
 ## Compliance Without Proof
 
@@ -240,13 +240,13 @@ pipelines)
 
 **Telemetry Pattern:**
 
--   No data residency org policy
--   Bucket location is multi-region containing data subject to regional
-    regulations (e.g., EU data in US multi-region)
--   Encryption is Google-default (GMEK), no CMEK
--   Data Access audit logs disabled
--   Bucket is private (public access prevention enforced) — positive signal
--   UBLA enabled — positive signal
+- No data residency org policy
+- Bucket location is multi-region containing data subject to regional
+  regulations (e.g., EU data in US multi-region)
+- Encryption is Google-default (GMEK), no CMEK
+- Data Access audit logs disabled
+- Bucket is private (public access prevention enforced) — positive signal
+- UBLA enabled — positive signal
 
 **Required Reasoning:** Despite good access controls (UBLA, private access), the
 project has critical compliance gaps. Data stored in a non-compliant region with
@@ -262,18 +262,18 @@ that looks secure but cannot withstand a regulatory audit.
 
 **Remediation:**
 
--   Set org policy to restrict resource locations: `gcloud resource-manager
-    org-policies set-policy --project=PROJECT_ID policy.yaml` (constrain to
-    compliant regions)
--   Migrate bucket to compliant region: `gcloud storage buckets create
-    gs://NEW_BUCKET --location=COMPLIANT_REGION` then `gcloud storage rsync
-    gs://OLD_BUCKET gs://NEW_BUCKET --recursive`
--   Enable CMEK: See GCS CMEK documentation —
-    https://cloud.google.com/storage/docs/encryption/customer-managed-keys
-    -   Enable Data Access audit logs: Update project audit config for
-        `storage.googleapis.com` with DATA_READ and DATA_WRITE.
+- Set org policy to restrict resource locations: `gcloud resource-manager
+org-policies set-policy --project=PROJECT_ID policy.yaml` (constrain to
+  compliant regions)
+- Migrate bucket to compliant region: `gcloud storage buckets create
+gs://NEW_BUCKET --location=COMPLIANT_REGION` then `gcloud storage rsync
+gs://OLD_BUCKET gs://NEW_BUCKET --recursive`
+- Enable CMEK: See GCS CMEK documentation —
+  https://cloud.google.com/storage/docs/encryption/customer-managed-keys
+  - Enable Data Access audit logs: Update project audit config for
+    `storage.googleapis.com` with DATA_READ and DATA_WRITE.
 
---------------------------------------------------------------------------------
+---
 
 ## Prompt Injection to Data Destruction
 
@@ -281,16 +281,16 @@ that looks secure but cannot withstand a regulatory audit.
 
 **Telemetry Pattern:**
 
--   Model Armor API enabled BUT Vertex AI integration NOT activated AND no
-    templates created
--   Agent service account with `roles/storage.admin` at project level
--   No VPC-SC perimeter
--   Data Access audit logs disabled
--   Object versioning disabled
--   Soft delete disabled
--   Encryption is Google-default (GMEK), no CMEK
--   UBLA enabled — positive signal
--   Bucket is private — positive signal
+- Model Armor API enabled BUT Vertex AI integration NOT activated AND no
+  templates created
+- Agent service account with `roles/storage.admin` at project level
+- No VPC-SC perimeter
+- Data Access audit logs disabled
+- Object versioning disabled
+- Soft delete disabled
+- Encryption is Google-default (GMEK), no CMEK
+- UBLA enabled — positive signal
+- Bucket is private — positive signal
 
 > [!IMPORTANT]
 > This archetype applies specifically to projects running AI agents
@@ -319,32 +319,32 @@ Model Exfiltration, Data Poisoning, Model Source Tampering
 
 **Remediation:**
 
--   **URGENT** — Reduce agent service account to least privilege: `gcloud
-    projects remove-iam-policy-binding PROJECT_ID
-    --member='serviceAccount:AGENT_SA' --role='roles/storage.admin'` then
-    `gcloud storage buckets add-iam-policy-binding gs://SPECIFIC_BUCKET
-    --member='serviceAccount:AGENT_SA' --role='roles/storage.objectViewer'`
--   **URGENT** — Activate Model Armor Vertex AI integration: `gcloud model-armor
-    floorsettings update
-    --full-uri=projects/PROJECT_ID/locations/global/floorSetting
-    --add-integrated-services=VERTEX_AI
-    --vertex-ai-enforcement-type=INSPECT_AND_BLOCK`
--   Create Model Armor screening template: `gcloud model-armor templates create
-    agent-protection --location=us-central1
-    --rai-settings-filters='[{"filterType":"HATE_SPEECH","confidenceLevel":"MEDIUM_AND_ABOVE"},{"filterType":"DANGEROUS","confidenceLevel":"MEDIUM_AND_ABOVE"},{"filterType":"HARASSMENT","confidenceLevel":"MEDIUM_AND_ABOVE"},{"filterType":"SEXUALLY_EXPLICIT","confidenceLevel":"MEDIUM_AND_ABOVE"}]'
-    --pi-and-jailbreak-filter-settings-enforcement=enabled
-    --pi-and-jailbreak-filter-settings-confidence-level=medium-and-above
-    --malicious-uri-filter-settings-enforcement=enabled`
--   Enable object versioning: `gcloud storage buckets update gs://BUCKET
-    --versioning`
--   Enable soft delete: `gcloud storage buckets update gs://BUCKET
-    --soft-delete-duration=7d`
--   Enable CMEK: See GCS CMEK documentation —
-    https://cloud.google.com/storage/docs/encryption/customer-managed-keys
-    -   Create VPC-SC perimeter: `gcloud access-context-manager perimeters
-        create agent-perimeter --title='Agent Workload Perimeter'
-        --resources=projects/PROJECT_NUMBER
-        --restricted-services=storage.googleapis.com,aiplatform.googleapis.com
-        --policy=POLICY_ID`
--   Enable Data Access audit logs: Update project audit config for
-    `storage.googleapis.com` with DATA_READ and DATA_WRITE.
+- **URGENT** — Reduce agent service account to least privilege: `gcloud
+projects remove-iam-policy-binding PROJECT_ID
+--member='serviceAccount:AGENT_SA' --role='roles/storage.admin'` then
+  `gcloud storage buckets add-iam-policy-binding gs://SPECIFIC_BUCKET
+--member='serviceAccount:AGENT_SA' --role='roles/storage.objectViewer'`
+- **URGENT** — Activate Model Armor Vertex AI integration: `gcloud model-armor
+floorsettings update
+--full-uri=projects/PROJECT_ID/locations/global/floorSetting
+--add-integrated-services=VERTEX_AI
+--vertex-ai-enforcement-type=INSPECT_AND_BLOCK`
+- Create Model Armor screening template: `gcloud model-armor templates create
+agent-protection --location=us-central1
+--rai-settings-filters='[{"filterType":"HATE_SPEECH","confidenceLevel":"MEDIUM_AND_ABOVE"},{"filterType":"DANGEROUS","confidenceLevel":"MEDIUM_AND_ABOVE"},{"filterType":"HARASSMENT","confidenceLevel":"MEDIUM_AND_ABOVE"},{"filterType":"SEXUALLY_EXPLICIT","confidenceLevel":"MEDIUM_AND_ABOVE"}]'
+--pi-and-jailbreak-filter-settings-enforcement=enabled
+--pi-and-jailbreak-filter-settings-confidence-level=medium-and-above
+--malicious-uri-filter-settings-enforcement=enabled`
+- Enable object versioning: `gcloud storage buckets update gs://BUCKET
+--versioning`
+- Enable soft delete: `gcloud storage buckets update gs://BUCKET
+--soft-delete-duration=7d`
+- Enable CMEK: See GCS CMEK documentation —
+  https://cloud.google.com/storage/docs/encryption/customer-managed-keys
+  - Create VPC-SC perimeter: `gcloud access-context-manager perimeters
+create agent-perimeter --title='Agent Workload Perimeter'
+--resources=projects/PROJECT_NUMBER
+--restricted-services=storage.googleapis.com,aiplatform.googleapis.com
+--policy=POLICY_ID`
+- Enable Data Access audit logs: Update project audit config for
+  `storage.googleapis.com` with DATA_READ and DATA_WRITE.

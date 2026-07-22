@@ -46,7 +46,7 @@ PromQL Query Examples:
 1.  Basic Time Series:
     `avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m])`
 2.  Top K: `topk(30,
-    avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
+avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 3.  Mean:
     `avg(avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 4.  Minimum:
@@ -58,7 +58,7 @@ PromQL Query Examples:
 7.  Count streams:
     `count(avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 8.  Percentile with groupby on database_id: `quantile by
-    ("database_id")(0.99,avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
+("database_id")(0.99,avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 
 Available Metrics List: metricname. description. monitored resource. labels.
 database_id is actually the instance id and the format is
@@ -164,9 +164,9 @@ database_id is actually the instance id and the format is
 
 #### Parameters
 
-Name      | Type   | Description                         | Required | Default
-:-------- | :----- | :---------------------------------- | :------- | :------
-projectId | string | The Id of the Google Cloud project. | Yes      |
-query     | string | The promql query to execute.        | Yes      |
+| Name      | Type   | Description                         | Required | Default |
+| :-------- | :----- | :---------------------------------- | :------- | :------ |
+| projectId | string | The Id of the Google Cloud project. | Yes      |
+| query     | string | The promql query to execute.        | Yes      |
 
---------------------------------------------------------------------------------
+---

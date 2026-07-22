@@ -7,6 +7,7 @@
         ## Entidades
 
         - `users`
+
 - `documents`
 - `biometrics`
 - `sessions`
@@ -16,6 +17,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -39,10 +41,10 @@
 
 - `POST /registrations` cria o All-in-One ID inicial sem ator preexistente e preserva controles de duplicidade.
 
-
         ## Eventos
 
         - `identity.user.created`
+
 - `identity.user.verified`
 - `identity.user.duplicate_detected`
 - `identity.document.created`

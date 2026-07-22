@@ -1,8 +1,6 @@
 {
   "enabled": true,
-  "adapters": [
-    "telegram"
-  ],
+  "adapters": ["telegram"],
   "telegram": {
     "token": "8704646286:AAGbqdQp7WzdyrwtxRnUH2vu1mqN0dONUwc",
     "chatId": "6466662132"

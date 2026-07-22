@@ -2,13 +2,24 @@ from __future__ import annotations
 
 import importlib
 import os
+import subprocess
 from pathlib import Path
 from typing import Any
 from uuid import UUID, uuid4
 
-from fastapi import Body, Depends, FastAPI, Header, HTTPException, Query, Request, Response
+from fastapi import (
+    Body,
+    Depends,
+    FastAPI,
+    Header,
+    HTTPException,
+    Query,
+    Request,
+    Response,
+)
 from pydantic import BaseModel, Field
 
+from .audit_contract import AuditContext, set_audit_context
 from .calculators import (
     CommissionRequest,
     DeliveryQuoteRequest,
@@ -18,9 +29,7 @@ from .calculators import (
     mobility_fare,
 )
 from .correlation import set_correlation_id
-from .audit_contract import AuditContext, set_audit_context
-from .logging_utils import setup_secure_logging, get_logger
-import subprocess
+from .logging_utils import get_logger, setup_secure_logging
 
 setup_secure_logging()
 logger = get_logger(__name__)
@@ -32,7 +41,9 @@ def _flag_enabled(name: str) -> bool:
 
 
 def _google_secret_fallback_enabled() -> bool:
-    return _flag_enabled("GOOGLE_INTEGRATIONS_ENABLED") and _flag_enabled("GOOGLE_CLOUD_ENABLED")
+    return _flag_enabled("GOOGLE_INTEGRATIONS_ENABLED") and _flag_enabled(
+        "GOOGLE_CLOUD_ENABLED"
+    )
 
 
 def _get_secret_gcloud(secret_id: str) -> str | None:
@@ -41,10 +52,17 @@ def _get_secret_gcloud(secret_id: str) -> str | None:
         return None
     try:
         result = subprocess.run(
-            ["gcloud", "secrets", "versions", "access", "latest", f"--secret={secret_id}"],
+            [
+                "gcloud",
+                "secrets",
+                "versions",
+                "access",
+                "latest",
+                f"--secret={secret_id}",
+            ],
             capture_output=True,
             text=True,
-            check=False
+            check=False,
         )
         if result.returncode == 0:
             return result.stdout.strip()
@@ -52,40 +70,41 @@ def _get_secret_gcloud(secret_id: str) -> str | None:
         pass
     return None
 
+
 def get_config(key: str, default: Any = None) -> Any:
     """Busca configuracao priorizando: Env Var > Google Secret Manager opt-in > Default."""
     value = os.getenv(key)
     if value:
         return value
-    
+
     secret_map = {
         "ALL_IN_ONE_JWT_SECRET": "jwt-secret",
         "ALL_IN_ONE_IDENTITY_POSTGRES_DSN": "identity-dsn",
-        "ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY": "document-encryption-key"
+        "ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY": "document-encryption-key",
     }
-    
+
     if key in secret_map:
         secret_value = _get_secret_gcloud(secret_map[key])
         if secret_value:
-            os.environ[key] = secret_value  # Cache em memória para evitar chamadas gcloud repetidas
+            os.environ[key] = (
+                secret_value  # Cache em memória para evitar chamadas gcloud repetidas
+            )
             return secret_value
-            
+
     return default
+
 
 from .domain_rules import (
     APPROVER_ROLES,
     MODULE_ENTITIES,
     PRIMARY_RESOURCE,
-    ResourceRule,
     SENSITIVE_ROLES,
+    ResourceRule,
     can_read_sensitive,
     check_payload,
     event_for_create,
     rule_for,
 )
-from .security import Actor, actor_from_headers, demand_active_business_recruiter, demand_mfa, demand_role
-from .store import DuplicateValueError, SQLiteStore
-from .valley import register_valley_routes, validate_valley_gold_ledger_payload, validate_valley_resource_policy
 from .integration_sandbox import (
     ApiHubSandbox,
     ClinicalConsentSandbox,
@@ -96,6 +115,19 @@ from .integration_sandbox import (
     PspLedgerSandbox,
     SandboxResult,
     SupplierCatalogSandbox,
+)
+from .security import (
+    Actor,
+    actor_from_headers,
+    demand_active_business_recruiter,
+    demand_mfa,
+    demand_role,
+)
+from .store import DuplicateValueError, SQLiteStore
+from .valley import (
+    register_valley_routes,
+    validate_valley_gold_ledger_payload,
+    validate_valley_resource_policy,
 )
 
 
@@ -238,7 +270,6 @@ PERMISSIONS_WRITE_ROLES = frozenset({"owner", "administrator", "compliance_offic
 PERMISSIONS_MFA_RESOURCES = frozenset({"approval_limits"})
 
 
-
 def _database_path(module_name: str) -> str:
     directory = os.getenv("ALL_IN_ONE_STORAGE_DIR")
     if not directory:
@@ -250,7 +281,7 @@ def _store_for(module_name: str) -> Any:
     """Busca o store adequado para o módulo, priorizando Postgres se configurado."""
     env_var = f"ALL_IN_ONE_{module_name.upper()}_POSTGRES_DSN"
     dsn = get_config(env_var)
-    
+
     if dsn:
         class_name = f"{module_name.title().replace('_', '')}PostgresStore"
         module_path = f".{module_name}_postgres_store"
@@ -265,6 +296,7 @@ def _store_for(module_name: str) -> Any:
                 ) from exc
             # Fallback para o store base apenas fora da matriz tipada conhecida
             from .postgres_store import BasePostgresStore
+
             return BasePostgresStore(dsn)
 
     return SQLiteStore(module_name, _database_path(module_name))
@@ -283,17 +315,24 @@ def get_erp_store() -> Any:
 
 def _authorize_owner_or_operator(actor: Actor, user_id: UUID, action: str) -> None:
     if actor.user_id != user_id and not actor.roles.intersection(APPROVER_ROLES):
-        raise HTTPException(status_code=403, detail=f"Ator nao autorizado para {action} em recurso de outro usuario.")
+        raise HTTPException(
+            status_code=403,
+            detail=f"Ator nao autorizado para {action} em recurso de outro usuario.",
+        )
 
 
-def _authorize_resource_read(actor: Actor, user_id: UUID, rule: ResourceRule, module_name: str) -> None:
+def _authorize_resource_read(
+    actor: Actor, user_id: UUID, rule: ResourceRule, module_name: str
+) -> None:
     if actor.user_id == user_id:
         return
     if rule.sensitive and can_read_sensitive(module_name, actor.roles):
         return
     if not rule.sensitive and actor.roles.intersection(APPROVER_ROLES):
         return
-    raise HTTPException(status_code=403, detail="Ator nao autorizado para ler recurso de outro usuario.")
+    raise HTTPException(
+        status_code=403, detail="Ator nao autorizado para ler recurso de outro usuario."
+    )
 
 
 def _authorize_permissions_operation(
@@ -313,11 +352,26 @@ def _authorize_permissions_operation(
         demand_mfa(actor, f"permissions:{resource_type}:{action}")
 
 
-def _expose(item: dict[str, Any], actor: Actor, rule: ResourceRule, module_name: str) -> dict[str, Any]:
-    if module_name == "jobs" and rule.sensitive and actor.user_id != UUID(item["user_id"]):
-        raise HTTPException(status_code=403, detail="Curriculo de terceiro exige consulta Business auditada.")
-    if rule.sensitive and actor.user_id != UUID(item["user_id"]) and not can_read_sensitive(module_name, actor.roles):
-        raise HTTPException(status_code=403, detail="Leitura de dado sensivel nao autorizada.")
+def _expose(
+    item: dict[str, Any], actor: Actor, rule: ResourceRule, module_name: str
+) -> dict[str, Any]:
+    if (
+        module_name == "jobs"
+        and rule.sensitive
+        and actor.user_id != UUID(item["user_id"])
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="Curriculo de terceiro exige consulta Business auditada.",
+        )
+    if (
+        rule.sensitive
+        and actor.user_id != UUID(item["user_id"])
+        and not can_read_sensitive(module_name, actor.roles)
+    ):
+        raise HTTPException(
+            status_code=403, detail="Leitura de dado sensivel nao autorizada."
+        )
     return item
 
 
@@ -352,23 +406,40 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             except ValueError:
                 return None
 
-        roles = sorted(item.strip().casefold() for item in request.headers.get("x-actor-roles", "").split(",") if item.strip())
-        scopes = sorted(item.strip().casefold() for item in request.headers.get("x-actor-scopes", "").split(",") if item.strip())
+        roles = sorted(
+            item.strip().casefold()
+            for item in request.headers.get("x-actor-roles", "").split(",")
+            if item.strip()
+        )
+        scopes = sorted(
+            item.strip().casefold()
+            for item in request.headers.get("x-actor-scopes", "").split(",")
+            if item.strip()
+        )
         forwarded = request.headers.get("x-forwarded-for")
         channel = request.headers.get("x-client-channel", "api").casefold()
         if channel not in {"api", "web", "mobile", "worker", "integration", "admin"}:
             channel = "api"
-        set_audit_context(AuditContext(
-            tenant_id=valid_uuid_header("x-tenant-id"), company_id=valid_uuid_header("x-business-id"),
-            actor_role=",".join(roles)[:200] or None,
-            session_id=(request.headers.get("x-audit-session-id") or "")[:180] or None,
-            device_id=(request.headers.get("x-device-fingerprint") or "")[:180] or None,
-            ip_address=forwarded.split(",", maxsplit=1)[0].strip()[:64] if forwarded else (request.client.host if request.client else None),
-            user_agent=(request.headers.get("user-agent") or "")[:500] or None,
-            origin=request.headers.get("x-client-origin", "web").casefold()[:100], channel=channel,
-            reason=(request.headers.get("x-audit-reason") or "")[:500] or None,
-            causation_id=valid_uuid_header("x-causation-id"), authorization=",".join(scopes)[:1000] or None,
-        ))
+        set_audit_context(
+            AuditContext(
+                tenant_id=valid_uuid_header("x-tenant-id"),
+                company_id=valid_uuid_header("x-business-id"),
+                actor_role=",".join(roles)[:200] or None,
+                session_id=(request.headers.get("x-audit-session-id") or "")[:180]
+                or None,
+                device_id=(request.headers.get("x-device-fingerprint") or "")[:180]
+                or None,
+                ip_address=forwarded.split(",", maxsplit=1)[0].strip()[:64]
+                if forwarded
+                else (request.client.host if request.client else None),
+                user_agent=(request.headers.get("user-agent") or "")[:500] or None,
+                origin=request.headers.get("x-client-origin", "web").casefold()[:100],
+                channel=channel,
+                reason=(request.headers.get("x-audit-reason") or "")[:500] or None,
+                causation_id=valid_uuid_header("x-causation-id"),
+                authorization=",".join(scopes)[:1000] or None,
+            )
+        )
         return await call_next(request)
 
     def fetch(resource_type: str, resource_id: UUID) -> dict[str, Any]:
@@ -377,11 +448,16 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             raise HTTPException(status_code=404, detail="Registro nao encontrado.")
         return item
 
-    def authorize_business_recruiter(actor: Actor, action: str, required_scope: str) -> None:
+    def authorize_business_recruiter(
+        actor: Actor, action: str, required_scope: str
+    ) -> None:
         demand_active_business_recruiter(actor, action, required_scope)
         verifier = getattr(store, "verify_active_business_recruiter", None)
         if verifier and not verifier(str(actor.user_id), str(actor.business_id)):
-            raise HTTPException(status_code=403, detail="Membership Business ativa nao confirmada no banco.")
+            raise HTTPException(
+                status_code=403,
+                detail="Membership Business ativa nao confirmada no banco.",
+            )
 
     def create_secured(
         resource_type: str,
@@ -395,21 +471,44 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         _authorize_permissions_operation(module_name, actor, "create", resource_type)
         _authorize_owner_or_operator(actor, body.user_id, "create")
         payload = dict(body.payload)
-        if module_name == "jobs" and resource_type in {"resumes", "employment_records", "applications"} and actor.user_id != body.user_id:
-            raise HTTPException(status_code=403, detail="Somente o titular pode alterar sua jornada de candidato.")
-        if module_name == "jobs" and resource_type in {"resume_documents", "resume_access_logs"}:
-            raise HTTPException(status_code=422, detail="Recurso Jobs criado somente por fluxo auditado interno.")
+        if (
+            module_name == "jobs"
+            and resource_type in {"resumes", "employment_records", "applications"}
+            and actor.user_id != body.user_id
+        ):
+            raise HTTPException(
+                status_code=403,
+                detail="Somente o titular pode alterar sua jornada de candidato.",
+            )
+        if module_name == "jobs" and resource_type in {
+            "resume_documents",
+            "resume_access_logs",
+        }:
+            raise HTTPException(
+                status_code=422,
+                detail="Recurso Jobs criado somente por fluxo auditado interno.",
+            )
         if module_name == "jobs" and resource_type == "employment_records":
             if payload.get("source_type") not in (None, "user_declared"):
-                raise HTTPException(status_code=422, detail="Origem documental somente e criada pelo importador CTPS PDF.")
+                raise HTTPException(
+                    status_code=422,
+                    detail="Origem documental somente e criada pelo importador CTPS PDF.",
+                )
             try:
                 resume_id = UUID(str(payload.get("resume_id")))
             except ValueError:
-                raise HTTPException(status_code=422, detail="resume_id valido e obrigatorio.") from None
+                raise HTTPException(
+                    status_code=422, detail="resume_id valido e obrigatorio."
+                ) from None
             resume = fetch("resumes", resume_id)
-            _authorize_owner_or_operator(actor, UUID(resume["user_id"]), "adicionar experiencia")
+            _authorize_owner_or_operator(
+                actor, UUID(resume["user_id"]), "adicionar experiencia"
+            )
             if UUID(resume["user_id"]) != body.user_id:
-                raise HTTPException(status_code=422, detail="Experiencia deve pertencer ao dono do curriculo.")
+                raise HTTPException(
+                    status_code=422,
+                    detail="Experiencia deve pertencer ao dono do curriculo.",
+                )
             payload.update(
                 {
                     "source_type": "user_declared",
@@ -421,24 +520,42 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         if module_name == "jobs" and resource_type == "job_postings":
             authorize_business_recruiter(actor, "publicar vagas", "jobs:manage")
             if str(payload.get("company_id")) != str(actor.business_id):
-                raise HTTPException(status_code=403, detail="Vaga deve pertencer a empresa Business autenticada.")
+                raise HTTPException(
+                    status_code=403,
+                    detail="Vaga deve pertencer a empresa Business autenticada.",
+                )
         if module_name == "jobs" and resource_type == "applications":
             try:
                 resume = fetch("resumes", UUID(str(payload.get("resume_id"))))
-                posting = fetch("job_postings", UUID(str(payload.get("job_posting_id"))))
+                posting = fetch(
+                    "job_postings", UUID(str(payload.get("job_posting_id")))
+                )
             except ValueError:
-                raise HTTPException(status_code=422, detail="Vaga e curriculo validos sao obrigatorios.") from None
+                raise HTTPException(
+                    status_code=422, detail="Vaga e curriculo validos sao obrigatorios."
+                ) from None
             if UUID(resume["user_id"]) != body.user_id:
-                raise HTTPException(status_code=403, detail="Candidatura exige curriculo do proprio usuario.")
+                raise HTTPException(
+                    status_code=403,
+                    detail="Candidatura exige curriculo do proprio usuario.",
+                )
             if posting["status"] != "published":
-                raise HTTPException(status_code=409, detail="Candidatura exige vaga publicada.")
+                raise HTTPException(
+                    status_code=409, detail="Candidatura exige vaga publicada."
+                )
         if module_name == "marketplace" and resource_type == "reviews":
             payload.setdefault("moderation_status", "pending_review")
         validate_valley_resource_policy(module_name, resource_type, payload, actor)
         if module_name == "finance" and resource_type == "valley_gold_ledger_entries":
             validate_valley_gold_ledger_payload(payload)
-        if (module_name, resource_type) in TRANSACTIONAL_RESOURCES and not idempotency_key:
-            raise HTTPException(status_code=422, detail="X-Idempotency-Key obrigatorio para operacao transacional.")
+        if (
+            module_name,
+            resource_type,
+        ) in TRANSACTIONAL_RESOURCES and not idempotency_key:
+            raise HTTPException(
+                status_code=422,
+                detail="X-Idempotency-Key obrigatorio para operacao transacional.",
+            )
         check_payload(rule, payload)
         try:
             return store.create(
@@ -453,7 +570,9 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
                 idempotency_key,
             )
         except DuplicateValueError as exc:
-            raise HTTPException(status_code=409, detail=f"Valor unico ja utilizado: {exc}.") from None
+            raise HTTPException(
+                status_code=409, detail=f"Valor unico ja utilizado: {exc}."
+            ) from None
 
     @app.get("/health")
     def health() -> dict[str, str]:
@@ -487,13 +606,20 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
 
     @app.get("/catalog")
     def catalog() -> dict[str, Any]:
-        return {"module": module_name, "resources": list(MODULE_ENTITIES[module_name]), "primary_resource": PRIMARY_RESOURCE[module_name]}
+        return {
+            "module": module_name,
+            "resources": list(MODULE_ENTITIES[module_name]),
+            "primary_resource": PRIMARY_RESOURCE[module_name],
+        }
 
     if module_name == "identity":
+
         @app.post("/registrations", status_code=201)
         def register_user(
             body: IdentityRegistration,
-            x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
+            x_correlation_id: UUID | None = Header(
+                default=None, alias="X-Correlation-Id"
+            ),
         ) -> dict[str, Any]:
             bind_correlation_id(x_correlation_id)
             user_id = str(uuid4())
@@ -515,7 +641,9 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
                     None,
                 )
             except DuplicateValueError as exc:
-                raise HTTPException(status_code=409, detail=f"Cadastro ja existente: {exc}.") from None
+                raise HTTPException(
+                    status_code=409, detail=f"Cadastro ja existente: {exc}."
+                ) from None
 
     @app.post("/resources/{resource_type}", status_code=201)
     def create_resource(
@@ -525,7 +653,9 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         x_idempotency_key: str | None = Header(default=None, alias="X-Idempotency-Key"),
         x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
     ) -> dict[str, Any]:
-        return create_secured(resource_type, body, actor, x_idempotency_key, x_correlation_id)
+        return create_secured(
+            resource_type, body, actor, x_idempotency_key, x_correlation_id
+        )
 
     @app.get("/resources/{resource_type}")
     def list_resources(
@@ -535,9 +665,17 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     ) -> list[dict[str, Any]]:
         rule = rule_for(module_name, resource_type)
         _authorize_permissions_operation(module_name, actor, "list", resource_type)
-        if user_id and actor.user_id != user_id and not actor.roles.intersection(APPROVER_ROLES):
-            raise HTTPException(status_code=403, detail="Consulta de outro usuario nao autorizada.")
-        rows = store.list(resource_type, str(user_id) if user_id else str(actor.user_id))
+        if (
+            user_id
+            and actor.user_id != user_id
+            and not actor.roles.intersection(APPROVER_ROLES)
+        ):
+            raise HTTPException(
+                status_code=403, detail="Consulta de outro usuario nao autorizada."
+            )
+        rows = store.list(
+            resource_type, str(user_id) if user_id else str(actor.user_id)
+        )
         return [_expose(item, actor, rule, module_name) for item in rows]
 
     @app.get("/resources/{resource_type}/{resource_id}")
@@ -545,7 +683,9 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         resource_type: str,
         resource_id: UUID,
         actor: Actor = Depends(actor_from_headers),
-        x_access_purpose: str = Header(default="consulta operacional autorizada", alias="X-Access-Purpose"),
+        x_access_purpose: str = Header(
+            default="consulta operacional autorizada", alias="X-Access-Purpose"
+        ),
         x_audit_exported: bool = Header(default=False, alias="X-Audit-Exported"),
         x_audit_printed: bool = Header(default=False, alias="X-Audit-Printed"),
         x_audit_shared: bool = Header(default=False, alias="X-Audit-Shared"),
@@ -555,11 +695,20 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         item = fetch(resource_type, resource_id)
         _authorize_resource_read(actor, UUID(item["user_id"]), rule, module_name)
         if rule.sensitive:
-            store.audit_external(str(actor.user_id), "sensitive_read", resource_type, str(resource_id), {
-                "user_id": item["user_id"], "entity_id": item.get("entity_id"),
-                "purpose": x_access_purpose[:300], "exported": x_audit_exported,
-                "printed": x_audit_printed, "shared": x_audit_shared,
-            })
+            store.audit_external(
+                str(actor.user_id),
+                "sensitive_read",
+                resource_type,
+                str(resource_id),
+                {
+                    "user_id": item["user_id"],
+                    "entity_id": item.get("entity_id"),
+                    "purpose": x_access_purpose[:300],
+                    "exported": x_audit_exported,
+                    "printed": x_audit_printed,
+                    "shared": x_audit_shared,
+                },
+            )
         return _expose(item, actor, rule, module_name)
 
     @app.patch("/resources/{resource_type}/{resource_id}")
@@ -574,10 +723,19 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         rule = rule_for(module_name, resource_type)
         _authorize_permissions_operation(module_name, actor, "update", resource_type)
         if rule.immutable:
-            raise HTTPException(status_code=409, detail="Recurso append-only nao aceita atualizacao.")
+            raise HTTPException(
+                status_code=409, detail="Recurso append-only nao aceita atualizacao."
+            )
         item = fetch(resource_type, resource_id)
-        if module_name == "jobs" and resource_type in {"resumes", "employment_records", "applications"} and actor.user_id != UUID(item["user_id"]):
-            raise HTTPException(status_code=403, detail="Somente o titular pode alterar sua jornada de candidato.")
+        if (
+            module_name == "jobs"
+            and resource_type in {"resumes", "employment_records", "applications"}
+            and actor.user_id != UUID(item["user_id"])
+        ):
+            raise HTTPException(
+                status_code=403,
+                detail="Somente o titular pode alterar sua jornada de candidato.",
+            )
         _authorize_owner_or_operator(actor, UUID(item["user_id"]), "update")
         merged = {**item["payload"], **body.payload}
         check_payload(rule, merged)
@@ -594,7 +752,10 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         rule = rule_for(module_name, resource_type)
         _authorize_permissions_operation(module_name, actor, "delete", resource_type)
         if rule.immutable or rule.sensitive:
-            raise HTTPException(status_code=409, detail="Recurso protegido exige retencao e nao pode ser excluido.")
+            raise HTTPException(
+                status_code=409,
+                detail="Recurso protegido exige retencao e nao pode ser excluido.",
+            )
         item = fetch(resource_type, resource_id)
         _authorize_owner_or_operator(actor, UUID(item["user_id"]), "delete")
         store.soft_delete(item, str(actor.user_id))
@@ -614,19 +775,35 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         _authorize_permissions_operation(module_name, actor, action, resource_type)
         transition = rule.transitions.get(action)
         if transition is None:
-            raise HTTPException(status_code=422, detail=f"Acao nao suportada: {action}.")
+            raise HTTPException(
+                status_code=422, detail=f"Acao nao suportada: {action}."
+            )
         item = fetch(resource_type, resource_id)
         if module_name == "jobs" and resource_type == "job_postings":
             authorize_business_recruiter(actor, "gerenciar vagas", "jobs:manage")
             if str(item["payload"].get("company_id")) != str(actor.business_id):
-                raise HTTPException(status_code=403, detail="Vaga pertence a outra empresa Business.")
-        if module_name == "jobs" and resource_type == "applications" and action != "withdraw":
+                raise HTTPException(
+                    status_code=403, detail="Vaga pertence a outra empresa Business."
+                )
+        if (
+            module_name == "jobs"
+            and resource_type == "applications"
+            and action != "withdraw"
+        ):
             authorize_business_recruiter(actor, "avaliar candidaturas", "jobs:manage")
-            posting = fetch("job_postings", UUID(str(item["payload"].get("job_posting_id"))))
+            posting = fetch(
+                "job_postings", UUID(str(item["payload"].get("job_posting_id")))
+            )
             if str(posting["payload"].get("company_id")) != str(actor.business_id):
-                raise HTTPException(status_code=403, detail="Candidatura pertence a outra empresa Business.")
+                raise HTTPException(
+                    status_code=403,
+                    detail="Candidatura pertence a outra empresa Business.",
+                )
         if item["status"] not in transition.source:
-            raise HTTPException(status_code=409, detail=f"Transicao {action} invalida a partir de {item['status']}.")
+            raise HTTPException(
+                status_code=409,
+                detail=f"Transicao {action} invalida a partir de {item['status']}.",
+            )
         if transition.roles:
             demand_role(actor, transition.roles, action)
         else:
@@ -635,10 +812,19 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             demand_mfa(actor, action)
         payload = {**item["payload"], **body.payload, "decision_reason": body.reason}
         check_payload(rule, payload)
-        return store.update(item, payload, transition.target, str(actor.user_id), action, transition.event)
+        return store.update(
+            item,
+            payload,
+            transition.target,
+            str(actor.user_id),
+            action,
+            transition.event,
+        )
 
     @app.get("/audit/events")
-    def audit_events(actor: Actor = Depends(actor_from_headers)) -> list[dict[str, Any]]:
+    def audit_events(
+        actor: Actor = Depends(actor_from_headers),
+    ) -> list[dict[str, Any]]:
         _authorize_permissions_operation(module_name, actor, "audit")
         demand_role(actor, APPROVER_ROLES, "audit")
         return store.audit_log()
@@ -650,6 +836,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         return store.outbox()
 
     if module_name in {"identity", "riders", "services"}:
+
         @app.post("/integrations/sandbox/kyc/person")
         def sandbox_kyc_person(
             body: SandboxKycPersonPayload,
@@ -666,6 +853,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             )
 
     if module_name == "business":
+
         @app.post("/integrations/sandbox/kyb/business")
         def sandbox_kyb_business(
             body: SandboxKybBusinessPayload,
@@ -681,6 +869,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             )
 
     if module_name == "finance":
+
         @app.post("/integrations/sandbox/psp/pix/authorize")
         def sandbox_pix_authorize(
             body: SandboxPixPayload,
@@ -717,9 +906,12 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             actor: Actor = Depends(actor_from_headers),
         ) -> dict[str, Any]:
             _authorize_sandbox(actor)
-            return _sandbox_response(PspLedgerSandbox().release_escrow(body.escrow_id, body.amount_brl))
+            return _sandbox_response(
+                PspLedgerSandbox().release_escrow(body.escrow_id, body.amount_brl)
+            )
 
     if module_name == "erp":
+
         @app.post("/integrations/sandbox/fiscal/invoices")
         def sandbox_fiscal_invoice(
             body: SandboxFiscalInvoicePayload,
@@ -736,15 +928,21 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             )
 
     if module_name == "jobs":
+
         @app.post("/integrations/sandbox/ctps/classify")
         def sandbox_ctps_classify(
             body: SandboxCtpsPayload,
             actor: Actor = Depends(actor_from_headers),
         ) -> dict[str, Any]:
             _authorize_sandbox(actor)
-            return _sandbox_response(CtpsSandbox().classify_pdf(body.resume_id, body.pdf_text.encode("utf-8")))
+            return _sandbox_response(
+                CtpsSandbox().classify_pdf(
+                    body.resume_id, body.pdf_text.encode("utf-8")
+                )
+            )
 
     if module_name in {"delivery", "mobility", "tms"}:
+
         @app.post("/integrations/sandbox/maps/route")
         def sandbox_maps_route(
             body: SandboxRoutePayload,
@@ -761,6 +959,7 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             )
 
     if module_name == "health":
+
         @app.post("/integrations/sandbox/health/consents")
         def sandbox_health_consent(
             body: SandboxClinicalConsentPayload,
@@ -777,13 +976,16 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             )
 
     if module_name == "api_hub":
+
         @app.post("/integrations/sandbox/api-hub/webhooks/sign")
         def sandbox_api_hub_webhook_sign(
             body: SandboxWebhookSignPayload,
             actor: Actor = Depends(actor_from_headers),
         ) -> dict[str, Any]:
             _authorize_sandbox(actor)
-            return _sandbox_response(ApiHubSandbox().sign_webhook(body.webhook_id, body.payload, body.secret))
+            return _sandbox_response(
+                ApiHubSandbox().sign_webhook(body.webhook_id, body.payload, body.secret)
+            )
 
         @app.post("/integrations/sandbox/api-hub/api-key/verify")
         def sandbox_api_hub_api_key_verify(
@@ -791,9 +993,12 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             actor: Actor = Depends(actor_from_headers),
         ) -> dict[str, Any]:
             _authorize_sandbox(actor)
-            return _sandbox_response(ApiHubSandbox().verify_api_key(body.api_key, set(body.allowed_hashes)))
+            return _sandbox_response(
+                ApiHubSandbox().verify_api_key(body.api_key, set(body.allowed_hashes))
+            )
 
     if module_name == "stock":
+
         @app.post("/integrations/sandbox/suppliers/products")
         def sandbox_supplier_product(
             body: SandboxSupplierProductPayload,
@@ -810,42 +1015,61 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             )
 
     if module_name == "delivery":
+
         @app.post("/pricing/quote")
-        def calculate_delivery_quote(body: DeliveryQuoteRequest, actor: Actor = Depends(actor_from_headers)) -> dict[str, str]:
+        def calculate_delivery_quote(
+            body: DeliveryQuoteRequest, actor: Actor = Depends(actor_from_headers)
+        ) -> dict[str, str]:
             return delivery_quote(body)
 
     if module_name == "mobility":
+
         @app.post("/pricing/fare")
-        def calculate_mobility_fare(body: MobilityFareRequest, actor: Actor = Depends(actor_from_headers)) -> dict[str, str]:
+        def calculate_mobility_fare(
+            body: MobilityFareRequest, actor: Actor = Depends(actor_from_headers)
+        ) -> dict[str, str]:
             return mobility_fare(body)
 
     if module_name == "marketplace":
+
         @app.post("/pricing/commission")
-        def calculate_marketplace_commission(body: CommissionRequest, actor: Actor = Depends(actor_from_headers)) -> dict[str, str]:
+        def calculate_marketplace_commission(
+            body: CommissionRequest, actor: Actor = Depends(actor_from_headers)
+        ) -> dict[str, str]:
             return marketplace_commission(body)
 
     if module_name == "jobs":
         from .ctps_import import extract_ctps_pdf
-        from .private_documents import DocumentConfigurationError, DocumentNotFoundError, PrivateDocumentStore
+        from .private_documents import (
+            DocumentConfigurationError,
+            DocumentNotFoundError,
+            PrivateDocumentStore,
+        )
 
         try:
             private_documents = PrivateDocumentStore()
         except DocumentConfigurationError as exc:
             raise RuntimeError(str(exc)) from exc
 
-        def protect_document_metadata(item: dict[str, Any], for_recruiter: bool = False) -> dict[str, Any]:
+        def protect_document_metadata(
+            item: dict[str, Any], for_recruiter: bool = False
+        ) -> dict[str, Any]:
             protected = {**item, "payload": dict(item["payload"])}
             protected["payload"].pop("storage_key", None)
             if for_recruiter:
                 protected["payload"] = {
                     "document_type": item["payload"].get("document_type"),
                     "evidence_status": item["payload"].get("evidence_status"),
-                    "official_verification_status": item["payload"].get("official_verification_status"),
+                    "official_verification_status": item["payload"].get(
+                        "official_verification_status"
+                    ),
                     "extraction_status": item["payload"].get("extraction_status"),
                 }
             return protected
 
-        def assemble_resume(resume: dict[str, Any], for_recruiter: bool = False) -> dict[str, Any]:
+        def assemble_resume(
+            resume: dict[str, Any], for_recruiter: bool = False
+        ) -> dict[str, Any]:
             records = [
                 item
                 for item in store.list("employment_records", resume["user_id"])
@@ -856,15 +1080,23 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
                 for item in store.list("resume_documents", resume["user_id"])
                 if item["payload"].get("resume_id") == resume["id"]
             ]
-            documents = [protect_document_metadata(item, for_recruiter) for item in documents]
+            documents = [
+                protect_document_metadata(item, for_recruiter) for item in documents
+            ]
             return {
                 "resume": resume,
                 "employment_records": {
                     "validated_by_document_import": [
-                        item for item in records if item["payload"].get("evidence_status") == "validated_by_document_import"
+                        item
+                        for item in records
+                        if item["payload"].get("evidence_status")
+                        == "validated_by_document_import"
                     ],
                     "self_declared_unverified": [
-                        item for item in records if item["payload"].get("evidence_status") == "self_declared_unverified"
+                        item
+                        for item in records
+                        if item["payload"].get("evidence_status")
+                        == "self_declared_unverified"
                     ],
                 },
                 "documents": documents,
@@ -880,19 +1112,30 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             resume_id: UUID,
             document: bytes = Body(media_type="application/pdf"),
             actor: Actor = Depends(actor_from_headers),
-            x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
+            x_correlation_id: UUID | None = Header(
+                default=None, alias="X-Correlation-Id"
+            ),
         ) -> dict[str, Any]:
             bind_correlation_id(x_correlation_id)
             resume = fetch("resumes", resume_id)
             if actor.user_id != UUID(resume["user_id"]):
-                raise HTTPException(status_code=403, detail="Somente o titular pode importar sua CTPS Digital.")
+                raise HTTPException(
+                    status_code=403,
+                    detail="Somente o titular pode importar sua CTPS Digital.",
+                )
             if len(document) > 15 * 1024 * 1024:
-                raise HTTPException(status_code=413, detail="PDF excede limite de 15 MB.")
+                raise HTTPException(
+                    status_code=413, detail="PDF excede limite de 15 MB."
+                )
             try:
                 result = extract_ctps_pdf(document)
             except ValueError as exc:
                 raise HTTPException(status_code=422, detail=str(exc)) from None
-            document_payload = {key: value for key, value in result.items() if key != "employment_records"}
+            document_payload = {
+                key: value
+                for key, value in result.items()
+                if key != "employment_records"
+            }
             document_payload["resume_id"] = str(resume_id)
             document_payload.update(private_documents.save(result["sha256"], document))
             evidence = store.create(
@@ -940,19 +1183,30 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             resume_id: UUID,
             document_id: UUID,
             actor: Actor = Depends(actor_from_headers),
-            x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
+            x_correlation_id: UUID | None = Header(
+                default=None, alias="X-Correlation-Id"
+            ),
         ) -> Response:
             bind_correlation_id(x_correlation_id)
             resume = fetch("resumes", resume_id)
             if actor.user_id != UUID(resume["user_id"]):
-                raise HTTPException(status_code=403, detail="Somente o titular pode acessar o PDF da CTPS Digital.")
+                raise HTTPException(
+                    status_code=403,
+                    detail="Somente o titular pode acessar o PDF da CTPS Digital.",
+                )
             evidence = fetch("resume_documents", document_id)
             if evidence["payload"].get("resume_id") != str(resume_id):
-                raise HTTPException(status_code=404, detail="Documento nao pertence ao curriculo.")
+                raise HTTPException(
+                    status_code=404, detail="Documento nao pertence ao curriculo."
+                )
             try:
-                contents = private_documents.read(evidence["payload"]["storage_key"], evidence["payload"]["sha256"])
+                contents = private_documents.read(
+                    evidence["payload"]["storage_key"], evidence["payload"]["sha256"]
+                )
             except (KeyError, DocumentNotFoundError, ValueError) as exc:
-                raise HTTPException(status_code=404, detail="Documento privado indisponivel.") from exc
+                raise HTTPException(
+                    status_code=404, detail="Documento privado indisponivel."
+                ) from exc
             store.audit_external(
                 str(actor.user_id),
                 "document_content_read",
@@ -971,19 +1225,31 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             )
 
         @app.get("/resumes/{resume_id}/complete")
-        def own_complete_resume(resume_id: UUID, actor: Actor = Depends(actor_from_headers)) -> dict[str, Any]:
+        def own_complete_resume(
+            resume_id: UUID, actor: Actor = Depends(actor_from_headers)
+        ) -> dict[str, Any]:
             resume = fetch("resumes", resume_id)
             if actor.user_id != UUID(resume["user_id"]):
-                raise HTTPException(status_code=403, detail="Use a consulta Business auditada para curriculo de terceiro.")
+                raise HTTPException(
+                    status_code=403,
+                    detail="Use a consulta Business auditada para curriculo de terceiro.",
+                )
             return assemble_resume(resume)
 
         @app.get("/vacancies")
-        def vacancies(q: str | None = Query(default=None, max_length=100)) -> list[dict[str, Any]]:
+        def vacancies(
+            q: str | None = Query(default=None, max_length=100),
+        ) -> list[dict[str, Any]]:
             terms = q.casefold() if q else None
-            rows = [row for row in store.list("job_postings") if row["status"] == "published"]
+            rows = [
+                row
+                for row in store.list("job_postings")
+                if row["status"] == "published"
+            ]
             if terms:
                 rows = [
-                    row for row in rows
+                    row
+                    for row in rows
                     if terms in str(row["payload"].get("title", "")).casefold()
                     or terms in str(row["payload"].get("description", "")).casefold()
                 ]
@@ -993,18 +1259,24 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         def candidate_resumes(
             q: str | None = Query(default=None, max_length=100),
             actor: Actor = Depends(actor_from_headers),
-            x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
+            x_correlation_id: UUID | None = Header(
+                default=None, alias="X-Correlation-Id"
+            ),
         ) -> list[dict[str, Any]]:
             bind_correlation_id(x_correlation_id)
-            authorize_business_recruiter(actor, "consultar curriculos", "jobs:resumes:read")
+            authorize_business_recruiter(
+                actor, "consultar curriculos", "jobs:resumes:read"
+            )
             terms = q.casefold() if q else None
             resumes = [
-                item for item in store.list("resumes")
+                item
+                for item in store.list("resumes")
                 if item["payload"].get("recruiter_visibility") == "business_recruiters"
             ]
             if terms:
                 resumes = [
-                    item for item in resumes
+                    item
+                    for item in resumes
                     if terms in str(item["payload"].get("headline", "")).casefold()
                     or terms in str(item["payload"].get("skills", "")).casefold()
                 ]
@@ -1022,26 +1294,36 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
             resume_id: UUID,
             purpose: str = Query(min_length=3, max_length=200),
             actor: Actor = Depends(actor_from_headers),
-            x_correlation_id: UUID | None = Header(default=None, alias="X-Correlation-Id"),
+            x_correlation_id: UUID | None = Header(
+                default=None, alias="X-Correlation-Id"
+            ),
         ) -> dict[str, Any]:
             bind_correlation_id(x_correlation_id)
-            authorize_business_recruiter(actor, "consultar curriculos", "jobs:resumes:read")
+            authorize_business_recruiter(
+                actor, "consultar curriculos", "jobs:resumes:read"
+            )
             resume = fetch("resumes", resume_id)
             if resume["payload"].get("recruiter_visibility") != "business_recruiters":
-                raise HTTPException(status_code=403, detail="Usuario nao autorizou visibilidade a recrutadores.")
+                raise HTTPException(
+                    status_code=403,
+                    detail="Usuario nao autorizou visibilidade a recrutadores.",
+                )
             store.create(
                 "resume_access_logs",
                 resume["user_id"],
                 str(actor.business_id),
                 "recorded",
-                {"resume_id": str(resume_id), "business_id": str(actor.business_id), "purpose": purpose},
+                {
+                    "resume_id": str(resume_id),
+                    "business_id": str(actor.business_id),
+                    "purpose": purpose,
+                },
                 str(actor.user_id),
                 (),
                 "jobs.resume.viewed",
                 None,
             )
             return assemble_resume(resume, for_recruiter=True)
-
 
     register_valley_routes(app, module_name, store, fetch)
 
@@ -1068,7 +1350,9 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         )
 
     @app.get("/list", deprecated=True)
-    def list_records(user_id: UUID | None = None, actor: Actor = Depends(actor_from_headers)) -> list[dict[str, Any]]:
+    def list_records(
+        user_id: UUID | None = None, actor: Actor = Depends(actor_from_headers)
+    ) -> list[dict[str, Any]]:
         _authorize_permissions_operation(module_name, actor, "list", "records")
         _authorize_owner_or_operator(actor, user_id or actor.user_id, "list")
         return store.list("records", str(user_id) if user_id else str(actor.user_id))
@@ -1083,7 +1367,9 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         _authorize_permissions_operation(module_name, actor, "approve", "records")
         item = fetch("records", body.id)
         _authorize_owner_or_operator(actor, UUID(item["user_id"]), "approve")
-        return store.update(item, item["payload"], "approved", str(actor.user_id), "approve")
+        return store.update(
+            item, item["payload"], "approved", str(actor.user_id), "approve"
+        )
 
     @app.post("/reject", deprecated=True)
     def reject(
@@ -1095,7 +1381,9 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         _authorize_permissions_operation(module_name, actor, "reject", "records")
         item = fetch("records", body.id)
         _authorize_owner_or_operator(actor, UUID(item["user_id"]), "reject")
-        return store.update(item, item["payload"], "rejected", str(actor.user_id), "reject")
+        return store.update(
+            item, item["payload"], "rejected", str(actor.user_id), "reject"
+        )
 
     @app.post("/audit", status_code=201, deprecated=True)
     def audit(
@@ -1105,10 +1393,18 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     ) -> dict[str, Any]:
         bind_correlation_id(x_correlation_id)
         demand_role(actor, APPROVER_ROLES, "audit")
-        return store.audit_external(str(actor.user_id), body.action, body.resource_type, str(body.resource_id), body.payload)
+        return store.audit_external(
+            str(actor.user_id),
+            body.action,
+            body.resource_type,
+            str(body.resource_id),
+            body.payload,
+        )
 
     @app.get("/{resource_id}", deprecated=True)
-    def get_record(resource_id: UUID, actor: Actor = Depends(actor_from_headers)) -> dict[str, Any]:
+    def get_record(
+        resource_id: UUID, actor: Actor = Depends(actor_from_headers)
+    ) -> dict[str, Any]:
         _authorize_permissions_operation(module_name, actor, "read", "records")
         item = fetch("records", resource_id)
         _authorize_owner_or_operator(actor, UUID(item["user_id"]), "read")

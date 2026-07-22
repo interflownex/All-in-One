@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `property.properties`
+
 - `property.units`
 - `property.leases`
 - `property.assemblies`

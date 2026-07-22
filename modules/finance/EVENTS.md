@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `payment.escrow.created`
+
 - `payment.escrow.released`
 - `payment.refunded`
 - `payment.split.executed`

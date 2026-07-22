@@ -5,7 +5,6 @@ import math
 from pathlib import Path
 from typing import Any
 
-
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG_PATH = ROOT / "config" / "module_catalog.json"
 
@@ -128,7 +127,15 @@ CATEGORY_DEFINITIONS: dict[str, dict[str, Any]] = {
     "Comida e Mercado": {
         "offer_types": ("food", "product"),
         "modules": ("delivery", "marketplace", "stock"),
-        "keywords": ("food", "alimento", "comida", "restaurante", "marmita", "mercado", "delivery"),
+        "keywords": (
+            "food",
+            "alimento",
+            "comida",
+            "restaurante",
+            "marmita",
+            "mercado",
+            "delivery",
+        ),
     },
     "Compras e Produtos": {
         "offer_types": ("product",),
@@ -138,12 +145,28 @@ CATEGORY_DEFINITIONS: dict[str, dict[str, Any]] = {
     "Saude e Bem-estar": {
         "offer_types": ("service",),
         "modules": ("health", "services"),
-        "keywords": ("saude", "medico", "medicina", "psicologo", "dentista", "consulta", "telemedicina"),
+        "keywords": (
+            "saude",
+            "medico",
+            "medicina",
+            "psicologo",
+            "dentista",
+            "consulta",
+            "telemedicina",
+        ),
     },
     "Casa, Reparos e Imoveis": {
         "offer_types": ("service", "product"),
         "modules": ("services", "property", "marketplace"),
-        "keywords": ("reparo", "eletricista", "pedreiro", "marceneiro", "imovel", "manutencao", "casa"),
+        "keywords": (
+            "reparo",
+            "eletricista",
+            "pedreiro",
+            "marceneiro",
+            "imovel",
+            "manutencao",
+            "casa",
+        ),
     },
     "Mobilidade, Entregas e Logistica": {
         "offer_types": ("service",),
@@ -153,17 +176,40 @@ CATEGORY_DEFINITIONS: dict[str, dict[str, Any]] = {
     "Negocios e Profissionais": {
         "offer_types": ("service",),
         "modules": ("legal", "erp", "crm", "bi", "bpm", "document", "hr", "jobs"),
-        "keywords": ("advogado", "contador", "recrutamento", "consultoria", "documento", "profissional"),
+        "keywords": (
+            "advogado",
+            "contador",
+            "recrutamento",
+            "consultoria",
+            "documento",
+            "profissional",
+        ),
     },
     "Beneficios, Wallet e Recompensas": {
         "offer_types": ("service", "product"),
         "modules": ("finance", "marketplace", "stock"),
-        "keywords": ("pepitas", "gold", "wallet", "desconto", "beneficio", "fidelidade", "recompensa"),
+        "keywords": (
+            "pepitas",
+            "gold",
+            "wallet",
+            "desconto",
+            "beneficio",
+            "fidelidade",
+            "recompensa",
+        ),
     },
     "Tecnologia, Seguranca e IA": {
         "offer_types": ("service",),
         "modules": ("vision", "ai_core", "api_hub", "permissions"),
-        "keywords": ("camera", "ia", "api", "integracao", "permissao", "seguranca", "automacao"),
+        "keywords": (
+            "camera",
+            "ia",
+            "api",
+            "integracao",
+            "permissao",
+            "seguranca",
+            "automacao",
+        ),
     },
 }
 
@@ -230,7 +276,9 @@ def valley_facets(offers: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]
         "consumer_categories": counted_facet(offers, "consumer_category", str),
         "company_types": counted_facet(offers, "company_type", company_type_label),
         "company_categories": counted_facet(offers, "company_category", str),
-        "business_activities": counted_facet(offers, "business_activity_id", business_activity_label),
+        "business_activities": counted_facet(
+            offers, "business_activity_id", business_activity_label
+        ),
     }
 
 
@@ -240,7 +288,9 @@ def valley_modules() -> list[dict[str, Any]]:
         {
             "source_module": module["slug"],
             "technical_title": module["title"],
-            "consumer_category": infer_category(module["slug"], "records", module["title"], module["description"]),
+            "consumer_category": infer_category(
+                module["slug"], "records", module["title"], module["description"]
+            ),
             "consumer_title": friendly_module_title(module["slug"], module["title"]),
             "description": module["description"],
             "availability_status": "coming_soon",
@@ -249,7 +299,9 @@ def valley_modules() -> list[dict[str, Any]]:
     ]
 
 
-def build_valley_offers(module_name: str, store: Any | None = None) -> list[dict[str, Any]]:
+def build_valley_offers(
+    module_name: str, store: Any | None = None
+) -> list[dict[str, Any]]:
     offers = module_fallback_offers()
     if store is None:
         return offers
@@ -270,8 +322,12 @@ def module_fallback_offers() -> list[dict[str, Any]]:
     return [
         {
             "offer_id": f"module:{module['slug']}",
-            "offer_type": infer_offer_type(module["slug"], "records", module["title"], module["description"]),
-            "consumer_category": infer_category(module["slug"], "records", module["title"], module["description"]),
+            "offer_type": infer_offer_type(
+                module["slug"], "records", module["title"], module["description"]
+            ),
+            "consumer_category": infer_category(
+                module["slug"], "records", module["title"], module["description"]
+            ),
             "title": friendly_module_title(module["slug"], module["title"]),
             "description": module["description"],
             "source_module": module["slug"],
@@ -291,17 +347,30 @@ def module_fallback_offers() -> list[dict[str, Any]]:
             "source_entity_id": None,
             "business_id": None,
             "seller_user_id": None,
-            "short_description": short_description(module["description"], friendly_module_title(module["slug"], module["title"])),
+            "short_description": short_description(
+                module["description"],
+                friendly_module_title(module["slug"], module["title"]),
+            ),
             "long_description": module["description"],
-            "consumer_friendly_label": friendly_module_title(module["slug"], module["title"]),
+            "consumer_friendly_label": friendly_module_title(
+                module["slug"], module["title"]
+            ),
             "company_type": "parceiro_integrado",
             "company_type_label": COMPANY_TYPE_ALIASES["parceiro_integrado"],
             "company_category": company_category_for(module["slug"], None),
-            "business_activity_id": business_activity_for(module["slug"], "records", module["title"], module["description"]),
-            "business_activity_label": business_activity_label(
-                business_activity_for(module["slug"], "records", module["title"], module["description"])
+            "business_activity_id": business_activity_for(
+                module["slug"], "records", module["title"], module["description"]
             ),
-            "category_id": slugify(infer_category(module["slug"], "records", module["title"], module["description"])),
+            "business_activity_label": business_activity_label(
+                business_activity_for(
+                    module["slug"], "records", module["title"], module["description"]
+                )
+            ),
+            "category_id": slugify(
+                infer_category(
+                    module["slug"], "records", module["title"], module["description"]
+                )
+            ),
             "price_type": "sob_consulta",
             "price_amount": None,
             "currency": "BRL",
@@ -322,7 +391,9 @@ def module_fallback_offers() -> list[dict[str, Any]]:
     ]
 
 
-def offer_from_resource(module_name: str, resource_type: str, row: dict[str, Any]) -> dict[str, Any] | None:
+def offer_from_resource(
+    module_name: str, resource_type: str, row: dict[str, Any]
+) -> dict[str, Any] | None:
     payload = row.get("payload") or {}
     if not publishable_for_valley(module_name, row, payload):
         return None
@@ -330,31 +401,61 @@ def offer_from_resource(module_name: str, resource_type: str, row: dict[str, Any
     source_resource_type = public_source_resource_type(resource_type, payload)
     title = first_text(
         payload,
-        ("public_title", "name", "title", "headline", "category", "service_type", "route_code", "property_type"),
+        (
+            "public_title",
+            "name",
+            "title",
+            "headline",
+            "category",
+            "service_type",
+            "route_code",
+            "property_type",
+        ),
         fallback=friendly_module_title(module_name, module_name),
     )
-    description = first_text(payload, ("public_description", "description", "summary"), fallback=title)
+    description = first_text(
+        payload, ("public_description", "description", "summary"), fallback=title
+    )
     offer_type = normalize_offer_type(payload.get("offer_type")) or infer_offer_type(
         source_module, source_resource_type, title, description
     )
-    consumer_category = str(payload.get("consumer_category") or infer_category(source_module, source_resource_type, title, description))
-    service_area = str(payload.get("service_area") or default_service_area(source_module, source_resource_type)).casefold()
+    consumer_category = str(
+        payload.get("consumer_category")
+        or infer_category(source_module, source_resource_type, title, description)
+    )
+    service_area = str(
+        payload.get("service_area")
+        or default_service_area(source_module, source_resource_type)
+    ).casefold()
     origin = public_origin(payload)
     radius = number_or_none(payload.get("service_radius_km"))
     business_activity_id = str(
-        payload.get("business_activity_id") or business_activity_for(source_module, source_resource_type, title, description)
+        payload.get("business_activity_id")
+        or business_activity_for(
+            source_module, source_resource_type, title, description
+        )
     )
     action = consumer_action_for(source_module, source_resource_type, payload)
     price_amount = price_for(payload)
     company_type = str(payload.get("company_type") or "microempresa")
     activity_label = business_activity_label(business_activity_id)
     type_label = OFFER_TYPE_LABELS.get(offer_type, offer_type.title())
-    category_label = str(payload.get("company_category") or company_category_for(source_module, business_activity_id))
+    category_label = str(
+        payload.get("company_category")
+        or company_category_for(source_module, business_activity_id)
+    )
     return {
         "offer_id": f"{module_name}:{resource_type}:{row['id']}",
         "source_entity_id": str(row["id"]),
-        "business_id": str(row.get("entity_id") or payload.get("business_id") or payload.get("company_id") or ""),
-        "seller_user_id": str(row.get("user_id") or payload.get("seller_user_id") or ""),
+        "business_id": str(
+            row.get("entity_id")
+            or payload.get("business_id")
+            or payload.get("company_id")
+            or ""
+        ),
+        "seller_user_id": str(
+            row.get("user_id") or payload.get("seller_user_id") or ""
+        ),
         "offer_type": offer_type,
         "offer_type_label": type_label,
         "consumer_category": consumer_category,
@@ -369,7 +470,9 @@ def offer_from_resource(module_name: str, resource_type: str, row: dict[str, Any
         "configured_resource_type": resource_type,
         "availability_status": availability_for(row.get("status")),
         "price_brl": price_amount,
-        "price_type": str(payload.get("price_type") or default_price_type(price_amount)),
+        "price_type": str(
+            payload.get("price_type") or default_price_type(price_amount)
+        ),
         "price_amount": price_amount,
         "currency": str(payload.get("currency") or "BRL"),
         "benefits": list_or_empty(payload.get("benefits")),
@@ -377,7 +480,9 @@ def offer_from_resource(module_name: str, resource_type: str, row: dict[str, Any
         "service_origin": origin,
         "service_radius_km": radius,
         "distance_km": None,
-        "region_label": str(payload.get("region_label") or default_region_label(service_area)),
+        "region_label": str(
+            payload.get("region_label") or default_region_label(service_area)
+        ),
         "service_area": service_area,
         "consumer_action": action,
         "primary_action_label": action_label_for(action, business_activity_id),
@@ -391,9 +496,14 @@ def offer_from_resource(module_name: str, resource_type: str, row: dict[str, Any
         "seller_context_label": f"{company_type_label(company_type)} em {activity_label}",
         "consumer_filter_text": f"{type_label} em {consumer_category} - {activity_label}",
         "category_id": str(payload.get("category_id") or slugify(consumer_category)),
-        "availability_type": str(payload.get("availability_type") or default_availability_type(source_module, source_resource_type)),
+        "availability_type": str(
+            payload.get("availability_type")
+            or default_availability_type(source_module, source_resource_type)
+        ),
         "stock_quantity": integer_or_none(payload.get("stock_quantity")),
-        "service_duration_minutes": integer_or_none(payload.get("service_duration_minutes")),
+        "service_duration_minutes": integer_or_none(
+            payload.get("service_duration_minutes")
+        ),
         "attributes": dict_or_empty(payload.get("attributes")),
         "requirements": list_or_empty(payload.get("requirements")),
         "compliance_status": default_compliance_status(source_module, payload),
@@ -401,8 +511,14 @@ def offer_from_resource(module_name: str, resource_type: str, row: dict[str, Any
         "publish_to_valley": True,
         "visible_to_consumer": payload.get("visible_to_consumer") is not False,
         "ranking_score": number_or_none(payload.get("ranking_score")) or 0,
-        "provider_label": str(payload.get("provider_label") or payload.get("store_name") or "Prestador verificado"),
-        "verified_seller": bool(payload.get("verified_seller") or payload.get("identity_validated")),
+        "provider_label": str(
+            payload.get("provider_label")
+            or payload.get("store_name")
+            or "Prestador verificado"
+        ),
+        "verified_seller": bool(
+            payload.get("verified_seller") or payload.get("identity_validated")
+        ),
     }
 
 
@@ -429,11 +545,22 @@ def search_valley_offers(
     for offer in offers:
         if normalized_type and offer["offer_type"] != normalized_type:
             continue
-        if selected_category and selected_category not in str(offer["consumer_category"]).casefold():
+        if (
+            selected_category
+            and selected_category not in str(offer["consumer_category"]).casefold()
+        ):
             continue
-        if company_type and str(company_type).casefold() != str(offer.get("company_type")).casefold():
+        if (
+            company_type
+            and str(company_type).casefold()
+            != str(offer.get("company_type")).casefold()
+        ):
             continue
-        if company_category and str(company_category).casefold() not in str(offer.get("company_category", "")).casefold():
+        if (
+            company_category
+            and str(company_category).casefold()
+            not in str(offer.get("company_category", "")).casefold()
+        ):
             continue
         if business_activity:
             selected_activity = str(business_activity).casefold()
@@ -442,7 +569,11 @@ def search_valley_offers(
                 str(offer.get("business_activity_label", "")).casefold(),
             }:
                 continue
-        if availability and str(availability).casefold() != str(offer.get("availability_status")).casefold():
+        if (
+            availability
+            and str(availability).casefold()
+            != str(offer.get("availability_status")).casefold()
+        ):
             continue
         if verified_only and not offer.get("verified_seller"):
             continue
@@ -476,22 +607,32 @@ def search_valley_offers(
     return sorted(results, key=offer_sort_key)
 
 
-def find_valley_offer(offers: list[dict[str, Any]], offer_id: str) -> dict[str, Any] | None:
+def find_valley_offer(
+    offers: list[dict[str, Any]], offer_id: str
+) -> dict[str, Any] | None:
     for offer in offers:
         if offer.get("offer_id") == offer_id:
             return offer
     return None
 
 
-def with_distance(offer: dict[str, Any], lat: float | None, lng: float | None) -> dict[str, Any]:
+def with_distance(
+    offer: dict[str, Any], lat: float | None, lng: float | None
+) -> dict[str, Any]:
     copy = dict(offer)
     if lat is None or lng is None or not offer.get("service_origin"):
         return copy
     origin = offer["service_origin"]
-    distance = haversine_km(lat, lng, float(origin["latitude"]), float(origin["longitude"]))
+    distance = haversine_km(
+        lat, lng, float(origin["latitude"]), float(origin["longitude"])
+    )
     copy["distance_km"] = round(distance, 3)
     radius = offer.get("service_radius_km")
-    if offer.get("service_area") in LOCAL_AREAS and radius is not None and distance > float(radius):
+    if (
+        offer.get("service_area") in LOCAL_AREAS
+        and radius is not None
+        and distance > float(radius)
+    ):
         copy["availability_status"] = "unavailable_for_location"
     return copy
 
@@ -505,7 +646,10 @@ def visible_for_location(offer: dict[str, Any]) -> bool:
         return True
     if offer.get("availability_status") == "unavailable_for_location":
         return False
-    return offer.get("distance_km") is not None and offer.get("service_radius_km") is not None
+    return (
+        offer.get("distance_km") is not None
+        and offer.get("service_radius_km") is not None
+    )
 
 
 def offer_sort_key(offer: dict[str, Any]) -> tuple[int, float, str]:
@@ -519,7 +663,11 @@ def offer_sort_key(offer: dict[str, Any]) -> tuple[int, float, str]:
         tier = 3
     else:
         tier = 2
-    distance = float(offer["distance_km"]) if offer.get("distance_km") is not None else 999999.0
+    distance = (
+        float(offer["distance_km"])
+        if offer.get("distance_km") is not None
+        else 999999.0
+    )
     return (tier, distance, str(offer.get("title", "")))
 
 
@@ -529,14 +677,21 @@ def haversine_km(lat_a: float, lng_a: float, lat_b: float, lng_b: float) -> floa
     delta_lng = math.radians(lng_b - lng_a)
     a = (
         math.sin(delta_lat / 2) ** 2
-        + math.cos(math.radians(lat_a)) * math.cos(math.radians(lat_b)) * math.sin(delta_lng / 2) ** 2
+        + math.cos(math.radians(lat_a))
+        * math.cos(math.radians(lat_b))
+        * math.sin(delta_lng / 2) ** 2
     )
     return earth_km * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
 
-def infer_offer_type(module_name: str, resource_type: str, title: str, description: str) -> str:
+def infer_offer_type(
+    module_name: str, resource_type: str, title: str, description: str
+) -> str:
     material = f"{module_name} {resource_type} {title} {description}".casefold()
-    if any(keyword in material for keyword in CATEGORY_DEFINITIONS["Comida e Mercado"]["keywords"]):
+    if any(
+        keyword in material
+        for keyword in CATEGORY_DEFINITIONS["Comida e Mercado"]["keywords"]
+    ):
         return "food"
     if RESOURCE_OFFER_TYPES.get(resource_type):
         return RESOURCE_OFFER_TYPES[resource_type]
@@ -545,7 +700,9 @@ def infer_offer_type(module_name: str, resource_type: str, title: str, descripti
     return "service"
 
 
-def infer_category(module_name: str, resource_type: str, title: str, description: str) -> str:
+def infer_category(
+    module_name: str, resource_type: str, title: str, description: str
+) -> str:
     material = f"{module_name} {resource_type} {title} {description}".casefold()
     for name, definition in CATEGORY_DEFINITIONS.items():
         if module_name in definition["modules"]:
@@ -602,7 +759,14 @@ def integer_or_none(value: Any) -> int | None:
 
 
 def price_for(payload: dict[str, Any]) -> str | None:
-    for key in ("price_brl", "list_price_brl", "visit_price_brl", "fare_brl", "amount_brl", "contracted_price_brl"):
+    for key in (
+        "price_brl",
+        "list_price_brl",
+        "visit_price_brl",
+        "fare_brl",
+        "amount_brl",
+        "contracted_price_brl",
+    ):
         if payload.get(key) not in (None, ""):
             return str(payload[key])
     return None
@@ -634,9 +798,23 @@ def dict_or_empty(value: Any) -> dict[str, Any]:
 
 def availability_for(status: Any) -> str:
     normalized = str(status or "").casefold()
-    if normalized in {"active", "approved", "published", "available", "posted", "quoted", "completed"}:
+    if normalized in {
+        "active",
+        "approved",
+        "published",
+        "available",
+        "posted",
+        "quoted",
+        "completed",
+    }:
         return "available"
-    if normalized in {"draft", "pending_validation", "pending_review", "created", "requested"}:
+    if normalized in {
+        "draft",
+        "pending_validation",
+        "pending_review",
+        "created",
+        "requested",
+    }:
         return "limited"
     if normalized in {"cancelled", "rejected", "blocked", "suspended", "archived"}:
         return "unavailable"
@@ -654,12 +832,20 @@ def publication_status_for(row: dict[str, Any], payload: dict[str, Any]) -> str:
         return "approved"
     if status in {"rejected", "cancelled", "blocked", "suspended"}:
         return "rejected"
-    if status in {"draft", "pending_review", "pending_validation", "created", "requested"}:
+    if status in {
+        "draft",
+        "pending_review",
+        "pending_validation",
+        "created",
+        "requested",
+    }:
         return "draft"
     return "pending_review"
 
 
-def publishable_for_valley(module_name: str, row: dict[str, Any], payload: dict[str, Any]) -> bool:
+def publishable_for_valley(
+    module_name: str, row: dict[str, Any], payload: dict[str, Any]
+) -> bool:
     if payload.get("publish_to_valley") is not True:
         return False
     if payload.get("visible_to_consumer") is False:
@@ -669,17 +855,34 @@ def publishable_for_valley(module_name: str, row: dict[str, Any], payload: dict[
     if availability_for(row.get("status")) == "unavailable":
         return False
     source_module = public_source_module(module_name, payload)
-    source_resource_type = public_source_resource_type(row.get("resource_type") or "", payload)
-    title = first_text(payload, ("public_title", "name", "title", "headline", "category"), fallback=source_module)
-    description = first_text(payload, ("public_description", "description", "summary"), fallback=title)
+    source_resource_type = public_source_resource_type(
+        row.get("resource_type") or "", payload
+    )
+    title = first_text(
+        payload,
+        ("public_title", "name", "title", "headline", "category"),
+        fallback=source_module,
+    )
+    description = first_text(
+        payload, ("public_description", "description", "summary"), fallback=title
+    )
     offer_type = normalize_offer_type(payload.get("offer_type")) or infer_offer_type(
         source_module, source_resource_type, title, description
     )
-    activity_id = str(payload.get("business_activity_id") or business_activity_for(source_module, source_resource_type, title, description))
-    allowed_types = BUSINESS_ACTIVITY_DEFINITIONS.get(activity_id, {}).get("allowed_offer_types")
+    activity_id = str(
+        payload.get("business_activity_id")
+        or business_activity_for(
+            source_module, source_resource_type, title, description
+        )
+    )
+    allowed_types = BUSINESS_ACTIVITY_DEFINITIONS.get(activity_id, {}).get(
+        "allowed_offer_types"
+    )
     if allowed_types and offer_type not in allowed_types:
         return False
-    if source_module in REGULATED_MODULES and default_compliance_status(source_module, payload) not in {"approved", "verified"}:
+    if source_module in REGULATED_MODULES and default_compliance_status(
+        source_module, payload
+    ) not in {"approved", "verified"}:
         return False
     return True
 
@@ -701,14 +904,22 @@ def counted_facet(
             "label": label_for(value),
             "count": count,
         }
-        for value, count in sorted(counts.items(), key=lambda item: (str(label_for(item[0])), item[0]))
+        for value, count in sorted(
+            counts.items(), key=lambda item: (str(label_for(item[0])), item[0])
+        )
     ]
 
 
-def consumer_action_for(module_name: str, resource_type: str, payload: dict[str, Any] | None = None) -> str:
+def consumer_action_for(
+    module_name: str, resource_type: str, payload: dict[str, Any] | None = None
+) -> str:
     if payload and payload.get("consumer_action"):
         return str(payload["consumer_action"])
-    if module_name in {"marketplace", "stock"} and resource_type in {"products", "catalog_products", "discount_quotes"}:
+    if module_name in {"marketplace", "stock"} and resource_type in {
+        "products",
+        "catalog_products",
+        "discount_quotes",
+    }:
         return "buy"
     if module_name in {"health", "services"}:
         return "book" if resource_type == "appointments" else "hire"
@@ -725,7 +936,9 @@ def action_label_for(action: str, business_activity_id: str | None) -> str:
     if action == "book":
         return "Marcar consulta" if business_activity_id == "saude" else "Agendar"
     if action == "hire":
-        return "Falar com advogado" if business_activity_id == "juridico" else "Contratar"
+        return (
+            "Falar com advogado" if business_activity_id == "juridico" else "Contratar"
+        )
     if action == "apply":
         return "Candidatar-se"
     if action == "request":
@@ -761,13 +974,17 @@ def default_availability_type(module_name: str, resource_type: str) -> str:
     return "sob_consulta"
 
 
-def default_compliance_status(module_name: str, payload: dict[str, Any] | None = None) -> str:
+def default_compliance_status(
+    module_name: str, payload: dict[str, Any] | None = None
+) -> str:
     if payload and payload.get("compliance_status"):
         return str(payload["compliance_status"]).casefold()
     return "pending_review" if module_name in REGULATED_MODULES else "not_required"
 
 
-def business_activity_for(module_name: str, resource_type: str, title: str, description: str) -> str:
+def business_activity_for(
+    module_name: str, resource_type: str, title: str, description: str
+) -> str:
     category = infer_category(module_name, resource_type, title, description)
     if category == "Comida e Mercado":
         return "alimentacao"
@@ -799,7 +1016,9 @@ def business_activity_label(activity_id: str) -> str:
 
 def company_category_for(module_name: str, business_activity_id: str | None) -> str:
     if business_activity_id and business_activity_id in BUSINESS_ACTIVITY_DEFINITIONS:
-        return str(BUSINESS_ACTIVITY_DEFINITIONS[business_activity_id]["parent_category"])
+        return str(
+            BUSINESS_ACTIVITY_DEFINITIONS[business_activity_id]["parent_category"]
+        )
     if module_name in {"marketplace", "stock", "wms", "erp"}:
         return "Comercio"
     if module_name in {"services", "delivery", "mobility", "riders"}:
@@ -824,7 +1043,13 @@ def short_description(description: str, fallback: str) -> str:
 
 
 def slugify(value: str) -> str:
-    return value.casefold().replace(" ", "_").replace(",", "").replace("-", "_").replace("__", "_")
+    return (
+        value.casefold()
+        .replace(" ", "_")
+        .replace(",", "")
+        .replace("-", "_")
+        .replace("__", "_")
+    )
 
 
 def friendly_module_title(slug: str, title: str) -> str:

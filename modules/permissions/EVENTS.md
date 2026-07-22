@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `permissions.role.created`
+
 - `permissions.role.assigned`
 
         Eventos carregam `event_id`, `occurred_at`, `actor_user_id`, `user_id`,

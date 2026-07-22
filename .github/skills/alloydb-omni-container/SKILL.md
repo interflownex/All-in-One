@@ -89,7 +89,7 @@ You have the following workflows:
 4.  If the user wants, get the logs of the container using:
 
     a. If `docker`: `docker logs <CONTAINER_NAME>` b. If `podman`: `podman logs
-    <CONTAINER_NAME>`
+<CONTAINER_NAME>`
 
 ## Stopping and removing an existing AlloyDB Omni container
 
@@ -99,12 +99,12 @@ You have the following workflows:
 3.  Stop the container:
 
     a. If `docker`: `docker stop <CONTAINER_NAME>` b. If `podman`: `podman stop
-    <CONTAINER_NAME>`
+<CONTAINER_NAME>`
 
 4.  Remove the container (optional, ask user first):
 
     a. If `docker`: `docker rm <CONTAINER_NAME>` b. If `podman`: `podman rm
-    <CONTAINER_NAME>`
+<CONTAINER_NAME>`
 
 ## Connecting to an existing AlloyDB Omni container
 

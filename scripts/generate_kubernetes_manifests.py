@@ -1,10 +1,31 @@
 import os
 
 MODULES = [
-    "ai-core", "api-hub", "bi", "bpm", "business", "crm", "delivery",
-    "document", "erp", "finance", "health", "hr", "identity", "jobs",
-    "legal", "marketplace", "mobility", "permissions", "property",
-    "riders", "services", "stock", "tms", "vision", "wms"
+    "ai-core",
+    "api-hub",
+    "bi",
+    "bpm",
+    "business",
+    "crm",
+    "delivery",
+    "document",
+    "erp",
+    "finance",
+    "health",
+    "hr",
+    "identity",
+    "jobs",
+    "legal",
+    "marketplace",
+    "mobility",
+    "permissions",
+    "property",
+    "riders",
+    "services",
+    "stock",
+    "tms",
+    "vision",
+    "wms",
 ]
 
 WORKERS = {
@@ -27,6 +48,7 @@ REPO = f"us-central1-docker.pkg.dev/{PROJECT_ID}/all-in-one-repo"
 NAMESPACE = "all-in-one"
 
 BASE_DIR = "infra/kubernetes/base"
+
 
 def generate_deployment(
     name,
@@ -95,6 +117,7 @@ spec:
   ports: [{{port: 80, targetPort: {port}}}]
 """
 
+
 def generate_cronjob(name, image, schedule, image_pull_policy="IfNotPresent"):
     return f"""---
 apiVersion: batch/v1
@@ -119,12 +142,13 @@ spec:
             - name: {name}
               image: {image}:latest
               imagePullPolicy: {image_pull_policy}
-              command: ["python", "-m", "workers.{name.replace('-', '_')}.main"]
+              command: ["python", "-m", "workers.{name.replace("-", "_")}.main"]
               args: ["--postgres", "--job", "retention_review_daily", "--dry-run"]
               envFrom:
                 - configMapRef: {{name: platform-config}}
                 - secretRef: {{name: platform-secrets-placeholder}}
 """
+
 
 def main():
     if not os.path.exists(BASE_DIR):
@@ -198,6 +222,7 @@ resources:
     with open(f"{BASE_DIR}/kustomization.yaml", "w") as f:
         f.write(kustomization)
     print("Generated kustomization.yaml")
+
 
 if __name__ == "__main__":
     main()

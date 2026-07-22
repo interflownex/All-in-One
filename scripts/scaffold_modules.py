@@ -11,7 +11,6 @@ import json
 from pathlib import Path
 from textwrap import dedent, indent
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "config" / "module_catalog.json"
 DB_SCHEMA = {
@@ -868,7 +867,9 @@ def render_openapi(module: dict) -> str:
                   additionalProperties: true
         """
     )
-    return document.replace("components:\n", f"{render_additional_paths(slug)}components:\n")
+    return document.replace(
+        "components:\n", f"{render_additional_paths(slug)}components:\n"
+    )
 
 
 def render_database(module: dict) -> str:
@@ -1140,7 +1141,11 @@ def customized_artifact_paths() -> list[Path]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--check", action="store_true", help="Falha se os artefatos estiverem dessincronizados.")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Falha se os artefatos estiverem dessincronizados.",
+    )
     args = parser.parse_args()
     outputs = expected_files(load_catalog())
     stale: list[str] = []
@@ -1166,9 +1171,13 @@ def main() -> int:
         for path in missing_customized:
             print(f"- {path}")
         return 1
-    print(f"{len(outputs)} artefatos {'verificados' if args.check else 'gerados'} a partir do catalogo.")
+    print(
+        f"{len(outputs)} artefatos {'verificados' if args.check else 'gerados'} a partir do catalogo."
+    )
     if args.check:
-        print(f"{len(CUSTOMIZED_ARTIFACTS)} artefatos customizados preservados fora do scaffold generico:")
+        print(
+            f"{len(CUSTOMIZED_ARTIFACTS)} artefatos customizados preservados fora do scaffold generico:"
+        )
         for path in customized_artifact_paths():
             print(f"- {path.relative_to(ROOT)}")
     return 0

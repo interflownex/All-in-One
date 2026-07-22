@@ -18,10 +18,10 @@ the skill's source files to address the reported error, you MUST update the
 
 ## Skill Context
 
--   **Skill ID**: The unique identifier for the skill (e.g., `my-skill`).
--   **Source Path**: Where the skill's source files are located.
--   **Installed Path**: Where the skill is installed/replicated.
--   **Manifest Path**: The absolute path to the `manifest.json` file.
+- **Skill ID**: The unique identifier for the skill (e.g., `my-skill`).
+- **Source Path**: Where the skill's source files are located.
+- **Installed Path**: Where the skill is installed/replicated.
+- **Manifest Path**: The absolute path to the `manifest.json` file.
 
 ## Repair Procedure
 
@@ -32,9 +32,9 @@ the skill's source files to address the reported error, you MUST update the
     `SKILL.md`, missing resources, or incorrect sub-scripts).
 3.  **Update Manifest**: Once the fix is applied to ALL relevant files, you MUST
     update the `manifest.json` at the **Manifest Path**.
-    -   Find the entry for the skill ID in the `skills` object.
-    -   Set `"status": "installed"`.
-    -   Clear the `"error"` field (set to `null` or remove it).
+    - Find the entry for the skill ID in the `skills` object.
+    - Set `"status": "installed"`.
+    - Clear the `"error"` field (set to `null` or remove it).
 4.  **Verification**: The UI will automatically detect this change and refresh.
 
 ### Manifest Example

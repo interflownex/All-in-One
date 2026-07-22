@@ -36,8 +36,17 @@
         "pausar_provider_port_relacionado",
         "preservar_audit_logs_append_only"
       ],
-      "evidence": ["actor_id_hash", "resource_selector_hash", "audit_event_id", "role_snapshot_hash", "incident_ticket"],
-      "recovery_validation": ["tests/test_sensitive_permissions_review.py", "python3 scripts/validate_repository.py"],
+      "evidence": [
+        "actor_id_hash",
+        "resource_selector_hash",
+        "audit_event_id",
+        "role_snapshot_hash",
+        "incident_ticket"
+      ],
+      "recovery_validation": [
+        "tests/test_sensitive_permissions_review.py",
+        "python3 scripts/validate_repository.py"
+      ],
       "postmortem_required": true
     },
     "payments_ledger_integrity": {
@@ -57,8 +66,17 @@
         "preservar_ledger_append_only",
         "reconciliar_outbox_antes_de_reprocessar"
       ],
-      "evidence": ["ledger_entry_id", "idempotency_key_hash", "escrow_id", "outbox_event_id", "incident_ticket"],
-      "recovery_validation": ["tests/test_valley_gold_ledger.py", "tests/test_user_marketplace_journey.py"],
+      "evidence": [
+        "ledger_entry_id",
+        "idempotency_key_hash",
+        "escrow_id",
+        "outbox_event_id",
+        "incident_ticket"
+      ],
+      "recovery_validation": [
+        "tests/test_valley_gold_ledger.py",
+        "tests/test_user_marketplace_journey.py"
+      ],
       "postmortem_required": true
     },
     "outbox_delivery_failure": {
@@ -66,14 +84,25 @@
       "owner": "platform",
       "domains": ["events", "outbox-dispatcher"],
       "runbook": "docs/OPERATIONS.md#outbox",
-      "trigger_signals": ["OutboxBacklogHigh", "OutboxOldestPendingTooOld", "OutboxRetryableFailuresHigh", "OutboxDueWithoutDeliveries"],
+      "trigger_signals": [
+        "OutboxBacklogHigh",
+        "OutboxOldestPendingTooOld",
+        "OutboxRetryableFailuresHigh",
+        "OutboxDueWithoutDeliveries"
+      ],
       "containment": [
         "congelar_consumidores_downstream_instaveis",
         "preservar_audit.domain_events",
         "reprocessar_eventos_idempotentes",
         "verificar_rabbitmq_e_conectividade"
       ],
-      "evidence": ["pending_count", "oldest_pending_age_seconds", "dispatcher_logs", "event_selector_hash", "incident_ticket"],
+      "evidence": [
+        "pending_count",
+        "oldest_pending_age_seconds",
+        "dispatcher_logs",
+        "event_selector_hash",
+        "incident_ticket"
+      ],
       "recovery_validation": ["tests/test_outbox_alerts.py", "tests/test_outbox_runbook.py"],
       "postmortem_required": false
     },
@@ -82,14 +111,26 @@
       "owner": "compliance",
       "domains": ["compliance", "retention-worker"],
       "runbook": "docs/OPERATIONS.md#retencao-lgpd",
-      "trigger_signals": ["RetentionCronJobFailed", "RetentionCronJobDelayed", "RetentionBacklogHigh", "RetentionOldestCandidateTooOld", "RetentionDecisionMissing"],
+      "trigger_signals": [
+        "RetentionCronJobFailed",
+        "RetentionCronJobDelayed",
+        "RetentionBacklogHigh",
+        "RetentionOldestCandidateTooOld",
+        "RetentionDecisionMissing"
+      ],
       "containment": [
         "manter_dry_run_ate_revisao",
         "preservar_legal_hold",
         "bloquear_descarte_produtivo_sem_dpia",
         "registrar_decisao_compliance"
       ],
-      "evidence": ["candidate_selector_hash", "policy_version", "legal_hold_summary", "worker_logs", "incident_ticket"],
+      "evidence": [
+        "candidate_selector_hash",
+        "policy_version",
+        "legal_hold_summary",
+        "worker_logs",
+        "incident_ticket"
+      ],
       "recovery_validation": ["tests/test_retention_alerts.py", "tests/test_retention_jobs.py"],
       "postmortem_required": true
     },
@@ -110,8 +151,17 @@
         "validar_append_only_e_outbox",
         "promover_somente_apos_aprovacao_humana"
       ],
-      "evidence": ["backup_object_uri_hash", "restore_database_id", "validator_output_hash", "rpo_rto_observado", "incident_ticket"],
-      "recovery_validation": ["tests/test_backup_restore_plan.py", "python3 scripts/validate_repository.py"],
+      "evidence": [
+        "backup_object_uri_hash",
+        "restore_database_id",
+        "validator_output_hash",
+        "rpo_rto_observado",
+        "incident_ticket"
+      ],
+      "recovery_validation": [
+        "tests/test_backup_restore_plan.py",
+        "python3 scripts/validate_repository.py"
+      ],
       "postmortem_required": true
     },
     "slo_burn_rate": {
@@ -132,7 +182,10 @@
         "acionar_fallback_sandbox_homologacao_quando_aplicavel"
       ],
       "evidence": ["slo_name", "burn_rate", "window", "service_logs", "incident_ticket"],
-      "recovery_validation": ["tests/test_slo_catalog.py", "python3 scripts/validate_repository.py"],
+      "recovery_validation": [
+        "tests/test_slo_catalog.py",
+        "python3 scripts/validate_repository.py"
+      ],
       "postmortem_required": false
     }
   },

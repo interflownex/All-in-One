@@ -192,13 +192,7 @@
         {
           "name": "body",
           "annotation": "SupportCaseRequest",
-          "model_fields": [
-            "kind",
-            "subject",
-            "message",
-            "desired_resolution",
-            "idempotency_key"
-          ]
+          "model_fields": ["kind", "subject", "message", "desired_resolution", "idempotency_key"]
         },
         {
           "name": "token_payload",
@@ -223,11 +217,7 @@
         {
           "name": "body",
           "annotation": "ConsumerReviewRequest",
-          "model_fields": [
-            "rating",
-            "comment",
-            "idempotency_key"
-          ]
+          "model_fields": ["rating", "comment", "idempotency_key"]
         },
         {
           "name": "token_payload",
@@ -284,11 +274,7 @@
         {
           "name": "body",
           "annotation": "CatalogPaymentRequest",
-          "model_fields": [
-            "order_id",
-            "idempotency_key",
-            "method"
-          ]
+          "model_fields": ["order_id", "idempotency_key", "method"]
         },
         {
           "name": "token_payload",
@@ -418,10 +404,7 @@
         {
           "name": "body",
           "annotation": "ApplyRecommendationsPayload",
-          "model_fields": [
-            "classification",
-            "actor_id"
-          ]
+          "model_fields": ["classification", "actor_id"]
         }
       ],
       "response_model": "ModuleSettingsResponse",
@@ -461,10 +444,7 @@
         {
           "name": "body",
           "annotation": "ModulePatch",
-          "model_fields": [
-            "state",
-            "reason"
-          ]
+          "model_fields": ["state", "reason"]
         }
       ],
       "response_model": "CompanyModuleSetting",
@@ -655,13 +635,7 @@
         {
           "name": "body",
           "annotation": "BlueprintReplace",
-          "model_fields": [
-            "blocks",
-            "fields",
-            "calculations",
-            "validations",
-            "visibility_rules"
-          ]
+          "model_fields": ["blocks", "fields", "calculations", "validations", "visibility_rules"]
         },
         {
           "name": "context",
@@ -691,9 +665,7 @@
         {
           "name": "body",
           "annotation": "HomologationRequest",
-          "model_fields": [
-            "checklist"
-          ]
+          "model_fields": ["checklist"]
         },
         {
           "name": "context",
@@ -728,13 +700,7 @@
         {
           "name": "body",
           "annotation": "HomologationReview",
-          "model_fields": [
-            "result",
-            "notes",
-            "problems",
-            "corrections",
-            "evidence"
-          ]
+          "model_fields": ["result", "notes", "problems", "corrections", "evidence"]
         },
         {
           "name": "context",
@@ -769,12 +735,7 @@
         {
           "name": "body",
           "annotation": "PublicationRequest",
-          "model_fields": [
-            "environment",
-            "rollout_policy",
-            "tenant_scope",
-            "channels"
-          ]
+          "model_fields": ["environment", "rollout_policy", "tenant_scope", "channels"]
         },
         {
           "name": "context",
@@ -809,11 +770,7 @@
         {
           "name": "body",
           "annotation": "FormSubmissionRequest",
-          "model_fields": [
-            "values",
-            "context",
-            "source"
-          ]
+          "model_fields": ["values", "context", "source"]
         },
         {
           "name": "context_actor",
@@ -1268,13 +1225,7 @@
         {
           "name": "body",
           "annotation": "SupportCaseRequest",
-          "model_fields": [
-            "kind",
-            "subject",
-            "message",
-            "desired_resolution",
-            "idempotency_key"
-          ]
+          "model_fields": ["kind", "subject", "message", "desired_resolution", "idempotency_key"]
         },
         {
           "name": "actor",
@@ -1405,11 +1356,7 @@
         {
           "name": "body",
           "annotation": "ResourceCreate",
-          "model_fields": [
-            "user_id",
-            "entity_id",
-            "payload"
-          ]
+          "model_fields": ["user_id", "entity_id", "payload"]
         },
         {
           "name": "actor",
@@ -1519,9 +1466,7 @@
         {
           "name": "body",
           "annotation": "ResourcePatch",
-          "model_fields": [
-            "payload"
-          ]
+          "model_fields": ["payload"]
         },
         {
           "name": "actor",
@@ -1591,10 +1536,7 @@
         {
           "name": "body",
           "annotation": "ActionPayload",
-          "model_fields": [
-            "reason",
-            "payload"
-          ]
+          "model_fields": ["reason", "payload"]
         },
         {
           "name": "actor",
@@ -1699,10 +1641,7 @@
         {
           "name": "body",
           "annotation": "DecisionPayload",
-          "model_fields": [
-            "id",
-            "reason"
-          ]
+          "model_fields": ["id", "reason"]
         },
         {
           "name": "actor",
@@ -1727,10 +1666,7 @@
         {
           "name": "body",
           "annotation": "DecisionPayload",
-          "model_fields": [
-            "id",
-            "reason"
-          ]
+          "model_fields": ["id", "reason"]
         },
         {
           "name": "actor",
@@ -1755,12 +1691,7 @@
         {
           "name": "body",
           "annotation": "AuditPayload",
-          "model_fields": [
-            "action",
-            "resource_type",
-            "resource_id",
-            "payload"
-          ]
+          "model_fields": ["action", "resource_type", "resource_id", "payload"]
         },
         {
           "name": "actor",
@@ -1888,12 +1819,7 @@
         {
           "name": "body",
           "annotation": "SandboxKycPersonPayload",
-          "model_fields": [
-            "user_id",
-            "document",
-            "full_name",
-            "selfie_hash"
-          ]
+          "model_fields": ["user_id", "document", "full_name", "selfie_hash"]
         },
         {
           "name": "actor",
@@ -1913,11 +1839,7 @@
         {
           "name": "body",
           "annotation": "SandboxKybBusinessPayload",
-          "model_fields": [
-            "company_id",
-            "cnpj",
-            "legal_name"
-          ]
+          "model_fields": ["company_id", "cnpj", "legal_name"]
         },
         {
           "name": "actor",
@@ -1937,12 +1859,7 @@
         {
           "name": "body",
           "annotation": "SandboxPixPayload",
-          "model_fields": [
-            "payment_id",
-            "payer_id",
-            "amount_brl",
-            "idempotency_key"
-          ]
+          "model_fields": ["payment_id", "payer_id", "amount_brl", "idempotency_key"]
         },
         {
           "name": "actor",
@@ -1962,12 +1879,7 @@
         {
           "name": "body",
           "annotation": "SandboxEscrowPayload",
-          "model_fields": [
-            "escrow_id",
-            "payer_id",
-            "beneficiary_id",
-            "amount_brl"
-          ]
+          "model_fields": ["escrow_id", "payer_id", "beneficiary_id", "amount_brl"]
         },
         {
           "name": "actor",
@@ -1987,10 +1899,7 @@
         {
           "name": "body",
           "annotation": "SandboxEscrowReleasePayload",
-          "model_fields": [
-            "escrow_id",
-            "amount_brl"
-          ]
+          "model_fields": ["escrow_id", "amount_brl"]
         },
         {
           "name": "actor",
@@ -2010,12 +1919,7 @@
         {
           "name": "body",
           "annotation": "SandboxFiscalInvoicePayload",
-          "model_fields": [
-            "invoice_id",
-            "document_type",
-            "amount_brl",
-            "issuer_document"
-          ]
+          "model_fields": ["invoice_id", "document_type", "amount_brl", "issuer_document"]
         },
         {
           "name": "actor",
@@ -2035,10 +1939,7 @@
         {
           "name": "body",
           "annotation": "SandboxCtpsPayload",
-          "model_fields": [
-            "resume_id",
-            "pdf_text"
-          ]
+          "model_fields": ["resume_id", "pdf_text"]
         },
         {
           "name": "actor",
@@ -2058,12 +1959,7 @@
         {
           "name": "body",
           "annotation": "SandboxRoutePayload",
-          "model_fields": [
-            "route_id",
-            "origin",
-            "destination",
-            "vehicle_type"
-          ]
+          "model_fields": ["route_id", "origin", "destination", "vehicle_type"]
         },
         {
           "name": "actor",
@@ -2083,12 +1979,7 @@
         {
           "name": "body",
           "annotation": "SandboxClinicalConsentPayload",
-          "model_fields": [
-            "patient_id",
-            "professional_id",
-            "purpose",
-            "ttl_days"
-          ]
+          "model_fields": ["patient_id", "professional_id", "purpose", "ttl_days"]
         },
         {
           "name": "actor",
@@ -2108,11 +1999,7 @@
         {
           "name": "body",
           "annotation": "SandboxWebhookSignPayload",
-          "model_fields": [
-            "webhook_id",
-            "payload",
-            "secret"
-          ]
+          "model_fields": ["webhook_id", "payload", "secret"]
         },
         {
           "name": "actor",
@@ -2132,10 +2019,7 @@
         {
           "name": "body",
           "annotation": "SandboxApiKeyVerifyPayload",
-          "model_fields": [
-            "api_key",
-            "allowed_hashes"
-          ]
+          "model_fields": ["api_key", "allowed_hashes"]
         },
         {
           "name": "actor",
@@ -2155,12 +2039,7 @@
         {
           "name": "body",
           "annotation": "SandboxSupplierProductPayload",
-          "model_fields": [
-            "supplier_id",
-            "external_sku",
-            "cost_brl",
-            "available_quantity"
-          ]
+          "model_fields": ["supplier_id", "external_sku", "cost_brl", "available_quantity"]
         },
         {
           "name": "actor",
@@ -2595,12 +2474,7 @@
         {
           "name": "body",
           "annotation": "ValleyPepitaGrant",
-          "model_fields": [
-            "pepitas",
-            "customer_user_id",
-            "merchant_gold_ledger_id",
-            "note"
-          ]
+          "model_fields": ["pepitas", "customer_user_id", "merchant_gold_ledger_id", "note"]
         },
         {
           "name": "actor",
@@ -2625,11 +2499,7 @@
         {
           "name": "body",
           "annotation": "ValleyStockDiscountRequest",
-          "model_fields": [
-            "catalog_product_id",
-            "price_brl",
-            "user_pepitas_balance"
-          ]
+          "model_fields": ["catalog_product_id", "price_brl", "user_pepitas_balance"]
         }
       ],
       "response_model": "",

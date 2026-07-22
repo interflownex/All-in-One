@@ -18,10 +18,10 @@
 
 ## Classificacao Visivel
 
-| Origem | Selo exibido | Significado |
-| --- | --- | --- |
-| Informacao extraida do PDF CTPS importado | `validated_by_document_import` | O campo veio do documento cujo SHA-256 foi preservado. |
-| Experiencia ou descricao digitada pelo usuario | `self_declared_unverified` | O campo foi declarado pelo titular e nao foi extraido do PDF. |
+| Origem                                         | Selo exibido                   | Significado                                                   |
+| ---------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| Informacao extraida do PDF CTPS importado      | `validated_by_document_import` | O campo veio do documento cujo SHA-256 foi preservado.        |
+| Experiencia ou descricao digitada pelo usuario | `self_declared_unverified`     | O campo foi declarado pelo titular e nao foi extraido do PDF. |
 
 O campo `official_verification_status` nasce como
 `not_verified_externally`. Um integrador autorizado futuro podera verificar

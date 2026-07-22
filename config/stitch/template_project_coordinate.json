@@ -22,7 +22,11 @@
     "on_daily_directive_change": "reler_fontes_autoritativas_e_aplicar_diff_sem_apagar_trabalho_aprovado",
     "schedule_source": ".github/workflows/stitch-sync.yml",
     "idempotency": "nao_recriar_projeto_ou_tela_com_id_remoto_registrado",
-    "automatic_execution_requires": ["GitHub Actions ativo", "secret STITCH_API_KEY valido", "quota Stitch disponivel"],
+    "automatic_execution_requires": [
+      "GitHub Actions ativo",
+      "secret STITCH_API_KEY valido",
+      "quota Stitch disponivel"
+    ],
     "prohibited_claim": "nao declarar continuidade automatica quando workflow, credencial ou quota nao estiverem comprovados"
   },
   "universal_directives": [
@@ -49,16 +53,50 @@
       "surfaces": ["android", "mobile_web_embedded"],
       "brands": ["All-in-One", "Valley"],
       "objective": "Desenvolver em um unico projeto o template integral do superapp Valley para consumidor, reunindo todas as ferramentas e recursos autorizados do ecossistema.",
-      "module_scope": ["identity", "finance", "marketplace", "stock", "delivery", "services", "mobility", "jobs", "health", "document", "notifications", "support"],
+      "module_scope": [
+        "identity",
+        "finance",
+        "marketplace",
+        "stock",
+        "delivery",
+        "services",
+        "mobility",
+        "jobs",
+        "health",
+        "document",
+        "notifications",
+        "support"
+      ],
       "screen_groups": [
-        {"key": "shell_onboarding_identity", "title": "Shell, onboarding, login, MFA, consentimento e perfil"},
-        {"key": "home_discovery_catalog", "title": "Home, busca, categorias, ofertas, detalhes e favoritos"},
-        {"key": "commerce_checkout_wallet", "title": "Carrinho, pedido, pagamento, wallet, escrow, comprovantes e disputas"},
-        {"key": "services_schedule", "title": "Servicos, profissionais, agenda, cotacao, contrato e avaliacao"},
-        {"key": "delivery_tracking", "title": "Entrega, cotacao, rastreio, prova, seguro e suporte"},
-        {"key": "mobility", "title": "Mobilidade, rotas, paradas, bilhetes e acompanhamento"},
-        {"key": "jobs_health_documents", "title": "Vagas, curriculo, CTPS, saude, documentos e consentimentos"},
-        {"key": "notifications_support_settings", "title": "Notificacoes, atendimento, privacidade, seguranca e configuracoes"}
+        {
+          "key": "shell_onboarding_identity",
+          "title": "Shell, onboarding, login, MFA, consentimento e perfil"
+        },
+        {
+          "key": "home_discovery_catalog",
+          "title": "Home, busca, categorias, ofertas, detalhes e favoritos"
+        },
+        {
+          "key": "commerce_checkout_wallet",
+          "title": "Carrinho, pedido, pagamento, wallet, escrow, comprovantes e disputas"
+        },
+        {
+          "key": "services_schedule",
+          "title": "Servicos, profissionais, agenda, cotacao, contrato e avaliacao"
+        },
+        {
+          "key": "delivery_tracking",
+          "title": "Entrega, cotacao, rastreio, prova, seguro e suporte"
+        },
+        { "key": "mobility", "title": "Mobilidade, rotas, paradas, bilhetes e acompanhamento" },
+        {
+          "key": "jobs_health_documents",
+          "title": "Vagas, curriculo, CTPS, saude, documentos e consentimentos"
+        },
+        {
+          "key": "notifications_support_settings",
+          "title": "Notificacoes, atendimento, privacidade, seguranca e configuracoes"
+        }
       ]
     },
     {
@@ -68,16 +106,66 @@
       "surfaces": ["responsive_web", "mobile_web", "mobile_app"],
       "brands": ["All-in-One"],
       "objective": "Desenvolver em um unico projeto o template web e mobile integral da plataforma All-in-One, cobrindo os 25 modulos oficiais sem fragmentar a experiencia administrativa e operacional.",
-      "module_scope": ["identity", "business", "permissions", "finance", "marketplace", "stock", "delivery", "riders", "services", "mobility", "jobs", "erp", "wms", "tms", "crm", "bpm", "document", "hr", "health", "vision", "legal", "property", "bi", "ai_core", "api_hub"],
+      "module_scope": [
+        "identity",
+        "business",
+        "permissions",
+        "finance",
+        "marketplace",
+        "stock",
+        "delivery",
+        "riders",
+        "services",
+        "mobility",
+        "jobs",
+        "erp",
+        "wms",
+        "tms",
+        "crm",
+        "bpm",
+        "document",
+        "hr",
+        "health",
+        "vision",
+        "legal",
+        "property",
+        "bi",
+        "ai_core",
+        "api_hub"
+      ],
       "screen_groups": [
-        {"key": "platform_shell", "title": "Shell global, seletor de tenant/empresa, navegacao, busca e notificacoes"},
-        {"key": "identity_business_permissions", "title": "Identidade, empresas, estabelecimentos, membros, RBAC, ABAC e aprovacoes"},
-        {"key": "commerce_finance_operations", "title": "Marketplace, estoque, pedidos, financeiro, ERP, WMS e TMS"},
-        {"key": "people_services", "title": "CRM, RH, Jobs, servicos, riders, delivery, mobility e saude"},
-        {"key": "content_governance", "title": "Documentos, propriedade, legal, vision, BPM, compliance e auditoria"},
-        {"key": "analytics_ai_integrations", "title": "BI, relatorios, analytics, IA, API Hub, webhooks e integracoes"},
-        {"key": "dynamic_forms", "title": "Construtor governado de formularios, preview, homologacao, publicacao, versao e cobranca"},
-        {"key": "complete_data_surfaces", "title": "CRUDs, grades, filtros, dashboards, relatorios, importacoes, exportacoes e estados completos"}
+        {
+          "key": "platform_shell",
+          "title": "Shell global, seletor de tenant/empresa, navegacao, busca e notificacoes"
+        },
+        {
+          "key": "identity_business_permissions",
+          "title": "Identidade, empresas, estabelecimentos, membros, RBAC, ABAC e aprovacoes"
+        },
+        {
+          "key": "commerce_finance_operations",
+          "title": "Marketplace, estoque, pedidos, financeiro, ERP, WMS e TMS"
+        },
+        {
+          "key": "people_services",
+          "title": "CRM, RH, Jobs, servicos, riders, delivery, mobility e saude"
+        },
+        {
+          "key": "content_governance",
+          "title": "Documentos, propriedade, legal, vision, BPM, compliance e auditoria"
+        },
+        {
+          "key": "analytics_ai_integrations",
+          "title": "BI, relatorios, analytics, IA, API Hub, webhooks e integracoes"
+        },
+        {
+          "key": "dynamic_forms",
+          "title": "Construtor governado de formularios, preview, homologacao, publicacao, versao e cobranca"
+        },
+        {
+          "key": "complete_data_surfaces",
+          "title": "CRUDs, grades, filtros, dashboards, relatorios, importacoes, exportacoes e estados completos"
+        }
       ]
     },
     {
@@ -87,16 +175,49 @@
       "surfaces": ["android", "mobile_web_embedded"],
       "brands": ["All-in-One", "Valley"],
       "objective": "Desenvolver em um unico projeto o template integral do APK Valley Riders para entregadores e motoristas, com operacao segura, rastreavel e orientada a campo.",
-      "module_scope": ["identity", "riders", "delivery", "mobility", "finance", "document", "notifications", "support"],
+      "module_scope": [
+        "identity",
+        "riders",
+        "delivery",
+        "mobility",
+        "finance",
+        "document",
+        "notifications",
+        "support"
+      ],
       "screen_groups": [
-        {"key": "onboarding_compliance", "title": "Onboarding, identidade, documentos, veiculo, KYC, consentimento e homologacao"},
-        {"key": "availability_map", "title": "Disponibilidade, mapa, zonas, demanda, conectividade e localizacao"},
-        {"key": "delivery_offers", "title": "Ofertas, aceite, coleta, rota, entrega, prova, ocorrencia e seguro"},
-        {"key": "mobility_rides", "title": "Corridas, passageiro, rota, paradas, seguranca e conclusao"},
-        {"key": "earnings_wallet", "title": "Ganhos, wallet, repasses, taxas, extrato, comprovantes e contestacao"},
-        {"key": "documents_vehicle", "title": "Perfil, documentos, veiculos, validade, manutencao e bloqueios"},
-        {"key": "safety_support", "title": "Emergencia, suporte, chat, incidentes, privacidade e central de seguranca"},
-        {"key": "history_ratings", "title": "Historico, indicadores, avaliacoes, notificacoes e configuracoes"}
+        {
+          "key": "onboarding_compliance",
+          "title": "Onboarding, identidade, documentos, veiculo, KYC, consentimento e homologacao"
+        },
+        {
+          "key": "availability_map",
+          "title": "Disponibilidade, mapa, zonas, demanda, conectividade e localizacao"
+        },
+        {
+          "key": "delivery_offers",
+          "title": "Ofertas, aceite, coleta, rota, entrega, prova, ocorrencia e seguro"
+        },
+        {
+          "key": "mobility_rides",
+          "title": "Corridas, passageiro, rota, paradas, seguranca e conclusao"
+        },
+        {
+          "key": "earnings_wallet",
+          "title": "Ganhos, wallet, repasses, taxas, extrato, comprovantes e contestacao"
+        },
+        {
+          "key": "documents_vehicle",
+          "title": "Perfil, documentos, veiculos, validade, manutencao e bloqueios"
+        },
+        {
+          "key": "safety_support",
+          "title": "Emergencia, suporte, chat, incidentes, privacidade e central de seguranca"
+        },
+        {
+          "key": "history_ratings",
+          "title": "Historico, indicadores, avaliacoes, notificacoes e configuracoes"
+        }
       ]
     }
   ]

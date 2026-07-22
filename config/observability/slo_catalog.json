@@ -59,7 +59,12 @@
         }
       ],
       "runbook": "docs/OPERATIONS.md#slo-e-alertas",
-      "evidence": ["ledger_write_error_rate", "idempotency_key_hash", "finance_logs", "incident_ticket"]
+      "evidence": [
+        "ledger_write_error_rate",
+        "idempotency_key_hash",
+        "finance_logs",
+        "incident_ticket"
+      ]
     },
     "outbox_delivery_freshness": {
       "service": "outbox-dispatcher",
@@ -77,7 +82,12 @@
         }
       ],
       "runbook": "docs/OPERATIONS.md#outbox",
-      "evidence": ["oldest_pending_age_seconds", "event_selector_hash", "dispatcher_logs", "incident_ticket"]
+      "evidence": [
+        "oldest_pending_age_seconds",
+        "event_selector_hash",
+        "dispatcher_logs",
+        "incident_ticket"
+      ]
     },
     "retention_decision_timeliness": {
       "service": "retention-worker",
@@ -95,7 +105,12 @@
         }
       ],
       "runbook": "docs/OPERATIONS.md#retencao-lgpd",
-      "evidence": ["oldest_candidate_age_seconds", "candidate_selector_hash", "legal_hold_summary", "incident_ticket"]
+      "evidence": [
+        "oldest_candidate_age_seconds",
+        "candidate_selector_hash",
+        "legal_hold_summary",
+        "incident_ticket"
+      ]
     },
     "jobs_document_vault_access_audit": {
       "service": "jobs",

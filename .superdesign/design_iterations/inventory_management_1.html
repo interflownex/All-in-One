@@ -1,186 +1,186 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Valley WMS - Gestão de Inventário</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --valley-deep-purple: #120B2E;
-            --valley-violet: #7C3AED;
-            --valley-lavender: #A78BFA;
-            --valley-cyan: #22D3EE;
-            --valley-surface-purple: #F5F3FF;
-            --valley-surface-neutral: #FFFFFF;
-            --valley-border: #000000;
-            --valley-shadow: 6px 6px 0px 0px #000000;
-            --valley-shadow-sm: 3px 3px 0px 0px #000000;
-            --valley-success: #10B981;
-            --valley-error: #EF4444;
-            --valley-warning: #F59E0B;
-        }
+      :root {
+        --valley-deep-purple: #120b2e;
+        --valley-violet: #7c3aed;
+        --valley-lavender: #a78bfa;
+        --valley-cyan: #22d3ee;
+        --valley-surface-purple: #f5f3ff;
+        --valley-surface-neutral: #ffffff;
+        --valley-border: #000000;
+        --valley-shadow: 6px 6px 0px 0px #000000;
+        --valley-shadow-sm: 3px 3px 0px 0px #000000;
+        --valley-success: #10b981;
+        --valley-error: #ef4444;
+        --valley-warning: #f59e0b;
+      }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--valley-surface-purple);
-            padding: 2rem;
-        }
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: var(--valley-surface-purple);
+        padding: 2rem;
+      }
 
-        .neo-card {
-            background: var(--valley-surface-neutral);
-            border: 3px solid var(--valley-border);
-            box-shadow: var(--valley-shadow);
-            padding: 1.5rem;
-            transition: all 0.2s ease;
-        }
+      .neo-card {
+        background: var(--valley-surface-neutral);
+        border: 3px solid var(--valley-border);
+        box-shadow: var(--valley-shadow);
+        padding: 1.5rem;
+        transition: all 0.2s ease;
+      }
 
-        .neo-button {
-            border: 2px solid var(--valley-border);
-            box-shadow: var(--valley-shadow-sm);
-            background: var(--valley-lavender);
-            font-weight: 800;
-            text-transform: uppercase;
-            padding: 0.75rem 1.5rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+      .neo-button {
+        border: 2px solid var(--valley-border);
+        box-shadow: var(--valley-shadow-sm);
+        background: var(--valley-lavender);
+        font-weight: 800;
+        text-transform: uppercase;
+        padding: 0.75rem 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
 
-        .neo-button:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0px 0px #000;
-        }
+      .neo-button:active {
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0px 0px #000;
+      }
 
-        .status-badge {
-            border: 2px solid #000;
-            padding: 2px 8px;
-            font-weight: 800;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-        }
+      .status-badge {
+        border: 2px solid #000;
+        padding: 2px 8px;
+        font-weight: 800;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
 
-        .stock-table th {
-            background: var(--valley-deep-purple);
-            color: white;
-            text-align: left;
-            padding: 12px;
-            border: 2px solid #000;
-        }
+      .stock-table th {
+        background: var(--valley-deep-purple);
+        color: white;
+        text-align: left;
+        padding: 12px;
+        border: 2px solid #000;
+      }
 
-        .stock-table td {
-            padding: 12px;
-            border: 2px solid #000;
-            font-weight: 600;
-        }
+      .stock-table td {
+        padding: 12px;
+        border: 2px solid #000;
+        font-weight: 600;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="max-w-6xl mx-auto">
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-4xl font-black uppercase tracking-tighter" style="color: var(--valley-deep-purple)">
-                    Gestão de Inventário</h1>
-                <p class="font-bold opacity-60 flex items-center gap-2">
-                    <span class="status-badge bg-cyan-200">Plano Essencial</span>
-                    <span>VALLEY BUSINESS - WMS CENTRAL</span>
-                </p>
-            </div>
-            <div class="flex gap-4">
-                <button class="neo-button bg-white">
-                    <i data-lucide="search"></i> Buscar
-                </button>
-                <button class="neo-button" style="background-color: var(--valley-cyan)">
-                    <i data-lucide="plus"></i> Novo Produto
-                </button>
-            </div>
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h1
+            class="text-4xl font-black uppercase tracking-tighter"
+            style="color: var(--valley-deep-purple)"
+          >
+            Gestão de Inventário
+          </h1>
+          <p class="font-bold opacity-60 flex items-center gap-2">
+            <span class="status-badge bg-cyan-200">Plano Essencial</span>
+            <span>VALLEY BUSINESS - WMS CENTRAL</span>
+          </p>
         </div>
+        <div class="flex gap-4">
+          <button class="neo-button bg-white"><i data-lucide="search"></i> Buscar</button>
+          <button class="neo-button" style="background-color: var(--valley-cyan)">
+            <i data-lucide="plus"></i> Novo Produto
+          </button>
+        </div>
+      </div>
 
-        <!-- Summary Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="neo-card bg-white">
-                <div class="text-xs font-black opacity-50 uppercase">Total em Estoque</div>
-                <div class="text-4xl font-black">1.240 <span class="text-sm opacity-50">un</span></div>
-            </div>
-            <div class="neo-card bg-yellow-100">
-                <div class="text-xs font-black opacity-50 uppercase">Alertas de Reposição</div>
-                <div class="text-4xl font-black text-yellow-600">12</div>
-            </div>
-            <div class="neo-card bg-red-100">
-                <div class="text-xs font-black opacity-50 uppercase">Ruptura Total</div>
-                <div class="text-4xl font-black text-red-600">03</div>
-            </div>
+      <!-- Summary Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="neo-card bg-white">
+          <div class="text-xs font-black opacity-50 uppercase">Total em Estoque</div>
+          <div class="text-4xl font-black">1.240 <span class="text-sm opacity-50">un</span></div>
         </div>
+        <div class="neo-card bg-yellow-100">
+          <div class="text-xs font-black opacity-50 uppercase">Alertas de Reposição</div>
+          <div class="text-4xl font-black text-yellow-600">12</div>
+        </div>
+        <div class="neo-card bg-red-100">
+          <div class="text-xs font-black opacity-50 uppercase">Ruptura Total</div>
+          <div class="text-4xl font-black text-red-600">03</div>
+        </div>
+      </div>
 
-        <!-- Table Container -->
-        <div class="neo-card overflow-hidden p-0">
-            <table class="w-full stock-table border-collapse">
-                <thead>
-                    <tr>
-                        <th>SKU</th>
-                        <th>Produto</th>
-                        <th>Categoria</th>
-                        <th>Estoque</th>
-                        <th>Preço Base</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="bg-white">
-                        <td>VLY-001</td>
-                        <td>Smartphone Valley X1</td>
-                        <td>Eletrônicos</td>
-                        <td>42</td>
-                        <td>R$ 2.500,00</td>
-                        <td><span class="status-badge bg-green-300">Em Estoque</span></td>
-                    </tr>
-                    <tr class="bg-purple-50">
-                        <td>VLY-002</td>
-                        <td>Capa Protetora Silicone</td>
-                        <td>Acessórios</td>
-                        <td>105</td>
-                        <td>R$ 45,00</td>
-                        <td><span class="status-badge bg-green-300">Em Estoque</span></td>
-                    </tr>
-                    <tr class="bg-yellow-50">
-                        <td>VLY-003</td>
-                        <td>Fone Bluetooth Pro</td>
-                        <td>Eletrônicos</td>
-                        <td class="text-red-600 font-bold">02</td>
-                        <td>R$ 150,00</td>
-                        <td><span class="status-badge bg-yellow-300">Estoque Baixo</span></td>
-                    </tr>
-                    <tr class="bg-white">
-                        <td>VLY-004</td>
-                        <td>Carregador Turbo 30W</td>
-                        <td>Acessórios</td>
-                        <td>15</td>
-                        <td>R$ 89,00</td>
-                        <td><span class="status-badge bg-green-300">Em Estoque</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+      <!-- Table Container -->
+      <div class="neo-card overflow-hidden p-0">
+        <table class="w-full stock-table border-collapse">
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Produto</th>
+              <th>Categoria</th>
+              <th>Estoque</th>
+              <th>Preço Base</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-white">
+              <td>VLY-001</td>
+              <td>Smartphone Valley X1</td>
+              <td>Eletrônicos</td>
+              <td>42</td>
+              <td>R$ 2.500,00</td>
+              <td><span class="status-badge bg-green-300">Em Estoque</span></td>
+            </tr>
+            <tr class="bg-purple-50">
+              <td>VLY-002</td>
+              <td>Capa Protetora Silicone</td>
+              <td>Acessórios</td>
+              <td>105</td>
+              <td>R$ 45,00</td>
+              <td><span class="status-badge bg-green-300">Em Estoque</span></td>
+            </tr>
+            <tr class="bg-yellow-50">
+              <td>VLY-003</td>
+              <td>Fone Bluetooth Pro</td>
+              <td>Eletrônicos</td>
+              <td class="text-red-600 font-bold">02</td>
+              <td>R$ 150,00</td>
+              <td><span class="status-badge bg-yellow-300">Estoque Baixo</span></td>
+            </tr>
+            <tr class="bg-white">
+              <td>VLY-004</td>
+              <td>Carregador Turbo 30W</td>
+              <td>Acessórios</td>
+              <td>15</td>
+              <td>R$ 89,00</td>
+              <td><span class="status-badge bg-green-300">Em Estoque</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <!-- Footer Stats -->
-        <div class="mt-8 text-center">
-            <p class="text-[10px] font-bold uppercase opacity-40 tracking-widest">
-                Operação Auditada • Logs Imutáveis Append-Only • Governança Valley Ecosystem
-            </p>
-        </div>
+      <!-- Footer Stats -->
+      <div class="mt-8 text-center">
+        <p class="text-[10px] font-bold uppercase opacity-40 tracking-widest">
+          Operação Auditada • Logs Imutáveis Append-Only • Governança Valley Ecosystem
+        </p>
+      </div>
     </div>
 
     <script>
-        lucide.createIcons();
+      lucide.createIcons();
     </script>
-</body>
-
+  </body>
 </html>

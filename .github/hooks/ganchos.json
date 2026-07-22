@@ -1,10 +1,10 @@
 {
-	"hooks": {
-		"SessionStart": [
-			{
-				"type": "command",
-				"command": ""
-			}
-		]
-	}
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": ""
+      }
+    ]
+  }
 }

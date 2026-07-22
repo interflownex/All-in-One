@@ -11,9 +11,10 @@ import sys
 import zipfile
 from pathlib import Path
 
-
 FORBIDDEN_ENTRY_PATTERNS = (
-    re.compile(r"(^|/)(?:docs?|runbooks?|roadmap|database|migrations?|scripts?)(/|$)", re.I),
+    re.compile(
+        r"(^|/)(?:docs?|runbooks?|roadmap|database|migrations?|scripts?)(/|$)", re.I
+    ),
     re.compile(r"\.(?:sql|mongo|md|rst)$", re.I),
     re.compile(r"(^|/)(?:README|CHANGELOG)(?:\.|$)", re.I),
 )
@@ -58,7 +59,11 @@ def forbidden_entries(names: list[str]) -> list[str]:
 def forbidden_text(name: str, content: bytes) -> list[str]:
     if Path(name).suffix.lower() not in TEXT_EXTENSIONS:
         return []
-    return [pattern.pattern.decode("ascii") for pattern in FORBIDDEN_TEXT_PATTERNS if pattern.search(content)]
+    return [
+        pattern.pattern.decode("ascii")
+        for pattern in FORBIDDEN_TEXT_PATTERNS
+        if pattern.search(content)
+    ]
 
 
 def locate_apksigner(android_sdk: Path | None) -> Path | None:
@@ -71,8 +76,14 @@ def locate_apksigner(android_sdk: Path | None) -> Path | None:
         )
         if candidates:
             return candidates[-1]
-    result = subprocess.run(["bash", "-lc", "command -v apksigner"], capture_output=True, text=True)
-    return Path(result.stdout.strip()) if result.returncode == 0 and result.stdout.strip() else None
+    result = subprocess.run(
+        ["bash", "-lc", "command -v apksigner"], capture_output=True, text=True
+    )
+    return (
+        Path(result.stdout.strip())
+        if result.returncode == 0 and result.stdout.strip()
+        else None
+    )
 
 
 def locate_aapt(android_sdk: Path | None) -> Path | None:
@@ -85,8 +96,14 @@ def locate_aapt(android_sdk: Path | None) -> Path | None:
         )
         if candidates:
             return candidates[-1]
-    result = subprocess.run(["bash", "-lc", "command -v aapt"], capture_output=True, text=True)
-    return Path(result.stdout.strip()) if result.returncode == 0 and result.stdout.strip() else None
+    result = subprocess.run(
+        ["bash", "-lc", "command -v aapt"], capture_output=True, text=True
+    )
+    return (
+        Path(result.stdout.strip())
+        if result.returncode == 0 and result.stdout.strip()
+        else None
+    )
 
 
 def verify_permissions(apk: Path, aapt: Path | None) -> list[str]:
@@ -100,14 +117,22 @@ def verify_permissions(apk: Path, aapt: Path | None) -> list[str]:
         errors="replace",
     )
     if result.returncode != 0:
-        return ["aapt nao conseguiu ler o manifesto compilado: " + (result.stderr.strip() or result.stdout.strip())]
-    permissions = set(re.findall(r"^uses-permission: name='([^']+)'", result.stdout, re.M))
+        return [
+            "aapt nao conseguiu ler o manifesto compilado: "
+            + (result.stderr.strip() or result.stdout.strip())
+        ]
+    permissions = set(
+        re.findall(r"^uses-permission: name='([^']+)'", result.stdout, re.M)
+    )
     errors: list[str] = []
     if "android.permission.INTERNET" not in permissions:
         errors.append("APK nao declara a permissao de rede obrigatoria")
     forbidden = sorted(permissions & FORBIDDEN_PERMISSIONS)
     if forbidden:
-        errors.append("APK declara permissoes proibidas ou nao justificadas: " + ", ".join(forbidden))
+        errors.append(
+            "APK declara permissoes proibidas ou nao justificadas: "
+            + ", ".join(forbidden)
+        )
     return errors
 
 
@@ -119,7 +144,9 @@ def verify_signature(apk: Path, apksigner: Path, require_release: bool) -> list[
             windows_cmd = Path("/mnt/c/Windows/System32/cmd.exe")
             cmd_executable = str(windows_cmd) if windows_cmd.is_file() else None
         if cmd_executable is None or shutil.which("wslpath") is None:
-            return ["cmd.exe/wslpath indisponivel para executar o apksigner do SDK Windows"]
+            return [
+                "cmd.exe/wslpath indisponivel para executar o apksigner do SDK Windows"
+            ]
         converted = [
             subprocess.run(
                 ["wslpath", "-w", str(path)],
@@ -129,7 +156,16 @@ def verify_signature(apk: Path, apksigner: Path, require_release: bool) -> list[
             ).stdout.strip()
             for path in (apksigner, apk.resolve())
         ]
-        command = [cmd_executable, "/d", "/c", converted[0], "verify", "--verbose", "--print-certs", converted[1]]
+        command = [
+            cmd_executable,
+            "/d",
+            "/c",
+            converted[0],
+            "verify",
+            "--verbose",
+            "--print-certs",
+            converted[1],
+        ]
     result = subprocess.run(
         command,
         capture_output=True,
@@ -138,7 +174,10 @@ def verify_signature(apk: Path, apksigner: Path, require_release: bool) -> list[
         errors="replace",
     )
     if result.returncode != 0:
-        return ["assinatura APK invalida: " + (result.stderr.strip() or result.stdout.strip())]
+        return [
+            "assinatura APK invalida: "
+            + (result.stderr.strip() or result.stdout.strip())
+        ]
     output = result.stdout + result.stderr
     errors: list[str] = []
     if require_release and re.search(r"Android Debug|CN=Android Debug", output, re.I):
@@ -148,7 +187,9 @@ def verify_signature(apk: Path, apksigner: Path, require_release: bool) -> list[
     return errors
 
 
-def audit(apk: Path, apksigner: Path | None, aapt: Path | None, require_release: bool) -> list[str]:
+def audit(
+    apk: Path, apksigner: Path | None, aapt: Path | None, require_release: bool
+) -> list[str]:
     errors: list[str] = []
     if not apk.is_file():
         return [f"APK ausente: {apk}"]

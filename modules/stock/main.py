@@ -1,15 +1,13 @@
-from pathlib import Path
 import sys
 from datetime import datetime
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from fastapi import Header, HTTPException
 from pydantic import BaseModel, Field
-
 from shared.runtime import create_module_app
 from shared.units_tax import ConversionRule, convert_quantity
-
 
 app = create_module_app("stock")
 

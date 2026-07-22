@@ -7,6 +7,7 @@
         ## Entidades
 
         - `resumes`
+
 - `employment_records`
 - `resume_documents`
 - `job_postings`
@@ -16,6 +17,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -37,7 +39,6 @@
 - `POST /reject`
 - `POST /audit`
 
-
 ## Fluxo Jobs e procedencia
 
 - `POST /resumes/{resume_id}/imports/ctps-digital` recebe PDF da CTPS Digital, registra hash imutavel e classifica itens extraidos como `validated_by_document_import`.
@@ -50,10 +51,10 @@
 - PDFs CTPS ficam cifrados em cofre privado AES-256-GCM; em producao a chave deve vir de vault/KMS.
 - `ALL_IN_ONE_JOBS_POSTGRES_DSN` habilita persistencia tipada em `jobs.*` com auditoria e outbox PostgreSQL.
 
-
         ## Eventos
 
         - `jobs.resume.created`
+
 - `jobs.resume.ctps_imported`
 - `jobs.employment.self_declared`
 - `jobs.resume_document.created`

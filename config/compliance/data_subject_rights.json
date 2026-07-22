@@ -2,11 +2,7 @@
   "version": "2026-05-31",
   "owner": "compliance",
   "scope": "all-in-one-modules",
-  "intake_channels": [
-    "app_privacidade",
-    "portal_empresa",
-    "suporte_compliance"
-  ],
+  "intake_channels": ["app_privacidade", "portal_empresa", "suporte_compliance"],
   "required_request_fields": [
     "request_id",
     "subject_id",
@@ -19,42 +15,83 @@
     "acesso": {
       "consumer_label": "Acessar meus dados",
       "sla_days": 15,
-      "workflow": ["validar_identidade", "localizar_dados", "gerar_relatorio", "registrar_auditoria", "entregar_ao_titular"],
+      "workflow": [
+        "validar_identidade",
+        "localizar_dados",
+        "gerar_relatorio",
+        "registrar_auditoria",
+        "entregar_ao_titular"
+      ],
       "evidence": ["identity_check", "data_inventory_snapshot", "export_hash", "audit_event_id"],
       "allowed_output": "relatorio estruturado com minimizacao de terceiros"
     },
     "correcao": {
       "consumer_label": "Corrigir dados",
       "sla_days": 15,
-      "workflow": ["validar_identidade", "abrir_tarefa_modulo", "validar_documento_quando_exigido", "aplicar_correcao", "registrar_auditoria"],
+      "workflow": [
+        "validar_identidade",
+        "abrir_tarefa_modulo",
+        "validar_documento_quando_exigido",
+        "aplicar_correcao",
+        "registrar_auditoria"
+      ],
       "evidence": ["identity_check", "before_after_hash", "operator_id", "audit_event_id"],
       "allowed_output": "confirmacao da correcao ou justificativa de impedimento"
     },
     "portabilidade": {
       "consumer_label": "Portar dados",
       "sla_days": 15,
-      "workflow": ["validar_identidade", "selecionar_dados_portaveis", "gerar_arquivo_interoperavel", "registrar_auditoria", "entregar_link_temporario"],
+      "workflow": [
+        "validar_identidade",
+        "selecionar_dados_portaveis",
+        "gerar_arquivo_interoperavel",
+        "registrar_auditoria",
+        "entregar_link_temporario"
+      ],
       "evidence": ["identity_check", "portable_dataset_manifest", "export_hash", "audit_event_id"],
       "allowed_output": "json ou csv minimizado e assinado por hash"
     },
     "anonimizacao": {
       "consumer_label": "Anonimizar dados",
       "sla_days": 15,
-      "workflow": ["validar_identidade", "avaliar_base_legal", "separar_obrigacao_legal", "anonimizar_campos_permitidos", "registrar_auditoria"],
-      "evidence": ["identity_check", "legal_hold_assessment", "anonymization_job_id", "audit_event_id"],
+      "workflow": [
+        "validar_identidade",
+        "avaliar_base_legal",
+        "separar_obrigacao_legal",
+        "anonimizar_campos_permitidos",
+        "registrar_auditoria"
+      ],
+      "evidence": [
+        "identity_check",
+        "legal_hold_assessment",
+        "anonymization_job_id",
+        "audit_event_id"
+      ],
       "allowed_output": "confirmacao de anonimizacao permitida"
     },
     "revogacao de consentimento": {
       "consumer_label": "Revogar consentimento",
       "sla_days": 5,
-      "workflow": ["validar_identidade", "localizar_consentimentos", "revogar_consentimento", "propagar_bloqueio", "registrar_auditoria"],
+      "workflow": [
+        "validar_identidade",
+        "localizar_consentimentos",
+        "revogar_consentimento",
+        "propagar_bloqueio",
+        "registrar_auditoria"
+      ],
       "evidence": ["identity_check", "consent_record_id", "revocation_event_id", "audit_event_id"],
       "allowed_output": "confirmacao de consentimento revogado"
     },
     "exclusao quando legalmente permitida": {
       "consumer_label": "Excluir dados permitidos",
       "sla_days": 15,
-      "workflow": ["validar_identidade", "avaliar_retencao_obrigatoria", "isolar_dados_excluiveis", "executar_descarte", "registrar_auditoria"],
+      "workflow": [
+        "validar_identidade",
+        "avaliar_retencao_obrigatoria",
+        "isolar_dados_excluiveis",
+        "executar_descarte",
+        "registrar_auditoria"
+      ],
       "evidence": ["identity_check", "retention_assessment", "deletion_job_id", "audit_event_id"],
       "allowed_output": "confirmacao de exclusao ou justificativa de retencao legal"
     }
@@ -68,38 +105,331 @@
       "prontuario de terceiros",
       "documentos brutos sem revalidacao do titular"
     ],
-    "sensitive_review_roles": [
-      "compliance_officer",
-      "data_protection_officer"
-    ],
+    "sensitive_review_roles": ["compliance_officer", "data_protection_officer"],
     "audit_event": "compliance.data_subject_request.processed",
-    "status_values": ["received", "in_review", "waiting_identity_validation", "fulfilled", "partially_fulfilled", "rejected_with_reason"]
+    "status_values": [
+      "received",
+      "in_review",
+      "waiting_identity_validation",
+      "fulfilled",
+      "partially_fulfilled",
+      "rejected_with_reason"
+    ]
   },
   "module_coverage": {
-    "identity": {"risk": "critical", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["validacao forte de identidade", "segregar biometria bruta", "preservar trilha de consentimento"]},
-    "business": {"risk": "high", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "exclusao quando legalmente permitida"], "special_handling": ["separar dados da empresa e do representante", "validar poderes do solicitante"]},
-    "permissions": {"risk": "high", "rights": ["acesso", "correcao", "anonimizacao", "exclusao quando legalmente permitida"], "special_handling": ["preservar trilha de autorizacao", "nao expor politica interna sensivel"]},
-    "finance": {"risk": "critical", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["reter ledger por obrigacao legal", "mascarar contraparte e instrumentos financeiros", "revogar consentimentos de marketing financeiro sem apagar obrigacoes legais"]},
-    "marketplace": {"risk": "medium", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["separar dados de pedido e dados de avaliacao", "preservar disputa ativa"]},
-    "stock": {"risk": "medium", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "exclusao quando legalmente permitida"], "special_handling": ["nao expor custo interno ou fornecedor restrito"]},
-    "delivery": {"risk": "high", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["minimizar localizacao historica", "reter prova de entrega pelo prazo contratual"]},
-    "riders": {"risk": "high", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["validar documentos de veiculo e identidade", "separar avaliacao operacional"]},
-    "services": {"risk": "high", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["mascarar endereco completo", "preservar contrato e evidencias de visita"]},
-    "mobility": {"risk": "high", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["agregar rotas antigas", "reter comprovantes de pagamento"]},
-    "jobs": {"risk": "critical", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["download CTPS somente pelo titular", "retencao trabalhista e logs de recrutador"]},
-    "erp": {"risk": "high", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "exclusao quando legalmente permitida"], "special_handling": ["reter documento fiscal", "segregar dados pessoais em lancamentos"]},
-    "wms": {"risk": "medium", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "exclusao quando legalmente permitida"], "special_handling": ["nao expor rotas internas de estoque", "mascarar operadores terceiros"]},
-    "tms": {"risk": "high", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "exclusao quando legalmente permitida"], "special_handling": ["minimizar rastreio historico", "reter CT-e/MDF-e quando aplicavel"]},
-    "crm": {"risk": "medium", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["aplicar opt-out comercial", "preservar origem licita do lead"]},
-    "bpm": {"risk": "medium", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "exclusao quando legalmente permitida"], "special_handling": ["preservar historico de aprovacao", "mascarar anexos sensiveis"]},
-    "document": {"risk": "critical", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["KMS obrigatorio", "entrega com link temporario e auditoria"]},
-    "hr": {"risk": "critical", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["reter obrigacoes trabalhistas", "limitar dados de dependentes"]},
-    "health": {"risk": "critical", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["revisao humana obrigatoria", "nao exportar prontuario de terceiros"]},
-    "vision": {"risk": "critical", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["descartar biometria bruta", "usar hashes e embeddings minimizados"]},
-    "legal": {"risk": "high", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "exclusao quando legalmente permitida"], "special_handling": ["respeitar sigilo profissional", "reter provas de mandato"]},
-    "property": {"risk": "high", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["mascarar endereco sensivel em busca publica", "reter contrato imobiliario"]},
-    "bi": {"risk": "medium", "rights": ["acesso", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["usar dataset agregado", "bloquear reidentificacao"]},
-    "ai_core": {"risk": "critical", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["mapear memoria consentida", "registrar exclusao de contexto e features"]},
-    "api_hub": {"risk": "critical", "rights": ["acesso", "correcao", "portabilidade", "anonimizacao", "revogacao de consentimento", "exclusao quando legalmente permitida"], "special_handling": ["mascarar tokens", "registrar chamada e integracao afetada"]}
+    "identity": {
+      "risk": "critical",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": [
+        "validacao forte de identidade",
+        "segregar biometria bruta",
+        "preservar trilha de consentimento"
+      ]
+    },
+    "business": {
+      "risk": "high",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": [
+        "separar dados da empresa e do representante",
+        "validar poderes do solicitante"
+      ]
+    },
+    "permissions": {
+      "risk": "high",
+      "rights": ["acesso", "correcao", "anonimizacao", "exclusao quando legalmente permitida"],
+      "special_handling": ["preservar trilha de autorizacao", "nao expor politica interna sensivel"]
+    },
+    "finance": {
+      "risk": "critical",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": [
+        "reter ledger por obrigacao legal",
+        "mascarar contraparte e instrumentos financeiros",
+        "revogar consentimentos de marketing financeiro sem apagar obrigacoes legais"
+      ]
+    },
+    "marketplace": {
+      "risk": "medium",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": [
+        "separar dados de pedido e dados de avaliacao",
+        "preservar disputa ativa"
+      ]
+    },
+    "stock": {
+      "risk": "medium",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["nao expor custo interno ou fornecedor restrito"]
+    },
+    "delivery": {
+      "risk": "high",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": [
+        "minimizar localizacao historica",
+        "reter prova de entrega pelo prazo contratual"
+      ]
+    },
+    "riders": {
+      "risk": "high",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": [
+        "validar documentos de veiculo e identidade",
+        "separar avaliacao operacional"
+      ]
+    },
+    "services": {
+      "risk": "high",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": [
+        "mascarar endereco completo",
+        "preservar contrato e evidencias de visita"
+      ]
+    },
+    "mobility": {
+      "risk": "high",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["agregar rotas antigas", "reter comprovantes de pagamento"]
+    },
+    "jobs": {
+      "risk": "critical",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": [
+        "download CTPS somente pelo titular",
+        "retencao trabalhista e logs de recrutador"
+      ]
+    },
+    "erp": {
+      "risk": "high",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["reter documento fiscal", "segregar dados pessoais em lancamentos"]
+    },
+    "wms": {
+      "risk": "medium",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["nao expor rotas internas de estoque", "mascarar operadores terceiros"]
+    },
+    "tms": {
+      "risk": "high",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["minimizar rastreio historico", "reter CT-e/MDF-e quando aplicavel"]
+    },
+    "crm": {
+      "risk": "medium",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["aplicar opt-out comercial", "preservar origem licita do lead"]
+    },
+    "bpm": {
+      "risk": "medium",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["preservar historico de aprovacao", "mascarar anexos sensiveis"]
+    },
+    "document": {
+      "risk": "critical",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["KMS obrigatorio", "entrega com link temporario e auditoria"]
+    },
+    "hr": {
+      "risk": "critical",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["reter obrigacoes trabalhistas", "limitar dados de dependentes"]
+    },
+    "health": {
+      "risk": "critical",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["revisao humana obrigatoria", "nao exportar prontuario de terceiros"]
+    },
+    "vision": {
+      "risk": "critical",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["descartar biometria bruta", "usar hashes e embeddings minimizados"]
+    },
+    "legal": {
+      "risk": "high",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["respeitar sigilo profissional", "reter provas de mandato"]
+    },
+    "property": {
+      "risk": "high",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": [
+        "mascarar endereco sensivel em busca publica",
+        "reter contrato imobiliario"
+      ]
+    },
+    "bi": {
+      "risk": "medium",
+      "rights": [
+        "acesso",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["usar dataset agregado", "bloquear reidentificacao"]
+    },
+    "ai_core": {
+      "risk": "critical",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["mapear memoria consentida", "registrar exclusao de contexto e features"]
+    },
+    "api_hub": {
+      "risk": "critical",
+      "rights": [
+        "acesso",
+        "correcao",
+        "portabilidade",
+        "anonimizacao",
+        "revogacao de consentimento",
+        "exclusao quando legalmente permitida"
+      ],
+      "special_handling": ["mascarar tokens", "registrar chamada e integracao afetada"]
+    }
   }
 }

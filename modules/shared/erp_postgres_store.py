@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 from uuid import uuid4
+
 from psycopg import Connection
+
 from .postgres_store import BasePostgresStore
 
 
@@ -51,13 +53,18 @@ class ErpMemoryStore:
             return None
         return {**document, "items": [*self.items.get(document_id, [])]}
 
-    def cancel_billing_document(self, document_id: str, user_id: str, reason: str) -> dict[str, Any]:
+    def cancel_billing_document(
+        self, document_id: str, user_id: str, reason: str
+    ) -> dict[str, Any]:
         document = self.documents.get(document_id)
         if not document:
             raise ValueError("Documento fiscal não encontrado.")
         payload = {**document.get("payload", {}), "cancel_reason": reason}
-        document.update({"status": "cancelled", "payload": payload, "cancelled_by": user_id})
+        document.update(
+            {"status": "cancelled", "payload": payload, "cancelled_by": user_id}
+        )
         return self.get_billing_detail(document_id)
+
 
 class ErpPostgresStore(BasePostgresStore):
     """
@@ -75,7 +82,16 @@ class ErpPostgresStore(BasePostgresStore):
         "cost_centers": "erp.cost_centers",
         "invoice_items": "erp.invoice_items",
     }
-    soft_deletable = frozenset({"fiscal_documents", "accounts", "payables", "receivables", "cost_centers", "invoice_items"})
+    soft_deletable = frozenset(
+        {
+            "fiscal_documents",
+            "accounts",
+            "payables",
+            "receivables",
+            "cost_centers",
+            "invoice_items",
+        }
+    )
 
     def create_billing_document(
         self,
@@ -83,7 +99,7 @@ class ErpPostgresStore(BasePostgresStore):
         company_id: str,
         payload: dict[str, Any],
         items: list[dict[str, Any]] | None = None,
-        idempotency_key: str | None = None
+        idempotency_key: str | None = None,
     ) -> dict[str, Any]:
         """
         Cria um documento fiscal (faturamento) garantindo a integridade e auditoria.
@@ -118,7 +134,7 @@ class ErpPostgresStore(BasePostgresStore):
             for item in items or []:
                 item_id = str(uuid4())
                 conn.execute(
-                    f"""INSERT INTO {self.tables['invoice_items']}
+                    f"""INSERT INTO {self.tables["invoice_items"]}
                         (id, fiscal_document_id, description, quantity, unit_price_brl, total_price_brl, tax_amount_brl)
                         VALUES (%s, %s, %s, %s, %s, %s, %s)""",  # nosec B608
                     (
@@ -134,7 +150,17 @@ class ErpPostgresStore(BasePostgresStore):
 
             document["items_count"] = len(items or [])
             document["items"] = self._fetch_invoice_items(conn, document["id"])
-            self._audit(conn, user_id, "create", resource_type, document["id"], None, document, user_id, company_id)
+            self._audit(
+                conn,
+                user_id,
+                "create",
+                resource_type,
+                document["id"],
+                None,
+                document,
+                user_id,
+                company_id,
+            )
             self._event(conn, event, user_id, document)
             return document
 
@@ -154,10 +180,7 @@ class ErpPostgresStore(BasePostgresStore):
         return doc
 
     def cancel_billing_document(
-        self,
-        document_id: str,
-        user_id: str,
-        reason: str
+        self, document_id: str, user_id: str, reason: str
     ) -> dict[str, Any]:
         """
         Cancela um documento fiscal mudando seu status para 'cancelled'.
@@ -196,11 +219,13 @@ class ErpPostgresStore(BasePostgresStore):
                 documents.append(doc)
         return documents
 
-    def _fetch_invoice_items(self, connection: Connection, document_id: str) -> list[dict[str, Any]]:
+    def _fetch_invoice_items(
+        self, connection: Connection, document_id: str
+    ) -> list[dict[str, Any]]:
         rows = connection.execute(
             f"""SELECT id, fiscal_document_id, description, quantity, unit_price_brl, total_price_brl,
                        tax_amount_brl, created_at, updated_at
-                FROM {self.tables['invoice_items']}
+                FROM {self.tables["invoice_items"]}
                 WHERE fiscal_document_id = %s
                 ORDER BY created_at ASC""",  # nosec B608
             (document_id,),

@@ -1,7 +1,7 @@
 # Status da Entrega Total UI/UX - All-in-One A1
 
 **Data:** 2026-07-20  
-**Branch:** `feat/data-ui-module-rules`  
+**Branch:** `feat/data-ui-module-rules`
 
 ## Objetivo
 
@@ -9,14 +9,14 @@ Executar as diretrizes mandatórias de integridade da logomarca oficial, dashboa
 
 ## Status atual
 
-| Atividade | Estado | Observação |
-|---|---|---|
-| Blindagem da logomarca | Concluída na primeira frente | `BrandLogo` criado e mesclado no PR #15. |
-| Verificação automática da marca | Concluída na primeira frente | `scripts/check_brand_integrity.py` criado e mesclado no PR #15. |
-| Contrato de UI de dados | Concluída na primeira frente | `config/apps/data_ui_contract.json` define visão geral, relatórios, listas, formulários e estados. |
-| Recomendações de módulos | Em execução | `moduleRecommendationRules.ts` cria base front-end para seleção automática por tipo de empresa. |
-| Blueprints de dados | Em execução | `dataUiBlueprints.ts` mapeia telas por módulo, entidade, superfície e ação primária. |
-| Cockpit externo | Publicado | AppDeploy publicado para acompanhamento público da entrega. |
+| Atividade                       | Estado                       | Observação                                                                                         |
+| ------------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------- |
+| Blindagem da logomarca          | Concluída na primeira frente | `BrandLogo` criado e mesclado no PR #15.                                                           |
+| Verificação automática da marca | Concluída na primeira frente | `scripts/check_brand_integrity.py` criado e mesclado no PR #15.                                    |
+| Contrato de UI de dados         | Concluída na primeira frente | `config/apps/data_ui_contract.json` define visão geral, relatórios, listas, formulários e estados. |
+| Recomendações de módulos        | Em execução                  | `moduleRecommendationRules.ts` cria base front-end para seleção automática por tipo de empresa.    |
+| Blueprints de dados             | Em execução                  | `dataUiBlueprints.ts` mapeia telas por módulo, entidade, superfície e ação primária.               |
+| Cockpit externo                 | Publicado                    | AppDeploy publicado para acompanhamento público da entrega.                                        |
 
 ## Próximas ações mandatórias
 

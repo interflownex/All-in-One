@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `ai_core.ai_memories`
+
 - `ai_core.moderation_decisions`
 - `ai_core.model_runs`
 

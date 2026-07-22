@@ -3,7 +3,9 @@ from uuid import uuid4
 from platform_test_support import fresh_client_for
 
 
-def actor_headers(user_id: str, roles: str = "", scopes: str = "", mfa: bool = False) -> dict[str, str]:
+def actor_headers(
+    user_id: str, roles: str = "", scopes: str = "", mfa: bool = False
+) -> dict[str, str]:
     headers = {"X-Actor-User-Id": user_id}
     if roles:
         headers["X-Actor-Roles"] = roles
@@ -38,7 +40,10 @@ def test_delivery_quote_assignment_completion_journey() -> None:
 
     request = delivery.post(
         "/resources/delivery_requests",
-        headers={**actor_headers(customer_id), "X-Idempotency-Key": f"delivery-{nonce}"},
+        headers={
+            **actor_headers(customer_id),
+            "X-Idempotency-Key": f"delivery-{nonce}",
+        },
         json={
             "user_id": customer_id,
             "payload": {
@@ -57,7 +62,10 @@ def test_delivery_quote_assignment_completion_journey() -> None:
     assigned = delivery.post(
         f"/resources/delivery_requests/{request_id}/actions/assign",
         headers=actor_headers(operator_id, "owner"),
-        json={"reason": "rider disponivel", "payload": {"assigned_rider_user_id": rider_id}},
+        json={
+            "reason": "rider disponivel",
+            "payload": {"assigned_rider_user_id": rider_id},
+        },
     )
     assert assigned.status_code == 200
     assert assigned.json()["status"] == "assigned"
@@ -104,10 +112,14 @@ def test_delivery_quote_assignment_completion_journey() -> None:
     )
     assert delete_pod.status_code == 409
 
-    outbox = delivery.get("/events/outbox", headers=actor_headers(operator_id, "auditor"))
+    outbox = delivery.get(
+        "/events/outbox", headers=actor_headers(operator_id, "auditor")
+    )
     assert outbox.status_code == 200
     assert any(event["routing_key"] == "delivery.completed" for event in outbox.json())
-    assert any(event["routing_key"] == "delivery.proof.recorded" for event in outbox.json())
+    assert any(
+        event["routing_key"] == "delivery.proof.recorded" for event in outbox.json()
+    )
 
 
 def test_rider_onboarding_document_vehicle_journey() -> None:
@@ -229,14 +241,21 @@ def test_services_provider_contract_completion_journey() -> None:
     completed = services.post(
         f"/resources/service_contracts/{contract_id}/actions/complete",
         headers=actor_headers(customer_id),
-        json={"reason": "servico executado", "payload": {"evidence_hash": "evidence-ok"}},
+        json={
+            "reason": "servico executado",
+            "payload": {"evidence_hash": "evidence-ok"},
+        },
     )
     assert completed.status_code == 200
     assert completed.json()["status"] == "completed"
 
-    outbox = services.get("/events/outbox", headers=actor_headers(reviewer_id, "auditor"))
+    outbox = services.get(
+        "/events/outbox", headers=actor_headers(reviewer_id, "auditor")
+    )
     assert outbox.status_code == 200
-    assert any(event["routing_key"] == "services.contract.completed" for event in outbox.json())
+    assert any(
+        event["routing_key"] == "services.contract.completed" for event in outbox.json()
+    )
 
 
 def test_mobility_fare_ride_and_ticket_journey() -> None:
@@ -249,7 +268,11 @@ def test_mobility_fare_ride_and_ticket_journey() -> None:
     fare = mobility.post(
         "/pricing/fare",
         headers=actor_headers(passenger_id),
-        json={"distance_km": "12.4", "duration_minutes": "31", "vehicle_type": "comfort"},
+        json={
+            "distance_km": "12.4",
+            "duration_minutes": "31",
+            "vehicle_type": "comfort",
+        },
     )
     assert fare.status_code == 200
 
@@ -348,7 +371,9 @@ def test_mobility_fare_ride_and_ticket_journey() -> None:
     assert used_ticket.status_code == 200
     assert used_ticket.json()["status"] == "used"
 
-    outbox = mobility.get("/events/outbox", headers=actor_headers(operator_id, "auditor"))
+    outbox = mobility.get(
+        "/events/outbox", headers=actor_headers(operator_id, "auditor")
+    )
     assert outbox.status_code == 200
     routing_keys = {event["routing_key"] for event in outbox.json()}
     assert {
@@ -373,10 +398,16 @@ def test_health_patient_appointment_access_journey() -> None:
     assert patient.status_code == 201
     patient_resource_id = patient.json()["id"]
 
-    denied = health.get(f"/resources/patients/{patient_resource_id}", headers=actor_headers(str(uuid4())))
+    denied = health.get(
+        f"/resources/patients/{patient_resource_id}",
+        headers=actor_headers(str(uuid4())),
+    )
     assert denied.status_code == 403
 
-    medical_view = health.get(f"/resources/patients/{patient_resource_id}", headers=actor_headers(doctor_id, "doctor"))
+    medical_view = health.get(
+        f"/resources/patients/{patient_resource_id}",
+        headers=actor_headers(doctor_id, "doctor"),
+    )
     assert medical_view.status_code == 200
     assert medical_view.json()["id"] == patient_resource_id
 

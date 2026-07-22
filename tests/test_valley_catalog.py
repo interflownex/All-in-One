@@ -26,7 +26,12 @@ def test_valley_catalog_lists_all_modules_with_simple_categories() -> None:
     assert modules.status_code == 200
     payload = modules.json()
     assert len(payload) == 25
-    assert {item["source_module"] for item in payload} >= {"health", "services", "marketplace", "delivery"}
+    assert {item["source_module"] for item in payload} >= {
+        "health",
+        "services",
+        "marketplace",
+        "delivery",
+    }
     assert {item["consumer_category"] for item in payload} >= {
         "Saude e Bem-estar",
         "Casa, Reparos e Imoveis",
@@ -38,7 +43,9 @@ def test_valley_catalog_lists_all_modules_with_simple_categories() -> None:
     assert offers.status_code == 200
     source_modules = {item["source_module"] for item in offers.json()}
     assert len(source_modules) == 25
-    assert all(item["offer_type"] in {"food", "product", "service"} for item in offers.json())
+    assert all(
+        item["offer_type"] in {"food", "product", "service"} for item in offers.json()
+    )
 
 
 def test_valley_catalog_search_filters_food_product_service_and_radius() -> None:
@@ -175,7 +182,9 @@ def test_valley_catalog_search_filters_food_product_service_and_radius() -> None
     assert "Marmita local" in titles
     assert "Marmita fora do raio" not in titles
     assert all(item["offer_type"] == "food" for item in food_results.json())
-    local_offer = next(item for item in food_results.json() if item["title"] == "Marmita local")
+    local_offer = next(
+        item for item in food_results.json() if item["title"] == "Marmita local"
+    )
     assert local_offer["distance_km"] is not None
     assert local_offer["distance_km"] <= local_offer["service_radius_km"]
 
@@ -189,11 +198,17 @@ def test_valley_catalog_search_filters_food_product_service_and_radius() -> None
 
     mei_food = marketplace.get(
         "/valley/catalog",
-        params={"company_type": "mei", "company_category": "Comercio", "business_activity": "alimentacao"},
+        params={
+            "company_type": "mei",
+            "company_category": "Comercio",
+            "business_activity": "alimentacao",
+        },
     )
     assert mei_food.status_code == 200
     assert any(item["title"] == "Marmita local" for item in mei_food.json())
-    food_offer = next(item for item in mei_food.json() if item["title"] == "Marmita local")
+    food_offer = next(
+        item for item in mei_food.json() if item["title"] == "Marmita local"
+    )
     assert food_offer["primary_action_label"] == "Comprar"
     assert food_offer["short_description"]
     assert len(food_offer["short_description"]) <= 160
@@ -246,7 +261,9 @@ def test_valley_catalog_groups_repair_health_and_food_in_plain_language() -> Non
     assert all("consumer_category" in item for item in health.json())
 
 
-def test_valley_catalog_hides_business_offers_without_publication_authorization() -> None:
+def test_valley_catalog_hides_business_offers_without_publication_authorization() -> (
+    None
+):
     marketplace = fresh_client_for("marketplace")
     merchant_id = str(uuid4())
     business_id = str(uuid4())
@@ -301,7 +318,9 @@ def test_valley_catalog_hides_business_offers_without_publication_authorization(
     )
     assert visible.status_code == 201
 
-    results = marketplace.get("/valley/catalog/search", params={"q": "Produto", "verified_only": True})
+    results = marketplace.get(
+        "/valley/catalog/search", params={"q": "Produto", "verified_only": True}
+    )
     assert results.status_code == 200
     titles = [item["title"] for item in results.json()]
     assert "Produto autorizado" in titles
@@ -319,7 +338,9 @@ def test_valley_catalog_exposes_business_activity_reference() -> None:
     assert all("label_for_consumer" in item for item in payload)
 
 
-def test_business_catalog_offer_publishes_product_to_valley_with_simple_filters() -> None:
+def test_business_catalog_offer_publishes_product_to_valley_with_simple_filters() -> (
+    None
+):
     business = fresh_client_for("business")
     seller_id = str(uuid4())
     business_id = str(uuid4())
@@ -357,7 +378,10 @@ def test_business_catalog_offer_publishes_product_to_valley_with_simple_filters(
     approved = business.post(
         f"/resources/catalog_offers/{offer_id}/actions/approve",
         headers=headers,
-        json={"reason": "Oferta comercial revisada", "payload": {"publication_status": "approved"}},
+        json={
+            "reason": "Oferta comercial revisada",
+            "payload": {"publication_status": "approved"},
+        },
     )
     assert approved.status_code == 200
 
@@ -372,7 +396,9 @@ def test_business_catalog_offer_publishes_product_to_valley_with_simple_filters(
         },
     )
     assert results.status_code == 200
-    offer = next(item for item in results.json() if item["title"] == "Kit cafe artesanal")
+    offer = next(
+        item for item in results.json() if item["title"] == "Kit cafe artesanal"
+    )
     assert offer["source_module"] == "marketplace"
     assert offer["source_resource_type"] == "products"
     assert offer["configured_in_module"] == "business"
@@ -385,12 +411,20 @@ def test_business_catalog_offer_publishes_product_to_valley_with_simple_filters(
     facets = business.get("/valley/catalog/facets")
     assert facets.status_code == 200
     facet_payload = facets.json()
-    assert any(item["id"] == "product" and item["label"] == "Produto" for item in facet_payload["offer_types"])
+    assert any(
+        item["id"] == "product" and item["label"] == "Produto"
+        for item in facet_payload["offer_types"]
+    )
     assert any(item["id"] == "pf_vendedor" for item in facet_payload["company_types"])
-    assert any(item["id"] == "varejo" and item["label"] == "Produtos e lojas" for item in facet_payload["business_activities"])
+    assert any(
+        item["id"] == "varejo" and item["label"] == "Produtos e lojas"
+        for item in facet_payload["business_activities"]
+    )
 
 
-def test_business_catalog_offer_publishes_service_to_valley_by_activity_and_radius() -> None:
+def test_business_catalog_offer_publishes_service_to_valley_by_activity_and_radius() -> (
+    None
+):
     business = fresh_client_for("business")
     provider_id = str(uuid4())
     business_id = str(uuid4())
@@ -429,7 +463,10 @@ def test_business_catalog_offer_publishes_service_to_valley_by_activity_and_radi
     approved = business.post(
         f"/resources/catalog_offers/{offer_id}/actions/approve",
         headers=headers,
-        json={"reason": "Prestador revisado", "payload": {"publication_status": "approved"}},
+        json={
+            "reason": "Prestador revisado",
+            "payload": {"publication_status": "approved"},
+        },
     )
     assert approved.status_code == 200
 
@@ -444,7 +481,9 @@ def test_business_catalog_offer_publishes_service_to_valley_by_activity_and_radi
         },
     )
     assert nearby.status_code == 200
-    offer = next(item for item in nearby.json() if item["title"] == "Montagem de moveis")
+    offer = next(
+        item for item in nearby.json() if item["title"] == "Montagem de moveis"
+    )
     assert offer["distance_km"] is not None
     assert offer["distance_km"] <= offer["service_radius_km"]
     assert offer["primary_action_label"] == "Contratar"

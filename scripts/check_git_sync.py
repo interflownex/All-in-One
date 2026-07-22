@@ -101,8 +101,7 @@ def validate(args: argparse.Namespace) -> int:
             )
         if ahead > 0 and not args.allow_ahead:
             problems.append(
-                "Branch local esta "
-                f"{ahead} commit(s) a frente de {remote}/{branch}."
+                f"Branch local esta {ahead} commit(s) a frente de {remote}/{branch}."
             )
 
         print(f"{remote}/{branch}: behind={behind} ahead={ahead}")

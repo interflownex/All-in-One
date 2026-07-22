@@ -1,14 +1,9 @@
-import React from 'react';
-import SmartCRUD from '../../components/SmartCRUD';
+import React from "react";
+import SmartCRUD from "../../components/SmartCRUD";
 
 const VisionPermissions: React.FC = () => {
   return (
-    <SmartCRUD 
-      module="vision" 
-      entity="visionpermissions" 
-      type="list" 
-      title="Vision Permissões" 
-    />
+    <SmartCRUD module="vision" entity="visionpermissions" type="list" title="Vision Permissões" />
   );
 };
 

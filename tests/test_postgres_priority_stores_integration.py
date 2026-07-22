@@ -6,8 +6,8 @@ from uuid import UUID, uuid4
 import psycopg
 import pytest
 
-from modules.shared.api_hub_postgres_store import ApiHubPostgresStore
 from modules.shared.ai_core_postgres_store import AiCorePostgresStore
+from modules.shared.api_hub_postgres_store import ApiHubPostgresStore
 from modules.shared.bi_postgres_store import BiPostgresStore
 from modules.shared.bpm_postgres_store import BpmPostgresStore
 from modules.shared.business_postgres_store import BusinessPostgresStore
@@ -32,9 +32,13 @@ from modules.shared.tms_postgres_store import TmsPostgresStore
 from modules.shared.vision_postgres_store import VisionPostgresStore
 from modules.shared.wms_postgres_store import WmsPostgresStore
 
-
-POSTGRES_DSN = os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN") or os.getenv("ALL_IN_ONE_BUSINESS_POSTGRES_DSN")
-pytestmark = pytest.mark.skipif(not POSTGRES_DSN, reason="DSN PostgreSQL real nao configurada para testes de integracao.")
+POSTGRES_DSN = os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN") or os.getenv(
+    "ALL_IN_ONE_BUSINESS_POSTGRES_DSN"
+)
+pytestmark = pytest.mark.skipif(
+    not POSTGRES_DSN,
+    reason="DSN PostgreSQL real nao configurada para testes de integracao.",
+)
 EVENT_PREFIX_ALIASES = {
     "riders": ("rider.%", "riders.%"),
 }
@@ -64,7 +68,11 @@ def seed_user(connection: psycopg.Connection, user_id: UUID, nonce: str) -> None
 
 
 def count_audit(connection: psycopg.Connection, module_name: str) -> int:
-    return int(connection.execute("SELECT COUNT(*) FROM audit.logs WHERE module = %s", (module_name,)).fetchone()[0])
+    return int(
+        connection.execute(
+            "SELECT COUNT(*) FROM audit.logs WHERE module = %s", (module_name,)
+        ).fetchone()[0]
+    )
 
 
 def count_events(connection: psycopg.Connection, module_name: str) -> int:
@@ -341,7 +349,10 @@ def test_api_hub_client_create_update_and_soft_delete() -> None:
     )
     updated = store.update(
         created,
-        payload={"client_name": f"Client {nonce} v2", "scopes": ["catalog:read", "orders:write"]},
+        payload={
+            "client_name": f"Client {nonce} v2",
+            "scopes": ["catalog:read", "orders:write"],
+        },
         status="rotated",
         actor=str(actor_id),
         action="rotate",
@@ -1054,7 +1065,10 @@ def test_ai_core_memory_create_update_and_soft_delete() -> None:
     )
     updated = store.update(
         created,
-        payload={"memory_key": created["payload"]["memory_key"], "summary": "Memoria consolidada"},
+        payload={
+            "memory_key": created["payload"]["memory_key"],
+            "summary": "Memoria consolidada",
+        },
         status="indexed",
         actor=str(actor_id),
         action="index",
@@ -1316,7 +1330,9 @@ def test_erp_billing_create_detail_and_cancel() -> None:
     assert detailed["items_count"] == 1
     assert detailed["items"][0]["description"] == "Servico de teste"
 
-    cancelled = store.cancel_billing_document(created["id"], str(actor_id), "cancelamento de teste")
+    cancelled = store.cancel_billing_document(
+        created["id"], str(actor_id), "cancelamento de teste"
+    )
     assert cancelled["status"] == "cancelled"
     assert cancelled["payload"]["cancel_reason"] == "cancelamento de teste"
 

@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SECURITY_SOURCE = (
     ROOT
@@ -22,7 +21,9 @@ SECURITY_SOURCE = (
 
 
 def test_masvs_resilience_contract_covers_all_resilience_controls() -> None:
-    policy = json.loads((ROOT / "config" / "security" / "valley_masvs_resilience.json").read_text())
+    policy = json.loads(
+        (ROOT / "config" / "security" / "valley_masvs_resilience.json").read_text()
+    )
 
     assert policy["profile"] == "MASVS-R"
     assert set(policy["controls"]) == {
@@ -31,7 +32,10 @@ def test_masvs_resilience_contract_covers_all_resilience_controls() -> None:
         "MASVS-RESILIENCE-3",
         "MASVS-RESILIENCE-4",
     }
-    assert "server-side Play Integrity verdict validation is mandatory before production" in policy["limitations"]
+    assert (
+        "server-side Play Integrity verdict validation is mandatory before production"
+        in policy["limitations"]
+    )
 
 
 def test_release_guard_detects_root_debugger_instrumentation_and_repackaging() -> None:
@@ -54,9 +58,15 @@ def test_release_guard_detects_root_debugger_instrumentation_and_repackaging() -
 
 
 def test_runtime_guard_does_not_collect_sensitive_runtime_details() -> None:
-    policy = json.loads((ROOT / "config" / "security" / "valley_masvs_resilience.json").read_text())
+    policy = json.loads(
+        (ROOT / "config" / "security" / "valley_masvs_resilience.json").read_text()
+    )
     source = SECURITY_SOURCE.read_text(encoding="utf-8")
 
-    assert set(policy["response"]["never_log"]) >= {"process_maps", "tokens", "user_identifiers"}
+    assert set(policy["response"]["never_log"]) >= {
+        "process_maps",
+        "tokens",
+        "user_identifiers",
+    }
     assert "getInstalledPackages" not in source
     assert "ValleyObservability" not in source

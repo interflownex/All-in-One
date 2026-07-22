@@ -20,7 +20,9 @@ PROHIBITED_NEAR_LOGO = re.compile(
     re.IGNORECASE,
 )
 DIRECT_LOGO_REFERENCE = re.compile(r"(?:logo|brand)[^\n]{0,180}", re.IGNORECASE)
-IMG_SOURCE = re.compile(r"(?:src|href)\s*=\s*[\"']([^\"']*(?:logo|brand)[^\"']*)[\"']", re.IGNORECASE)
+IMG_SOURCE = re.compile(
+    r"(?:src|href)\s*=\s*[\"']([^\"']*(?:logo|brand)[^\"']*)[\"']", re.IGNORECASE
+)
 
 
 def frontend_files() -> list[Path]:
@@ -47,7 +49,9 @@ def main() -> int:
         for match in IMG_SOURCE.finditer(text):
             source = match.group(1)
             if "all-in-one" in source.lower() and source != OFFICIAL_ASSET:
-                violations.append(f"{relative}: referência de marca não oficial: {source}")
+                violations.append(
+                    f"{relative}: referência de marca não oficial: {source}"
+                )
 
         for match in DIRECT_LOGO_REFERENCE.finditer(text):
             fragment = match.group(0)
@@ -62,7 +66,9 @@ def main() -> int:
         violations.append("Componente BrandLogo.tsx obrigatório não encontrado.")
 
     if official_usage == 0:
-        violations.append(f"Nenhum uso do asset oficial foi encontrado: {OFFICIAL_ASSET}")
+        violations.append(
+            f"Nenhum uso do asset oficial foi encontrado: {OFFICIAL_ASSET}"
+        )
 
     if violations:
         print("Falha na integridade da marca oficial:")

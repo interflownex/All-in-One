@@ -32,10 +32,7 @@
     "storage.googleapis.com",
     "sqladmin.googleapis.com"
   ],
-  "restorable_resources": [
-    "compute_instances_terminated",
-    "cloud_sql_instances_never"
-  ],
+  "restorable_resources": ["compute_instances_terminated", "cloud_sql_instances_never"],
   "safety": {
     "requires_authenticated_gcloud": true,
     "requires_explicit_project": true,

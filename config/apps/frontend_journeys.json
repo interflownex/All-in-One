@@ -10,10 +10,27 @@
       "package_name": "@all-in-one/user-shell",
       "persona": "Consumidor e candidato",
       "priority_journey": "cadastro -> wallet -> busca -> compra -> delivery -> jobs",
-      "api_modules": ["identity", "finance", "marketplace", "delivery", "mobility", "health", "jobs"],
-      "api_hub_routes": ["/gateway/identity", "/gateway/finance", "/gateway/catalog", "/gateway/jobs"],
+      "api_modules": [
+        "identity",
+        "finance",
+        "marketplace",
+        "delivery",
+        "mobility",
+        "health",
+        "jobs"
+      ],
+      "api_hub_routes": [
+        "/gateway/identity",
+        "/gateway/finance",
+        "/gateway/catalog",
+        "/gateway/jobs"
+      ],
       "shell_status": "api_hub_live_actions",
-      "coverage": ["playwright:all_in_one_user_shell", "pytest:user_marketplace_journey", "pytest:operational_journeys"],
+      "coverage": [
+        "playwright:all_in_one_user_shell",
+        "pytest:user_marketplace_journey",
+        "pytest:operational_journeys"
+      ],
       "next_e2e": "Ampliar notificacoes persistidas e comunicacao com empresa apos candidatura Jobs."
     },
     {
@@ -23,8 +40,27 @@
       "package_name": "@all-in-one/business-shell",
       "persona": "Empresa operadora",
       "priority_journey": "empresa -> aprovacao -> usuarios -> jobs -> ERP -> relatorios",
-      "api_modules": ["business", "identity", "permissions", "jobs", "erp", "wms", "tms", "crm", "bi"],
-      "api_hub_routes": ["/gateway/business", "/gateway/jobs", "/gateway/erp", "/gateway/bi", "/resources/api_clients", "/resources/api_keys", "/resources/webhooks", "/resources/integration_runs"],
+      "api_modules": [
+        "business",
+        "identity",
+        "permissions",
+        "jobs",
+        "erp",
+        "wms",
+        "tms",
+        "crm",
+        "bi"
+      ],
+      "api_hub_routes": [
+        "/gateway/business",
+        "/gateway/jobs",
+        "/gateway/erp",
+        "/gateway/bi",
+        "/resources/api_clients",
+        "/resources/api_keys",
+        "/resources/webhooks",
+        "/resources/integration_runs"
+      ],
       "shell_status": "api_hub_live_actions",
       "coverage": ["playwright:all_in_one_business_shell", "pytest:business_jobs_journey"],
       "next_e2e": "Executar homologacao externa de KYB, Apigee API Hub e provedores integrados quando ambiente responsivo estiver disponivel."
@@ -37,7 +73,12 @@
       "persona": "Entregador e motorista parceiro",
       "priority_journey": "candidatura -> documento -> veiculo -> entrega/corrida -> ganhos",
       "api_modules": ["riders", "delivery", "mobility", "finance", "identity"],
-      "api_hub_routes": ["/riders/resources/rider_profiles", "/riders/resources/vehicles", "/delivery/resources/delivery_requests", "/mobility/resources/rides"],
+      "api_hub_routes": [
+        "/riders/resources/rider_profiles",
+        "/riders/resources/vehicles",
+        "/delivery/resources/delivery_requests",
+        "/mobility/resources/rides"
+      ],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
       "next_e2e": "Ampliar interface funcional para extrato financeiro e ocorrencias operacionais apos ganhos vivos."
@@ -50,7 +91,12 @@
       "persona": "Prestador de servicos",
       "priority_journey": "prestador -> visita -> orcamento -> contrato -> evidencia",
       "api_modules": ["services", "finance", "identity", "document"],
-      "api_hub_routes": ["/services/resources/providers", "/services/resources/service_contracts", "/finance/resources/escrows", "/document/resources/documents"],
+      "api_hub_routes": [
+        "/services/resources/providers",
+        "/services/resources/service_contracts",
+        "/finance/resources/escrows",
+        "/document/resources/documents"
+      ],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
       "next_e2e": "Ampliar interface funcional para visita, orcamento detalhado e avaliacao do cliente apos pos-atendimento vivo."
@@ -63,7 +109,12 @@
       "persona": "Paciente e profissional de saude",
       "priority_journey": "paciente -> agenda -> prontuario -> consulta",
       "api_modules": ["health", "identity", "document"],
-      "api_hub_routes": ["/health/resources/patients", "/health/resources/appointments", "/identity/resources/consents", "/document/resources/documents"],
+      "api_hub_routes": [
+        "/health/resources/patients",
+        "/health/resources/appointments",
+        "/identity/resources/consents",
+        "/document/resources/documents"
+      ],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
       "next_e2e": "Ampliar interface funcional para teleconsulta e integracao com provedor clinico externo apos governanca local viva."
@@ -76,7 +127,12 @@
       "persona": "Passageiro e operador de mobilidade",
       "priority_journey": "corrida -> ticket -> QR/NFC -> historico",
       "api_modules": ["mobility", "riders", "finance", "identity"],
-      "api_hub_routes": ["/mobility/resources/rides", "/mobility/resources/tickets", "/riders/resources/rider_profiles", "/finance/resources/wallets"],
+      "api_hub_routes": [
+        "/mobility/resources/rides",
+        "/mobility/resources/tickets",
+        "/riders/resources/rider_profiles",
+        "/finance/resources/wallets"
+      ],
       "shell_status": "api_hub_connected_shell",
       "coverage": ["playwright:all_in_one_phase4_shells", "pytest:operational_journeys"],
       "next_e2e": "Ampliar interface funcional para mapa, ETA dinamico e ocorrencias antifraude apos pos-corrida vivo."
@@ -91,7 +147,11 @@
       "api_modules": ["business", "marketplace", "stock", "finance", "delivery", "services"],
       "api_hub_routes": ["/gateway/catalog/offers", "/gateway/catalog/actions", "/gateway/orders"],
       "shell_status": "functional_react_shell",
-      "coverage": ["playwright:valley_superapp", "playwright:valley_catalog_journey", "pytest:valley_catalog"],
+      "coverage": [
+        "playwright:valley_superapp",
+        "playwright:valley_catalog_journey",
+        "pytest:valley_catalog"
+      ],
       "next_e2e": "Ampliar combinacoes desktop/mobile de checkout, agendamento e tracking."
     },
     {
@@ -104,7 +164,11 @@
       "api_modules": ["business", "marketplace", "finance", "stock", "outbox-dispatcher"],
       "api_hub_routes": ["/gateway/business", "/gateway/catalog/offers", "/gateway/finance"],
       "shell_status": "functional_react_shell",
-      "coverage": ["playwright:valley_business", "pytest:valley_ecosystem", "pytest:valley_gold_ledger"],
+      "coverage": [
+        "playwright:valley_business",
+        "pytest:valley_ecosystem",
+        "pytest:valley_gold_ledger"
+      ],
       "next_e2e": "Ampliar Playwright para compra Gold -> publicacao de oferta -> telemetria outbox."
     },
     {

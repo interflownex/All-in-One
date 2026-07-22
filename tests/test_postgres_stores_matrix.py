@@ -115,7 +115,9 @@ def _tables_for(store_class: type) -> dict[str, str]:
 
 
 STORE_CLASSES = _iter_postgres_store_classes()
-STORE_CLASS_BY_MODULE = {store_class.module: store_class for store_class in STORE_CLASSES}
+STORE_CLASS_BY_MODULE = {
+    store_class.module: store_class for store_class in STORE_CLASSES
+}
 MODULES_CONFIG = {
     module_name: {
         "class": store_class,
@@ -128,7 +130,9 @@ MODULES_CONFIG = {
 
 
 def _dsn_for(module_name: str) -> str:
-    dsn = os.environ.get(f"ALL_IN_ONE_{module_name.upper()}_POSTGRES_DSN") or DEFAULT_DSN
+    dsn = (
+        os.environ.get(f"ALL_IN_ONE_{module_name.upper()}_POSTGRES_DSN") or DEFAULT_DSN
+    )
     if "connect_timeout" not in dsn:
         dsn += "&connect_timeout=3" if "?" in dsn else "?connect_timeout=3"
     return dsn
@@ -166,7 +170,9 @@ def test_postgres_store_matrix_covers_all_workspace_store_modules() -> None:
 
 
 def test_postgres_store_matrix_marks_priority_modules_for_runtime_validation() -> None:
-    ready_modules = {name for name, config in MODULES_CONFIG.items() if config["runtime_ready"]}
+    ready_modules = {
+        name for name, config in MODULES_CONFIG.items() if config["runtime_ready"]
+    }
     assert PRIORITY_MODULES.issubset(ready_modules)
 
 

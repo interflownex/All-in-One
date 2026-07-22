@@ -12,7 +12,7 @@ necessary telemetry signals.
     attempt to dynamically determine any input like project ID**. If the user
     does not provide a Storage Insights linked dataset name or ID, you MUST list
     available datasets first. **List Dataset**: `python3
-    scripts/list_datasets.py --project_id <PROJECT_ID> [--location <LOCATION>]`.
+scripts/list_datasets.py --project_id <PROJECT_ID> [--location <LOCATION>]`.
     The script will automatically list all datasets if the user does not specify
     a location. **IMPORTANT** ONLY show the first 10 datasets in the response.
     If there are more than 10 datasets, there should be a note for the user to
@@ -50,7 +50,7 @@ necessary telemetry signals.
     Run:
 
     `python3 scripts/preflight_permissions.py --project_id <PROJECT_ID>
-    --dataset_name <DATASET_NAME>`
+--dataset_name <DATASET_NAME>`
 
     The preflight runs one **required** check and two **recommended** checks:
     (a) `adc` — working application-default credentials (required); (b)
@@ -64,31 +64,31 @@ necessary telemetry signals.
     Parse the JSON output. The `analysis_scope` field tells you which mode to
     run:
 
-    -   **STOP only on a required failure**: If `ready_to_proceed` is `false`
-        (i.e. `analysis_scope: "none"` — the `adc` check is `missing`), you
-        **MUST IMMEDIATELY STOP** and output your final response. **DO NOT**
-        invoke any telemetry-gathering scripts (`fetch_bucket_telemetry.py`,
-        `fetch_object_telemetry.py`, or `evaluate_project_security_posture.py`).
-        Report the `adc` check's `impact` and `fix` verbatim and wait for the
-        user to re-authenticate before re-running preflight.
-    -   If `analysis_scope` is `"full"` (SI enabled and dataset queryable),
-        proceed with the full assessment: run all telemetry scripts and all
-        phases.
-    -   If `analysis_scope` is `"project_only"` (a recommended check is
-        `missing` — SI not enabled, or no linked dataset), **DO NOT bail out**.
-        Run a project-level assessment:
-        *   In Step 3 below, run **only**
-            `evaluate_project_security_posture.py`. Do **not** run
-            `fetch_bucket_telemetry.py` or `fetch_object_telemetry.py`.
-        *   Surface the failing recommended check's `fix` once, framed as
-            unlocking the full assessment: if `storage_insights_enabled` is
-            missing, relay `gcloud services enable
-            storageinsights.googleapis.com --project <PROJECT_ID>`; if
-            `bigquery_dataset_access` is missing with a 404, relay its `fix` to
-            run `list_datasets.py` or create a dataset config.
-        *   In later phases, mark bucket- and object-level sections as
-            "Unavailable — requires Storage Intelligence" (see the
-            **Project-only mode** note in `output.md`).
+    - **STOP only on a required failure**: If `ready_to_proceed` is `false`
+      (i.e. `analysis_scope: "none"` — the `adc` check is `missing`), you
+      **MUST IMMEDIATELY STOP** and output your final response. **DO NOT**
+      invoke any telemetry-gathering scripts (`fetch_bucket_telemetry.py`,
+      `fetch_object_telemetry.py`, or `evaluate_project_security_posture.py`).
+      Report the `adc` check's `impact` and `fix` verbatim and wait for the
+      user to re-authenticate before re-running preflight.
+    - If `analysis_scope` is `"full"` (SI enabled and dataset queryable),
+      proceed with the full assessment: run all telemetry scripts and all
+      phases.
+    - If `analysis_scope` is `"project_only"` (a recommended check is
+      `missing` — SI not enabled, or no linked dataset), **DO NOT bail out**.
+      Run a project-level assessment:
+      - In Step 3 below, run **only**
+        `evaluate_project_security_posture.py`. Do **not** run
+        `fetch_bucket_telemetry.py` or `fetch_object_telemetry.py`.
+      - Surface the failing recommended check's `fix` once, framed as
+        unlocking the full assessment: if `storage_insights_enabled` is
+        missing, relay `gcloud services enable
+storageinsights.googleapis.com --project <PROJECT_ID>`; if
+        `bigquery_dataset_access` is missing with a 404, relay its `fix` to
+        run `list_datasets.py` or create a dataset config.
+      - In later phases, mark bucket- and object-level sections as
+        "Unavailable — requires Storage Intelligence" (see the
+        **Project-only mode** note in `output.md`).
 
 3.  **Gather Telemetry**: Run the telemetry scripts that match your
     `analysis_scope` (from Step 2). Use your shell execution tool (e.g.,

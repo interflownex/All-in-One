@@ -7,6 +7,7 @@
         ## Entidades
 
         - `stores`
+
 - `products`
 - `carts`
 - `orders`
@@ -17,6 +18,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -38,10 +40,10 @@
 - `POST /reject`
 - `POST /audit`
 
-
         ## Eventos
 
         - `marketplace.store.created`
+
 - `marketplace.product.created`
 - `marketplace.order.created`
 - `marketplace.order.paid`

@@ -9,10 +9,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
-
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_PATH = ROOT / "config" / "cloud" / "google_cloud_profile.json"
-WINDOWS_GCLOUD = Path("/mnt/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud")
+WINDOWS_GCLOUD = Path(
+    "/mnt/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud"
+)
 LINUX_GCLOUD = Path.home() / "google-cloud-sdk" / "bin" / "gcloud"
 DEFAULT_GCLOUD_TIMEOUT_SECONDS = 20
 
@@ -57,7 +58,9 @@ def run_gcloud_result(*args: str) -> subprocess.CompletedProcess[str] | None:
 
 
 def run_gcloud(*args: str, check: bool = True) -> str:
-    timeout = int(os.getenv("GCLOUD_TIMEOUT_SECONDS", str(DEFAULT_GCLOUD_TIMEOUT_SECONDS)))
+    timeout = int(
+        os.getenv("GCLOUD_TIMEOUT_SECONDS", str(DEFAULT_GCLOUD_TIMEOUT_SECONDS))
+    )
     result = run_gcloud_result(*args)
     if result is None:
         if not check:
@@ -70,7 +73,9 @@ def run_gcloud(*args: str, check: bool = True) -> str:
 
 
 def active_account() -> str:
-    return run_gcloud("auth", "list", "--filter=status:ACTIVE", "--format=value(account)", check=False)
+    return run_gcloud(
+        "auth", "list", "--filter=status:ACTIVE", "--format=value(account)", check=False
+    )
 
 
 def adc_authenticated() -> bool:
@@ -106,7 +111,9 @@ def auth_status(project: str) -> dict[str, Any]:
     if not cli_responsive:
         warnings.append(f"gcloud nao respondeu dentro de {gcloud_timeout_seconds()}s.")
     if cli_responsive and not account:
-        warnings.append("Conta Google Cloud CLI ausente; execute gcloud auth login legitimamente.")
+        warnings.append(
+            "Conta Google Cloud CLI ausente; execute gcloud auth login legitimamente."
+        )
     if cli_responsive and not adc_ok:
         warnings.append(
             "Application Default Credentials ausente ou expirado; execute gcloud auth application-default login."
@@ -118,7 +125,9 @@ def auth_status(project: str) -> dict[str, Any]:
         "gcloud_path": gcloud_path,
         "cli_responsive": cli_responsive,
         "active_account": account or None,
-        "application_default_credentials": "ok" if adc_ok else "missing_or_unresponsive",
+        "application_default_credentials": "ok"
+        if adc_ok
+        else "missing_or_unresponsive",
         "project": project or None,
         "warnings": warnings,
         "required_commands": [
@@ -136,7 +145,11 @@ def selected_project(explicit_project: str | None, profile: dict[str, Any]) -> s
     from_environment = os.getenv(environment_name, "").strip()
     if from_environment:
         return from_environment
-    return run_gcloud("config", "get-value", "project", check=False).strip().replace("(unset)", "")
+    return (
+        run_gcloud("config", "get-value", "project", check=False)
+        .strip()
+        .replace("(unset)", "")
+    )
 
 
 def resource_list(command: list[str], project: str) -> list[dict[str, Any]]:
@@ -178,17 +191,27 @@ def status(project: str) -> dict[str, Any]:
         )
         if project
         else [],
-        "alloydb_clusters": resource_list(["alloydb", "clusters", "list"], project) if project else [],
-        "cloud_run_services": resource_list(["run", "services", "list"], project) if project else [],
-        "gke_clusters": resource_list(["container", "clusters", "list"], project) if project else [],
+        "alloydb_clusters": resource_list(["alloydb", "clusters", "list"], project)
+        if project
+        else [],
+        "cloud_run_services": resource_list(["run", "services", "list"], project)
+        if project
+        else [],
+        "gke_clusters": resource_list(["container", "clusters", "list"], project)
+        if project
+        else [],
     }
 
 
 def activate(project: str, profile: dict[str, Any]) -> dict[str, Any]:
     if not active_account():
-        raise RuntimeError("gcloud sem conta ativa. Execute gcloud auth login legitimamente.")
+        raise RuntimeError(
+            "gcloud sem conta ativa. Execute gcloud auth login legitimamente."
+        )
     if not project:
-        raise RuntimeError("Projeto Google Cloud ausente. Defina GOOGLE_CLOUD_PROJECT ou use --project.")
+        raise RuntimeError(
+            "Projeto Google Cloud ausente. Defina GOOGLE_CLOUD_PROJECT ou use --project."
+        )
 
     run_gcloud("config", "set", "project", project)
     run_gcloud("config", "set", "compute/region", str(profile["default_region"]))
@@ -201,7 +224,14 @@ def activate(project: str, profile: dict[str, Any]) -> dict[str, Any]:
         name = instance.get("name")
         zone = str(instance.get("zone", "")).rsplit("/", 1)[-1]
         if name and zone:
-            run_gcloud("compute", "instances", "start", str(name), f"--zone={zone}", f"--project={project}")
+            run_gcloud(
+                "compute",
+                "instances",
+                "start",
+                str(name),
+                f"--zone={zone}",
+                f"--project={project}",
+            )
             started_compute.append(str(name))
 
     resumed_sql: list[str] = []
@@ -229,7 +259,9 @@ def activate(project: str, profile: dict[str, Any]) -> dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Diagnostica e reativa recursos Google Cloud permitidos.")
+    parser = argparse.ArgumentParser(
+        description="Diagnostica e reativa recursos Google Cloud permitidos."
+    )
     parser.add_argument("command", choices=("status", "activate", "auth"))
     parser.add_argument("--project")
     args = parser.parse_args()

@@ -32,11 +32,11 @@ Use this skill to execute SQL.
 
 #### Parameters
 
-Name | Type   | Description         | Required | Default
-:--- | :----- | :------------------ | :------- | :------
-sql  | string | The sql to execute. | Yes      |
+| Name | Type   | Description         | Required | Default |
+| :--- | :----- | :------------------ | :------- | :------ |
+| sql  | string | The sql to execute. | Yes      |
 
---------------------------------------------------------------------------------
+---
 
 ### get_query_plan
 
@@ -46,11 +46,11 @@ effectiveness of existing indexes and evalueate new ones.
 
 #### Parameters
 
-Name          | Type   | Description                   | Required | Default
-:------------ | :----- | :---------------------------- | :------- | :------
-sql_statement | string | The sql statement to explain. | Yes      |
+| Name          | Type   | Description                   | Required | Default |
+| :------------ | :----- | :---------------------------- | :------- | :------ |
+| sql_statement | string | The sql statement to explain. | Yes      |
 
---------------------------------------------------------------------------------
+---
 
 ### list_active_queries
 
@@ -63,16 +63,16 @@ schema.
 
 #### Parameters
 
-| Name              | Type    | Description               | Required | Default |
-| :---------------- | :------ | :------------------------ | :------- | :------ |
-| min_duration_secs | integer | Optional: Only show       | No       | `0`     |
-:                   :         : queries running for at    :          :         :
-:                   :         : least this long in        :          :         :
-:                   :         : seconds                   :          :         :
-| limit             | integer | Optional: The maximum     | No       | `100`   |
-:                   :         : number of rows to return. :          :         :
+| Name                                  | Type    | Description           | Required | Default |
+| :------------------------------------ | :------ | :-------------------- | :------- | :------ |
+| min_duration_secs                     | integer | Optional: Only show   | No       | `0`     |
+| : : : queries running for at : : :    |
+| : : : least this long in : : :        |
+| : : : seconds : : :                   |
+| limit                                 | integer | Optional: The maximum | No       | `100`   |
+| : : : number of rows to return. : : : |
 
---------------------------------------------------------------------------------
+---
 
 ### list_tables
 
@@ -83,19 +83,19 @@ tables in user schemas.
 
 #### Parameters
 
-| Name          | Type   | Description     | Required | Default    |
-| :------------ | :----- | :-------------- | :------- | :--------- |
-| table_names   | string | Optional: A     | No       | ``         |
-:               :        : comma-separated :          :            :
-:               :        : list of table   :          :            :
-:               :        : names. If       :          :            :
-:               :        : empty, details  :          :            :
-:               :        : for all tables  :          :            :
-:               :        : will be listed. :          :            :
-| output_format | string | Optional: Use   | No       | `detailed` |
-:               :        : 'simple' for    :          :            :
-:               :        : names only or   :          :            :
-:               :        : 'detailed' for  :          :            :
-:               :        : full info.      :          :            :
+| Name                        | Type   | Description   | Required | Default    |
+| :-------------------------- | :----- | :------------ | :------- | :--------- |
+| table_names                 | string | Optional: A   | No       | ``         |
+| : : : comma-separated : : : |
+| : : : list of table : : :   |
+| : : : names. If : : :       |
+| : : : empty, details : : :  |
+| : : : for all tables : : :  |
+| : : : will be listed. : : : |
+| output_format               | string | Optional: Use | No       | `detailed` |
+| : : : 'simple' for : : :    |
+| : : : names only or : : :   |
+| : : : 'detailed' for : : :  |
+| : : : full info. : : :      |
 
---------------------------------------------------------------------------------
+---

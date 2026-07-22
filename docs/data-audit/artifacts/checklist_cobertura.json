@@ -53,19 +53,13 @@
   "dimensoes": {
     "bancos": {
       "percentual": 80,
-      "evidencias": [
-        "docs/data-audit/03_CATALOGO_DE_BANCOS.md"
-      ],
-      "lacunas": [
-        "AUD-P0-000"
-      ],
+      "evidencias": ["docs/data-audit/03_CATALOGO_DE_BANCOS.md"],
+      "lacunas": ["AUD-P0-000"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "schemas": {
       "percentual": 100,
-      "evidencias": [
-        "docs/data-audit/artifacts/dicionario_de_dados.json"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/dicionario_de_dados.json"],
       "lacunas": [],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
@@ -76,123 +70,67 @@
         "docs/data-audit/artifacts/catalogo_mongodb.json",
         "docs/data-audit/artifacts/catalogo_sqlite.json"
       ],
-      "lacunas": [
-        "AUD-P0-000",
-        "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ],
+      "lacunas": ["AUD-P0-000", "AUD-P1-004", "AUD-P1-005", "AUD-P1-006"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "campos": {
       "percentual": 75,
-      "evidencias": [
-        "docs/data-audit/artifacts/dicionario_de_dados.json"
-      ],
-      "lacunas": [
-        "AUD-P0-000",
-        "AUD-P1-003",
-        "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/dicionario_de_dados.json"],
+      "lacunas": ["AUD-P0-000", "AUD-P1-003", "AUD-P1-004", "AUD-P1-005", "AUD-P1-006"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "relacionamentos": {
       "percentual": 99,
-      "evidencias": [
-        "docs/data-audit/artifacts/erd.mmd"
-      ],
-      "lacunas": [
-        "AUD-P1-003",
-        "AUD-P1-006"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/erd.mmd"],
+      "lacunas": ["AUD-P1-003", "AUD-P1-006"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "bindings_frontend": {
       "percentual": 96,
-      "evidencias": [
-        "docs/data-audit/artifacts/matriz_formulario_campo.csv"
-      ],
-      "lacunas": [
-        "AUD-P1-002"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/matriz_formulario_campo.csv"],
+      "lacunas": ["AUD-P1-002"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "campos_sensiveis": {
       "percentual": 0,
-      "evidencias": [
-        "docs/data-audit/artifacts/politica_classificacao_campos.json"
-      ],
-      "lacunas": [
-        "AUD-P0-001",
-        "AUD-P1-007"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/politica_classificacao_campos.json"],
+      "lacunas": ["AUD-P0-001", "AUD-P1-007"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "auditoria": {
       "percentual": 99,
-      "evidencias": [
-        "docs/data-audit/artifacts/cobertura_auditoria.json"
-      ],
-      "lacunas": [
-        "AUD-P1-004",
-        "AUD-P1-007"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/cobertura_auditoria.json"],
+      "lacunas": ["AUD-P1-004", "AUD-P1-007"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "calculos": {
       "percentual": 80,
-      "evidencias": [
-        "docs/data-audit/artifacts/modelo_unidades_tributacao.json"
-      ],
-      "lacunas": [
-        "AUD-P1-004",
-        "AUD-P1-005"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json"],
+      "lacunas": ["AUD-P1-004", "AUD-P1-005"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "unidades": {
       "percentual": 99,
-      "evidencias": [
-        "docs/data-audit/artifacts/modelo_unidades_tributacao.json"
-      ],
-      "lacunas": [
-        "AUD-P1-005"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json"],
+      "lacunas": ["AUD-P1-005"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "regras_fiscais": {
       "percentual": 86,
-      "evidencias": [
-        "docs/data-audit/artifacts/modelo_unidades_tributacao.json"
-      ],
-      "lacunas": [
-        "AUD-P1-005"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/modelo_unidades_tributacao.json"],
+      "lacunas": ["AUD-P1-005"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "formularios": {
       "percentual": 99,
-      "evidencias": [
-        "docs/data-audit/artifacts/coordenadas_stitch.json"
-      ],
-      "lacunas": [
-        "AUD-P1-002",
-        "AUD-P1-004",
-        "AUD-P1-005",
-        "AUD-P1-006"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/coordenadas_stitch.json"],
+      "lacunas": ["AUD-P1-002", "AUD-P1-004", "AUD-P1-005", "AUD-P1-006"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "acoes_ui": {
       "percentual": 99,
-      "evidencias": [
-        "docs/data-audit/artifacts/coordenadas_stitch.json"
-      ],
-      "lacunas": [
-        "AUD-P1-004"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/coordenadas_stitch.json"],
+      "lacunas": ["AUD-P1-004"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "permissoes_backend": {
@@ -201,17 +139,12 @@
         "docs/data-audit/artifacts/matriz_permissao_acao.csv",
         "docs/data-audit/artifacts/matriz_enforcement_permissao.json"
       ],
-      "lacunas": [
-        "AUD-P1-004",
-        "AUD-P1-007"
-      ],
+      "lacunas": ["AUD-P1-004", "AUD-P1-007"],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     },
     "lacunas_com_backlog": {
       "percentual": 100,
-      "evidencias": [
-        "docs/data-audit/artifacts/relatorio_divergencias.json"
-      ],
+      "evidencias": ["docs/data-audit/artifacts/relatorio_divergencias.json"],
       "lacunas": [],
       "metodo": "razão derivada dos artefatos quando disponível; dimensão com lacuna aberta nunca recebe 100%"
     }

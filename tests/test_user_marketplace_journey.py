@@ -33,7 +33,10 @@ def test_user_identity_wallet_marketplace_order_journey() -> None:
     wallet = finance.post(
         "/resources/wallets",
         headers=headers,
-        json={"user_id": user_id, "payload": {"wallet_type": "consumer", "currency": "BRL"}},
+        json={
+            "user_id": user_id,
+            "payload": {"wallet_type": "consumer", "currency": "BRL"},
+        },
     )
     assert wallet.status_code == 201
     wallet_id = wallet.json()["id"]
@@ -74,7 +77,9 @@ def test_user_identity_wallet_marketplace_order_journey() -> None:
                 "store_id": store_reference,
                 "escrow_id": escrow_reference,
                 "total_brl": "99.90",
-                "items": [{"sku": "SKU-MARKETPLACE", "quantity": 1, "unit_brl": "99.90"}],
+                "items": [
+                    {"sku": "SKU-MARKETPLACE", "quantity": 1, "unit_brl": "99.90"}
+                ],
             },
         },
     )
@@ -91,6 +96,11 @@ def test_user_identity_wallet_marketplace_order_journey() -> None:
     assert paid.json()["status"] == "paid"
     assert paid.json()["payload"]["escrow_id"] == escrow_reference
 
-    audit = marketplace.get("/events/outbox", headers={"X-Actor-User-Id": user_id, "X-Actor-Roles": "auditor"})
+    audit = marketplace.get(
+        "/events/outbox",
+        headers={"X-Actor-User-Id": user_id, "X-Actor-Roles": "auditor"},
+    )
     assert audit.status_code == 200
-    assert any(event["routing_key"] == "marketplace.order.paid" for event in audit.json())
+    assert any(
+        event["routing_key"] == "marketplace.order.paid" for event in audit.json()
+    )

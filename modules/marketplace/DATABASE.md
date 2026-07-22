@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `marketplace.stores`
+
 - `marketplace.products`
 - `marketplace.carts`
 - `marketplace.orders`

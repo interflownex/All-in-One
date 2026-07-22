@@ -30,15 +30,15 @@ metadata:
     output schemas. Include the schema in your thought process BEFORE generating
     any code. Do NOT guess column names.
 2.  **Generate spark code**:
-    *   **Output Format**: **ALWAYS** generate code in **Python Notebooks
-        (.ipynb)** format. Generate scripts (.py) only if explicitly requested.
-    *   **Read and Write data**: **ALWAYS** Refer to
-        `references/read_write_data.md` when reading or writing data.
-    *   **ML Tasks**: Refer to `@skill:ml-best-practices` skill and
-        `references/ml_tasks.md` when generating ML code.
-    *   **Spark Optimizations**: **ALWAYS** refer to
-        `references/spark_optimizations.md` when generating spark code and apply
-        optimization whenever applicable.
+    - **Output Format**: **ALWAYS** generate code in **Python Notebooks
+      (.ipynb)** format. Generate scripts (.py) only if explicitly requested.
+    - **Read and Write data**: **ALWAYS** Refer to
+      `references/read_write_data.md` when reading or writing data.
+    - **ML Tasks**: Refer to `@skill:ml-best-practices` skill and
+      `references/ml_tasks.md` when generating ML code.
+    - **Spark Optimizations**: **ALWAYS** refer to
+      `references/spark_optimizations.md` when generating spark code and apply
+      optimization whenever applicable.
 3.  **Verify schema before write**: **ALWAYS** verify that the dataframe and
     destination schema match, use `df.printSchema()` for dataframe schema and
     refer to `@skill:discovering-gcp-data-assets` skill or
@@ -50,7 +50,7 @@ metadata:
     `references/gcloud_dataproc.md` on writing command to execute generated code
     on Dataproc. This DOES NOT apply when generating notebooks.
 
---------------------------------------------------------------------------------
+---
 
 ## Common Mistakes Checklist
 
@@ -60,31 +60,31 @@ metadata:
 
 Before submitting a job, verify:
 
--   [ ] **All imports present** (`col`, `when`, `lit`, etc. from
-    `pyspark.sql.functions`)
--   [ ] **`vector_to_array` from correct module** use `from pyspark.ml.functions
-    import vector_to_array` (NOT `pyspark.sql.functions`)
--   [ ] **DataFrame schema matches target Iceberg table** verify with
-    `df.printSchema()` before writing
--   [ ] **CSV files read with `header` and `inferSchema`** without these, the
-    header row becomes data and all columns are strings
--   [ ] **Avoid toPandas()** Converting a pyspark dataframe to pandas by calling
-    toPandas() can lead to out of memory errors. Only acceptable for building
-    visualizations in Spark 3.5
+- [ ] **All imports present** (`col`, `when`, `lit`, etc. from
+      `pyspark.sql.functions`)
+- [ ] **`vector_to_array` from correct module** use `from pyspark.ml.functions
+import vector_to_array` (NOT `pyspark.sql.functions`)
+- [ ] **DataFrame schema matches target Iceberg table** verify with
+      `df.printSchema()` before writing
+- [ ] **CSV files read with `header` and `inferSchema`** without these, the
+      header row becomes data and all columns are strings
+- [ ] **Avoid toPandas()** Converting a pyspark dataframe to pandas by calling
+      toPandas() can lead to out of memory errors. Only acceptable for building
+      visualizations in Spark 3.5
 
---------------------------------------------------------------------------------
+---
 
 ## IAM Requirements
 
 The Dataproc service account needs:
 
-*   `roles/dataproc.worker`: Job execution
-*   `roles/biglake.admin`: Iceberg table management
-*   `roles/bigquery.jobUser`: Query materialization
-*   `roles/storage.objectUser`: Read/write GCS
-*   `roles/spanner.databaseUser`: Spanner writes
+- `roles/dataproc.worker`: Job execution
+- `roles/biglake.admin`: Iceberg table management
+- `roles/bigquery.jobUser`: Query materialization
+- `roles/storage.objectUser`: Read/write GCS
+- `roles/spanner.databaseUser`: Spanner writes
 
---------------------------------------------------------------------------------
+---
 
 ## Spark resource management
 

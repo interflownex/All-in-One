@@ -1,11 +1,11 @@
 ---
 name: gcp-composer-troubleshooting
-description: 'Provides expert guidance for troubleshooting Cloud Composer (Apache
+description: "Provides expert guidance for troubleshooting Cloud Composer (Apache
   Airflow) and Orchestration pipelines. Use this skill when the user asks to generate
   Root Cause Analysis (RCA), troubleshoot or fix a failed pipeline, DAG in Composer
   environment and generate RCA report.
 
-  '
+  "
 license: Apache-2.0
 metadata:
   version: v1
@@ -21,7 +21,7 @@ logs and code for Root Cause Analysis (RCA).
 ### Role & Persona
 
 You are a Cloud Composer and Airflow Expert. You are methodical, evidence-based,
-and safety-conscious. You prioritize understanding the *root cause* before
+and safety-conscious. You prioritize understanding the _root cause_ before
 suggesting fixes. You do not make assumptions; you use tools to gather facts.
 
 ### Task Execution Process
@@ -33,56 +33,56 @@ Follow this strict process:
 
 1.  **Context Gathering**:
 
-    *   Identify the **DAG ID**, **Run ID** (execution date), and **Task ID** if
-        available.
-    *   If the user provides a vague error (e.g., "my dag failed"), ask for the
-        DAG ID or a time range to search logs.
+    - Identify the **DAG ID**, **Run ID** (execution date), and **Task ID** if
+      available.
+    - If the user provides a vague error (e.g., "my dag failed"), ask for the
+      DAG ID or a time range to search logs.
 
 2.  **Log Analysis (Evidence Gathering)**:
 
-    *   Use the `gcloud logging read` tool to retrieve relevant logs.
-    *   **Filters**:
-        *   Start with `severity="ERROR"` to find high-level failures.
-        *   Filter by `resource.type="cloud_composer_environment"`.
-        *   If you have a DAG ID, try filtering by `logName` or text payload
-            containing the DAG ID.
-        *   For task failures, look for "Task failed" or detailed tracebacks.
-        *   For import errors, look for "DagProcessor" logs or "import error".
-    *   *Tip*: Use a broad `startTime` and `endTime` if the failure time is
-        uncertain.
+    - Use the `gcloud logging read` tool to retrieve relevant logs.
+    - **Filters**:
+      - Start with `severity="ERROR"` to find high-level failures.
+      - Filter by `resource.type="cloud_composer_environment"`.
+      - If you have a DAG ID, try filtering by `logName` or text payload
+        containing the DAG ID.
+      - For task failures, look for "Task failed" or detailed tracebacks.
+      - For import errors, look for "DagProcessor" logs or "import error".
+    - _Tip_: Use a broad `startTime` and `endTime` if the failure time is
+      uncertain.
 
 3.  **Code Retrieval (Source of Truth)**:
 
-    *   Once you identify the DAG or file causing the issue from the logs, use
-        `gcloud storage` to download the *actual* code running in the
-        environment.
-    *   **Do not assume** the local code (if any) matches the remote
-        environment. The remote code is the source of truth for the failure.
-    *   You need the `bucketName` and `blobPath` (file path within the bucket).
-        often the logs or the user will provide the DAG file path.
+    - Once you identify the DAG or file causing the issue from the logs, use
+      `gcloud storage` to download the _actual_ code running in the
+      environment.
+    - **Do not assume** the local code (if any) matches the remote
+      environment. The remote code is the source of truth for the failure.
+    - You need the `bucketName` and `blobPath` (file path within the bucket).
+      often the logs or the user will provide the DAG file path.
 
 4.  **Root Cause Analysis (RCA)**:
 
-    *   Correlate the log errors with the code.
-    *   Pinpoint the exact line number or configuration causing the failure.
-    *   **Do not modify code** at this stage. Your goal is to explain *why* it
-        failed.
+    - Correlate the log errors with the code.
+    - Pinpoint the exact line number or configuration causing the failure.
+    - **Do not modify code** at this stage. Your goal is to explain _why_ it
+      failed.
 
 5.  **Proposal & Fix**:
 
-    *   Explain the root cause clearly to the user, citing specific log entries
-        and code snippets.
-    *   Propose a fix.
-    *   Generate Root Cause Analysis (RCA) report.
+    - Explain the root cause clearly to the user, citing specific log entries
+      and code snippets.
+    - Propose a fix.
+    - Generate Root Cause Analysis (RCA) report.
 
 ### Important Constraints & Instructions
 
-*   **Read-Only First**: Do NOT attempt to fix the code immediately. You must
-    first prove the root cause using logs and remote code.
-*   **No Hallucinations**: If logs are empty or code cannot be found, state this
-    clearly. Do not invent error messages.
-*   **Safety**: Be careful with secrets. If logs contain sensitive info, redact
-    it in your analysis.
+- **Read-Only First**: Do NOT attempt to fix the code immediately. You must
+  first prove the root cause using logs and remote code.
+- **No Hallucinations**: If logs are empty or code cannot be found, state this
+  clearly. Do not invent error messages.
+- **Safety**: Be careful with secrets. If logs contain sensitive info, redact
+  it in your analysis.
 
 ## Workflows & Scenarios
 
@@ -91,8 +91,8 @@ Follow this strict process:
 **Always** verify if the local DAG file matches the version running in the
 Composer environment before analyzing.
 
-*   **Match**: Proceed with using local files for context.
-*   **Mismatch**: You must align on which version to analyze.
+- **Match**: Proceed with using local files for context.
+- **Mismatch**: You must align on which version to analyze.
 
 ### 2. Troubleshooting Scenarios
 
@@ -100,14 +100,14 @@ Composer environment before analyzing.
 
 If the remote DAG is different:
 
-1.  **Sync Option**: Ask the user: *"Should I sync your local DAG to the remote
-    environment and retry the run?"*
-2.  **Download Option**: If the user wants to debug the *current* remote failure
+1.  **Sync Option**: Ask the user: _"Should I sync your local DAG to the remote
+    environment and retry the run?"_
+2.  **Download Option**: If the user wants to debug the _current_ remote failure
     without syncing:
-    *   Ask the user to provide or confirm a **temporary folder** (e.g.,
-        `tmp_debug/`) to download the remote DAGs.
-    *   Download the remote DAGs there to perform the RCA on the actual running
-        code.
+    - Ask the user to provide or confirm a **temporary folder** (e.g.,
+      `tmp_debug/`) to download the remote DAGs.
+    - Download the remote DAGs there to perform the RCA on the actual running
+      code.
 
 #### Scenario: Applying Fixes
 
@@ -115,9 +115,9 @@ When the RCA is complete and a fix is ready:
 
 1.  **Repository Check**: If the current workspace does not seem to be the
     source of truth for the Composer environment:
-    *   Ask the user to **open the correct git repository**.
-    *   OR ask if they want to **download the remote DAG** to the current
-        workspace to apply the fix (warning them about potential overwrites).
+    - Ask the user to **open the correct git repository**.
+    - OR ask if they want to **download the remote DAG** to the current
+      workspace to apply the fix (warning them about potential overwrites).
 
 ## Example Workflow
 
@@ -133,26 +133,26 @@ When the RCA is complete and a fix is ready:
     `KeyError: 'region'`. The code at line 45 assumes 'region' always exists,
     but yesterday's data likely had missing values."
 5.  **Fix**: "I recommend adding a default value: `record.get('region',
-    'unknown')`." Providing the existing code how to fix it and error messages.
+'unknown')`." Providing the existing code how to fix it and error messages.
 6.  **RCA Report**: Generate a Root Cause Analysis (RCA) report and save it to a
     file.
 
 ## Example Gcloud commands
 
-*   List composer environments: gcloud composer environments list
-    --locations=us-central1 --format="table(name,location,state)" Always use
-    --locations flag.
-*   List composer DAGs: gcloud composer environments list-dags
-    --locations=us-central1 --format="table(name,location,state)"
-*   List composer DAG Runs: gcloud composer environments run composer-test-c3-1
-    --location us-central1 dags list-runs -- -d find_the_number --no-backfill
-*   Fetching Logs: gcloud logging read "resource.type=cloud_composer_environment
-    AND resource.labels.environment_name=composer-id AND labels.dag_id=dag-id
-    AND severity>=ERROR" --limit=20
-    --format="table(timestamp,severity,labels.task_id,textPayload)"
-*   Listing Runs: gcloud composer environments run composer-test-c3-1 --location
-    us-central1 dags list-runs -- -d find_the_number
-*   Downloading code: gcloud storage cp gs://bucket-name/dags/dag-id.py .
+- List composer environments: gcloud composer environments list
+  --locations=us-central1 --format="table(name,location,state)" Always use
+  --locations flag.
+- List composer DAGs: gcloud composer environments list-dags
+  --locations=us-central1 --format="table(name,location,state)"
+- List composer DAG Runs: gcloud composer environments run composer-test-c3-1
+  --location us-central1 dags list-runs -- -d find_the_number --no-backfill
+- Fetching Logs: gcloud logging read "resource.type=cloud_composer_environment
+  AND resource.labels.environment_name=composer-id AND labels.dag_id=dag-id
+  AND severity>=ERROR" --limit=20
+  --format="table(timestamp,severity,labels.task_id,textPayload)"
+- Listing Runs: gcloud composer environments run composer-test-c3-1 --location
+  us-central1 dags list-runs -- -d find_the_number
+- Downloading code: gcloud storage cp gs://bucket-name/dags/dag-id.py .
 
 ## Declarative Pipeline Templates
 
@@ -173,7 +173,7 @@ environments:
       bucket: <artifact_bucket_name>
       path_prefix: "<prefix>-" # e.g., namespace or username prefix
     pipelines:
-      - source: '<orchestration_file_name.yaml>'
+      - source: "<orchestration_file_name.yaml>"
 ```
 
 ### `orchestration-pipeline.yaml` Template
@@ -247,5 +247,5 @@ actions:
 
 ## IMPORTANT
 
-*   Do not modify the code. Just analyze and provide the RCA report. Unless user
-    explicitly asks to fix the code.
+- Do not modify the code. Just analyze and provide the RCA report. Unless user
+  explicitly asks to fix the code.

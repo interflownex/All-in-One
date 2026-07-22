@@ -5,13 +5,14 @@ from pathlib import Path
 
 from scripts import send_ready_artifact_to_telegram as delivery
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_policy_covers_web_and_app_without_credentials() -> None:
     policy = json.loads(
-        (ROOT / "config/autonomy/telegram_delivery_policy.json").read_text(encoding="utf-8")
+        (ROOT / "config/autonomy/telegram_delivery_policy.json").read_text(
+            encoding="utf-8"
+        )
     )
     assert policy["enabled"] is True
     assert set(policy["targets"]) == {"web", "app"}
@@ -91,7 +92,9 @@ def test_web_identity_rejects_wrong_site(monkeypatch) -> None:
         def read(self) -> bytes:
             return b"<title>AIO Bot - Telegram File Bot</title>"
 
-    monkeypatch.setattr(delivery.request, "urlopen", lambda *_args, **_kwargs: WrongSiteResponse())
+    monkeypatch.setattr(
+        delivery.request, "urlopen", lambda *_args, **_kwargs: WrongSiteResponse()
+    )
     try:
         delivery.verify_web_identity("https://example.pages.dev", "All-in-One")
     except RuntimeError as exc:

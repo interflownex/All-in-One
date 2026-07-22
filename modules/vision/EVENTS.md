@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `vision.device.registered`
+
 - `vision.device.submitted`
 - `vision.device.cancelled`
 - `vision.device.completed`

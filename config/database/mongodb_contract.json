@@ -15,17 +15,13 @@
       "purpose": "Feed social e videos com moderacao e links de comissao.",
       "required": ["user_id", "asset_key", "status", "created_at"],
       "sensitive_fields": ["asset_key", "moderation"],
-      "indexes": [
-        { "keys": { "user_id": 1, "created_at": -1 } }
-      ]
+      "indexes": [{ "keys": { "user_id": 1, "created_at": -1 } }]
     },
     "influencer_metrics": {
       "purpose": "Metricas agregadas de afiliacao e comissoes por periodo.",
       "required": ["user_id", "period", "created_at"],
       "sensitive_fields": ["commissions_brl"],
-      "indexes": [
-        { "keys": { "user_id": 1, "period": 1 }, "options": { "unique": true } }
-      ]
+      "indexes": [{ "keys": { "user_id": 1, "period": 1 }, "options": { "unique": true } }]
     },
     "telemetry_logs": {
       "purpose": "Telemetria volumosa com localizacao e retencao temporal.",

@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `tms.carriers`
+
 - `tms.freights`
 - `tms.routes`
 - `tms.proofs_of_delivery`

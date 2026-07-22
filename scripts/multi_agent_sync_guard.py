@@ -11,7 +11,6 @@ from pathlib import Path
 from re import fullmatch
 from typing import Any
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_TTL_MINUTES = 120
 GCP_HYGIENE_TIMEOUT_SECONDS = 60
@@ -35,7 +34,9 @@ def git_path(relative: str) -> Path:
 
 def lock_path(scope: str = "workspace") -> Path:
     if not fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}", scope):
-        raise RuntimeError("Escopo de lock invalido. Use de 1 a 64 caracteres alfanumericos, '.', '_' ou '-'.")
+        raise RuntimeError(
+            "Escopo de lock invalido. Use de 1 a 64 caracteres alfanumericos, '.', '_' ou '-'."
+        )
     return git_path(f"all-in-one-agent-locks/{scope}.lock")
 
 
@@ -43,7 +44,9 @@ def now_utc() -> datetime:
     return datetime.now(UTC)
 
 
-def read_lock(path: Path | None = None, scope: str = "workspace") -> dict[str, Any] | None:
+def read_lock(
+    path: Path | None = None, scope: str = "workspace"
+) -> dict[str, Any] | None:
     target = path or lock_path(scope)
     if not target.is_file():
         return None
@@ -65,7 +68,9 @@ def lock_is_stale(payload: dict[str, Any], ttl_minutes: int) -> bool:
     return now_utc() - acquired_at > timedelta(minutes=ttl_minutes)
 
 
-def acquire_lock(agent: str, activity: str, ttl_minutes: int, scope: str = "workspace") -> dict[str, Any]:
+def acquire_lock(
+    agent: str, activity: str, ttl_minutes: int, scope: str = "workspace"
+) -> dict[str, Any]:
     path = lock_path(scope)
     path.parent.mkdir(parents=True, exist_ok=True)
     existing = read_lock(path)
@@ -80,7 +85,10 @@ def acquire_lock(agent: str, activity: str, ttl_minutes: int, scope: str = "work
                     "scope": scope,
                 }
             )
-            path.write_text(json.dumps(existing, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+            path.write_text(
+                json.dumps(existing, ensure_ascii=True, indent=2) + "\n",
+                encoding="utf-8",
+            )
             return existing
         raise RuntimeError(
             f"Escopo '{scope}' em uso por "
@@ -127,7 +135,10 @@ def ref_exists(ref: str) -> bool:
 
 
 def is_ancestor(older: str, newer: str) -> bool:
-    return run_git("merge-base", "--is-ancestor", older, newer, check=False).returncode == 0
+    return (
+        run_git("merge-base", "--is-ancestor", older, newer, check=False).returncode
+        == 0
+    )
 
 
 def working_tree_clean() -> bool:
@@ -137,7 +148,9 @@ def working_tree_clean() -> bool:
 def working_tree_paths() -> set[str]:
     changed = run_git("diff", "--name-only", "HEAD").stdout.splitlines()
     staged = run_git("diff", "--cached", "--name-only").stdout.splitlines()
-    untracked = run_git("ls-files", "--others", "--exclude-standard").stdout.splitlines()
+    untracked = run_git(
+        "ls-files", "--others", "--exclude-standard"
+    ).stdout.splitlines()
     return set(changed) | set(staged) | set(untracked)
 
 
@@ -146,7 +159,13 @@ def changed_paths_between(older: str, newer: str) -> set[str]:
 
 
 def ensure_no_operation_in_progress() -> None:
-    for marker in ("MERGE_HEAD", "rebase-merge", "rebase-apply", "CHERRY_PICK_HEAD", "REVERT_HEAD"):
+    for marker in (
+        "MERGE_HEAD",
+        "rebase-merge",
+        "rebase-apply",
+        "CHERRY_PICK_HEAD",
+        "REVERT_HEAD",
+    ):
         if git_path(marker).exists():
             raise RuntimeError(f"Operacao Git em andamento detectada: {marker}.")
 
@@ -182,7 +201,9 @@ def preflight(branch: str, remotes: list[str], integrate: bool) -> dict[str, Any
     action = "aligned"
     if is_ancestor(head, newest) and not is_ancestor(newest, head):
         if not integrate:
-            raise RuntimeError(f"HEAD esta atras de {newest}; execute preflight com --integrate.")
+            raise RuntimeError(
+                f"HEAD esta atras de {newest}; execute preflight com --integrate."
+            )
         if not working_tree_clean():
             local_paths = working_tree_paths()
             remote_paths = changed_paths_between(head, newest)
@@ -195,9 +216,15 @@ def preflight(branch: str, remotes: list[str], integrate: bool) -> dict[str, Any
                     f"{preview}{suffix}."
                 )
         run_git("merge", "--ff-only", newest)
-        action = f"fast-forward:{newest}" if working_tree_clean() else f"fast-forward-com-mudancas-locais:{newest}"
+        action = (
+            f"fast-forward:{newest}"
+            if working_tree_clean()
+            else f"fast-forward-com-mudancas-locais:{newest}"
+        )
     elif not is_ancestor(newest, head):
-        raise RuntimeError(f"HEAD divergiu de {newest}; integracao manual sem descarte e obrigatoria.")
+        raise RuntimeError(
+            f"HEAD divergiu de {newest}; integracao manual sem descarte e obrigatoria."
+        )
 
     return {
         "branch": branch,
@@ -210,7 +237,9 @@ def preflight(branch: str, remotes: list[str], integrate: bool) -> dict[str, Any
 
 
 def parser() -> argparse.ArgumentParser:
-    cli = argparse.ArgumentParser(description="Coordena agentes e remotos do workspace All-in-One.")
+    cli = argparse.ArgumentParser(
+        description="Coordena agentes e remotos do workspace All-in-One."
+    )
     subcommands = cli.add_subparsers(dest="command", required=True)
 
     acquire = subcommands.add_parser("acquire")
@@ -238,7 +267,9 @@ def main() -> int:
     args = parser().parse_args()
     try:
         if args.command == "acquire":
-            result = acquire_lock(args.agent, args.activity, args.ttl_minutes, args.scope)
+            result = acquire_lock(
+                args.agent, args.activity, args.ttl_minutes, args.scope
+            )
         elif args.command == "release":
             # Higienização mandatória de armazenamento GCP antes de liberar
             hygiene_script = ROOT / "scripts" / "gcp_storage_hygiene.py"

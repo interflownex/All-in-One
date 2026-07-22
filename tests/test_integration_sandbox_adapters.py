@@ -20,8 +20,8 @@ def test_all_matrix_sandbox_adapters_are_implemented() -> None:
 
     assert set(matrix) == set(adapters)
     for key, adapter in adapters.items():
-        assert getattr(adapter, "provider_key") == key
-        assert getattr(adapter, "adapter") == matrix[key]["sandbox_adapter"]
+        assert adapter.provider_key == key
+        assert adapter.adapter == matrix[key]["sandbox_adapter"]
 
 
 def test_identity_verification_sandbox_hashes_sensitive_inputs() -> None:
@@ -108,8 +108,10 @@ def test_maps_ctps_health_and_api_hub_sandboxes_are_deterministic() -> None:
     )
     document = ctps.classify_pdf("resume-1", b"%PDF-1.4\nconteudo ctps")
     consent = health.record_consent("patient-1", "doctor-1", "teleconsulta")
-    webhook = api_hub.sign_webhook("webhook-1", {"event": "delivery.completed"}, "sandbox-secret")
-    api_key_hash = hashlib.sha256("dev-key".encode("utf-8")).hexdigest()
+    webhook = api_hub.sign_webhook(
+        "webhook-1", {"event": "delivery.completed"}, "sandbox-secret"
+    )
+    api_key_hash = hashlib.sha256(b"dev-key").hexdigest()
     api_key = api_hub.verify_api_key("dev-key", {api_key_hash})
 
     assert route.status == "calculated"

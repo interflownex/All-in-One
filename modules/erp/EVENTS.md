@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `erp.account.created`
+
 - `erp.cost_center.created`
 - `erp.payable.created`
 - `erp.payment.approved`

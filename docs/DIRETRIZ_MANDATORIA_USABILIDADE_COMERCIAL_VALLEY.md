@@ -469,27 +469,27 @@ catalog_offer:
 
 Os módulos abaixo devem ser tratados como fontes de oferta para o Valley quando aplicável.
 
-| Módulo | Tipo de oferta gerada | Exemplo para usuário final |
-|---|---|---|
-| Marketplace | Produto físico/digital | Comprar cadeira, alimento, eletrônico |
-| Stock | Produto com estoque | Produto disponível para entrega |
-| Services | Serviço profissional | Eletricista, consultor, diarista |
-| Health | Consulta/exame | Agendar dermatologista |
-| Legal | Serviço jurídico | Revisão de contrato |
-| Education | Curso/trilha | Curso com certificado |
-| Jobs | Vaga/oportunidade | Candidatar-se a vaga |
-| Property | Imóvel/serviço imobiliário | Alugar imóvel, vistoria |
-| Delivery | Entrega/coleta | Solicitar entrega expressa |
-| Mobility | Corrida/transporte | Agendar deslocamento |
-| Finance | Produto financeiro | Pagamento, boleto, carteira, crédito quando homologado |
-| Document | Documento/assinatura | Assinar contrato, guardar laudo |
-| Gov Digital | Serviço público | Solicitar certidão |
-| HR | Treinamento/benefício | Curso interno, benefício corporativo |
-| CRM | Campanha/oferta personalizada | Promoção recomendada |
-| BI | Recomendação/insight | Ofertas mais relevantes |
-| AI Core | Assistente/recomendação | Ajuda para escolher serviço |
-| Vision | Evidência/monitoramento | Prova visual de entrega |
-| WMS/TMS/YMS | Suporte logístico | Prazo real de entrega |
+| Módulo      | Tipo de oferta gerada         | Exemplo para usuário final                             |
+| ----------- | ----------------------------- | ------------------------------------------------------ |
+| Marketplace | Produto físico/digital        | Comprar cadeira, alimento, eletrônico                  |
+| Stock       | Produto com estoque           | Produto disponível para entrega                        |
+| Services    | Serviço profissional          | Eletricista, consultor, diarista                       |
+| Health      | Consulta/exame                | Agendar dermatologista                                 |
+| Legal       | Serviço jurídico              | Revisão de contrato                                    |
+| Education   | Curso/trilha                  | Curso com certificado                                  |
+| Jobs        | Vaga/oportunidade             | Candidatar-se a vaga                                   |
+| Property    | Imóvel/serviço imobiliário    | Alugar imóvel, vistoria                                |
+| Delivery    | Entrega/coleta                | Solicitar entrega expressa                             |
+| Mobility    | Corrida/transporte            | Agendar deslocamento                                   |
+| Finance     | Produto financeiro            | Pagamento, boleto, carteira, crédito quando homologado |
+| Document    | Documento/assinatura          | Assinar contrato, guardar laudo                        |
+| Gov Digital | Serviço público               | Solicitar certidão                                     |
+| HR          | Treinamento/benefício         | Curso interno, benefício corporativo                   |
+| CRM         | Campanha/oferta personalizada | Promoção recomendada                                   |
+| BI          | Recomendação/insight          | Ofertas mais relevantes                                |
+| AI Core     | Assistente/recomendação       | Ajuda para escolher serviço                            |
+| Vision      | Evidência/monitoramento       | Prova visual de entrega                                |
+| WMS/TMS/YMS | Suporte logístico             | Prazo real de entrega                                  |
 
 ---
 

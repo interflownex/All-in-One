@@ -57,11 +57,7 @@
       "key_pattern": "rate_limit:{ip}",
       "purpose": "Contador de requisições por endereço IP no API Hub",
       "owner": "api_hub",
-      "operations": [
-        "GET",
-        "INCR",
-        "EXPIRE"
-      ],
+      "operations": ["GET", "INCR", "EXPIRE"],
       "value_type": "integer",
       "ttl_seconds": 60,
       "limit": 100,

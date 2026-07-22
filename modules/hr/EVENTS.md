@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `hr.employee.created`
+
 - `hr.payroll.opened`
 - `hr.payroll.closed`
 - `hr.training.assigned`

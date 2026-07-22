@@ -1,14 +1,9 @@
-import React from 'react';
-import SmartCRUD from '../../components/SmartCRUD';
+import React from "react";
+import SmartCRUD from "../../components/SmartCRUD";
 
 const KycVerification: React.FC = () => {
   return (
-    <SmartCRUD 
-      module="identity" 
-      entity="kycverification" 
-      type="form" 
-      title="Kyc Verification" 
-    />
+    <SmartCRUD module="identity" entity="kycverification" type="form" title="Kyc Verification" />
   );
 };
 

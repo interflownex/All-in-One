@@ -1,12 +1,17 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from uuid import uuid4
-from datetime import datetime, timezone
 
 import jwt
 
+from modules.identity.auth_logic import (
+    JWT_ALGORITHM,
+    JWT_SECRET,
+    totp_code,
+    totp_counter,
+)
 from platform_test_support import fresh_client_for
-from modules.identity.auth_logic import JWT_ALGORITHM, JWT_SECRET, totp_code, totp_counter
 
 
 def _registered_user(client):
@@ -48,7 +53,9 @@ def test_login_creates_hashed_server_session_and_short_lived_access_token() -> N
     assert payload["refresh_token"]
     assert payload["session_id"]
     access_expires_at = datetime.fromisoformat(payload["expires_at"])
-    assert 0 < (access_expires_at - datetime.now(timezone.utc)).total_seconds() <= 16 * 60
+    assert (
+        0 < (access_expires_at - datetime.now(UTC)).total_seconds() <= 16 * 60
+    )
     sessions = client.get(
         "/resources/sessions",
         headers={"X-Actor-User-Id": user["id"]},
@@ -72,25 +79,37 @@ def test_refresh_rotates_token_rejects_replay_and_logout_revokes_session() -> No
 
     rotated = client.post(
         "/auth/refresh",
-        json={"refresh_token": login["refresh_token"], "device_fingerprint": fingerprint},
+        json={
+            "refresh_token": login["refresh_token"],
+            "device_fingerprint": fingerprint,
+        },
     )
     assert rotated.status_code == 200, rotated.text
     assert rotated.json()["refresh_token"] != login["refresh_token"]
 
     replay = client.post(
         "/auth/refresh",
-        json={"refresh_token": login["refresh_token"], "device_fingerprint": fingerprint},
+        json={
+            "refresh_token": login["refresh_token"],
+            "device_fingerprint": fingerprint,
+        },
     )
     assert replay.status_code == 401
 
     logout = client.post(
         "/auth/logout",
-        json={"refresh_token": rotated.json()["refresh_token"], "device_fingerprint": fingerprint},
+        json={
+            "refresh_token": rotated.json()["refresh_token"],
+            "device_fingerprint": fingerprint,
+        },
     )
     assert logout.status_code == 200
     after_logout = client.post(
         "/auth/refresh",
-        json={"refresh_token": rotated.json()["refresh_token"], "device_fingerprint": fingerprint},
+        json={
+            "refresh_token": rotated.json()["refresh_token"],
+            "device_fingerprint": fingerprint,
+        },
     )
     assert after_logout.status_code == 401
 
@@ -106,7 +125,10 @@ def test_refresh_revokes_session_when_device_fingerprint_changes() -> None:
 
     mismatch = client.post(
         "/auth/refresh",
-        json={"refresh_token": login["refresh_token"], "device_fingerprint": "valley-other-device"},
+        json={
+            "refresh_token": login["refresh_token"],
+            "device_fingerprint": "valley-other-device",
+        },
     )
     assert mismatch.status_code == 401
     assert "Dispositivo" in mismatch.json()["detail"]
@@ -132,7 +154,9 @@ def test_totp_setup_encrypts_secret_verifies_real_code_and_rejects_replay() -> N
     assert setup.status_code == 200, setup.text
     enrollment = setup.json()
     assert enrollment["secret"] != "JBSWY3DPEHPK3PXP"
-    factors = client.get("/resources/identity_verifications", headers=_actor_headers(user["id"]))
+    factors = client.get(
+        "/resources/identity_verifications", headers=_actor_headers(user["id"])
+    )
     stored = factors.json()[0]
     assert enrollment["secret"] not in str(stored["payload"])
     assert stored["payload"]["secret_ciphertext"]
@@ -141,19 +165,31 @@ def test_totp_setup_encrypts_secret_verifies_real_code_and_rejects_replay() -> N
     verified = client.post(
         "/mfa/verify",
         headers=_actor_headers(user["id"]),
-        json={"user_id": user["id"], "session_id": login["session_id"], "method": "totp", "code": code},
+        json={
+            "user_id": user["id"],
+            "session_id": login["session_id"],
+            "method": "totp",
+            "code": code,
+        },
     )
     assert verified.status_code == 200, verified.text
     assert verified.json()["status"] == "verified"
     assert verified.json()["access_token"]
-    claims = jwt.decode(verified.json()["access_token"], JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    claims = jwt.decode(
+        verified.json()["access_token"], JWT_SECRET, algorithms=[JWT_ALGORITHM]
+    )
     assert claims["mfa_verified"] is True
     assert claims["sid"] == login["session_id"]
 
     replay = client.post(
         "/mfa/verify",
         headers=_actor_headers(user["id"]),
-        json={"user_id": user["id"], "session_id": login["session_id"], "method": "totp", "code": code},
+        json={
+            "user_id": user["id"],
+            "session_id": login["session_id"],
+            "method": "totp",
+            "code": code,
+        },
     )
     assert replay.status_code == 401
     assert "reutilizado" in replay.json()["detail"]

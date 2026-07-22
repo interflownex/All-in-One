@@ -7,6 +7,7 @@
         ## Entidades
 
         - `roles`
+
 - `permissions`
 - `user_roles`
 - `access_policies`
@@ -15,6 +16,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -36,10 +38,10 @@
 - `POST /reject`
 - `POST /audit`
 
-
         ## Eventos
 
         - `permissions.role.created`
+
 - `permissions.role.assigned`
 
         ## Regras

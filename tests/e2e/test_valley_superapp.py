@@ -1,12 +1,13 @@
 from playwright.sync_api import Page, expect
 
+
 def test_valley_superapp_filters(page: Page, superapp_server: str):
     """
     Testa a vitrine regional e os filtros de categorias amigáveis do Valley SuperApp.
     """
     # Acessa o app Valley (SuperApp)
     page.goto(superapp_server, timeout=60000, wait_until="domcontentloaded")
-    
+
     # Valida Header e Hero Section
     expect(page.locator("header .logo")).to_contain_text("Valley")
     expect(page.locator("h1")).to_contain_text("Encontre o que precisa")
@@ -29,7 +30,7 @@ def test_valley_superapp_filters(page: Page, superapp_server: str):
     # verificamos a estrutura do grid e os Fallbacks.
     # Clica em um filtro específico
     page.locator(".pill", has_text="Comida e Mercado").click()
-    
+
     # Valida estado 'active' do pill selecionado
     expect(page.locator(".pill.active")).to_contain_text("Comida e Mercado")
 

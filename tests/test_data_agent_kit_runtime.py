@@ -21,7 +21,9 @@ def test_runtime_status_tolerates_slow_gcloud(tmp_path, monkeypatch) -> None:
 
     assert status["application_default_credentials_available"] is True
     assert status["runtime_warning"] is None
-    assert observed["timeout"] == configure_data_agent_kit.GCLOUD_RUNTIME_TIMEOUT_SECONDS
+    assert (
+        observed["timeout"] == configure_data_agent_kit.GCLOUD_RUNTIME_TIMEOUT_SECONDS
+    )
     assert observed["timeout"] >= 30
 
 

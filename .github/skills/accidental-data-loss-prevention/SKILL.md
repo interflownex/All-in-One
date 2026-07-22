@@ -24,8 +24,8 @@ metadata:
 
 1.  **Halt Execution**: Do **not** execute the command.
 2.  **Request Consent**: Explain clearly to the user:
-    -   The **impact** of this deletion.
-    -   **Why** you believe this is necessary.
-    -   A request for their **explicit approval** to proceed.
+    - The **impact** of this deletion.
+    - **Why** you believe this is necessary.
+    - A request for their **explicit approval** to proceed.
 3.  **Wait**: Only proceed if the user provides clear, affirmative consent in
     the conversation.

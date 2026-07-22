@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import types
-
 import pytest
 
 from modules.shared import runtime
@@ -9,7 +7,9 @@ from modules.shared.riders_postgres_store import RidersPostgresStore
 
 
 class DummyConnection:
-    def execute(self, *args, **kwargs):  # pragma: no cover - nao deve ser chamado nestes testes
+    def execute(
+        self, *args, **kwargs
+    ):  # pragma: no cover - nao deve ser chamado nestes testes
         raise AssertionError("Teste de resolucao nao deve executar queries.")
 
 
@@ -17,7 +17,9 @@ class DummyConnection:
 def test_store_for_resolves_typed_postgres_store_for_all_known_modules(
     module_name: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setenv(f"ALL_IN_ONE_{module_name.upper()}_POSTGRES_DSN", "postgresql://test")
+    monkeypatch.setenv(
+        f"ALL_IN_ONE_{module_name.upper()}_POSTGRES_DSN", "postgresql://test"
+    )
     monkeypatch.setattr("psycopg.connect", lambda *args, **kwargs: DummyConnection())
 
     store = runtime._store_for(module_name)
@@ -43,7 +45,9 @@ def test_store_for_rejects_fallback_to_generic_postgres_for_known_module(
 
     monkeypatch.setattr(runtime.importlib, "import_module", fake_import)
 
-    with pytest.raises(RuntimeError, match="Store PostgreSQL tipado obrigatorio ausente"):
+    with pytest.raises(
+        RuntimeError, match="Store PostgreSQL tipado obrigatorio ausente"
+    ):
         runtime._store_for(module_name)
 
 
@@ -55,7 +59,9 @@ def test_store_for_keeps_generic_fallback_outside_typed_matrix(
     monkeypatch.setattr(
         runtime.importlib,
         "import_module",
-        lambda *args, **kwargs: (_ for _ in ()).throw(ImportError("missing optional module")),
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            ImportError("missing optional module")
+        ),
     )
 
     store = runtime._store_for("experimental")
@@ -63,7 +69,9 @@ def test_store_for_keeps_generic_fallback_outside_typed_matrix(
     assert store.__class__.__name__ == "BasePostgresStore"
 
 
-def test_get_erp_store_uses_memory_store_without_dsn(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_get_erp_store_uses_memory_store_without_dsn(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.delenv("ALL_IN_ONE_ERP_POSTGRES_DSN", raising=False)
     monkeypatch.setattr(runtime, "_ERP_FALLBACK_STORE", None)
 
@@ -97,5 +105,8 @@ def test_get_config_skips_gcloud_fallback_when_google_mode_is_disabled(
 
     monkeypatch.setattr(runtime.subprocess, "run", fake_run)
 
-    assert runtime.get_config("ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY", "local-default") == "local-default"
+    assert (
+        runtime.get_config("ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY", "local-default")
+        == "local-default"
+    )
     assert called is False

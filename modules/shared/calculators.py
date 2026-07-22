@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 
 from pydantic import BaseModel, Field
-
 
 MONEY = Decimal("0.0001")
 
@@ -34,7 +33,11 @@ def delivery_quote(body: DeliveryQuoteRequest) -> dict[str, str]:
         "van": Decimal("18.00"),
         "truck": Decimal("35.00"),
     }.get(body.vehicle_type, Decimal("10.00"))
-    base = vehicle + body.distance_km * Decimal("1.75") + body.duration_minutes * Decimal("0.18")
+    base = (
+        vehicle
+        + body.distance_km * Decimal("1.75")
+        + body.duration_minutes * Decimal("0.18")
+    )
     cargo = body.weight_kg * Decimal("0.04") + body.volume_m3 * Decimal("8.00")
     extras = body.toll_brl
     extras += Decimal("25.00") if body.helper else Decimal("0")
@@ -42,7 +45,9 @@ def delivery_quote(body: DeliveryQuoteRequest) -> dict[str, str]:
     subtotal = base + cargo + extras
     if body.urgent:
         subtotal *= Decimal("1.20")
-    insurance_fee = body.declared_value_brl * Decimal("0.0125") if body.insurance else Decimal("0")
+    insurance_fee = (
+        body.declared_value_brl * Decimal("0.0125") if body.insurance else Decimal("0")
+    )
     total = money(subtotal + insurance_fee)
     platform_fee = money(total * Decimal("0.18"))
     return {
@@ -57,7 +62,9 @@ class MobilityFareRequest(BaseModel):
     distance_km: Decimal = Field(gt=0)
     duration_minutes: Decimal = Field(gt=0)
     vehicle_type: str = "economy"
-    demand_multiplier: Decimal = Field(default=Decimal("1.00"), ge=Decimal("1.00"), le=Decimal("3.00"))
+    demand_multiplier: Decimal = Field(
+        default=Decimal("1.00"), ge=Decimal("1.00"), le=Decimal("3.00")
+    )
 
 
 def mobility_fare(body: MobilityFareRequest) -> dict[str, str]:
@@ -66,8 +73,14 @@ def mobility_fare(body: MobilityFareRequest) -> dict[str, str]:
         "comfort": (Decimal("8.00"), Decimal("2.40"), Decimal("0.32")),
         "premium": (Decimal("14.00"), Decimal("3.80"), Decimal("0.45")),
     }.get(body.vehicle_type, (Decimal("5.00"), Decimal("1.70"), Decimal("0.25")))
-    fare = money((base + body.distance_km * per_km + body.duration_minutes * per_minute) * body.demand_multiplier)
-    return {"fare_brl": str(fare), "platform_fee_brl": str(money(fare * Decimal("0.20")))}
+    fare = money(
+        (base + body.distance_km * per_km + body.duration_minutes * per_minute)
+        * body.demand_multiplier
+    )
+    return {
+        "fare_brl": str(fare),
+        "platform_fee_brl": str(money(fare * Decimal("0.20"))),
+    }
 
 
 class CommissionRequest(BaseModel):
@@ -77,4 +90,7 @@ class CommissionRequest(BaseModel):
 
 def marketplace_commission(body: CommissionRequest) -> dict[str, str]:
     commission = money(body.gross_brl * body.commission_percent / Decimal("100"))
-    return {"commission_brl": str(commission), "seller_net_brl": str(money(body.gross_brl - commission))}
+    return {
+        "commission_brl": str(commission),
+        "seller_net_brl": str(money(body.gross_brl - commission)),
+    }

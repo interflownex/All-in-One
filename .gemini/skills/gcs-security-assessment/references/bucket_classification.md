@@ -16,10 +16,10 @@ Check whether the bucket has sensitivity labels from any of these sources:
 
 If SDP has scanned the bucket, use the SDP-assigned tier as **authoritative**:
 
--   **High**: PII, financial records, healthcare data, credentials detected
--   **Medium**: Internal business data, proprietary content, limited PII
-    detected
--   **Low**: SDP scanned and found no significant sensitive content
+- **High**: PII, financial records, healthcare data, credentials detected
+- **Medium**: Internal business data, proprietary content, limited PII
+  detected
+- **Low**: SDP scanned and found no significant sensitive content
 
 ### Source B: Customer Tags or Labels
 
@@ -38,21 +38,21 @@ For unclassified buckets, do two things:
 
 **First**, infer a provisional sensitivity estimate from heuristics:
 
-| Heuristic                           | Suggests Higher Sensitivity          |
-| ----------------------------------- | ------------------------------------ |
-| Bucket name contains `prod`,        | Yes                                  |
-: `training`, `ml`, `model`,          :                                      :
-: `weights`, `pii`, `financial`,      :                                      :
-: `health`                            :                                      :
-| Bucket name contains `test`, `dev`, | No                                   |
-: `sandbox`, `tmp`, `public`,         :                                      :
-: `static`, `assets`                  :                                      :
-| Encryption type is CMEK or CSEK     | Yes — customer invested in key       |
-:                                     : management                           :
-| Project also contains Vertex AI     | Yes — likely AI workload data        |
-: endpoints or Agent Engine           :                                      :
-| Large object count or total size    | Weakly yes — significant data stores |
-:                                     : tend to matter more                  :
+| Heuristic                            | Suggests Higher Sensitivity          |
+| ------------------------------------ | ------------------------------------ |
+| Bucket name contains `prod`,         | Yes                                  |
+| : `training`, `ml`, `model`, : :     |
+| : `weights`, `pii`, `financial`, : : |
+| : `health` : :                       |
+| Bucket name contains `test`, `dev`,  | No                                   |
+| : `sandbox`, `tmp`, `public`, : :    |
+| : `static`, `assets` : :             |
+| Encryption type is CMEK or CSEK      | Yes — customer invested in key       |
+| : : management :                     |
+| Project also contains Vertex AI      | Yes — likely AI workload data        |
+| : endpoints or Agent Engine : :      |
+| Large object count or total size     | Weakly yes — significant data stores |
+| : : tend to matter more :            |
 
 **Second**, surface this recommendation in your output:
 
@@ -66,18 +66,18 @@ Flag the provisional estimate as **"inferred — not verified"** in all output.
 
 Use the classification to adjust the severity label for each finding:
 
-| Classification          | Severity Modulation   | Rationale                |
-| ----------------------- | --------------------- | ------------------------ |
-| High (SDP or            | Full severity         | Confirmed sensitive,     |
-: customer-tagged)        :                       : maximum urgency          :
-| Medium (SDP or          | Reduced severity      | Moderate sensitivity,    |
-: customer-tagged)        :                       : still significant        :
-| Low (SDP or             | Significantly reduced | Verified low-sensitivity |
-: customer-tagged)        : severity              : content                  :
-| Non-sensitive           | Minimal severity      | Customer affirmed        |
-: (explicitly tagged)     :                       : non-sensitive            :
-| Unclassified (inferred) | Full severity         | Unknown = potentially    |
-:                         :                       : sensitive, worst case    :
+| Classification                             | Severity Modulation   | Rationale                |
+| ------------------------------------------ | --------------------- | ------------------------ |
+| High (SDP or                               | Full severity         | Confirmed sensitive,     |
+| : customer-tagged) : : maximum urgency :   |
+| Medium (SDP or                             | Reduced severity      | Moderate sensitivity,    |
+| : customer-tagged) : : still significant : |
+| Low (SDP or                                | Significantly reduced | Verified low-sensitivity |
+| : customer-tagged) : severity : content :  |
+| Non-sensitive                              | Minimal severity      | Customer affirmed        |
+| : (explicitly tagged) : : non-sensitive :  |
+| Unclassified (inferred)                    | Full severity         | Unknown = potentially    |
+| : : : sensitive, worst case :              |
 
 > [!CAUTION]
 > **Unclassified is NOT non-sensitive.** Unknown data gets full

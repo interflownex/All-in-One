@@ -94,18 +94,18 @@
         "tests/test_security_workflow_contract.py",
         "tests/test_slo_catalog.py"
       ],
-      "evidence": [
-        "commit_sha",
-        "release_tag",
-        "validator_output_hash",
-        "incident_ticket"
-      ],
+      "evidence": ["commit_sha", "release_tag", "validator_output_hash", "incident_ticket"],
       "rollback": "reverter por commit assinado ou hotfix sem sobrescrever mudancas multiagente"
     }
   },
   "dr_exercise": {
     "cadence": "quarterly",
-    "minimum_scope": ["postgres_core", "mongodb_operational", "private_documents", "gitops_configuration"],
+    "minimum_scope": [
+      "postgres_core",
+      "mongodb_operational",
+      "private_documents",
+      "gitops_configuration"
+    ],
     "required_steps": [
       "abrir incidente_simulado",
       "congelar_mutacoes_nao_idempotentes",

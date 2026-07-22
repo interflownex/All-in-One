@@ -1,13 +1,14 @@
 from __future__ import annotations
 
+import json
+import sqlite3
+from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import replace
 from datetime import UTC, datetime
-import json
 from pathlib import Path
-import sqlite3
 from threading import RLock
-from typing import Any, Iterator
+from typing import Any
 from uuid import uuid4
 
 from .audit_contract import build_audit_record, get_audit_context
@@ -121,19 +122,33 @@ class SQLiteStore:
             )
             self._ensure_column(connection, "audit_events", "correlation_id TEXT")
             for definition in (
-                "changed_fields TEXT NOT NULL DEFAULT '[]'", "event TEXT", "log_type TEXT NOT NULL DEFAULT 'audit'",
-                "origin TEXT NOT NULL DEFAULT 'backend'", "channel TEXT NOT NULL DEFAULT 'api'", "occurred_at TEXT",
-                "result TEXT NOT NULL DEFAULT 'success'", "retention_until TEXT", "previous_hash TEXT", "row_hash TEXT",
-                "exported INTEGER NOT NULL DEFAULT 0", "printed INTEGER NOT NULL DEFAULT 0", "shared INTEGER NOT NULL DEFAULT 0",
+                "changed_fields TEXT NOT NULL DEFAULT '[]'",
+                "event TEXT",
+                "log_type TEXT NOT NULL DEFAULT 'audit'",
+                "origin TEXT NOT NULL DEFAULT 'backend'",
+                "channel TEXT NOT NULL DEFAULT 'api'",
+                "occurred_at TEXT",
+                "result TEXT NOT NULL DEFAULT 'success'",
+                "retention_until TEXT",
+                "previous_hash TEXT",
+                "row_hash TEXT",
+                "exported INTEGER NOT NULL DEFAULT 0",
+                "printed INTEGER NOT NULL DEFAULT 0",
+                "shared INTEGER NOT NULL DEFAULT 0",
                 "metadata TEXT NOT NULL DEFAULT '{}'",
             ):
                 self._ensure_column(connection, "audit_events", definition)
             self._ensure_column(connection, "domain_events", "correlation_id TEXT")
 
     @staticmethod
-    def _ensure_column(connection: sqlite3.Connection, table: str, column_definition: str) -> None:
+    def _ensure_column(
+        connection: sqlite3.Connection, table: str, column_definition: str
+    ) -> None:
         column_name = column_definition.split()[0]
-        columns = {row["name"] for row in connection.execute(f"PRAGMA table_info({table})").fetchall()}
+        columns = {
+            row["name"]
+            for row in connection.execute(f"PRAGMA table_info({table})").fetchall()
+        }
         if column_name not in columns:
             connection.execute(f"ALTER TABLE {table} ADD COLUMN {column_definition}")
 
@@ -194,7 +209,13 @@ class SQLiteStore:
                 try:
                     connection.execute(
                         "INSERT INTO unique_attributes VALUES (?, ?, ?, ?, ?)",
-                        (self.module, resource_type, field, str(value).casefold(), resource_id),
+                        (
+                            self.module,
+                            resource_type,
+                            field,
+                            str(value).casefold(),
+                            resource_id,
+                        ),
                     )
                 except sqlite3.IntegrityError as exc:
                     raise DuplicateValueError(field) from exc
@@ -221,7 +242,9 @@ class SQLiteStore:
                     idempotency_key,
                 ),
             )
-            self._audit(connection, actor, "create", resource_type, resource_id, None, item)
+            self._audit(
+                connection, actor, "create", resource_type, resource_id, None, item
+            )
             self._event(connection, event, actor, item)
         return item
 
@@ -232,14 +255,19 @@ class SQLiteStore:
         ).fetchone()
         return self._resource(row)
 
-    def list(self, resource_type: str, user_id: str | None = None) -> list[dict[str, Any]]:
+    def list(
+        self, resource_type: str, user_id: str | None = None
+    ) -> list[dict[str, Any]]:
         sql = "SELECT * FROM resources WHERE module = ? AND resource_type = ? AND deleted_at IS NULL"
         params: list[Any] = [self.module, resource_type]
         if user_id:
             sql += " AND user_id = ?"
             params.append(user_id)
         sql += " ORDER BY created_at DESC"
-        return [self._resource(row) for row in self.connection.execute(sql, params).fetchall()]
+        return [
+            self._resource(row)
+            for row in self.connection.execute(sql, params).fetchall()
+        ]
 
     def update(
         self,
@@ -259,9 +287,23 @@ class SQLiteStore:
         with self.transaction() as connection:
             connection.execute(
                 "UPDATE resources SET payload = ?, status = ?, updated_by = ?, updated_at = ? WHERE id = ?",
-                (json.dumps(payload, sort_keys=True), status, actor, item["updated_at"], item["id"]),
+                (
+                    json.dumps(payload, sort_keys=True),
+                    status,
+                    actor,
+                    item["updated_at"],
+                    item["id"],
+                ),
             )
-            self._audit(connection, actor, action, item["resource_type"], item["id"], before, item)
+            self._audit(
+                connection,
+                actor,
+                action,
+                item["resource_type"],
+                item["id"],
+                before,
+                item,
+            )
             if event:
                 self._event(connection, event, actor, item)
         return item
@@ -274,11 +316,28 @@ class SQLiteStore:
                 "UPDATE resources SET deleted_at = ?, updated_by = ?, updated_at = ? WHERE id = ?",
                 (item["deleted_at"], actor, item["deleted_at"], item["id"]),
             )
-            self._audit(connection, actor, "soft_delete", item["resource_type"], item["id"], item, None)
+            self._audit(
+                connection,
+                actor,
+                "soft_delete",
+                item["resource_type"],
+                item["id"],
+                item,
+                None,
+            )
 
-    def audit_external(self, actor: str, action: str, resource_type: str, resource_id: str, data: dict[str, Any]) -> dict[str, Any]:
+    def audit_external(
+        self,
+        actor: str,
+        action: str,
+        resource_type: str,
+        resource_id: str,
+        data: dict[str, Any],
+    ) -> dict[str, Any]:
         with self.transaction() as connection:
-            return self._audit(connection, actor, action, resource_type, resource_id, None, data)
+            return self._audit(
+                connection, actor, action, resource_type, resource_id, None, data
+            )
 
     def _audit(
         self,
@@ -291,14 +350,26 @@ class SQLiteStore:
         after: Any,
     ) -> dict[str, Any]:
         previous = connection.execute(
-            "SELECT row_hash FROM audit_events WHERE module = ? ORDER BY created_at DESC LIMIT 1", (self.module,)
+            "SELECT row_hash FROM audit_events WHERE module = ? ORDER BY created_at DESC LIMIT 1",
+            (self.module,),
         ).fetchone()
         audit_context = get_audit_context()
-        entity = (after or before or {}).get("entity_id") if isinstance(after or before, dict) else None
+        entity = (
+            (after or before or {}).get("entity_id")
+            if isinstance(after or before, dict)
+            else None
+        )
         evidence = build_audit_record(
-            module=self.module, actor_user_id=actor, action=action, resource_type=resource_type,
-            resource_id=resource_id, before=before, after=after,
-            context=replace(audit_context, company_id=entity or audit_context.company_id),
+            module=self.module,
+            actor_user_id=actor,
+            action=action,
+            resource_type=resource_type,
+            resource_id=resource_id,
+            before=before,
+            after=after,
+            context=replace(
+                audit_context, company_id=entity or audit_context.company_id
+            ),
             previous_hash=previous["row_hash"] if previous else None,
         )
         evidence["created_at"] = evidence["occurred_at"]
@@ -320,16 +391,32 @@ class SQLiteStore:
                 evidence["correlation_id"],
                 json.dumps(before, sort_keys=True) if before else None,
                 json.dumps(after, sort_keys=True) if after else None,
-                json.dumps(evidence["changed_fields"]), evidence["event"], evidence["log_type"], evidence["origin"],
-                evidence["channel"], evidence["occurred_at"], evidence["result"],
-                int(evidence["exported"]), int(evidence["printed"]), int(evidence["shared"]), evidence["retention_until"],
-                evidence["previous_hash"], evidence["row_hash"], json.dumps(evidence["metadata"], sort_keys=True),
+                json.dumps(evidence["changed_fields"]),
+                evidence["event"],
+                evidence["log_type"],
+                evidence["origin"],
+                evidence["channel"],
+                evidence["occurred_at"],
+                evidence["result"],
+                int(evidence["exported"]),
+                int(evidence["printed"]),
+                int(evidence["shared"]),
+                evidence["retention_until"],
+                evidence["previous_hash"],
+                evidence["row_hash"],
+                json.dumps(evidence["metadata"], sort_keys=True),
                 evidence["created_at"],
             ),
         )
         return evidence
 
-    def _event(self, connection: sqlite3.Connection, routing_key: str, actor: str, item: dict[str, Any]) -> None:
+    def _event(
+        self,
+        connection: sqlite3.Connection,
+        routing_key: str,
+        actor: str,
+        item: dict[str, Any],
+    ) -> None:
         correlation_id = get_correlation_id()
         envelope = build_event_envelope(
             module=self.module,
@@ -361,19 +448,32 @@ class SQLiteStore:
         )
 
     def audit_log(self) -> list[dict[str, Any]]:
-        return [dict(row) for row in self.connection.execute(
-            "SELECT * FROM audit_events WHERE module = ? ORDER BY created_at DESC", (self.module,)
-        ).fetchall()]
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                "SELECT * FROM audit_events WHERE module = ? ORDER BY created_at DESC",
+                (self.module,),
+            ).fetchall()
+        ]
 
     def outbox(self) -> list[dict[str, Any]]:
-        return [dict(row) for row in self.connection.execute(
-            "SELECT * FROM domain_events WHERE module = ? ORDER BY created_at DESC", (self.module,)
-        ).fetchall()]
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                "SELECT * FROM domain_events WHERE module = ? ORDER BY created_at DESC",
+                (self.module,),
+            ).fetchall()
+        ]
 
     def metrics(self) -> tuple[int, int, int]:
         records = self.connection.execute(
-            "SELECT COUNT(*) FROM resources WHERE module = ? AND deleted_at IS NULL", (self.module,)
+            "SELECT COUNT(*) FROM resources WHERE module = ? AND deleted_at IS NULL",
+            (self.module,),
         ).fetchone()[0]
-        audits = self.connection.execute("SELECT COUNT(*) FROM audit_events WHERE module = ?", (self.module,)).fetchone()[0]
-        events = self.connection.execute("SELECT COUNT(*) FROM domain_events WHERE module = ?", (self.module,)).fetchone()[0]
+        audits = self.connection.execute(
+            "SELECT COUNT(*) FROM audit_events WHERE module = ?", (self.module,)
+        ).fetchone()[0]
+        events = self.connection.execute(
+            "SELECT COUNT(*) FROM domain_events WHERE module = ?", (self.module,)
+        ).fetchone()[0]
         return records, audits, events

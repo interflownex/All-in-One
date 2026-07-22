@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `wms.warehouse.created`
+
 - `wms.bin.created`
 - `wms.inventory.received`
 - `wms.inventory.allocated`

@@ -48,7 +48,7 @@ PromQL Query Examples:
 1.  Basic Time Series:
     `avg_over_time({"__name__"="dbinsights.googleapis.com/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m])`
 2.  Top K: `topk(30,
-    avg_over_time({"__name__"="dbinsights.googleapis.com/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
+avg_over_time({"__name__"="dbinsights.googleapis.com/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
 3.  Mean:
     `avg(avg_over_time({"__name__"="dbinsights.googleapis.com/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
 4.  Minimum:
@@ -60,7 +60,7 @@ PromQL Query Examples:
 7.  Count streams:
     `count(avg_over_time({"__name__"="dbinsights.googleapis.com/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
 8.  Percentile with groupby on resource_id, database: `quantile by
-    ("resource_id","database")(0.99,avg_over_time({"__name__"="dbinsights.googleapis.com/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
+("resource_id","database")(0.99,avg_over_time({"__name__"="dbinsights.googleapis.com/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
 
 Available Metrics List: metricname. description. monitored resource. labels.
 resource_id label format is `project_id:instance_id` which is actually instance
@@ -138,12 +138,12 @@ hash to avoid fetching the querystring. Do not use latency metrics for anything.
 
 #### Parameters
 
-Name      | Type   | Description                         | Required | Default
-:-------- | :----- | :---------------------------------- | :------- | :------
-projectId | string | The Id of the Google Cloud project. | Yes      |
-query     | string | The promql query to execute.        | Yes      |
+| Name      | Type   | Description                         | Required | Default |
+| :-------- | :----- | :---------------------------------- | :------- | :------ |
+| projectId | string | The Id of the Google Cloud project. | Yes      |
+| query     | string | The promql query to execute.        | Yes      |
 
---------------------------------------------------------------------------------
+---
 
 ### get_query_plan
 
@@ -153,11 +153,11 @@ effectiveness of existing indexes and evalueate new ones.
 
 #### Parameters
 
-Name          | Type   | Description                   | Required | Default
-:------------ | :----- | :---------------------------- | :------- | :------
-sql_statement | string | The sql statement to explain. | Yes      |
+| Name          | Type   | Description                   | Required | Default |
+| :------------ | :----- | :---------------------------- | :------- | :------ |
+| sql_statement | string | The sql statement to explain. | Yes      |
 
---------------------------------------------------------------------------------
+---
 
 ### get_system_metrics
 
@@ -179,7 +179,7 @@ PromQL Query Examples:
 1.  Basic Time Series:
     `avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m])`
 2.  Top K: `topk(30,
-    avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
+avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 3.  Mean:
     `avg(avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 4.  Minimum:
@@ -191,7 +191,7 @@ PromQL Query Examples:
 7.  Count streams:
     `count(avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 8.  Percentile with groupby on database_id: `quantile by
-    ("database_id")(0.99,avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
+("database_id")(0.99,avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 
 Available Metrics List: metricname. description. monitored resource. labels.
 database_id is actually the instance id and the format is
@@ -272,12 +272,12 @@ database_id is actually the instance id and the format is
 
 #### Parameters
 
-Name      | Type   | Description                         | Required | Default
-:-------- | :----- | :---------------------------------- | :------- | :------
-projectId | string | The Id of the Google Cloud project. | Yes      |
-query     | string | The promql query to execute.        | Yes      |
+| Name      | Type   | Description                         | Required | Default |
+| :-------- | :----- | :---------------------------------- | :------- | :------ |
+| projectId | string | The Id of the Google Cloud project. | Yes      |
+| query     | string | The promql query to execute.        | Yes      |
 
---------------------------------------------------------------------------------
+---
 
 ### list_active_queries
 
@@ -290,16 +290,16 @@ schema.
 
 #### Parameters
 
-| Name              | Type    | Description               | Required | Default |
-| :---------------- | :------ | :------------------------ | :------- | :------ |
-| min_duration_secs | integer | Optional: Only show       | No       | `0`     |
-:                   :         : queries running for at    :          :         :
-:                   :         : least this long in        :          :         :
-:                   :         : seconds                   :          :         :
-| limit             | integer | Optional: The maximum     | No       | `100`   |
-:                   :         : number of rows to return. :          :         :
+| Name                                  | Type    | Description           | Required | Default |
+| :------------------------------------ | :------ | :-------------------- | :------- | :------ |
+| min_duration_secs                     | integer | Optional: Only show   | No       | `0`     |
+| : : : queries running for at : : :    |
+| : : : least this long in : : :        |
+| : : : seconds : : :                   |
+| limit                                 | integer | Optional: The maximum | No       | `100`   |
+| : : : number of rows to return. : : : |
 
---------------------------------------------------------------------------------
+---
 
 ### list_table_fragmentation
 
@@ -311,44 +311,44 @@ using OPTIMIZE TABLE.
 
 #### Parameters
 
-| Name                      | Type    | Description   | Required | Default |
-| :------------------------ | :------ | :------------ | :------- | :------ |
-| table_schema              | string  | (Optional)    | No       | ``      |
-:                           :         : The database  :          :         :
-:                           :         : where         :          :         :
-:                           :         : fragmentation :          :         :
-:                           :         : check is to   :          :         :
-:                           :         : be executed.  :          :         :
-:                           :         : Check all     :          :         :
-:                           :         : tables        :          :         :
-:                           :         : visible to    :          :         :
-:                           :         : the current   :          :         :
-:                           :         : user if not   :          :         :
-:                           :         : specified     :          :         :
-| table_name                | string  | (Optional)    | No       | ``      |
-:                           :         : Name of the   :          :         :
-:                           :         : table to be   :          :         :
-:                           :         : checked.      :          :         :
-:                           :         : Check all     :          :         :
-:                           :         : tables        :          :         :
-:                           :         : visible to    :          :         :
-:                           :         : the current   :          :         :
-:                           :         : user if not   :          :         :
-:                           :         : specified.    :          :         :
-| data_free_threshold_bytes | integer | (Optional)    | No       | `1`     |
-:                           :         : Only show     :          :         :
-:                           :         : tables with   :          :         :
-:                           :         : at least this :          :         :
-:                           :         : much free     :          :         :
-:                           :         : space in      :          :         :
-:                           :         : bytes.        :          :         :
-:                           :         : Default is 1  :          :         :
-| limit                     | integer | (Optional)    | No       | `10`    |
-:                           :         : Max rows to   :          :         :
-:                           :         : return,       :          :         :
-:                           :         : default is 10 :          :         :
+| Name                      | Type    | Description | Required | Default |
+| :------------------------ | :------ | :---------- | :------- | :------ |
+| table_schema              | string  | (Optional)  | No       | ``      |
+| : : : The database : : :  |
+| : : : where : : :         |
+| : : : fragmentation : : : |
+| : : : check is to : : :   |
+| : : : be executed. : : :  |
+| : : : Check all : : :     |
+| : : : tables : : :        |
+| : : : visible to : : :    |
+| : : : the current : : :   |
+| : : : user if not : : :   |
+| : : : specified : : :     |
+| table_name                | string  | (Optional)  | No       | ``      |
+| : : : Name of the : : :   |
+| : : : table to be : : :   |
+| : : : checked. : : :      |
+| : : : Check all : : :     |
+| : : : tables : : :        |
+| : : : visible to : : :    |
+| : : : the current : : :   |
+| : : : user if not : : :   |
+| : : : specified. : : :    |
+| data_free_threshold_bytes | integer | (Optional)  | No       | `1`     |
+| : : : Only show : : :     |
+| : : : tables with : : :   |
+| : : : at least this : : : |
+| : : : much free : : :     |
+| : : : space in : : :      |
+| : : : bytes. : : :        |
+| : : : Default is 1 : : :  |
+| limit                     | integer | (Optional)  | No       | `10`    |
+| : : : Max rows to : : :   |
+| : : : return, : : :       |
+| : : : default is 10 : : : |
 
---------------------------------------------------------------------------------
+---
 
 ### list_table_stats
 
@@ -359,26 +359,26 @@ that specific db or table. Results are limited to 10 by default.
 
 #### Parameters
 
-| Name             | Type    | Description                | Required | Default |
-| :--------------- | :------ | :------------------------- | :------- | :------ |
-| table_schema     | string  | (Optional) The database    | No       | ``      |
-:                  :         : where statistics is to be  :          :         :
-:                  :         : executed. Check all tables :          :         :
-:                  :         : visible to the current     :          :         :
-:                  :         : user if not specified      :          :         :
-| table_name       | string  | (Optional) Name of the     | No       | ``      |
-:                  :         : table to be checked. Check :          :         :
-:                  :         : all tables visible to the  :          :         :
-:                  :         : current user if not        :          :         :
-:                  :         : specified.                 :          :         :
-| sort_by          | string  | (Optional) The column to   | No       | ``      |
-:                  :         : sort by                    :          :         :
-| limit            | integer | (Optional) Max rows to     | No       | `10`    |
-:                  :         : return, default is 10      :          :         :
-| connected_schema | string  | (Optional) The connected   | No       |         |
-:                  :         : db                         :          :         :
+| Name                                   | Type    | Description              | Required | Default |
+| :------------------------------------- | :------ | :----------------------- | :------- | :------ |
+| table_schema                           | string  | (Optional) The database  | No       | ``      |
+| : : : where statistics is to be : : :  |
+| : : : executed. Check all tables : : : |
+| : : : visible to the current : : :     |
+| : : : user if not specified : : :      |
+| table_name                             | string  | (Optional) Name of the   | No       | ``      |
+| : : : table to be checked. Check : : : |
+| : : : all tables visible to the : : :  |
+| : : : current user if not : : :        |
+| : : : specified. : : :                 |
+| sort_by                                | string  | (Optional) The column to | No       | ``      |
+| : : : sort by : : :                    |
+| limit                                  | integer | (Optional) Max rows to   | No       | `10`    |
+| : : : return, default is 10 : : :      |
+| connected_schema                       | string  | (Optional) The connected | No       |         |
+| : : : db : : :                         |
 
---------------------------------------------------------------------------------
+---
 
 ### list_tables_missing_unique_indexes
 
@@ -388,14 +388,14 @@ the database-level protection against data integrity issues will be missing.
 
 #### Parameters
 
-| Name         | Type    | Description                    | Required | Default |
-| :----------- | :------ | :----------------------------- | :------- | :------ |
-| table_schema | string  | (Optional) The database where  | No       | ``      |
-:              :         : the check is to be performed.  :          :         :
-:              :         : Check all tables visible to    :          :         :
-:              :         : the current user if not        :          :         :
-:              :         : specified                      :          :         :
-| limit        | integer | (Optional) Max rows to return, | No       | `50`    |
-:              :         : default is 50                  :          :         :
+| Name                                      | Type    | Description                    | Required | Default |
+| :---------------------------------------- | :------ | :----------------------------- | :------- | :------ |
+| table_schema                              | string  | (Optional) The database where  | No       | ``      |
+| : : : the check is to be performed. : : : |
+| : : : Check all tables visible to : : :   |
+| : : : the current user if not : : :       |
+| : : : specified : : :                     |
+| limit                                     | integer | (Optional) Max rows to return, | No       | `50`    |
+| : : : default is 50 : : :                 |
 
---------------------------------------------------------------------------------
+---

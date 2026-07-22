@@ -8,11 +8,11 @@ Follow the classification logic in `references/bucket_classification.md`.
 
 The classification determines how urgently findings should be treated:
 
--   **High sensitivity** → Full severity on all findings
--   **Medium sensitivity** → Reduced severity
--   **Low sensitivity** → Significantly reduced severity
--   **Non-sensitive (explicit)** → Minimal severity
--   **Unclassified** → Treat as potentially sensitive (full severity)
+- **High sensitivity** → Full severity on all findings
+- **Medium sensitivity** → Reduced severity
+- **Low sensitivity** → Significantly reduced severity
+- **Non-sensitive (explicit)** → Minimal severity
+- **Unclassified** → Treat as potentially sensitive (full severity)
 
 > [!IMPORTANT]
 > Unclassified is NOT the same as non-sensitive. If a bucket has no

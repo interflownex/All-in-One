@@ -17,11 +17,17 @@ def test_signed_response_is_verifiable_with_published_public_key() -> None:
     response = signed_json_response(payload)
     contract = public_key_contract()
     timestamp = response.headers["X-Valley-Signature-Timestamp"]
-    body = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    body = json.dumps(
+        payload, ensure_ascii=False, separators=(",", ":"), sort_keys=True
+    ).encode("utf-8")
     canonical = f"{timestamp}\n{hashlib.sha256(body).hexdigest()}".encode("ascii")
 
-    public_key = Ed25519PublicKey.from_public_bytes(base64.b64decode(contract["public_key_b64"]))
-    public_key.verify(base64.b64decode(response.headers["X-Valley-Response-Signature"]), canonical)
+    public_key = Ed25519PublicKey.from_public_bytes(
+        base64.b64decode(contract["public_key_b64"])
+    )
+    public_key.verify(
+        base64.b64decode(response.headers["X-Valley-Response-Signature"]), canonical
+    )
     assert response.headers["X-Valley-Signature-Key-Id"] == contract["key_id"]
 
 

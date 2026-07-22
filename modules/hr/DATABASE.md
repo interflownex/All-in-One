@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `hr.employees`
+
 - `hr.payroll_runs`
 - `hr.candidates`
 - `hr.courses`

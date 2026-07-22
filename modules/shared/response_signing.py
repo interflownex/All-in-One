@@ -15,7 +15,6 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 
-
 PRIVATE_KEY_ENV = "VALLEY_RESPONSE_SIGNING_PRIVATE_KEY_B64"
 PRODUCTION_ENVIRONMENTS = {"production", "prod"}
 
@@ -38,9 +37,13 @@ def _private_key() -> Ed25519PrivateKey:
 
 
 def public_key_contract() -> dict[str, str]:
-    public_raw = _private_key().public_key().public_bytes(
-        encoding=serialization.Encoding.Raw,
-        format=serialization.PublicFormat.Raw,
+    public_raw = (
+        _private_key()
+        .public_key()
+        .public_bytes(
+            encoding=serialization.Encoding.Raw,
+            format=serialization.PublicFormat.Raw,
+        )
     )
     return {
         "algorithm": "Ed25519",
@@ -50,7 +53,9 @@ def public_key_contract() -> dict[str, str]:
 
 
 def canonical_response(payload: Any, timestamp: str) -> bytes:
-    body = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    body = json.dumps(
+        payload, ensure_ascii=False, separators=(",", ":"), sort_keys=True
+    ).encode("utf-8")
     digest = hashlib.sha256(body).hexdigest()
     return f"{timestamp}\n{digest}".encode("ascii")
 
@@ -61,7 +66,9 @@ def signed_json_response(payload: Any, *, status_code: int = 200) -> JSONRespons
         timestamp = str(int(time.time()))
         signature = _private_key().sign(canonical_response(payload, timestamp))
     except RuntimeError as exc:
-        raise HTTPException(status_code=503, detail="Assinatura de resposta crítica indisponível.") from exc
+        raise HTTPException(
+            status_code=503, detail="Assinatura de resposta crítica indisponível."
+        ) from exc
     return JSONResponse(
         status_code=status_code,
         content=payload,

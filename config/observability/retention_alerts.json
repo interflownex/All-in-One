@@ -24,7 +24,12 @@
       "expr": "time() - max(kube_job_status_completion_time{job_name=~\"retention-worker.*\"}) > 7200",
       "for": "15m",
       "response_sla_minutes": 60,
-      "evidence": ["last_completion_timestamp", "cronjob_status", "scheduler_events", "incident_ticket"]
+      "evidence": [
+        "last_completion_timestamp",
+        "cronjob_status",
+        "scheduler_events",
+        "incident_ticket"
+      ]
     },
     "RetentionBacklogHigh": {
       "severity": "high",
@@ -32,7 +37,12 @@
       "expr": "all_in_one_retention_candidates_pending > 500",
       "for": "30m",
       "response_sla_minutes": 120,
-      "evidence": ["pending_count", "oldest_candidate_age_seconds", "policy_version", "incident_ticket"]
+      "evidence": [
+        "pending_count",
+        "oldest_candidate_age_seconds",
+        "policy_version",
+        "incident_ticket"
+      ]
     },
     "RetentionOldestCandidateTooOld": {
       "severity": "critical",
@@ -40,7 +50,12 @@
       "expr": "all_in_one_retention_oldest_candidate_age_seconds > 86400",
       "for": "15m",
       "response_sla_minutes": 30,
-      "evidence": ["oldest_candidate_age_seconds", "candidate_selector_hash", "legal_hold_summary", "incident_ticket"]
+      "evidence": [
+        "oldest_candidate_age_seconds",
+        "candidate_selector_hash",
+        "legal_hold_summary",
+        "incident_ticket"
+      ]
     },
     "RetentionDecisionMissing": {
       "severity": "medium",

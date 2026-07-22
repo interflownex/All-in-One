@@ -1,13 +1,13 @@
-import React from 'react';
-import SmartCRUD from '../../components/SmartCRUD';
+import React from "react";
+import SmartCRUD from "../../components/SmartCRUD";
 
 const BusinessPermissions: React.FC = () => {
   return (
-    <SmartCRUD 
-      module="business" 
-      entity="businesspermissions" 
-      type="list" 
-      title="Business Permissões" 
+    <SmartCRUD
+      module="business"
+      entity="businesspermissions"
+      type="list"
+      title="Business Permissões"
     />
   );
 };

@@ -7,6 +7,7 @@
         ## Entidades
 
         - `companies`
+
 - `branches`
 - `company_documents`
 - `user_company_memberships`
@@ -15,6 +16,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -36,7 +38,6 @@
 - `POST /reject`
 - `POST /audit`
 
-
 ## Publicacao Marketplace e Valley
 
 - `catalog_offers` exige `offer_type`, `consumer_category`, `company_type`, `company_category`, `business_activity_id`, `source_module` e `source_resource_type`.
@@ -51,10 +52,10 @@
 - A acao `activate` exige papel aprovador, MFA e emite `business.role.assigned`.
 - A acao `revoke` exige papel aprovador, MFA e emite `business.user.revoked`.
 
-
         ## Eventos
 
         - `business.company.created`
+
 - `business.company.submitted`
 - `business.company.approved`
 - `business.company.rejected`

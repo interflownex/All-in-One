@@ -1,8 +1,10 @@
 from uuid import uuid4
+
 from playwright.sync_api import Page, Request, Route, expect
 
-from platform_test_support import fresh_client_for
 from modules.shared.valley_catalog import valley_facets
+from platform_test_support import fresh_client_for
+
 
 def actor_headers(
     user_id: str,
@@ -19,7 +21,10 @@ def actor_headers(
         headers["X-Business-Status"] = "active"
     return headers
 
-def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, superapp_server: str):
+
+def test_business_offer_appears_in_valley_and_triggers_checkout(
+    page: Page, superapp_server: str
+):
     """
     Testa a jornada E2E:
     1. Criação de oferta real no módulo Business via API.
@@ -68,7 +73,10 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
     approved = business.post(
         f"/resources/catalog_offers/{offer_id}/actions/approve",
         headers=headers,
-        json={"reason": "Oferta E2E validada", "payload": {"publication_status": "approved"}},
+        json={
+            "reason": "Oferta E2E validada",
+            "payload": {"publication_status": "approved"},
+        },
     )
     assert approved.status_code == 200
 
@@ -122,7 +130,13 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
 
     def create_order(route: Route, request: Request) -> None:
         if request.method == "OPTIONS":
-            route.fulfill(status=204, headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*"})
+            route.fulfill(
+                status=204,
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "*",
+                },
+            )
             return
         submitted_actions.append(request.post_data_json)
         route.fulfill(
@@ -137,7 +151,7 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
                 "payment_intent": {
                     "amount": "99.90",
                     "order_id": "00000000-0000-4000-8000-000000000001",
-                }
+                },
             },
         )
 
@@ -145,7 +159,13 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
 
     def process_payment(route: Route, request: Request) -> None:
         if request.method == "OPTIONS":
-            route.fulfill(status=204, headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*"})
+            route.fulfill(
+                status=204,
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "*",
+                },
+            )
             return
         route.fulfill(
             status=201,
@@ -155,14 +175,20 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
                 "status": "paid",
                 "order_id": "00000000-0000-4000-8000-000000000001",
                 "message": "Pagamento sandbox autorizado e protegido ate a conclusao do pedido.",
-            }
+            },
         )
 
     page.route("**/gateway/payments/sandbox/authorize*", process_payment)
 
     def get_orders(route: Route, request: Request) -> None:
         if request.method == "OPTIONS":
-            route.fulfill(status=204, headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*"})
+            route.fulfill(
+                status=204,
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "*",
+                },
+            )
             return
         route.fulfill(
             status=200,
@@ -179,15 +205,22 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
                         "created_at": "2026-06-05T00:00:00Z",
                     }
                 ]
-            }
+            },
         )
+
     page.route("**/gateway/consumer/orders*", get_orders)
     submitted_reviews: list[dict] = []
     submitted_support_cases: list[dict] = []
 
     def create_review(route: Route, request: Request) -> None:
         if request.method == "OPTIONS":
-            route.fulfill(status=204, headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*"})
+            route.fulfill(
+                status=204,
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "*",
+                },
+            )
             return
         submitted_reviews.append(request.post_data_json)
         route.fulfill(
@@ -207,7 +240,13 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
 
     def create_support(route: Route, request: Request) -> None:
         if request.method == "OPTIONS":
-            route.fulfill(status=204, headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*"})
+            route.fulfill(
+                status=204,
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "*",
+                },
+            )
             return
         submitted_support_cases.append(request.post_data_json)
         route.fulfill(
@@ -236,7 +275,7 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
     search_input = page.locator("input[placeholder*='eletricista']")
     search_input.fill(unique_title)
     page.get_by_role("button", name="Buscar").click()
-    
+
     # Localizar o card especifico pelo titulo (Aguarda o API Hub agregar a oferta do PostgreSQL real)
     card = page.locator(".offer-card", has_text=unique_title)
     expect(card).to_be_visible(timeout=15000)
@@ -245,7 +284,7 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
     expect(card.locator(".price")).to_contain_text("R$ 99,90")
     expect(card.locator(".badge")).to_contain_text("Produto")
     expect(card).to_contain_text("Compras e Produtos")
-    
+
     # 3. Interagir com o fluxo (Clicar na Acao Principal)
     buy_button = card.locator("button", has_text="Comprar")
     expect(buy_button).to_be_visible()
@@ -254,15 +293,15 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
     # Validar se o Modal Neo-brutalista de Login abre
     login_modal = page.locator(".login-modal")
     expect(login_modal).to_be_visible()
-    
+
     # Navegar para Cadastro
     page.get_by_role("button", name="Ainda nao tem conta? Cadastre-se").click()
-    
+
     # Preencher dados
     buyer_email = f"buyer_{str(uuid4())[:8]}@valley.com"
     page.locator("input[type='email']").fill(buyer_email)
     page.locator("input[type='password']").fill("SenhaForte123!")
-    
+
     # Enviar form (usar login_modal para evitar conflito com o botao do Header)
     login_modal.get_by_role("button", name="Cadastrar", exact=True).click()
 
@@ -271,17 +310,19 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
     expect(checkout_modal).to_be_visible(timeout=10000)
     expect(checkout_modal).to_contain_text(unique_title)
     expect(checkout_modal).to_contain_text("Finalizar pedido")
-    
+
     # Clicar em Confirmar pedido
     confirm_button = page.locator(".checkout-modal button", has_text="Confirmar pedido")
     confirm_button.click()
-    
+
     # Aguardar feedback de sucesso que veio do API Hub real comunicando-se com Marketplace
     feedback = page.locator(".checkout-modal .action-feedback.success")
     expect(feedback).to_be_visible(timeout=15000)
     expect(feedback).to_contain_text("Pedido criado")
     assert len(submitted_actions) == 1
-    published_offer = next(item for item in normalized_offers if item["title"] == unique_title)
+    published_offer = next(
+        item for item in normalized_offers if item["title"] == unique_title
+    )
     assert submitted_actions[0]["offer_id"] == published_offer["offer_id"]
     assert submitted_actions[0]["customer_user_id"] == buyer_id
 
@@ -330,7 +371,9 @@ def test_business_offer_appears_in_valley_and_triggers_checkout(page: Page, supe
     expect(support_modal).to_be_visible()
     support_modal.get_by_role("button", name="Disputa").click()
     support_modal.locator("#support-subject").fill("Atraso na entrega")
-    support_modal.locator("#support-message").fill("Preciso de uma atualizacao do pedido.")
+    support_modal.locator("#support-message").fill(
+        "Preciso de uma atualizacao do pedido."
+    )
     support_modal.locator("#support-resolution").fill("Contato do fornecedor.")
     support_modal.get_by_role("button", name="Registrar caso").click()
     expect(support_modal.get_by_role("status")).to_contain_text("Caso registrado")

@@ -24,7 +24,7 @@ content = services_pattern.sub(new_services, content)
 # Remove the hardcoded routes
 routes_start = content.find("# Roteamento Protegido")
 if routes_start != -1:
-    routes_end = content.find("@app.get(\"/gateway/status\")")
+    routes_end = content.find('@app.get("/gateway/status")')
     if routes_end != -1:
         new_routes = """# Roteamento Protegido Dinâmico para Módulos
 def create_proxy_route(service_name: str):

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const UserProfileForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -6,7 +6,7 @@ const UserProfileForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+
     setTimeout(() => setLoading(false), 1000);
   };
 
@@ -23,9 +23,11 @@ const UserProfileForm: React.FC = () => {
           <textarea placeholder="Detalhes opcionais..."></textarea>
         </div>
         <div className="actions-row">
-          <button type="button" className="btn-secondary">Cancelar</button>
+          <button type="button" className="btn-secondary">
+            Cancelar
+          </button>
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Salvando...' : 'Confirmar'}
+            {loading ? "Salvando..." : "Confirmar"}
           </button>
         </div>
       </form>

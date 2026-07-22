@@ -29,15 +29,23 @@ def test_mutation_outbox_uses_request_correlation_id() -> None:
                 "store_id": "store-correlation",
                 "escrow_id": "escrow-correlation",
                 "total_brl": "49.90",
-                "items": [{"sku": "SKU-CORRELATION", "quantity": 1, "unit_brl": "49.90"}],
+                "items": [
+                    {"sku": "SKU-CORRELATION", "quantity": 1, "unit_brl": "49.90"}
+                ],
             },
         },
     )
 
     assert created.status_code == 201
-    outbox = marketplace.get("/events/outbox", headers=actor_headers(user_id, "auditor"))
+    outbox = marketplace.get(
+        "/events/outbox", headers=actor_headers(user_id, "auditor")
+    )
     assert outbox.status_code == 200
-    order_created = [event for event in outbox.json() if event["routing_key"] == "marketplace.order.created"]
+    order_created = [
+        event
+        for event in outbox.json()
+        if event["routing_key"] == "marketplace.order.created"
+    ]
     assert order_created
     assert order_created[0]["correlation_id"] == correlation_id
 
@@ -53,9 +61,15 @@ def test_mutation_without_header_generates_valid_correlation_id() -> None:
     )
 
     assert created.status_code == 201
-    outbox = services.get("/events/outbox", headers=actor_headers(provider_id, "auditor"))
+    outbox = services.get(
+        "/events/outbox", headers=actor_headers(provider_id, "auditor")
+    )
     assert outbox.status_code == 200
-    provider_created = [event for event in outbox.json() if event["routing_key"] == "services.provider.created"]
+    provider_created = [
+        event
+        for event in outbox.json()
+        if event["routing_key"] == "services.provider.created"
+    ]
     assert provider_created
     UUID(provider_created[0]["correlation_id"])
 

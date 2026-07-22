@@ -7,6 +7,7 @@
         ## Entidades
 
         - `leads`
+
 - `opportunities`
 - `activities`
 - `campaigns`
@@ -14,6 +15,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -35,7 +37,6 @@
 - `POST /reject`
 - `POST /audit`
 
-
 ## Lead, oportunidade e relacionamento
 
 - `leads` exige `name` e `source`, iniciando em `new` e emitindo `crm.lead.created`.
@@ -45,10 +46,10 @@
 - `activities` exige `lead_id`, `activity_type` e `scheduled_at`, iniciando em `scheduled` e concluindo com `crm.activity.completed`.
 - `campaigns` exige `campaign_key` e `channel`; `launch` exige papel aprovador, MFA e emite `crm.campaign.launched`.
 
-
         ## Eventos
 
         - `crm.lead.created`
+
 - `crm.lead.qualified`
 - `crm.lead.disqualified`
 - `crm.opportunity.created`

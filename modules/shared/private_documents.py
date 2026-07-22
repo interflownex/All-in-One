@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import base64
 import os
-from pathlib import Path, PurePosixPath
 import secrets
 import tempfile
+from pathlib import Path, PurePosixPath
 
 from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -43,18 +43,28 @@ class PrivateDocumentStore:
             try:
                 key = base64.urlsafe_b64decode(configured.encode("ascii"))
             except (ValueError, UnicodeEncodeError) as exc:
-                raise DocumentConfigurationError("Chave de documentos deve ser base64 URL-safe.") from exc
+                raise DocumentConfigurationError(
+                    "Chave de documentos deve ser base64 URL-safe."
+                ) from exc
             if len(key) != 32:
-                raise DocumentConfigurationError("Chave de documentos deve conter 32 bytes.")
+                raise DocumentConfigurationError(
+                    "Chave de documentos deve conter 32 bytes."
+                )
             return key
         if os.getenv("ALL_IN_ONE_ENV", "development").casefold() == "production":
-            raise DocumentConfigurationError("Chave de criptografia documental obrigatoria em producao.")
+            raise DocumentConfigurationError(
+                "Chave de criptografia documental obrigatoria em producao."
+            )
 
         key_path = self.root / ".development-document-key"
         if key_path.exists():
-            return base64.urlsafe_b64decode(key_path.read_text(encoding="ascii").strip().encode("ascii"))
+            return base64.urlsafe_b64decode(
+                key_path.read_text(encoding="ascii").strip().encode("ascii")
+            )
         key = AESGCM.generate_key(bit_length=256)
-        key_path.write_text(base64.urlsafe_b64encode(key).decode("ascii"), encoding="ascii")
+        key_path.write_text(
+            base64.urlsafe_b64encode(key).decode("ascii"), encoding="ascii"
+        )
         try:
             key_path.chmod(0o600)
         except OSError:
@@ -67,7 +77,9 @@ class PrivateDocumentStore:
         target.parent.mkdir(parents=True, exist_ok=True)
         if not target.exists():
             nonce = secrets.token_bytes(12)
-            ciphertext = AESGCM(self.key).encrypt(nonce, contents, digest.encode("ascii"))
+            ciphertext = AESGCM(self.key).encrypt(
+                nonce, contents, digest.encode("ascii")
+            )
             temporary = target.with_suffix(f"{target.suffix}.tmp")
             temporary.write_bytes(nonce + ciphertext)
             temporary.replace(target)
@@ -89,6 +101,10 @@ class PrivateDocumentStore:
         if len(sealed) <= 12:
             raise DocumentNotFoundError("Documento privado corrompido.")
         try:
-            return AESGCM(self.key).decrypt(sealed[:12], sealed[12:], digest.encode("ascii"))
+            return AESGCM(self.key).decrypt(
+                sealed[:12], sealed[12:], digest.encode("ascii")
+            )
         except InvalidTag as exc:
-            raise DocumentNotFoundError("Documento privado nao pode ser autenticado.") from exc
+            raise DocumentNotFoundError(
+                "Documento privado nao pode ser autenticado."
+            ) from exc

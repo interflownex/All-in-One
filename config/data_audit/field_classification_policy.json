@@ -12,7 +12,15 @@
     },
     {
       "id": "biometria_saude",
-      "patterns": ["biometric", "biometry", "face_hash", "medical", "health", "prescription", "patient"],
+      "patterns": [
+        "biometric",
+        "biometry",
+        "face_hash",
+        "medical",
+        "health",
+        "prescription",
+        "patient"
+      ],
       "classification": "dado pessoal sensível",
       "encryption": "obrigatória com chave gerenciada e segregação de acesso",
       "masking": "não exibir sem finalidade e autorização reforçada",
@@ -28,7 +36,17 @@
     },
     {
       "id": "financeiro",
-      "patterns": ["wallet", "account", "amount", "balance", "price", "cost", "commission", "tax", "salary"],
+      "patterns": [
+        "wallet",
+        "account",
+        "amount",
+        "balance",
+        "price",
+        "cost",
+        "commission",
+        "tax",
+        "salary"
+      ],
       "classification": "financeiro confidencial",
       "encryption": "obrigatória em trânsito e repouso",
       "masking": "restringir por papel e finalidade; não registrar valor sensível desnecessário",
@@ -36,7 +54,17 @@
     },
     {
       "id": "contato_localizacao",
-      "patterns": ["email", "phone", "address", "postal", "latitude", "longitude", "location", "ip_address", "device"],
+      "patterns": [
+        "email",
+        "phone",
+        "address",
+        "postal",
+        "latitude",
+        "longitude",
+        "location",
+        "ip_address",
+        "device"
+      ],
       "classification": "dado pessoal",
       "encryption": "criptografar quando associado a pessoa identificada ou rastreamento",
       "masking": "mascarar em logs, listagens e exportações não autorizadas",
@@ -44,7 +72,15 @@
     },
     {
       "id": "identidade_relacional",
-      "patterns": ["user_id", "person_id", "customer_id", "beneficiary", "created_by", "updated_by", "approved_by"],
+      "patterns": [
+        "user_id",
+        "person_id",
+        "customer_id",
+        "beneficiary",
+        "created_by",
+        "updated_by",
+        "approved_by"
+      ],
       "classification": "pseudônimo vinculável",
       "encryption": "controle de acesso e segregação por tenant; criptografia do banco",
       "masking": "não expor identificadores internos sem necessidade",

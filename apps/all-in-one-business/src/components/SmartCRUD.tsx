@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 interface SmartCRUDProps {
   module: string;
   entity: string;
-  type: 'list' | 'form';
+  type: "list" | "form";
   title: string;
 }
 
@@ -13,77 +13,77 @@ type AuditState = {
   status: string;
 };
 
-const API_HUB_URL = (import.meta as any).env?.VITE_API_HUB_URL ?? '';
-const API_HUB_TOKEN = (import.meta as any).env?.VITE_API_HUB_TOKEN ?? '';
+const API_HUB_URL = (import.meta as any).env?.VITE_API_HUB_URL ?? "";
+const API_HUB_TOKEN = (import.meta as any).env?.VITE_API_HUB_TOKEN ?? "";
 
 const RESOURCE_ALIASES: Record<string, string> = {
-  'bpm:processes': 'processes',
-  'bpm:slapolicies': 'sla_policies',
-  'bpm:tasks': 'tasks',
-  'bpm:workflowinstances': 'workflow_instances',
-  'business:catalogoffers': 'catalog_offers',
-  'business:companies': 'companies',
-  'bi:dashboards': 'dashboards',
-  'bi:datasets': 'datasets',
-  'bi:exports': 'exports',
-  'bi:indicators': 'indicators',
-  'document:documents': 'documents',
-  'document:folders': 'folders',
-  'document:retentionpolicies': 'retention_policies',
-  'document:versions': 'versions',
-  'erp:accounts': 'accounts',
-  'erp:costcenters': 'cost_centers',
-  'erp:fiscaldocuments': 'fiscal_documents',
-  'erp:payables': 'payables',
-  'erp:receivables': 'receivables',
-  'crm:activities': 'activities',
-  'crm:campaigns': 'campaigns',
-  'crm:leads': 'leads',
-  'crm:opportunities': 'opportunities',
-  'jobs:applications': 'applications',
-  'jobs:jobpostings': 'job_postings',
-  'jobs:resumeaccesslogs': 'resume_access_logs',
-  'jobs:resumes': 'resumes',
-  'ai_core:aimemories': 'ai_memories',
-  'ai_core:moderationdecisions': 'moderation_decisions',
-  'ai_core:modelruns': 'model_runs',
-  'api_hub:apiclients': 'api_clients',
-  'api_hub:apikeys': 'api_keys',
-  'api_hub:integrationruns': 'integration_runs',
-  'api_hub:webhooks': 'webhooks',
-  'hr:candidates': 'candidates',
-  'hr:courses': 'courses',
-  'hr:employees': 'employees',
-  'hr:occupationalrecords': 'occupational_records',
-  'hr:payrollruns': 'payroll_runs',
-  'legal:cases': 'cases',
-  'legal:deadlines': 'deadlines',
-  'legal:hearings': 'hearings',
-  'legal:legalcontracts': 'legal_contracts',
-  'property:assemblies': 'assemblies',
-  'property:leases': 'leases',
-  'property:maintenanceorders': 'maintenance_orders',
-  'property:properties': 'properties',
-  'property:units': 'units',
-  'tms:carriers': 'carriers',
-  'tms:freightaudits': 'freight_audits',
-  'tms:freights': 'freights',
-  'tms:proofsofdelivery': 'proofs_of_delivery',
-  'tms:routes': 'routes',
-  'wms:bins': 'bins',
-  'wms:inventory': 'inventory',
-  'wms:pickingwaves': 'picking_waves',
-  'wms:shipments': 'shipments',
-  'wms:warehouses': 'warehouses',
-  'vision:devices': 'devices',
-  'vision:motionalerts': 'motion_alerts',
-  'vision:recordings': 'recordings',
-  'vision:streams': 'streams',
+  "bpm:processes": "processes",
+  "bpm:slapolicies": "sla_policies",
+  "bpm:tasks": "tasks",
+  "bpm:workflowinstances": "workflow_instances",
+  "business:catalogoffers": "catalog_offers",
+  "business:companies": "companies",
+  "bi:dashboards": "dashboards",
+  "bi:datasets": "datasets",
+  "bi:exports": "exports",
+  "bi:indicators": "indicators",
+  "document:documents": "documents",
+  "document:folders": "folders",
+  "document:retentionpolicies": "retention_policies",
+  "document:versions": "versions",
+  "erp:accounts": "accounts",
+  "erp:costcenters": "cost_centers",
+  "erp:fiscaldocuments": "fiscal_documents",
+  "erp:payables": "payables",
+  "erp:receivables": "receivables",
+  "crm:activities": "activities",
+  "crm:campaigns": "campaigns",
+  "crm:leads": "leads",
+  "crm:opportunities": "opportunities",
+  "jobs:applications": "applications",
+  "jobs:jobpostings": "job_postings",
+  "jobs:resumeaccesslogs": "resume_access_logs",
+  "jobs:resumes": "resumes",
+  "ai_core:aimemories": "ai_memories",
+  "ai_core:moderationdecisions": "moderation_decisions",
+  "ai_core:modelruns": "model_runs",
+  "api_hub:apiclients": "api_clients",
+  "api_hub:apikeys": "api_keys",
+  "api_hub:integrationruns": "integration_runs",
+  "api_hub:webhooks": "webhooks",
+  "hr:candidates": "candidates",
+  "hr:courses": "courses",
+  "hr:employees": "employees",
+  "hr:occupationalrecords": "occupational_records",
+  "hr:payrollruns": "payroll_runs",
+  "legal:cases": "cases",
+  "legal:deadlines": "deadlines",
+  "legal:hearings": "hearings",
+  "legal:legalcontracts": "legal_contracts",
+  "property:assemblies": "assemblies",
+  "property:leases": "leases",
+  "property:maintenanceorders": "maintenance_orders",
+  "property:properties": "properties",
+  "property:units": "units",
+  "tms:carriers": "carriers",
+  "tms:freightaudits": "freight_audits",
+  "tms:freights": "freights",
+  "tms:proofsofdelivery": "proofs_of_delivery",
+  "tms:routes": "routes",
+  "wms:bins": "bins",
+  "wms:inventory": "inventory",
+  "wms:pickingwaves": "picking_waves",
+  "wms:shipments": "shipments",
+  "wms:warehouses": "warehouses",
+  "vision:devices": "devices",
+  "vision:motionalerts": "motion_alerts",
+  "vision:recordings": "recordings",
+  "vision:streams": "streams",
 };
 
 const liveHeaders = () => ({
   Authorization: `Bearer ${API_HUB_TOKEN}`,
-  'Content-Type': 'application/json',
+  "Content-Type": "application/json",
 });
 
 const normalizeCollection = (result: any): any[] => {
@@ -114,45 +114,51 @@ const itemTitle = (item: any, fallbackTitle: string) =>
   `${fallbackTitle} #${item.id}`;
 
 const approvalMessageForModule = (module: string) => {
-  if (module === 'erp') return 'Registro ERP aprovado no API Hub vivo.';
-  if (module === 'bi') return 'Relatorio BI aprovado no API Hub vivo.';
-  if (module === 'wms') return 'Operacao WMS aprovada no API Hub vivo.';
-  if (module === 'tms') return 'Operacao TMS aprovada no API Hub vivo.';
-  if (module === 'crm') return 'Oportunidade CRM aprovada no API Hub vivo.';
-  if (module === 'bpm') return 'Fluxo BPM aprovado no API Hub vivo.';
-  if (module === 'document') return 'Documento operacional aprovado no API Hub vivo.';
-  if (module === 'hr') return 'Registro HR aprovado no API Hub vivo.';
-  if (module === 'legal') return 'Caso Legal aprovado no API Hub vivo.';
-  if (module === 'property') return 'Ativo Property aprovado no API Hub vivo.';
-  if (module === 'vision') return 'Dispositivo Vision aprovado no API Hub vivo.';
-  if (module === 'ai_core') return 'Decisao AI Core aprovada no API Hub vivo.';
-  if (module === 'api_hub') return 'Cliente API Hub aprovado no API Hub vivo.';
-  return 'Registro operacional aprovado no API Hub vivo.';
+  if (module === "erp") return "Registro ERP aprovado no API Hub vivo.";
+  if (module === "bi") return "Relatorio BI aprovado no API Hub vivo.";
+  if (module === "wms") return "Operacao WMS aprovada no API Hub vivo.";
+  if (module === "tms") return "Operacao TMS aprovada no API Hub vivo.";
+  if (module === "crm") return "Oportunidade CRM aprovada no API Hub vivo.";
+  if (module === "bpm") return "Fluxo BPM aprovado no API Hub vivo.";
+  if (module === "document") return "Documento operacional aprovado no API Hub vivo.";
+  if (module === "hr") return "Registro HR aprovado no API Hub vivo.";
+  if (module === "legal") return "Caso Legal aprovado no API Hub vivo.";
+  if (module === "property") return "Ativo Property aprovado no API Hub vivo.";
+  if (module === "vision") return "Dispositivo Vision aprovado no API Hub vivo.";
+  if (module === "ai_core") return "Decisao AI Core aprovada no API Hub vivo.";
+  if (module === "api_hub") return "Cliente API Hub aprovado no API Hub vivo.";
+  return "Registro operacional aprovado no API Hub vivo.";
 };
 
 const itemCreatedAt = (item: any) => {
   const rawDate = item.created_at || item.createdAt;
-  return rawDate ? new Date(rawDate).toLocaleDateString() : 'sem data';
+  return rawDate ? new Date(rawDate).toLocaleDateString() : "sem data";
 };
 
-const itemStatus = (item: any) => String(item.status || 'Disponível');
+const itemStatus = (item: any) => String(item.status || "Disponível");
 
 const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [actionMessage, setActionMessage] = useState('');
-  const [query, setQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [error, setError] = useState("");
+  const [actionMessage, setActionMessage] = useState("");
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [auditState, setAuditState] = useState<AuditState | null>(null);
   const resourceType = RESOURCE_ALIASES[`${module}:${entity}`];
   const liveApiEnabled = Boolean(API_HUB_URL && API_HUB_TOKEN && resourceType);
-  const resourceBasePath = module === 'api_hub' ? `/resources/${resourceType}` : `/${module}/resources/${resourceType}`;
-  const filteredData = statusFilter === 'all' ? data : data.filter((item) => itemStatus(item) === statusFilter);
+  const resourceBasePath =
+    module === "api_hub" ? `/resources/${resourceType}` : `/${module}/resources/${resourceType}`;
+  const filteredData =
+    statusFilter === "all" ? data : data.filter((item) => itemStatus(item) === statusFilter);
   const statusOptions = Array.from(new Set(data.map(itemStatus)));
-  const approvedCount = data.filter((item) => ['approved', 'published', 'recorded'].includes(itemStatus(item))).length;
-  const pendingCount = data.filter((item) => !['Ativo', 'active', 'approved', 'published', 'recorded'].includes(itemStatus(item))).length;
+  const approvedCount = data.filter((item) =>
+    ["approved", "published", "recorded"].includes(itemStatus(item)),
+  ).length;
+  const pendingCount = data.filter(
+    (item) => !["Ativo", "active", "approved", "published", "recorded"].includes(itemStatus(item)),
+  ).length;
   const visibleCount = filteredData.length;
 
   const apiHubFetch = async (path: string, init: RequestInit = {}) => {
@@ -180,31 +186,41 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
 
   const fetchData = async () => {
     setLoading(true);
-    setError('');
-    setActionMessage('');
+    setError("");
+    setActionMessage("");
     try {
       if (liveApiEnabled) {
-        const searchParams = query ? `?q=${encodeURIComponent(query)}` : '';
+        const searchParams = query ? `?q=${encodeURIComponent(query)}` : "";
         const result = await apiHubFetch(`${resourceBasePath}${searchParams}`);
         setData(normalizeCollection(result));
         return;
       }
 
       const response = await fetch(`${API_HUB_URL}/gateway/${module}/${entity}?q=${query}`);
-      if (!response.ok) throw new Error('Falha ao carregar dados.');
+      if (!response.ok) throw new Error("Falha ao carregar dados.");
       const result = await response.json();
       setData(result.data ?? []);
     } catch (err) {
       if (liveApiEnabled) {
-        setError(err instanceof Error ? err.message : 'Falha ao carregar dados vivos do API Hub.');
+        setError(err instanceof Error ? err.message : "Falha ao carregar dados vivos do API Hub.");
         setData([]);
         return;
       }
       console.warn(`Usando dados fictícios para ${module}/${entity}`);
       setData([
-        { id: '1', name: `${title} Item 1`, status: 'Ativo', created_at: new Date().toISOString() },
-        { id: '2', name: `${title} Item 2`, status: 'Pendente', created_at: new Date().toISOString() },
-        { id: '3', name: `${title} Item 3`, status: 'Inativo', created_at: new Date().toISOString() },
+        { id: "1", name: `${title} Item 1`, status: "Ativo", created_at: new Date().toISOString() },
+        {
+          id: "2",
+          name: `${title} Item 2`,
+          status: "Pendente",
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: "3",
+          name: `${title} Item 3`,
+          status: "Inativo",
+          created_at: new Date().toISOString(),
+        },
       ]);
     } finally {
       setLoading(false);
@@ -212,135 +228,187 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   };
 
   useEffect(() => {
-    if (type === 'list') {
+    if (type === "list") {
       fetchData();
     }
   }, [module, entity, type, query]);
 
   const runLiveAction = async () => {
     setActionLoading(true);
-    setError('');
-    setActionMessage('');
+    setError("");
+    setActionMessage("");
     try {
-      if (module === 'business' && resourceType === 'companies') {
+      if (module === "business" && resourceType === "companies") {
         const company = data[0];
-        if (!company?.id) throw new Error('Nenhuma empresa disponivel para aprovacao.');
-        const approved = await apiHubFetch(`/business/resources/companies/${company.id}/actions/approve`, {
-          method: 'POST',
-          body: JSON.stringify({ reason: 'KYB aprovado via Business shell vivo' }),
-        });
-        setData((items) => items.map((item) => (item.id === company.id ? approved : item)));
-        recordAudit('approve', approved);
-        setActionMessage('Empresa aprovada no API Hub vivo.');
-        return;
-      }
-
-      if (module === 'jobs' && resourceType === 'job_postings') {
-        const job = data[0];
-        if (!job?.id) throw new Error('Nenhuma vaga disponivel para publicacao.');
-        const published = await apiHubFetch(`/jobs/resources/job_postings/${job.id}/actions/publish`, {
-          method: 'POST',
-          body: JSON.stringify({ reason: 'Vaga validada pela empresa no Business shell vivo' }),
-        });
-        setData((items) => items.map((item) => (item.id === job.id ? published : item)));
-        recordAudit('publish', published);
-        setActionMessage('Vaga publicada no API Hub vivo.');
-        return;
-      }
-
-      if (module === 'jobs' && resourceType === 'resume_access_logs') {
-        const resumes = normalizeCollection(await apiHubFetch('/jobs/resources/resumes'));
-        const resume = resumes[0];
-        if (!resume?.id) throw new Error('Nenhum curriculo visivel para registrar acesso.');
-        await apiHubFetch(
-          `/jobs/recruiting/resumes/${resume.id}?purpose=${encodeURIComponent('triagem para vaga publicada via Business shell')}`,
+        if (!company?.id) throw new Error("Nenhuma empresa disponivel para aprovacao.");
+        const approved = await apiHubFetch(
+          `/business/resources/companies/${company.id}/actions/approve`,
+          {
+            method: "POST",
+            body: JSON.stringify({ reason: "KYB aprovado via Business shell vivo" }),
+          },
         );
-        const logs = normalizeCollection(await apiHubFetch('/jobs/resources/resume_access_logs'));
+        setData((items) => items.map((item) => (item.id === company.id ? approved : item)));
+        recordAudit("approve", approved);
+        setActionMessage("Empresa aprovada no API Hub vivo.");
+        return;
+      }
+
+      if (module === "jobs" && resourceType === "job_postings") {
+        const job = data[0];
+        if (!job?.id) throw new Error("Nenhuma vaga disponivel para publicacao.");
+        const published = await apiHubFetch(
+          `/jobs/resources/job_postings/${job.id}/actions/publish`,
+          {
+            method: "POST",
+            body: JSON.stringify({ reason: "Vaga validada pela empresa no Business shell vivo" }),
+          },
+        );
+        setData((items) => items.map((item) => (item.id === job.id ? published : item)));
+        recordAudit("publish", published);
+        setActionMessage("Vaga publicada no API Hub vivo.");
+        return;
+      }
+
+      if (module === "jobs" && resourceType === "resume_access_logs") {
+        const resumes = normalizeCollection(await apiHubFetch("/jobs/resources/resumes"));
+        const resume = resumes[0];
+        if (!resume?.id) throw new Error("Nenhum curriculo visivel para registrar acesso.");
+        await apiHubFetch(
+          `/jobs/recruiting/resumes/${resume.id}?purpose=${encodeURIComponent("triagem para vaga publicada via Business shell")}`,
+        );
+        const logs = normalizeCollection(await apiHubFetch("/jobs/resources/resume_access_logs"));
         setData(logs);
-        if (logs[0]) recordAudit('record_resume_access', logs[0]);
-        setActionMessage('Acesso a curriculo registrado no API Hub vivo.');
+        if (logs[0]) recordAudit("record_resume_access", logs[0]);
+        setActionMessage("Acesso a curriculo registrado no API Hub vivo.");
         return;
       }
 
       if (
-        ['erp', 'bi', 'wms', 'tms', 'crm', 'bpm', 'document', 'hr', 'legal', 'property', 'vision', 'ai_core', 'api_hub'].includes(module)
+        [
+          "erp",
+          "bi",
+          "wms",
+          "tms",
+          "crm",
+          "bpm",
+          "document",
+          "hr",
+          "legal",
+          "property",
+          "vision",
+          "ai_core",
+          "api_hub",
+        ].includes(module)
       ) {
         const item = data[0];
-        if (!item?.id) throw new Error('Nenhum registro disponivel para aprovacao operacional.');
+        if (!item?.id) throw new Error("Nenhum registro disponivel para aprovacao operacional.");
         const approved = await apiHubFetch(`${resourceBasePath}/${item.id}/actions/approve`, {
-          method: 'POST',
-          body: JSON.stringify({ reason: 'Aprovacao operacional via Business shell vivo' }),
+          method: "POST",
+          body: JSON.stringify({ reason: "Aprovacao operacional via Business shell vivo" }),
         });
         setData((items) => items.map((current) => (current.id === item.id ? approved : current)));
-        recordAudit('approve', approved);
+        recordAudit("approve", approved);
         setActionMessage(approvalMessageForModule(module));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Falha ao executar acao viva no API Hub.');
+      setError(err instanceof Error ? err.message : "Falha ao executar acao viva no API Hub.");
     } finally {
       setActionLoading(false);
     }
   };
 
   const actionLabel =
-    module === 'business' && resourceType === 'companies'
-      ? 'Aprovar empresa'
-      : module === 'jobs' && resourceType === 'job_postings'
-        ? 'Publicar vaga'
-        : module === 'jobs' && resourceType === 'resume_access_logs'
-          ? 'Registrar acesso a currículo'
-          : module === 'erp'
-            ? 'Aprovar registro ERP'
-            : module === 'bi'
-              ? 'Aprovar relatório BI'
-              : module === 'wms'
-                ? 'Aprovar operação WMS'
-                : module === 'tms'
-                  ? 'Aprovar operação TMS'
-                    : module === 'crm'
-                      ? 'Aprovar oportunidade CRM'
-                      : module === 'bpm'
-                        ? 'Aprovar fluxo BPM'
-                      : module === 'document'
-                        ? 'Aprovar documento'
-                        : module === 'hr'
-                          ? 'Aprovar registro HR'
-                          : module === 'legal'
-                            ? 'Aprovar caso Legal'
-                            : module === 'property'
-                              ? 'Aprovar ativo Property'
-                              : module === 'vision'
-                                ? 'Aprovar dispositivo Vision'
-                                : module === 'ai_core'
-                                  ? 'Aprovar decisão AI Core'
-                                  : module === 'api_hub'
-                                    ? 'Aprovar cliente API Hub'
-                                    : '';
+    module === "business" && resourceType === "companies"
+      ? "Aprovar empresa"
+      : module === "jobs" && resourceType === "job_postings"
+        ? "Publicar vaga"
+        : module === "jobs" && resourceType === "resume_access_logs"
+          ? "Registrar acesso a currículo"
+          : module === "erp"
+            ? "Aprovar registro ERP"
+            : module === "bi"
+              ? "Aprovar relatório BI"
+              : module === "wms"
+                ? "Aprovar operação WMS"
+                : module === "tms"
+                  ? "Aprovar operação TMS"
+                  : module === "crm"
+                    ? "Aprovar oportunidade CRM"
+                    : module === "bpm"
+                      ? "Aprovar fluxo BPM"
+                      : module === "document"
+                        ? "Aprovar documento"
+                        : module === "hr"
+                          ? "Aprovar registro HR"
+                          : module === "legal"
+                            ? "Aprovar caso Legal"
+                            : module === "property"
+                              ? "Aprovar ativo Property"
+                              : module === "vision"
+                                ? "Aprovar dispositivo Vision"
+                                : module === "ai_core"
+                                  ? "Aprovar decisão AI Core"
+                                  : module === "api_hub"
+                                    ? "Aprovar cliente API Hub"
+                                    : "";
 
-  if (type === 'form') {
+  if (type === "form") {
     return (
       <div className="container">
-        <form className="neo-form neo-brutalism" onSubmit={(e) => { e.preventDefault(); alert('Salvo com sucesso!'); }}>
-          <h2 style={{ marginBottom: '24px', color: '#126b45' }}>{title} - Novo Registro</h2>
-          <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
+        <form
+          className="neo-form neo-brutalism"
+          onSubmit={(e) => {
+            e.preventDefault();
+            alert("Salvo com sucesso!");
+          }}
+        >
+          <h2 style={{ marginBottom: "24px", color: "#126b45" }}>{title} - Novo Registro</h2>
+          <div
+            className="field-group"
+            style={{ display: "grid", gap: "8px", marginBottom: "16px" }}
+          >
             <label style={{ fontWeight: 800 }}>Nome / Identificador</label>
-            <input type="text" className="neo-input" placeholder="Digite aqui..." required style={{ padding: '12px', border: '2px solid #17211c' }} />
+            <input
+              type="text"
+              className="neo-input"
+              placeholder="Digite aqui..."
+              required
+              style={{ padding: "12px", border: "2px solid #17211c" }}
+            />
           </div>
-          <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
+          <div
+            className="field-group"
+            style={{ display: "grid", gap: "8px", marginBottom: "16px" }}
+          >
             <label style={{ fontWeight: 800 }}>Descrição Detalhada</label>
-            <textarea className="neo-input" placeholder="Informações adicionais..." style={{ padding: '12px', border: '2px solid #17211c', minHeight: '100px' }}></textarea>
+            <textarea
+              className="neo-input"
+              placeholder="Informações adicionais..."
+              style={{ padding: "12px", border: "2px solid #17211c", minHeight: "100px" }}
+            ></textarea>
           </div>
-          <div className="field-group" style={{ display: 'grid', gap: '8px', marginBottom: '24px' }}>
+          <div
+            className="field-group"
+            style={{ display: "grid", gap: "8px", marginBottom: "24px" }}
+          >
             <label style={{ fontWeight: 800 }}>Categoria / Tipo</label>
-            <select className="neo-input" style={{ padding: '12px', border: '2px solid #17211c' }}>
+            <select className="neo-input" style={{ padding: "12px", border: "2px solid #17211c" }}>
               <option>Padrão</option>
               <option>Prioritário</option>
               <option>Estratégico</option>
             </select>
           </div>
-          <div className="actions-row" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-            <button type="button" className="btn-secondary" style={{ padding: '10px 20px' }}>Cancelar</button>
-            <button type="submit" className="btn-primary" style={{ padding: '10px 20px' }}>Salvar Registro</button>
+          <div
+            className="actions-row"
+            style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}
+          >
+            <button type="button" className="btn-secondary" style={{ padding: "10px 20px" }}>
+              Cancelar
+            </button>
+            <button type="submit" className="btn-primary" style={{ padding: "10px 20px" }}>
+              Salvar Registro
+            </button>
           </div>
         </form>
       </div>
@@ -348,26 +416,54 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   }
 
   return (
-    <div className="container" style={{ position: 'relative' }}>
-      <div style={{ position: 'fixed', bottom: '24px', right: '24px', opacity: 0.5, pointerEvents: 'none', zIndex: 100 }}>
-        <img src="/assets/brand/all-in-one-logo-light-official.png" alt="Branding" style={{ height: '24px', width: 'auto' }} />
+    <div className="container" style={{ position: "relative" }}>
+      <div
+        style={{
+          position: "fixed",
+          bottom: "24px",
+          right: "24px",
+          opacity: 0.5,
+          pointerEvents: "none",
+          zIndex: 100,
+        }}
+      >
+        <img
+          src="/assets/brand/all-in-one-logo-light-official.png"
+          alt="Branding"
+          style={{ height: "24px", width: "auto" }}
+        />
       </div>
       <section className="hero">
-
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '12px' }}>{title}</h1>
-        <p style={{ color: '#536159', fontSize: '1.1rem' }}>Gerenciamento inteligente do módulo {module.toUpperCase()}.</p>
+        <h1 style={{ fontSize: "2.5rem", fontWeight: 900, marginBottom: "12px" }}>{title}</h1>
+        <p style={{ color: "#536159", fontSize: "1.1rem" }}>
+          Gerenciamento inteligente do módulo {module.toUpperCase()}.
+        </p>
       </section>
 
-      <div className="filters-section" style={{ background: '#fff', padding: '24px', border: '3px solid #17211c', boxShadow: '6px 6px 0px #17211c', marginBottom: '32px' }}>
-        <div className="search-row" style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '16px' }}>
-          <input 
-            type="text" 
-            placeholder={`Buscar em ${title}...`} 
-            value={query} 
-            onChange={(e) => setQuery(e.target.value)} 
-            style={{ padding: '12px', border: '2px solid #17211c', borderRadius: '4px' }}
+      <div
+        className="filters-section"
+        style={{
+          background: "#fff",
+          padding: "24px",
+          border: "3px solid #17211c",
+          boxShadow: "6px 6px 0px #17211c",
+          marginBottom: "32px",
+        }}
+      >
+        <div
+          className="search-row"
+          style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "16px" }}
+        >
+          <input
+            type="text"
+            placeholder={`Buscar em ${title}...`}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            style={{ padding: "12px", border: "2px solid #17211c", borderRadius: "4px" }}
           />
-          <button className="btn-primary" onClick={fetchData} style={{ padding: '0 24px' }}>Pesquisar</button>
+          <button className="btn-primary" onClick={fetchData} style={{ padding: "0 24px" }}>
+            Pesquisar
+          </button>
         </div>
         <div className="business-filters" aria-label="Filtros operacionais Business">
           <label>
@@ -379,7 +475,9 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
             >
               <option value="all">Todos os status</option>
               {statusOptions.map((status) => (
-                <option key={status} value={status}>{status}</option>
+                <option key={status} value={status}>
+                  {status}
+                </option>
               ))}
             </select>
           </label>
@@ -401,16 +499,30 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
       ) : null}
 
       {liveApiEnabled && actionLabel ? (
-        <div className="filters-section" style={{ background: '#eef8f1', padding: '20px', border: '3px solid #17211c', boxShadow: '6px 6px 0px #17211c', marginBottom: '32px' }}>
+        <div
+          className="filters-section"
+          style={{
+            background: "#eef8f1",
+            padding: "20px",
+            border: "3px solid #17211c",
+            boxShadow: "6px 6px 0px #17211c",
+            marginBottom: "32px",
+          }}
+        >
           <strong>API Hub vivo ativo</strong>
-          <p style={{ margin: '8px 0 16px', color: '#536159' }}>
+          <p style={{ margin: "8px 0 16px", color: "#536159" }}>
             Esta tela esta usando recursos reais do API Hub e registra acoes auditaveis no backend.
           </p>
-          <button className="btn-primary" onClick={runLiveAction} disabled={actionLoading} style={{ padding: '10px 20px' }}>
-            {actionLoading ? 'Executando...' : actionLabel}
+          <button
+            className="btn-primary"
+            onClick={runLiveAction}
+            disabled={actionLoading}
+            style={{ padding: "10px 20px" }}
+          >
+            {actionLoading ? "Executando..." : actionLabel}
           </button>
           {actionMessage ? (
-            <div className="notice" role="status" style={{ marginTop: '16px' }}>
+            <div className="notice" role="status" style={{ marginTop: "16px" }}>
               {actionMessage}
             </div>
           ) : null}
@@ -419,9 +531,12 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
             <p>
               {auditState
                 ? `Ultima acao auditavel: ${auditState.action} em ${auditState.resource} -> ${auditState.status}`
-                : 'Nenhuma acao auditavel executada nesta tela.'}
+                : "Nenhuma acao auditavel executada nesta tela."}
             </p>
-            <small>{approvedCount} aprovado/publicado/registrado(s) e {pendingCount} pendente(s) no conjunto carregado.</small>
+            <small>
+              {approvedCount} aprovado/publicado/registrado(s) e {pendingCount} pendente(s) no
+              conjunto carregado.
+            </small>
           </div>
         </div>
       ) : null}
@@ -429,22 +544,61 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
       {loading ? (
         <div className="loader"></div>
       ) : (
-        <div className="data-grid" style={{ display: 'grid', gap: '16px' }}>
-          {filteredData.length > 0 ? filteredData.map((item: any) => (
-            <div key={item.id} className="data-card neo-brutalism" style={{ background: '#fff', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{itemTitle(item, title)}</h3>
-                <p style={{ fontSize: '0.9rem', color: '#536159' }}>ID: {item.id} | Criado em: {itemCreatedAt(item)}</p>
+        <div className="data-grid" style={{ display: "grid", gap: "16px" }}>
+          {filteredData.length > 0 ? (
+            filteredData.map((item: any) => (
+              <div
+                key={item.id}
+                className="data-card neo-brutalism"
+                style={{
+                  background: "#fff",
+                  padding: "20px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <h3 style={{ fontSize: "1.2rem", fontWeight: 800 }}>{itemTitle(item, title)}</h3>
+                  <p style={{ fontSize: "0.9rem", color: "#536159" }}>
+                    ID: {item.id} | Criado em: {itemCreatedAt(item)}
+                  </p>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  <span
+                    className="badge"
+                    style={{
+                      background: ["Ativo", "active", "approved", "published", "recorded"].includes(
+                        item.status,
+                      )
+                        ? "#e2f2ea"
+                        : "#fef3c7",
+                      color: ["Ativo", "active", "approved", "published", "recorded"].includes(
+                        item.status,
+                      )
+                        ? "#0d5135"
+                        : "#92400e",
+                      padding: "6px 12px",
+                      borderRadius: "4px",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {item.status || "Disponível"}
+                  </span>
+                  <button
+                    className="btn-secondary"
+                    style={{ padding: "6px 12px", fontSize: "0.8rem" }}
+                  >
+                    Editar
+                  </button>
+                </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <span className="badge" style={{ background: ['Ativo', 'active', 'approved', 'published', 'recorded'].includes(item.status) ? '#e2f2ea' : '#fef3c7', color: ['Ativo', 'active', 'approved', 'published', 'recorded'].includes(item.status) ? '#0d5135' : '#92400e', padding: '6px 12px', borderRadius: '4px', fontWeight: 700 }}>
-                  {item.status || 'Disponível'}
-                </span>
-                <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem' }}>Editar</button>
-              </div>
-            </div>
-          )) : (
-            <div className="empty-state" style={{ textAlign: 'center', padding: '48px', border: '2px dashed #b8c5be' }}>
+            ))
+          ) : (
+            <div
+              className="empty-state"
+              style={{ textAlign: "center", padding: "48px", border: "2px dashed #b8c5be" }}
+            >
               <p>Nenhum registro encontrado para esta busca.</p>
             </div>
           )}

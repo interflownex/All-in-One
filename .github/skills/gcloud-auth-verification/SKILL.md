@@ -14,20 +14,20 @@ metadata:
 ## Common Error Messages
 
 1.  **gcloud/bq CLI**:
-    -   `ERROR: (bq) You do not currently have an active account selected.`
-    -   `No credentialed accounts.`
-    -   `Configuration error: No account is currently active.`
+    - `ERROR: (bq) You do not currently have an active account selected.`
+    - `No credentialed accounts.`
+    - `Configuration error: No account is currently active.`
 2.  **Execution Failures (Python/Notebooks)**:
-    -   `google.auth.exceptions.DefaultCredentialsError: Could not automatically
-        determine credentials.`
-    -   `Forbidden: 403 Access Denied` (when it's clearly an auth issue).
+    - `google.auth.exceptions.DefaultCredentialsError: Could not automatically
+determine credentials.`
+    - `Forbidden: 403 Access Denied` (when it's clearly an auth issue).
 
 ## Verification Step
 
 Before asking the user to log in, independently verify the authentication status
 by running: `gcloud auth list` * If the output contains `No credentialed
 accounts.`, proceed to the **Corrective Action** steps below. * If an account
-*is* listed but the user still receives a `403 Access Denied` error, the issue
+_is_ listed but the user still receives a `403 Access Denied` error, the issue
 is likely **IAM permissions** (e.g., missing BigQuery roles) on their active
 account, rather than missing authentication. In this case, investigate the
 permissions rather than asking them to log in again.

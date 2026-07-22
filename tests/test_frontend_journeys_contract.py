@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config" / "apps" / "frontend_journeys.json"
 
@@ -45,7 +44,9 @@ def test_frontend_journeys_contract_covers_phase_4_apps() -> None:
         assert app["api_modules"], app["slug"]
         assert app["api_hub_routes"], app["slug"]
         assert app["coverage"], app["slug"]
-        assert app["next_e2e"].startswith(("Levar", "Criar", "Ampliar", "Executar")), app["slug"]
+        assert app["next_e2e"].startswith(("Levar", "Criar", "Ampliar", "Executar")), (
+            app["slug"]
+        )
 
 
 def test_frontend_shell_package_names_match_contract() -> None:
@@ -101,7 +102,9 @@ def test_phase_4_shells_are_wired_to_declared_api_hub_routes() -> None:
         for route in app["api_hub_routes"]:
             assert route in app_source, f"{app['slug']} nao usa {route}"
             proxy_prefix = "/" + route.strip("/").split("/", 1)[0]
-            assert proxy_prefix in vite_config, f"{app['slug']} sem proxy {proxy_prefix}"
+            assert proxy_prefix in vite_config, (
+                f"{app['slug']} sem proxy {proxy_prefix}"
+            )
 
 
 def test_phase_4_shells_have_playwright_coverage_declared() -> None:
@@ -139,8 +142,13 @@ def test_phase_4_live_shells_do_not_keep_obsolete_next_steps() -> None:
 
 
 def test_frontend_contract_links_to_existing_e2e_and_pytest_evidence() -> None:
-    e2e_tests = {path.stem.removeprefix("test_") for path in (ROOT / "tests" / "e2e").glob("test_*.py")}
-    pytest_tests = {path.stem.removeprefix("test_") for path in (ROOT / "tests").glob("test_*.py")}
+    e2e_tests = {
+        path.stem.removeprefix("test_")
+        for path in (ROOT / "tests" / "e2e").glob("test_*.py")
+    }
+    pytest_tests = {
+        path.stem.removeprefix("test_") for path in (ROOT / "tests").glob("test_*.py")
+    }
 
     for app in load_contract()["apps"]:
         for evidence in app["coverage"]:

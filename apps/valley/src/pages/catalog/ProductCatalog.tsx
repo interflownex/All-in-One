@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const ProductCatalog: React.FC = () => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   return (
     <div className="container">
@@ -12,11 +12,11 @@ const ProductCatalog: React.FC = () => {
 
       <div className="filters-section">
         <div className="search-row">
-          <input 
-            type="text" 
-            placeholder="Buscar..." 
-            value={query} 
-            onChange={(e) => setQuery(e.target.value)} 
+          <input
+            type="text"
+            placeholder="Buscar..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
           />
           <button className="btn-primary">Filtrar</button>
         </div>

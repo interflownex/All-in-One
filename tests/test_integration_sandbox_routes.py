@@ -20,14 +20,22 @@ def test_identity_business_finance_sandbox_routes() -> None:
     denied = identity.post(
         "/integrations/sandbox/kyc/person",
         headers={"X-Actor-User-Id": str(uuid4())},
-        json={"user_id": "user-1", "document": "12345678901", "full_name": "Cliente Teste"},
+        json={
+            "user_id": "user-1",
+            "document": "12345678901",
+            "full_name": "Cliente Teste",
+        },
     )
     assert denied.status_code == 403
 
     kyc = identity.post(
         "/integrations/sandbox/kyc/person",
         headers=sandbox_headers(),
-        json={"user_id": "user-1", "document": "12345678901", "full_name": "Cliente Teste"},
+        json={
+            "user_id": "user-1",
+            "document": "12345678901",
+            "full_name": "Cliente Teste",
+        },
     )
     assert kyc.status_code == 200
     assert kyc.json()["provider_key"] == "identity_kyc_kyb"
@@ -41,7 +49,11 @@ def test_identity_business_finance_sandbox_routes() -> None:
     kyb = business.post(
         "/integrations/sandbox/kyb/business",
         headers=sandbox_headers(),
-        json={"company_id": "company-1", "cnpj": "12345678000199", "legal_name": "Empresa Teste"},
+        json={
+            "company_id": "company-1",
+            "cnpj": "12345678000199",
+            "legal_name": "Empresa Teste",
+        },
     )
     assert kyb.status_code == 200
     assert kyb.json()["events"][0]["routing_key"] == "business.company.approved"
@@ -49,7 +61,12 @@ def test_identity_business_finance_sandbox_routes() -> None:
     pix = finance.post(
         "/integrations/sandbox/psp/pix/authorize",
         headers=sandbox_headers(),
-        json={"payment_id": "pay-1", "payer_id": "payer-1", "amount_brl": "99.90", "idempotency_key": "idem-1"},
+        json={
+            "payment_id": "pay-1",
+            "payer_id": "payer-1",
+            "amount_brl": "99.90",
+            "idempotency_key": "idem-1",
+        },
     )
     assert pix.status_code == 200
     assert pix.json()["status"] == "authorized"
@@ -58,7 +75,12 @@ def test_identity_business_finance_sandbox_routes() -> None:
     escrow = finance.post(
         "/integrations/sandbox/psp/escrows",
         headers=sandbox_headers(),
-        json={"escrow_id": "escrow-1", "payer_id": "payer-1", "beneficiary_id": "seller-1", "amount_brl": "99.90"},
+        json={
+            "escrow_id": "escrow-1",
+            "payer_id": "payer-1",
+            "beneficiary_id": "seller-1",
+            "amount_brl": "99.90",
+        },
     )
     assert escrow.status_code == 200
     assert escrow.json()["events"][0]["routing_key"] == "payment.escrow.created"
@@ -97,7 +119,11 @@ def test_logistics_jobs_health_api_hub_and_supplier_sandbox_routes() -> None:
     consent = health.post(
         "/integrations/sandbox/health/consents",
         headers=sandbox_headers(),
-        json={"patient_id": "patient-1", "professional_id": "doctor-1", "purpose": "teleconsulta"},
+        json={
+            "patient_id": "patient-1",
+            "professional_id": "doctor-1",
+            "purpose": "teleconsulta",
+        },
     )
     assert consent.status_code == 200
     assert consent.json()["status"] == "active"
@@ -105,13 +131,17 @@ def test_logistics_jobs_health_api_hub_and_supplier_sandbox_routes() -> None:
     webhook = api_hub.post(
         "/integrations/sandbox/api-hub/webhooks/sign",
         headers=sandbox_headers(),
-        json={"webhook_id": "webhook-1", "payload": {"event": "delivery.completed"}, "secret": "sandbox-secret"},
+        json={
+            "webhook_id": "webhook-1",
+            "payload": {"event": "delivery.completed"},
+            "secret": "sandbox-secret",
+        },
     )
     assert webhook.status_code == 200
     assert webhook.json()["status"] == "signed"
     assert "sandbox-secret" not in str(webhook.json()["payload"])
 
-    api_key_hash = hashlib.sha256("dev-key".encode("utf-8")).hexdigest()
+    api_key_hash = hashlib.sha256(b"dev-key").hexdigest()
     api_key = api_hub.post(
         "/integrations/sandbox/api-hub/api-key/verify",
         headers=sandbox_headers(),
@@ -123,7 +153,12 @@ def test_logistics_jobs_health_api_hub_and_supplier_sandbox_routes() -> None:
     product = stock.post(
         "/integrations/sandbox/suppliers/products",
         headers=sandbox_headers(),
-        json={"supplier_id": "supplier-1", "external_sku": "SKU-1", "cost_brl": "42.10", "available_quantity": 5},
+        json={
+            "supplier_id": "supplier-1",
+            "external_sku": "SKU-1",
+            "cost_brl": "42.10",
+            "available_quantity": 5,
+        },
     )
     assert product.status_code == 200
     assert product.json()["events"][0]["routing_key"] == "stock.product.imported"
@@ -131,7 +166,12 @@ def test_logistics_jobs_health_api_hub_and_supplier_sandbox_routes() -> None:
     invoice = erp.post(
         "/integrations/sandbox/fiscal/invoices",
         headers=sandbox_headers(),
-        json={"invoice_id": "invoice-1", "document_type": "nfse", "amount_brl": "99.90", "issuer_document": "12345678000199"},
+        json={
+            "invoice_id": "invoice-1",
+            "document_type": "nfse",
+            "amount_brl": "99.90",
+            "issuer_document": "12345678000199",
+        },
     )
     assert invoice.status_code == 200
     assert invoice.json()["events"][0]["routing_key"] == "erp.invoice.created"

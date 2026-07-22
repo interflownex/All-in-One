@@ -26,9 +26,24 @@
       "target_rps": 80,
       "duration_minutes": 20,
       "covered_modules": ["api_hub", "marketplace", "services", "finance"],
-      "required_metrics": ["http_requests_total", "http_request_duration_seconds", "gateway_upstream_errors_total"],
-      "success_criteria": ["p95_latency_ms <= 800", "http_error_rate_percent <= 1.0", "no_raw_payment_payload_in_logs"],
-      "evidence": ["run_id", "commit_sha", "p95_latency_ms", "error_rate_percent", "dashboard_snapshot_hash", "incident_ticket_if_failed"]
+      "required_metrics": [
+        "http_requests_total",
+        "http_request_duration_seconds",
+        "gateway_upstream_errors_total"
+      ],
+      "success_criteria": [
+        "p95_latency_ms <= 800",
+        "http_error_rate_percent <= 1.0",
+        "no_raw_payment_payload_in_logs"
+      ],
+      "evidence": [
+        "run_id",
+        "commit_sha",
+        "p95_latency_ms",
+        "error_rate_percent",
+        "dashboard_snapshot_hash",
+        "incident_ticket_if_failed"
+      ]
     },
     "identity_auth_mfa": {
       "priority": "critical",
@@ -37,9 +52,24 @@
       "target_rps": 50,
       "duration_minutes": 20,
       "covered_modules": ["identity", "permissions"],
-      "required_metrics": ["http_requests_total", "http_request_duration_seconds", "auth_failures_total"],
-      "success_criteria": ["p95_latency_ms <= 500", "http_error_rate_percent <= 1.0", "no_password_or_token_in_logs"],
-      "evidence": ["run_id", "commit_sha", "auth_success_rate", "p95_latency_ms", "audit_event_id", "incident_ticket_if_failed"]
+      "required_metrics": [
+        "http_requests_total",
+        "http_request_duration_seconds",
+        "auth_failures_total"
+      ],
+      "success_criteria": [
+        "p95_latency_ms <= 500",
+        "http_error_rate_percent <= 1.0",
+        "no_password_or_token_in_logs"
+      ],
+      "evidence": [
+        "run_id",
+        "commit_sha",
+        "auth_success_rate",
+        "p95_latency_ms",
+        "audit_event_id",
+        "incident_ticket_if_failed"
+      ]
     },
     "finance_escrow_ledger": {
       "priority": "critical",
@@ -48,9 +78,24 @@
       "target_rps": 40,
       "duration_minutes": 20,
       "covered_modules": ["finance", "marketplace", "services", "mobility"],
-      "required_metrics": ["http_requests_total", "finance_ledger_writes_total", "outbox_events_pending"],
-      "success_criteria": ["ledger_write_error_rate_percent <= 0.5", "idempotency_collisions == 0", "outbox_oldest_pending_seconds <= 1800"],
-      "evidence": ["run_id", "commit_sha", "ledger_write_error_rate", "idempotency_key_hash_sample", "outbox_pending_count", "incident_ticket_if_failed"]
+      "required_metrics": [
+        "http_requests_total",
+        "finance_ledger_writes_total",
+        "outbox_events_pending"
+      ],
+      "success_criteria": [
+        "ledger_write_error_rate_percent <= 0.5",
+        "idempotency_collisions == 0",
+        "outbox_oldest_pending_seconds <= 1800"
+      ],
+      "evidence": [
+        "run_id",
+        "commit_sha",
+        "ledger_write_error_rate",
+        "idempotency_key_hash_sample",
+        "outbox_pending_count",
+        "incident_ticket_if_failed"
+      ]
     },
     "jobs_resume_access": {
       "priority": "high",
@@ -59,9 +104,24 @@
       "target_rps": 35,
       "duration_minutes": 20,
       "covered_modules": ["jobs", "business", "document"],
-      "required_metrics": ["http_requests_total", "http_request_duration_seconds", "resume_access_audit_total"],
-      "success_criteria": ["p95_latency_ms <= 800", "resume_access_audit_missing == 0", "no_ctps_storage_key_in_logs"],
-      "evidence": ["run_id", "commit_sha", "resume_access_log_id", "p95_latency_ms", "audit_event_id", "incident_ticket_if_failed"]
+      "required_metrics": [
+        "http_requests_total",
+        "http_request_duration_seconds",
+        "resume_access_audit_total"
+      ],
+      "success_criteria": [
+        "p95_latency_ms <= 800",
+        "resume_access_audit_missing == 0",
+        "no_ctps_storage_key_in_logs"
+      ],
+      "evidence": [
+        "run_id",
+        "commit_sha",
+        "resume_access_log_id",
+        "p95_latency_ms",
+        "audit_event_id",
+        "incident_ticket_if_failed"
+      ]
     },
     "retention_worker_batch": {
       "priority": "high",
@@ -70,14 +130,32 @@
       "target_rps": 0,
       "duration_minutes": 15,
       "covered_modules": ["compliance", "audit"],
-      "required_metrics": ["retention_candidates_pending", "retention_decisions_total", "retention_worker_duration_seconds"],
-      "success_criteria": ["dry_run_only == true", "oldest_candidate_age_seconds_decreases == true", "no_sensitive_payload_in_evidence"],
-      "evidence": ["run_id", "commit_sha", "candidate_selector_hash", "decision_count_delta", "worker_logs_hash", "incident_ticket_if_failed"]
+      "required_metrics": [
+        "retention_candidates_pending",
+        "retention_decisions_total",
+        "retention_worker_duration_seconds"
+      ],
+      "success_criteria": [
+        "dry_run_only == true",
+        "oldest_candidate_age_seconds_decreases == true",
+        "no_sensitive_payload_in_evidence"
+      ],
+      "evidence": [
+        "run_id",
+        "commit_sha",
+        "candidate_selector_hash",
+        "decision_count_delta",
+        "worker_logs_hash",
+        "incident_ticket_if_failed"
+      ]
     }
   },
   "tooling": {
     "recommended": ["k6", "locust", "pytest-benchmark"],
-    "local_contract_tests": ["tests/test_load_test_plan.py", "python3 scripts/validate_repository.py"],
+    "local_contract_tests": [
+      "tests/test_load_test_plan.py",
+      "python3 scripts/validate_repository.py"
+    ],
     "ci_gate": "contract_only_until_homologacao_endpoint_exists"
   },
   "promotion_gate": [

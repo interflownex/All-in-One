@@ -3,12 +3,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_outbox_alerts_point_to_actionable_runbook() -> None:
-    alerts = json.loads((ROOT / "config/observability/outbox_alerts.json").read_text(encoding="utf-8"))
+    alerts = json.loads(
+        (ROOT / "config/observability/outbox_alerts.json").read_text(encoding="utf-8")
+    )
     operations = (ROOT / "docs/OPERATIONS.md").read_text(encoding="utf-8")
 
     assert alerts["runbook"] == "docs/OPERATIONS.md#outbox"

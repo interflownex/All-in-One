@@ -49,6 +49,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 ### Schema: `identity`
 
 #### Tabela: `identity.users`
+
 - `id` (UUID, PK)
 - `all_in_one_id` (UUID, UNIQUE)
 - `full_name` (VARCHAR(200))
@@ -76,6 +77,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 - `idempotency_key` (VARCHAR(100), UNIQUE)
 
 #### Tabela: `identity.documents`
+
 - `id` (UUID, PK)
 - `user_id` (UUID, FK to `identity.users`)
 - `document_type` (VARCHAR(60))
@@ -92,6 +94,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 ### Schema: `business`
 
 #### Tabela: `business.companies`
+
 - `id` (UUID, PK)
 - `user_id` (UUID, FK to `identity.users`)
 - `parent_company_id` (UUID, FK to `business.companies`)
@@ -102,6 +105,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 - `idempotency_key` (VARCHAR(120), UNIQUE)
 
 #### Tabela: `business.catalog_offers`
+
 - `id` (UUID, PK)
 - `user_id` (UUID, FK to `identity.users`)
 - `company_id` (UUID, FK to `business.companies`)
@@ -118,6 +122,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 ### Schema: `permissions`
 
 #### Tabela: `permissions.roles`
+
 - `id` (UUID, PK)
 - `user_id` (UUID, FK to `identity.users`)
 - `company_id` (UUID, FK to `business.companies`)
@@ -126,6 +131,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 - ... (outros campos de metadados e auditoria)
 
 #### Tabela: `permissions.access_policies`
+
 - `id` (UUID, PK)
 - `user_id` (UUID, FK to `identity.users`)
 - `company_id` (UUID, FK to `business.companies`)
@@ -138,6 +144,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 ### Schema: `finance`
 
 #### Tabela: `finance.wallets`
+
 - `id` (UUID, PK)
 - `user_id` (UUID, FK to `identity.users`)
 - `brl_available` (NUMERIC(18, 4))
@@ -146,6 +153,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 - ...
 
 #### Tabela: `finance.ledger_entries`
+
 - `id` (UUID, PK)
 - `wallet_id` (UUID, FK to `finance.wallets`)
 - `currency` (VARCHAR(10))
@@ -158,6 +166,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 ### Schema: `jobs`
 
 #### Tabela: `jobs.resumes`
+
 - `id` (UUID, PK)
 - `user_id` (UUID, FK to `identity.users`)
 - `headline` (VARCHAR(240))
@@ -167,6 +176,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 - ...
 
 #### Tabela: `jobs.employment_records`
+
 - `id` (UUID, PK)
 - `resume_id` (UUID, FK to `jobs.resumes`)
 - `source_type` (VARCHAR(50))
@@ -180,6 +190,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 ### Schema: `audit`
 
 #### Tabela: `audit.logs`
+
 - `id` (UUID, PK)
 - `actor_user_id` (UUID, FK to `identity.users`)
 - `action` (VARCHAR(100))
@@ -190,6 +201,7 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 - ... (Tabela Imutável)
 
 #### Tabela: `audit.domain_events` (Outbox)
+
 - `id` (UUID, PK)
 - `routing_key` (VARCHAR(120))
 - `aggregate_id` (UUID)
@@ -201,4 +213,4 @@ As seguintes schemas foram criadas e agrupam as tabelas por domínio:
 
 ---
 
-*(Nota: Esta é uma representação abreviada. A estrutura completa de todas as tabelas e colunas foi inferida e será usada para a construção do Catálogo Lógico de Dados.)*
+_(Nota: Esta é uma representação abreviada. A estrutura completa de todas as tabelas e colunas foi inferida e será usada para a construção do Catálogo Lógico de Dados.)_

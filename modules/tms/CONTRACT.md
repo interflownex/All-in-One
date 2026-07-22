@@ -7,6 +7,7 @@
         ## Entidades
 
         - `carriers`
+
 - `freights`
 - `routes`
 - `proofs_of_delivery`
@@ -15,6 +16,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -36,7 +38,6 @@
 - `POST /reject`
 - `POST /audit`
 
-
 ## Frete, POD e auditoria
 
 - `carriers` exige `name` e `coverage`, iniciando em `pending_review` e emitindo `tms.carrier.created`.
@@ -47,10 +48,10 @@
 - `proofs_of_delivery` exige `freight_id`, `file_sha256`, `storage_key` e `delivered_at`, e e append-only com evento `tms.delivery.proved`.
 - `freight_audits` exige `freight_id`, `audit_result` e `audited_at`; `close` exige papel aprovador, MFA e emite `tms.freight.audit_closed`.
 
-
         ## Eventos
 
         - `tms.carrier.created`
+
 - `tms.carrier.submitted`
 - `tms.carrier.approved`
 - `tms.carrier.rejected`

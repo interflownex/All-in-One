@@ -10,8 +10,7 @@ def test_git_sync_workflow_uses_python_gate() -> None:
     workflow = (ROOT / ".github/workflows/git-sync.yml").read_text(encoding="utf-8")
 
     assert (
-        "python3 scripts/check_git_sync.py --branch main --remotes origin "
-        "--allow-dirty"
+        "python3 scripts/check_git_sync.py --branch main --remotes origin --allow-dirty"
     ) in workflow
     assert "shell: pwsh" not in workflow
 

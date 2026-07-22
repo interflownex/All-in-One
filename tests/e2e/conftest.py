@@ -1,16 +1,15 @@
-import pytest
 import json
+import os
+import socket
 import subprocess
 import sys
 import time
-import socket
-import os
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 import jwt
-
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PHASE4_ACTOR_ID = "11111111-1111-4111-8111-111111111111"
@@ -41,7 +40,9 @@ def free_port() -> int:
         return int(server.getsockname()[1])
 
 
-def wait_for_http(port: int, timeout: int = 15, process: subprocess.Popen | None = None) -> bool:
+def wait_for_http(
+    port: int, timeout: int = 15, process: subprocess.Popen | None = None
+) -> bool:
     """Wait until the expected Vite server returns a valid HTTP response."""
     start_time = time.time()
     while time.time() - start_time <= timeout:
@@ -56,7 +57,9 @@ def wait_for_http(port: int, timeout: int = 15, process: subprocess.Popen | None
     return False
 
 
-def wait_for_url(url: str, timeout: int = 15, process: subprocess.Popen | None = None) -> bool:
+def wait_for_url(
+    url: str, timeout: int = 15, process: subprocess.Popen | None = None
+) -> bool:
     start_time = time.time()
     while time.time() - start_time <= timeout:
         if process is not None and process.poll() is not None:
@@ -70,12 +73,16 @@ def wait_for_url(url: str, timeout: int = 15, process: subprocess.Popen | None =
     return False
 
 
-def start_vite_server(app_directory: str, env: dict[str, str] | None = None) -> tuple[subprocess.Popen, str]:
+def start_vite_server(
+    app_directory: str, env: dict[str, str] | None = None
+) -> tuple[subprocess.Popen, str]:
     port = free_port()
     server_url = f"http://127.0.0.1:{port}"
     process_env = os.environ.copy()
     if env:
-        process_env.update({key: value.format(server_url=server_url) for key, value in env.items()})
+        process_env.update(
+            {key: value.format(server_url=server_url) for key, value in env.items()}
+        )
     startup_timeout = int(process_env.get("VITE_START_TIMEOUT_SECONDS", "120"))
     process = subprocess.Popen(
         f"npm run dev -- --port {port} --strictPort --host 127.0.0.1",
@@ -87,17 +94,23 @@ def start_vite_server(app_directory: str, env: dict[str, str] | None = None) -> 
     )
     if not wait_for_http(port, timeout=startup_timeout, process=process):
         process.terminate()
-        raise RuntimeError(f"Vite nao respondeu corretamente na porta {port} em {startup_timeout}s.")
+        raise RuntimeError(
+            f"Vite nao respondeu corretamente na porta {port} em {startup_timeout}s."
+        )
     return process, server_url
 
 
-def start_vite_preview_server(app_directory: str, env: dict[str, str] | None = None) -> tuple[subprocess.Popen, str]:
+def start_vite_preview_server(
+    app_directory: str, env: dict[str, str] | None = None
+) -> tuple[subprocess.Popen, str]:
     """Gera e serve a build de producao para auditorias integrais de rotas."""
     port = free_port()
     server_url = f"http://127.0.0.1:{port}"
     process_env = os.environ.copy()
     if env:
-        process_env.update({key: value.format(server_url=server_url) for key, value in env.items()})
+        process_env.update(
+            {key: value.format(server_url=server_url) for key, value in env.items()}
+        )
     subprocess.run(
         ["npm", "run", "build"],
         cwd=app_directory,
@@ -108,7 +121,17 @@ def start_vite_preview_server(app_directory: str, env: dict[str, str] | None = N
         timeout=240,
     )
     process = subprocess.Popen(
-        ["npm", "run", "preview", "--", "--port", str(port), "--strictPort", "--host", "127.0.0.1"],
+        [
+            "npm",
+            "run",
+            "preview",
+            "--",
+            "--port",
+            str(port),
+            "--strictPort",
+            "--host",
+            "127.0.0.1",
+        ],
         cwd=app_directory,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
@@ -146,9 +169,13 @@ def start_python_http_server(
         stderr=subprocess.DEVNULL,
         env=process_env,
     )
-    if not wait_for_url(f"{server_url}{health_path}", timeout=startup_timeout, process=process):
+    if not wait_for_url(
+        f"{server_url}{health_path}", timeout=startup_timeout, process=process
+    ):
         process.terminate()
-        raise RuntimeError(f"Servidor FastAPI nao respondeu corretamente em {server_url} em {startup_timeout}s.")
+        raise RuntimeError(
+            f"Servidor FastAPI nao respondeu corretamente em {server_url} em {startup_timeout}s."
+        )
     return process, server_url
 
 
@@ -194,8 +221,14 @@ PHASE4_ROUTE_PAYLOADS = {
         "qr_token_hash": "phase4-ticket-token",
         "nfc_token_hash": "phase4-nfc-token",
     },
-    ("services", "providers"): {"category": "home_services", "name": "Prestador Playwright"},
-    ("services", "service_contracts"): {"visit_price_brl": "120.00", "scope": "Visita Playwright"},
+    ("services", "providers"): {
+        "category": "home_services",
+        "name": "Prestador Playwright",
+    },
+    ("services", "service_contracts"): {
+        "visit_price_brl": "120.00",
+        "scope": "Visita Playwright",
+    },
     ("finance", "escrows"): {
         "wallet_id": "wallet-phase4",
         "beneficiary_user_id": PHASE4_ACTOR_ID,
@@ -493,8 +526,14 @@ PHASE4_ROUTE_PAYLOADS = {
         "estimated_cost_brl": "0.42",
         "requested_at": "2026-07-15T10:30:00Z",
     },
-    ("health", "patients"): {"health_identifier": "patient-phase4", "name": "Paciente Playwright"},
-    ("health", "appointments"): {"scheduled_at": "2026-07-12T12:00:00Z", "care_line": "Consulta"},
+    ("health", "patients"): {
+        "health_identifier": "patient-phase4",
+        "name": "Paciente Playwright",
+    },
+    ("health", "appointments"): {
+        "scheduled_at": "2026-07-12T12:00:00Z",
+        "care_line": "Consulta",
+    },
     ("identity", "consents"): {
         "user_id": PHASE4_ACTOR_ID,
         "document_version": "2026-07-12",
@@ -512,7 +551,9 @@ def _route_to_resource(route: str) -> tuple[str, str]:
     return module_name, resource_type
 
 
-def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) -> dict[str, object]:
+def _post_json(
+    url: str, payload: dict[str, object], headers: dict[str, str]
+) -> dict[str, object]:
     last_error: Exception | None = None
     for attempt in range(1, 4):
         request = Request(
@@ -529,7 +570,9 @@ def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) ->
         except HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")
             if exc.code < 500 or attempt == 3:
-                raise RuntimeError(f"POST {url} retornou HTTP {exc.code}: {detail}") from exc
+                raise RuntimeError(
+                    f"POST {url} retornou HTTP {exc.code}: {detail}"
+                ) from exc
             last_error = RuntimeError(f"POST {url} retornou HTTP {exc.code}: {detail}")
         except URLError as exc:
             if attempt == 3:
@@ -537,7 +580,9 @@ def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) ->
             last_error = exc
         except TimeoutError as exc:
             if attempt == 3:
-                raise RuntimeError(f"POST {url} excedeu {PHASE4_HTTP_TIMEOUT_SECONDS}s.") from exc
+                raise RuntimeError(
+                    f"POST {url} excedeu {PHASE4_HTTP_TIMEOUT_SECONDS}s."
+                ) from exc
             last_error = exc
         time.sleep(0.5 * attempt)
     if last_error:
@@ -545,14 +590,23 @@ def _post_json(url: str, payload: dict[str, object], headers: dict[str, str]) ->
     raise RuntimeError(f"POST {url} falhou sem detalhe.")
 
 
-def _seed_phase4_resources(api_hub_url: str, routes: list[str], token: str) -> dict[tuple[str, str], dict[str, object]]:
+def _seed_phase4_resources(
+    api_hub_url: str, routes: list[str], token: str
+) -> dict[tuple[str, str], dict[str, object]]:
     headers = {"Authorization": f"Bearer {token}"}
     created: dict[tuple[str, str], dict[str, object]] = {}
     for index, route in enumerate(routes, start=1):
         module_name, resource_type = _route_to_resource(route)
         payload = PHASE4_ROUTE_PAYLOADS[(module_name, resource_type)]
-        target_path = f"/resources/{resource_type}" if module_name == "api_hub" else f"/{module_name}/resources/{resource_type}"
-        request_headers = {**headers, "X-Idempotency-Key": f"phase4-{module_name}-{resource_type}-{index}"}
+        target_path = (
+            f"/resources/{resource_type}"
+            if module_name == "api_hub"
+            else f"/{module_name}/resources/{resource_type}"
+        )
+        request_headers = {
+            **headers,
+            "X-Idempotency-Key": f"phase4-{module_name}-{resource_type}-{index}",
+        }
         created[(module_name, resource_type)] = _post_json(
             f"{api_hub_url}{target_path}",
             {"user_id": PHASE4_ACTOR_ID, "payload": payload},
@@ -573,7 +627,12 @@ def start_phase4_live_stack(
         {
             "sub": PHASE4_ACTOR_ID,
             "roles": ["compliance_officer", "auditor", "owner", "recruiter"],
-            "scopes": ["riders:approve", "health:approve", "jobs:manage", "jobs:resumes:read"],
+            "scopes": [
+                "riders:approve",
+                "health:approve",
+                "jobs:manage",
+                "jobs:resumes:read",
+            ],
             "mfa_verified": True,
             "business_id": PHASE4_BUSINESS_ID,
             "business_status": "active",
@@ -621,7 +680,12 @@ def start_phase4_live_stack(
             "GOOGLE_INTEGRATIONS_ENABLED": "false",
             "GOOGLE_CLOUD_ENABLED": "false",
         }
-        api_env.update({f"{module_name.upper()}_SERVICE_URL": url for module_name, url in module_urls.items()})
+        api_env.update(
+            {
+                f"{module_name.upper()}_SERVICE_URL": url
+                for module_name, url in module_urls.items()
+            }
+        )
         api_process, _ = start_python_http_server(
             REPO_ROOT / "modules" / "api_hub",
             api_port,
@@ -635,7 +699,10 @@ def start_phase4_live_stack(
             _post_json(
                 f"{api_hub_url}/jobs/resources/job_postings/{job['id']}/actions/publish",
                 {"reason": "vaga publicada para candidatura viva do shell User"},
-                {**headers, "X-Idempotency-Key": f"phase4-jobs-job-postings-publish-{job['id']}"},
+                {
+                    **headers,
+                    "X-Idempotency-Key": f"phase4-jobs-job-postings-publish-{job['id']}",
+                },
             )
         return processes, vite_url
     except Exception:
@@ -643,28 +710,37 @@ def start_phase4_live_stack(
             stop_process(process)
         raise
 
+
 @pytest.fixture(scope="session")
 def rider_server():
     try:
-        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/valley_rider"))
+        process, url = start_vite_server(
+            os.path.join(os.path.dirname(__file__), "../../apps/valley_rider")
+        )
     except RuntimeError as exc:
         pytest.fail(str(exc))
     yield url
     stop_process(process)
+
 
 @pytest.fixture(scope="session")
 def business_server():
     try:
-        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/valley_business"))
+        process, url = start_vite_server(
+            os.path.join(os.path.dirname(__file__), "../../apps/valley_business")
+        )
     except RuntimeError as exc:
         pytest.fail(str(exc))
     yield url
     stop_process(process)
 
+
 @pytest.fixture(scope="session")
 def superapp_server():
     try:
-        process, url = start_vite_server(os.path.join(os.path.dirname(__file__), "../../apps/valley"))
+        process, url = start_vite_server(
+            os.path.join(os.path.dirname(__file__), "../../apps/valley")
+        )
     except RuntimeError as exc:
         pytest.fail(str(exc))
     yield url
@@ -691,7 +767,11 @@ def all_in_one_user_preview_server():
             os.path.join(os.path.dirname(__file__), "../../apps/all-in-one"),
             {"VITE_API_HUB_URL": "{server_url}"},
         )
-    except (RuntimeError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
+    except (
+        RuntimeError,
+        subprocess.CalledProcessError,
+        subprocess.TimeoutExpired,
+    ) as exc:
         pytest.fail(str(exc))
     yield url
     stop_process(process)
@@ -816,6 +896,7 @@ def all_in_one_riders_server():
     yield url
     stop_process(process)
 
+
 @pytest.fixture(scope="session")
 def all_in_one_services_server():
     try:
@@ -828,6 +909,7 @@ def all_in_one_services_server():
     yield url
     stop_process(process)
 
+
 @pytest.fixture(scope="session")
 def all_in_one_health_server():
     try:
@@ -839,6 +921,7 @@ def all_in_one_health_server():
         pytest.fail(str(exc))
     yield url
     stop_process(process)
+
 
 @pytest.fixture(scope="session")
 def all_in_one_mobility_server():

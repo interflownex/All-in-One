@@ -11,160 +11,160 @@ paths:
     get:
       security: []
       responses:
-        '200':
+        "200":
           description: Healthy
   /version:
     get:
       security: []
       responses:
-        '200':
+        "200":
           description: Version information
   /status:
     get:
       responses:
-        '200':
+        "200":
           description: Operational status
   /metrics:
     get:
       responses:
-        '200':
+        "200":
           description: Prometheus metrics
   /create:
     post:
       parameters:
-        - $ref: '#/components/parameters/ActorUserId'
+        - $ref: "#/components/parameters/ActorUserId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePayload'
+              $ref: "#/components/schemas/CreatePayload"
       responses:
-        '201':
+        "201":
           description: Resource created
   /list:
     get:
       responses:
-        '200':
+        "200":
           description: Resource collection
   /{id}:
     get:
       parameters:
-        - $ref: '#/components/parameters/ResourceId'
+        - $ref: "#/components/parameters/ResourceId"
       responses:
-        '200':
+        "200":
           description: Resource detail
     patch:
       parameters:
-        - $ref: '#/components/parameters/ResourceId'
-        - $ref: '#/components/parameters/ActorUserId'
+        - $ref: "#/components/parameters/ResourceId"
+        - $ref: "#/components/parameters/ActorUserId"
       responses:
-        '200':
+        "200":
           description: Resource updated
     delete:
       parameters:
-        - $ref: '#/components/parameters/ResourceId'
-        - $ref: '#/components/parameters/ActorUserId'
+        - $ref: "#/components/parameters/ResourceId"
+        - $ref: "#/components/parameters/ActorUserId"
       responses:
-        '204':
+        "204":
           description: Resource soft-deleted
   /approve:
     post:
       parameters:
-        - $ref: '#/components/parameters/ActorUserId'
+        - $ref: "#/components/parameters/ActorUserId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DecisionPayload'
+              $ref: "#/components/schemas/DecisionPayload"
       responses:
-        '200':
+        "200":
           description: Resource approved
   /reject:
     post:
       parameters:
-        - $ref: '#/components/parameters/ActorUserId'
+        - $ref: "#/components/parameters/ActorUserId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/DecisionPayload'
+              $ref: "#/components/schemas/DecisionPayload"
       responses:
-        '200':
+        "200":
           description: Resource rejected
   /audit:
     post:
       parameters:
-        - $ref: '#/components/parameters/ActorUserId'
+        - $ref: "#/components/parameters/ActorUserId"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuditPayload'
+              $ref: "#/components/schemas/AuditPayload"
       responses:
-        '201':
+        "201":
           description: Audit evidence accepted
   /catalog:
     get:
       responses:
-        '200':
+        "200":
           description: Contracted domain resources
   /resources/{resource_type}:
     post:
       responses:
-        '201':
+        "201":
           description: Domain resource created
     get:
       responses:
-        '200':
+        "200":
           description: Authorized domain resource collection
   /resources/{resource_type}/{resource_id}:
     get:
       responses:
-        '200':
+        "200":
           description: Authorized domain resource
     patch:
       responses:
-        '200':
+        "200":
           description: Domain resource updated
     delete:
       responses:
-        '204':
+        "204":
           description: Domain resource soft-deleted
   /resources/{resource_type}/{resource_id}/actions/{action}:
     post:
       responses:
-        '200':
+        "200":
           description: Workflow transition recorded
   /audit/events:
     get:
       responses:
-        '200':
+        "200":
           description: Immutable audit evidence
   /events/outbox:
     get:
       responses:
-        '200':
+        "200":
           description: Transactional outbox domain events
   /gateway/status:
     get:
       security: []
       responses:
-        '200':
+        "200":
           description: Gateway operational status
   /gateway/catalog/offers:
     get:
       security: []
       responses:
-        '200':
+        "200":
           description: Catalogo Valley agregado e filtrado
   /gateway/consumer/orders:
     get:
       responses:
-        '200':
+        "200":
           description: Historico normalizado do consumidor autenticado
   /gateway/consumer/orders/{order_id}/reviews:
     post:
@@ -180,13 +180,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConsumerReviewRequest'
+              $ref: "#/components/schemas/ConsumerReviewRequest"
       responses:
-        '201':
+        "201":
           description: Avaliacao publicada para pedido concluido
-        '403':
+        "403":
           description: Pedido pertence a outro consumidor
-        '409':
+        "409":
           description: Pedido ainda nao foi concluido
   /gateway/consumer/orders/{order_id}/support:
     post:
@@ -202,18 +202,18 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SupportCaseRequest'
+              $ref: "#/components/schemas/SupportCaseRequest"
       responses:
-        '201':
+        "201":
           description: Caso de suporte ou disputa registrado
-        '403':
+        "403":
           description: Pedido pertence a outro consumidor
-        '409':
+        "409":
           description: Pedido ainda nao permite suporte
   /gateway/insights/commercial:
     get:
       responses:
-        '200':
+        "200":
           description: Resumo comercial para CRM e BI
   /gateway/api-key/check:
     get:
@@ -225,11 +225,11 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: API key accepted by edge gateway
-        '401':
+        "401":
           description: API key missing or invalid
-        '403':
+        "403":
           description: API key scope denied
   /gateway/webhooks/verify:
     post:
@@ -248,9 +248,9 @@ paths:
               type: object
               additionalProperties: true
       responses:
-        '200':
+        "200":
           description: Webhook signature accepted
-        '401':
+        "401":
           description: Webhook signature invalid
 components:
   securitySchemes:
@@ -324,7 +324,7 @@ components:
         comment:
           type:
             - string
-            - 'null'
+            - "null"
           maxLength: 1000
         idempotency_key:
           type: string

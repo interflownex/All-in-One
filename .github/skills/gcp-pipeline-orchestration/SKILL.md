@@ -18,9 +18,9 @@ Refer to the table below to determine which reference file to retrieve in
 different scenarios involving specific functions. [!IMPORTANT]: DO NOT GUESS
 filenames. You MUST only use the exact paths provided below.
 
-Function/Use Case                  | Required Reference File                        | Capabilities & Intent Keywords
----------------------------------- | ---------------------------------------------- | ------------------------------
-**orchestration-pipelines schema** | `references/orchestration-pipelines-schema.md` | orchestrate, generate, create, update
+| Function/Use Case                  | Required Reference File                        | Capabilities & Intent Keywords        |
+| ---------------------------------- | ---------------------------------------------- | ------------------------------------- |
+| **orchestration-pipelines schema** | `references/orchestration-pipelines-schema.md` | orchestrate, generate, create, update |
 
 ## How to use this skill
 
@@ -38,11 +38,11 @@ deployable pipeline:
     `dev`, `prod`). `deployment.yaml`should only exists in the repository root
     and must be named `deployment.yaml`
 
--   All files should always be maintained together. And all files should be
-    placed on the root of the workspace folder.
+- All files should always be maintained together. And all files should be
+  placed on the root of the workspace folder.
 
--   This skill is helpful to create or update configuration files to orchestrate
-    data pipelines.
+- This skill is helpful to create or update configuration files to orchestrate
+  data pipelines.
 
 ## How to use this skill
 
@@ -93,34 +93,34 @@ Reference to file `references/orchestration-pipelines-schema.md`.
 of the orchestration pipeline YAML definition. The value of this field depends
 on the IDE environment:
 
--   For Antigravity, use `["job:datacloud:antigravity"]`.
--   For VS Code, use `["job:datacloud:vscode"]`.
--   For Gemini CLI, use `["job:datacloud:gemini-cli"]`.
--   For Claude Code, use `["job:datacloud:claude"]`.
--   For Codex, use `["job:datacloud:codex"]`.
--   For any other environment, use `["job:datacloud:other"]`.
+- For Antigravity, use `["job:datacloud:antigravity"]`.
+- For VS Code, use `["job:datacloud:vscode"]`.
+- For Gemini CLI, use `["job:datacloud:gemini-cli"]`.
+- For Claude Code, use `["job:datacloud:claude"]`.
+- For Codex, use `["job:datacloud:codex"]`.
+- For any other environment, use `["job:datacloud:other"]`.
 
 #### Deployment yaml structure and syntax instruction.
 
 **Top-Level Structure:** The root of the YAML should be an object with the
 following fields:
 
--   `environments` (dictionary): A map where keys are environment names (e.g.,
-    'dev', 'prod', etc) and values are Environment objects.
+- `environments` (dictionary): A map where keys are environment names (e.g.,
+  'dev', 'prod', etc) and values are Environment objects.
 
 **Environment:** Each environment object contains the following fields:
 
--   `project` (string): The Google Cloud Project ID.
--   `region` (string): The Google Cloud region (e.g., 'us-central1').
--   `composer_environment` (string): The Cloud Composer environment name.
--   `artifact_storage`
-    -   `bucket` (string): GCS bucket
-    -   `path_prefix`(string): prefix of path that we want to put in bucket
--   `pipelines`
-    -   `- source` (string): orchestration pipeline yaml file names. It can be
-        multiple
--   `variables` (dictionary, optional): Key-value pairs representing environment
-    variables. Values can be strings, numbers, or booleans.
+- `project` (string): The Google Cloud Project ID.
+- `region` (string): The Google Cloud region (e.g., 'us-central1').
+- `composer_environment` (string): The Cloud Composer environment name.
+- `artifact_storage`
+  - `bucket` (string): GCS bucket
+  - `path_prefix`(string): prefix of path that we want to put in bucket
+- `pipelines`
+  - `- source` (string): orchestration pipeline yaml file names. It can be
+    multiple
+- `variables` (dictionary, optional): Key-value pairs representing environment
+  variables. Values can be strings, numbers, or booleans.
 
 > [!TIP]
 >
@@ -131,102 +131,102 @@ following fields:
 
 ### Step 3: Generate the pipeline files
 
--   Before generating, check if an orchestration pipeline definition file and
-    `deployment.yaml` already exist in the current directory. If they do, inform
-    the user and ask if they want to update the existing files or create new
-    ones with different names. Do not overwrite without confirmation.
+- Before generating, check if an orchestration pipeline definition file and
+  `deployment.yaml` already exist in the current directory. If they do, inform
+  the user and ask if they want to update the existing files or create new
+  ones with different names. Do not overwrite without confirmation.
 
--   First, before creating the orchestration pipeline definition file, you
-    **must** first run the following command to get the list of available
-    dataproc environments for the user's project. This avoids using placeholder
-    values to run the jobs.
+- First, before creating the orchestration pipeline definition file, you
+  **must** first run the following command to get the list of available
+  dataproc environments for the user's project. This avoids using placeholder
+  values to run the jobs.
 
-    ```
-    # Replace <PROJECT_ID> with the actual project_id
-    # Replace <REGION> with the actual region
-    gcloud dataproc clusters list \
-    --project <PROJECT_ID> \
-    --region <REGION> \
-    ```
+  ```
+  # Replace <PROJECT_ID> with the actual project_id
+  # Replace <REGION> with the actual region
+  gcloud dataproc clusters list \
+  --project <PROJECT_ID> \
+  --region <REGION> \
+  ```
 
-    > [!TIP]
-    >
-    > Running the command without `--format=yaml` provides a clear, tabular
-    > output that is easier to read.
+  > [!TIP]
+  >
+  > Running the command without `--format=yaml` provides a clear, tabular
+  > output that is easier to read.
 
--   Then use the returned dataproc list with details to create the orchestration
-    pipeline definition file based on the user's requirements for the pipeline's
-    logic and schedule. **IMPORTANT:** Every schedule **must** include an
-    `endTime`. Every schedule **must** use the current date as `startTime` if
-    the user hasn't specified.
+- Then use the returned dataproc list with details to create the orchestration
+  pipeline definition file based on the user's requirements for the pipeline's
+  logic and schedule. **IMPORTANT:** Every schedule **must** include an
+  `endTime`. Every schedule **must** use the current date as `startTime` if
+  the user hasn't specified.
 
-    > [!IMPORTANT]
-    >
-    > A Composer environment is not a Dataproc cluster. If no Dataproc clusters
-    > are available, do not use a Composer environment for the
-    > `sparkHistoryServerConfig`. It is better to omit this configuration if a
-    > dedicated Spark History Server is not available.
+  > [!IMPORTANT]
+  >
+  > A Composer environment is not a Dataproc cluster. If no Dataproc clusters
+  > are available, do not use a Composer environment for the
+  > `sparkHistoryServerConfig`. It is better to omit this configuration if a
+  > dedicated Spark History Server is not available.
 
--   If you want to schedule the python job, check the content of Python content
-    to determine if it's a spark job. If it is, use `pyspark` as type instead of
-    script as type.
+- If you want to schedule the python job, check the content of Python content
+  to determine if it's a spark job. If it is, use `pyspark` as type instead of
+  script as type.
 
--   Before creating or updating the `deployment.yaml` file, you **must** first
-    run the following command to get the list of available Composer environments
-    for the user's project.
+- Before creating or updating the `deployment.yaml` file, you **must** first
+  run the following command to get the list of available Composer environments
+  for the user's project.
 
-    ```
-    # Replace <PROJECT_ID> with the actual project_id
-    # Replace <REGION> with the actual region
-    gcloud composer environments list \
-    --project <PROJECT_ID> \
-    --locations <REGION> \
-    ```
+  ```
+  # Replace <PROJECT_ID> with the actual project_id
+  # Replace <REGION> with the actual region
+  gcloud composer environments list \
+  --project <PROJECT_ID> \
+  --locations <REGION> \
+  ```
 
-    After listing available Composer environments, you **must** check each
-    environment to ensure the composer is using the right image version or has
-    installed right PyPI packages. Run the following command for each
-    environment:
+  After listing available Composer environments, you **must** check each
+  environment to ensure the composer is using the right image version or has
+  installed right PyPI packages. Run the following command for each
+  environment:
 
-    ```
-    # Replace <ENVIRONMENT_NAME> with the Composer environment name
-    # Replace <REGION> with the region
-    gcloud composer environments describe <ENVIRONMENT_NAME> \
-    --location <REGION> \
-    --format="json(config.softwareConfig.imageVersion, config.softwareConfig.pypiPackages)"
-    ```
+  ```
+  # Replace <ENVIRONMENT_NAME> with the Composer environment name
+  # Replace <REGION> with the region
+  gcloud composer environments describe <ENVIRONMENT_NAME> \
+  --location <REGION> \
+  --format="json(config.softwareConfig.imageVersion, config.softwareConfig.pypiPackages)"
+  ```
 
-    From the output, select an environment where the imageVersion value is one
-    of is "composer-3-airflow-3.1.7-build.x, composer-3-airflow-2.11.1-build.x,
-    composer-3-airflow-2.10.5-build.x, composer-3-airflow-2.9.3-build.x,
-    composer-2.16.11-airflow-2.11.1, composer-2.16.11-airflow-2.10.5,
-    composer-2.16.11-airflow-2.9.3" or select an environment
-    where`orchestration-pipelines` field is presented listed in the PyPI
-    packages. This ensures the selected environment is compatible with
-    orchestration pipelines.
+  From the output, select an environment where the imageVersion value is one
+  of is "composer-3-airflow-3.1.7-build.x, composer-3-airflow-2.11.1-build.x,
+  composer-3-airflow-2.10.5-build.x, composer-3-airflow-2.9.3-build.x,
+  composer-2.16.11-airflow-2.11.1, composer-2.16.11-airflow-2.10.5,
+  composer-2.16.11-airflow-2.9.3" or select an environment
+  where`orchestration-pipelines` field is presented listed in the PyPI
+  packages. This ensures the selected environment is compatible with
+  orchestration pipelines.
 
--   Third, before generating the `deployment.yaml` file, you **must ask the
-    user** to provide the `artifact_storage` bucket name. Note that the
-    `artifact_storage` bucket is typically initialized as a placeholder (e.g.,
-    `YOUR_BUCKET`) by the `init` command in Step 1. You must identify any such
-    placeholders, ask the user for the actual bucket name, and then update the
-    `deployment.yaml` file with the provided value.
+- Third, before generating the `deployment.yaml` file, you **must ask the
+  user** to provide the `artifact_storage` bucket name. Note that the
+  `artifact_storage` bucket is typically initialized as a placeholder (e.g.,
+  `YOUR_BUCKET`) by the `init` command in Step 1. You must identify any such
+  placeholders, ask the user for the actual bucket name, and then update the
+  `deployment.yaml` file with the provided value.
 
-    Use the returned composer list with details, along with the project ID,
-    region, and the bucket name provided by the user, to generate or update the
-    `deployment.yaml` file. When generating or updating the `deployment.yaml`
-    file, you **must** replace placeholders (e.g., "<YOUR_PROJECT_ID>",
-    "<YOUR_REGION>", "<YOUR_COMPOSER>", "<YOUR_BUCKET>") with the actual
-    retrieved and provided values. Additionally, you **must** remove any
-    associated `# TODO:` comments once the placeholders are replaced.
+  Use the returned composer list with details, along with the project ID,
+  region, and the bucket name provided by the user, to generate or update the
+  `deployment.yaml` file. When generating or updating the `deployment.yaml`
+  file, you **must** replace placeholders (e.g., "<YOUR_PROJECT_ID>",
+  "<YOUR_REGION>", "<YOUR_COMPOSER>", "<YOUR_BUCKET>") with the actual
+  retrieved and provided values. Additionally, you **must** remove any
+  associated `# TODO:` comments once the placeholders are replaced.
 
--   Ensure both files adhere to the code structures and syntax specified in this
-    document.
+- Ensure both files adhere to the code structures and syntax specified in this
+  document.
 
--   **Renaming Pipelines**: If requested to change the orchestration pipeline
-    name, you must rename the orchestration YAML file accordingly (e.g., from
-    `dbt_clean_pipeline.yaml` to `new_name.yaml`) and update the `source` field
-    within the `pipelines` list in `deployment.yaml` to match the new filename.
+- **Renaming Pipelines**: If requested to change the orchestration pipeline
+  name, you must rename the orchestration YAML file accordingly (e.g., from
+  `dbt_clean_pipeline.yaml` to `new_name.yaml`) and update the `source` field
+  within the `pipelines` list in `deployment.yaml` to match the new filename.
 
 > [!IMPORTANT]
 >
@@ -251,9 +251,9 @@ gcloud beta orchestration-pipelines validate --environment=<ENV_NAME>
 
 2.  If the command returns an error or failure message:
 
-    -   Read the error message carefully.
-    -   Edit the orchestration and deployment files to fix the specific issue
-        mentioned.
+    - Read the error message carefully.
+    - Edit the orchestration and deployment files to fix the specific issue
+      mentioned.
 
 3.  Re-run the validation command to confirm the fix. Do not mark the task as
     complete until the validation passes (exit code 0), and do not fall back to
@@ -278,7 +278,7 @@ environments:
       bucket: <ARTIFACT_BUCKET_NAME>
       path_prefix: "<prefix>-" # e.g., namespace or username prefix
     pipelines:
-      - source: '<orchestration-pipeline.yaml>' # e.g., list of pipeline yaml names
+      - source: "<orchestration-pipeline.yaml>" # e.g., list of pipeline yaml names
 ```
 
 ### Step 6: Deploy the Orchestration Pipeline (Optional)
@@ -302,7 +302,7 @@ If requested to **deploy** the orchestration pipeline:
 
 4.  Parse the deploy output to extract the **bundle ID** (version). The output
     includes a line like: `Pipeline deployment successful for version
-    local-b32d15e307b5` The version string (e.g., `local-b32d15e307b5`) is the
+local-b32d15e307b5` The version string (e.g., `local-b32d15e307b5`) is the
     bundle ID.
 
 > [!IMPORTANT]
@@ -364,7 +364,7 @@ Deploy → Poll → Trigger flow.
 >
 > **Trigger-only (no deploy):** If the user wants to trigger an already-deployed
 > pipeline, skip Step 6. Use `gcloud beta orchestration-pipelines list
-> --environment=<ENV_NAME>` to find the bundle ID, then trigger directly with
+--environment=<ENV_NAME>` to find the bundle ID, then trigger directly with
 > Step 7.4.
 
 > [!IMPORTANT]
@@ -381,19 +381,19 @@ Deploy → Poll → Trigger flow.
 
 ## Definition of done
 
--   `deployment.yaml` file is created successfully.
--   The orchestration pipeline file (e.g., `orchestration_pipeline.yaml`) is
-    created successfully, includes a mandatory `endTime` for every schedule, and
-    passes the validation command: `gcloud beta orchestration-pipelines validate
-    --environment=<ENV_NAME>`
--   If user requested to **deploy** the orchestration pipeline, the `gcloud beta
-    orchestration-pipelines deploy --environment=<ENV_NAME> --local` command
-    should return a success message with a version/bundle ID.
--   If user requested to **trigger/run** the orchestration pipeline:
-    1.  Deploy succeeded (bundle ID extracted from output)
-    2.  DAG appeared in `gcloud beta orchestration-pipelines list` within 2 min
-    3.  `gcloud beta orchestration-pipelines trigger` returned success
-    4.  Run is visible in `gcloud beta orchestration-pipelines runs list`
+- `deployment.yaml` file is created successfully.
+- The orchestration pipeline file (e.g., `orchestration_pipeline.yaml`) is
+  created successfully, includes a mandatory `endTime` for every schedule, and
+  passes the validation command: `gcloud beta orchestration-pipelines validate
+--environment=<ENV_NAME>`
+- If user requested to **deploy** the orchestration pipeline, the `gcloud beta
+orchestration-pipelines deploy --environment=<ENV_NAME> --local` command
+  should return a success message with a version/bundle ID.
+- If user requested to **trigger/run** the orchestration pipeline:
+  1.  Deploy succeeded (bundle ID extracted from output)
+  2.  DAG appeared in `gcloud beta orchestration-pipelines list` within 2 min
+  3.  `gcloud beta orchestration-pipelines trigger` returned success
+  4.  Run is visible in `gcloud beta orchestration-pipelines runs list`
 
 ## Other actions
 

@@ -49,7 +49,9 @@ def test_release_refuses_another_agent(monkeypatch, tmp_path: Path) -> None:
     assert not path.exists()
 
 
-def test_same_agent_renews_lock_from_another_process(monkeypatch, tmp_path: Path) -> None:
+def test_same_agent_renews_lock_from_another_process(
+    monkeypatch, tmp_path: Path
+) -> None:
     path = tmp_path / "agent.lock"
     monkeypatch.setattr(guard, "lock_path", lambda scope="workspace": path)
     original = guard.acquire_lock("codex_cli", "primeira etapa", 120)

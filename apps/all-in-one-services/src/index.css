@@ -13,8 +13,7 @@ body {
   padding: 46px;
   background:
     linear-gradient(90deg, rgba(178, 111, 45, 0.12) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(178, 111, 45, 0.12) 1px, transparent 1px),
-    #fbf6ea;
+    linear-gradient(180deg, rgba(178, 111, 45, 0.12) 1px, transparent 1px), #fbf6ea;
   background-size: 28px 28px;
 }
 
@@ -82,8 +81,7 @@ h1 {
   border: 3px solid #231a12;
   border-radius: 28px;
   background:
-    radial-gradient(circle at top right, rgba(178, 111, 45, 0.24), transparent 30%),
-    #fffaf0;
+    radial-gradient(circle at top right, rgba(178, 111, 45, 0.24), transparent 30%), #fffaf0;
   box-shadow: 10px 10px 0 #231a12;
   padding: 26px;
 }

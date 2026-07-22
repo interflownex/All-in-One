@@ -32,50 +32,50 @@ data ecosystem.
 
 ### Choice: Streamlit
 
--   **User Profile**: Data Scientists / Python users.
--   **Logic Complexity**: High Python dependency (Pandas, NumPy, local data
-    processing).
--   **Deployment**: Single-file Python script.
--   **Customization**: Standard layout (fast boilerplate).
+- **User Profile**: Data Scientists / Python users.
+- **Logic Complexity**: High Python dependency (Pandas, NumPy, local data
+  processing).
+- **Deployment**: Single-file Python script.
+- **Customization**: Standard layout (fast boilerplate).
 
 ### Choice: React + Vite
 
--   **User Profile**: Web Developers / Full-stack teams.
--   **Logic Complexity**: High UI and Interactivity requirements (e.g.,
-    drag-and-drop, interactive maps).
--   **Deployment**: Standalone Frontend + Backend API.
--   **Customization**: Infinite (Custom CSS, specialized JS libraries).
+- **User Profile**: Web Developers / Full-stack teams.
+- **Logic Complexity**: High UI and Interactivity requirements (e.g.,
+  drag-and-drop, interactive maps).
+- **Deployment**: Standalone Frontend + Backend API.
+- **Customization**: Infinite (Custom CSS, specialized JS libraries).
 
 ### Guidance:
 
--   **Check for existing stack first**: ALWAYS prefer the framework the user is
-    already using in their project (e.g., if you see a `package.json` with React
-    dependencies, use React; if you see existing Streamlit files, use
-    Streamlit).
--   **Default to React + Vite** for production-grade applications that require
-    complex client-side state, custom branding, or integration into a larger web
-    ecosystem.
--   **Default to Streamlit** if the user specifically mentions "Python
-    dashboard", needs to iterate on complex local Python data processing, or
-    requires a single-script deployment.
+- **Check for existing stack first**: ALWAYS prefer the framework the user is
+  already using in their project (e.g., if you see a `package.json` with React
+  dependencies, use React; if you see existing Streamlit files, use
+  Streamlit).
+- **Default to React + Vite** for production-grade applications that require
+  complex client-side state, custom branding, or integration into a larger web
+  ecosystem.
+- **Default to Streamlit** if the user specifically mentions "Python
+  dashboard", needs to iterate on complex local Python data processing, or
+  requires a single-script deployment.
 
 ## Step 1: Implementation Plan
 
 You MUST propose a plan to the user that specifies the chosen framework and
 justifies the choice based on the criteria above.
 
---------------------------------------------------------------------------------
+---
 
 ## Shared Design Standards
 
 Regardless of framework, you MUST follow the principles in
 `references/shared_design_system.md`.
 
--   **Visual Style**: Minimal chrome, zinc color palette, and card-based
-    layouts.
--   **Typography**: `DM Sans` for content, `JetBrains Mono` for data.
+- **Visual Style**: Minimal chrome, zinc color palette, and card-based
+  layouts.
+- **Typography**: `DM Sans` for content, `JetBrains Mono` for data.
 
---------------------------------------------------------------------------------
+---
 
 ## Framework Implementation
 
@@ -90,7 +90,7 @@ Regardless of framework, you MUST follow the principles in
 1.  Read `references/react_framework.md` for Tailwind and ECharts setup.
 2.  Follow the detailed component guidelines for KPI cards, Tables, and Panels.
 
---------------------------------------------------------------------------------
+---
 
 ## AI Chat Interface (Optional Feature)
 
@@ -132,7 +132,7 @@ If the user requests or agrees to the chat interface:
 >
 > If available, you MUST use browser testing capabilities (such as
 > `browser_subagent`, Puppeteer, Playwright, or an equivalent available tool) to
-> visually verify the frontend application is working correctly *before*
+> visually verify the frontend application is working correctly _before_
 > notifying the user that the task is complete.
 
 > [!IMPORTANT]
@@ -141,17 +141,17 @@ If the user requests or agrees to the chat interface:
 > must include these items in whatever format you use to track your work (e.g.,
 > your task list, implementation plan, or internal checklist).
 
--   [ ] Are CSS hover transitions smooth?
--   [ ] Are date fields formatted readably? (e.g., `MMM dd, yyyy`)
--   [ ] Do z-indexes stack correctly so dropdowns appear above table headers?
-    (`relative z-30`)
--   [ ] Do all interactive form/button inputs handle loading/disabled states?
--   [ ] Is the application responsive and does the layout adapt well to
-    different screen sizes?
--   [ ] Are API calls for data fetching successful, and is there appropriate
-    error handling?
--   [ ] Does the dark mode toggle function correctly and apply styles
-    consistently?
--   [ ] Do all visualizations render correctly and are they interactive where
-    expected?
--   [ ] Is the dashboard visually appealing?
+- [ ] Are CSS hover transitions smooth?
+- [ ] Are date fields formatted readably? (e.g., `MMM dd, yyyy`)
+- [ ] Do z-indexes stack correctly so dropdowns appear above table headers?
+      (`relative z-30`)
+- [ ] Do all interactive form/button inputs handle loading/disabled states?
+- [ ] Is the application responsive and does the layout adapt well to
+      different screen sizes?
+- [ ] Are API calls for data fetching successful, and is there appropriate
+      error handling?
+- [ ] Does the dark mode toggle function correctly and apply styles
+      consistently?
+- [ ] Do all visualizations render correctly and are they interactive where
+      expected?
+- [ ] Is the dashboard visually appealing?

@@ -30,60 +30,60 @@ var absence.
 List PostgreSQL autovacuum-related configurations (name and current setting)
 from pg_settings.
 
---------------------------------------------------------------------------------
+---
 
 ### list_available_extensions
 
 Discover all PostgreSQL extensions available for installation on this server,
 returning name, default_version, and description.
 
---------------------------------------------------------------------------------
+---
 
 ### list_columnar_configurations
 
 List AlloyDB Omni columnar-related configurations (name and current setting)
 from pg_settings.
 
---------------------------------------------------------------------------------
+---
 
 ### list_columnar_recommended_columns
 
 Lists columns that AlloyDB Omni recommends adding to the columnar engine to
 improve query performance.
 
---------------------------------------------------------------------------------
+---
 
 ### list_installed_extensions
 
 List all installed PostgreSQL extensions with their name, version, schema,
 owner, and description.
 
---------------------------------------------------------------------------------
+---
 
 ### list_memory_configurations
 
 List PostgreSQL memory-related configurations (name and current setting) from
 pg_settings.
 
---------------------------------------------------------------------------------
+---
 
 ### list_pg_settings
 
 #### Parameters
 
-| Name         | Type    | Description   | Required | Default |
-| :----------- | :------ | :------------ | :------- | :------ |
-| setting_name | string  | Optional: A   | No       |         |
-:              :         : specific      :          :         :
-:              :         : configuration :          :         :
-:              :         : parameter     :          :         :
-:              :         : name pattern  :          :         :
-:              :         : to search     :          :         :
-:              :         : for.          :          :         :
-| limit        | integer | Optional: The | No       | `50`    |
-:              :         : maximum       :          :         :
-:              :         : number of     :          :         :
-:              :         : rows to       :          :         :
-:              :         : return.       :          :         :
+| Name                      | Type    | Description   | Required | Default |
+| :------------------------ | :------ | :------------ | :------- | :------ |
+| setting_name              | string  | Optional: A   | No       |         |
+| : : : specific : : :      |
+| : : : configuration : : : |
+| : : : parameter : : :     |
+| : : : name pattern : : :  |
+| : : : to search : : :     |
+| : : : for. : : :          |
+| limit                     | integer | Optional: The | No       | `50`    |
+| : : : maximum : : :       |
+| : : : number of : : :     |
+| : : : rows to : : :       |
+| : : : return. : : :       |
 
---------------------------------------------------------------------------------
+---

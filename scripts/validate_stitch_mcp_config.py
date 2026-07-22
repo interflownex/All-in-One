@@ -11,10 +11,11 @@ import tomllib
 from pathlib import Path
 from typing import Any
 
-
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "config" / "autonomy" / "stitch_mcp_policy.json"
-DEFAULT_CODEX_CONFIG = Path(os.getenv("CODEX_CONFIG_FILE", Path.home() / ".codex" / "config.toml"))
+DEFAULT_CODEX_CONFIG = Path(
+    os.getenv("CODEX_CONFIG_FILE", Path.home() / ".codex" / "config.toml")
+)
 EXPECTED_SERVER = "stitch"
 EXPECTED_ENDPOINT = "https://stitch.googleapis.com/mcp"
 EXPECTED_HEADER = "X-Goog-Api-Key"
@@ -23,7 +24,9 @@ EXPECTED_ACCEPT = "application/json"
 
 SECRET_ASSIGNMENT_PATTERNS = (
     re.compile(r"(?im)^\s*STITCH_API_KEY\s*=\s*['\"]?[^'\"\s#][^'\"\n#]*"),
-    re.compile(r"(?im)X-Goog-Api-Key\s*[:=]\s*(?!\$\{STITCH_API_KEY\}|STITCH_API_KEY\b)['\"]?[A-Za-z0-9_\-]{12,}"),
+    re.compile(
+        r"(?im)X-Goog-Api-Key\s*[:=]\s*(?!\$\{STITCH_API_KEY\}|STITCH_API_KEY\b)['\"]?[A-Za-z0-9_\-]{12,}"
+    ),
 )
 SECRET_SCAN_PATHS = [
     ".agents",
@@ -56,7 +59,9 @@ def validate_policy(policy: dict[str, Any]) -> list[str]:
     required_headers = policy.get("required_headers", {})
     if policy.get("enabled") is not True:
         if policy.get("disabled_until") != "segunda_ordem_explicita_do_usuario":
-            errors.append("Politica Stitch desativada deve declarar disabled_until=segunda_ordem_explicita_do_usuario.")
+            errors.append(
+                "Politica Stitch desativada deve declarar disabled_until=segunda_ordem_explicita_do_usuario."
+            )
         if not policy.get("disabled_reason"):
             errors.append("Politica Stitch desativada deve declarar disabled_reason.")
     if policy.get("server_name") != EXPECTED_SERVER:
@@ -76,7 +81,12 @@ def validate_policy(policy: dict[str, Any]) -> list[str]:
 
 def is_stitch_enabled(root: Path = ROOT) -> bool:
     try:
-        return load_policy(root / "config" / "autonomy" / "stitch_mcp_policy.json").get("enabled") is True
+        return (
+            load_policy(root / "config" / "autonomy" / "stitch_mcp_policy.json").get(
+                "enabled"
+            )
+            is True
+        )
     except ValueError:
         return False
 
@@ -94,20 +104,30 @@ def validate_codex_config(config: dict[str, Any], config_path: Path) -> list[str
     errors: list[str] = []
     stitch = config.get("mcp_servers", {}).get(EXPECTED_SERVER)
     if not isinstance(stitch, dict):
-        return [f"Servidor MCP obrigatorio ausente em {config_path}: [mcp_servers.stitch]"]
+        return [
+            f"Servidor MCP obrigatorio ausente em {config_path}: [mcp_servers.stitch]"
+        ]
     if stitch.get("url") != EXPECTED_ENDPOINT:
         errors.append(f"Servidor Stitch deve usar url {EXPECTED_ENDPOINT}.")
     if stitch.get("http_headers", {}).get("Accept") != EXPECTED_ACCEPT:
-        errors.append(f"Servidor Stitch deve declarar http_headers.Accept = {EXPECTED_ACCEPT}.")
+        errors.append(
+            f"Servidor Stitch deve declarar http_headers.Accept = {EXPECTED_ACCEPT}."
+        )
     env_headers = stitch.get("env_http_headers", {})
     if env_headers.get(EXPECTED_HEADER) != EXPECTED_ENV_VAR:
-        errors.append(f"Servidor Stitch deve mapear {EXPECTED_HEADER} para {EXPECTED_ENV_VAR} em env_http_headers.")
+        errors.append(
+            f"Servidor Stitch deve mapear {EXPECTED_HEADER} para {EXPECTED_ENV_VAR} em env_http_headers."
+        )
     literal_headers = stitch.get("headers", {}) | stitch.get("http_headers", {})
     literal_key = literal_headers.get(EXPECTED_HEADER)
     if literal_key and literal_key != f"${{{EXPECTED_ENV_VAR}}}":
-        errors.append(f"Servidor Stitch nao pode gravar {EXPECTED_HEADER} literal em {config_path}.")
+        errors.append(
+            f"Servidor Stitch nao pode gravar {EXPECTED_HEADER} literal em {config_path}."
+        )
     if stitch.get("command") or stitch.get("args"):
-        errors.append("Servidor Stitch deve usar transporte HTTP nativo por url/env_http_headers, sem command/args.")
+        errors.append(
+            "Servidor Stitch deve usar transporte HTTP nativo por url/env_http_headers, sem command/args."
+        )
     return errors
 
 
@@ -131,7 +151,10 @@ def stitch_secret_candidate_files(root: Path = ROOT) -> list[Path]:
             path = root / relative
             paths = path.rglob("*") if path.is_dir() else [path]
             for candidate in paths:
-                if any(part in SECRET_SCAN_EXCLUDED_DIRS for part in candidate.relative_to(root).parts):
+                if any(
+                    part in SECRET_SCAN_EXCLUDED_DIRS
+                    for part in candidate.relative_to(root).parts
+                ):
                     continue
                 if not candidate.is_file():
                     continue
@@ -172,7 +195,9 @@ def stitch_secret_candidate_files(root: Path = ROOT) -> list[Path]:
         except subprocess.TimeoutExpired:
             return fallback_candidates()
         if result.returncode not in (0, 1):
-            raise RuntimeError(result.stderr.strip() or "Falha ao buscar candidatos a segredo Stitch.")
+            raise RuntimeError(
+                result.stderr.strip() or "Falha ao buscar candidatos a segredo Stitch."
+            )
         return [root / line for line in result.stdout.splitlines() if line]
 
     try:
@@ -188,7 +213,9 @@ def stitch_secret_candidate_files(root: Path = ROOT) -> list[Path]:
     except subprocess.TimeoutExpired:
         return fallback_candidates()
     if result.returncode not in (0, 1):
-        raise RuntimeError(result.stderr.strip() or "Falha ao buscar candidatos a segredo Stitch.")
+        raise RuntimeError(
+            result.stderr.strip() or "Falha ao buscar candidatos a segredo Stitch."
+        )
     candidates = {root / line for line in result.stdout.splitlines() if line}
     for path in untracked_files(root):
         if path in candidates or not path.is_file():
@@ -215,7 +242,9 @@ def validate_no_versioned_secret(root: Path = ROOT) -> list[str]:
             match = pattern.search(content)
             if match:
                 relative = path.relative_to(root)
-                errors.append(f"Possivel segredo Stitch versionado em {relative}: {match.group(0).strip()}")
+                errors.append(
+                    f"Possivel segredo Stitch versionado em {relative}: {match.group(0).strip()}"
+                )
                 break
     return errors
 
@@ -228,7 +257,11 @@ def validate_stitch_mcp_config(
 ) -> list[str]:
     errors: list[str] = []
     try:
-        errors.extend(validate_policy(load_policy(root / "config" / "autonomy" / "stitch_mcp_policy.json")))
+        errors.extend(
+            validate_policy(
+                load_policy(root / "config" / "autonomy" / "stitch_mcp_policy.json")
+            )
+        )
     except ValueError as exc:
         errors.append(str(exc))
     should_validate_config = require_codex_config and (
@@ -246,19 +279,34 @@ def validate_stitch_mcp_config(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Valida a configuracao obrigatoria do MCP Stitch.")
-    parser.add_argument("--config", type=Path, default=DEFAULT_CODEX_CONFIG, help="Arquivo config.toml do Codex.")
-    parser.add_argument("--require-secret", action="store_true", help="Exige STITCH_API_KEY no ambiente.")
+    parser = argparse.ArgumentParser(
+        description="Valida a configuracao obrigatoria do MCP Stitch."
+    )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=DEFAULT_CODEX_CONFIG,
+        help="Arquivo config.toml do Codex.",
+    )
+    parser.add_argument(
+        "--require-secret",
+        action="store_true",
+        help="Exige STITCH_API_KEY no ambiente.",
+    )
     args = parser.parse_args()
 
-    errors = validate_stitch_mcp_config(config_path=args.config, require_secret=args.require_secret)
+    errors = validate_stitch_mcp_config(
+        config_path=args.config, require_secret=args.require_secret
+    )
     if errors:
         print("\nFalhas de validacao do MCP Stitch:")
         for error in errors:
             print(f"- {error}")
         return 1
 
-    print("\nMCP Stitch validado com sucesso: configuracao persistente e politica versionada em conformidade.")
+    print(
+        "\nMCP Stitch validado com sucesso: configuracao persistente e politica versionada em conformidade."
+    )
     return 0
 
 

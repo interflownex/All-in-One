@@ -3,7 +3,6 @@ from pathlib import Path
 
 from modules.shared.domain_rules import MODULE_ENTITIES, event_for_create, rule_for
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

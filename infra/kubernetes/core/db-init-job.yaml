@@ -7,24 +7,24 @@ spec:
   template:
     spec:
       containers:
-      - name: psql
-        image: postgres:16
-        command:
-        - sh
-        - -c
-        - |
-          export PGPASSWORD="strong-password"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE identity_db;"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE api_hub_db;"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE jobs_db;"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE finance_db;"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE marketplace_db;"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE delivery_db;"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE wms_db;"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE tms_db;"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE erp_db;"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE health_db;"
-          psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE legal_db;"
-          echo "Bancos de dados criados com sucesso."
+        - name: psql
+          image: postgres:16
+          command:
+            - sh
+            - -c
+            - |
+              export PGPASSWORD="strong-password"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE identity_db;"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE api_hub_db;"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE jobs_db;"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE finance_db;"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE marketplace_db;"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE delivery_db;"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE wms_db;"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE tms_db;"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE erp_db;"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE health_db;"
+              psql -h 10.93.0.2 -U postgres -c "CREATE DATABASE legal_db;"
+              echo "Bancos de dados criados com sucesso."
       restartPolicy: Never
   backoffLimit: 4

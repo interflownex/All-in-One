@@ -1,43 +1,123 @@
 steps:
   # Core
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/identity:latest', '-f', 'modules/identity/Dockerfile', '.']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/api-hub:latest', '-f', 'modules/api_hub/Dockerfile', '.']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/jobs:latest', '-f', 'modules/jobs/Dockerfile', '.']
-  
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/identity:latest",
+        "-f",
+        "modules/identity/Dockerfile",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/api-hub:latest",
+        "-f",
+        "modules/api_hub/Dockerfile",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/jobs:latest",
+        "-f",
+        "modules/jobs/Dockerfile",
+        ".",
+      ]
+
   # Business & Finance
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/business:latest', '-f', 'modules/business/Dockerfile', '.']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/finance:latest', '-f', 'modules/finance/Dockerfile', '.']
-  
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/business:latest",
+        "-f",
+        "modules/business/Dockerfile",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/finance:latest",
+        "-f",
+        "modules/finance/Dockerfile",
+        ".",
+      ]
+
   # Operations
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/marketplace:latest', '-f', 'modules/marketplace/Dockerfile', '.']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/delivery:latest', '-f', 'modules/delivery/Dockerfile', '.']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/wms:latest', '-f', 'modules/wms/Dockerfile', '.']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/tms:latest', '-f', 'modules/tms/Dockerfile', '.']
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/marketplace:latest",
+        "-f",
+        "modules/marketplace/Dockerfile",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/delivery:latest",
+        "-f",
+        "modules/delivery/Dockerfile",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/wms:latest",
+        "-f",
+        "modules/wms/Dockerfile",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/tms:latest",
+        "-f",
+        "modules/tms/Dockerfile",
+        ".",
+      ]
 
   # Workers
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/outbox-dispatcher:latest', '-f', 'workers/outbox_dispatcher/Dockerfile', '.']
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/outbox-dispatcher:latest",
+        "-f",
+        "workers/outbox_dispatcher/Dockerfile",
+        ".",
+      ]
 
 images:
-  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/identity:latest'
-  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/api-hub:latest'
-  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/jobs:latest'
-  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/business:latest'
-  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/finance:latest'
-  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/marketplace:latest'
-  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/delivery:latest'
-  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/wms:latest'
-  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/tms:latest'
-  - 'us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/outbox-dispatcher:latest'
+  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/identity:latest"
+  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/api-hub:latest"
+  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/jobs:latest"
+  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/business:latest"
+  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/finance:latest"
+  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/marketplace:latest"
+  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/delivery:latest"
+  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/wms:latest"
+  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/tms:latest"
+  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/outbox-dispatcher:latest"
 
 options:
   logging: CLOUD_LOGGING_ONLY

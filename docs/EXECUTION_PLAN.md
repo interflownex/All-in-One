@@ -5,10 +5,12 @@ Branch operacional deste checkout: `worktree-sync` -> `origin/worktree-sync`
 Meta: transformar o MVP backend/data atual em beta operacional validado, com infraestrutura estavel, PostgreSQL real por modulo, jornadas E2E e integracoes externas homologadas.
 
 Coordenada operacional atual:
+
 - Executar em modo `local-first`, sem custo obrigatorio de Google Cloud neste momento.
 - Manter compatibilidade com futura migracao para Google/AlloyDB preservando migrations, DSNs PostgreSQL, manifests e contratos ja versionados.
 
 Atualizacao de fronteira:
+
 - Em 2026-07-19, a Home principal passou a seguir a referencia visual enviada
   pelo usuario, com paleta azul/ciano/violeta aplicada globalmente e 25 cards
   ligados aos dashboards Stitch existentes. A cobertura Stitch foi regenerada
@@ -51,18 +53,18 @@ Atualizacao de fronteira:
 
 ## 1. Estado consolidado
 
-| Area | Conclusao | Evidencia atual | Leitura operacional |
-| --- | ---: | --- | --- |
-| Git e sincronizacao remota | 100% local | `worktree-sync` alinhado com `origin/worktree-sync` (`behind=0 ahead=0`); remoto `fork` indisponivel neste checkout | Fluxo de entrega via `origin` esta operacional; `fork` continua como fallback quando configurado. |
-| Contratos de microservicos | 100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base | Superficie contratual completa para evoluir. |
-| PostgreSQL estrutural | 90% | 15 migrations SQL, stores para 25 modulos, suite de matriz estrutural para todos os adapters PostgreSQL e suite viva preparada para os 25 modulos tipados | Schema amplo existe; falta converter a cobertura pronta em evidencia real de banco vivo. |
-| Runtime FastAPI modular | 88% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado, carregamento dinamico por DSN validado em containers e resolucao obrigatoria de store tipado para modulos conhecidos | Base local estabilizada; falta ampliar testes E2E por jornada. |
-| Mensageria/outbox | 91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais. |
-| MongoDB/NoSQL | 62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift | Precisa validacao viva em MongoDB real e uso operacional pelos modulos. |
-| Docker local | 100% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real, contexto Docker higienizado por `.dockerignore`, Docker DX persistente em `config/autonomy/docker_dx_policy.json` + `.env.docker-dx`, reparo sem sudo para plugins Compose/Buildx em `~/.docker/cli-plugins` e gate vivo `all-in-one-dx` validado neste host com 13 APIs healthy | Frente Docker local fechada; manter observacao do workflow remoto e regressao a cada mudanca de runtime/compose. |
-| Apps/frontend | 95% | Home alinhada a referencia visual do usuario, paleta global azul/ciano/violeta, 25 dashboards Stitch, 181 telas esperadas e 180 sincronizadas, 335 rotas React auditadas na build de producao, dez cenarios com midia por modulo, CRUD comum funcional, build Vite, smoke HTTP e jornadas Playwright aprovados; workflow Cloudflare Pages, Wrangler, headers e fallback SPA versionados | Falta sincronizar a nova tela Finance no Stitch, publicar com credenciais/aceite Cloudflare, apontar o API Hub externo e repetir as 335 rotas contra os servicos vivos. |
-| Integracoes externas | 42% | Contratos, matriz versionada, adapters sandbox, endpoints administrativos locais e Firebase Auth Google real no Valley Android existem | Demais provedores reais dependem de credenciais/homologacao e testes de contrato externos. |
-| Producao/compliance | 59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva. |
+| Area                       |  Conclusao | Evidencia atual                                                                                                                                                                                                                                                                                                                                                                              | Leitura operacional                                                                                                                                                     |
+| -------------------------- | ---------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Git e sincronizacao remota | 100% local | `worktree-sync` alinhado com `origin/worktree-sync` (`behind=0 ahead=0`); remoto `fork` indisponivel neste checkout                                                                                                                                                                                                                                                                          | Fluxo de entrega via `origin` esta operacional; `fork` continua como fallback quando configurado.                                                                       |
+| Contratos de microservicos |       100% | 25 modulos com OpenAPI, contratos, Dockerfile, docs e testes base                                                                                                                                                                                                                                                                                                                            | Superficie contratual completa para evoluir.                                                                                                                            |
+| PostgreSQL estrutural      |        90% | 15 migrations SQL, stores para 25 modulos, suite de matriz estrutural para todos os adapters PostgreSQL e suite viva preparada para os 25 modulos tipados                                                                                                                                                                                                                                    | Schema amplo existe; falta converter a cobertura pronta em evidencia real de banco vivo.                                                                                |
+| Runtime FastAPI modular    |        88% | Runtime comum, autorizacao, auditoria, outbox, catalogo Valley regionalizado, carregamento dinamico por DSN validado em containers e resolucao obrigatoria de store tipado para modulos conhecidos                                                                                                                                                                                           | Base local estabilizada; falta ampliar testes E2E por jornada.                                                                                                          |
+| Mensageria/outbox          |        91% | RabbitMQ, dispatcher com correlation_id, retry/backoff observavel, metricas Prometheus text, alertas e dashboard versionados, testes criticos e payload seguro para eventos Valley/catalogo, Jobs, retencao e dominios operacionais centrais                                                                                                                                                 | Falta aplicar observabilidade no cluster real e conectar consumidores downstream reais.                                                                                 |
+| MongoDB/NoSQL              |        62% | Contrato versionado para AI/social/telemetria, script inicial com JSON Schema, indices de usuario/geoespacial/TTL e teste anti-drift                                                                                                                                                                                                                                                         | Precisa validacao viva em MongoDB real e uso operacional pelos modulos.                                                                                                 |
+| Docker local               |       100% | Postgres, RabbitMQ, MongoDB, Redis, outbox, 13 APIs FastAPI healthy, gate CI Linux com validacao HTTP real, contexto Docker higienizado por `.dockerignore`, Docker DX persistente em `config/autonomy/docker_dx_policy.json` + `.env.docker-dx`, reparo sem sudo para plugins Compose/Buildx em `~/.docker/cli-plugins` e gate vivo `all-in-one-dx` validado neste host com 13 APIs healthy | Frente Docker local fechada; manter observacao do workflow remoto e regressao a cada mudanca de runtime/compose.                                                        |
+| Apps/frontend              |        95% | Home alinhada a referencia visual do usuario, paleta global azul/ciano/violeta, 25 dashboards Stitch, 181 telas esperadas e 180 sincronizadas, 335 rotas React auditadas na build de producao, dez cenarios com midia por modulo, CRUD comum funcional, build Vite, smoke HTTP e jornadas Playwright aprovados; workflow Cloudflare Pages, Wrangler, headers e fallback SPA versionados      | Falta sincronizar a nova tela Finance no Stitch, publicar com credenciais/aceite Cloudflare, apontar o API Hub externo e repetir as 335 rotas contra os servicos vivos. |
+| Integracoes externas       |        42% | Contratos, matriz versionada, adapters sandbox, endpoints administrativos locais e Firebase Auth Google real no Valley Android existem                                                                                                                                                                                                                                                       | Demais provedores reais dependem de credenciais/homologacao e testes de contrato externos.                                                                              |
+| Producao/compliance        |        59% | `docs/COMPLIANCE.md`, matriz LGPD por modulo, fluxo de direitos do titular, contrato, worker local, fila PostgreSQL, agendamento seguro e PrometheusRule/AlertmanagerConfig de retencao LGPD                                                                                                                                                                                                 | Faltam aplicar os manifests no cluster real, mutacoes finais nos stores de dominio, DPIA assinada, pentest, carga, DR, backup/restore e observabilidade produtiva.      |
 
 ## 2. Ordem mandataria de execucao
 
@@ -73,6 +75,7 @@ Objetivo: impedir regressao enquanto o projeto avanca.
 Status: 100% no checkout local
 
 Entregas esperadas:
+
 - Manter `main` limpo e sincronizado com `origin` e `fork`.
 - Executar `git add`, `git commit` e `git push` ao concluir cada atividade.
 - Atualizar `STATUS.md` e este plano quando a realidade mudar.
@@ -82,7 +85,7 @@ Entregas esperadas:
 - Em 2026-07-15, `scripts/check_git_sync.py` passou a resolver o branch do
   upstream configurado antes de cair no nome da branch local; neste worktree
   `worktree-sync -> origin/main`, o gate padrao valida `origin/main:
-  behind=0 ahead=0` e apenas avisa quando `fork` esta ausente.
+behind=0 ahead=0` e apenas avisa quando `fork` esta ausente.
 - Em 2026-07-15, `scripts/check_generated_artifacts.py` voltou a passar sem
   rebaixar docs operacionais dos shells vivos; `scripts/scaffold_modules.py`
   preserva os README/STATUS customizados dos apps com API Hub conectado.
@@ -91,12 +94,14 @@ Entregas esperadas:
   bloqueia o remoto gravavel atual.
 
 Pendencias:
+
 - Executar o gate de divergencia em ambiente com PowerShell Core disponivel e
   credenciais remotas configuradas.
 - Gate Python/CI de artefatos gerados e Git Sync Linux entregues; manter
   execucao em todo fechamento.
 
 Proximos passos naturais:
+
 1. Rodar `scripts/check_git_sync.py` no fechamento de cada incremento; usar
    `scripts/check_git_sync.ps1` apenas quando PowerShell Core estiver
    disponivel no host.
@@ -111,6 +116,7 @@ Objetivo: todos os servicos essenciais precisam subir de forma previsivel.
 Status: 100%
 
 Entregas ja existentes:
+
 - `postgres`, `rabbitmq`, `mongodb` e `redis` sobem.
 - Flags Google/AlloyDB/Stitch remoto podem permanecer desativadas sem bloquear a operacao local obrigatoria.
 - Migrations rodam via servico `migrations`.
@@ -138,18 +144,19 @@ Entregas ja existentes:
 - Neste host, `docker compose version`, `docker buildx version`,
   `docker mcp version`, `python3 scripts/configure_docker_dx.py --check` e
   `docker compose --env-file .env.docker-dx -f infra/docker/docker-compose.yml
-  config --quiet` responderam com sucesso apos o reparo.
+config --quiet` responderam com sucesso apos o reparo.
 - O gate vivo
   `python3 scripts/validate_compose_health.py --env-file .env.docker-dx
-  --project-name all-in-one-dx --require-free-ports --down-after
-  --command-timeout-seconds 900 --timeout-seconds 600
-  --probe-timeout-seconds 1` passou neste host com banco limpo, migrations e 13
+--project-name all-in-one-dx --require-free-ports --down-after
+--command-timeout-seconds 900 --timeout-seconds 600
+--probe-timeout-seconds 1` passou neste host com banco limpo, migrations e 13
   APIs FastAPI healthy.
 - Em 2026-07-19, a configuracao Compose voltou a passar e os probes de
   Compose/Buildx foram endurecidos para aguardar ate 45s, eliminando o falso
   negativo observado com o daemon lento.
 
 Pendencias:
+
 - Medir tempo de rebuild dos containers Python no runner remoto apos reducao do
   contexto Docker.
 - Acompanhar execucoes do workflow `compose-health.yml` no GitHub em ambiente
@@ -157,6 +164,7 @@ Pendencias:
 - Executar o smoke test opt-in de banco limpo para migrations PostgreSQL em ambiente com imagem/base disponivel.
 
 Proximos passos naturais:
+
 1. Observar o gate `compose-health.yml` apos pushes que alterem runtime,
    migrations, workers ou compose.
 2. Rodar `python3 scripts/configure_docker_dx.py --print-status` e a validacao
@@ -170,11 +178,13 @@ Proximos passos naturais:
 Objetivo: trocar o contrato local por persistencia PostgreSQL real, auditavel e testada.
 
 Diretriz de menor manutencao:
+
 - O banco operacional atual deve ser PostgreSQL local/self-managed, usando os mesmos contratos e migrations preparados para futura migracao a AlloyDB.
 
 Status: 95%
 
 Entregas ja existentes:
+
 - 15 migrations PostgreSQL.
 - `BasePostgresStore` compartilhado.
 - Stores especializados para `jobs`, `identity`, `finance`, `api_hub`, `business`, `marketplace`, `delivery`, `services` e `mobility`.
@@ -182,6 +192,7 @@ Entregas ja existentes:
 - Idempotencia espalhada nas principais tabelas.
 
 Pendencias:
+
 - Validar migrations 001-015 em banco limpo e banco ja populado fora do GitHub
   Actions via smoke efemero ou `scripts/validate_postgres_real_dsn.py` com DSN
   real de homologacao.
@@ -198,6 +209,7 @@ Pendencias:
 - Eliminar usos reais remanescentes de stores genericos em fluxos PostgreSQL e manter o runtime falhando rapido quando um store tipado obrigatorio estiver ausente.
 
 Prioridade de tipagem por risco:
+
 1. `finance`
 2. `identity`
 3. `business`
@@ -210,6 +222,7 @@ Prioridade de tipagem por risco:
 10. Demais modulos operacionais
 
 Proximos passos naturais:
+
 1. Rodar `scripts/validate_postgres_real_dsn.py --apply-migrations --repeat-migrations --write-checks` com `ALL_IN_ONE_POSTGRES_MATRIX_DSN` apontando para PostgreSQL real.
 2. Rodar `tests/test_postgres_priority_stores_integration.py` em ambiente com DSN real para obter prova CRUD viva adicional nos 25 stores tipados.
 3. Evoluir `tests/test_postgres_stores_matrix.py` com fixtures completas antes
@@ -219,6 +232,7 @@ Proximos passos naturais:
 6. Corrigir cada store gerado que tentar gravar colunas inexistentes.
 
 Nota operacional atual:
+
 - Em 2026-07-19, o smoke opt-in executou `postgres:16` efemero neste host e
   concluiu com `1 passed in 210.95s`; a evidencia local de banco limpo deixou
   de ser pendencia.
@@ -267,6 +281,7 @@ Objetivo: garantir comunicacao assincroma confiavel e rastreavel.
 Status: 91%
 
 Entregas ja existentes:
+
 - `audit.domain_events`.
 - Worker `outbox-dispatcher`.
 - Testes de integracao com RabbitMQ para fluxo critico.
@@ -297,6 +312,7 @@ Entregas ja existentes:
   processos, carriers e documentos fiscais, sempre por allowlist.
 
 Pendencias:
+
 - Aplicar `infra/kubernetes/base/outbox-alerting.yaml` e importar
   `config/observability/outbox_dashboard.json` no cluster/ferramenta real.
 - Conectar consumidores downstream reais e validar comportamento ponta a ponta
@@ -306,6 +322,7 @@ Pendencias:
   enderecos, prontuario e payload bruto fora das mensagens.
 
 Proximos passos naturais:
+
 1. Aplicar alertas e dashboard no ambiente Kubernetes/observabilidade real.
 2. Criar fixtures de consumidor reais para payloads publicados por dominio.
 3. Rodar dispatcher contra consumidores reais de cada dominio.
@@ -318,6 +335,7 @@ Objetivo: transformar microservicos em jornadas de produto.
 Status: 91%
 
 Apps e prioridades:
+
 - `all-in-one-user`: cadastro, wallet, busca, compra, delivery, jobs.
 - `all-in-one-business`: empresa, aprovacao, usuarios, jobs, ERP, relatorios.
 - `all-in-one-riders`: candidatura, documento, veiculo, entrega/corrida, ganhos.
@@ -441,12 +459,14 @@ Apps e prioridades:
   bruto.
 
 Pendencias:
+
 - Homologar as jornadas contra provedores externos reais quando credenciais e
   ambientes responsivos estiverem disponiveis.
 - Acompanhar regressao Playwright/pytest dos shells vivos em cada mudanca de
   frontend, gateway ou regras de dominio.
 
 Proximos passos naturais:
+
 1. Manter as 7 jornadas contratuais locais e os Playwright vivos como base de
    regressao de produto.
 2. Homologar KYB, Apigee API Hub e provedores externos quando o ambiente
@@ -460,6 +480,7 @@ Objetivo: substituir mocks/contratos por provedores reais.
 Status: 42%
 
 Pendencias por area:
+
 - Identity: OIDC, MFA real, KYC/KYB, liveness, biometria e consentimento LGPD.
 - Finance: PSP/Pix, split, escrow, refund, conciliacao, antifraude e fiscal.
 - Jobs: verificador oficial CTPS Digital ou integrador autorizado.
@@ -469,6 +490,7 @@ Pendencias por area:
 - API Hub: OAuth2, API keys, webhooks assinados, sandbox e rate limits reais.
 
 Entregas ja existentes:
+
 - Firebase project `all-in-one-498012`, app Android `com.example.valley` e
   provider `google.com` habilitado sem billing; Credential Manager troca o
   Google ID token por sessao Firebase antes de provisionar a sessao Valley.
@@ -538,13 +560,14 @@ Entregas ja existentes:
   45s e passou a reportar explicitamente quando a sonda expira.
 
 Proximos passos naturais:
+
 1. Reativar/associar billing do projeto `all-in-one-498012` sem contornar
    politica de provedor.
 2. Renovar ADC com `~/google-cloud-sdk/bin/gcloud auth application-default
-   login` em terminal interativo e definir o projeto com `gcloud config set
-   project all-in-one-498012` se `--status` mostrar `(unset)`.
+login` em terminal interativo e definir o projeto com `gcloud config set
+project all-in-one-498012` se `--status` mostrar `(unset)`.
 3. Reexecutar `PATH="$HOME/google-cloud-sdk/bin:$PATH" python3
-   scripts/configure_apigee_api_hub.py --apply --timeout 120` para aplicar o
+scripts/configure_apigee_api_hub.py --apply --timeout 120` para aplicar o
    grant KMS restante.
 4. Validar importacao automatica dos proxies Apigee para o API Hub do projeto
    host.
@@ -558,6 +581,7 @@ Objetivo: sair de beta tecnica para producao auditavel.
 Status: 64%
 
 Pendencias:
+
 - Aplicar mutacoes finais nos stores de dominio apos homologacao de dry-run por modulo.
 - Aplicar manifests de monitoramento no cluster real e validar disparo controlado dos alertas.
 - DPIA assinada por modulo critico.
@@ -569,6 +593,7 @@ Pendencias:
 - Executar revisao trimestral de permissoes sensiveis com evidencias reais.
 
 Proximos passos naturais:
+
 1. Aplicar manifests de monitoramento no cluster real e validar disparo controlado dos alertas.
 2. Aplicar mutacoes finais nos stores de dominio apos homologacao de dry-run.
 3. Executar restore de Postgres/Mongo/storage privado contra ambiente isolado
@@ -584,33 +609,33 @@ Proximos passos naturais:
 
 ## 3. Matriz por modulo
 
-| Modulo | Conclusao | Estado | Pendencia principal | Proximo passo |
-| --- | ---: | --- | --- | --- |
-| `identity` | 88% | Contrato, runtime, PostgreSQL especializado, cadastro/login/KYC/MFA E2E, container healthy, negativas de documento/telefone no registro publico e entidades sensiveis alinhadas a catalogo/migrations/store cobertas por testes | KYC/KYB/liveness reais | Homologar provedor KYC/KYB/liveness e repetir evidencias negativas com dados controlados |
-| `business` | 81% | Companies, memberships, idempotencia, store tipado, criacao/aprovacao de empresa, convite operacional com atribuicao de papel, negativas de role invalido/ativacao nao autorizada e catalogo de eventos runtime cobertos por testes | Fluxo KYB real homologado | Homologar KYB real e repetir evidencias de membership com dados produtivos controlados |
-| `permissions` | 73% | RBAC/ABAC modelado, store gerado, matriz versionada, consumidores sensiveis de dominio ligados a `sensitive_permissions_review` e testes HTTP negativos/positivos para endpoints Identity/Finance/Health | Homologar enforcement RBAC/ABAC em ambiente real e revisar ABAC fino por tenant/contexto | Executar revisao RBAC/ABAC com dados homologados e ampliar evidencias por modulo critico restante |
-| `finance` | 75% | Wallet, ledger, escrow, store tipado, ledger Gold Valley append-only e catalogo Finance reconciliado com `valley_gold_ledger_entries`/evento `valley.gold.ledger.posted` | PSP/Pix/split/fiscal reais | Conectar compra Gold a PSP/Pix real e manter saldo derivado por ledger em homologacao |
-| `marketplace` | 74% | Catalogo, pedidos, store tipado, jornada pytest consumidor -> wallet -> escrow -> pedido -> pagamento sandbox, suporte/disputa, reviews com moderacao basica auditavel e observabilidade comercial segura no API Hub | Checkout completo, pagamento real, fulfillment com provider homologado e notificacoes vivas | Expandir checkout/fulfillment com provedor homologado e conectar notificacoes/dashboards ao ambiente vivo |
-| `stock` | 69% | Dropshipping, fornecedores modelados, adapter sandbox `SupplierCatalogSandbox` com rota administrativa/testes e lifecycle local de `supplier_orders` com tracking/eventos | Integracoes reais de fornecedores | Homologar fornecedor real e repetir tracking de pedido fornecedor com provider homologado |
-| `delivery` | 78% | Entregas, riders, cotacao, atribuicao, coleta/conclusao, POD append-only com hash/storage privado e entrega `completed` coberta por pytest/Playwright | Tracking real, matching e mapas/antifraude homologados | Homologar tracking/matching/POD com provider real e arquivos em storage final |
-| `riders` | 70% | Candidatura, documentos, aprovacao, ativacao, veiculos e painel pos-ativacao com ganhos/documentos cobertos por pytest/Playwright | Ganhos financeiros reais e antifraude documental homologada | Homologar repasse de ganhos e validacao documental com providers reais |
-| `services` | 75% | Prestadores, aprovacao, contrato, escrow operacional referenciado, evidencia documental e pos-atendimento cobertos por pytest/Playwright | Anti-burla avancado e escrow Finance homologado | Homologar liberacao de escrow, disputa e anti-burla com provider real |
-| `mobility` | 78% | Rides, tickets QR/NFC tokenizados, ETA auditavel, tarifa versionada, aceite/conclusao e corrida/ticket cobertos por pytest/Playwright | ETA dinamico, NFC real e tarifas produtivas homologadas | Homologar mapas/ETA, NFC e tarifas dinamicas com providers reais |
-| `jobs` | 90% | CTPS/cofre/outbox/testes, jornada candidato -> vaga -> recrutador, fluxo triagem -> shortlist -> entrevista e catalogo de eventos operacionais Jobs cobertos por pytest | Homologacao CTPS oficial e Playwright E2E final | Homologar CTPS oficial e levar triagem/entrevista para Playwright vivo |
-| `api_hub` | 83% | API keys/webhooks, SQL refinado, rotas gateway de API key/webhook, testes de rate limit e catalogo de eventos administrativos cobertos por pytest | OAuth2 real e testes de proxy com servicos vivos | Testar OAuth2 real, assinatura de webhooks de saida e rate limit com Redis real |
-| `erp` | 71% | Fiscal/accounting modelado, `ErpPostgresStore` tipado, billing create/detail/cancel, payables aprovados/baixados, receivables recebidos/conciliados com MFA e catalogo de eventos fiscais cobertos por pytest | Fluxos contabeis reais e conciliacao fiscal homologados | Homologar integracoes contabeis/fiscais reais e conciliacao bancaria produtiva controlada |
-| `wms` | 70% | Armazem/inventario modelados, `WmsPostgresStore` tipado, recebimento/alocacao, picking fechado com MFA e despacho auditavel cobertos por pytest | Operacao real de estoque homologada | Homologar coletores/estoque fisico real e ampliar evidencias com operacao controlada |
-| `tms` | 71% | Fretes/transportadoras modelados, `TmsPostgresStore` tipado, frete aprovado/despachado/concluido, POD privado append-only, auditoria fechada com MFA e catalogo de eventos de carrier cobertos por pytest | Torre de controle e POD real homologados | Homologar torre de controle/POD real e ampliar evidencias com transportadoras controladas |
-| `crm` | 70% | Leads/oportunidades modelados, `CrmPostgresStore` tipado, lead qualificado, atividade concluida, oportunidade proposta/ganha com MFA e campanha lancada cobertos por pytest | Pipeline e campanhas reais homologados | Homologar pipeline/campanhas reais e ampliar evidencias com dados comerciais controlados |
-| `bpm` | 70% | Processos/workflows modelados, `BpmPostgresStore` tipado, timers/SLA, tarefas com `due_at`, escalonamento MFA e eventos `bpm.task.escalated`/`bpm.task.completed` cobertos por pytest | Engine real de workflow homologada | Homologar engine/worker de timers em ambiente real e ampliar evidencias de escalonamento produtivo |
-| `document` | 70% | GED/OCR/assinatura modelados, `DocumentPostgresStore` tipado, upload com cofre privado/KMS/hash, versoes append-only e eventos `document.uploaded`/`document.versioned` cobertos por pytest | OCR, assinatura e storage final homologados | Homologar bucket/KMS/OCR/assinatura reais e ampliar evidencias com arquivos produtivos |
-| `hr` | 70% | HCM/ATS/LMS modelado, `HrPostgresStore` tipado, colaborador admitido, folha fechada com MFA, treinamento atribuido/concluido e eventos HR cobertos por pytest | Folha, ponto e LMS reais homologados | Homologar folha/ponto/LMS reais e ampliar evidencias com dados produtivos controlados |
-| `health` | 68% | Pacientes, agenda, dado sensivel, consulta, consentimento LGPD e prontuario protegido cobertos por pytest/Playwright | Telemedicina, prescricao e governanca clinica homologadas | Homologar telemedicina/prescricao e governanca clinica com provider real |
-| `vision` | 68% | Dispositivos, streams com URL hasheada, lifecycle de device/stream catalogado, gravacoes append-only, alertas de movimento, triagem/resolucao com MFA e eventos Vision cobertos por pytest | Ingestao de video e IA produtivas homologadas | Homologar ingestao de video/IA e ampliar evidencias com streams reais controlados |
-| `legal` | 67% | Casos/prazos/audiencias modelados, `LegalPostgresStore` tipado, casos com tipo/abertura/risco e fluxo prazo -> alerta MFA -> conclusao coberto por pytest | Integracoes tribunal/calendario homologadas | Homologar integracoes tribunal/calendario e ampliar evidencias com prazos reais controlados |
-| `property` | 67% | Imoveis/unidades/locacoes modelados, `PropertyPostgresStore` tipado, locacao ativada com MFA e manutencao solicitada/agendada/concluida cobertas por pytest | Condominio e manutencao reais homologados | Homologar operacao condominial/manutencao real e ampliar evidencias com prestadores controlados |
-| `bi` | 69% | Datasets/dashboards modelados, `BiPostgresStore` tipado, dataset com origem/refresh, publicacao MFA, dashboard com `allowed_roles`, indicadores com catalogo de eventos alinhado e exportacao auditavel cobertos por pytest | ETL, permissao analitica e datasets reais homologados | Homologar fontes ETL/permissoes analiticas reais e ampliar evidencias com datasets produtivos controlados |
-| `ai_core` | 69% | Memoria/moderacao/model runs modelados, `AiCorePostgresStore` tipado, memorias indexaveis, moderacao com catalogo de eventos alinhado e execucao com adapter/provider/modelo/tokens/custo aprovado por MFA cobertos por pytest | Providers IA e governanca produtiva homologados | Homologar providers IA reais, governanca de modelos e custos produtivos controlados |
+| Modulo        | Conclusao | Estado                                                                                                                                                                                                                              | Pendencia principal                                                                         | Proximo passo                                                                                             |
+| ------------- | --------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `identity`    |       88% | Contrato, runtime, PostgreSQL especializado, cadastro/login/KYC/MFA E2E, container healthy, negativas de documento/telefone no registro publico e entidades sensiveis alinhadas a catalogo/migrations/store cobertas por testes     | KYC/KYB/liveness reais                                                                      | Homologar provedor KYC/KYB/liveness e repetir evidencias negativas com dados controlados                  |
+| `business`    |       81% | Companies, memberships, idempotencia, store tipado, criacao/aprovacao de empresa, convite operacional com atribuicao de papel, negativas de role invalido/ativacao nao autorizada e catalogo de eventos runtime cobertos por testes | Fluxo KYB real homologado                                                                   | Homologar KYB real e repetir evidencias de membership com dados produtivos controlados                    |
+| `permissions` |       73% | RBAC/ABAC modelado, store gerado, matriz versionada, consumidores sensiveis de dominio ligados a `sensitive_permissions_review` e testes HTTP negativos/positivos para endpoints Identity/Finance/Health                            | Homologar enforcement RBAC/ABAC em ambiente real e revisar ABAC fino por tenant/contexto    | Executar revisao RBAC/ABAC com dados homologados e ampliar evidencias por modulo critico restante         |
+| `finance`     |       75% | Wallet, ledger, escrow, store tipado, ledger Gold Valley append-only e catalogo Finance reconciliado com `valley_gold_ledger_entries`/evento `valley.gold.ledger.posted`                                                            | PSP/Pix/split/fiscal reais                                                                  | Conectar compra Gold a PSP/Pix real e manter saldo derivado por ledger em homologacao                     |
+| `marketplace` |       74% | Catalogo, pedidos, store tipado, jornada pytest consumidor -> wallet -> escrow -> pedido -> pagamento sandbox, suporte/disputa, reviews com moderacao basica auditavel e observabilidade comercial segura no API Hub                | Checkout completo, pagamento real, fulfillment com provider homologado e notificacoes vivas | Expandir checkout/fulfillment com provedor homologado e conectar notificacoes/dashboards ao ambiente vivo |
+| `stock`       |       69% | Dropshipping, fornecedores modelados, adapter sandbox `SupplierCatalogSandbox` com rota administrativa/testes e lifecycle local de `supplier_orders` com tracking/eventos                                                           | Integracoes reais de fornecedores                                                           | Homologar fornecedor real e repetir tracking de pedido fornecedor com provider homologado                 |
+| `delivery`    |       78% | Entregas, riders, cotacao, atribuicao, coleta/conclusao, POD append-only com hash/storage privado e entrega `completed` coberta por pytest/Playwright                                                                               | Tracking real, matching e mapas/antifraude homologados                                      | Homologar tracking/matching/POD com provider real e arquivos em storage final                             |
+| `riders`      |       70% | Candidatura, documentos, aprovacao, ativacao, veiculos e painel pos-ativacao com ganhos/documentos cobertos por pytest/Playwright                                                                                                   | Ganhos financeiros reais e antifraude documental homologada                                 | Homologar repasse de ganhos e validacao documental com providers reais                                    |
+| `services`    |       75% | Prestadores, aprovacao, contrato, escrow operacional referenciado, evidencia documental e pos-atendimento cobertos por pytest/Playwright                                                                                            | Anti-burla avancado e escrow Finance homologado                                             | Homologar liberacao de escrow, disputa e anti-burla com provider real                                     |
+| `mobility`    |       78% | Rides, tickets QR/NFC tokenizados, ETA auditavel, tarifa versionada, aceite/conclusao e corrida/ticket cobertos por pytest/Playwright                                                                                               | ETA dinamico, NFC real e tarifas produtivas homologadas                                     | Homologar mapas/ETA, NFC e tarifas dinamicas com providers reais                                          |
+| `jobs`        |       90% | CTPS/cofre/outbox/testes, jornada candidato -> vaga -> recrutador, fluxo triagem -> shortlist -> entrevista e catalogo de eventos operacionais Jobs cobertos por pytest                                                             | Homologacao CTPS oficial e Playwright E2E final                                             | Homologar CTPS oficial e levar triagem/entrevista para Playwright vivo                                    |
+| `api_hub`     |       83% | API keys/webhooks, SQL refinado, rotas gateway de API key/webhook, testes de rate limit e catalogo de eventos administrativos cobertos por pytest                                                                                   | OAuth2 real e testes de proxy com servicos vivos                                            | Testar OAuth2 real, assinatura de webhooks de saida e rate limit com Redis real                           |
+| `erp`         |       71% | Fiscal/accounting modelado, `ErpPostgresStore` tipado, billing create/detail/cancel, payables aprovados/baixados, receivables recebidos/conciliados com MFA e catalogo de eventos fiscais cobertos por pytest                       | Fluxos contabeis reais e conciliacao fiscal homologados                                     | Homologar integracoes contabeis/fiscais reais e conciliacao bancaria produtiva controlada                 |
+| `wms`         |       70% | Armazem/inventario modelados, `WmsPostgresStore` tipado, recebimento/alocacao, picking fechado com MFA e despacho auditavel cobertos por pytest                                                                                     | Operacao real de estoque homologada                                                         | Homologar coletores/estoque fisico real e ampliar evidencias com operacao controlada                      |
+| `tms`         |       71% | Fretes/transportadoras modelados, `TmsPostgresStore` tipado, frete aprovado/despachado/concluido, POD privado append-only, auditoria fechada com MFA e catalogo de eventos de carrier cobertos por pytest                           | Torre de controle e POD real homologados                                                    | Homologar torre de controle/POD real e ampliar evidencias com transportadoras controladas                 |
+| `crm`         |       70% | Leads/oportunidades modelados, `CrmPostgresStore` tipado, lead qualificado, atividade concluida, oportunidade proposta/ganha com MFA e campanha lancada cobertos por pytest                                                         | Pipeline e campanhas reais homologados                                                      | Homologar pipeline/campanhas reais e ampliar evidencias com dados comerciais controlados                  |
+| `bpm`         |       70% | Processos/workflows modelados, `BpmPostgresStore` tipado, timers/SLA, tarefas com `due_at`, escalonamento MFA e eventos `bpm.task.escalated`/`bpm.task.completed` cobertos por pytest                                               | Engine real de workflow homologada                                                          | Homologar engine/worker de timers em ambiente real e ampliar evidencias de escalonamento produtivo        |
+| `document`    |       70% | GED/OCR/assinatura modelados, `DocumentPostgresStore` tipado, upload com cofre privado/KMS/hash, versoes append-only e eventos `document.uploaded`/`document.versioned` cobertos por pytest                                         | OCR, assinatura e storage final homologados                                                 | Homologar bucket/KMS/OCR/assinatura reais e ampliar evidencias com arquivos produtivos                    |
+| `hr`          |       70% | HCM/ATS/LMS modelado, `HrPostgresStore` tipado, colaborador admitido, folha fechada com MFA, treinamento atribuido/concluido e eventos HR cobertos por pytest                                                                       | Folha, ponto e LMS reais homologados                                                        | Homologar folha/ponto/LMS reais e ampliar evidencias com dados produtivos controlados                     |
+| `health`      |       68% | Pacientes, agenda, dado sensivel, consulta, consentimento LGPD e prontuario protegido cobertos por pytest/Playwright                                                                                                                | Telemedicina, prescricao e governanca clinica homologadas                                   | Homologar telemedicina/prescricao e governanca clinica com provider real                                  |
+| `vision`      |       68% | Dispositivos, streams com URL hasheada, lifecycle de device/stream catalogado, gravacoes append-only, alertas de movimento, triagem/resolucao com MFA e eventos Vision cobertos por pytest                                          | Ingestao de video e IA produtivas homologadas                                               | Homologar ingestao de video/IA e ampliar evidencias com streams reais controlados                         |
+| `legal`       |       67% | Casos/prazos/audiencias modelados, `LegalPostgresStore` tipado, casos com tipo/abertura/risco e fluxo prazo -> alerta MFA -> conclusao coberto por pytest                                                                           | Integracoes tribunal/calendario homologadas                                                 | Homologar integracoes tribunal/calendario e ampliar evidencias com prazos reais controlados               |
+| `property`    |       67% | Imoveis/unidades/locacoes modelados, `PropertyPostgresStore` tipado, locacao ativada com MFA e manutencao solicitada/agendada/concluida cobertas por pytest                                                                         | Condominio e manutencao reais homologados                                                   | Homologar operacao condominial/manutencao real e ampliar evidencias com prestadores controlados           |
+| `bi`          |       69% | Datasets/dashboards modelados, `BiPostgresStore` tipado, dataset com origem/refresh, publicacao MFA, dashboard com `allowed_roles`, indicadores com catalogo de eventos alinhado e exportacao auditavel cobertos por pytest         | ETL, permissao analitica e datasets reais homologados                                       | Homologar fontes ETL/permissoes analiticas reais e ampliar evidencias com datasets produtivos controlados |
+| `ai_core`     |       69% | Memoria/moderacao/model runs modelados, `AiCorePostgresStore` tipado, memorias indexaveis, moderacao com catalogo de eventos alinhado e execucao com adapter/provider/modelo/tokens/custo aprovado por MFA cobertos por pytest      | Providers IA e governanca produtiva homologados                                             | Homologar providers IA reais, governanca de modelos e custos produtivos controlados                       |
 
 ## 4. Criterios de beta
 

@@ -23,14 +23,14 @@ anonimizacao, descarte e legal hold fica em
 
 ## Matriz De Dados Sensiveis
 
-| Grupo | Modulos | Risco | Controles minimos |
-| --- | --- | --- | --- |
-| Identidade e acesso | `identity`, `permissions`, `api_hub` | Critico/alto | DPIA, MFA, KMS/vault, credenciais hash-only, rotacao, testes negativos de permissao |
-| Dinheiro, fiscal e empresa | `finance`, `business`, `erp` | Critico/alto | PSP/fiscal homologado, ledger append-only, conciliacao, segregacao de funcoes, backup/restore |
-| Trabalho e pessoas | `jobs`, `hr`, `riders` | Critico/alto | Consentimento, cofre documental, retencao trabalhista, auditoria de acessos, validacao documental |
-| Saude, documentos e IA | `health`, `document`, `ai_core`, `vision` | Critico | DPIA especifica, KMS, consentimento explicito, retencao curta quando aplicavel, governanca de modelo |
-| Operacao local | `delivery`, `services`, `mobility`, `property`, `tms`, `wms` | Alto/medio | Opt-in de localizacao, minimizacao de endereco, POD seguro, retencao operacional, permissao por papel |
-| Comercial e analytics | `marketplace`, `stock`, `crm`, `bpm`, `bi`, `legal` | Alto/medio | Anti-burla, opt-out, mascaramento, logs de exportacao, sigilo profissional, controle de margem/custo |
+| Grupo                      | Modulos                                                      | Risco        | Controles minimos                                                                                     |
+| -------------------------- | ------------------------------------------------------------ | ------------ | ----------------------------------------------------------------------------------------------------- |
+| Identidade e acesso        | `identity`, `permissions`, `api_hub`                         | Critico/alto | DPIA, MFA, KMS/vault, credenciais hash-only, rotacao, testes negativos de permissao                   |
+| Dinheiro, fiscal e empresa | `finance`, `business`, `erp`                                 | Critico/alto | PSP/fiscal homologado, ledger append-only, conciliacao, segregacao de funcoes, backup/restore         |
+| Trabalho e pessoas         | `jobs`, `hr`, `riders`                                       | Critico/alto | Consentimento, cofre documental, retencao trabalhista, auditoria de acessos, validacao documental     |
+| Saude, documentos e IA     | `health`, `document`, `ai_core`, `vision`                    | Critico      | DPIA especifica, KMS, consentimento explicito, retencao curta quando aplicavel, governanca de modelo  |
+| Operacao local             | `delivery`, `services`, `mobility`, `property`, `tms`, `wms` | Alto/medio   | Opt-in de localizacao, minimizacao de endereco, POD seguro, retencao operacional, permissao por papel |
+| Comercial e analytics      | `marketplace`, `stock`, `crm`, `bpm`, `bi`, `legal`          | Alto/medio   | Anti-burla, opt-out, mascaramento, logs de exportacao, sigilo profissional, controle de margem/custo  |
 
 ## Gates De Producao
 
@@ -168,7 +168,7 @@ O agendamento declarativo foi adicionado em dois modos:
 - Gerar evidencias de DPIA assinadas por modulo critico.
 - CI de seguranca obrigatorio em `.github/workflows/security.yml`: `pip-audit`
   para SCA Python, `bandit` para SAST Python e `npm audit --omit=dev
-  --audit-level=critical` para lockfiles JavaScript dos apps/desktop.
+--audit-level=critical` para lockfiles JavaScript dos apps/desktop.
 - Catalogo SLO em `config/observability/slo_catalog.json` define objetivos e
   evidencias sem payload sensivel para API Hub, Identity, Finance, Outbox,
   Retention e Jobs.

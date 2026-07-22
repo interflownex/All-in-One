@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `property.lease.created`
+
 - `property.lease.activated`
 - `property.lease.terminated`
 - `property.maintenance.requested`

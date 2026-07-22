@@ -7,6 +7,7 @@ Este documento realiza a correspondência entre os módulos oficiais do projeto 
 A análise da estrutura de diretórios revelou 25 domínios de negócio principais, cada um com seu próprio módulo e contrato de API. O módulo `shared` foi excluído desta lista por ser uma biblioteca transversal, não um domínio de negócio.
 
 Os módulos oficiais são:
+
 1.  `ai_core`
 2.  `api_hub`
 3.  `bi`
@@ -38,6 +39,7 @@ Os módulos oficiais são:
 A seguir, a lista de domínios conceituais do memorando é agrupada sob os módulos oficiais correspondentes.
 
 ### 1. `identity`
+
 - Identidade
 - Usuários
 - Perfis
@@ -46,6 +48,7 @@ A seguir, a lista de domínios conceituais do memorando é agrupada sob os módu
 - Privacidade (parcial)
 
 ### 2. `permissions`
+
 - Autorização
 - RBAC (Role-Based Access Control)
 - ABAC (Attribute-Based Access Control)
@@ -53,10 +56,12 @@ A seguir, a lista de domínios conceituais do memorando é agrupada sob os módu
 - Administração interna (parcial)
 
 ### 3. `business`
+
 - Empresas
 - Configurações (parcial, específico da empresa)
 
 ### 4. `marketplace`
+
 - Marketplace
 - Catálogo
 - Produtos
@@ -65,26 +70,33 @@ A seguir, a lista de domínios conceituais do memorando é agrupada sob os módu
 - Pedidos
 
 ### 5. `stock`
+
 - Estoque
 
 ### 6. `services`
+
 - Serviços
 
 ### 7. `delivery`
+
 - Delivery
 
 ### 8. `riders`
+
 - Riders
 
 ### 9. `mobility`
+
 - Mobility
 
 ### 10. `jobs`
+
 - Jobs
 - Currículos
 - CTPS (Carteira de Trabalho e Previdência Social)
 
 ### 11. `finance`
+
 - Pagamentos
 - Wallet (Carteira)
 - Escrow
@@ -95,56 +107,69 @@ A seguir, a lista de domínios conceituais do memorando é agrupada sob os módu
 - Cobrança
 
 ### 12. `document`
+
 - Documentos
 - Mídia
 
 ### 13. `health`
+
 - Health
 - Agenda (parcial, específico de saúde)
 
 ### 14. `hr` (Recursos Humanos)
+
 - RH
 
 ### 15. `crm` (Customer Relationship Management)
+
 - CRM
 - Atendimento
 - Suporte
 
 ### 16. `erp` (Enterprise Resource Planning)
+
 - ERP
 
 ### 17. `wms` (Warehouse Management System)
+
 - WMS (relacionado a `stock`)
 
 ### 18. `tms` (Transportation Management System)
+
 - TMS (relacionado a `delivery` e `mobility`)
 
 ### 19. `bpm` (Business Process Management)
+
 - BPM
 - Orquestração Helena (provável)
 - Homologação (parcial)
 
 ### 20. `ai_core`
+
 - Inteligência artificial
 - Analytics (parcial)
 
 ### 21. `api_hub`
+
 - API Hub (Gateway de API)
 
 ### 22. `bi` (Business Intelligence)
+
 - Relatórios
 - Analytics (parcial)
 
 ### 23. `legal`
+
 - Legal
 - Compliance (parcial)
 
 ### 24. `property`
+
 - Property (Imóveis)
 
 ### 25. `vision`
-- Vision (Processamento de Imagem/Visão Computacional)
 
+- Vision (Processamento de Imagem/Visão Computacional)
 
 ## Domínios Transversais e Não Mapeados Diretamente
 

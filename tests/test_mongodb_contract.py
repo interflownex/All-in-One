@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config" / "database" / "mongodb_contract.json"
 INIT_SCRIPT = ROOT / "database" / "mongodb" / "init" / "001_ai_social_telemetry.js"

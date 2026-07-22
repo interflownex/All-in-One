@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `permissions.roles`
+
 - `permissions.permissions`
 - `permissions.user_roles`
 - `permissions.access_policies`

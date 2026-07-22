@@ -9,13 +9,8 @@
   "wrangler_config": "apps/all-in-one/wrangler.jsonc",
   "security_headers": "apps/all-in-one/public/_headers",
   "workflow": ".github/workflows/cloudflare-pages.yml",
-  "required_secrets": [
-    "CLOUDFLARE_API_TOKEN",
-    "CLOUDFLARE_ACCOUNT_ID"
-  ],
-  "required_variables": [
-    "VITE_API_HUB_URL"
-  ],
+  "required_secrets": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"],
+  "required_variables": ["VITE_API_HUB_URL"],
   "rules": [
     "Nunca versionar tokens Cloudflare ou tokens de usuario do API Hub.",
     "Toda rota React deve responder pelo fallback SPA no Cloudflare Pages.",

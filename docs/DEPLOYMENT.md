@@ -14,8 +14,8 @@
    A documentacao oficial usa `http_headers`; neste workspace, persista o
    header por `env_http_headers` e configure a credencial rotacionada em
    `STITCH_API_KEY` apenas no ambiente local/CI.
-Para o agente de IA Superdesign, configure `OPENROUTER_API_KEY` no seu ambiente local
-e aponte a URL base para `https://openrouter.ai/api/v1`.
+   Para o agente de IA Superdesign, configure `OPENROUTER_API_KEY` no seu ambiente local
+   e aponte a URL base para `https://openrouter.ai/api/v1`.
    O estado padrao do workspace e `local-first`, sem custo obrigatorio e sem
    dependencia operacional de Google Cloud, AlloyDB ou Stitch remoto.
    Preserve os nomes de variaveis e manifests atuais para que a migracao futura
@@ -49,6 +49,7 @@ e aponte a URL base para `https://openrouter.ai/api/v1`.
    Engine em `TERMINATED` e restaura Cloud SQL com `activationPolicy=NEVER`.
    O comando nao altera billing, nao exclui recursos e nao contorna IAM,
    compliance ou suspensao administrativa.
+
 2. Execute `docker compose -f infra/docker/docker-compose.yml up --build`.
 3. Aplique migrations automaticamente pelo container `migrations` ou rode
    `psql` em ambiente limpo.

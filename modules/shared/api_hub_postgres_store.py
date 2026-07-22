@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Any, Iterator
+from typing import Any
 from uuid import uuid4
 
 import psycopg
@@ -14,7 +15,6 @@ from .audit_contract import insert_postgres_audit
 from .correlation import get_correlation_id
 from .event_contract import EVENT_SCHEMA_VERSION, build_event_envelope
 from .store import DuplicateValueError
-
 
 TABLES = {
     "api_clients": "api_hub.api_clients",
@@ -52,12 +52,16 @@ class ApiHubPostgresStore:
     def _payload(row: dict[str, Any]) -> dict[str, Any]:
         return dict((row.get("metadata") or {}).get("runtime_payload", {}))
 
-    def _resource(self, resource_type: str, row: dict[str, Any] | None) -> dict[str, Any] | None:
+    def _resource(
+        self, resource_type: str, row: dict[str, Any] | None
+    ) -> dict[str, Any] | None:
         if row is None:
             return None
         created_at = row.get("created_at") or row.get("started_at")
         if created_at is None:
-            raise RuntimeError(f"PostgreSQL nao retornou timestamp para {resource_type}.")
+            raise RuntimeError(
+                f"PostgreSQL nao retornou timestamp para {resource_type}."
+            )
         return {
             "id": str(row["id"]),
             "module": self.module,
@@ -66,11 +70,17 @@ class ApiHubPostgresStore:
             "entity_id": str(row["company_id"]) if row.get("company_id") else None,
             "status": row["status"],
             "payload": self._payload(row),
-            "created_by": str(row["created_by"]) if row.get("created_by") else str(row["user_id"]),
-            "updated_by": str(row.get("updated_by") or row.get("created_by") or row["user_id"]),
+            "created_by": str(row["created_by"])
+            if row.get("created_by")
+            else str(row["user_id"]),
+            "updated_by": str(
+                row.get("updated_by") or row.get("created_by") or row["user_id"]
+            ),
             "created_at": created_at.isoformat(),
             "updated_at": (row.get("updated_at") or created_at).isoformat(),
-            "deleted_at": row.get("deleted_at").isoformat() if row.get("deleted_at") else None,
+            "deleted_at": row.get("deleted_at").isoformat()
+            if row.get("deleted_at")
+            else None,
             "idempotency_key": row.get("idempotency_key"),
         }
 
@@ -78,11 +88,15 @@ class ApiHubPostgresStore:
     def _metadata(payload: dict[str, Any]) -> Jsonb:
         return Jsonb({"runtime_payload": payload})
 
-    def find_idempotent(self, resource_type: str, key: str | None) -> dict[str, Any] | None:
+    def find_idempotent(
+        self, resource_type: str, key: str | None
+    ) -> dict[str, Any] | None:
         if not key:
             return None
         row = self.connection.execute(
-            sql.SQL("SELECT * FROM {} WHERE idempotency_key = %s").format(self._table(resource_type)),
+            sql.SQL("SELECT * FROM {} WHERE idempotency_key = %s").format(
+                self._table(resource_type)
+            ),
             (key,),
         ).fetchone()
         return self._resource(resource_type, row)
@@ -106,11 +120,33 @@ class ApiHubPostgresStore:
         resource_id = str(uuid4())
         try:
             with self.transaction() as connection:
-                row = self._insert(connection, resource_type, resource_id, user_id, entity_id, status, payload, actor, idempotency_key)
+                row = self._insert(
+                    connection,
+                    resource_type,
+                    resource_id,
+                    user_id,
+                    entity_id,
+                    status,
+                    payload,
+                    actor,
+                    idempotency_key,
+                )
                 item = self._resource(resource_type, row)
                 if item is None:
-                    raise RuntimeError("PostgreSQL nao retornou recurso API Hub criado.")
-                self._audit(connection, actor, "create", resource_type, resource_id, None, item, user_id, entity_id)
+                    raise RuntimeError(
+                        "PostgreSQL nao retornou recurso API Hub criado."
+                    )
+                self._audit(
+                    connection,
+                    actor,
+                    "create",
+                    resource_type,
+                    resource_id,
+                    None,
+                    item,
+                    user_id,
+                    entity_id,
+                )
                 self._event(connection, event, actor, item)
                 return item
         except UniqueViolation as exc:
@@ -136,9 +172,18 @@ class ApiHubPostgresStore:
                     status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, entity_id, payload["client_name"], payload["client_id_hash"],
-                    payload["secret_reference"], Jsonb(payload.get("scopes", [])),
-                    status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    entity_id,
+                    payload["client_name"],
+                    payload["client_id_hash"],
+                    payload["secret_reference"],
+                    Jsonb(payload.get("scopes", [])),
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "api_keys":
@@ -148,9 +193,20 @@ class ApiHubPostgresStore:
                     expires_at, status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, entity_id, payload.get("client_id"), payload["key_name"],
-                    payload["key_hash"], payload["key_hint"], Jsonb(payload.get("scopes", [])),
-                    payload.get("expires_at"), status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    entity_id,
+                    payload.get("client_id"),
+                    payload["key_name"],
+                    payload["key_hash"],
+                    payload["key_hint"],
+                    Jsonb(payload.get("scopes", [])),
+                    payload.get("expires_at"),
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "webhooks":
@@ -160,8 +216,17 @@ class ApiHubPostgresStore:
                     status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, entity_id, payload["target_url"], Jsonb(payload.get("event_patterns", [])),
-                    payload["signing_secret_reference"], status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    entity_id,
+                    payload["target_url"],
+                    Jsonb(payload.get("event_patterns", [])),
+                    payload["signing_secret_reference"],
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "integration_runs":
@@ -171,22 +236,43 @@ class ApiHubPostgresStore:
                     status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, entity_id, payload["integration_type"], payload["provider_name"],
-                    payload.get("log_summary"), status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    entity_id,
+                    payload["integration_type"],
+                    payload["provider_name"],
+                    payload.get("log_summary"),
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         raise ValueError(f"Recurso API Hub desconhecido: {resource_type}")
 
     def get(self, resource_type: str, resource_id: str) -> dict[str, Any] | None:
-        deleted = sql.SQL(" AND deleted_at IS NULL") if resource_type in SOFT_DELETABLE else sql.SQL("")
+        deleted = (
+            sql.SQL(" AND deleted_at IS NULL")
+            if resource_type in SOFT_DELETABLE
+            else sql.SQL("")
+        )
         row = self.connection.execute(
-            sql.SQL("SELECT * FROM {} WHERE id = %s{}").format(self._table(resource_type), deleted),
+            sql.SQL("SELECT * FROM {} WHERE id = %s{}").format(
+                self._table(resource_type), deleted
+            ),
             (resource_id,),
         ).fetchone()
         return self._resource(resource_type, row)
 
-    def list(self, resource_type: str, user_id: str | None = None) -> list[dict[str, Any]]:
-        conditions = sql.SQL("deleted_at IS NULL") if resource_type in SOFT_DELETABLE else sql.SQL("TRUE")
+    def list(
+        self, resource_type: str, user_id: str | None = None
+    ) -> list[dict[str, Any]]:
+        conditions = (
+            sql.SQL("deleted_at IS NULL")
+            if resource_type in SOFT_DELETABLE
+            else sql.SQL("TRUE")
+        )
         parameters: list[Any] = []
         if user_id:
             conditions = conditions + sql.SQL(" AND user_id = %s")
@@ -197,7 +283,11 @@ class ApiHubPostgresStore:
             ),
             parameters,
         ).fetchall()
-        return [item for row in rows if (item := self._resource(resource_type, row)) is not None]
+        return [
+            item
+            for row in rows
+            if (item := self._resource(resource_type, row)) is not None
+        ]
 
     def update(
         self,
@@ -210,24 +300,51 @@ class ApiHubPostgresStore:
     ) -> dict[str, Any]:
         before = {**item, "payload": dict(item["payload"])}
         with self.transaction() as connection:
-            row = self._update(connection, item["resource_type"], item["id"], payload, status, actor)
+            row = self._update(
+                connection, item["resource_type"], item["id"], payload, status, actor
+            )
             updated = self._resource(item["resource_type"], row)
             if updated is None:
-                raise RuntimeError("PostgreSQL nao retornou recurso API Hub atualizado.")
-            self._audit(connection, actor, action, item["resource_type"], item["id"], before, updated, item["user_id"], item["entity_id"])
+                raise RuntimeError(
+                    "PostgreSQL nao retornou recurso API Hub atualizado."
+                )
+            self._audit(
+                connection,
+                actor,
+                action,
+                item["resource_type"],
+                item["id"],
+                before,
+                updated,
+                item["user_id"],
+                item["entity_id"],
+            )
             if event:
                 self._event(connection, event, actor, updated)
             return updated
 
     def _update(
-        self, connection: Connection, resource_type: str, resource_id: str, payload: dict[str, Any], status: str, actor: str
+        self,
+        connection: Connection,
+        resource_type: str,
+        resource_id: str,
+        payload: dict[str, Any],
+        status: str,
+        actor: str,
     ) -> dict[str, Any]:
         metadata = self._metadata(payload)
         if resource_type == "api_clients":
             return connection.execute(
                 """UPDATE api_hub.api_clients SET client_name = %s, scopes = %s, status = %s,
                    metadata = %s, updated_by = %s, updated_at = NOW() WHERE id = %s RETURNING *""",
-                (payload["client_name"], Jsonb(payload.get("scopes", [])), status, metadata, actor, resource_id),
+                (
+                    payload["client_name"],
+                    Jsonb(payload.get("scopes", [])),
+                    status,
+                    metadata,
+                    actor,
+                    resource_id,
+                ),
             ).fetchone()
         if resource_type == "api_keys":
             return connection.execute(
@@ -239,7 +356,14 @@ class ApiHubPostgresStore:
             return connection.execute(
                 """UPDATE api_hub.webhooks SET target_url = %s, event_patterns = %s, status = %s,
                    metadata = %s, updated_by = %s, updated_at = NOW() WHERE id = %s RETURNING *""",
-                (payload["target_url"], Jsonb(payload.get("event_patterns", [])), status, metadata, actor, resource_id),
+                (
+                    payload["target_url"],
+                    Jsonb(payload.get("event_patterns", [])),
+                    status,
+                    metadata,
+                    actor,
+                    resource_id,
+                ),
             ).fetchone()
         if resource_type == "integration_runs":
             return connection.execute(
@@ -257,11 +381,38 @@ class ApiHubPostgresStore:
                 ).format(self._table(item["resource_type"])),
                 (actor, item["id"]),
             )
-            self._audit(connection, actor, "soft_delete", item["resource_type"], item["id"], item, None, item["user_id"], item["entity_id"])
+            self._audit(
+                connection,
+                actor,
+                "soft_delete",
+                item["resource_type"],
+                item["id"],
+                item,
+                None,
+                item["user_id"],
+                item["entity_id"],
+            )
 
-    def audit_external(self, actor: str, action: str, resource_type: str, resource_id: str, data: dict[str, Any]) -> dict[str, Any]:
+    def audit_external(
+        self,
+        actor: str,
+        action: str,
+        resource_type: str,
+        resource_id: str,
+        data: dict[str, Any],
+    ) -> dict[str, Any]:
         with self.transaction() as connection:
-            return self._audit(connection, actor, action, resource_type, resource_id, None, data, data.get("user_id"), data.get("company_id"))
+            return self._audit(
+                connection,
+                actor,
+                action,
+                resource_type,
+                resource_id,
+                None,
+                data,
+                data.get("user_id"),
+                data.get("company_id"),
+            )
 
     def _audit(
         self,
@@ -275,13 +426,30 @@ class ApiHubPostgresStore:
         user_id: str | None,
         entity_id: str | None,
     ) -> dict[str, Any]:
-        return insert_postgres_audit(connection, module="api_hub", actor_user_id=actor, action=action,
-            resource_type=resource_type, resource_id=resource_id, before=before, after=after,
-            user_id=user_id, company_id=entity_id)
+        return insert_postgres_audit(
+            connection,
+            module="api_hub",
+            actor_user_id=actor,
+            action=action,
+            resource_type=resource_type,
+            resource_id=resource_id,
+            before=before,
+            after=after,
+            user_id=user_id,
+            company_id=entity_id,
+        )
 
-    def _event(self, connection: Connection, routing_key: str, actor: str, item: dict[str, Any]) -> None:
+    def _event(
+        self, connection: Connection, routing_key: str, actor: str, item: dict[str, Any]
+    ) -> None:
         correlation_id = get_correlation_id()
-        envelope = build_event_envelope(module=self.module, routing_key=routing_key, actor_user_id=actor, item=item, correlation_id=correlation_id)
+        envelope = build_event_envelope(
+            module=self.module,
+            routing_key=routing_key,
+            actor_user_id=actor,
+            item=item,
+            correlation_id=correlation_id,
+        )
         connection.execute(
             """INSERT INTO audit.domain_events
                (id, user_id, actor_user_id, entity_id, routing_key, aggregate_type, aggregate_id, correlation_id, schema_version, payload, created_by)
@@ -302,23 +470,33 @@ class ApiHubPostgresStore:
         )
 
     def audit_log(self) -> list[dict[str, Any]]:
-        return [dict(row) for row in self.connection.execute(
-            "SELECT * FROM audit.logs WHERE module = 'api_hub' ORDER BY created_at DESC"
-        ).fetchall()]
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                "SELECT * FROM audit.logs WHERE module = 'api_hub' ORDER BY created_at DESC"
+            ).fetchall()
+        ]
 
     def outbox(self) -> list[dict[str, Any]]:
-        return [dict(row) for row in self.connection.execute(
-            "SELECT * FROM audit.domain_events WHERE routing_key LIKE 'api.%' OR routing_key LIKE 'api_hub.%' ORDER BY created_at DESC"
-        ).fetchall()]
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                "SELECT * FROM audit.domain_events WHERE routing_key LIKE 'api.%' OR routing_key LIKE 'api_hub.%' ORDER BY created_at DESC"
+            ).fetchall()
+        ]
 
     def metrics(self) -> tuple[int, int, int]:
         records = sum(
             self.connection.execute(
-                sql.SQL("SELECT COUNT(*) AS count FROM {}").format(self._table(resource_type))
+                sql.SQL("SELECT COUNT(*) AS count FROM {}").format(
+                    self._table(resource_type)
+                )
             ).fetchone()["count"]
             for resource_type in TABLES
         )
-        audits = self.connection.execute("SELECT COUNT(*) AS count FROM audit.logs WHERE module = 'api_hub'").fetchone()["count"]
+        audits = self.connection.execute(
+            "SELECT COUNT(*) AS count FROM audit.logs WHERE module = 'api_hub'"
+        ).fetchone()["count"]
         events = self.connection.execute(
             "SELECT COUNT(*) AS count FROM audit.domain_events WHERE routing_key LIKE 'api.%' OR routing_key LIKE 'api_hub.%'"
         ).fetchone()["count"]

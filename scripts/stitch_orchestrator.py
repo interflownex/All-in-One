@@ -15,16 +15,49 @@ STATE_PATH = ROOT / "config" / "stitch" / "sync_state.json"
 STITCH_ENDPOINT = "https://stitch.googleapis.com/mcp"
 
 APP_ASSIGNMENTS = {
-    "identity": ["all-in-one-user", "all-in-one-business", "all-in-one-riders", "all-in-one-services", "all-in-one-health", "all-in-one-mobility"],
+    "identity": [
+        "all-in-one-user",
+        "all-in-one-business",
+        "all-in-one-riders",
+        "all-in-one-services",
+        "all-in-one-health",
+        "all-in-one-mobility",
+    ],
     "business": ["all-in-one-business"],
     "permissions": ["all-in-one-business"],
-    "finance": ["all-in-one-user", "all-in-one-business", "all-in-one-riders", "all-in-one-services", "all-in-one-mobility", "valley", "valley-business"],
-    "marketplace": ["all-in-one-user", "all-in-one-business", "valley", "valley-business"],
+    "finance": [
+        "all-in-one-user",
+        "all-in-one-business",
+        "all-in-one-riders",
+        "all-in-one-services",
+        "all-in-one-mobility",
+        "valley",
+        "valley-business",
+    ],
+    "marketplace": [
+        "all-in-one-user",
+        "all-in-one-business",
+        "valley",
+        "valley-business",
+    ],
     "stock": ["all-in-one-business", "valley", "valley-business"],
-    "delivery": ["all-in-one-user", "all-in-one-business", "all-in-one-riders", "valley", "valley-business", "valley-rider"],
+    "delivery": [
+        "all-in-one-user",
+        "all-in-one-business",
+        "all-in-one-riders",
+        "valley",
+        "valley-business",
+        "valley-rider",
+    ],
     "riders": ["all-in-one-riders", "valley-rider"],
     "services": ["all-in-one-user", "all-in-one-services", "valley"],
-    "mobility": ["all-in-one-user", "all-in-one-riders", "all-in-one-mobility", "valley", "valley-rider"],
+    "mobility": [
+        "all-in-one-user",
+        "all-in-one-riders",
+        "all-in-one-mobility",
+        "valley",
+        "valley-rider",
+    ],
     "jobs": ["all-in-one-user", "all-in-one-business"],
     "erp": ["all-in-one-business"],
     "wms": ["all-in-one-business"],
@@ -44,21 +77,48 @@ APP_ASSIGNMENTS = {
 
 SPECIAL_SCREENS = {
     "jobs": [
-        ("candidate_resume", "Curriculo do candidato com origem CTPS validada e itens autodeclarados visualmente distintos."),
-        ("ctps_import", "Importacao segura de PDF CTPS Digital com estados de processamento e explicacao de procedencia."),
-        ("vacancy_search", "Busca e detalhes de vagas para usuario final com candidatura."),
-        ("recruiter_resume_review", "Triagem Business com acesso auditado, filtros e selo de procedencia de cada experiencia."),
+        (
+            "candidate_resume",
+            "Curriculo do candidato com origem CTPS validada e itens autodeclarados visualmente distintos.",
+        ),
+        (
+            "ctps_import",
+            "Importacao segura de PDF CTPS Digital com estados de processamento e explicacao de procedencia.",
+        ),
+        (
+            "vacancy_search",
+            "Busca e detalhes de vagas para usuario final com candidatura.",
+        ),
+        (
+            "recruiter_resume_review",
+            "Triagem Business com acesso auditado, filtros e selo de procedencia de cada experiencia.",
+        ),
     ],
     "identity": [
         ("auth_gateway", "Login, geracao e validacao de tokens JWT/OAuth2."),
-        ("kyc_verification", "Interface e servico de processamento de biometria facial e OCR de documentos fisicos."),
-        ("kyb_business", "Servico de onboarding corporativo, validacao de CNPJ e quadro societário."),
+        (
+            "kyc_verification",
+            "Interface e servico de processamento de biometria facial e OCR de documentos fisicos.",
+        ),
+        (
+            "kyb_business",
+            "Servico de onboarding corporativo, validacao de CNPJ e quadro societário.",
+        ),
         ("mfa_manager", "Servico de duplo fator de autenticacao (TOTP/SMS/Email)."),
-        ("consent_lgpd", "Gestao de aceite de termos e versionamento de politicas de privacidade."),
-        ("session_control", "Monitoramento de dispositivos logados e revogação remota de acesso."),
+        (
+            "consent_lgpd",
+            "Gestao de aceite de termos e versionamento de politicas de privacidade.",
+        ),
+        (
+            "session_control",
+            "Monitoramento de dispositivos logados e revogação remota de acesso.",
+        ),
     ],
     "finance": [
-        ("wallet_ledger", "Wallet e extrato imutavel com BRL, NEX, transacoes e seguranca."),
+        (
+            "wallet_ledger",
+            "Wallet e extrato imutavel com BRL, NEX, transacoes e seguranca.",
+        ),
     ],
 }
 
@@ -96,7 +156,9 @@ def branding_version() -> str:
     return load_brand_identity()["version"]
 
 
-def screen_prompt(module: dict[str, Any], name: str, purpose: str, apps: list[str]) -> str:
+def screen_prompt(
+    module: dict[str, Any], name: str, purpose: str, apps: list[str]
+) -> str:
     return (
         f"Crie uma tela de produto profissional para All-in-One, modulo {module['title']}. "
         f"{brand_prompt(apps)} "
@@ -198,9 +260,14 @@ def versioned_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
 def write_manifest() -> dict[str, Any]:
     manifest = build_manifest(load_catalog())
     MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
-    MANIFEST_PATH.write_text(json.dumps(versioned_manifest(manifest), indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+    MANIFEST_PATH.write_text(
+        json.dumps(versioned_manifest(manifest), indent=2, ensure_ascii=True) + "\n",
+        encoding="utf-8",
+    )
     if not STATE_PATH.exists():
-        STATE_PATH.write_text('{\n  "schema_version": 1,\n  "projects": {}\n}\n', encoding="utf-8")
+        STATE_PATH.write_text(
+            '{\n  "schema_version": 1,\n  "projects": {}\n}\n', encoding="utf-8"
+        )
     return manifest
 
 
@@ -236,7 +303,8 @@ def sync_summary(manifest: dict[str, Any], state: dict[str, Any]) -> dict[str, A
         pending = sorted(
             key
             for key in screen_keys & synced_keys
-            if project_state.get("screens", {}).get(key, {}).get("branding_version") != current_branding_version
+            if project_state.get("screens", {}).get(key, {}).get("branding_version")
+            != current_branding_version
         )
         if pending:
             branding_pending[module] = pending
@@ -259,7 +327,9 @@ class StitchMcpClient:
         api_key = os.getenv("STITCH_API_KEY")
         access_token = os.getenv("STITCH_ACCESS_TOKEN")
         if not api_key and not access_token:
-            raise RuntimeError("Configure STITCH_API_KEY ou STITCH_ACCESS_TOKEN em secret local antes da sincronizacao.")
+            raise RuntimeError(
+                "Configure STITCH_API_KEY ou STITCH_ACCESS_TOKEN em secret local antes da sincronizacao."
+            )
         headers = {
             "Accept": "application/json, text/event-stream",
             "Content-Type": "application/json",
@@ -269,7 +339,9 @@ class StitchMcpClient:
         else:
             headers["Authorization"] = f"Bearer {access_token}"
         self.endpoint = endpoint
-        self.client = httpx.Client(headers=headers, timeout=float(os.getenv("STITCH_TIMEOUT_SECONDS", "600")))
+        self.client = httpx.Client(
+            headers=headers, timeout=float(os.getenv("STITCH_TIMEOUT_SECONDS", "600"))
+        )
         self.session_id: str | None = None
         self.request_id = 0
 
@@ -287,15 +359,24 @@ class StitchMcpClient:
                 payload = json.loads(line.removeprefix("data:").strip())
                 if payload.get("id") == self.request_id:
                     return payload
-        raise RuntimeError("STITCH MCP nao retornou resposta JSON-RPC para a requisicao.")
+        raise RuntimeError(
+            "STITCH MCP nao retornou resposta JSON-RPC para a requisicao."
+        )
 
-    def request(self, method: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
+    def request(
+        self, method: str, params: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         self.request_id += 1
         headers = {"Mcp-Session-Id": self.session_id} if self.session_id else {}
         response = self.client.post(
             self.endpoint,
             headers=headers,
-            json={"jsonrpc": "2.0", "id": self.request_id, "method": method, "params": params or {}},
+            json={
+                "jsonrpc": "2.0",
+                "id": self.request_id,
+                "method": method,
+                "params": params or {},
+            },
         )
         result = self._decode(response)
         if result.get("error"):
@@ -308,14 +389,21 @@ class StitchMcpClient:
             {
                 "protocolVersion": "2025-03-26",
                 "capabilities": {},
-                "clientInfo": {"name": "all-in-one-stitch-orchestrator", "version": "1.0.0"},
+                "clientInfo": {
+                    "name": "all-in-one-stitch-orchestrator",
+                    "version": "1.0.0",
+                },
             },
         )
         headers = {"Mcp-Session-Id": self.session_id} if self.session_id else {}
         self.client.post(
             self.endpoint,
             headers=headers,
-            json={"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
+            json={
+                "jsonrpc": "2.0",
+                "method": "notifications/initialized",
+                "params": {},
+            },
         ).raise_for_status()
 
     def tools(self) -> list[dict[str, Any]]:
@@ -325,7 +413,9 @@ class StitchMcpClient:
         return self.request("tools/call", {"name": name, "arguments": arguments})
 
 
-def choose_tool(tools: list[dict[str, Any]], candidates: tuple[str, ...]) -> dict[str, Any]:
+def choose_tool(
+    tools: list[dict[str, Any]], candidates: tuple[str, ...]
+) -> dict[str, Any]:
     normalized = {tool["name"].lower(): tool for tool in tools}
     for candidate in candidates:
         if candidate in normalized:
@@ -334,7 +424,9 @@ def choose_tool(tools: list[dict[str, Any]], candidates: tuple[str, ...]) -> dic
         tool_name = tool["name"].lower()
         if all(fragment in tool_name for fragment in candidates[0].split("_")):
             return tool
-    raise RuntimeError(f"Tool STITCH nao localizado para {candidates[0]}; execute discover para revisar capacidades.")
+    raise RuntimeError(
+        f"Tool STITCH nao localizado para {candidates[0]}; execute discover para revisar capacidades."
+    )
 
 
 def input_arguments(tool: dict[str, Any], values: dict[str, Any]) -> dict[str, Any]:
@@ -344,24 +436,45 @@ def input_arguments(tool: dict[str, Any], values: dict[str, Any]) -> dict[str, A
         "name": ("name", "title", "project_name", "projectName"),
         "project_id": ("project_id", "projectId", "project"),
         "prompt": ("prompt", "description", "text"),
-        "selected_screen_ids": ("selectedScreenIds", "selected_screen_ids", "screenIds", "screen_ids"),
+        "selected_screen_ids": (
+            "selectedScreenIds",
+            "selected_screen_ids",
+            "screenIds",
+            "screen_ids",
+        ),
     }.items():
         for alias in aliases:
             if alias in properties and canonical_name in values:
                 arguments[alias] = values[canonical_name]
                 break
-    if "prompt" in values and not any(alias in arguments for alias in ("prompt", "description", "text")):
-        raise RuntimeError(f"Schema da tool {tool['name']} nao oferece argumento de prompt reconhecido.")
+    if "prompt" in values and not any(
+        alias in arguments for alias in ("prompt", "description", "text")
+    ):
+        raise RuntimeError(
+            f"Schema da tool {tool['name']} nao oferece argumento de prompt reconhecido."
+        )
     return arguments
 
 
-def extract_identifier(result: Any, preferred_keys: tuple[str, ...] | None = None) -> str | None:
-    keys = preferred_keys or ("projectId", "project_id", "screenId", "screen_id", "sessionId", "session_id", "name", "id")
+def extract_identifier(
+    result: Any, preferred_keys: tuple[str, ...] | None = None
+) -> str | None:
+    keys = preferred_keys or (
+        "projectId",
+        "project_id",
+        "screenId",
+        "screen_id",
+        "sessionId",
+        "session_id",
+        "name",
+        "id",
+    )
     if isinstance(result, dict):
         if result.get("isError"):
             content = str(result.get("content", ""))
             if "unavailable" in content.lower() or "error" in content.lower():
                 import uuid
+
                 return f"mock-{uuid.uuid4().hex[:8]}"
         for key in keys:
             if key in result and isinstance(result[key], str):
@@ -379,7 +492,9 @@ def extract_identifier(result: Any, preferred_keys: tuple[str, ...] | None = Non
         try:
             return extract_identifier(json.loads(result), preferred_keys)
         except json.JSONDecodeError:
-            resource = re.search(r"projects/[A-Za-z0-9_.:-]+(?:/screens/[A-Za-z0-9_.:-]+)?", result)
+            resource = re.search(
+                r"projects/[A-Za-z0-9_.:-]+(?:/screens/[A-Za-z0-9_.:-]+)?", result
+            )
             if resource:
                 return resource.group(0)
             return None
@@ -400,7 +515,9 @@ def normalize_project_id(identifier: str) -> str:
     return identifier.removeprefix("projects/")
 
 
-def sync_projects(manifest: dict[str, Any], max_operations: int | None = None) -> dict[str, Any]:
+def sync_projects(
+    manifest: dict[str, Any], max_operations: int | None = None
+) -> dict[str, Any]:
     state = load_state()
     modules = {module["slug"]: module for module in load_catalog()["modules"]}
     client = StitchMcpClient()
@@ -418,24 +535,46 @@ def sync_projects(manifest: dict[str, Any], max_operations: int | None = None) -
         generate_screen = choose_tool(tools, ("generate_screen", "create_screen"))
         edit_screen = choose_tool(tools, ("edit_screens", "edit_screen"))
         for project in manifest["projects"]:
-            project_state = state["projects"].setdefault(project["module"], {"screens": {}})
+            project_state = state["projects"].setdefault(
+                project["module"], {"screens": {}}
+            )
             if "project_id" not in project_state:
-                result = client.call_tool(create_project["name"], input_arguments(create_project, {"name": project["project_name"]}))
-                project_state["project_id"] = extract_identifier(result, ("projectId", "project_id", "name", "id"))
+                result = client.call_tool(
+                    create_project["name"],
+                    input_arguments(create_project, {"name": project["project_name"]}),
+                )
+                project_state["project_id"] = extract_identifier(
+                    result, ("projectId", "project_id", "name", "id")
+                )
                 if not project_state["project_id"]:
-                    raise RuntimeError(f"STITCH nao retornou project_id para {project['module']}.")
-                project_state["project_id"] = normalize_project_id(project_state["project_id"])
-                STATE_PATH.write_text(json.dumps(state, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+                    raise RuntimeError(
+                        f"STITCH nao retornou project_id para {project['module']}."
+                    )
+                project_state["project_id"] = normalize_project_id(
+                    project_state["project_id"]
+                )
+                STATE_PATH.write_text(
+                    json.dumps(state, indent=2, ensure_ascii=True) + "\n",
+                    encoding="utf-8",
+                )
                 if operation_done():
                     return state
             else:
-                normalized_project_id = normalize_project_id(project_state["project_id"])
+                normalized_project_id = normalize_project_id(
+                    project_state["project_id"]
+                )
                 if normalized_project_id != project_state["project_id"]:
                     project_state["project_id"] = normalized_project_id
-                    STATE_PATH.write_text(json.dumps(state, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+                    STATE_PATH.write_text(
+                        json.dumps(state, indent=2, ensure_ascii=True) + "\n",
+                        encoding="utf-8",
+                    )
             for screen in project["screens"]:
                 screen_state = project_state["screens"].get(screen["key"])
-                if screen_state and screen_state.get("branding_version") == branding_version():
+                if (
+                    screen_state
+                    and screen_state.get("branding_version") == branding_version()
+                ):
                     continue
                 if screen_state:
                     client.call_tool(
@@ -454,7 +593,10 @@ def sync_projects(manifest: dict[str, Any], max_operations: int | None = None) -
                         ),
                     )
                     screen_state["branding_version"] = branding_version()
-                    STATE_PATH.write_text(json.dumps(state, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+                    STATE_PATH.write_text(
+                        json.dumps(state, indent=2, ensure_ascii=True) + "\n",
+                        encoding="utf-8",
+                    )
                     if operation_done():
                         return state
                     continue
@@ -473,7 +615,10 @@ def sync_projects(manifest: dict[str, Any], max_operations: int | None = None) -
                         },
                     ),
                 )
-                screen_id = extract_identifier(result, ("screenId", "screen_id", "name", "sessionId", "session_id", "id"))
+                screen_id = extract_identifier(
+                    result,
+                    ("screenId", "screen_id", "name", "sessionId", "session_id", "id"),
+                )
                 if not screen_id:
                     raise RuntimeError(
                         f"STITCH nao retornou screen_id para {project['module']}/{screen['key']}. "
@@ -484,7 +629,10 @@ def sync_projects(manifest: dict[str, Any], max_operations: int | None = None) -
                     "name": screen["name"],
                     "branding_version": branding_version(),
                 }
-                STATE_PATH.write_text(json.dumps(state, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+                STATE_PATH.write_text(
+                    json.dumps(state, indent=2, ensure_ascii=True) + "\n",
+                    encoding="utf-8",
+                )
                 if operation_done():
                     return state
         return state
@@ -508,13 +656,24 @@ def summarize_tools(tools: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Plan and synchronize All-in-One module screens with Google Stitch MCP.")
-    parser.add_argument("command", choices=("plan", "status", "discover", "tools", "sync"))
-    parser.add_argument("--max-operations", type=int, default=None, help="Limita criacoes/edicoes remotas para retomar em ciclos seguros.")
+    parser = argparse.ArgumentParser(
+        description="Plan and synchronize All-in-One module screens with Google Stitch MCP."
+    )
+    parser.add_argument(
+        "command", choices=("plan", "status", "discover", "tools", "sync")
+    )
+    parser.add_argument(
+        "--max-operations",
+        type=int,
+        default=None,
+        help="Limita criacoes/edicoes remotas para retomar em ciclos seguros.",
+    )
     args = parser.parse_args()
     manifest = write_manifest()
     if args.command == "plan":
-        print(f"STITCH plan: {manifest['project_count']} projetos e {manifest['screen_count']} telas materializados.")
+        print(
+            f"STITCH plan: {manifest['project_count']} projetos e {manifest['screen_count']} telas materializados."
+        )
         return 0
     if args.command == "status":
         summary = sync_summary(manifest, load_state())
@@ -532,12 +691,16 @@ def main() -> int:
     if args.command == "tools":
         try:
             client.initialize()
-            print(json.dumps(summarize_tools(client.tools()), indent=2, ensure_ascii=True))
+            print(
+                json.dumps(summarize_tools(client.tools()), indent=2, ensure_ascii=True)
+            )
             return 0
         finally:
             client.close()
     state = sync_projects(manifest, max_operations=args.max_operations)
-    print(f"STITCH sync: {len(state['projects'])} projetos registrados em estado local.")
+    print(
+        f"STITCH sync: {len(state['projects'])} projetos registrados em estado local."
+    )
     return 0
 
 

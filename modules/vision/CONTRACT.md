@@ -7,6 +7,7 @@
         ## Entidades
 
         - `devices`
+
 - `streams`
 - `recordings`
 - `motion_alerts`
@@ -14,6 +15,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -35,7 +37,6 @@
 - `POST /reject`
 - `POST /audit`
 
-
 ## Stream, gravacao e alerta operacional
 
 - `streams` exige `device_id`, `stream_url_hash`, `protocol` e `started_at`, iniciando em `active` e emitindo `vision.stream.started`.
@@ -44,10 +45,10 @@
 - A acao `triage` exige papel aprovador, MFA e cria incidente com `vision.incident.created`.
 - A acao `resolve` exige papel aprovador, MFA e emite `vision.incident.resolved`.
 
-
         ## Eventos
 
         - `vision.device.registered`
+
 - `vision.device.submitted`
 - `vision.device.cancelled`
 - `vision.device.completed`

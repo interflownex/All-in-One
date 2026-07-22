@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `delivery.rider_profiles`
+
 - `delivery.rider_documents`
 - `delivery.vehicles`
 - `delivery.rider_reviews`

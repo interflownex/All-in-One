@@ -127,11 +127,14 @@ A separacao operacional entre `sandbox`, `homologacao` e `producao` fica em
 O ecossistema All-in-One expõe uma interface unificada que consolida todos os 25 módulos. O roteamento é gerenciado pelo Ingress Global na GCP.
 
 ### Rotas de Interface
+
 - **Base:** `/all-in-one/`
 - **Módulos:** `/{modulo}/overview` (ex: `/identity/overview`)
 
 ### Integração com Apigee Gateway
+
 Todas as chamadas de API do frontend devem passar pelo Apigee para garantir governança, quota e segurança:
+
 - **Identity:** `https://api.all-in-one.com/identity/*`
 - **API Hub:** `https://api.all-in-one.com/gateway/*`
 - **Logística:** `https://api.all-in-one.com/{delivery|wms|tms}/*`

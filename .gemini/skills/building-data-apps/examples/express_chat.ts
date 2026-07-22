@@ -14,39 +14,39 @@
 // express_chat.ts
 // requires: npm install express
 // cors @google-cloud/geminidataanalytics @google-cloud/bigquery dotenv
-import {DataChatServiceClient} from '@google-cloud/geminidataanalytics/build/src/v1beta';
-import cors from 'cors';
-import 'dotenv/config';
-import express from 'express';
+import { DataChatServiceClient } from "@google-cloud/geminidataanalytics/build/src/v1beta";
+import cors from "cors";
+import "dotenv/config";
+import express from "express";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const chatClient = new DataChatServiceClient();
-const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || '<PROJECT_ID>';
+const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || "<PROJECT_ID>";
 
-app.post('/api/chat', async (req, res) => {
-  const {message, history} = req.body;
+app.post("/api/chat", async (req, res) => {
+  const { message, history } = req.body;
 
   // Initialize SSE streaming headers
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
 
   const formattedHistory = [];
   if (history && Array.isArray(history)) {
     for (const msg of history) {
-      if (msg.role === 'user') {
-        formattedHistory.push({userMessage: {text: msg.content}});
-      } else if (msg.role === 'model') {
-        formattedHistory.push({systemMessage: {text: {parts: [msg.content]}}});
+      if (msg.role === "user") {
+        formattedHistory.push({ userMessage: { text: msg.content } });
+      } else if (msg.role === "model") {
+        formattedHistory.push({ systemMessage: { text: { parts: [msg.content] } } });
       }
     }
   }
 
   // Append new user message
-  formattedHistory.push({userMessage: {text: message}});
+  formattedHistory.push({ userMessage: { text: message } });
 
   try {
     const chatRequest = {
@@ -54,26 +54,26 @@ app.post('/api/chat', async (req, res) => {
       messages: formattedHistory,
       inlineContext: {
         systemInstruction:
-          'You are a friendly data analytics assistant. Write SQL against BigQuery to answer user questions.',
+          "You are a friendly data analytics assistant. Write SQL against BigQuery to answer user questions.",
         datasourceReferences: {
           bq: {
             tableReferences: [
               {
                 projectId: PROJECT_ID,
-                datasetId: '<BIGQUERY_DATASET>',
-                tableId: '<BIGQUERY_TABLE>',
+                datasetId: "<BIGQUERY_DATASET>",
+                tableId: "<BIGQUERY_TABLE>",
               },
             ],
           },
         },
         // Optionally disable plotting logic
-        options: {chart: {}},
+        options: { chart: {} },
       },
     };
 
     const stream = chatClient.chat(chatRequest);
 
-    stream.on('data', (response) => {
+    stream.on("data", (response) => {
       const sysMsg = response.systemMessage;
       if (!sysMsg) return;
 
@@ -82,7 +82,7 @@ app.post('/api/chat', async (req, res) => {
         for (const suggestion of sysMsg.suggestions) {
           res.write(
             `data: ${JSON.stringify({
-              type: 'SUGGESTION',
+              type: "SUGGESTION",
               content: suggestion.title,
             })}\n\n`,
           );
@@ -96,27 +96,23 @@ app.post('/api/chat', async (req, res) => {
 
         // Suggestions are streamed as an array of parts with TEXT_TYPE_UNSPECIFIED at the very end
         if (
-          typeValue === 'TEXT_TYPE_UNSPECIFIED' ||
-          typeValue === 'UNSPECIFIED' ||
+          typeValue === "TEXT_TYPE_UNSPECIFIED" ||
+          typeValue === "UNSPECIFIED" ||
           typeValue === 0
         ) {
           for (const suggestion of sysMsg.text.parts) {
             if (suggestion && suggestion.trim()) {
               res.write(
-                `data: ${JSON.stringify({type: 'SUGGESTION', content: suggestion.trim()})}\n\n`,
+                `data: ${JSON.stringify({ type: "SUGGESTION", content: suggestion.trim() })}\n\n`,
               );
             }
           }
         } else {
-          const textContent = sysMsg.text.parts.join('\n');
-          let evtType = 'FINAL_RESPONSE';
+          const textContent = sysMsg.text.parts.join("\n");
+          let evtType = "FINAL_RESPONSE";
 
-          if (
-            typeValue === 'TEXT_TYPE_THOUGHT' ||
-            typeValue === 'THOUGHT' ||
-            typeValue === 1
-          ) {
-            evtType = 'THOUGHT';
+          if (typeValue === "TEXT_TYPE_THOUGHT" || typeValue === "THOUGHT" || typeValue === 1) {
+            evtType = "THOUGHT";
           }
 
           res.write(
@@ -129,32 +125,32 @@ app.post('/api/chat', async (req, res) => {
       }
     });
 
-    stream.on('end', () => {
-      res.write('data: [DONE]\n\n');
+    stream.on("end", () => {
+      res.write("data: [DONE]\n\n");
       res.end();
     });
 
-    stream.on('error', (err) => {
-      console.error('Gemini API Error:', err);
+    stream.on("error", (err) => {
+      console.error("Gemini API Error:", err);
       // Fallback response inside the API error
       res.write(
         `data: ${JSON.stringify({
-          type: 'FINAL_RESPONSE',
-          content: '\\n\\n**API Error**: ' + err.message,
+          type: "FINAL_RESPONSE",
+          content: "\\n\\n**API Error**: " + err.message,
         })}\n\n`,
       );
-      res.write('data: [DONE]\n\n');
+      res.write("data: [DONE]\n\n");
       res.end();
     });
   } catch (error) {
-    console.error('Failure Setting Up Chat:', error);
+    console.error("Failure Setting Up Chat:", error);
     res.write(
       `data: ${JSON.stringify({
-        type: 'FINAL_RESPONSE',
-        content: 'Connection failed.',
+        type: "FINAL_RESPONSE",
+        content: "Connection failed.",
       })}\n\n`,
     );
-    res.write('data: [DONE]\n\n');
+    res.write("data: [DONE]\n\n");
     res.end();
   }
 });

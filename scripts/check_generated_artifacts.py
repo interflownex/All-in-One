@@ -6,7 +6,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 DEFAULT_COMMANDS = (
     (sys.executable, "scripts/scaffold_modules.py", "--check"),
     (sys.executable, "scripts/validate_openapi.py"),
@@ -23,7 +22,9 @@ def repo_root() -> Path:
         stderr=subprocess.PIPE,
     )
     if result.returncode != 0 or not result.stdout.strip():
-        raise RuntimeError("Este comando precisa ser executado dentro de um repositorio Git.")
+        raise RuntimeError(
+            "Este comando precisa ser executado dentro de um repositorio Git."
+        )
     return Path(result.stdout.strip())
 
 
@@ -59,7 +60,11 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     root = repo_root()
-    commands = tuple(tuple(shlex.split(command)) for command in args.commands) if args.commands else DEFAULT_COMMANDS
+    commands = (
+        tuple(tuple(shlex.split(command)) for command in args.commands)
+        if args.commands
+        else DEFAULT_COMMANDS
+    )
 
     before = git_status(root)
     for command in commands:

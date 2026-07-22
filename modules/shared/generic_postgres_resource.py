@@ -23,7 +23,16 @@ def insert_generic_resource(
             "INSERT INTO {} (id, user_id, company_id, status, metadata, created_by, updated_by, idempotency_key) "
             "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING *"
         ).format(sql.Identifier(schema_name, table_name)),
-        (resource_id, user_id, entity_id, status, Jsonb({"runtime_payload": payload}), actor, actor, idempotency_key),
+        (
+            resource_id,
+            user_id,
+            entity_id,
+            status,
+            Jsonb({"runtime_payload": payload}),
+            actor,
+            actor,
+            idempotency_key,
+        ),
     ).fetchone()
 
 

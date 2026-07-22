@@ -1,4 +1,3 @@
-import os
 import json
 
 MARKDOWN_CONTENT = """# ALL-IN-ONE VALLEY - DOCUMENTO DE ESPECIFICACAO E STATUS DO PROJETO (MVP)
@@ -120,44 +119,55 @@ Qualquer alteracao gera sync automatico com origem usando o remote fork. O coman
 Este documento atesta a finalizacao estrutural e comportamental da aplicacao na Fase 8. Nao constam pendencias abertas no checklist MVP. Tudo foi entregue sem pontas soltas.
 """
 
+
 def generate_long_text():
     output = MARKDOWN_CONTENT
     output += "\\n\\n## 11. ESPECIFICACOES DETALHADAS DOS ENDPOINTS E CONTRATOS\\n"
-    
-    modules = ["Identity", "Business", "Finance", "Logistics", "Services", "Health", "Communication", "Marketing", "Security", "Auditing", "Core", "Notification"]
-    
+
+    modules = [
+        "Identity",
+        "Business",
+        "Finance",
+        "Logistics",
+        "Services",
+        "Health",
+        "Communication",
+        "Marketing",
+        "Security",
+        "Auditing",
+        "Core",
+        "Notification",
+    ]
+
     for module in modules:
         output += f"\\n### 11. Modulo: {module} - Mapeamento Exhaustivo\\n"
         output += f"O modulo {module} contem configuracoes avancadas de tolerância a falhas.\\n"
         output += "#### Modelos de Dominio\\n"
-        
+
         schema = {
             "module": module,
             "version": "v1.5",
-            "schema": {
-                "id": "uuid",
-                "created_at": "iso8601",
-                "updated_at": "iso8601"
-            }
+            "schema": {"id": "uuid", "created_at": "iso8601", "updated_at": "iso8601"},
         }
-        
+
         output += "```json\\n"
         output += json.dumps(schema, indent=2)
         output += "\\n```\\n"
-        
-        for endpoint in range(1, 40): # Expanding length to simulate 20 pages
+
+        for endpoint in range(1, 40):  # Expanding length to simulate 20 pages
             output += f"\\n**Rota:** `/{module.lower()}/v1/resource-{endpoint}`\\n"
-            output += f"- Metodo: GET/POST/PUT/DELETE\\n"
-            output += f"- Middlewares: AuthEdge, RateLimiters, AuditLogger\\n"
-            output += f"- Tratamento de Erro: GlobalExceptionHandler com retornos 4xx e 5xx RFC 7807.\\n"
+            output += "- Metodo: GET/POST/PUT/DELETE\\n"
+            output += "- Middlewares: AuthEdge, RateLimiters, AuditLogger\\n"
+            output += "- Tratamento de Erro: GlobalExceptionHandler com retornos 4xx e 5xx RFC 7807.\\n"
             output += f"- Descricao: Manipulacao de entidade basica para processos CRUD de alta performance para a entidade {endpoint}. Possui isolamento de transacao ACID a nivel de banco de dados e disparo de eventos (Outbox pattern) via RabbitMQ no topico `all-in-one.{module.lower()}.events`.\\n"
             output += "\\n"
-    
+
     output += "\\n\\n## 12. LOGS DE EXECUCAO E COMPATIBILIDADE (DUMP)\\n"
     for i in range(1, 2000):
-        output += f"2026-06-06T00:00:{i%60:02d} [INFO] System Core - Heartbeat acknowledged. Matrix DSN stable. Mem: {50+i%20}MB. Pool Active. Thread: 0x00{i:04x}. Status: OK. All dependencies resolved. Syncing shards.\\n"
-        
+        output += f"2026-06-06T00:00:{i % 60:02d} [INFO] System Core - Heartbeat acknowledged. Matrix DSN stable. Mem: {50 + i % 20}MB. Pool Active. Thread: 0x00{i:04x}. Status: OK. All dependencies resolved. Syncing shards.\\n"
+
     return output
+
 
 if __name__ == "__main__":
     with open("relatorio_completo.md", "w", encoding="utf-8") as f:

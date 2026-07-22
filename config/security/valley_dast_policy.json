@@ -8,7 +8,12 @@
   "report_retention_days": 30,
   "synthetic_data_only": true,
   "production_scan_allowed": false,
-  "required_evidence": ["report_json.json", "report_html.html", "report_md.md", "valley-zap-summary.json"],
+  "required_evidence": [
+    "report_json.json",
+    "report_html.html",
+    "report_md.md",
+    "valley-zap-summary.json"
+  ],
   "latest_local_evidence": "config/security/evidence/valley_dast_2026-07-20.json",
   "pentest_equivalence": false
 }

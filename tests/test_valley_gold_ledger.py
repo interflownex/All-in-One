@@ -2,14 +2,15 @@ import json
 from pathlib import Path
 from uuid import uuid4
 
-from platform_test_support import fresh_client_for
 from modules.shared.domain_rules import MODULE_ENTITIES
-
+from platform_test_support import fresh_client_for
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def actor_headers(user_id: str, roles: str = "merchant", *, business_id: str | None = None) -> dict[str, str]:
+def actor_headers(
+    user_id: str, roles: str = "merchant", *, business_id: str | None = None
+) -> dict[str, str]:
     headers = {"X-Actor-User-Id": user_id, "X-Actor-Roles": roles, "X-Actor-Scopes": ""}
     if business_id:
         headers["X-Business-Id"] = business_id
@@ -18,8 +19,12 @@ def actor_headers(user_id: str, roles: str = "merchant", *, business_id: str | N
 
 
 def test_finance_catalog_declares_valley_gold_ledger_contract() -> None:
-    catalog = json.loads((ROOT / "config" / "module_catalog.json").read_text(encoding="utf-8"))
-    finance = next(module for module in catalog["modules"] if module["slug"] == "finance")
+    catalog = json.loads(
+        (ROOT / "config" / "module_catalog.json").read_text(encoding="utf-8")
+    )
+    finance = next(
+        module for module in catalog["modules"] if module["slug"] == "finance"
+    )
 
     assert "valley_gold_ledger_entries" in finance["entities"]
     assert "valley_gold_ledger_entries" in MODULE_ENTITIES["finance"]
@@ -34,7 +39,10 @@ def test_valley_gold_ledger_is_append_only_idempotent_and_emits_event() -> None:
 
     created = finance.post(
         "/resources/valley_gold_ledger_entries",
-        headers={**actor_headers(merchant_id, business_id=business_id), "X-Idempotency-Key": entry_key},
+        headers={
+            **actor_headers(merchant_id, business_id=business_id),
+            "X-Idempotency-Key": entry_key,
+        },
         json={
             "user_id": merchant_id,
             "entity_id": business_id,
@@ -54,7 +62,10 @@ def test_valley_gold_ledger_is_append_only_idempotent_and_emits_event() -> None:
 
     repeated = finance.post(
         "/resources/valley_gold_ledger_entries",
-        headers={**actor_headers(merchant_id, business_id=business_id), "X-Idempotency-Key": entry_key},
+        headers={
+            **actor_headers(merchant_id, business_id=business_id),
+            "X-Idempotency-Key": entry_key,
+        },
         json={
             "user_id": merchant_id,
             "entity_id": business_id,
@@ -112,9 +123,13 @@ def test_valley_gold_ledger_is_append_only_idempotent_and_emits_event() -> None:
     )
     assert deleted.status_code == 409
 
-    outbox = finance.get("/events/outbox", headers=actor_headers(merchant_id, "auditor"))
+    outbox = finance.get(
+        "/events/outbox", headers=actor_headers(merchant_id, "auditor")
+    )
     assert outbox.status_code == 200
-    assert any(event["routing_key"] == "valley.gold.ledger.posted" for event in outbox.json())
+    assert any(
+        event["routing_key"] == "valley.gold.ledger.posted" for event in outbox.json()
+    )
 
 
 def test_valley_gold_ledger_blocks_automatic_pepitas_and_invalid_debits() -> None:

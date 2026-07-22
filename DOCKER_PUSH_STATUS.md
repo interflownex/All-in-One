@@ -1,23 +1,24 @@
 # DOCKER PUSH STATUS - All-in-One
+
 **Data**: 2026-06-03  
-**Usuário Docker Hub**: andersoninterflow  
+**Usuário Docker Hub**: andersoninterflow
 
 ## ✅ Imagens Construídas (14 total)
 
-1. ✅ all-in-one-api-hub:latest - *Enviando*
-2. ✅ all-in-one-identity:latest - *Enviando*
-3. ✅ all-in-one-finance:latest - *Enviando*
-4. ✅ all-in-one-marketplace:latest - *Enviando*
-5. ✅ all-in-one-delivery:latest - *Enviando*
-6. ✅ all-in-one-services:latest - *Enviando*
-7. ✅ all-in-one-mobility:latest - *Enviando*
-8. ✅ all-in-one-erp:latest - *Enviando*
-9. ✅ all-in-one-wms:latest - *Enviando*
-10. ✅ all-in-one-tms:latest - *Enviando*
-11. ✅ all-in-one-crm:latest - *Enviando*
-12. ✅ all-in-one-health:latest - *Enviando*
-13. ✅ all-in-one-jobs:latest - *Enviando*
-14. ✅ all-in-one-outbox-dispatcher:latest - *Enviando*
+1. ✅ all-in-one-api-hub:latest - _Enviando_
+2. ✅ all-in-one-identity:latest - _Enviando_
+3. ✅ all-in-one-finance:latest - _Enviando_
+4. ✅ all-in-one-marketplace:latest - _Enviando_
+5. ✅ all-in-one-delivery:latest - _Enviando_
+6. ✅ all-in-one-services:latest - _Enviando_
+7. ✅ all-in-one-mobility:latest - _Enviando_
+8. ✅ all-in-one-erp:latest - _Enviando_
+9. ✅ all-in-one-wms:latest - _Enviando_
+10. ✅ all-in-one-tms:latest - _Enviando_
+11. ✅ all-in-one-crm:latest - _Enviando_
+12. ✅ all-in-one-health:latest - _Enviando_
+13. ✅ all-in-one-jobs:latest - _Enviando_
+14. ✅ all-in-one-outbox-dispatcher:latest - _Enviando_
 
 ## 📊 Status de Sincronização Git
 
@@ -65,4 +66,4 @@ https://hub.docker.com/r/andersoninterflow/all-in-one-api-hub
 
 **Total de Imagens**: 14  
 **Tamanho Estimado**: ~3-4 GB  
-**Status**: ⏳ Em andamento  
+**Status**: ⏳ Em andamento

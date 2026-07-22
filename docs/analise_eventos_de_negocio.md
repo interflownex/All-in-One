@@ -9,6 +9,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 ---
 
 ## 1. Domínio: AI Core (`ai_core`)
+
 - `ai.memory.created`
 - `ai.memory.indexed`
 - `ai.memory.updated`
@@ -23,6 +24,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `ai.model_run.cost_approved`
 
 ## 2. Domínio: API Hub (`api_hub`)
+
 - `api.client.created`
 - `api.client.submitted`
 - `api.client.approved`
@@ -42,6 +44,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `api.webhook.delivered`
 
 ## 3. Domínio: BI (`bi`)
+
 - `bi.dataset.created`
 - `bi.dataset.refreshed`
 - `bi.dataset.published`
@@ -56,6 +59,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `bi.export.completed`
 
 ## 4. Domínio: BPM (`bpm`)
+
 - `bpm.process.started`
 - `bpm.task.created`
 - `bpm.task.escalated`
@@ -63,6 +67,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `bpm.sla_policy.published`
 
 ## 5. Domínio: Business (`business`)
+
 - `business.company.created`
 - `business.company.submitted`
 - `business.company.approved`
@@ -86,6 +91,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `business.catalog_offer.paused`
 
 ## 6. Domínio: CRM (`crm`)
+
 - `crm.lead.created`
 - `crm.lead.qualified`
 - `crm.lead.disqualified`
@@ -100,6 +106,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `crm.campaign.closed`
 
 ## 7. Domínio: Delivery (`delivery`)
+
 - `delivery.request.created`
 - `delivery.rider.assigned`
 - `delivery.picked_up`
@@ -108,11 +115,13 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `delivery.cancelled`
 
 ## 8. Domínio: Document (`document`)
+
 - `document.uploaded`
 - `document.versioned`
 - `document.signed`
 
 ## 9. Domínio: ERP (`erp`)
+
 - `erp.account.created`
 - `erp.cost_center.created`
 - `erp.payable.created`
@@ -127,6 +136,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `erp.invoice.cancelled`
 
 ## 10. Domínio: Finance (`finance`)
+
 - `payment.escrow.created`
 - `payment.escrow.released`
 - `payment.refunded`
@@ -134,11 +144,13 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `valley.gold.ledger.posted`
 
 ## 11. Domínio: Health (`health`)
+
 - `health.appointment.created`
 - `health.telemedicine.started`
 - `health.prescription.issued`
 
 ## 12. Domínio: HR (`hr`)
+
 - `hr.employee.created`
 - `hr.payroll.opened`
 - `hr.payroll.closed`
@@ -146,6 +158,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `hr.training.completed`
 
 ## 13. Domínio: Identity (`identity`)
+
 - `identity.user.created`
 - `identity.user.verified`
 - `identity.user.duplicate_detected`
@@ -161,6 +174,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `identity.consent.recorded`
 
 ## 14. Domínio: Jobs (`jobs`)
+
 - `jobs.resume.created`
 - `jobs.resume.ctps_imported`
 - `jobs.employment.self_declared`
@@ -178,6 +192,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `jobs.resume_access_log.created`
 
 ## 15. Domínio: Legal (`legal`)
+
 - `legal.case.created`
 - `legal.deadline.created`
 - `legal.deadline.alerted`
@@ -185,6 +200,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `legal.hearing.scheduled`
 
 ## 16. Domínio: Marketplace (`marketplace`)
+
 - `marketplace.store.created`
 - `marketplace.product.created`
 - `marketplace.order.created`
@@ -201,6 +217,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `valley.pepitas.granted`
 
 ## 17. Domínio: Mobility (`mobility`)
+
 - `mobility.ride.requested`
 - `mobility.ride.accepted`
 - `mobility.ride.completed`
@@ -210,10 +227,12 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `mobility.fare_rule.published`
 
 ## 18. Domínio: Permissions (`permissions`)
+
 - `permissions.role.created`
 - `permissions.role.assigned`
 
 ## 19. Domínio: Property (`property`)
+
 - `property.lease.created`
 - `property.lease.activated`
 - `property.lease.terminated`
@@ -222,12 +241,14 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `property.maintenance.completed`
 
 ## 20. Domínio: Riders (`riders`)
+
 - `rider.submitted`
 - `rider.approved`
 - `rider.rejected`
 - `rider.vehicle.approved`
 
 ## 21. Domínio: Services (`services`)
+
 - `services.visit.created`
 - `services.visit.completed`
 - `services.quote.created`
@@ -235,6 +256,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `services.contract.completed`
 
 ## 22. Domínio: Stock (`stock`)
+
 - `stock.product.imported`
 - `stock.supplier_order.created`
 - `stock.supplier_order.acknowledged`
@@ -244,6 +266,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `valley.stock.discount.quoted`
 
 ## 23. Domínio: TMS (`tms`)
+
 - `tms.carrier.created`
 - `tms.carrier.submitted`
 - `tms.carrier.approved`
@@ -259,6 +282,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `tms.freight.audit_closed`
 
 ## 24. Domínio: Vision (`vision`)
+
 - `vision.device.registered`
 - `vision.device.submitted`
 - `vision.device.cancelled`
@@ -272,6 +296,7 @@ As definições de payload, consumidores e outras propriedades detalhadas serão
 - `vision.incident.resolved`
 
 ## 25. Domínio: WMS (`wms`)
+
 - `wms.warehouse.created`
 - `wms.bin.created`
 - `wms.inventory.received`

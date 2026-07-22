@@ -25,10 +25,21 @@
     "identity": {
       "risk_level": "critical",
       "data_domains": ["identidade", "documentos", "biometria", "sessoes", "consentimentos"],
-      "sensitive_categories": ["documento_governamental", "biometria", "credencial", "consentimento"],
+      "sensitive_categories": [
+        "documento_governamental",
+        "biometria",
+        "credencial",
+        "consentimento"
+      ],
       "legal_basis": ["execucao_contrato", "obrigacao_legal", "consentimento", "prevencao_fraude"],
       "retention_policy": "reter identidade, KYC e consentimentos enquanto houver conta ativa, obrigacao legal ou defesa de direito; anonimizar dados nao obrigatorios apos encerramento",
-      "production_gate": ["DPIA", "DPA_provedor_KYC", "KMS", "direitos_titular", "teste_negativo_permissoes"]
+      "production_gate": [
+        "DPIA",
+        "DPA_provedor_KYC",
+        "KMS",
+        "direitos_titular",
+        "teste_negativo_permissoes"
+      ]
     },
     "business": {
       "risk_level": "high",
@@ -52,7 +63,14 @@
       "sensitive_categories": ["financeiro", "transacional", "fiscal"],
       "legal_basis": ["execucao_contrato", "obrigacao_legal", "prevencao_fraude"],
       "retention_policy": "ledger e registros fiscais sao append-only e retidos por prazo legal; dados auxiliares devem ser minimizados",
-      "production_gate": ["DPIA", "PSP_homologado", "conciliacao", "KMS", "antifraude", "backup_restore"]
+      "production_gate": [
+        "DPIA",
+        "PSP_homologado",
+        "conciliacao",
+        "KMS",
+        "antifraude",
+        "backup_restore"
+      ]
     },
     "marketplace": {
       "risk_level": "medium",
@@ -84,7 +102,12 @@
       "sensitive_categories": ["documento_governamental", "localizacao", "avaliacao_profissional"],
       "legal_basis": ["execucao_contrato", "obrigacao_legal", "prevencao_fraude"],
       "retention_policy": "reter documentos e aprovacoes pelo ciclo contratual e defesa de direito; limitar acesso operacional",
-      "production_gate": ["validacao_documental", "MFA_aprovacao", "antifraude", "retencao_documentos"]
+      "production_gate": [
+        "validacao_documental",
+        "MFA_aprovacao",
+        "antifraude",
+        "retencao_documentos"
+      ]
     },
     "services": {
       "risk_level": "high",
@@ -108,7 +131,13 @@
       "sensitive_categories": ["documento_trabalho", "historico_profissional", "dado_candidato"],
       "legal_basis": ["consentimento", "execucao_contrato", "obrigacao_legal"],
       "retention_policy": "curriculos privados por padrao; PDF CTPS cifrado e acessivel somente ao titular; acessos empresariais auditados",
-      "production_gate": ["DPIA", "cofre_documentos", "consentimento_recrutador", "direitos_titular", "retencao_curriculo"]
+      "production_gate": [
+        "DPIA",
+        "cofre_documentos",
+        "consentimento_recrutador",
+        "direitos_titular",
+        "retencao_curriculo"
+      ]
     },
     "erp": {
       "risk_level": "high",
@@ -156,7 +185,13 @@
       "sensitive_categories": ["documento_bruto", "assinatura", "OCR"],
       "legal_basis": ["execucao_contrato", "obrigacao_legal", "consentimento"],
       "retention_policy": "documentos exigem classificacao, cofre seguro, versionamento e regra de retencao por tipo",
-      "production_gate": ["DPIA", "KMS", "classificacao_documental", "assinatura_homologada", "direitos_titular"]
+      "production_gate": [
+        "DPIA",
+        "KMS",
+        "classificacao_documental",
+        "assinatura_homologada",
+        "direitos_titular"
+      ]
     },
     "hr": {
       "risk_level": "critical",
@@ -172,7 +207,13 @@
       "sensitive_categories": ["saude", "prontuario", "prescricao"],
       "legal_basis": ["consentimento", "obrigacao_legal", "tutela_saude"],
       "retention_policy": "prontuario e prescricoes seguem retencao regulatoria; acesso minimo, consentimento e auditoria obrigatorios",
-      "production_gate": ["DPIA_saude", "CFM_CFP_quando_aplicavel", "consentimento_clinico", "KMS", "logs_imutaveis"]
+      "production_gate": [
+        "DPIA_saude",
+        "CFM_CFP_quando_aplicavel",
+        "consentimento_clinico",
+        "KMS",
+        "logs_imutaveis"
+      ]
     },
     "vision": {
       "risk_level": "critical",
@@ -180,7 +221,13 @@
       "sensitive_categories": ["imagem", "biometria_potencial", "localizacao"],
       "legal_basis": ["legitimo_interesse", "consentimento", "seguranca"],
       "retention_policy": "gravacoes exigem sinalizacao, finalidade, retencao curta e descarte automatico",
-      "production_gate": ["DPIA_video", "sinalizacao", "retencao_curta", "controle_acesso", "anonimizacao_quando_possivel"]
+      "production_gate": [
+        "DPIA_video",
+        "sinalizacao",
+        "retencao_curta",
+        "controle_acesso",
+        "anonimizacao_quando_possivel"
+      ]
     },
     "legal": {
       "risk_level": "high",
@@ -204,7 +251,12 @@
       "sensitive_categories": ["analitico", "dados_derivados", "exportacao"],
       "legal_basis": ["legitimo_interesse", "execucao_contrato"],
       "retention_policy": "dashboards devem usar minimizacao, agregacao e mascaramento; exports expiram por politica",
-      "production_gate": ["permissao_analitica", "mascaramento", "catalogo_dataset", "logs_exportacao"]
+      "production_gate": [
+        "permissao_analitica",
+        "mascaramento",
+        "catalogo_dataset",
+        "logs_exportacao"
+      ]
     },
     "ai_core": {
       "risk_level": "critical",
@@ -212,7 +264,13 @@
       "sensitive_categories": ["prompt", "dado_derivado", "decisao_IA"],
       "legal_basis": ["consentimento", "execucao_contrato", "legitimo_interesse"],
       "retention_policy": "memorias exigem consentimento e TTL; prompts e outputs sensiveis devem ser minimizados e auditados",
-      "production_gate": ["DPIA_IA", "governanca_modelo", "opt_out_memoria", "controle_custo", "moderacao"]
+      "production_gate": [
+        "DPIA_IA",
+        "governanca_modelo",
+        "opt_out_memoria",
+        "controle_custo",
+        "moderacao"
+      ]
     },
     "api_hub": {
       "risk_level": "critical",
@@ -220,7 +278,13 @@
       "sensitive_categories": ["credencial", "segredo", "payload_integracao"],
       "legal_basis": ["execucao_contrato", "legitimo_interesse", "seguranca"],
       "retention_policy": "API keys apenas hash-only; logs de payload devem ser minimizados e redigidos",
-      "production_gate": ["hash_only", "rotacao_chaves", "assinatura_webhook", "rate_limit", "segredos_vault"]
+      "production_gate": [
+        "hash_only",
+        "rotacao_chaves",
+        "assinatura_webhook",
+        "rate_limit",
+        "segredos_vault"
+      ]
     }
   }
 }

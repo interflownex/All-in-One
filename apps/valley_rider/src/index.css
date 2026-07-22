@@ -9,7 +9,7 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-main);
   min-height: 100vh;
@@ -65,12 +65,13 @@ body {
 }
 
 .map-placeholder::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 200%;
   height: 200%;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-  linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 20px 20px;
   opacity: 0.5;
 }

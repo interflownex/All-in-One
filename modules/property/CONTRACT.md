@@ -7,6 +7,7 @@
         ## Entidades
 
         - `properties`
+
 - `units`
 - `leases`
 - `assemblies`
@@ -15,6 +16,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -36,7 +38,6 @@
 - `POST /reject`
 - `POST /audit`
 
-
 ## Locacao e manutencao
 
 - `leases` exige `property_id`, `tenant_user_id`, `starts_at` e `rent_amount_brl`, iniciando em `draft` e emitindo `property.lease.created`.
@@ -45,10 +46,10 @@
 - `maintenance_orders` exige `property_id`, `issue_type` e `requested_at`, iniciando em `requested` e emitindo `property.maintenance.requested`.
 - A acao `schedule` agenda manutencao e emite `property.maintenance.scheduled`; `complete` exige papel aprovador, MFA e emite `property.maintenance.completed`.
 
-
         ## Eventos
 
         - `property.lease.created`
+
 - `property.lease.activated`
 - `property.lease.terminated`
 - `property.maintenance.requested`

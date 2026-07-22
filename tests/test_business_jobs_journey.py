@@ -15,7 +15,9 @@ def approver_headers(user_id: str) -> dict[str, str]:
     }
 
 
-def recruiter_headers(user_id: str, business_id: str, scope: str = "jobs:resumes:read") -> dict[str, str]:
+def recruiter_headers(
+    user_id: str, business_id: str, scope: str = "jobs:resumes:read"
+) -> dict[str, str]:
     return {
         "X-Actor-User-Id": user_id,
         "X-Actor-Roles": "recruiter",
@@ -91,7 +93,10 @@ def test_business_jobs_candidate_access_journey() -> None:
         headers=owner_headers(candidate_id),
         json={
             "user_id": candidate_id,
-            "payload": {"headline": "Candidato Operacional", "recruiter_visibility": "business_recruiters"},
+            "payload": {
+                "headline": "Candidato Operacional",
+                "recruiter_visibility": "business_recruiters",
+            },
         },
     )
     assert resume.status_code == 201

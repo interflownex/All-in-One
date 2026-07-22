@@ -12,7 +12,6 @@ from modules.shared.retention_worker import (
     process_candidates,
 )
 
-
 NOW = datetime(2026, 5, 31, 15, 0, tzinfo=UTC)
 
 
@@ -22,33 +21,56 @@ def candidate(**overrides: object) -> RetentionCandidate:
         "record_id": "lead-1",
         "resource_type": "leads",
         "subject_id": "user-1",
-        "payload": {"name": "Pessoa", "email": "pessoa@example.com", "campaign": "local"},
+        "payload": {
+            "name": "Pessoa",
+            "email": "pessoa@example.com",
+            "campaign": "local",
+        },
         "legal_hold": [],
     }
     data.update(overrides)
     return RetentionCandidate.from_dict(data)
 
 
-def test_anonymization_worker_redacts_sensitive_fields_and_keeps_business_context() -> None:
+def test_anonymization_worker_redacts_sensitive_fields_and_keeps_business_context() -> (
+    None
+):
     decision = decide_retention(
-        candidate(module="delivery", payload={"address": "Rua A", "route_id": "R-1", "customer_phone": "999"}),
+        candidate(
+            module="delivery",
+            payload={"address": "Rua A", "route_id": "R-1", "customer_phone": "999"},
+        ),
         "anonymization_worker_hourly",
         observed_at=NOW,
     )
 
     assert decision.status == "applied"
     assert decision.audit_event == "compliance.data.anonymized"
-    assert decision.payload == {"address": "[anonymized]", "route_id": "R-1", "customer_phone": "[anonymized]"}
+    assert decision.payload == {
+        "address": "[anonymized]",
+        "route_id": "R-1",
+        "customer_phone": "[anonymized]",
+    }
     assert decision.evidence["anonymization_method"] == "field_redaction"
-    assert decision.evidence["audit_event_id"] == "delivery:lead-1:anonymization_worker_hourly"
+    assert (
+        decision.evidence["audit_event_id"]
+        == "delivery:lead-1:anonymization_worker_hourly"
+    )
 
 
 def test_deletion_worker_emits_tombstone_and_receipt_hash() -> None:
-    decision = decide_retention(candidate(module="vision", record_id="recording-1"), "deletion_worker_daily", observed_at=NOW)
+    decision = decide_retention(
+        candidate(module="vision", record_id="recording-1"),
+        "deletion_worker_daily",
+        observed_at=NOW,
+    )
 
     assert decision.status == "applied"
     assert decision.audit_event == "compliance.data.deleted"
-    assert decision.payload == {"deleted": True, "deleted_at": "2026-05-31T15:00:00+00:00"}
+    assert decision.payload == {
+        "deleted": True,
+        "deleted_at": "2026-05-31T15:00:00+00:00",
+    }
     assert len(decision.evidence["deletion_receipt_hash"]) == 64
     assert decision.evidence["record_selector_hash"]
 
@@ -56,7 +78,12 @@ def test_deletion_worker_emits_tombstone_and_receipt_hash() -> None:
 def test_dry_run_keeps_payload_and_marks_decision_without_applying() -> None:
     original = {"name": "Pessoa", "email": "pessoa@example.com"}
 
-    decision = decide_retention(candidate(payload=original), "deletion_worker_daily", dry_run=True, observed_at=NOW)
+    decision = decide_retention(
+        candidate(payload=original),
+        "deletion_worker_daily",
+        dry_run=True,
+        observed_at=NOW,
+    )
 
     assert decision.status == "dry_run"
     assert decision.payload == original
@@ -65,7 +92,9 @@ def test_dry_run_keeps_payload_and_marks_decision_without_applying() -> None:
 
 def test_legal_hold_blocks_destructive_or_anonymizing_actions() -> None:
     decision = decide_retention(
-        candidate(module="finance", legal_hold=["ledger"], requested_action="delete_ledger"),
+        candidate(
+            module="finance", legal_hold=["ledger"], requested_action="delete_ledger"
+        ),
         "deletion_worker_daily",
         observed_at=NOW,
     )
@@ -83,7 +112,11 @@ def test_forbidden_action_requires_legal_review_even_without_current_hold() -> N
         observed_at=NOW,
     )
     approved = decide_retention(
-        candidate(module="health", requested_action="delete_medical_record", legal_review_approved=True),
+        candidate(
+            module="health",
+            requested_action="delete_medical_record",
+            legal_review_approved=True,
+        ),
         "deletion_worker_daily",
         observed_at=NOW,
     )
@@ -106,11 +139,16 @@ def test_process_candidates_reuses_single_policy_timestamp_for_batch() -> None:
     )
 
     assert [decision.status for decision in decisions] == ["dry_run", "dry_run"]
-    assert {decision.evidence["job_run_id"] for decision in decisions} == {"retention_review_daily:20260531T150000Z"}
+    assert {decision.evidence["job_run_id"] for decision in decisions} == {
+        "retention_review_daily:20260531T150000Z"
+    }
 
 
 def test_anonymize_payload_handles_nested_values() -> None:
-    payload = {"profile": {"document_number": "123", "city": "SP"}, "items": [{"phone": "999", "sku": "A"}]}
+    payload = {
+        "profile": {"document_number": "123", "city": "SP"},
+        "items": [{"phone": "999", "sku": "A"}],
+    }
 
     assert anonymize_payload(payload) == {
         "profile": {"document_number": "[anonymized]", "city": "SP"},
@@ -154,7 +192,9 @@ def test_postgres_candidate_row_maps_to_retention_candidate() -> None:
 
 
 def test_decision_event_payload_exposes_only_operational_evidence() -> None:
-    decision = decide_retention(candidate(module="crm"), "retention_review_daily", observed_at=NOW)
+    decision = decide_retention(
+        candidate(module="crm"), "retention_review_daily", observed_at=NOW
+    )
 
     payload = decision_event_payload(decision, "candidate-1")
 

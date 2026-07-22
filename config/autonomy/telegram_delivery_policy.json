@@ -2,10 +2,7 @@
   "version": 1,
   "enabled": true,
   "channel": "telegram",
-  "required_secrets": [
-    "TELEGRAM_BOT_TOKEN",
-    "TELEGRAM_CHAT_ID"
-  ],
+  "required_secrets": ["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"],
   "credentials_outside_git": true,
   "delivery_script": "scripts/send_ready_artifact_to_telegram.py",
   "targets": {

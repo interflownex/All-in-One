@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `bi.datasets`
+
 - `bi.dashboards`
 - `bi.indicators`
 - `bi.exports`

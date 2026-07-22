@@ -22,12 +22,12 @@ AWS over the public internet.
 
 ## Prerequisites
 
--   For Databricks: Databricks Workspace URL and OAuth Service Principal (Client
-    ID and Secret) with read access.
--   For AWS Glue: AWS Administrator access to create IAM roles and permissions
-    policies.
--   Active Google Cloud project with administrative access to create lakehouse
-    resources, and secrets in the case of Databricks.
+- For Databricks: Databricks Workspace URL and OAuth Service Principal (Client
+  ID and Secret) with read access.
+- For AWS Glue: AWS Administrator access to create IAM roles and permissions
+  policies.
+- Active Google Cloud project with administrative access to create lakehouse
+  resources, and secrets in the case of Databricks.
 
 ## Procedure
 
@@ -195,14 +195,8 @@ Attach a policy that allows Lakehouse to read from Glue and S3.
     {
       "Sid": "S3Read",
       "Effect": "Allow",
-      "Action": [
-        "s3:ListBucket",
-        "s3:GetObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::<SPECIFIC_BUCKET>",
-        "arn:aws:s3:::<SPECIFIC_BUCKET>/*"
-      ]
+      "Action": ["s3:ListBucket", "s3:GetObject"],
+      "Resource": ["arn:aws:s3:::<SPECIFIC_BUCKET>", "arn:aws:s3:::<SPECIFIC_BUCKET>/*"]
     }
   ]
 }
@@ -281,34 +275,34 @@ working and propose next steps to the user.
 
 1.  **Validate the Connection**:
 
-    -   Attempt to list the namespaces or tables in the newly federated catalog
-        using the `bq` CLI or BigQuery API. For example:
+    - Attempt to list the namespaces or tables in the newly federated catalog
+      using the `bq` CLI or BigQuery API. For example:
 
-        ```bash
-        bq ls --location="<REGION>" <PROJECT_ID>.<CATALOG_NAME>
-        ```
+      ```bash
+      bq ls --location="<REGION>" <PROJECT_ID>.<CATALOG_NAME>
+      ```
 
-    -   If the command returns a list of namespaces/schemas, the federation is
-        successful.
+    - If the command returns a list of namespaces/schemas, the federation is
+      successful.
 
 2.  **Troubleshooting**:
 
-    -   If the validation fails (e.g., permission errors, empty results,
-        timeout), the agent should consult the Cross-Cloud Lakehouse
-        Troubleshooting documentation:
-        https://docs.cloud.google.com/lakehouse/docs/troubleshooting.
-    -   For AWS Glue, verify that the trust policy correctly references the
-        `biglake-service-account-id` and that the GCP and AWS regions match your
-        configuration.
-    -   For Databricks, verify that the secret exists in the correct region and
-        the service account has `roles/secretmanager.secretAccessor`.
+    - If the validation fails (e.g., permission errors, empty results,
+      timeout), the agent should consult the Cross-Cloud Lakehouse
+      Troubleshooting documentation:
+      https://docs.cloud.google.com/lakehouse/docs/troubleshooting.
+    - For AWS Glue, verify that the trust policy correctly references the
+      `biglake-service-account-id` and that the GCP and AWS regions match your
+      configuration.
+    - For Databricks, verify that the secret exists in the correct region and
+      the service account has `roles/secretmanager.secretAccessor`.
 
 3.  **Explore and Propose**:
 
-    -   Assuming the federation is working, browse the available namespaces and
-        a few key tables.
-    -   Summarize to the user what kind of data was found (e.g., "I see you have
-        tables related to e-commerce transactions and customer profiles").
-    -   Propose a business or analytical question to the user that would result
-        in a meaningful query of their data (e.g., "Would you like me to write a
-        query to find the top 5 purchasing customers from last month?").
+    - Assuming the federation is working, browse the available namespaces and
+      a few key tables.
+    - Summarize to the user what kind of data was found (e.g., "I see you have
+      tables related to e-commerce transactions and customer profiles").
+    - Propose a business or analytical question to the user that would result
+      in a meaningful query of their data (e.g., "Would you like me to write a
+      query to find the top 5 purchasing customers from last month?").

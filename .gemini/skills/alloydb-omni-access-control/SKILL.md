@@ -32,28 +32,28 @@ whether it's a replica, uptime duration, maximum connection limit, number of
 current connections, number of active connections, and the percentage of
 connections in use.
 
---------------------------------------------------------------------------------
+---
 
 ### list_pg_settings
 
 #### Parameters
 
-| Name         | Type    | Description   | Required | Default |
-| :----------- | :------ | :------------ | :------- | :------ |
-| setting_name | string  | Optional: A   | No       |         |
-:              :         : specific      :          :         :
-:              :         : configuration :          :         :
-:              :         : parameter     :          :         :
-:              :         : name pattern  :          :         :
-:              :         : to search     :          :         :
-:              :         : for.          :          :         :
-| limit        | integer | Optional: The | No       | `50`    |
-:              :         : maximum       :          :         :
-:              :         : number of     :          :         :
-:              :         : rows to       :          :         :
-:              :         : return.       :          :         :
+| Name                      | Type    | Description   | Required | Default |
+| :------------------------ | :------ | :------------ | :------- | :------ |
+| setting_name              | string  | Optional: A   | No       |         |
+| : : : specific : : :      |
+| : : : configuration : : : |
+| : : : parameter : : :     |
+| : : : name pattern : : :  |
+| : : : to search : : :     |
+| : : : for. : : :          |
+| limit                     | integer | Optional: The | No       | `50`    |
+| : : : maximum : : :       |
+| : : : number of : : :     |
+| : : : rows to : : :       |
+| : : : return. : : :       |
 
---------------------------------------------------------------------------------
+---
 
 ### list_roles
 
@@ -67,12 +67,12 @@ and a list of other roles/groups that this role is a member of.
 
 #### Parameters
 
-| Name      | Type    | Description                     | Required | Default |
-| :-------- | :------ | :------------------------------ | :------- | :------ |
-| role_name | string  | Optional: a text to filter      | No       |         |
-:           :         : results by role name. The input :          :         :
-:           :         : is used within a LIKE clause.   :          :         :
-| limit     | integer | Optional: The maximum number of | No       | `50`    |
-:           :         : rows to return. Default is 10   :          :         :
+| Name                                        | Type    | Description                     | Required | Default |
+| :------------------------------------------ | :------ | :------------------------------ | :------- | :------ |
+| role_name                                   | string  | Optional: a text to filter      | No       |         |
+| : : : results by role name. The input : : : |
+| : : : is used within a LIKE clause. : : :   |
+| limit                                       | integer | Optional: The maximum number of | No       | `50`    |
+| : : : rows to return. Default is 10 : : :   |
 
---------------------------------------------------------------------------------
+---

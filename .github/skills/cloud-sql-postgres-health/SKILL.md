@@ -48,7 +48,7 @@ PromQL Query Examples:
 1.  Basic Time Series:
     `avg_over_time({"__name__"="cloudsql.googleapis.com/database/postgresql/insights/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m])`
 2.  Top K: `topk(30,
-    avg_over_time({"__name__"="cloudsql.googleapis.com/database/postgresql/insights/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
+avg_over_time({"__name__"="cloudsql.googleapis.com/database/postgresql/insights/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
 3.  Mean:
     `avg(avg_over_time({"__name__"="cloudsql.googleapis.com/database/postgresql/insights/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
 4.  Minimum:
@@ -60,7 +60,7 @@ PromQL Query Examples:
 7.  Count streams:
     `count(avg_over_time({"__name__"="cloudsql.googleapis.com/database/postgresql/insights/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
 8.  Percentile with groupby on resource_id, database: `quantile by
-    ("resource_id","database")(0.99,avg_over_time({"__name__"="cloudsql.googleapis.com/database/postgresql/insights/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
+("resource_id","database")(0.99,avg_over_time({"__name__"="cloudsql.googleapis.com/database/postgresql/insights/aggregate/execution_time","monitored_resource"="cloudsql_instance_database","project_id"="my-projectId","resource_id"="my-projectId:my-instanceId"}[5m]))`
 
 Available Metrics List: metricname. description. monitored resource. labels.
 resource_id label format is `project_id:instance_id` which is actually instance
@@ -147,12 +147,12 @@ hash to avoid fetching the querystring. Do not use latency metrics for anything.
 
 #### Parameters
 
-Name      | Type   | Description                         | Required | Default
-:-------- | :----- | :---------------------------------- | :------- | :------
-projectId | string | The Id of the Google Cloud project. | Yes      |
-query     | string | The promql query to execute.        | Yes      |
+| Name      | Type   | Description                         | Required | Default |
+| :-------- | :----- | :---------------------------------- | :------- | :------ |
+| projectId | string | The Id of the Google Cloud project. | Yes      |
+| query     | string | The promql query to execute.        | Yes      |
 
---------------------------------------------------------------------------------
+---
 
 ### get_query_plan
 
@@ -163,13 +163,13 @@ plan inspection, regression checks, and query tuning workflows.
 
 #### Parameters
 
-| Name  | Type   | Description                          | Required | Default |
-| :---- | :----- | :----------------------------------- | :------- | :------ |
-| query | string | The SQL statement for which you want | Yes      |         |
-:       :        : to generate plan (omit the EXPLAIN   :          :         :
-:       :        : keyword).                            :          :         :
+| Name                                           | Type   | Description                          | Required | Default |
+| :--------------------------------------------- | :----- | :----------------------------------- | :------- | :------ |
+| query                                          | string | The SQL statement for which you want | Yes      |         |
+| : : : to generate plan (omit the EXPLAIN : : : |
+| : : : keyword). : : :                          |
 
---------------------------------------------------------------------------------
+---
 
 ### get_system_metrics
 
@@ -192,7 +192,7 @@ PromQL Query Examples:
 1.  Basic Time Series:
     `avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m])`
 2.  Top K: `topk(30,
-    avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
+avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 3.  Mean:
     `avg(avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 4.  Minimum:
@@ -204,7 +204,7 @@ PromQL Query Examples:
 7.  Count streams:
     `count(avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 8.  Percentile with groupby on database_id: `quantile by
-    ("database_id")(0.99,avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
+("database_id")(0.99,avg_over_time({"__name__"="cloudsql.googleapis.com/database/cpu/utilization","monitored_resource"="cloudsql_database","project_id"="my-projectId","database_id"="my-projectId:my-instanceId"}[5m]))`
 
 Available Metrics List: metricname. description. monitored resource. labels.
 database_id is actually the instance id and the format is
@@ -301,12 +301,12 @@ database_id is actually the instance id and the format is
 
 #### Parameters
 
-Name      | Type   | Description                         | Required | Default
-:-------- | :----- | :---------------------------------- | :------- | :------
-projectId | string | The Id of the Google Cloud project. | Yes      |
-query     | string | The promql query to execute.        | Yes      |
+| Name      | Type   | Description                         | Required | Default |
+| :-------- | :----- | :---------------------------------- | :------- | :------ |
+| projectId | string | The Id of the Google Cloud project. | Yes      |
+| query     | string | The promql query to execute.        | Yes      |
 
---------------------------------------------------------------------------------
+---
 
 ### list_active_queries
 
@@ -317,78 +317,78 @@ backend/xact/query start times, computed query_duration, and the SQL text.
 
 #### Parameters
 
-| Name                      | Type    | Description     | Required | Default |
-| :------------------------ | :------ | :-------------- | :------- | :------ |
-| min_duration              | string  | Optional: Only  | No       | `1      |
-:                           :         : show queries    :          : minute` :
-:                           :         : running at      :          :         :
-:                           :         : least this long :          :         :
-:                           :         : (e.g., '1       :          :         :
-:                           :         : minute', '1     :          :         :
-:                           :         : second', '2     :          :         :
-:                           :         : seconds').      :          :         :
-| exclude_application_names | string  | Optional: A     | No       | ``      |
-:                           :         : comma-separated :          :         :
-:                           :         : list of         :          :         :
-:                           :         : application     :          :         :
-:                           :         : names to        :          :         :
-:                           :         : exclude from    :          :         :
-:                           :         : the query       :          :         :
-:                           :         : results. This   :          :         :
-:                           :         : is useful for   :          :         :
-:                           :         : filtering out   :          :         :
-:                           :         : queries from    :          :         :
-:                           :         : specific        :          :         :
-:                           :         : applications    :          :         :
-:                           :         : (e.g., 'psql',  :          :         :
-:                           :         : 'pgAdmin',      :          :         :
-:                           :         : 'DBeaver'). The :          :         :
-:                           :         : match is        :          :         :
-:                           :         : case-sensitive. :          :         :
-:                           :         : Whitespace      :          :         :
-:                           :         : around commas   :          :         :
-:                           :         : and names is    :          :         :
-:                           :         : automatically   :          :         :
-:                           :         : handled. If     :          :         :
-:                           :         : this parameter  :          :         :
-:                           :         : is omitted, no  :          :         :
-:                           :         : applications    :          :         :
-:                           :         : are excluded.   :          :         :
-| limit                     | integer | Optional: The   | No       | `50`    |
-:                           :         : maximum number  :          :         :
-:                           :         : of rows to      :          :         :
-:                           :         : return.         :          :         :
+| Name                             | Type    | Description    | Required | Default |
+| :------------------------------- | :------ | :------------- | :------- | :------ |
+| min_duration                     | string  | Optional: Only | No       | `1      |
+| : : : show queries : : minute` : |
+| : : : running at : : :           |
+| : : : least this long : : :      |
+| : : : (e.g., '1 : : :            |
+| : : : minute', '1 : : :          |
+| : : : second', '2 : : :          |
+| : : : seconds'). : : :           |
+| exclude_application_names        | string  | Optional: A    | No       | ``      |
+| : : : comma-separated : : :      |
+| : : : list of : : :              |
+| : : : application : : :          |
+| : : : names to : : :             |
+| : : : exclude from : : :         |
+| : : : the query : : :            |
+| : : : results. This : : :        |
+| : : : is useful for : : :        |
+| : : : filtering out : : :        |
+| : : : queries from : : :         |
+| : : : specific : : :             |
+| : : : applications : : :         |
+| : : : (e.g., 'psql', : : :       |
+| : : : 'pgAdmin', : : :           |
+| : : : 'DBeaver'). The : : :      |
+| : : : match is : : :             |
+| : : : case-sensitive. : : :      |
+| : : : Whitespace : : :           |
+| : : : around commas : : :        |
+| : : : and names is : : :         |
+| : : : automatically : : :        |
+| : : : handled. If : : :          |
+| : : : this parameter : : :       |
+| : : : is omitted, no : : :       |
+| : : : applications : : :         |
+| : : : are excluded. : : :        |
+| limit                            | integer | Optional: The  | No       | `50`    |
+| : : : maximum number : : :       |
+| : : : of rows to : : :           |
+| : : : return. : : :              |
 
---------------------------------------------------------------------------------
+---
 
 ### list_database_stats
 
 #### Parameters
 
-| Name               | Type    | Description              | Required | Default |
-| :----------------- | :------ | :----------------------- | :------- | :------ |
-| database_name      | string  | Optional: A specific     | No       | ``      |
-:                    :         : database name pattern to :          :         :
-:                    :         : search for.              :          :         :
-| include_templates  | boolean | Optional: Whether to     | No       | `false` |
-:                    :         : include template         :          :         :
-:                    :         : databases in the         :          :         :
-:                    :         : results.                 :          :         :
-| database_owner     | string  | Optional: A specific     | No       | ``      |
-:                    :         : database owner name      :          :         :
-:                    :         : pattern to search for.   :          :         :
-| default_tablespace | string  | Optional: A specific     | No       | ``      |
-:                    :         : default tablespace name  :          :         :
-:                    :         : pattern to search for.   :          :         :
-| order_by           | string  | Optional: The field to   | No       | ``      |
-:                    :         : order the results by.    :          :         :
-:                    :         : Valid values are 'size'  :          :         :
-:                    :         : and 'commit'.            :          :         :
-| limit              | integer | Optional: The maximum    | No       | `10`    |
-:                    :         : number of rows to        :          :         :
-:                    :         : return.                  :          :         :
+| Name                                 | Type    | Description            | Required | Default |
+| :----------------------------------- | :------ | :--------------------- | :------- | :------ |
+| database_name                        | string  | Optional: A specific   | No       | ``      |
+| : : : database name pattern to : : : |
+| : : : search for. : : :              |
+| include_templates                    | boolean | Optional: Whether to   | No       | `false` |
+| : : : include template : : :         |
+| : : : databases in the : : :         |
+| : : : results. : : :                 |
+| database_owner                       | string  | Optional: A specific   | No       | ``      |
+| : : : database owner name : : :      |
+| : : : pattern to search for. : : :   |
+| default_tablespace                   | string  | Optional: A specific   | No       | ``      |
+| : : : default tablespace name : : :  |
+| : : : pattern to search for. : : :   |
+| order_by                             | string  | Optional: The field to | No       | ``      |
+| : : : order the results by. : : :    |
+| : : : Valid values are 'size' : : :  |
+| : : : and 'commit'. : : :            |
+| limit                                | integer | Optional: The maximum  | No       | `10`    |
+| : : : number of rows to : : :        |
+| : : : return. : : :                  |
 
---------------------------------------------------------------------------------
+---
 
 ### list_locks
 
@@ -396,7 +396,7 @@ Identifies all locks held by active processes showing the process ID, user,
 query text, and an aggregated list of all transactions and specific locks
 (relation, mode, grant status) associated with each process.
 
---------------------------------------------------------------------------------
+---
 
 ### list_query_stats
 
@@ -408,15 +408,15 @@ affected, and buffer cache I/O statistics (hits and reads).
 
 #### Parameters
 
-| Name          | Type    | Description                  | Required | Default |
-| :------------ | :------ | :--------------------------- | :------- | :------ |
-| database_name | string  | Optional: The database name  | No       | ``      |
-:               :         : to list query stats for.     :          :         :
-| limit         | integer | Optional: The maximum number | No       | `50`    |
-:               :         : of results to return.        :          :         :
-:               :         : Defaults to 50.              :          :         :
+| Name                                 | Type    | Description                  | Required | Default |
+| :----------------------------------- | :------ | :--------------------------- | :------- | :------ |
+| database_name                        | string  | Optional: The database name  | No       | ``      |
+| : : : to list query stats for. : : : |
+| limit                                | integer | Optional: The maximum number | No       | `50`    |
+| : : : of results to return. : : :    |
+| : : : Defaults to 50. : : :          |
 
---------------------------------------------------------------------------------
+---
 
 ### long_running_transactions
 
@@ -428,16 +428,16 @@ and query string.
 
 #### Parameters
 
-| Name         | Type    | Description                | Required | Default     |
-| :----------- | :------ | :------------------------- | :------- | :---------- |
-| min_duration | string  | Optional: Only show        | No       | `5 minutes` |
-:              :         : transactions running at    :          :             :
-:              :         : least this long (e.g., '1  :          :             :
-:              :         : minute', '15 minutes', '30 :          :             :
-:              :         : seconds').                 :          :             :
-| limit        | integer | Optional: The maximum      | No       | `20`        |
-:              :         : number of long-running     :          :             :
-:              :         : transactions to return.    :          :             :
-:              :         : Defaults to 20.            :          :             :
+| Name                                   | Type    | Description           | Required | Default     |
+| :------------------------------------- | :------ | :-------------------- | :------- | :---------- |
+| min_duration                           | string  | Optional: Only show   | No       | `5 minutes` |
+| : : : transactions running at : : :    |
+| : : : least this long (e.g., '1 : : :  |
+| : : : minute', '15 minutes', '30 : : : |
+| : : : seconds'). : : :                 |
+| limit                                  | integer | Optional: The maximum | No       | `20`        |
+| : : : number of long-running : : :     |
+| : : : transactions to return. : : :    |
+| : : : Defaults to 20. : : :            |
 
---------------------------------------------------------------------------------
+---

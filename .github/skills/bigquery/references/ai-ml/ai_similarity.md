@@ -4,9 +4,9 @@
 
 Use cases include the following:
 
--   Semantic search: Search for text or images based off a description, without
-    having to match specific keywords.
--   Recommendation: Return entities with attributes similar to a given entity.
+- Semantic search: Search for text or images based off a description, without
+  having to match specific keywords.
+- Recommendation: Return entities with attributes similar to a given entity.
 
 ## Syntax Reference
 
@@ -22,28 +22,28 @@ AI.SIMILARITY(
 
 ### Input Arguments
 
-| Argument            | Requirement  | Type      | Description              |
-| :------------------ | :----------- | :-------- | :----------------------- |
-| **`content1`**      | **Required** | String or | The first text content   |
-:                     :              : ObjectRef : or image context.        :
-| **`content2`**      | **Required** | String or | The second text content  |
-:                     :              : ObjectRef : or image to compare      :
-:                     :              :           : against.                 :
-| **`connection_id`** | Optional     | String    | The connection ID to use |
-:                     :              :           : for the LLM.             :
-| **`endpoint`**      | Optional     | String    | The model endpoint (e.g. |
-:                     :              :           : `'text-embedding-005'`). :
-| **`model_params`**  | Optional     | JSON      | JSON object for model    |
-:                     :              :           : parameters (e.g.,        :
-:                     :              :           : `temperature`,           :
-:                     :              :           : `max_output_tokens`).    :
+| Argument                                | Requirement  | Type      | Description              |
+| :-------------------------------------- | :----------- | :-------- | :----------------------- |
+| **`content1`**                          | **Required** | String or | The first text content   |
+| : : : ObjectRef : or image context. :   |
+| **`content2`**                          | **Required** | String or | The second text content  |
+| : : : ObjectRef : or image to compare : |
+| : : : : against. :                      |
+| **`connection_id`**                     | Optional     | String    | The connection ID to use |
+| : : : : for the LLM. :                  |
+| **`endpoint`**                          | Optional     | String    | The model endpoint (e.g. |
+| : : : : `'text-embedding-005'`). :      |
+| **`model_params`**                      | Optional     | JSON      | JSON object for model    |
+| : : : : parameters (e.g., :             |
+| : : : : `temperature`, :                |
+| : : : : `max_output_tokens`). :         |
 
 ### Output Schema
 
-| Column Name         | Type      | Description                         |
-| :------------------ | :-------- | :---------------------------------- |
-| **(Scalar Result)** | `FLOAT64` | A similarity score (e.g., cosine    |
-:                     :           : similarity). Returns null if error. :
+| Column Name                                 | Type      | Description                      |
+| :------------------------------------------ | :-------- | :------------------------------- |
+| **(Scalar Result)**                         | `FLOAT64` | A similarity score (e.g., cosine |
+| : : : similarity). Returns null if error. : |
 
 ## Examples
 

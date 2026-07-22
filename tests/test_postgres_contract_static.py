@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from modules.shared.delivery_postgres_store import DeliveryPostgresStore
@@ -10,14 +10,16 @@ from modules.shared.services_postgres_store import ServicesPostgresStore
 from scripts.validate_postgres_real_dsn import REQUIRED_TABLES, REQUIRED_TRIGGERS
 from scripts.verify_pg_indexes import REQUIRED_INDEXES
 
-
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATIONS_DIR = ROOT / "database" / "postgres" / "migrations"
 PRIORITY_STORES_TEST = ROOT / "tests" / "test_postgres_priority_stores_integration.py"
 
 
 def _migration_sql() -> str:
-    return "\n".join(path.read_text(encoding="utf-8") for path in sorted(MIGRATIONS_DIR.glob("*.sql")))
+    return "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted(MIGRATIONS_DIR.glob("*.sql"))
+    )
 
 
 def test_postgres_contract_required_tables_exist_in_migrations() -> None:
@@ -37,7 +39,9 @@ def test_postgres_contract_required_triggers_exist_in_migrations() -> None:
     missing = [
         trigger_name
         for trigger_name in sorted(REQUIRED_TRIGGERS)
-        if not re.search(rf"CREATE\s+TRIGGER\s+{re.escape(trigger_name)}\b", sql, re.IGNORECASE)
+        if not re.search(
+            rf"CREATE\s+TRIGGER\s+{re.escape(trigger_name)}\b", sql, re.IGNORECASE
+        )
     ]
 
     assert missing == []
@@ -82,7 +86,7 @@ def test_user_reference_columns_are_not_treated_as_business_entities() -> None:
 
 
 def test_operational_user_references_do_not_become_audit_entity_ids() -> None:
-    created_at = datetime.now(timezone.utc)
+    created_at = datetime.now(UTC)
     common_row = {
         "id": "00000000-0000-0000-0000-000000000001",
         "user_id": "00000000-0000-0000-0000-000000000002",
@@ -100,9 +104,25 @@ def test_operational_user_references_do_not_become_audit_entity_ids() -> None:
     delivery = DeliveryPostgresStore.__new__(DeliveryPostgresStore)
     mobility = MobilityPostgresStore.__new__(MobilityPostgresStore)
 
-    assert services._resource("providers", {**common_row, "provider_user_id": common_row["user_id"]})["entity_id"] is None
-    assert delivery._resource("delivery_requests", {**common_row, "assigned_rider_user_id": common_row["user_id"]})["entity_id"] is None
-    assert mobility._resource("rides", {**common_row, "driver_user_id": common_row["user_id"]})["entity_id"] is None
+    assert (
+        services._resource(
+            "providers", {**common_row, "provider_user_id": common_row["user_id"]}
+        )["entity_id"]
+        is None
+    )
+    assert (
+        delivery._resource(
+            "delivery_requests",
+            {**common_row, "assigned_rider_user_id": common_row["user_id"]},
+        )["entity_id"]
+        is None
+    )
+    assert (
+        mobility._resource(
+            "rides", {**common_row, "driver_user_id": common_row["user_id"]}
+        )["entity_id"]
+        is None
+    )
 
 
 def test_identity_priority_store_phone_does_not_collide_with_dsn_validator() -> None:

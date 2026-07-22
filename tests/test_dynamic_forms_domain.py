@@ -2,8 +2,12 @@ from copy import deepcopy
 
 import pytest
 
-from modules.shared.dynamic_forms import DynamicFormValidationError, assert_transition, validate_blueprint, validate_submission_values
-
+from modules.shared.dynamic_forms import (
+    DynamicFormValidationError,
+    assert_transition,
+    validate_blueprint,
+    validate_submission_values,
+)
 
 CATALOG = {
     "catalog-name": {
@@ -28,7 +32,12 @@ BINDINGS = {
 def blueprint() -> dict:
     return {
         "blocks": [
-            {"id": "block-main", "block_type": "section", "title": "Principal", "width": 12},
+            {
+                "id": "block-main",
+                "block_type": "section",
+                "title": "Principal",
+                "width": 12,
+            },
         ],
         "fields": [
             {
@@ -53,11 +62,29 @@ def blueprint() -> dict:
             },
         ],
         "validations": [
-            {"id": "validation-required", "field_id": "field-name", "validation_type": "required", "severity": "blocking", "run_backend": True},
-            {"id": "validation-length", "field_id": "field-name", "validation_type": "max_length", "severity": "error", "run_backend": True},
+            {
+                "id": "validation-required",
+                "field_id": "field-name",
+                "validation_type": "required",
+                "severity": "blocking",
+                "run_backend": True,
+            },
+            {
+                "id": "validation-length",
+                "field_id": "field-name",
+                "validation_type": "max_length",
+                "severity": "error",
+                "run_backend": True,
+            },
         ],
         "calculations": [
-            {"id": "calculation-total", "result_field_id": "field-total", "operand_field_ids": ["field-name"], "operation": "sum", "safe_expression": {"operation": "sum"}},
+            {
+                "id": "calculation-total",
+                "result_field_id": "field-total",
+                "operand_field_ids": ["field-name"],
+                "operation": "sum",
+                "safe_expression": {"operation": "sum"},
+            },
         ],
         "visibility_rules": [],
     }
@@ -65,14 +92,20 @@ def blueprint() -> dict:
 
 def test_blueprint_valido_produz_checksum_estavel() -> None:
     first = validate_blueprint(blueprint(), catalog=CATALOG, bindings=BINDINGS)
-    second = validate_blueprint(deepcopy(blueprint()), catalog=CATALOG, bindings=BINDINGS)
+    second = validate_blueprint(
+        deepcopy(blueprint()), catalog=CATALOG, bindings=BINDINGS
+    )
     assert first["checksum"] == second["checksum"]
     assert len(first["checksum"]) == 64
 
 
 @pytest.mark.parametrize(
     ("key", "value"),
-    [("sql", "SELECT * FROM users"), ("javascript", "alert(1)"), ("physical_table", "identity.users")],
+    [
+        ("sql", "SELECT * FROM users"),
+        ("javascript", "alert(1)"),
+        ("physical_table", "identity.users"),
+    ],
 )
 def test_blueprint_rejeita_codigo_e_destino_fisico(key: str, value: str) -> None:
     candidate = blueprint()
@@ -85,7 +118,9 @@ def test_blueprint_rejeita_enfraquecimento_de_validacao_obrigatoria() -> None:
     candidate = blueprint()
     candidate["validations"] = candidate["validations"][:1]
     candidate["fields"][0]["validation_ids"] = ["validation-required"]
-    with pytest.raises(DynamicFormValidationError, match="Validacoes estruturais ausentes"):
+    with pytest.raises(
+        DynamicFormValidationError, match="Validacoes estruturais ausentes"
+    ):
         validate_blueprint(candidate, catalog=CATALOG, bindings=BINDINGS)
 
 
@@ -125,13 +160,31 @@ def test_transicoes_impedem_publicacao_sem_aprovacao() -> None:
 
 def test_submissao_normaliza_por_catalogo_sem_destino_fisico() -> None:
     fields = [
-        {"field_catalog_id": "catalog-name", "required": True, "read_only": False, "hidden": False},
-        {"field_catalog_id": "catalog-total", "required": True, "read_only": False, "hidden": False},
+        {
+            "field_catalog_id": "catalog-name",
+            "required": True,
+            "read_only": False,
+            "hidden": False,
+        },
+        {
+            "field_catalog_id": "catalog-total",
+            "required": True,
+            "read_only": False,
+            "hidden": False,
+        },
     ]
     catalog = {
         **CATALOG,
-        "catalog-name": {**CATALOG["catalog-name"], "data_type": "string", "sensitivity": "personal"},
-        "catalog-total": {**CATALOG["catalog-total"], "data_type": "decimal", "unit": "BRL"},
+        "catalog-name": {
+            **CATALOG["catalog-name"],
+            "data_type": "string",
+            "sensitivity": "personal",
+        },
+        "catalog-total": {
+            **CATALOG["catalog-total"],
+            "data_type": "decimal",
+            "unit": "BRL",
+        },
     }
     result = validate_submission_values(
         fields=fields,
@@ -144,9 +197,20 @@ def test_submissao_normaliza_por_catalogo_sem_destino_fisico() -> None:
 
 
 def test_submissao_rejeita_campo_nao_publicado_e_float_financeiro() -> None:
-    fields = [{"field_catalog_id": "catalog-total", "required": True, "read_only": False, "hidden": False}]
+    fields = [
+        {
+            "field_catalog_id": "catalog-total",
+            "required": True,
+            "read_only": False,
+            "hidden": False,
+        }
+    ]
     catalog = {"catalog-total": {**CATALOG["catalog-total"], "data_type": "decimal"}}
     with pytest.raises(DynamicFormValidationError, match="nao autorizados"):
-        validate_submission_values(fields=fields, catalog=catalog, values={"outro-campo": "x"})
+        validate_submission_values(
+            fields=fields, catalog=catalog, values={"outro-campo": "x"}
+        )
     with pytest.raises(DynamicFormValidationError, match="Tipo invalido"):
-        validate_submission_values(fields=fields, catalog=catalog, values={"catalog-total": 10.5})
+        validate_submission_values(
+            fields=fields, catalog=catalog, values={"catalog-total": 10.5}
+        )

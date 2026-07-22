@@ -14,16 +14,16 @@ spec:
         app: rabbitmq
     spec:
       containers:
-      - name: rabbitmq
-        image: rabbitmq:3-management-alpine
-        ports:
-        - containerPort: 5672
-        - containerPort: 15672
-        env:
-        - name: RABBITMQ_DEFAULT_USER
-          value: "all-in-one"
-        - name: RABBITMQ_DEFAULT_PASS
-          value: "strong-password"
+        - name: rabbitmq
+          image: rabbitmq:3-management-alpine
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              value: "all-in-one"
+            - name: RABBITMQ_DEFAULT_PASS
+              value: "strong-password"
 ---
 apiVersion: v1
 kind: Service
@@ -34,11 +34,11 @@ spec:
   selector:
     app: rabbitmq
   ports:
-  - name: amqp
-    protocol: TCP
-    port: 5672
-    targetPort: 5672
-  - name: management
-    protocol: TCP
-    port: 15672
-    targetPort: 15672
+    - name: amqp
+      protocol: TCP
+      port: 5672
+      targetPort: 5672
+    - name: management
+      protocol: TCP
+      port: 15672
+      targetPort: 15672

@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `mobility.ride.requested`
+
 - `mobility.ride.accepted`
 - `mobility.ride.completed`
 - `mobility.route.eta_quoted`

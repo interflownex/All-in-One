@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `legal.cases`
+
 - `legal.deadlines`
 - `legal.hearings`
 - `legal.legal_contracts`

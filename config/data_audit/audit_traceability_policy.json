@@ -40,6 +40,23 @@
     "printed": ["printed"],
     "shared": ["shared", "shared_with"]
   },
-  "log_types": ["technical", "security", "audit", "business", "metric", "trace", "integration_event"],
-  "security_rules": ["no_plaintext_secrets", "sensitive_value_minimization", "tenant_isolation", "append_only", "tamper_evidence", "correlation_required", "retention_defined", "authorized_access_only"]
+  "log_types": [
+    "technical",
+    "security",
+    "audit",
+    "business",
+    "metric",
+    "trace",
+    "integration_event"
+  ],
+  "security_rules": [
+    "no_plaintext_secrets",
+    "sensitive_value_minimization",
+    "tenant_isolation",
+    "append_only",
+    "tamper_evidence",
+    "correlation_required",
+    "retention_defined",
+    "authorized_access_only"
+  ]
 }

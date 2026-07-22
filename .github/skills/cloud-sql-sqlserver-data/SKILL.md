@@ -32,11 +32,11 @@ Use this tool to execute SQL.
 
 #### Parameters
 
-Name | Type   | Description         | Required | Default
-:--- | :----- | :------------------ | :------- | :------
-sql  | string | The sql to execute. | Yes      |
+| Name | Type   | Description         | Required | Default |
+| :--- | :----- | :------------------ | :------- | :------ |
+| sql  | string | The sql to execute. | Yes      |
 
---------------------------------------------------------------------------------
+---
 
 ### list_tables
 
@@ -47,19 +47,19 @@ tables in user schemas.
 
 #### Parameters
 
-| Name          | Type   | Description     | Required | Default    |
-| :------------ | :----- | :-------------- | :------- | :--------- |
-| table_names   | string | Optional: A     | No       | ``         |
-:               :        : comma-separated :          :            :
-:               :        : list of table   :          :            :
-:               :        : names. If       :          :            :
-:               :        : empty, details  :          :            :
-:               :        : for all tables  :          :            :
-:               :        : will be listed. :          :            :
-| output_format | string | Optional: Use   | No       | `detailed` |
-:               :        : 'simple' for    :          :            :
-:               :        : names only or   :          :            :
-:               :        : 'detailed' for  :          :            :
-:               :        : full info.      :          :            :
+| Name                        | Type   | Description   | Required | Default    |
+| :-------------------------- | :----- | :------------ | :------- | :--------- |
+| table_names                 | string | Optional: A   | No       | ``         |
+| : : : comma-separated : : : |
+| : : : list of table : : :   |
+| : : : names. If : : :       |
+| : : : empty, details : : :  |
+| : : : for all tables : : :  |
+| : : : will be listed. : : : |
+| output_format               | string | Optional: Use | No       | `detailed` |
+| : : : 'simple' for : : :    |
+| : : : names only or : : :   |
+| : : : 'detailed' for : : :  |
+| : : : full info. : : :      |
 
---------------------------------------------------------------------------------
+---

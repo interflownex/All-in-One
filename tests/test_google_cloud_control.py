@@ -21,17 +21,25 @@ def test_google_cloud_profile_is_active_and_non_destructive() -> None:
     assert profile["safety"]["preserve_existing_remote_resources"] is True
 
 
-def test_google_cloud_auth_status_reports_adc_without_printing_token(monkeypatch) -> None:
+def test_google_cloud_auth_status_reports_adc_without_printing_token(
+    monkeypatch,
+) -> None:
     calls: list[tuple[str, ...]] = []
 
     def fake_result(*args: str):
         calls.append(args)
         if args == ("--version",):
-            return subprocess.CompletedProcess(["gcloud", *args], 0, stdout="Google Cloud SDK 999\n", stderr="")
+            return subprocess.CompletedProcess(
+                ["gcloud", *args], 0, stdout="Google Cloud SDK 999\n", stderr=""
+            )
         if args[:2] == ("auth", "list"):
-            return subprocess.CompletedProcess(["gcloud", *args], 0, stdout="user@example.test\n", stderr="")
+            return subprocess.CompletedProcess(
+                ["gcloud", *args], 0, stdout="user@example.test\n", stderr=""
+            )
         if args == ("auth", "application-default", "print-access-token"):
-            return subprocess.CompletedProcess(["gcloud", *args], 0, stdout="secret-token\n", stderr="")
+            return subprocess.CompletedProcess(
+                ["gcloud", *args], 0, stdout="secret-token\n", stderr=""
+            )
         raise AssertionError(args)
 
     monkeypatch.setattr(google_cloud_control, "find_gcloud", lambda: "/usr/bin/gcloud")
@@ -46,11 +54,15 @@ def test_google_cloud_auth_status_reports_adc_without_printing_token(monkeypatch
     assert ("auth", "application-default", "print-access-token") in calls
 
 
-def test_google_cloud_auth_status_warns_about_unresponsive_windows_gcloud(monkeypatch) -> None:
+def test_google_cloud_auth_status_warns_about_unresponsive_windows_gcloud(
+    monkeypatch,
+) -> None:
     monkeypatch.setattr(
         google_cloud_control,
         "find_gcloud",
-        lambda: "/mnt/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud",
+        lambda: (
+            "/mnt/c/Program Files (x86)/Google/Cloud SDK/google-cloud-sdk/bin/gcloud"
+        ),
     )
     monkeypatch.setattr(google_cloud_control, "run_gcloud_result", lambda *args: None)
     monkeypatch.setattr(google_cloud_control, "gcloud_timeout_seconds", lambda: 8)

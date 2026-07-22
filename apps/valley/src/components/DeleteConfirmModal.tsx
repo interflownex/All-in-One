@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface DeleteConfirmModalProps {
   isOpen: boolean;
@@ -14,14 +14,20 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ isOpen, onClose
       <div className="modal-content neo-brutalism">
         <header>
           <h2>DeleteConfirmModal</h2>
-          <button onClick={onClose} className="close-btn">&times;</button>
+          <button onClick={onClose} className="close-btn">
+            &times;
+          </button>
         </header>
         <div className="modal-body">
           <p>Você tem certeza que deseja realizar esta ação?</p>
         </div>
         <footer>
-          <button className="btn-secondary" onClick={onClose}>Cancelar</button>
-          <button className="btn-primary" onClick={onConfirm}>Confirmar</button>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancelar
+          </button>
+          <button className="btn-primary" onClick={onConfirm}>
+            Confirmar
+          </button>
         </footer>
       </div>
     </div>

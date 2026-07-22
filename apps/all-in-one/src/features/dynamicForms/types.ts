@@ -25,7 +25,7 @@ export type FieldBinding = {
 
 export type BuilderBlock = {
   id: string;
-  block_type: 'section' | 'group' | 'tab' | 'column';
+  block_type: "section" | "group" | "tab" | "column";
   parent_block_id: string | null;
   display_order: number;
   title: string;
@@ -34,7 +34,7 @@ export type BuilderBlock = {
   collapsible: boolean;
   visibility_rule_id: string | null;
   repeatable: boolean;
-  allowed_style: 'default' | 'compact' | 'highlight' | 'bordered';
+  allowed_style: "default" | "compact" | "highlight" | "bordered";
 };
 
 export type BuilderField = {
@@ -54,7 +54,7 @@ export type BuilderField = {
   mask: string | null;
   format: string | null;
   default_value: unknown;
-  value_source: 'user' | 'context' | 'backend' | 'calculation';
+  value_source: "user" | "context" | "backend" | "calculation";
   unit: string | null;
   permissions: Record<string, unknown>;
   visibility_rule_id: string | null;
@@ -68,11 +68,11 @@ export type BuilderValidation = {
   validation_type: string;
   parameters: Record<string, unknown>;
   message_pt_br: string;
-  severity: 'info' | 'warning' | 'error' | 'blocking';
+  severity: "info" | "warning" | "error" | "blocking";
   condition: null;
   run_frontend: boolean;
   run_backend: boolean;
-  status: 'active';
+  status: "active";
   version: number;
 };
 
@@ -83,7 +83,7 @@ export type BuilderDocument = {
   name: string;
   moduleId: string;
   businessContext: string;
-  status: 'draft' | 'editing' | 'submitted' | 'approved' | 'published';
+  status: "draft" | "editing" | "submitted" | "approved" | "published";
   versionNumber: number;
   blocks: BuilderBlock[];
   fields: BuilderField[];
@@ -92,4 +92,4 @@ export type BuilderDocument = {
   visibility_rules: Record<string, unknown>[];
 };
 
-export type BuilderFeedback = { kind: 'idle' | 'loading' | 'success' | 'error'; message: string };
+export type BuilderFeedback = { kind: "idle" | "loading" | "success" | "error"; message: string };

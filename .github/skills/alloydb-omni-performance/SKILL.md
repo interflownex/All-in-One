@@ -31,11 +31,11 @@ Use this skill to execute a single SQL statement.
 
 #### Parameters
 
-Name | Type   | Description         | Required | Default
-:--- | :----- | :------------------ | :------- | :------
-sql  | string | The sql to execute. | Yes      |
+| Name | Type   | Description         | Required | Default |
+| :--- | :----- | :------------------ | :------- | :------ |
+| sql  | string | The sql to execute. | Yes      |
 
---------------------------------------------------------------------------------
+---
 
 ### get_column_cardinality
 
@@ -49,19 +49,19 @@ estimated cardinality.
 
 #### Parameters
 
-| Name        | Type   | Description                    | Required | Default  |
-| :---------- | :----- | :----------------------------- | :------- | :------- |
-| schema_name | string | Optional: The schema name in   | No       | `public` |
-:             :        : which the table is present.    :          :          :
-| table_name  | string | Required: The table name in    | Yes      |          |
-:             :        : which the column is present.   :          :          :
-| column_name | string | Optional: The column name for  | No       |          |
-:             :        : which the cardinality is to be :          :          :
-:             :        : found. If not provided,        :          :          :
-:             :        : cardinality for all columns    :          :          :
-:             :        : will be returned.              :          :          :
+| Name                                       | Type   | Description                   | Required | Default  |
+| :----------------------------------------- | :----- | :---------------------------- | :------- | :------- |
+| schema_name                                | string | Optional: The schema name in  | No       | `public` |
+| : : : which the table is present. : : :    |
+| table_name                                 | string | Required: The table name in   | Yes      |          |
+| : : : which the column is present. : : :   |
+| column_name                                | string | Optional: The column name for | No       |          |
+| : : : which the cardinality is to be : : : |
+| : : : found. If not provided, : : :        |
+| : : : cardinality for all columns : : :    |
+| : : : will be returned. : : :              |
 
---------------------------------------------------------------------------------
+---
 
 ### get_query_plan
 
@@ -72,13 +72,13 @@ plan inspection, regression checks, and query tuning workflows.
 
 #### Parameters
 
-| Name  | Type   | Description                          | Required | Default |
-| :---- | :----- | :----------------------------------- | :------- | :------ |
-| query | string | The SQL statement for which you want | Yes      |         |
-:       :        : to generate plan (omit the EXPLAIN   :          :         :
-:       :        : keyword).                            :          :         :
+| Name                                           | Type   | Description                          | Required | Default |
+| :--------------------------------------------- | :----- | :----------------------------------- | :------- | :------ |
+| query                                          | string | The SQL statement for which you want | Yes      |         |
+| : : : to generate plan (omit the EXPLAIN : : : |
+| : : : keyword). : : :                          |
 
---------------------------------------------------------------------------------
+---
 
 ### list_active_queries
 
@@ -89,78 +89,78 @@ backend/xact/query start times, computed query_duration, and the SQL text.
 
 #### Parameters
 
-| Name                      | Type    | Description     | Required | Default |
-| :------------------------ | :------ | :-------------- | :------- | :------ |
-| min_duration              | string  | Optional: Only  | No       | `1      |
-:                           :         : show queries    :          : minute` :
-:                           :         : running at      :          :         :
-:                           :         : least this long :          :         :
-:                           :         : (e.g., '1       :          :         :
-:                           :         : minute', '1     :          :         :
-:                           :         : second', '2     :          :         :
-:                           :         : seconds').      :          :         :
-| exclude_application_names | string  | Optional: A     | No       |         |
-:                           :         : comma-separated :          :         :
-:                           :         : list of         :          :         :
-:                           :         : application     :          :         :
-:                           :         : names to        :          :         :
-:                           :         : exclude from    :          :         :
-:                           :         : the query       :          :         :
-:                           :         : results. This   :          :         :
-:                           :         : is useful for   :          :         :
-:                           :         : filtering out   :          :         :
-:                           :         : queries from    :          :         :
-:                           :         : specific        :          :         :
-:                           :         : applications    :          :         :
-:                           :         : (e.g., 'psql',  :          :         :
-:                           :         : 'pgAdmin',      :          :         :
-:                           :         : 'DBeaver'). The :          :         :
-:                           :         : match is        :          :         :
-:                           :         : case-sensitive. :          :         :
-:                           :         : Whitespace      :          :         :
-:                           :         : around commas   :          :         :
-:                           :         : and names is    :          :         :
-:                           :         : automatically   :          :         :
-:                           :         : handled. If     :          :         :
-:                           :         : this parameter  :          :         :
-:                           :         : is omitted, no  :          :         :
-:                           :         : applications    :          :         :
-:                           :         : are excluded.   :          :         :
-| limit                     | integer | Optional: The   | No       | `50`    |
-:                           :         : maximum number  :          :         :
-:                           :         : of rows to      :          :         :
-:                           :         : return.         :          :         :
+| Name                             | Type    | Description    | Required | Default |
+| :------------------------------- | :------ | :------------- | :------- | :------ |
+| min_duration                     | string  | Optional: Only | No       | `1      |
+| : : : show queries : : minute` : |
+| : : : running at : : :           |
+| : : : least this long : : :      |
+| : : : (e.g., '1 : : :            |
+| : : : minute', '1 : : :          |
+| : : : second', '2 : : :          |
+| : : : seconds'). : : :           |
+| exclude_application_names        | string  | Optional: A    | No       |         |
+| : : : comma-separated : : :      |
+| : : : list of : : :              |
+| : : : application : : :          |
+| : : : names to : : :             |
+| : : : exclude from : : :         |
+| : : : the query : : :            |
+| : : : results. This : : :        |
+| : : : is useful for : : :        |
+| : : : filtering out : : :        |
+| : : : queries from : : :         |
+| : : : specific : : :             |
+| : : : applications : : :         |
+| : : : (e.g., 'psql', : : :       |
+| : : : 'pgAdmin', : : :           |
+| : : : 'DBeaver'). The : : :      |
+| : : : match is : : :             |
+| : : : case-sensitive. : : :      |
+| : : : Whitespace : : :           |
+| : : : around commas : : :        |
+| : : : and names is : : :         |
+| : : : automatically : : :        |
+| : : : handled. If : : :          |
+| : : : this parameter : : :       |
+| : : : is omitted, no : : :       |
+| : : : applications : : :         |
+| : : : are excluded. : : :        |
+| limit                            | integer | Optional: The  | No       | `50`    |
+| : : : maximum number : : :       |
+| : : : of rows to : : :           |
+| : : : return. : : :              |
 
---------------------------------------------------------------------------------
+---
 
 ### list_database_stats
 
 #### Parameters
 
-| Name               | Type    | Description              | Required | Default |
-| :----------------- | :------ | :----------------------- | :------- | :------ |
-| database_name      | string  | Optional: A specific     | No       |         |
-:                    :         : database name pattern to :          :         :
-:                    :         : search for.              :          :         :
-| include_templates  | boolean | Optional: Whether to     | No       | `false` |
-:                    :         : include template         :          :         :
-:                    :         : databases in the         :          :         :
-:                    :         : results.                 :          :         :
-| database_owner     | string  | Optional: A specific     | No       |         |
-:                    :         : database owner name      :          :         :
-:                    :         : pattern to search for.   :          :         :
-| default_tablespace | string  | Optional: A specific     | No       |         |
-:                    :         : default tablespace name  :          :         :
-:                    :         : pattern to search for.   :          :         :
-| order_by           | string  | Optional: The field to   | No       |         |
-:                    :         : order the results by.    :          :         :
-:                    :         : Valid values are 'size'  :          :         :
-:                    :         : and 'commit'.            :          :         :
-| limit              | integer | Optional: The maximum    | No       | `10`    |
-:                    :         : number of rows to        :          :         :
-:                    :         : return.                  :          :         :
+| Name                                 | Type    | Description            | Required | Default |
+| :----------------------------------- | :------ | :--------------------- | :------- | :------ |
+| database_name                        | string  | Optional: A specific   | No       |         |
+| : : : database name pattern to : : : |
+| : : : search for. : : :              |
+| include_templates                    | boolean | Optional: Whether to   | No       | `false` |
+| : : : include template : : :         |
+| : : : databases in the : : :         |
+| : : : results. : : :                 |
+| database_owner                       | string  | Optional: A specific   | No       |         |
+| : : : database owner name : : :      |
+| : : : pattern to search for. : : :   |
+| default_tablespace                   | string  | Optional: A specific   | No       |         |
+| : : : default tablespace name : : :  |
+| : : : pattern to search for. : : :   |
+| order_by                             | string  | Optional: The field to | No       |         |
+| : : : order the results by. : : :    |
+| : : : Valid values are 'size' : : :  |
+| : : : and 'commit'. : : :            |
+| limit                                | integer | Optional: The maximum  | No       | `10`    |
+| : : : number of rows to : : :        |
+| : : : return. : : :                  |
 
---------------------------------------------------------------------------------
+---
 
 ### list_query_stats
 
@@ -172,15 +172,15 @@ affected, and buffer cache I/O statistics (hits and reads).
 
 #### Parameters
 
-| Name          | Type    | Description                  | Required | Default |
-| :------------ | :------ | :--------------------------- | :------- | :------ |
-| database_name | string  | Optional: The database name  | No       |         |
-:               :         : to list query stats for.     :          :         :
-| limit         | integer | Optional: The maximum number | No       | `50`    |
-:               :         : of results to return.        :          :         :
-:               :         : Defaults to 50.              :          :         :
+| Name                                 | Type    | Description                  | Required | Default |
+| :----------------------------------- | :------ | :--------------------------- | :------- | :------ |
+| database_name                        | string  | Optional: The database name  | No       |         |
+| : : : to list query stats for. : : : |
+| limit                                | integer | Optional: The maximum number | No       | `50`    |
+| : : : of results to return. : : :    |
+| : : : Defaults to 50. : : :          |
 
---------------------------------------------------------------------------------
+---
 
 ### list_table_stats
 
@@ -196,17 +196,17 @@ operations.
 
 #### Parameters
 
-| Name        | Type    | Description                   | Required | Default  |
-| :---------- | :------ | :---------------------------- | :------- | :------- |
-| schema_name | string  | Optional: A specific schema   | No       | `public` |
-:             :         : name to filter by             :          :          :
-| table_name  | string  | Optional: A specific table    | No       |          |
-:             :         : name to filter by             :          :          :
-| owner       | string  | Optional: A specific owner to | No       |          |
-:             :         : filter by                     :          :          :
-| sort_by     | string  | Optional: The column to sort  | No       |          |
-:             :         : by                            :          :          :
-| limit       | integer | Optional: The maximum number  | No       | `50`     |
-:             :         : of results to return          :          :          :
+| Name                             | Type    | Description                   | Required | Default  |
+| :------------------------------- | :------ | :---------------------------- | :------- | :------- |
+| schema_name                      | string  | Optional: A specific schema   | No       | `public` |
+| : : : name to filter by : : :    |
+| table_name                       | string  | Optional: A specific table    | No       |          |
+| : : : name to filter by : : :    |
+| owner                            | string  | Optional: A specific owner to | No       |          |
+| : : : filter by : : :            |
+| sort_by                          | string  | Optional: The column to sort  | No       |          |
+| : : : by : : :                   |
+| limit                            | integer | Optional: The maximum number  | No       | `50`     |
+| : : : of results to return : : : |
 
---------------------------------------------------------------------------------
+---

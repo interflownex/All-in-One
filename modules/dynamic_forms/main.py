@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import os
+import sys
 from functools import lru_cache
 from pathlib import Path
-import sys
-from typing import Any, Annotated
+from typing import Annotated, Any
 from uuid import UUID
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query
@@ -17,11 +17,12 @@ from shared.dynamic_forms import DynamicFormValidationError
 from shared.dynamic_forms_postgres_store import DynamicFormsPostgresStore
 from shared.security import Actor, actor_from_headers, demand_mfa, demand_role
 
-
 app = FastAPI(title="All-in-One Dynamic Forms", version="1.0.0")
 
 DESIGN_ROLES = frozenset({"owner", "administrator", "form_designer"})
-REVIEW_ROLES = frozenset({"owner", "administrator", "compliance_officer", "form_reviewer"})
+REVIEW_ROLES = frozenset(
+    {"owner", "administrator", "compliance_officer", "form_reviewer"}
+)
 PUBLISH_ROLES = frozenset({"owner", "administrator", "form_publisher"})
 READ_ROLES = DESIGN_ROLES | REVIEW_ROLES | PUBLISH_ROLES | frozenset({"auditor"})
 SUBMIT_ROLES = READ_ROLES | frozenset({"user", "form_user", "consumer", "employee"})
@@ -30,7 +31,9 @@ SUBMIT_ROLES = READ_ROLES | frozenset({"user", "form_user", "consumer", "employe
 class DefinitionCreate(BaseModel):
     company_id: UUID | None = None
     module_id: str = Field(min_length=2, max_length=80, pattern=r"^[a-z][a-z0-9_]*$")
-    business_context: str = Field(min_length=2, max_length=120, pattern=r"^[a-z][a-z0-9_.-]*$")
+    business_context: str = Field(
+        min_length=2, max_length=120, pattern=r"^[a-z][a-z0-9_.-]*$"
+    )
     name: str = Field(min_length=3, max_length=160)
     description: str | None = Field(default=None, max_length=2000)
     change_summary: str = Field(min_length=3, max_length=500)
@@ -60,7 +63,9 @@ class PublicationRequest(BaseModel):
     environment: str = Field(pattern=r"^(development|homologation|production)$")
     rollout_policy: dict[str, Any] = Field(default_factory=dict)
     tenant_scope: dict[str, Any] = Field(min_length=1)
-    channels: list[str] = Field(default_factory=lambda: ["web"], min_length=1, max_length=10)
+    channels: list[str] = Field(
+        default_factory=lambda: ["web"], min_length=1, max_length=10
+    )
 
 
 class FormSubmissionRequest(BaseModel):
@@ -71,9 +76,14 @@ class FormSubmissionRequest(BaseModel):
 
 @lru_cache(maxsize=1)
 def get_store() -> DynamicFormsPostgresStore:
-    dsn = os.getenv("ALL_IN_ONE_DYNAMIC_FORMS_POSTGRES_DSN") or os.getenv("ALL_IN_ONE_POSTGRES_DSN")
+    dsn = os.getenv("ALL_IN_ONE_DYNAMIC_FORMS_POSTGRES_DSN") or os.getenv(
+        "ALL_IN_ONE_POSTGRES_DSN"
+    )
     if not dsn:
-        raise HTTPException(status_code=503, detail="PostgreSQL de formularios dinamicos nao configurado.")
+        raise HTTPException(
+            status_code=503,
+            detail="PostgreSQL de formularios dinamicos nao configurado.",
+        )
     return DynamicFormsPostgresStore(dsn)
 
 
@@ -82,23 +92,42 @@ def tenant_actor(
     actor: Annotated[Actor, Depends(actor_from_headers)],
 ) -> tuple[str, Actor]:
     elevated = bool(actor.roles.intersection({"administrator", "platform_admin"}))
-    if actor.business_id is not None and actor.business_id != x_tenant_id and not elevated:
-        raise HTTPException(status_code=403, detail="Tenant informado diverge do contexto empresarial autenticado.")
+    if (
+        actor.business_id is not None
+        and actor.business_id != x_tenant_id
+        and not elevated
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="Tenant informado diverge do contexto empresarial autenticado.",
+        )
     return str(x_tenant_id), actor
 
 
-def demand_forms_access(actor: Actor, roles: frozenset[str], scope: str, action: str) -> None:
+def demand_forms_access(
+    actor: Actor, roles: frozenset[str], scope: str, action: str
+) -> None:
     demand_role(actor, roles, action)
-    if not actor.roles.intersection({"owner", "administrator"}) and not actor.scopes.intersection({scope, "forms:manage"}):
-        raise HTTPException(status_code=403, detail=f"Escopo {scope} obrigatorio para {action}.")
+    if not actor.roles.intersection(
+        {"owner", "administrator"}
+    ) and not actor.scopes.intersection({scope, "forms:manage"}):
+        raise HTTPException(
+            status_code=403, detail=f"Escopo {scope} obrigatorio para {action}."
+        )
 
 
-def idempotency_header(value: Annotated[str, Header(alias="X-Idempotency-Key", min_length=8, max_length=160)]) -> str:
+def idempotency_header(
+    value: Annotated[
+        str, Header(alias="X-Idempotency-Key", min_length=8, max_length=160)
+    ],
+) -> str:
     return value
 
 
 @app.exception_handler(DynamicFormValidationError)
-def handle_validation_error(_request: Any, exc: DynamicFormValidationError) -> JSONResponse:
+def handle_validation_error(
+    _request: Any, exc: DynamicFormValidationError
+) -> JSONResponse:
     return JSONResponse(status_code=422, content={"detail": str(exc)})
 
 
@@ -143,8 +172,16 @@ def create_definition(
 ) -> dict[str, Any]:
     tenant_id, actor = context
     demand_forms_access(actor, DESIGN_ROLES, "forms:write", "criar formulario")
-    if body.company_id and actor.business_id and body.company_id != actor.business_id and "administrator" not in actor.roles:
-        raise HTTPException(status_code=403, detail="Empresa do formulario diverge da empresa autenticada.")
+    if (
+        body.company_id
+        and actor.business_id
+        and body.company_id != actor.business_id
+        and "administrator" not in actor.roles
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="Empresa do formulario diverge da empresa autenticada.",
+        )
     return store.create_definition(
         tenant_id=tenant_id,
         company_id=str(body.company_id) if body.company_id else None,
@@ -162,7 +199,9 @@ def create_definition(
 def list_definitions(
     context: Annotated[tuple[str, Actor], Depends(tenant_actor)],
     store: Annotated[DynamicFormsPostgresStore, Depends(get_store)],
-    status: str | None = Query(default=None, pattern=r"^(draft|active|suspended|retired)$"),
+    status: str | None = Query(
+        default=None, pattern=r"^(draft|active|suspended|retired)$"
+    ),
 ) -> list[dict[str, Any]]:
     tenant_id, actor = context
     demand_forms_access(actor, READ_ROLES, "forms:read", "listar formularios")
@@ -189,7 +228,9 @@ def replace_blueprint(
 ) -> dict[str, Any]:
     tenant_id, actor = context
     demand_forms_access(actor, DESIGN_ROLES, "forms:write", "editar blueprint")
-    return store.replace_blueprint(tenant_id, str(version_id), body.model_dump(), str(actor.user_id))
+    return store.replace_blueprint(
+        tenant_id, str(version_id), body.model_dump(), str(actor.user_id)
+    )
 
 
 @app.post("/versions/{version_id}/homologations", status_code=201)
@@ -202,7 +243,9 @@ def request_homologation(
 ) -> dict[str, Any]:
     tenant_id, actor = context
     demand_forms_access(actor, DESIGN_ROLES, "forms:write", "solicitar homologacao")
-    return store.request_homologation(tenant_id, str(version_id), str(actor.user_id), body.checklist, idempotency_key)
+    return store.request_homologation(
+        tenant_id, str(version_id), str(actor.user_id), body.checklist, idempotency_key
+    )
 
 
 @app.post("/homologations/{homologation_id}/review")

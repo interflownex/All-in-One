@@ -22,9 +22,15 @@ def main() -> int:
 
     projects = sync.get("projects", {})
     screen_count = sum(len(project.get("screens", {})) for project in projects.values())
-    assert len(projects) == manifest["project_count"] == 25, "Cobertura Stitch deve conter 25 projetos."
-    assert manifest["screen_count"] >= 181, "Manifesto Stitch deve conter ao menos 181 telas."
-    assert screen_count <= manifest["screen_count"], "Estado Stitch nao pode exceder o manifesto."
+    assert len(projects) == manifest["project_count"] == 25, (
+        "Cobertura Stitch deve conter 25 projetos."
+    )
+    assert manifest["screen_count"] >= 181, (
+        "Manifesto Stitch deve conter ao menos 181 telas."
+    )
+    assert screen_count <= manifest["screen_count"], (
+        "Estado Stitch nao pode exceder o manifesto."
+    )
 
     missing_ids = [
         f"{module}/{screen}"
@@ -36,43 +42,91 @@ def main() -> int:
 
     route_paths = set(re.findall(r'<Route path="([^"]+)"', app_source))
     all_route_paths = re.findall(r'<Route path="([^"]+)"', app_source)
-    duplicate_routes = sorted({path for path in all_route_paths if all_route_paths.count(path) > 1})
+    duplicate_routes = sorted(
+        {path for path in all_route_paths if all_route_paths.count(path) > 1}
+    )
     assert not duplicate_routes, f"Rotas React duplicadas: {duplicate_routes}"
-    assert len(route_paths) >= 335, f"Frontend deve registrar ao menos 335 rotas; encontradas {len(route_paths)}."
+    assert len(route_paths) >= 335, (
+        f"Frontend deve registrar ao menos 335 rotas; encontradas {len(route_paths)}."
+    )
     navigation_paths = re.findall(r'path:\s*"([^"]+)"', navigation)
     missing_navigation_routes = sorted(set(navigation_paths) - route_paths)
-    assert not missing_navigation_routes, f"Links da navegacao sem rota: {missing_navigation_routes}"
-    assert len(navigation_paths) == len(set(navigation_paths)), "Navegacao contem links duplicados."
-    assert len(navigation_paths) >= 298, f"Navegacao deve cobrir ao menos 298 telas; encontradas {len(navigation_paths)}."
-    home_modules = re.findall(r"\['([a-z_]+)', '[^']+', '[^']+', '[^']+'\]", home_source)
-    assert len(home_modules) == 25, f"Home deve listar 25 modulos; encontrados {len(home_modules)}."
-    missing_dashboards = [module for module in home_modules if f"/{module}" not in route_paths]
+    assert not missing_navigation_routes, (
+        f"Links da navegacao sem rota: {missing_navigation_routes}"
+    )
+    assert len(navigation_paths) == len(set(navigation_paths)), (
+        "Navegacao contem links duplicados."
+    )
+    assert len(navigation_paths) >= 298, (
+        f"Navegacao deve cobrir ao menos 298 telas; encontradas {len(navigation_paths)}."
+    )
+    home_modules = re.findall(
+        r"\['([a-z_]+)', '[^']+', '[^']+', '[^']+'\]", home_source
+    )
+    assert len(home_modules) == 25, (
+        f"Home deve listar 25 modulos; encontrados {len(home_modules)}."
+    )
+    missing_dashboards = [
+        module for module in home_modules if f"/{module}" not in route_paths
+    ]
     assert not missing_dashboards, f"Cards sem dashboard real: {missing_dashboards}"
 
     assert "alert(" not in smart_crud, "SmartCRUD ainda contem alert demonstrativo."
-    assert not re.search(r'<button(?:(?!>).)*(?:>|\s)\s*</button>', smart_crud, re.S), "Botao vazio encontrado."
+    assert not re.search(r"<button(?:(?!>).)*(?:>|\s)\s*</button>", smart_crud, re.S), (
+        "Botao vazio encontrado."
+    )
     assert "onClick={() => {}}" not in smart_crud, "Botao com handler vazio encontrado."
-    all_tsx = "\n".join(path.read_text(encoding="utf-8") for path in (APP / "src").rglob("*.tsx"))
+    all_tsx = "\n".join(
+        path.read_text(encoding="utf-8") for path in (APP / "src").rglob("*.tsx")
+    )
     button_tags = re.findall(r"<button\b([^>]*)>", all_tsx, re.DOTALL)
-    dead_buttons = [tag.strip() for tag in button_tags if "onClick=" not in tag and not re.search(r'type=["\']submit["\']', tag)]
-    assert not dead_buttons, f"Botoes sem handler ou submit encontrados: {dead_buttons[:5]}"
-    assert not re.search(r'href=["\'](?:#["\']|javascript:)', all_tsx), "Link morto ou javascript: encontrado."
-    assert not (APP / "public/404.html").exists(), "Cloudflare Pages SPA exige ausencia de 404.html estatico."
-    assert not (APP / "public/_redirects").exists(), "Fallback SPA automatico nao deve ter redirect circular."
+    dead_buttons = [
+        tag.strip()
+        for tag in button_tags
+        if "onClick=" not in tag and not re.search(r'type=["\']submit["\']', tag)
+    ]
+    assert not dead_buttons, (
+        f"Botoes sem handler ou submit encontrados: {dead_buttons[:5]}"
+    )
+    assert not re.search(r'href=["\'](?:#["\']|javascript:)', all_tsx), (
+        "Link morto ou javascript: encontrado."
+    )
+    assert not (APP / "public/404.html").exists(), (
+        "Cloudflare Pages SPA exige ausencia de 404.html estatico."
+    )
+    assert not (APP / "public/_redirects").exists(), (
+        "Fallback SPA automatico nao deve ter redirect circular."
+    )
     assert (APP / "public/_headers").is_file(), "Headers Cloudflare ausentes."
     wrangler = json.loads((APP / "wrangler.jsonc").read_text())
     assert wrangler.get("name") == "all-in-one-web"
     assert wrangler.get("pages_build_output_dir") == "./dist"
 
-    scenario_block = demo_data.split("const MODULE_SCENARIOS", 1)[1].split("const STATUS", 1)[0]
-    scenario_groups = re.findall(r"^\s{2}([a-z_]+): \[(.*?)\],$", scenario_block, re.MULTILINE)
-    assert len(scenario_groups) == 25, f"Dados demo devem cobrir 25 modulos; encontrados {len(scenario_groups)}."
-    invalid_counts = {module: len(re.findall(r"'[^']*'", values)) for module, values in scenario_groups if len(re.findall(r"'[^']*'", values)) != 10}
+    scenario_block = demo_data.split("const MODULE_SCENARIOS", 1)[1].split(
+        "const STATUS", 1
+    )[0]
+    scenario_groups = re.findall(
+        r"^\s{2}([a-z_]+): \[(.*?)\],$", scenario_block, re.MULTILINE
+    )
+    assert len(scenario_groups) == 25, (
+        f"Dados demo devem cobrir 25 modulos; encontrados {len(scenario_groups)}."
+    )
+    invalid_counts = {
+        module: len(re.findall(r"'[^']*'", values))
+        for module, values in scenario_groups
+        if len(re.findall(r"'[^']*'", values)) != 10
+    }
     assert not invalid_counts, f"Cada modulo deve conter dez cenarios: {invalid_counts}"
     module_media = APP / "public/assets/demo/modules"
-    missing_media = [module for module, _ in scenario_groups if not (module_media / f"{module}.webp").is_file()]
+    missing_media = [
+        module
+        for module, _ in scenario_groups
+        if not (module_media / f"{module}.webp").is_file()
+    ]
     assert not missing_media, f"Modulos sem imagem demonstrativa: {missing_media}"
-    assert (APP / "public/assets/demo/platform-overview.mp4").is_file(), "Video demonstrativo ausente."
+    assert (APP / "public/assets/demo/platform-overview.mp4").is_file(), (
+        "Video demonstrativo ausente."
+    )
 
     pending_screens = manifest["screen_count"] - screen_count
     print(

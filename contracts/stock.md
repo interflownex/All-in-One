@@ -7,6 +7,7 @@
         ## Entidades
 
         - `suppliers`
+
 - `catalog_products`
 - `price_rules`
 - `supplier_orders`
@@ -15,6 +16,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -36,10 +38,10 @@
 - `POST /reject`
 - `POST /audit`
 
-
         ## Eventos
 
         - `stock.product.imported`
+
 - `stock.supplier_order.created`
 - `stock.supplier_order.acknowledged`
 - `stock.supplier_order.shipped`

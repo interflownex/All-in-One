@@ -13,8 +13,7 @@ body {
   padding: 48px;
   background:
     radial-gradient(circle at 10% 20%, rgba(255, 194, 87, 0.26), transparent 24rem),
-    radial-gradient(circle at 90% 10%, rgba(78, 132, 255, 0.22), transparent 22rem),
-    #111318;
+    radial-gradient(circle at 90% 10%, rgba(78, 132, 255, 0.22), transparent 22rem), #111318;
 }
 
 .hero {

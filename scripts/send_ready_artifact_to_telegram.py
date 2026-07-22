@@ -44,7 +44,9 @@ def send_web(token: str, chat_id: str, url: str, version: str) -> None:
 
 def verify_web_identity(url: str, expected_marker: str) -> None:
     try:
-        req = request.Request(url, headers={"User-Agent": "all-in-one-release-verifier/1"})
+        req = request.Request(
+            url, headers={"User-Agent": "all-in-one-release-verifier/1"}
+        )
         with request.urlopen(req, timeout=30) as response:
             body = response.read().decode("utf-8", errors="replace")
             if response.status not in range(200, 300):
@@ -84,7 +86,12 @@ def send_app(token: str, chat_id: str, artifact: Path, version: str) -> None:
             f"--{boundary}--\r\n".encode(),
         ]
     )
-    telegram_request("sendDocument", token, b"".join(chunks), f"multipart/form-data; boundary={boundary}")
+    telegram_request(
+        "sendDocument",
+        token,
+        b"".join(chunks),
+        f"multipart/form-data; boundary={boundary}",
+    )
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -93,7 +100,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--version", required=True)
     parser.add_argument("--url")
     parser.add_argument("--artifact")
-    parser.add_argument("--expected-marker", default="<title>All-in-One — Ecossistema Digital</title>")
+    parser.add_argument(
+        "--expected-marker", default="<title>All-in-One — Ecossistema Digital</title>"
+    )
     parser.add_argument("--verified", action="store_true")
     parser.add_argument("--telegram-token", default=env("TELEGRAM_BOT_TOKEN"))
     parser.add_argument("--telegram-chat-id", default=env("TELEGRAM_CHAT_ID"))
@@ -103,10 +112,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
     if not args.verified:
-        print("Entrega recusada: confirme os gates de prontidao com --verified.", file=sys.stderr)
+        print(
+            "Entrega recusada: confirme os gates de prontidao com --verified.",
+            file=sys.stderr,
+        )
         return 2
     if not args.telegram_token or not args.telegram_chat_id:
-        print("Telegram exige TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID fora do Git.", file=sys.stderr)
+        print(
+            "Telegram exige TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID fora do Git.",
+            file=sys.stderr,
+        )
         return 2
     if args.kind == "web":
         if not args.url or not args.url.startswith("https://"):

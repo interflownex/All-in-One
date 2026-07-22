@@ -1,77 +1,65 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "bootstrap: ambiente dev",
-            "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-NoProfile",
-                "-ExecutionPolicy",
-                "Bypass",
-                "-File",
-                "scripts/bootstrap_dev_environment.ps1"
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "cleanup: artifacts",
-            "type": "shell",
-            "command": "${config:python.defaultInterpreterPath}",
-            "args": [
-                "scripts/cleanup_artifacts.py"
-            ],
-            "post_command": "powershell -Command \"$ws = New-Object -ComObject WScript.Shell; $ws.Popup('A limpeza de artefatos do All-in-One foi concluída com sucesso!', 0, 'Cleanup Success', 64)\"",
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "test: pytest completo",
-            "type": "shell",
-            "command": "${config:python.defaultInterpreterPath}",
-            "args": [
-                "-m",
-                "pytest",
-                "-q"
-            ],
-            "dependsOn": [
-                "cleanup: artifacts"
-            ],
-            "group": "test",
-            "problemMatcher": []
-        },
-        {
-            "label": "validate: repository",
-            "type": "shell",
-            "command": "python3",
-            "args": [
-                "scripts/validate_repository.py"
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "validate: openapi",
-            "type": "shell",
-            "command": "python3",
-            "args": [
-                "scripts/validate_openapi.py"
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "docker: compose health",
-            "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-NoProfile",
-                "-ExecutionPolicy",
-                "Bypass",
-                "-File",
-                "scripts/validate_compose_health.ps1"
-            ],
-            "problemMatcher": []
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "bootstrap: ambiente dev",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "scripts/bootstrap_dev_environment.ps1"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "cleanup: artifacts",
+      "type": "shell",
+      "command": "${config:python.defaultInterpreterPath}",
+      "args": ["scripts/cleanup_artifacts.py"],
+      "post_command": "powershell -Command \"$ws = New-Object -ComObject WScript.Shell; $ws.Popup('A limpeza de artefatos do All-in-One foi concluída com sucesso!', 0, 'Cleanup Success', 64)\"",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "test: pytest completo",
+      "type": "shell",
+      "command": "${config:python.defaultInterpreterPath}",
+      "args": ["-m", "pytest", "-q"],
+      "dependsOn": ["cleanup: artifacts"],
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "validate: repository",
+      "type": "shell",
+      "command": "python3",
+      "args": ["scripts/validate_repository.py"],
+      "problemMatcher": []
+    },
+    {
+      "label": "validate: openapi",
+      "type": "shell",
+      "command": "python3",
+      "args": ["scripts/validate_openapi.py"],
+      "problemMatcher": []
+    },
+    {
+      "label": "docker: compose health",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "scripts/validate_compose_health.ps1"
+      ],
+      "problemMatcher": []
+    }
+  ]
 }

@@ -81,8 +81,7 @@ def test_permissions_enforcement_matrix_matches_runtime_constants() -> None:
     assert set(matrix["mfa_required_for_resources"]) == set(PERMISSIONS_MFA_RESOURCES)
     assert "common_user_cannot_create_role" in matrix["negative_tests"]
     assert (
-        "administrator_with_mfa_can_create_approval_limit"
-        in matrix["positive_tests"]
+        "administrator_with_mfa_can_create_approval_limit" in matrix["positive_tests"]
     )
 
 
@@ -295,9 +294,14 @@ def test_domain_endpoint_uses_medical_roles_for_health_sensitive_read() -> None:
     assert allowed.status_code == 200
     audit = client.get("/audit/events", headers=headers(auditor, "auditor"))
     assert audit.status_code == 200
-    sensitive_read = next(item for item in audit.json() if item["action"] == "sensitive_read")
+    sensitive_read = next(
+        item for item in audit.json() if item["action"] == "sensitive_read"
+    )
     audit_context = json.loads(sensitive_read["metadata"])["context"]
-    assert json.loads(sensitive_read["after_data"])["purpose"] == "Atendimento assistencial"
+    assert (
+        json.loads(sensitive_read["after_data"])["purpose"]
+        == "Atendimento assistencial"
+    )
     assert audit_context["session_id"] == "clinical-session-1"
     assert audit_context["device_id"] == "trusted-clinical-device"
     assert sensitive_read["channel"] == "web"

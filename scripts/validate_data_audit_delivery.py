@@ -9,7 +9,6 @@ import sys
 from pathlib import Path
 from typing import Any
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = ROOT / "config" / "data_audit" / "delivery_contract.json"
 
@@ -32,7 +31,9 @@ def validate_csv(path: Path, errors: list[str]) -> None:
         errors.append(f"arquivo ausente: {path.relative_to(ROOT)}")
         return
     if len(rows) < 2 or not rows[0] or any(not column.strip() for column in rows[0]):
-        errors.append(f"CSV sem cabeçalho e ao menos uma linha de dados: {path.relative_to(ROOT)}")
+        errors.append(
+            f"CSV sem cabeçalho e ao menos uma linha de dados: {path.relative_to(ROOT)}"
+        )
 
 
 def validate() -> list[str]:
@@ -49,7 +50,9 @@ def validate() -> list[str]:
             continue
         text = path.read_text(encoding="utf-8")
         if len(text.strip()) < 200:
-            errors.append(f"documento obrigatório insuficiente: {path.relative_to(ROOT)}")
+            errors.append(
+                f"documento obrigatório insuficiente: {path.relative_to(ROOT)}"
+            )
 
     for relative in contract["required_complementary"]:
         path = audit_root / relative
@@ -58,12 +61,16 @@ def validate() -> list[str]:
         elif path.suffix == ".json":
             load_json(path, errors)
         elif not path.is_file() or not path.read_text(encoding="utf-8").strip():
-            errors.append(f"artefato complementar ausente ou vazio: {path.relative_to(ROOT)}")
+            errors.append(
+                f"artefato complementar ausente ou vazio: {path.relative_to(ROOT)}"
+            )
 
     for relative in contract["required_database_paths"]:
         path = audit_root / relative
         if not path.exists():
-            errors.append(f"estrutura de banco obrigatória ausente: {path.relative_to(ROOT)}")
+            errors.append(
+                f"estrutura de banco obrigatória ausente: {path.relative_to(ROOT)}"
+            )
 
     coverage_path = audit_root / "artifacts" / "checklist_cobertura.json"
     coverage = load_json(coverage_path, errors)
@@ -78,18 +85,29 @@ def validate() -> list[str]:
                     errors.append(f"cobertura sem dimensão obrigatória: {dimension}")
                     continue
                 percentage = item.get("percentual")
-                if not isinstance(percentage, (int, float)) or not 0 <= percentage <= 100:
+                if (
+                    not isinstance(percentage, (int, float))
+                    or not 0 <= percentage <= 100
+                ):
                     errors.append(f"percentual de cobertura inválido: {dimension}")
                 if not item.get("evidencias") and not item.get("lacunas"):
-                    errors.append(f"cobertura sem evidência nem lacuna registrada: {dimension}")
+                    errors.append(
+                        f"cobertura sem evidência nem lacuna registrada: {dimension}"
+                    )
 
         declared_status = coverage.get("status")
-        incomplete = any(
-            isinstance(item, dict) and item.get("percentual") != 100
-            for item in dimensions.values()
-        ) if isinstance(dimensions, dict) else True
+        incomplete = (
+            any(
+                isinstance(item, dict) and item.get("percentual") != 100
+                for item in dimensions.values()
+            )
+            if isinstance(dimensions, dict)
+            else True
+        )
         if declared_status == "concluido" and incomplete:
-            errors.append("status 'concluido' é incompatível com cobertura inferior a 100%")
+            errors.append(
+                "status 'concluido' é incompatível com cobertura inferior a 100%"
+            )
 
     return errors
 

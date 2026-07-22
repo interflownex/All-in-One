@@ -1,8 +1,8 @@
 ```yaml
 environments:
   dev:
-    project: {{ project }}
-    region: {{ region }}
+    project: { { project } }
+    region: { { region } }
     variables:
       REPO_NAME: my-repo
       SERVICE_ACCOUNT_EMAIL: "[NAME]@{{ project }}.iam.gserviceaccount.com"
@@ -44,21 +44,21 @@ environments:
 
       # --- Dataform ---
       - type: dataform.repository
-        name: {{ REPO_NAME }}
+        name: { { REPO_NAME } }
         definition:
           labels:
             env: dev
             datacloud: __REQUIRED_LABEL__
       - type: dataform.repository.releaseConfig
         name: my-release-config
-        parent: {{ REPO_NAME }}
+        parent: { { REPO_NAME } }
         definition:
-          gitCommitish: {{ COMMIT_SHA }}
+          gitCommitish: { { COMMIT_SHA } }
           codeCompilationConfig:
             defaultDatabase: "{{ project }}"
       - type: dataform.repository.workflowConfig
         name: my-workflow-config
-        parent: {{ REPO_NAME }}
+        parent: { { REPO_NAME } }
         definition:
           releaseConfig: "my-release-config"
           invocationConfig:
@@ -69,7 +69,7 @@ environments:
           timeZone: "America/Los_Angeles"
       - type: dataform.repository.workspace
         name: my-workspace
-        parent: {{ REPO_NAME }}
+        parent: { { REPO_NAME } }
         definition: {}
 
       # --- Dataproc ---
@@ -104,5 +104,4 @@ environments:
               sparkJob:
                 mainClass: org.apache.spark.examples.SparkPi
                 jarFileUris: ["file:///usr/lib/spark/examples/jars/spark-examples.jar"]
-
 ```

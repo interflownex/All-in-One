@@ -1,19 +1,23 @@
 # WSL 2 + Docker Otimizado - Configuração Aplicada
+
 **Data**: 2026-06-04  
-**Idioma**: Português Brasileiro  
+**Idioma**: Português Brasileiro
 
 ---
 
 ## ✅ Configurações Aplicadas
 
 ### 1. WSL 2 Update
+
 - ✅ Verificado - Versão mais recente instalada
 - ✅ Subsistema Windows para Linux atualizado
 
 ### 2. Arquivo .wslconfig
+
 **Localização**: `C:\Users\ereta\.wslconfig`
 
 **Configurações Aplicadas**:
+
 - **Memória**: 8 GB (ajustável)
 - **CPUs**: 4 processadores
 - **Swap**: 2 GB
@@ -24,9 +28,11 @@
 - **DNS Tunneling**: Ativado
 
 ### 3. Docker Daemon (daemon.json)
+
 **Localização**: `C:\ProgramData\Docker\config\daemon.json`
 
 **Otimizações Aplicadas**:
+
 - **Log Driver**: json-file (melhor performance)
 - **Log Format**: json (estruturado)
 - **Max Downloads Simultâneos**: 5
@@ -44,6 +50,7 @@
   - Containerd Snapshotter: Desativado
 
 ### 4. Labels Docker
+
 ```json
 "labels": [
   "os=windows",
@@ -64,13 +71,13 @@
 
 ## 📊 Benefícios da Configuração
 
-| Aspecto | Benefício |
-|--------|----------|
-| **Performance** | WSL 2 com 4 cores + 8GB RAM |
-| **Confiabilidade** | Live restore ativado |
-| **Rede** | DNS múltiplos + mirror de registry |
-| **Logs** | JSON estruturado para melhor análise |
-| **Construção** | Builder GC com limpeza automática |
+| Aspecto            | Benefício                            |
+| ------------------ | ------------------------------------ |
+| **Performance**    | WSL 2 com 4 cores + 8GB RAM          |
+| **Confiabilidade** | Live restore ativado                 |
+| **Rede**           | DNS múltiplos + mirror de registry   |
+| **Logs**           | JSON estruturado para melhor análise |
+| **Construção**     | Builder GC com limpeza automática    |
 
 ---
 

@@ -17,44 +17,44 @@ AI.GENERATE(
 
 ### Input Arguments
 
-| Argument            | Requirement  | Type   | Description           |
-| :------------------ | :----------- | :----- | :-------------------- |
-| **`prompt`**        | **Required** | String | The prompt text or    |
-:                     :              :        : instruction for the   :
-:                     :              :        : model.                :
-| **`connection_id`** | Optional     | String | The connection ID.    |
-:                     :              :        : Optional if           :
-:                     :              :        : configured via other  :
-:                     :              :        : means or testing.     :
-| **`endpoint`**      | Optional     | String | The model name, e.g., |
-:                     :              :        : `'gemini-2.5-flash'`. :
-| **`output_schema`** | Optional     | String | Schema definition for |
-:                     :              :        : structured output,    :
-:                     :              :        : e.g., `'answer BOOL,  :
-:                     :              :        : reason STRING'`.      :
-| **`request_type`**  | Optional     | String | `'DEDICATED'` or      |
-:                     :              :        : `'SHARED'`.           :
-| **`model_params`**  | Optional     | JSON   | JSON object for model |
-:                     :              :        : parameters (e.g.,     :
-:                     :              :        : `temperature`,        :
-:                     :              :        : `max_output_tokens`). :
+| Argument                        | Requirement  | Type   | Description           |
+| :------------------------------ | :----------- | :----- | :-------------------- |
+| **`prompt`**                    | **Required** | String | The prompt text or    |
+| : : : : instruction for the :   |
+| : : : : model. :                |
+| **`connection_id`**             | Optional     | String | The connection ID.    |
+| : : : : Optional if :           |
+| : : : : configured via other :  |
+| : : : : means or testing. :     |
+| **`endpoint`**                  | Optional     | String | The model name, e.g., |
+| : : : : `'gemini-2.5-flash'`. : |
+| **`output_schema`**             | Optional     | String | Schema definition for |
+| : : : : structured output, :    |
+| : : : : e.g., `'answer BOOL, :  |
+| : : : : reason STRING'`. :      |
+| **`request_type`**              | Optional     | String | `'DEDICATED'` or      |
+| : : : : `'SHARED'`. :           |
+| **`model_params`**              | Optional     | JSON   | JSON object for model |
+| : : : : parameters (e.g., :     |
+| : : : : `temperature`, :        |
+| : : : : `max_output_tokens`). : |
 
 ### Output Schema
 
 Returns a `STRUCT` with the following fields:
 
-| Column Name         | Type                 | Description                    |
-| :------------------ | :------------------- | :----------------------------- |
-| **`result`**        | `STRING` (or Custom) | The generated content. If      |
-:                     :                      : `output_schema` is used, this  :
-:                     :                      : field is replaced by the       :
-:                     :                      : schema's fields.               :
-| **`status`**        | `STRING`             | API response status (empty on  |
-:                     :                      : success).                      :
-| **`full_response`** | `JSON`               | The complete raw JSON response |
-:                     :                      : from the model (including      :
-:                     :                      : safety ratings, usage          :
-:                     :                      : metadata).                     :
+| Column Name                           | Type                 | Description                    |
+| :------------------------------------ | :------------------- | :----------------------------- |
+| **`result`**                          | `STRING` (or Custom) | The generated content. If      |
+| : : : `output_schema` is used, this : |
+| : : : field is replaced by the :      |
+| : : : schema's fields. :              |
+| **`status`**                          | `STRING`             | API response status (empty on  |
+| : : : success). :                     |
+| **`full_response`**                   | `JSON`               | The complete raw JSON response |
+| : : : from the model (including :     |
+| : : : safety ratings, usage :         |
+| : : : metadata). :                    |
 
 ## Examples
 

@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `ai.memory.created`
+
 - `ai.memory.indexed`
 - `ai.memory.updated`
 - `ai.moderation.created`

@@ -7,12 +7,14 @@
         ## Entidades
 
         - `ai_memories`
+
 - `moderation_decisions`
 - `model_runs`
 
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -34,7 +36,6 @@
 - `POST /reject`
 - `POST /audit`
 
-
 ## Provider, custo e governanca de modelo
 
 - `ai_memories` exige `memory_key` e `summary`, inicia em `draft` e emite `ai.memory.created`.
@@ -44,10 +45,10 @@
 - A acao `approve_cost` exige papel aprovador, MFA e emite `ai.model_run.cost_approved`.
 - `estimated_cost_brl` e validado como valor monetario nao negativo; providers reais seguem pendentes de homologacao.
 
-
         ## Eventos
 
         - `ai.memory.created`
+
 - `ai.memory.indexed`
 - `ai.memory.updated`
 - `ai.moderation.created`

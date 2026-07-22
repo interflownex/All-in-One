@@ -4,7 +4,11 @@
   "enforcement": "release-only",
   "controls": {
     "MASVS-RESILIENCE-1": ["root-artifacts", "test-keys", "play-integrity-device-verdict"],
-    "MASVS-RESILIENCE-2": ["play-app-signing-certificate-sha256", "play-integrity-app-verdict", "r8-minification"],
+    "MASVS-RESILIENCE-2": [
+      "play-app-signing-certificate-sha256",
+      "play-integrity-app-verdict",
+      "r8-minification"
+    ],
     "MASVS-RESILIENCE-3": ["r8-obfuscation", "resource-shrinking", "release-symbol-removal"],
     "MASVS-RESILIENCE-4": ["debugger", "tracer-pid", "frida-xposed-substrate-zygisk-maps"]
   },

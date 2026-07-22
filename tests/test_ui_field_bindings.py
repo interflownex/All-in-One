@@ -3,7 +3,6 @@ from pathlib import Path
 
 from modules.shared.domain_rules import MODULE_ENTITIES
 
-
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "apps/all-in-one/src/config/entityFieldBindings.generated.json"
 SMART_CRUD_PATH = ROOT / "apps/all-in-one/src/components/SmartCRUD.tsx"
@@ -17,7 +16,11 @@ def _manifest():
 
 def test_manifest_covers_every_persistent_domain_entity():
     manifest = _manifest()
-    expected = {f"{module}:{entity}" for module, entities in MODULE_ENTITIES.items() for entity in entities}
+    expected = {
+        f"{module}:{entity}"
+        for module, entities in MODULE_ENTITIES.items()
+        for entity in entities
+    }
 
     assert manifest["contractCount"] == 120
     assert set(manifest["contracts"]) == expected
@@ -35,7 +38,10 @@ def test_every_ui_field_has_a_unique_physical_dto_binding():
         names = [field["name"] for field in contract["fields"]]
         assert names, key
         assert len(names) == len(set(names)), key
-        assert contract["endpoint"] == f"/{contract['module']}/resources/{contract['resource']}"
+        assert (
+            contract["endpoint"]
+            == f"/{contract['module']}/resources/{contract['resource']}"
+        )
         for field in contract["fields"]:
             assert field["binding"] == f"ResourceCreate.payload.{field['name']}"
             assert field["patchBinding"] == f"ResourcePatch.payload.{field['name']}"

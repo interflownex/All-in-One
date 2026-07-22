@@ -1,14 +1,9 @@
-import React from 'react';
-import SmartCRUD from '../../components/SmartCRUD';
+import React from "react";
+import SmartCRUD from "../../components/SmartCRUD";
 
 const ProofsOfDeliveryForm: React.FC = () => {
   return (
-    <SmartCRUD 
-      module="tms" 
-      entity="proofsofdelivery" 
-      type="form" 
-      title="Proofs Of Delivery" 
-    />
+    <SmartCRUD module="tms" entity="proofsofdelivery" type="form" title="Proofs Of Delivery" />
   );
 };
 

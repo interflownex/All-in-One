@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_ALERTS = {
     "OutboxBacklogHigh",
@@ -12,15 +11,25 @@ REQUIRED_ALERTS = {
 
 
 def load_alerts() -> dict:
-    return json.loads((ROOT / "config" / "observability" / "outbox_alerts.json").read_text(encoding="utf-8"))
+    return json.loads(
+        (ROOT / "config" / "observability" / "outbox_alerts.json").read_text(
+            encoding="utf-8"
+        )
+    )
 
 
 def load_prometheus_rule() -> str:
-    return (ROOT / "infra" / "kubernetes" / "base" / "outbox-alerting.yaml").read_text(encoding="utf-8")
+    return (ROOT / "infra" / "kubernetes" / "base" / "outbox-alerting.yaml").read_text(
+        encoding="utf-8"
+    )
 
 
 def load_dashboard() -> dict:
-    return json.loads((ROOT / "config" / "observability" / "outbox_dashboard.json").read_text(encoding="utf-8"))
+    return json.loads(
+        (ROOT / "config" / "observability" / "outbox_dashboard.json").read_text(
+            encoding="utf-8"
+        )
+    )
 
 
 def test_outbox_alerts_cover_backlog_staleness_failures_and_delivery_gap() -> None:
@@ -48,13 +57,24 @@ def test_outbox_alert_expressions_reference_exported_metrics() -> None:
     alerts = load_alerts()["alerts"]
 
     assert "all_in_one_outbox_pending" in alerts["OutboxBacklogHigh"]["expr"]
-    assert "all_in_one_outbox_oldest_pending_age_seconds" in alerts["OutboxOldestPendingTooOld"]["expr"]
-    assert "all_in_one_outbox_failed_retryable_total" in alerts["OutboxRetryableFailuresHigh"]["expr"]
+    assert (
+        "all_in_one_outbox_oldest_pending_age_seconds"
+        in alerts["OutboxOldestPendingTooOld"]["expr"]
+    )
+    assert (
+        "all_in_one_outbox_failed_retryable_total"
+        in alerts["OutboxRetryableFailuresHigh"]["expr"]
+    )
     assert "all_in_one_outbox_due" in alerts["OutboxDueWithoutDeliveries"]["expr"]
-    assert "all_in_one_outbox_published_total" in alerts["OutboxDueWithoutDeliveries"]["expr"]
+    assert (
+        "all_in_one_outbox_published_total"
+        in alerts["OutboxDueWithoutDeliveries"]["expr"]
+    )
 
 
-def test_outbox_alerts_are_materialized_as_prometheus_rule_and_alertmanager_route() -> None:
+def test_outbox_alerts_are_materialized_as_prometheus_rule_and_alertmanager_route() -> (
+    None
+):
     alerts = load_alerts()["alerts"]
     manifest = load_prometheus_rule()
 
@@ -70,7 +90,9 @@ def test_outbox_alerts_are_materialized_as_prometheus_rule_and_alertmanager_rout
 
 
 def test_outbox_alerting_manifest_is_included_in_base_kustomization() -> None:
-    kustomization = (ROOT / "infra" / "kubernetes" / "base" / "kustomization.yaml").read_text(encoding="utf-8")
+    kustomization = (
+        ROOT / "infra" / "kubernetes" / "base" / "kustomization.yaml"
+    ).read_text(encoding="utf-8")
 
     assert "outbox-alerting.yaml" in kustomization
 

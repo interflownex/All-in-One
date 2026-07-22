@@ -33,57 +33,57 @@ whether it's a replica, uptime duration, maximum connection limit, number of
 current connections, number of active connections, and the percentage of
 connections in use.
 
---------------------------------------------------------------------------------
+---
 
 ### list_pg_settings
 
 #### Parameters
 
-| Name         | Type    | Description   | Required | Default |
-| :----------- | :------ | :------------ | :------- | :------ |
-| setting_name | string  | Optional: A   | No       | ``      |
-:              :         : specific      :          :         :
-:              :         : configuration :          :         :
-:              :         : parameter     :          :         :
-:              :         : name pattern  :          :         :
-:              :         : to search     :          :         :
-:              :         : for.          :          :         :
-| limit        | integer | Optional: The | No       | `50`    |
-:              :         : maximum       :          :         :
-:              :         : number of     :          :         :
-:              :         : rows to       :          :         :
-:              :         : return.       :          :         :
+| Name                      | Type    | Description   | Required | Default |
+| :------------------------ | :------ | :------------ | :------- | :------ |
+| setting_name              | string  | Optional: A   | No       | ``      |
+| : : : specific : : :      |
+| : : : configuration : : : |
+| : : : parameter : : :     |
+| : : : name pattern : : :  |
+| : : : to search : : :     |
+| : : : for. : : :          |
+| limit                     | integer | Optional: The | No       | `50`    |
+| : : : maximum : : :       |
+| : : : number of : : :     |
+| : : : rows to : : :       |
+| : : : return. : : :       |
 
---------------------------------------------------------------------------------
+---
 
 ### list_publication_tables
 
 #### Parameters
 
-| Name              | Type    | Description     | Required | Default |
-| :---------------- | :------ | :-------------- | :------- | :------ |
-| table_names       | string  | Optional:       | No       | ``      |
-:                   :         : Filters by a    :          :         :
-:                   :         : comma-separated :          :         :
-:                   :         : list of table   :          :         :
-:                   :         : names.          :          :         :
-| publication_names | string  | Optional:       | No       | ``      |
-:                   :         : Filters by a    :          :         :
-:                   :         : comma-separated :          :         :
-:                   :         : list of         :          :         :
-:                   :         : publication     :          :         :
-:                   :         : names.          :          :         :
-| schema_names      | string  | Optional:       | No       | ``      |
-:                   :         : Filters by a    :          :         :
-:                   :         : comma-separated :          :         :
-:                   :         : list of schema  :          :         :
-:                   :         : names.          :          :         :
-| limit             | integer | Optional: The   | No       | `50`    |
-:                   :         : maximum number  :          :         :
-:                   :         : of rows to      :          :         :
-:                   :         : return.         :          :         :
+| Name                        | Type    | Description   | Required | Default |
+| :-------------------------- | :------ | :------------ | :------- | :------ |
+| table_names                 | string  | Optional:     | No       | ``      |
+| : : : Filters by a : : :    |
+| : : : comma-separated : : : |
+| : : : list of table : : :   |
+| : : : names. : : :          |
+| publication_names           | string  | Optional:     | No       | ``      |
+| : : : Filters by a : : :    |
+| : : : comma-separated : : : |
+| : : : list of : : :         |
+| : : : publication : : :     |
+| : : : names. : : :          |
+| schema_names                | string  | Optional:     | No       | ``      |
+| : : : Filters by a : : :    |
+| : : : comma-separated : : : |
+| : : : list of schema : : :  |
+| : : : names. : : :          |
+| limit                       | integer | Optional: The | No       | `50`    |
+| : : : maximum number : : :  |
+| : : : of rows to : : :      |
+| : : : return. : : :         |
 
---------------------------------------------------------------------------------
+---
 
 ### list_replication_slots
 
@@ -91,7 +91,7 @@ List key details for all PostgreSQL replication slots (e.g., type, database,
 active status) and calculates the size of the outstanding WAL that is being
 prevented from removal by the slot.
 
---------------------------------------------------------------------------------
+---
 
 ### list_roles
 
@@ -105,15 +105,15 @@ and a list of other roles/groups that this role is a member of.
 
 #### Parameters
 
-| Name      | Type    | Description                     | Required | Default |
-| :-------- | :------ | :------------------------------ | :------- | :------ |
-| role_name | string  | Optional: a text to filter      | No       | ``      |
-:           :         : results by role name. The input :          :         :
-:           :         : is used within a LIKE clause.   :          :         :
-| limit     | integer | Optional: The maximum number of | No       | `50`    |
-:           :         : rows to return. Default is 10   :          :         :
+| Name                                        | Type    | Description                     | Required | Default |
+| :------------------------------------------ | :------ | :------------------------------ | :------- | :------ |
+| role_name                                   | string  | Optional: a text to filter      | No       | ``      |
+| : : : results by role name. The input : : : |
+| : : : is used within a LIKE clause. : : :   |
+| limit                                       | integer | Optional: The maximum number of | No       | `50`    |
+| : : : rows to return. Default is 10 : : :   |
 
---------------------------------------------------------------------------------
+---
 
 ### replication_stats
 
@@ -124,4 +124,4 @@ connection state, and sync_state, along with lag sizes in bytes for sent_lag
 replay_lag (flushed to replayed), and the overall total_lag (primary to
 replayed).
 
---------------------------------------------------------------------------------
+---

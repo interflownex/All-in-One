@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `identity.user.created`
+
 - `identity.user.verified`
 - `identity.user.duplicate_detected`
 - `identity.document.created`

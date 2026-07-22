@@ -1,5 +1,6 @@
 import os
 import sys
+
 import psycopg
 
 POSTGRES_DSN = os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN")
@@ -13,6 +14,7 @@ REQUIRED_INDEXES = [
     "idx_business_membership_lookup",
 ]
 
+
 def verify_indexes():
     if not POSTGRES_DSN:
         print("Erro: ALL_IN_ONE_POSTGRES_MATRIX_DSN nao configurada.")
@@ -21,7 +23,10 @@ def verify_indexes():
     try:
         with psycopg.connect(POSTGRES_DSN) as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT indexname FROM pg_indexes WHERE indexname = ANY(%s)", (REQUIRED_INDEXES,))
+                cur.execute(
+                    "SELECT indexname FROM pg_indexes WHERE indexname = ANY(%s)",
+                    (REQUIRED_INDEXES,),
+                )
                 found = {row[0] for row in cur.fetchall()}
 
                 missing = set(REQUIRED_INDEXES) - found
@@ -29,11 +34,14 @@ def verify_indexes():
                     print(f"Falha: Indices ausentes no banco: {', '.join(missing)}")
                     return 1
 
-                print(f"Sucesso: Todos os {len(REQUIRED_INDEXES)} indices de performance foram localizados no banco.")
+                print(
+                    f"Sucesso: Todos os {len(REQUIRED_INDEXES)} indices de performance foram localizados no banco."
+                )
                 return 0
     except Exception as e:
         print(f"Erro ao conectar ao PostgreSQL: {e}")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(verify_indexes())

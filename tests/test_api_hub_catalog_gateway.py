@@ -30,7 +30,9 @@ class FakeCatalogClient:
         timeout: float,
     ) -> FakeResponse:
         self.calls.append((url, params or {}))
-        if url.endswith("marketplace:8000/resources/orders/00000000-0000-4000-8000-000000000002"):
+        if url.endswith(
+            "marketplace:8000/resources/orders/00000000-0000-4000-8000-000000000002"
+        ):
             return FakeResponse(
                 200,
                 {
@@ -44,7 +46,9 @@ class FakeCatalogClient:
                     },
                 },
             )
-        if url.endswith("marketplace:8000/resources/orders/00000000-0000-4000-8000-000000000001"):
+        if url.endswith(
+            "marketplace:8000/resources/orders/00000000-0000-4000-8000-000000000001"
+        ):
             return FakeResponse(
                 200,
                 {
@@ -59,9 +63,13 @@ class FakeCatalogClient:
                 },
             )
         if url.endswith("crm:8000/status"):
-            return FakeResponse(200, {"records": 3, "audit_events": 1, "outbox_events": 1})
+            return FakeResponse(
+                200, {"records": 3, "audit_events": 1, "outbox_events": 1}
+            )
         if url.endswith("bi:8000/status"):
-            return FakeResponse(200, {"records": 2, "audit_events": 1, "outbox_events": 1})
+            return FakeResponse(
+                200, {"records": 2, "audit_events": 1, "outbox_events": 1}
+            )
         if url.endswith("marketplace:8000/valley/insights/commercial"):
             return FakeResponse(
                 200,
@@ -87,7 +95,10 @@ class FakeCatalogClient:
                         "id": "resource-created",
                         "status": "created",
                         "created_at": "2026-06-05T12:00:00Z",
-                        "payload": {"offer_title": "Produto Valley", "total_brl": "99.90"},
+                        "payload": {
+                            "offer_title": "Produto Valley",
+                            "total_brl": "99.90",
+                        },
                     }
                 ],
             )
@@ -170,7 +181,9 @@ class FakeCatalogClient:
     ) -> FakeResponse:
         self.posts.append((url, json, headers))
         if url.endswith("finance:8000/integrations/sandbox/psp/pix/authorize"):
-            return FakeResponse(200, {"status": "authorized", "reference_id": "pix-ref"})
+            return FakeResponse(
+                200, {"status": "authorized", "reference_id": "pix-ref"}
+            )
         if url.endswith("finance:8000/integrations/sandbox/psp/escrows"):
             return FakeResponse(200, {"status": "held", "reference_id": "escrow-ref"})
         if url.endswith(
@@ -178,9 +191,20 @@ class FakeCatalogClient:
         ):
             return FakeResponse(200, {"id": "resource-created", "status": "paid"})
         if url.endswith("marketplace:8000/resources/reviews"):
-            return FakeResponse(201, {"id": "review-created", "status": "pending_review"})
-        if url.endswith("marketplace:8000/valley/orders/00000000-0000-4000-8000-000000000002/support"):
-            return FakeResponse(201, {"id": "support-created", "status": "open", "message": "Caso registrado."})
+            return FakeResponse(
+                201, {"id": "review-created", "status": "pending_review"}
+            )
+        if url.endswith(
+            "marketplace:8000/valley/orders/00000000-0000-4000-8000-000000000002/support"
+        ):
+            return FakeResponse(
+                201,
+                {
+                    "id": "support-created",
+                    "status": "open",
+                    "message": "Caso registrado.",
+                },
+            )
         return FakeResponse(201, {"id": "resource-created", "status": "created"})
 
 
@@ -221,7 +245,11 @@ def test_gateway_aggregates_business_offer_with_consumer_filters(monkeypatch) ->
         {"id": "servicos_domesticos", "label": "Casa e manutencao", "count": 1}
     ]
 
-    offer = next(item for item in payload["data"] if item["offer_id"] == "business:catalog_offers:offer-1")
+    offer = next(
+        item
+        for item in payload["data"]
+        if item["offer_id"] == "business:catalog_offers:offer-1"
+    )
     assert offer["title"] == "Eletricista residencial"
     assert offer["source_module"] == "services"
     assert offer["consumer_category"] == "Casa, Reparos e Imoveis"
@@ -316,10 +344,14 @@ def test_gateway_rejects_action_different_from_published_offer(monkeypatch) -> N
     )
 
     assert response.status_code == 409
-    assert response.json()["detail"] == "A acao solicitada nao corresponde a esta oferta."
+    assert (
+        response.json()["detail"] == "A acao solicitada nao corresponde a esta oferta."
+    )
 
 
-def test_gateway_authorizes_pix_sandbox_using_server_side_order_data(monkeypatch) -> None:
+def test_gateway_authorizes_pix_sandbox_using_server_side_order_data(
+    monkeypatch,
+) -> None:
     fake_client = FakeCatalogClient()
     monkeypatch.setattr(api_hub, "client", fake_client)
     monkeypatch.setattr(api_hub, "redis_client", None)
@@ -342,10 +374,14 @@ def test_gateway_authorizes_pix_sandbox_using_server_side_order_data(monkeypatch
     assert response.headers["x-valley-response-signature"]
     assert response.json()["status"] == "paid"
     assert response.json()["provider_environment"] == "sandbox"
-    pix_call = next(call for call in fake_client.posts if call[0].endswith("/psp/pix/authorize"))
+    pix_call = next(
+        call for call in fake_client.posts if call[0].endswith("/psp/pix/authorize")
+    )
     assert pix_call[1]["amount_brl"] == "99.90"
     assert pix_call[1]["payer_id"] == user_id
-    escrow_call = next(call for call in fake_client.posts if call[0].endswith("/psp/escrows"))
+    escrow_call = next(
+        call for call in fake_client.posts if call[0].endswith("/psp/escrows")
+    )
     assert escrow_call[1]["beneficiary_id"] == "seller-1"
     assert fake_client.posts[-1][0].endswith("/actions/pay")
     pay_payload = fake_client.posts[-1][1]
@@ -385,14 +421,19 @@ def test_gateway_returns_normalized_consumer_history(monkeypatch) -> None:
         "failures": [],
     }
 
+
 def test_gateway_returns_partial_history_when_module_fails(monkeypatch) -> None:
     fake_client = FakeCatalogClient()
     # Mock services:8000 to raise RequestError
     original_get = fake_client.get
+
     async def mock_get(url: str, **kwargs):
         if url.endswith("services:8000/resources/service_contracts"):
             import httpx
-            raise httpx.RequestError("Conexao recusada", request=httpx.Request("GET", url))
+
+            raise httpx.RequestError(
+                "Conexao recusada", request=httpx.Request("GET", url)
+            )
         return await original_get(url, **kwargs)
 
     fake_client.get = mock_get
@@ -440,7 +481,9 @@ def test_gateway_creates_review_only_for_completed_owned_order(monkeypatch) -> N
     assert review_call[0].endswith("marketplace:8000/resources/reviews")
     assert review_call[2]["X-Idempotency-Key"] == "review-order-completed"
     assert review_call[1]["payload"]["rating"] == 5
-    assert review_call[1]["payload"]["order_id"] == "00000000-0000-4000-8000-000000000002"
+    assert (
+        review_call[1]["payload"]["order_id"] == "00000000-0000-4000-8000-000000000002"
+    )
     assert review_call[1]["payload"]["moderation_status"] == "pending_review"
 
 
@@ -462,7 +505,10 @@ def test_gateway_rejects_review_before_order_completion(monkeypatch) -> None:
     )
 
     assert response.status_code == 409
-    assert response.json()["detail"] == "A avaliacao fica disponivel apos a conclusao do pedido."
+    assert (
+        response.json()["detail"]
+        == "A avaliacao fica disponivel apos a conclusao do pedido."
+    )
 
 
 def test_gateway_creates_support_case_for_owned_paid_order(monkeypatch) -> None:
@@ -489,7 +535,9 @@ def test_gateway_creates_support_case_for_owned_paid_order(monkeypatch) -> None:
     assert response.json()["kind"] == "support"
     assert response.json()["status"] == "open"
     support_call = fake_client.posts[-1]
-    assert support_call[0].endswith("marketplace:8000/valley/orders/00000000-0000-4000-8000-000000000002/support")
+    assert support_call[0].endswith(
+        "marketplace:8000/valley/orders/00000000-0000-4000-8000-000000000002/support"
+    )
     assert support_call[2]["X-Idempotency-Key"] == "support-order-completed"
     assert support_call[1]["kind"] == "support"
 

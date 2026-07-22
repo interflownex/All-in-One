@@ -32,14 +32,14 @@ whether it's a replica, uptime duration, maximum connection limit, number of
 current connections, number of active connections, and the percentage of
 connections in use.
 
---------------------------------------------------------------------------------
+---
 
 ### list_autovacuum_configurations
 
 List PostgreSQL autovacuum-related configurations (name and current setting)
 from pg_settings.
 
---------------------------------------------------------------------------------
+---
 
 ### list_invalid_indexes
 
@@ -47,7 +47,7 @@ Lists all invalid PostgreSQL indexes which are taking up disk space but are
 unusable by the query planner. Typically created by failed CREATE INDEX
 CONCURRENTLY operations.
 
---------------------------------------------------------------------------------
+---
 
 ### list_table_stats
 
@@ -63,35 +63,35 @@ operations.
 
 #### Parameters
 
-| Name        | Type    | Description                   | Required | Default  |
-| :---------- | :------ | :---------------------------- | :------- | :------- |
-| schema_name | string  | Optional: A specific schema   | No       | `public` |
-:             :         : name to filter by             :          :          :
-| table_name  | string  | Optional: A specific table    | No       |          |
-:             :         : name to filter by             :          :          :
-| owner       | string  | Optional: A specific owner to | No       |          |
-:             :         : filter by                     :          :          :
-| sort_by     | string  | Optional: The column to sort  | No       |          |
-:             :         : by                            :          :          :
-| limit       | integer | Optional: The maximum number  | No       | `50`     |
-:             :         : of results to return          :          :          :
+| Name                             | Type    | Description                   | Required | Default  |
+| :------------------------------- | :------ | :---------------------------- | :------- | :------- |
+| schema_name                      | string  | Optional: A specific schema   | No       | `public` |
+| : : : name to filter by : : :    |
+| table_name                       | string  | Optional: A specific table    | No       |          |
+| : : : name to filter by : : :    |
+| owner                            | string  | Optional: A specific owner to | No       |          |
+| : : : filter by : : :            |
+| sort_by                          | string  | Optional: The column to sort  | No       |          |
+| : : : by : : :                   |
+| limit                            | integer | Optional: The maximum number  | No       | `50`     |
+| : : : of results to return : : : |
 
---------------------------------------------------------------------------------
+---
 
 ### list_tablespaces
 
 #### Parameters
 
-| Name            | Type    | Description                 | Required | Default |
-| :-------------- | :------ | :-------------------------- | :------- | :------ |
-| tablespace_name | string  | Optional: a text to filter  | No       |         |
-:                 :         : results by tablespace name. :          :         :
-:                 :         : The input is used within a  :          :         :
-:                 :         : LIKE clause.                :          :         :
-| limit           | integer | Optional: The maximum       | No       | `50`    |
-:                 :         : number of rows to return.   :          :         :
+| Name                                    | Type    | Description                | Required | Default |
+| :-------------------------------------- | :------ | :------------------------- | :------- | :------ |
+| tablespace_name                         | string  | Optional: a text to filter | No       |         |
+| : : : results by tablespace name. : : : |
+| : : : The input is used within a : : :  |
+| : : : LIKE clause. : : :                |
+| limit                                   | integer | Optional: The maximum      | No       | `50`    |
+| : : : number of rows to return. : : :   |
 
---------------------------------------------------------------------------------
+---
 
 ### list_top_bloated_tables
 
@@ -100,8 +100,8 @@ table, live/dead tuples, percentage, and last vacuum/analyze times.
 
 #### Parameters
 
-Name  | Type    | Description                              | Required | Default
-:---- | :------ | :--------------------------------------- | :------- | :------
-limit | integer | The maximum number of results to return. | No       | `50`
+| Name  | Type    | Description                              | Required | Default |
+| :---- | :------ | :--------------------------------------- | :------- | :------ |
+| limit | integer | The maximum number of results to return. | No       | `50`    |
 
---------------------------------------------------------------------------------
+---

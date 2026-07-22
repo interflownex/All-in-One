@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `health.appointment.created`
+
 - `health.telemedicine.started`
 - `health.prescription.issued`
 

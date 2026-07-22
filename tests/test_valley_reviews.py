@@ -74,8 +74,12 @@ def test_marketplace_review_is_immutable_and_emits_valley_event() -> None:
         headers=actor_headers(user_id, roles="auditor"),
     )
     assert outbox.status_code == 200
-    assert any(event["routing_key"] == "valley.review.created" for event in outbox.json())
-    assert any(event["routing_key"] == "valley.review.published" for event in outbox.json())
+    assert any(
+        event["routing_key"] == "valley.review.created" for event in outbox.json()
+    )
+    assert any(
+        event["routing_key"] == "valley.review.published" for event in outbox.json()
+    )
 
     insights_after = marketplace.get(
         "/valley/insights/commercial",

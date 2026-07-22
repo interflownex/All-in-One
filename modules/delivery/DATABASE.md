@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `delivery.delivery_requests`
+
 - `delivery.quotes`
 - `delivery.assignments`
 - `delivery.proofs`

@@ -14,20 +14,20 @@ spec:
         app: health
     spec:
       containers:
-      - name: health
-        image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/health:latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: ALL_IN_ONE_HEALTH_POSTGRES_DSN
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: health-dsn
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8000
+        - name: health
+          image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/health:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: ALL_IN_ONE_HEALTH_POSTGRES_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: health-dsn
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
 ---
 apiVersion: v1
 kind: Service
@@ -38,6 +38,6 @@ spec:
   selector:
     app: health
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8000
+    - protocol: TCP
+      port: 80
+      targetPort: 8000

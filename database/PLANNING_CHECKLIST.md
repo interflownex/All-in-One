@@ -25,17 +25,17 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
 
 ## 🚢 [FRENTE 2] ORQUESTRAÇÃO E RUNTIME KUBERNETES (GKE)
 
-- [X] **Tarefa: Validação de Disponibilidade no Artifact Registry** (2026-06-08)
+- [x] **Tarefa: Validação de Disponibilidade no Artifact Registry** (2026-06-08)
   - **Critério de Aceite:** Script de check confirma as 27 imagens com tag `:latest` disponíveis para pull.
   - **Dependência:** Conclusão do build `eb8a5547-16ab-4ee4-919e-a4b62212921a`.
   - **Módulo Afetado:** `scripts/check_artifact_registry.py`.
 
-- [X] **Tarefa: Configuração de Segredos Reais** (2026-06-08)
+- [x] **Tarefa: Configuração de Segredos Reais** (2026-06-08)
   - **Critério de Aceite:** DSNs e chaves JWT/Documentos disponíveis no Cloud Secret Manager.
   - **Status:** Finalizado via `scripts/setup_cloud_secrets.py`.
   - **Módulo Afetado:** `scripts/setup_cloud_secrets.py`.
 
-- [X] **Tarefa: Bucket de Estado do Terraform** (2026-06-08)
+- [x] **Tarefa: Bucket de Estado do Terraform** (2026-06-08)
   - **Critério de Aceite:** Bucket `gs://all-in-one-tfstate` criado na região `us-central1`.
   - **Status:** Finalizado.
 
@@ -44,7 +44,7 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
   - **Status:** Reiniciado em 2026-06-08 (Cloud Build ID: 52026ef6-0869-42b7-a363-228795908e2d - em execução).
   - **Módulo Afetado:** `infra/ci-cd/cloudbuild-deploy.yaml`.
 
-- [X] **Tarefa: Manifestos de Deploy K8s para o Core, Negócios, Logística e Verticais** (2026-06-08)
+- [x] **Tarefa: Manifestos de Deploy K8s para o Core, Negócios, Logística e Verticais** (2026-06-08)
   - **Critério de Aceite:** Toda a malha de 25 módulos declarada no GKE com Ingress centralizado.
   - **Status:** Finalizado.
   - **Dependência:** Terraform concluído.
@@ -54,7 +54,7 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
 
 ## 🌐 [FRENTE 3] GOVERNANÇA DE APIS (APIGEE & STITCH FRONTEND)
 
-- [X] **Tarefa: Proxy de Borda para Identity no Apigee** (2026-06-08)
+- [x] **Tarefa: Proxy de Borda para Identity no Apigee** (2026-06-08)
   - **Critério de Aceite:** Endpoints de Login/KYC protegidos por Spike Arrest e VerifyOAuthV2.
   - **Status:** Proxy Bundle base criado em `config/apigee/proxies/identity/`.
   - **Dependência:** Módulo Identity rodando em GKE ou Cloud Run.
@@ -85,7 +85,7 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
   - **Dependência:** Módulo Jobs funcional.
   - **Módulo Afetado:** `modules/jobs/`.
 
-- [X] **Tarefa: Manifestos de Deploy K8s para Logística** (2026-06-08)
+- [x] **Tarefa: Manifestos de Deploy K8s para Logística** (2026-06-08)
   - **Critério de Aceite:** `delivery`, `wms` e `tms` rodando no GKE.
   - **Status:** Manifestos de Logística concluídos e integrados ao Ingress global.
   - **Dependência:** Terraform concluído.
@@ -104,6 +104,7 @@ Este documento é a fonte da verdade para a orquestração técnica e evolução
 ---
 
 ## 🔄 REGRAS DE ATUALIZAÇÃO
+
 1. **Conclusão:** Alterne `[ ]` para `[X]` e adicione a data da conclusão.
 2. **Priorização:** Itens no topo de cada frente são bloqueadores imediatos.
 3. **Persistência:** Commitar este arquivo após cada atualização significativa de estado.

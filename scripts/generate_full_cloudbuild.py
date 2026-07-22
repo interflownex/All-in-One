@@ -1,4 +1,3 @@
-import os
 
 PROJECT_ID = "all-in-one-498012"
 REPOSITORY = "all-in-one-repo"
@@ -32,7 +31,7 @@ dockerfiles = [
     "./modules/vision/Dockerfile",
     "./modules/wms/Dockerfile",
     "./workers/outbox_dispatcher/Dockerfile",
-    "./workers/retention_worker/Dockerfile"
+    "./workers/retention_worker/Dockerfile",
 ]
 
 yaml_content = ["steps:"]
@@ -44,12 +43,12 @@ for df in dockerfiles:
         service_name = df.split("/")[2].replace("_", "-")
     else:
         service_name = df.split("/")[2].replace("_", "-")
-        
+
     image_tag = f"{REGISTRY_URL}/{service_name}:latest"
     images.append(image_tag)
-    
+
     yaml_content.append(f"  # {service_name}")
-    yaml_content.append(f"  - name: 'gcr.io/cloud-builders/docker'")
+    yaml_content.append("  - name: 'gcr.io/cloud-builders/docker'")
     yaml_content.append(f"    args: ['build', '-t', '{image_tag}', '-f', '{df}', '.']")
 
 yaml_content.append("\nimages:")
@@ -58,7 +57,9 @@ for img in images:
 
 yaml_content.append("\noptions:")
 yaml_content.append("  logging: CLOUD_LOGGING_ONLY")
-yaml_content.append("  machineType: 'E2_HIGHCPU_32' # Aumentando potência para build massivo")
+yaml_content.append(
+    "  machineType: 'E2_HIGHCPU_32' # Aumentando potência para build massivo"
+)
 
 with open("infra/ci-cd/cloudbuild-all.yaml", "w") as f:
     f.write("\n".join(yaml_content))

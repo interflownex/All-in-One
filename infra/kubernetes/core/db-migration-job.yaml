@@ -7,29 +7,29 @@ spec:
   template:
     spec:
       containers:
-      - name: migrations
-        image: postgres:16-alpine
-        env:
-        - name: PGPASSWORD
-          value: "strong-password"
-        volumeMounts:
-        - name: migrations-vol
-          mountPath: /migrations
-        command:
-        - sh
-        - -ec
-        - |
-          for db in identity_db api_hub_db jobs_db finance_db marketplace_db delivery_db wms_db tms_db erp_db health_db legal_db; do
-            echo "Running migrations for $db..."
-            for file in /migrations/*.sql; do
-              echo "Applying $file to $db..."
-              psql -h 10.93.0.2 -U postgres -d "$db" -v ON_ERROR_STOP=1 -f "$file"
-            done
-          done
+        - name: migrations
+          image: postgres:16-alpine
+          env:
+            - name: PGPASSWORD
+              value: "strong-password"
+          volumeMounts:
+            - name: migrations-vol
+              mountPath: /migrations
+          command:
+            - sh
+            - -ec
+            - |
+              for db in identity_db api_hub_db jobs_db finance_db marketplace_db delivery_db wms_db tms_db erp_db health_db legal_db; do
+                echo "Running migrations for $db..."
+                for file in /migrations/*.sql; do
+                  echo "Applying $file to $db..."
+                  psql -h 10.93.0.2 -U postgres -d "$db" -v ON_ERROR_STOP=1 -f "$file"
+                done
+              done
       volumes:
-      - name: migrations-vol
-        configMap:
-          name: db-migrations-cm
+        - name: migrations-vol
+          configMap:
+            name: db-migrations-cm
       restartPolicy: Never
   backoffLimit: 2
 ---

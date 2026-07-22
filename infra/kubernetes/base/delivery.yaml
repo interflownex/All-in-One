@@ -7,23 +7,23 @@ metadata:
 spec:
   replicas: 2
   selector:
-    matchLabels: {app: delivery}
+    matchLabels: { app: delivery }
   template:
     metadata:
-      labels: {app: delivery}
+      labels: { app: delivery }
     spec:
       containers:
         - name: delivery
           image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/delivery:latest
           imagePullPolicy: IfNotPresent
-          ports: [{containerPort: 8000}]
+          ports: [{ containerPort: 8000 }]
           readinessProbe:
             httpGet:
               path: /health
               port: 8000
           envFrom:
-            - configMapRef: {name: platform-config}
-            - secretRef: {name: platform-secrets-placeholder}
+            - configMapRef: { name: platform-config }
+            - secretRef: { name: platform-secrets-placeholder }
 ---
 apiVersion: v1
 kind: Service
@@ -31,5 +31,5 @@ metadata:
   name: delivery
   namespace: all-in-one
 spec:
-  selector: {app: delivery}
-  ports: [{port: 80, targetPort: 8000}]
+  selector: { app: delivery }
+  ports: [{ port: 80, targetPort: 8000 }]

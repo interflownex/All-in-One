@@ -7,7 +7,6 @@ import json
 import subprocess
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "config/autonomy/firebase_auth_policy.json"
 ANDROID = ROOT / "apps/valley-android"
@@ -33,9 +32,16 @@ def validate() -> list[str]:
     }
     for key, actual in expected.items():
         if policy.get(key) != actual:
-            errors.append(f"Firebase {key} divergente: politica={policy.get(key)!r}, config={actual!r}.")
-    if not any(entry.get("client_type") == 3 and entry.get("client_id") for entry in oauth_clients):
-        errors.append("google-services.json nao contem OAuth web client para Credential Manager.")
+            errors.append(
+                f"Firebase {key} divergente: politica={policy.get(key)!r}, config={actual!r}."
+            )
+    if not any(
+        entry.get("client_type") == 3 and entry.get("client_id")
+        for entry in oauth_clients
+    ):
+        errors.append(
+            "google-services.json nao contem OAuth web client para Credential Manager."
+        )
 
     catalog = (ANDROID / "gradle/libs.versions.toml").read_text(encoding="utf-8")
     app_gradle = (ANDROID / "app/build.gradle.kts").read_text(encoding="utf-8")
@@ -45,8 +51,14 @@ def validate() -> list[str]:
     required_catalog = ("firebase-auth", "androidx-credentials", "google-services")
     for marker in required_catalog:
         if marker not in catalog:
-            errors.append(f"Catalogo Android sem dependencia/plugin obrigatorio: {marker}.")
-    for marker in ("libs.plugins.google.services", "libs.firebase.auth", "libs.googleid"):
+            errors.append(
+                f"Catalogo Android sem dependencia/plugin obrigatorio: {marker}."
+            )
+    for marker in (
+        "libs.plugins.google.services",
+        "libs.firebase.auth",
+        "libs.googleid",
+    ):
         if marker not in app_gradle:
             errors.append(f"Gradle Android sem integracao Firebase: {marker}.")
     for marker in (
@@ -79,7 +91,9 @@ def main() -> int:
         for error in errors:
             print(f"- {error}")
         return 1
-    print("Firebase Auth validado: projeto, app Android, Credential Manager e assinatura externa coerentes.")
+    print(
+        "Firebase Auth validado: projeto, app Android, Credential Manager e assinatura externa coerentes."
+    )
     return 0
 
 

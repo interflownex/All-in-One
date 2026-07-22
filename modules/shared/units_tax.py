@@ -2,8 +2,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from decimal import Decimal, InvalidOperation, ROUND_CEILING, ROUND_FLOOR, ROUND_HALF_EVEN, ROUND_HALF_UP
-
+from decimal import (
+    ROUND_CEILING,
+    ROUND_FLOOR,
+    ROUND_HALF_EVEN,
+    ROUND_HALF_UP,
+    Decimal,
+    InvalidOperation,
+)
 
 ROUNDING_MODES = {
     "half_up": ROUND_HALF_UP,
@@ -15,7 +21,9 @@ ROUNDING_MODES = {
 
 def decimal_value(value: Decimal | int | str) -> Decimal:
     if isinstance(value, float):
-        raise TypeError("Float binario proibido; informe Decimal, inteiro ou string decimal.")
+        raise TypeError(
+            "Float binario proibido; informe Decimal, inteiro ou string decimal."
+        )
     try:
         result = Decimal(value)
     except (InvalidOperation, TypeError, ValueError) as exc:
@@ -58,7 +66,9 @@ def convert_quantity(
     moment = at or datetime.now(UTC)
     if not rule.approved:
         raise ValueError("Conversao precisa estar aprovada.")
-    if moment < rule.effective_from or (rule.effective_to is not None and moment >= rule.effective_to):
+    if moment < rule.effective_from or (
+        rule.effective_to is not None and moment >= rule.effective_to
+    ):
         raise ValueError("Conversao fora da vigencia.")
     multiplier = decimal_value(rule.multiplier)
     divisor = decimal_value(rule.divisor)
@@ -98,13 +108,17 @@ def calculate_tax(
         raise ValueError("Regra fiscal precisa estar aprovada.")
     if not rule.legal_basis.strip():
         raise ValueError("Fundamento legal obrigatorio.")
-    if moment < rule.effective_from or (rule.effective_to is not None and moment >= rule.effective_to):
+    if moment < rule.effective_from or (
+        rule.effective_to is not None and moment >= rule.effective_to
+    ):
         raise ValueError("Regra fiscal fora da vigencia.")
     base = decimal_value(taxable_base)
     rate = decimal_value(rule.rate)
     reduction = decimal_value(rule.base_reduction)
     if base < 0 or rate < 0 or not Decimal("0") <= reduction <= Decimal("1"):
         raise ValueError("Base, aliquota ou reducao invalidas.")
-    reduced_base = quantize(base * (Decimal("1") - reduction), rule.precision, rule.rounding_mode)
+    reduced_base = quantize(
+        base * (Decimal("1") - reduction), rule.precision, rule.rounding_mode
+    )
     amount = quantize(reduced_base * rate, rule.precision, rule.rounding_mode)
     return reduced_base, amount

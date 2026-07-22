@@ -11,9 +11,9 @@ environment, you can use the Composer Local Development CLI tool
 
 ## 2. Identify Active Environment and DAGs Location
 
-*   **Active Environment:** Specified by `<LOCAL_ENV_NAME>`.
-*   **DAGs Location:** Shown in `composer-dev describe` output under `Dags
-    directory`. Copy your migrated DAGs to this directory to test.
+- **Active Environment:** Specified by `<LOCAL_ENV_NAME>`.
+- **DAGs Location:** Shown in `composer-dev describe` output under `Dags
+directory`. Copy your migrated DAGs to this directory to test.
 
 ## 3. Verify DAGs and Check for Import Errors
 

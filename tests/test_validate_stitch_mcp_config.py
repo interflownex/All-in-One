@@ -24,7 +24,9 @@ env_http_headers = { 'X-Goog-Api-Key' = 'STITCH_API_KEY' }
 
 
 def test_accepts_expected_env_header_config(tmp_path: Path) -> None:
-    errors = validate_stitch_mcp_config(config_path=valid_config(tmp_path), root=Path.cwd())
+    errors = validate_stitch_mcp_config(
+        config_path=valid_config(tmp_path), root=Path.cwd()
+    )
     assert errors == []
 
 
@@ -64,7 +66,11 @@ env_http_headers = { 'X-Goog-Api-Key' = 'STITCH_API_KEY' }
     assert any("literal" in error for error in errors)
 
 
-def test_requires_secret_when_active_policy_requests_remote_validation(tmp_path: Path, monkeypatch) -> None:
+def test_requires_secret_when_active_policy_requests_remote_validation(
+    tmp_path: Path, monkeypatch
+) -> None:
     monkeypatch.delenv("STITCH_API_KEY", raising=False)
-    errors = validate_stitch_mcp_config(config_path=valid_config(tmp_path), require_secret=True, root=Path.cwd())
+    errors = validate_stitch_mcp_config(
+        config_path=valid_config(tmp_path), require_secret=True, root=Path.cwd()
+    )
     assert errors == ["Variavel obrigatoria ausente no ambiente: STITCH_API_KEY"]

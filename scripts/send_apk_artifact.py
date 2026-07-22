@@ -29,14 +29,18 @@ def resolve_apk(path_text: str) -> Path:
     return apk
 
 
-def send_to_telegram(apk: Path, bot_token: str, chat_id: str, caption: str | None) -> None:
+def send_to_telegram(
+    apk: Path, bot_token: str, chat_id: str, caption: str | None
+) -> None:
     boundary = "----codex-valley-apk-boundary"
     crlf = "\r\n"
     body: list[bytes] = []
 
     def add_field(name: str, value: str) -> None:
         body.append(f"--{boundary}{crlf}".encode())
-        body.append(f'Content-Disposition: form-data; name="{name}"{crlf}{crlf}'.encode())
+        body.append(
+            f'Content-Disposition: form-data; name="{name}"{crlf}{crlf}'.encode()
+        )
         body.append(value.encode())
         body.append(crlf.encode())
 
@@ -98,7 +102,9 @@ def send_to_email(
 
     mime_type = mimetypes.guess_type(apk.name)[0] or "application/octet-stream"
     maintype, subtype = mime_type.split("/", 1)
-    message.add_attachment(apk.read_bytes(), maintype=maintype, subtype=subtype, filename=apk.name)
+    message.add_attachment(
+        apk.read_bytes(), maintype=maintype, subtype=subtype, filename=apk.name
+    )
 
     if use_tls:
         context = ssl.create_default_context()
@@ -117,17 +123,25 @@ def send_to_email(
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--apk", default="apps/valley-android/app/build/outputs/apk/debug/app-debug.apk")
+    parser.add_argument(
+        "--apk", default="apps/valley-android/app/build/outputs/apk/debug/app-debug.apk"
+    )
     parser.add_argument("--caption", default="APK Valley Consumer pronto para teste.")
     parser.add_argument("--telegram-token", default=env("TELEGRAM_BOT_TOKEN"))
     parser.add_argument("--telegram-chat-id", default=env("TELEGRAM_CHAT_ID"))
     parser.add_argument("--email-to", default=env("APK_EMAIL_TO"))
     parser.add_argument("--email-from", default=env("APK_EMAIL_FROM"))
     parser.add_argument("--smtp-host", default=env("SMTP_HOST"))
-    parser.add_argument("--smtp-port", type=int, default=int(env("SMTP_PORT", "465") or "465"))
+    parser.add_argument(
+        "--smtp-port", type=int, default=int(env("SMTP_PORT", "465") or "465")
+    )
     parser.add_argument("--smtp-user", default=env("SMTP_USER"))
     parser.add_argument("--smtp-password", default=env("SMTP_PASSWORD"))
-    parser.add_argument("--smtp-tls", action="store_true", default=(env("SMTP_TLS", "false") or "false").lower() == "true")
+    parser.add_argument(
+        "--smtp-tls",
+        action="store_true",
+        default=(env("SMTP_TLS", "false") or "false").lower() == "true",
+    )
     parser.add_argument("--subject", default="APK Valley Consumer")
     return parser.parse_args(argv)
 
@@ -139,7 +153,9 @@ def main(argv: list[str] | None = None) -> int:
     targets: list[str] = []
     if args.telegram_token or args.telegram_chat_id:
         if not args.telegram_token or not args.telegram_chat_id:
-            print("Telegram exige TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID.", file=sys.stderr)
+            print(
+                "Telegram exige TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID.", file=sys.stderr
+            )
             return 2
         send_to_telegram(apk, args.telegram_token, args.telegram_chat_id, args.caption)
         targets.append("telegram")

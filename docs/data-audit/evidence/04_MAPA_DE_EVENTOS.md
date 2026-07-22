@@ -9,6 +9,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 ## Eventos por Módulo Produtor
 
 ### 1. AI Core (`ai_core`)
+
 - `ai.memory.created`
 - `ai.memory.indexed`
 - `ai.memory.updated`
@@ -23,6 +24,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `ai.model_run.cost_approved`
 
 ### 2. API Hub (`api_hub`)
+
 - `api.client.created`
 - `api.client.submitted`
 - `api.client.approved`
@@ -42,6 +44,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `api.integration_run.rejected`
 
 ### 3. Business Intelligence (`bi`)
+
 - `bi.dataset.created`
 - `bi.dataset.refreshed`
 - `bi.dataset.published`
@@ -56,6 +59,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `bi.export.completed`
 
 ### 4. Business Process Management (`bpm`)
+
 - `bpm.process.started`
 - `bpm.process.completed`
 - `bpm.process.cancelled`
@@ -65,6 +69,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `bpm.sla_policy.published`
 
 ### 5. Business (`business`)
+
 - `business.company.created`
 - `business.company.submitted`
 - `business.company.approved`
@@ -87,6 +92,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `valley.catalog.offer.synced`
 
 ### 6. CRM (`crm`)
+
 - `crm.lead.created`
 - `crm.lead.qualified`
 - `crm.lead.disqualified`
@@ -101,6 +107,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `crm.campaign.closed`
 
 ### 7. Delivery (`delivery`)
+
 - `delivery.request.created`
 - `delivery.rider.assigned`
 - `delivery.picked_up`
@@ -109,11 +116,13 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `delivery.cancelled`
 
 ### 8. Document (`document`)
+
 - `document.uploaded`
 - `document.versioned`
 - `document.signed`
 
 ### 9. ERP (`erp`)
+
 - `erp.account.created`
 - `erp.cost_center.created`
 - `erp.payable.created`
@@ -128,6 +137,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `erp.invoice.cancelled`
 
 ### 10. Finance (`finance`)
+
 - `payment.escrow.created`
 - `payment.escrow.released`
 - `payment.refunded`
@@ -135,11 +145,13 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `valley.gold.ledger.posted`
 
 ### 11. Health (`health`)
+
 - `health.appointment.created`
 - `health.telemedicine.started`
 - `health.prescription.issued`
 
 ### 12. HR (`hr`)
+
 - `hr.employee.created`
 - `hr.payroll.opened`
 - `hr.payroll.closed`
@@ -147,6 +159,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `hr.training.completed`
 
 ### 13. Identity (`identity`)
+
 - `identity.user.created`
 - `identity.user.verified`
 - `identity.user.duplicate_detected`
@@ -162,6 +175,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `identity.consent.recorded`
 
 ### 14. Jobs (`jobs`)
+
 - `jobs.resume.created`
 - `jobs.resume.ctps_imported`
 - `jobs.employment.self_declared`
@@ -179,6 +193,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `jobs.resume_access_log.created`
 
 ### 15. Legal (`legal`)
+
 - `legal.case.created`
 - `legal.deadline.created`
 - `legal.deadline.alerted`
@@ -186,6 +201,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `legal.hearing.scheduled`
 
 ### 16. Marketplace (`marketplace`)
+
 - `marketplace.store.created`
 - `marketplace.product.created`
 - `marketplace.order.created`
@@ -202,6 +218,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `valley.pepitas.granted`
 
 ### 17. Mobility (`mobility`)
+
 - `mobility.ride.requested`
 - `mobility.ride.accepted`
 - `mobility.ride.completed`
@@ -211,10 +228,12 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `mobility.fare_rule.published`
 
 ### 18. Permissions (`permissions`)
+
 - `permissions.role.created`
 - `permissions.role.assigned`
 
 ### 19. Property (`property`)
+
 - `property.lease.created`
 - `property.lease.activated`
 - `property.lease.terminated`
@@ -223,12 +242,14 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `property.maintenance.completed`
 
 ### 20. Riders (`riders`)
+
 - `rider.submitted`
 - `rider.approved`
 - `rider.rejected`
 - `rider.vehicle.approved`
 
 ### 21. Services (`services`)
+
 - `services.visit.created`
 - `services.visit.completed`
 - `services.quote.created`
@@ -236,6 +257,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `services.contract.completed`
 
 ### 22. Stock (`stock`)
+
 - `stock.product.imported`
 - `stock.supplier_order.created`
 - `stock.supplier_order.acknowledged`
@@ -245,6 +267,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `valley.stock.discount.quoted`
 
 ### 23. TMS (`tms`)
+
 - `tms.carrier.created`
 - `tms.carrier.submitted`
 - `tms.carrier.approved`
@@ -260,6 +283,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `tms.freight.audit_closed`
 
 ### 24. Vision (`vision`)
+
 - `vision.device.registered`
 - `vision.device.submitted`
 - `vision.device.cancelled`
@@ -273,6 +297,7 @@ A estrutura de payload padrão inclui: `event_id`, `occurred_at`, `actor_user_id
 - `vision.incident.resolved`
 
 ### 25. WMS (`wms`)
+
 - `wms.warehouse.created`
 - `wms.bin.created`
 - `wms.inventory.received`

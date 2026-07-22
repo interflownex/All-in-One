@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Any, Iterator, Protocol
+from typing import Any
 from uuid import uuid4
 
 import psycopg
@@ -88,7 +89,13 @@ class BasePostgresStore:
             "idempotency_key": idempotency_key,
         }
         if entity_id:
-            for candidate in ("company_id", "business_id", "entity_id", "store_id", "warehouse_id"):
+            for candidate in (
+                "company_id",
+                "business_id",
+                "entity_id",
+                "store_id",
+                "warehouse_id",
+            ):
                 if candidate in columns and candidate not in payload:
                     values[candidate] = entity_id
                     break
@@ -115,11 +122,22 @@ class BasePostgresStore:
         actor: str,
     ) -> dict[str, Any]:
         columns = self._table_columns(resource_type)
-        values: dict[str, Any] = {"status": status, "metadata": self._metadata(payload), "updated_by": actor}
+        values: dict[str, Any] = {
+            "status": status,
+            "metadata": self._metadata(payload),
+            "updated_by": actor,
+        }
         for key, value in payload.items():
-            if key in columns and key not in {"id", "user_id", "created_at", "created_by"}:
+            if key in columns and key not in {
+                "id",
+                "user_id",
+                "created_at",
+                "created_by",
+            }:
                 values[key] = self._column_value(value)
-        set_sql = [sql.SQL("{} = %s").format(sql.Identifier(column)) for column in values]
+        set_sql = [
+            sql.SQL("{} = %s").format(sql.Identifier(column)) for column in values
+        ]
         if "updated_at" in columns:
             set_sql.append(sql.SQL("updated_at = NOW()"))
         return connection.execute(
@@ -147,15 +165,26 @@ class BasePostgresStore:
     def _metadata(payload: dict[str, Any]) -> Jsonb:
         return Jsonb({"runtime_payload": payload})
 
-    def _resource(self, resource_type: str, row: dict[str, Any] | None) -> dict[str, Any] | None:
+    def _resource(
+        self, resource_type: str, row: dict[str, Any] | None
+    ) -> dict[str, Any] | None:
         if row is None:
             return None
-        created_at = row.get("created_at") or row.get("started_at") or row.get("accessed_at")
+        created_at = (
+            row.get("created_at") or row.get("started_at") or row.get("accessed_at")
+        )
         if created_at is None:
-            raise RuntimeError(f"PostgreSQL nao retornou timestamp para {resource_type}.")
-        
-        entity_id = row.get("company_id") or row.get("business_id") or row.get("store_id") or row.get("warehouse_id")
-        
+            raise RuntimeError(
+                f"PostgreSQL nao retornou timestamp para {resource_type}."
+            )
+
+        entity_id = (
+            row.get("company_id")
+            or row.get("business_id")
+            or row.get("store_id")
+            or row.get("warehouse_id")
+        )
+
         if resource_type == "companies":
             entity_id = row["id"]
 
@@ -168,21 +197,31 @@ class BasePostgresStore:
             "entity_id": str(entity_id) if entity_id else None,
             "status": row["status"],
             "payload": self._payload(row),
-            "created_by": str(row["created_by"]) if row.get("created_by") else str(row_user_id),
-            "updated_by": str(row.get("updated_by") or row.get("created_by") or row_user_id),
+            "created_by": str(row["created_by"])
+            if row.get("created_by")
+            else str(row_user_id),
+            "updated_by": str(
+                row.get("updated_by") or row.get("created_by") or row_user_id
+            ),
             "created_at": created_at.isoformat(),
             "updated_at": (row.get("updated_at") or created_at).isoformat(),
-            "deleted_at": row.get("deleted_at").isoformat() if row.get("deleted_at") else None,
+            "deleted_at": row.get("deleted_at").isoformat()
+            if row.get("deleted_at")
+            else None,
             "idempotency_key": row.get("idempotency_key"),
         }
 
-    def find_idempotent(self, resource_type: str, key: str | None) -> dict[str, Any] | None:
+    def find_idempotent(
+        self, resource_type: str, key: str | None
+    ) -> dict[str, Any] | None:
         if not key:
             return None
         if "idempotency_key" not in self._table_columns(resource_type):
             return None
         row = self.connection.execute(
-            sql.SQL("SELECT * FROM {} WHERE idempotency_key = %s").format(self._table(resource_type)),
+            sql.SQL("SELECT * FROM {} WHERE idempotency_key = %s").format(
+                self._table(resource_type)
+            ),
             (key,),
         ).fetchone()
         return self._resource(resource_type, row)
@@ -206,34 +245,85 @@ class BasePostgresStore:
         resource_id = str(uuid4())
         try:
             with self.transaction() as connection:
-                row = self._insert(connection, resource_type, resource_id, user_id, entity_id, status, payload, actor, idempotency_key)
+                row = self._insert(
+                    connection,
+                    resource_type,
+                    resource_id,
+                    user_id,
+                    entity_id,
+                    status,
+                    payload,
+                    actor,
+                    idempotency_key,
+                )
                 item = self._resource(resource_type, row)
                 if item is None:
-                    raise RuntimeError(f"PostgreSQL nao retornou recurso {self.module} criado.")
-                self._audit(connection, actor, "create", resource_type, resource_id, None, item, user_id, entity_id)
+                    raise RuntimeError(
+                        f"PostgreSQL nao retornou recurso {self.module} criado."
+                    )
+                self._audit(
+                    connection,
+                    actor,
+                    "create",
+                    resource_type,
+                    resource_id,
+                    None,
+                    item,
+                    user_id,
+                    entity_id,
+                )
                 self._event(connection, event, actor, item)
                 return item
         except UniqueViolation as exc:
             raise DuplicateValueError(resource_type) from exc
 
-    def _insert(self, connection: Connection, resource_type: str, resource_id: str, user_id: str, 
-                entity_id: str | None, status: str, payload: dict[str, Any], actor: str, 
-                idempotency_key: str | None) -> dict[str, Any]:
+    def _insert(
+        self,
+        connection: Connection,
+        resource_type: str,
+        resource_id: str,
+        user_id: str,
+        entity_id: str | None,
+        status: str,
+        payload: dict[str, Any],
+        actor: str,
+        idempotency_key: str | None,
+    ) -> dict[str, Any]:
         """Defaults to generic insert; subclasses can override for specialized logic."""
         return self._insert_generic(
-            connection, resource_type, resource_id, user_id, entity_id, status, payload, actor, idempotency_key
+            connection,
+            resource_type,
+            resource_id,
+            user_id,
+            entity_id,
+            status,
+            payload,
+            actor,
+            idempotency_key,
         )
 
     def get(self, resource_type: str, resource_id: str) -> dict[str, Any] | None:
-        deleted = sql.SQL(" AND deleted_at IS NULL") if resource_type in self.soft_deletable else sql.SQL("")
+        deleted = (
+            sql.SQL(" AND deleted_at IS NULL")
+            if resource_type in self.soft_deletable
+            else sql.SQL("")
+        )
         row = self.connection.execute(
-            sql.SQL("SELECT * FROM {} WHERE id = %s{}").format(self._table(resource_type), deleted),
+            sql.SQL("SELECT * FROM {} WHERE id = %s{}").format(
+                self._table(resource_type), deleted
+            ),
             (resource_id,),
         ).fetchone()
         return self._resource(resource_type, row)
 
-    def list(self, resource_type: str, user_id: str | None = None) -> list[dict[str, Any]]:
-        conditions = sql.SQL("deleted_at IS NULL") if resource_type in self.soft_deletable else sql.SQL("TRUE")
+    def list(
+        self, resource_type: str, user_id: str | None = None
+    ) -> list[dict[str, Any]]:
+        conditions = (
+            sql.SQL("deleted_at IS NULL")
+            if resource_type in self.soft_deletable
+            else sql.SQL("TRUE")
+        )
         parameters: list[Any] = []
         if user_id and "user_id" in self._table_columns(resource_type):
             conditions = conditions + sql.SQL(" AND user_id = %s")
@@ -244,7 +334,11 @@ class BasePostgresStore:
             ),
             parameters,
         ).fetchall()
-        return [item for row in rows if (item := self._resource(resource_type, row)) is not None]
+        return [
+            item
+            for row in rows
+            if (item := self._resource(resource_type, row)) is not None
+        ]
 
     def update(
         self,
@@ -257,17 +351,38 @@ class BasePostgresStore:
     ) -> dict[str, Any]:
         before = {**item, "payload": dict(item["payload"])}
         with self.transaction() as connection:
-            row = self._update(connection, item["resource_type"], item["id"], payload, status, actor)
+            row = self._update(
+                connection, item["resource_type"], item["id"], payload, status, actor
+            )
             updated = self._resource(item["resource_type"], row)
             if updated is None:
-                raise RuntimeError(f"PostgreSQL nao retornou recurso {self.module} atualizado.")
-            self._audit(connection, actor, action, item["resource_type"], item["id"], before, updated, item["user_id"], item["entity_id"])
+                raise RuntimeError(
+                    f"PostgreSQL nao retornou recurso {self.module} atualizado."
+                )
+            self._audit(
+                connection,
+                actor,
+                action,
+                item["resource_type"],
+                item["id"],
+                before,
+                updated,
+                item["user_id"],
+                item["entity_id"],
+            )
             if event:
                 self._event(connection, event, actor, updated)
             return updated
 
-    def _update(self, connection: Connection, resource_type: str, resource_id: str, 
-                payload: dict[str, Any], status: str, actor: str) -> dict[str, Any]:
+    def _update(
+        self,
+        connection: Connection,
+        resource_type: str,
+        resource_id: str,
+        payload: dict[str, Any],
+        status: str,
+        actor: str,
+    ) -> dict[str, Any]:
         """Defaults to generic update; subclasses can override for specialized logic."""
         return self._update_generic(
             connection, resource_type, resource_id, payload, status, actor
@@ -281,11 +396,38 @@ class BasePostgresStore:
                 ).format(self._table(item["resource_type"])),
                 (actor, item["id"]),
             )
-            self._audit(connection, actor, "soft_delete", item["resource_type"], item["id"], item, None, item["user_id"], item["entity_id"])
+            self._audit(
+                connection,
+                actor,
+                "soft_delete",
+                item["resource_type"],
+                item["id"],
+                item,
+                None,
+                item["user_id"],
+                item["entity_id"],
+            )
 
-    def audit_external(self, actor: str, action: str, resource_type: str, resource_id: str, data: dict[str, Any]) -> dict[str, Any]:
+    def audit_external(
+        self,
+        actor: str,
+        action: str,
+        resource_type: str,
+        resource_id: str,
+        data: dict[str, Any],
+    ) -> dict[str, Any]:
         with self.transaction() as connection:
-            return self._audit(connection, actor, action, resource_type, resource_id, None, data, data.get("user_id"), data.get("entity_id") or data.get("company_id"))
+            return self._audit(
+                connection,
+                actor,
+                action,
+                resource_type,
+                resource_id,
+                None,
+                data,
+                data.get("user_id"),
+                data.get("entity_id") or data.get("company_id"),
+            )
 
     def _audit(
         self,
@@ -300,12 +442,21 @@ class BasePostgresStore:
         entity_id: str | None,
     ) -> dict[str, Any]:
         return insert_postgres_audit(
-            connection, module=self.module, actor_user_id=actor, action=action,
-            resource_type=resource_type, resource_id=resource_id, before=before, after=after,
-            user_id=user_id, company_id=entity_id,
+            connection,
+            module=self.module,
+            actor_user_id=actor,
+            action=action,
+            resource_type=resource_type,
+            resource_id=resource_id,
+            before=before,
+            after=after,
+            user_id=user_id,
+            company_id=entity_id,
         )
 
-    def _event(self, connection: Connection, routing_key: str, actor: str, item: dict[str, Any]) -> None:
+    def _event(
+        self, connection: Connection, routing_key: str, actor: str, item: dict[str, Any]
+    ) -> None:
         correlation_id = get_correlation_id()
         envelope = build_event_envelope(
             module=self.module,
@@ -335,33 +486,48 @@ class BasePostgresStore:
         )
 
     def audit_log(self) -> list[dict[str, Any]]:
-        return [dict(row) for row in self.connection.execute(
-            sql.SQL("SELECT * FROM audit.logs WHERE module = %s ORDER BY created_at DESC"), (self.module,)
-        ).fetchall()]
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                sql.SQL(
+                    "SELECT * FROM audit.logs WHERE module = %s ORDER BY created_at DESC"
+                ),
+                (self.module,),
+            ).fetchall()
+        ]
 
     def outbox(self) -> list[dict[str, Any]]:
         routing_prefix = f"{self.module}.%"
-        if self.module == "finance": routing_prefix = "payment.%"
+        if self.module == "finance":
+            routing_prefix = "payment.%"
 
-        return [dict(row) for row in self.connection.execute(
-            "SELECT * FROM audit.domain_events WHERE routing_key LIKE %s ORDER BY created_at DESC", (routing_prefix,)
-        ).fetchall()]
+        return [
+            dict(row)
+            for row in self.connection.execute(
+                "SELECT * FROM audit.domain_events WHERE routing_key LIKE %s ORDER BY created_at DESC",
+                (routing_prefix,),
+            ).fetchall()
+        ]
 
     def metrics(self) -> tuple[int, int, int]:
         records = sum(
             self.connection.execute(
-                sql.SQL("SELECT COUNT(*) AS count FROM {}").format(self._table(resource_type))
+                sql.SQL("SELECT COUNT(*) AS count FROM {}").format(
+                    self._table(resource_type)
+                )
             ).fetchone()["count"]
             for resource_type in self.tables
         )
         audits = self.connection.execute(
             "SELECT COUNT(*) AS count FROM audit.logs WHERE module = %s", (self.module,)
         ).fetchone()["count"]
-        
+
         routing_prefix = f"{self.module}.%"
-        if self.module == "finance": routing_prefix = "payment.%"
+        if self.module == "finance":
+            routing_prefix = "payment.%"
 
         events = self.connection.execute(
-            "SELECT COUNT(*) AS count FROM audit.domain_events WHERE routing_key LIKE %s", (routing_prefix,)
+            "SELECT COUNT(*) AS count FROM audit.domain_events WHERE routing_key LIKE %s",
+            (routing_prefix,),
         ).fetchone()["count"]
         return records, audits, events

@@ -4,14 +4,7 @@
   "categories": [
     {
       "id": "credencial_segredo",
-      "patterns": [
-        "password",
-        "token",
-        "secret",
-        "credential",
-        "key_hash",
-        "refresh"
-      ],
+      "patterns": ["password", "token", "secret", "credential", "key_hash", "refresh"],
       "classification": "restrito",
       "encryption": "obrigatória em trânsito e repouso; preferir hash não reversível quando aplicável",
       "masking": "nunca retornar valor integral nem registrar em logs",
@@ -35,14 +28,7 @@
     },
     {
       "id": "documento_identificador",
-      "patterns": [
-        "document_number",
-        "document_cpf",
-        "cpf",
-        "cnpj",
-        "passport",
-        "tax_id"
-      ],
+      "patterns": ["document_number", "document_cpf", "cpf", "cnpj", "passport", "tax_id"],
       "classification": "dado pessoal identificador",
       "encryption": "criptografar ou armazenar hash conforme necessidade de recuperação",
       "masking": "exibir parcialmente por padrão",

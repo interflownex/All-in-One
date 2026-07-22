@@ -66,9 +66,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_permissions_enforcement_matrix.py:238"
-      ],
+      "test_evidence": ["tests/test_permissions_enforcement_matrix.py:238"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -104,9 +102,7 @@
       "audit_enforcement": "leitura não auditada genericamente",
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_permissions_enforcement_matrix.py:252"
-      ],
+      "test_evidence": ["tests/test_permissions_enforcement_matrix.py:252"],
       "evidence": "modules/shared/runtime.py:543"
     },
     {
@@ -160,9 +156,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_document_domain.py:39"
-      ],
+      "test_evidence": ["tests/test_document_domain.py:39"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -360,9 +354,7 @@
       "audit_enforcement": "leitura não auditada genericamente",
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_identity_session_security.py:52"
-      ],
+      "test_evidence": ["tests/test_identity_session_security.py:52"],
       "evidence": "modules/shared/runtime.py:530"
     },
     {
@@ -452,9 +444,7 @@
       "audit_enforcement": "leitura não auditada genericamente",
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_identity_session_security.py:135"
-      ],
+      "test_evidence": ["tests/test_identity_session_security.py:135"],
       "evidence": "modules/shared/runtime.py:530"
     },
     {
@@ -616,9 +606,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_business_jobs_journey.py:35"
-      ],
+      "test_evidence": ["tests/test_business_jobs_journey.py:35"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -747,9 +735,7 @@
       "audit_enforcement": "leitura não auditada genericamente",
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_permissions_enforcement_matrix.py:220"
-      ],
+      "test_evidence": ["tests/test_permissions_enforcement_matrix.py:220"],
       "evidence": "modules/shared/runtime.py:543"
     },
     {
@@ -1076,9 +1062,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_permissions_enforcement_matrix.py:126"
-      ],
+      "test_evidence": ["tests/test_permissions_enforcement_matrix.py:126"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -1096,9 +1080,7 @@
       "audit_enforcement": "leitura não auditada genericamente",
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_permissions_enforcement_matrix.py:131"
-      ],
+      "test_evidence": ["tests/test_permissions_enforcement_matrix.py:131"],
       "evidence": "modules/shared/runtime.py:530"
     },
     {
@@ -1440,9 +1422,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_permissions_enforcement_matrix.py:163"
-      ],
+      "test_evidence": ["tests/test_permissions_enforcement_matrix.py:163"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -1571,9 +1551,7 @@
       "audit_enforcement": "leitura não auditada genericamente",
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_permissions_enforcement_matrix.py:190"
-      ],
+      "test_evidence": ["tests/test_permissions_enforcement_matrix.py:190"],
       "evidence": "modules/shared/runtime.py:543"
     },
     {
@@ -1717,9 +1695,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_user_marketplace_journey.py:49"
-      ],
+      "test_evidence": ["tests/test_user_marketplace_journey.py:49"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -1989,9 +1965,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_valley_gold_ledger.py:35"
-      ],
+      "test_evidence": ["tests/test_valley_gold_ledger.py:35"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -2045,9 +2019,7 @@
       "audit_enforcement": "store.update gera audit",
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_valley_gold_ledger.py:102"
-      ],
+      "test_evidence": ["tests/test_valley_gold_ledger.py:102"],
       "evidence": "modules/shared/runtime.py:565"
     },
     {
@@ -2065,9 +2037,7 @@
       "audit_enforcement": "soft_delete gera audit",
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_valley_gold_ledger.py:109"
-      ],
+      "test_evidence": ["tests/test_valley_gold_ledger.py:109"],
       "evidence": "modules/shared/runtime.py:586"
     },
     {
@@ -2085,9 +2055,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_valley_ecosystem.py:303"
-      ],
+      "test_evidence": ["tests/test_valley_ecosystem.py:303"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -2177,10 +2145,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_valley_catalog.py:49",
-        "tests/test_valley_ecosystem.py:58"
-      ],
+      "test_evidence": ["tests/test_valley_catalog.py:49", "tests/test_valley_ecosystem.py:58"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -2511,9 +2476,7 @@
       "audit_enforcement": "store.update gera audit",
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_valley_reviews.py:45"
-      ],
+      "test_evidence": ["tests/test_valley_reviews.py:45"],
       "evidence": "modules/shared/runtime.py:565"
     },
     {
@@ -2819,9 +2782,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_valley_ecosystem.py:100"
-      ],
+      "test_evidence": ["tests/test_valley_ecosystem.py:100"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -3001,9 +2962,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_valley_ecosystem.py:160"
-      ],
+      "test_evidence": ["tests/test_valley_ecosystem.py:160"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -3183,10 +3142,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_correlation_id.py:67",
-        "tests/test_operational_journeys.py:39"
-      ],
+      "test_evidence": ["tests/test_correlation_id.py:67", "tests/test_operational_journeys.py:39"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -3456,9 +3412,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:82"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:82"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -3530,9 +3484,7 @@
       "audit_enforcement": "soft_delete gera audit",
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:101"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:101"],
       "evidence": "modules/shared/runtime.py:586"
     },
     {
@@ -3640,9 +3592,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:119"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:119"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -3822,9 +3772,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:159"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:159"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -4278,9 +4226,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:203"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:203"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -4460,9 +4406,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:290"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:290"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -4552,10 +4496,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:273",
-        "tests/test_tms_domain.py:40"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:273", "tests/test_tms_domain.py:40"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -4735,9 +4676,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:327"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:327"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -4827,9 +4766,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:256"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:256"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -5013,9 +4950,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_identity_jobs_domain.py:110"
-      ],
+      "test_evidence": ["tests/test_identity_jobs_domain.py:110"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -5472,9 +5407,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_erp_domain.py:26"
-      ],
+      "test_evidence": ["tests/test_erp_domain.py:26"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -5564,9 +5497,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_erp_domain.py:54"
-      ],
+      "test_evidence": ["tests/test_erp_domain.py:54"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -5656,9 +5587,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_erp_domain.py:93"
-      ],
+      "test_evidence": ["tests/test_erp_domain.py:93"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -5748,9 +5677,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_erp_domain.py:40"
-      ],
+      "test_evidence": ["tests/test_erp_domain.py:40"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -5930,9 +5857,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_wms_domain.py:26"
-      ],
+      "test_evidence": ["tests/test_wms_domain.py:26"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6022,9 +5947,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_wms_domain.py:40"
-      ],
+      "test_evidence": ["tests/test_wms_domain.py:40"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6114,9 +6037,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_wms_domain.py:54"
-      ],
+      "test_evidence": ["tests/test_wms_domain.py:54"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6206,9 +6127,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_wms_domain.py:79"
-      ],
+      "test_evidence": ["tests/test_wms_domain.py:79"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6298,9 +6217,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_wms_domain.py:118"
-      ],
+      "test_evidence": ["tests/test_wms_domain.py:118"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6390,9 +6307,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_tms_domain.py:26"
-      ],
+      "test_evidence": ["tests/test_tms_domain.py:26"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6482,9 +6397,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_tms_domain.py:56"
-      ],
+      "test_evidence": ["tests/test_tms_domain.py:56"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6574,10 +6487,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:273",
-        "tests/test_tms_domain.py:40"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:273", "tests/test_tms_domain.py:40"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6667,9 +6577,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_tms_domain.py:104"
-      ],
+      "test_evidence": ["tests/test_tms_domain.py:104"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6759,9 +6667,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_tms_domain.py:135"
-      ],
+      "test_evidence": ["tests/test_tms_domain.py:135"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6851,9 +6757,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_crm_domain.py:26"
-      ],
+      "test_evidence": ["tests/test_crm_domain.py:26"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -6943,9 +6847,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_crm_domain.py:71"
-      ],
+      "test_evidence": ["tests/test_crm_domain.py:71"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -7035,9 +6937,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_crm_domain.py:48"
-      ],
+      "test_evidence": ["tests/test_crm_domain.py:48"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -7127,9 +7027,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_crm_domain.py:123"
-      ],
+      "test_evidence": ["tests/test_crm_domain.py:123"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -7309,9 +7207,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_bpm_domain.py:41"
-      ],
+      "test_evidence": ["tests/test_bpm_domain.py:41"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -7401,9 +7297,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_bpm_domain.py:56"
-      ],
+      "test_evidence": ["tests/test_bpm_domain.py:56"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -7493,9 +7387,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_bpm_domain.py:26"
-      ],
+      "test_evidence": ["tests/test_bpm_domain.py:26"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -7675,9 +7567,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_document_domain.py:39"
-      ],
+      "test_evidence": ["tests/test_document_domain.py:39"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -7767,9 +7657,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_document_domain.py:49"
-      ],
+      "test_evidence": ["tests/test_document_domain.py:49"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -7949,9 +7837,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_hr_domain.py:27"
-      ],
+      "test_evidence": ["tests/test_hr_domain.py:27"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -8041,9 +7927,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_hr_domain.py:43"
-      ],
+      "test_evidence": ["tests/test_hr_domain.py:43"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -8223,9 +8107,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_hr_domain.py:74"
-      ],
+      "test_evidence": ["tests/test_hr_domain.py:74"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -8501,9 +8383,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:383"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:383"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -8863,9 +8743,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_vision_domain.py:26"
-      ],
+      "test_evidence": ["tests/test_vision_domain.py:26"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -8955,9 +8833,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_vision_domain.py:39"
-      ],
+      "test_evidence": ["tests/test_vision_domain.py:39"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -9047,9 +8923,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_vision_domain.py:56"
-      ],
+      "test_evidence": ["tests/test_vision_domain.py:56"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -9139,9 +9013,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_vision_domain.py:72"
-      ],
+      "test_evidence": ["tests/test_vision_domain.py:72"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -9231,9 +9103,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_legal_domain.py:26"
-      ],
+      "test_evidence": ["tests/test_legal_domain.py:26"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -9323,9 +9193,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_legal_domain.py:42"
-      ],
+      "test_evidence": ["tests/test_legal_domain.py:42"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -9595,9 +9463,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_property_domain.py:27"
-      ],
+      "test_evidence": ["tests/test_property_domain.py:27"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -9777,9 +9643,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_property_domain.py:40"
-      ],
+      "test_evidence": ["tests/test_property_domain.py:40"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -9959,9 +9823,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_property_domain.py:72"
-      ],
+      "test_evidence": ["tests/test_property_domain.py:72"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -10051,9 +9913,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_bi_domain.py:26"
-      ],
+      "test_evidence": ["tests/test_bi_domain.py:26"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -10143,9 +10003,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_bi_domain.py:65"
-      ],
+      "test_evidence": ["tests/test_bi_domain.py:65"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -10325,9 +10183,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_bi_domain.py:96"
-      ],
+      "test_evidence": ["tests/test_bi_domain.py:96"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -10417,9 +10273,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_ai_core_domain.py:26"
-      ],
+      "test_evidence": ["tests/test_ai_core_domain.py:26"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -10599,9 +10453,7 @@
       "audit_enforcement": "store.create gera audit/event",
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
-      "test_evidence": [
-        "tests/test_ai_core_domain.py:48"
-      ],
+      "test_evidence": ["tests/test_ai_core_domain.py:48"],
       "evidence": "modules/shared/runtime.py:520"
     },
     {
@@ -11043,9 +10895,7 @@
       "method": "POST",
       "endpoint": "/resources/ai_memories/{resource_id}/actions/index",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11053,9 +10903,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_ai_core_domain.py:40"
-      ],
+      "test_evidence": ["tests/test_ai_core_domain.py:40"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11065,9 +10913,7 @@
       "method": "POST",
       "endpoint": "/resources/ai_memories/{resource_id}/actions/update",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11099,9 +10945,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_ai_core_domain.py:67"
-      ],
+      "test_evidence": ["tests/test_ai_core_domain.py:67"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11111,9 +10955,7 @@
       "method": "POST",
       "endpoint": "/resources/model_runs/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11121,9 +10963,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_ai_core_domain.py:67"
-      ],
+      "test_evidence": ["tests/test_ai_core_domain.py:67"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11133,9 +10973,7 @@
       "method": "POST",
       "endpoint": "/resources/model_runs/{resource_id}/actions/fail",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11201,9 +11039,7 @@
       "method": "POST",
       "endpoint": "/resources/moderation_decisions/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11269,9 +11105,7 @@
       "method": "POST",
       "endpoint": "/resources/api_clients/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11337,9 +11171,7 @@
       "method": "POST",
       "endpoint": "/resources/api_keys/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11405,9 +11237,7 @@
       "method": "POST",
       "endpoint": "/resources/integration_runs/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11473,9 +11303,7 @@
       "method": "POST",
       "endpoint": "/resources/webhooks/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11531,9 +11359,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_bi_domain.py:81"
-      ],
+      "test_evidence": ["tests/test_bi_domain.py:81"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11557,9 +11383,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_bi_domain.py:42"
-      ],
+      "test_evidence": ["tests/test_bi_domain.py:42"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11569,9 +11393,7 @@
       "method": "POST",
       "endpoint": "/resources/datasets/{resource_id}/actions/refresh",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11579,9 +11401,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_bi_domain.py:42"
-      ],
+      "test_evidence": ["tests/test_bi_domain.py:42"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11591,9 +11411,7 @@
       "method": "POST",
       "endpoint": "/resources/exports/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11601,9 +11419,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_bi_domain.py:111"
-      ],
+      "test_evidence": ["tests/test_bi_domain.py:111"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11613,9 +11429,7 @@
       "method": "POST",
       "endpoint": "/resources/tasks/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11647,9 +11461,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_bpm_domain.py:73"
-      ],
+      "test_evidence": ["tests/test_bpm_domain.py:73"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11683,9 +11495,7 @@
       "method": "POST",
       "endpoint": "/resources/workflow_instances/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11703,9 +11513,7 @@
       "method": "POST",
       "endpoint": "/resources/catalog_offers/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11723,9 +11531,7 @@
       "method": "POST",
       "endpoint": "/resources/catalog_offers/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11791,9 +11597,7 @@
       "method": "POST",
       "endpoint": "/resources/catalog_offers/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11825,9 +11629,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_business_jobs_journey.py:52"
-      ],
+      "test_evidence": ["tests/test_business_jobs_journey.py:52"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11861,9 +11663,7 @@
       "method": "POST",
       "endpoint": "/resources/companies/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11929,9 +11729,7 @@
       "method": "POST",
       "endpoint": "/resources/activities/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11939,9 +11737,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_crm_domain.py:63"
-      ],
+      "test_evidence": ["tests/test_crm_domain.py:63"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11951,9 +11747,7 @@
       "method": "POST",
       "endpoint": "/resources/campaigns/{resource_id}/actions/close",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -11985,9 +11779,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_crm_domain.py:137"
-      ],
+      "test_evidence": ["tests/test_crm_domain.py:137"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -11997,9 +11789,7 @@
       "method": "POST",
       "endpoint": "/resources/leads/{resource_id}/actions/disqualify",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12017,9 +11807,7 @@
       "method": "POST",
       "endpoint": "/resources/leads/{resource_id}/actions/qualify",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12027,9 +11815,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_crm_domain.py:40"
-      ],
+      "test_evidence": ["tests/test_crm_domain.py:40"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -12039,9 +11825,7 @@
       "method": "POST",
       "endpoint": "/resources/opportunities/{resource_id}/actions/lose",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12073,9 +11857,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_crm_domain.py:86"
-      ],
+      "test_evidence": ["tests/test_crm_domain.py:86"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -12109,9 +11891,7 @@
       "method": "POST",
       "endpoint": "/resources/delivery_requests/{resource_id}/actions/assign",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12119,9 +11899,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:57"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:57"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -12131,9 +11909,7 @@
       "method": "POST",
       "endpoint": "/resources/delivery_requests/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12151,9 +11927,7 @@
       "method": "POST",
       "endpoint": "/resources/delivery_requests/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12171,9 +11945,7 @@
       "method": "POST",
       "endpoint": "/resources/delivery_requests/{resource_id}/actions/pickup",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12181,9 +11953,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:57"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:57"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -12193,9 +11963,7 @@
       "method": "POST",
       "endpoint": "/resources/documents/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12213,9 +11981,7 @@
       "method": "POST",
       "endpoint": "/resources/documents/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12233,9 +11999,7 @@
       "method": "POST",
       "endpoint": "/resources/documents/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12253,9 +12017,7 @@
       "method": "POST",
       "endpoint": "/resources/fiscal_documents/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12273,9 +12035,7 @@
       "method": "POST",
       "endpoint": "/resources/fiscal_documents/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12293,9 +12053,7 @@
       "method": "POST",
       "endpoint": "/resources/fiscal_documents/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12327,9 +12085,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_erp_domain.py:70"
-      ],
+      "test_evidence": ["tests/test_erp_domain.py:70"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -12339,9 +12095,7 @@
       "method": "POST",
       "endpoint": "/resources/payables/{resource_id}/actions/settle",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12359,9 +12113,7 @@
       "method": "POST",
       "endpoint": "/resources/receivables/{resource_id}/actions/receive",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12369,9 +12121,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_erp_domain.py:109"
-      ],
+      "test_evidence": ["tests/test_erp_domain.py:109"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -12395,9 +12145,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_erp_domain.py:109"
-      ],
+      "test_evidence": ["tests/test_erp_domain.py:109"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -12431,9 +12179,7 @@
       "method": "POST",
       "endpoint": "/resources/escrows/{resource_id}/actions/dispute",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12499,9 +12245,7 @@
       "method": "POST",
       "endpoint": "/resources/invoices/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12519,9 +12263,7 @@
       "method": "POST",
       "endpoint": "/resources/invoices/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12539,9 +12281,7 @@
       "method": "POST",
       "endpoint": "/resources/invoices/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12559,9 +12299,7 @@
       "method": "POST",
       "endpoint": "/resources/splits/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12579,9 +12317,7 @@
       "method": "POST",
       "endpoint": "/resources/splits/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12599,9 +12335,7 @@
       "method": "POST",
       "endpoint": "/resources/splits/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12619,9 +12353,7 @@
       "method": "POST",
       "endpoint": "/resources/appointments/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12639,9 +12371,7 @@
       "method": "POST",
       "endpoint": "/resources/appointments/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12649,9 +12379,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:400"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:400"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -12709,9 +12437,7 @@
       "method": "POST",
       "endpoint": "/resources/appointments/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12729,9 +12455,7 @@
       "method": "POST",
       "endpoint": "/resources/beds/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12749,9 +12473,7 @@
       "method": "POST",
       "endpoint": "/resources/beds/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12769,9 +12491,7 @@
       "method": "POST",
       "endpoint": "/resources/beds/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12837,9 +12557,7 @@
       "method": "POST",
       "endpoint": "/resources/medical_records/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12905,9 +12623,7 @@
       "method": "POST",
       "endpoint": "/resources/prescriptions/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12925,9 +12641,7 @@
       "method": "POST",
       "endpoint": "/resources/courses/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -12935,9 +12649,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_hr_domain.py:90"
-      ],
+      "test_evidence": ["tests/test_hr_domain.py:90"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -12995,9 +12707,7 @@
       "method": "POST",
       "endpoint": "/resources/employees/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13063,9 +12773,7 @@
       "method": "POST",
       "endpoint": "/resources/occupational_records/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13097,9 +12805,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_hr_domain.py:59"
-      ],
+      "test_evidence": ["tests/test_hr_domain.py:59"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -13253,9 +12959,7 @@
       "method": "POST",
       "endpoint": "/resources/sessions/{resource_id}/actions/revoke",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13297,13 +13001,7 @@
       "method": "POST",
       "endpoint": "/resources/applications/{resource_id}/actions/reject",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "role_enforcement": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": true,
@@ -13321,13 +13019,7 @@
       "method": "POST",
       "endpoint": "/resources/applications/{resource_id}/actions/review",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "role_enforcement": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13335,9 +13027,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_identity_jobs_domain.py:215"
-      ],
+      "test_evidence": ["tests/test_identity_jobs_domain.py:215"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -13347,13 +13037,7 @@
       "method": "POST",
       "endpoint": "/resources/applications/{resource_id}/actions/schedule_interview",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "role_enforcement": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": true,
@@ -13371,13 +13055,7 @@
       "method": "POST",
       "endpoint": "/resources/applications/{resource_id}/actions/shortlist",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "role_enforcement": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": true,
@@ -13385,9 +13063,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_identity_jobs_domain.py:215"
-      ],
+      "test_evidence": ["tests/test_identity_jobs_domain.py:215"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -13397,9 +13073,7 @@
       "method": "POST",
       "endpoint": "/resources/applications/{resource_id}/actions/withdraw",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13417,13 +13091,7 @@
       "method": "POST",
       "endpoint": "/resources/job_postings/{resource_id}/actions/close",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "role_enforcement": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": true,
@@ -13441,13 +13109,7 @@
       "method": "POST",
       "endpoint": "/resources/job_postings/{resource_id}/actions/publish",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "role_enforcement": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": true,
@@ -13469,9 +13131,7 @@
       "method": "POST",
       "endpoint": "/resources/cases/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13489,9 +13149,7 @@
       "method": "POST",
       "endpoint": "/resources/cases/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13509,9 +13167,7 @@
       "method": "POST",
       "endpoint": "/resources/cases/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13543,9 +13199,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_legal_domain.py:57"
-      ],
+      "test_evidence": ["tests/test_legal_domain.py:57"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -13555,9 +13209,7 @@
       "method": "POST",
       "endpoint": "/resources/deadlines/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13647,9 +13299,7 @@
       "method": "POST",
       "endpoint": "/resources/orders/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13667,9 +13317,7 @@
       "method": "POST",
       "endpoint": "/resources/orders/{resource_id}/actions/deliver",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13687,9 +13335,7 @@
       "method": "POST",
       "endpoint": "/resources/orders/{resource_id}/actions/pay",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13711,9 +13357,7 @@
       "method": "POST",
       "endpoint": "/resources/products/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13731,9 +13375,7 @@
       "method": "POST",
       "endpoint": "/resources/products/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13799,9 +13441,7 @@
       "method": "POST",
       "endpoint": "/resources/products/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13918,9 +13558,7 @@
       "method": "POST",
       "endpoint": "/resources/stores/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13938,9 +13576,7 @@
       "method": "POST",
       "endpoint": "/resources/rides/{resource_id}/actions/accept",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13948,9 +13584,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:310"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:310"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -13960,9 +13594,7 @@
       "method": "POST",
       "endpoint": "/resources/rides/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13980,9 +13612,7 @@
       "method": "POST",
       "endpoint": "/resources/rides/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -13990,9 +13620,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:310"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:310"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14002,9 +13630,7 @@
       "method": "POST",
       "endpoint": "/resources/tickets/{resource_id}/actions/use",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14012,9 +13638,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:343"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:343"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14038,9 +13662,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_property_domain.py:57"
-      ],
+      "test_evidence": ["tests/test_property_domain.py:57"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14088,9 +13710,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_property_domain.py:88"
-      ],
+      "test_evidence": ["tests/test_property_domain.py:88"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14100,9 +13720,7 @@
       "method": "POST",
       "endpoint": "/resources/maintenance_orders/{resource_id}/actions/schedule",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14110,9 +13728,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_property_domain.py:88"
-      ],
+      "test_evidence": ["tests/test_property_domain.py:88"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14122,9 +13738,7 @@
       "method": "POST",
       "endpoint": "/resources/properties/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14142,9 +13756,7 @@
       "method": "POST",
       "endpoint": "/resources/properties/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14210,9 +13822,7 @@
       "method": "POST",
       "endpoint": "/resources/properties/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14244,9 +13854,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:135"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:135"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14280,9 +13888,7 @@
       "method": "POST",
       "endpoint": "/resources/rider_profiles/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14290,9 +13896,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:135"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:135"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14350,9 +13954,7 @@
       "method": "POST",
       "endpoint": "/resources/vehicles/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14370,9 +13972,7 @@
       "method": "POST",
       "endpoint": "/resources/providers/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14390,9 +13990,7 @@
       "method": "POST",
       "endpoint": "/resources/providers/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14458,9 +14056,7 @@
       "method": "POST",
       "endpoint": "/resources/providers/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14478,9 +14074,7 @@
       "method": "POST",
       "endpoint": "/resources/service_contracts/{resource_id}/actions/accept",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14488,9 +14082,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:221"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:221"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14500,9 +14092,7 @@
       "method": "POST",
       "endpoint": "/resources/service_contracts/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14510,9 +14100,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_operational_journeys.py:221"
-      ],
+      "test_evidence": ["tests/test_operational_journeys.py:221"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14522,9 +14110,7 @@
       "method": "POST",
       "endpoint": "/resources/service_contracts/{resource_id}/actions/dispute",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14542,9 +14128,7 @@
       "method": "POST",
       "endpoint": "/resources/catalog_products/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14562,9 +14146,7 @@
       "method": "POST",
       "endpoint": "/resources/catalog_products/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14630,9 +14212,7 @@
       "method": "POST",
       "endpoint": "/resources/catalog_products/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14650,9 +14230,7 @@
       "method": "POST",
       "endpoint": "/resources/supplier_orders/{resource_id}/actions/acknowledge",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14660,9 +14238,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_valley_ecosystem.py:176"
-      ],
+      "test_evidence": ["tests/test_valley_ecosystem.py:176"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14672,9 +14248,7 @@
       "method": "POST",
       "endpoint": "/resources/supplier_orders/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14692,9 +14266,7 @@
       "method": "POST",
       "endpoint": "/resources/supplier_orders/{resource_id}/actions/deliver",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14712,9 +14284,7 @@
       "method": "POST",
       "endpoint": "/resources/supplier_orders/{resource_id}/actions/ship",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14722,9 +14292,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_valley_ecosystem.py:176"
-      ],
+      "test_evidence": ["tests/test_valley_ecosystem.py:176"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14782,9 +14350,7 @@
       "method": "POST",
       "endpoint": "/resources/suppliers/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14850,9 +14416,7 @@
       "method": "POST",
       "endpoint": "/resources/carriers/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14884,9 +14448,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_tms_domain.py:150"
-      ],
+      "test_evidence": ["tests/test_tms_domain.py:150"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14910,9 +14472,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_tms_domain.py:73"
-      ],
+      "test_evidence": ["tests/test_tms_domain.py:73"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -14946,9 +14506,7 @@
       "method": "POST",
       "endpoint": "/resources/freights/{resource_id}/actions/dispatch",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14966,9 +14524,7 @@
       "method": "POST",
       "endpoint": "/resources/routes/{resource_id}/actions/activate",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -14986,9 +14542,7 @@
       "method": "POST",
       "endpoint": "/resources/devices/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15006,9 +14560,7 @@
       "method": "POST",
       "endpoint": "/resources/devices/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15026,9 +14578,7 @@
       "method": "POST",
       "endpoint": "/resources/devices/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15084,9 +14634,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_vision_domain.py:88"
-      ],
+      "test_evidence": ["tests/test_vision_domain.py:88"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -15144,9 +14692,7 @@
       "method": "POST",
       "endpoint": "/resources/bins/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15164,9 +14710,7 @@
       "method": "POST",
       "endpoint": "/resources/bins/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15184,9 +14728,7 @@
       "method": "POST",
       "endpoint": "/resources/bins/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15204,9 +14746,7 @@
       "method": "POST",
       "endpoint": "/resources/inventory/{resource_id}/actions/allocate",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15214,9 +14754,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_wms_domain.py:71"
-      ],
+      "test_evidence": ["tests/test_wms_domain.py:71"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -15226,9 +14764,7 @@
       "method": "POST",
       "endpoint": "/resources/inventory/{resource_id}/actions/receive",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15260,9 +14796,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_wms_domain.py:95"
-      ],
+      "test_evidence": ["tests/test_wms_domain.py:95"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -15272,9 +14806,7 @@
       "method": "POST",
       "endpoint": "/resources/picking_waves/{resource_id}/actions/pick",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15282,9 +14814,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_wms_domain.py:95"
-      ],
+      "test_evidence": ["tests/test_wms_domain.py:95"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -15308,9 +14838,7 @@
       "audit_enforcement": "store.update registra ação e evento de transição",
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
-      "test_evidence": [
-        "tests/test_wms_domain.py:133"
-      ],
+      "test_evidence": ["tests/test_wms_domain.py:133"],
       "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
@@ -15320,9 +14848,7 @@
       "method": "POST",
       "endpoint": "/resources/warehouses/{resource_id}/actions/cancel",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15340,9 +14866,7 @@
       "method": "POST",
       "endpoint": "/resources/warehouses/{resource_id}/actions/complete",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,
@@ -15360,9 +14884,7 @@
       "method": "POST",
       "endpoint": "/resources/warehouses/{resource_id}/actions/submit",
       "authentication": "actor_from_headers obrigatório",
-      "role_enforcement": [
-        "owner_or_operator"
-      ],
+      "role_enforcement": ["owner_or_operator"],
       "ownership_enforcement": "papel da transição quando declarado; caso contrário owner_or_operator",
       "tenant_enforcement": "Jobs valida company_id/business_id em vagas e candidaturas; demais dependem de regra de domínio",
       "mfa_enforcement": false,

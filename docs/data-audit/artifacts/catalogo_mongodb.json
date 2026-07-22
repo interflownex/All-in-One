@@ -87,12 +87,7 @@
       "field": "memory_type",
       "bson_type": "object/complex",
       "required": true,
-      "enum": [
-        "preference",
-        "context",
-        "summary",
-        "moderation"
-      ],
+      "enum": ["preference", "context", "summary", "moderation"],
       "sensitive_declared": false,
       "lgpd": "não classificado automaticamente",
       "classification_basis": "política v1; nenhuma regra automática aplicável",
@@ -677,13 +672,7 @@
       "field": "source",
       "bson_type": "object/complex",
       "required": true,
-      "enum": [
-        "rider_gps",
-        "mobility_gps",
-        "vision_sensor",
-        "home_sensor",
-        "medical_device"
-      ],
+      "enum": ["rider_gps", "mobility_gps", "vision_sensor", "home_sensor", "medical_device"],
       "sensitive_declared": false,
       "lgpd": "não classificado automaticamente",
       "classification_basis": "política v1; nenhuma regra automática aplicável",

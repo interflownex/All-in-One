@@ -1,7 +1,14 @@
 {
   "name": "antigravity",
   "description": "Agente de desenvolvimento avançado com acesso aos servidores MCP.",
-  "mcp_servers": ["filesystem-all-in-one", "context7", "cloudflare-docs", "cloudflare-api", "docker", "stitch"],
+  "mcp_servers": [
+    "filesystem-all-in-one",
+    "context7",
+    "cloudflare-docs",
+    "cloudflare-api",
+    "docker",
+    "stitch"
+  ],
   "disabled_mcp_servers": [
     {
       "name": "arize-tracing-assistant",

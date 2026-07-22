@@ -34,13 +34,13 @@ Table columns: Priority (#), Bucket, Severity, Risk, Quickfix.
 
 **Risk column content:**
 
--   If the bucket matches a named toxic-combination archetype from
-    `references/toxic_combinations.md`, the Risk cell contains that archetype
-    name (e.g., "Public Data Pipeline", "Prompt Injection to Data Destruction").
--   Otherwise — the bucket fails only baseline controls — the Risk cell
-    enumerates the failing baseline controls separated by semicolons (e.g.,
-    "UBLA disabled; versioning off"). Do NOT invent a toxic-combo-style label
-    for baseline-only failures.
+- If the bucket matches a named toxic-combination archetype from
+  `references/toxic_combinations.md`, the Risk cell contains that archetype
+  name (e.g., "Public Data Pipeline", "Prompt Injection to Data Destruction").
+- Otherwise — the bucket fails only baseline controls — the Risk cell
+  enumerates the failing baseline controls separated by semicolons (e.g.,
+  "UBLA disabled; versioning off"). Do NOT invent a toxic-combo-style label
+  for baseline-only failures.
 
 Example:
 
@@ -67,30 +67,30 @@ Follow the table with a policy-level summary and a baseline-failure rollup:
 
 Rules for these lines:
 
--   **Project-level controls:** Always surface every baseline project-level
-    control here — ✅ for verified-passing, ❌ for failing. Emit a separate ❌ line
-    with a unique `Why:` caption for EACH failing project-level control. Do NOT
-    merge multiple failing policies into a single line. This confirms to the
-    admin the control was actually evaluated.
--   **Per-control bucket rollup (MANDATORY for every per-bucket baseline that
-    has at least one failing bucket):** For each failing per-bucket baseline
-    control — UBLA, object versioning, soft delete, etc. — emit one line in
-    Section 2 with an accurate count of affected buckets and the bucket names.
-    If count ≤ 10, list inline. If > 10, list the first 10 followed by "... and
-    N more (full list in telemetry output)". Never replace the count with a
-    vague rollup like "X additional buckets assessed — no critical findings."
-    Section 3 per-bucket cards do NOT substitute for this rollup: a baseline
-    failure that appears in a per-bucket card must still appear in the Section 2
-    rollup. Failures missing from Section 2 are treated as missing findings.
--   **Why caption (required for every ❌ baseline failure):** Each ❌ line —
-    whether project-level or per-bucket — must be followed by a one-line `Why:`
-    caption that explains the risk. Pull the caption from the matching control's
-    "Why it matters" paragraph in `references/baseline_security.md` and condense
-    to one sentence. Examples: for UBLA disabled, cite legacy-ACL shadow access
-    paths bypassing IAM; for TLS, cite downgrade-to-insecure-version risk; for
-    versioning, cite irreversible overwrite/delete; for audit logs, cite missing
-    forensic trail. Do NOT add a Why caption for ✅ verified-passing lines.
--   **Unclassified / informational:** Use ⚠️ for caveats that don't fit ✅/❌.
+- **Project-level controls:** Always surface every baseline project-level
+  control here — ✅ for verified-passing, ❌ for failing. Emit a separate ❌ line
+  with a unique `Why:` caption for EACH failing project-level control. Do NOT
+  merge multiple failing policies into a single line. This confirms to the
+  admin the control was actually evaluated.
+- **Per-control bucket rollup (MANDATORY for every per-bucket baseline that
+  has at least one failing bucket):** For each failing per-bucket baseline
+  control — UBLA, object versioning, soft delete, etc. — emit one line in
+  Section 2 with an accurate count of affected buckets and the bucket names.
+  If count ≤ 10, list inline. If > 10, list the first 10 followed by "... and
+  N more (full list in telemetry output)". Never replace the count with a
+  vague rollup like "X additional buckets assessed — no critical findings."
+  Section 3 per-bucket cards do NOT substitute for this rollup: a baseline
+  failure that appears in a per-bucket card must still appear in the Section 2
+  rollup. Failures missing from Section 2 are treated as missing findings.
+- **Why caption (required for every ❌ baseline failure):** Each ❌ line —
+  whether project-level or per-bucket — must be followed by a one-line `Why:`
+  caption that explains the risk. Pull the caption from the matching control's
+  "Why it matters" paragraph in `references/baseline_security.md` and condense
+  to one sentence. Examples: for UBLA disabled, cite legacy-ACL shadow access
+  paths bypassing IAM; for TLS, cite downgrade-to-insecure-version risk; for
+  versioning, cite irreversible overwrite/delete; for audit logs, cite missing
+  forensic trail. Do NOT add a Why caption for ✅ verified-passing lines.
+- **Unclassified / informational:** Use ⚠️ for caveats that don't fit ✅/❌.
 
 **Section 3: Action Plan**
 
@@ -176,51 +176,51 @@ If preflight returned `analysis_scope: project_only` (Storage Intelligence
 unavailable), you have project-level signals but no per-bucket or per-object
 telemetry. Adapt the structure above:
 
--   Open with a one-line note that this is a **project-level assessment** and a
-    recommendation to enable Storage Intelligence to unlock the full bucket- and
-    object-level assessment (relay the preflight `fix` verbatim).
--   **Skip** the bucket Risk Heuristic (Section 1) and the per-bucket Risk
-    Dashboard table (Section 2's bucket rows) — render them as "Unavailable —
-    requires Storage Intelligence" rather than fabricating buckets or scores.
--   **Keep** the policy-level control status block and project findings: IAM,
-    VPC-SC, Data Access audit logs, org policies (data residency, Block HTTP,
-    TLS floor, HMAC), and Model Armor posture. These carry the report.
+- Open with a one-line note that this is a **project-level assessment** and a
+  recommendation to enable Storage Intelligence to unlock the full bucket- and
+  object-level assessment (relay the preflight `fix` verbatim).
+- **Skip** the bucket Risk Heuristic (Section 1) and the per-bucket Risk
+  Dashboard table (Section 2's bucket rows) — render them as "Unavailable —
+  requires Storage Intelligence" rather than fabricating buckets or scores.
+- **Keep** the policy-level control status block and project findings: IAM,
+  VPC-SC, Data Access audit logs, org policies (data residency, Block HTTP,
+  TLS floor, HMAC), and Model Armor posture. These carry the report.
 
 ## Important Rules
 
--   Limit per-bucket *cards* (Section 3) to the top 5 riskiest buckets. Buckets
-    with baseline failures outside the top 5 are still surfaced in the Section 2
-    per-control rollup lines (with accurate counts and names per the rules
-    above), so no bucket with a finding is silently dropped. Do NOT use a
-    generic "X additional buckets — no critical findings" tail; if the remaining
-    buckets have findings, those findings are already represented in the Section
-    2 rollup.
--   Baseline failures are enumerated as discrete items, not collapsed into a
-    single toxic-combination archetype label. Toxic-combo labels are reserved
-    for the named archetypes in `references/toxic_combinations.md`.
--   **UNKNOWN signals must be reported consistently across the entire report.**
-    When a signal is unverifiable (e.g., VPC-SC because the caller lacks
-    `accesscontextmanager.policies.list`, audit log status because of a missing
-    permission), every mention of that signal — narrative summaries, "Key
-    Findings" / "Assessment Summary" prose, Section 2 lines, Section 3
-    per-bucket cards, fixes — must reflect UNKNOWN (or equivalent: "Access
-    Denied", "permission denied", "status not verifiable"). Do NOT infer
-    "missing", "lacking", "not configured", "not enforced", or any equivalent
-    state in any section. An UNKNOWN signal anywhere is UNKNOWN everywhere.
--   Show findings (bucket cards) before fixes. Admins should understand the
-    problem before looking up the remediation.
--   Never repeat a command under multiple bucket cards. Define it once in Policy
-    Fixes or Bucket Fixes and reference it by ID.
--   Only include a description on a fix when the title alone is not
-    self-explanatory (e.g., CMEK warrants a note; "Block public access" does
-    not).
--   Where a fix can be applied via Console, include the Console path. gcloud is
-    secondary, not the only option.
--   One sentence max for the danger explanation per card. No academic prose.
--   Use ⚠️ (not ✅) for controls that pass but create false confidence, with a
-    brief inline note explaining why.
--   The Quickfix column in Section 2 should be a short plain-language label +
-    fix reference — never just a raw command, never blank.
+- Limit per-bucket _cards_ (Section 3) to the top 5 riskiest buckets. Buckets
+  with baseline failures outside the top 5 are still surfaced in the Section 2
+  per-control rollup lines (with accurate counts and names per the rules
+  above), so no bucket with a finding is silently dropped. Do NOT use a
+  generic "X additional buckets — no critical findings" tail; if the remaining
+  buckets have findings, those findings are already represented in the Section
+  2 rollup.
+- Baseline failures are enumerated as discrete items, not collapsed into a
+  single toxic-combination archetype label. Toxic-combo labels are reserved
+  for the named archetypes in `references/toxic_combinations.md`.
+- **UNKNOWN signals must be reported consistently across the entire report.**
+  When a signal is unverifiable (e.g., VPC-SC because the caller lacks
+  `accesscontextmanager.policies.list`, audit log status because of a missing
+  permission), every mention of that signal — narrative summaries, "Key
+  Findings" / "Assessment Summary" prose, Section 2 lines, Section 3
+  per-bucket cards, fixes — must reflect UNKNOWN (or equivalent: "Access
+  Denied", "permission denied", "status not verifiable"). Do NOT infer
+  "missing", "lacking", "not configured", "not enforced", or any equivalent
+  state in any section. An UNKNOWN signal anywhere is UNKNOWN everywhere.
+- Show findings (bucket cards) before fixes. Admins should understand the
+  problem before looking up the remediation.
+- Never repeat a command under multiple bucket cards. Define it once in Policy
+  Fixes or Bucket Fixes and reference it by ID.
+- Only include a description on a fix when the title alone is not
+  self-explanatory (e.g., CMEK warrants a note; "Block public access" does
+  not).
+- Where a fix can be applied via Console, include the Console path. gcloud is
+  secondary, not the only option.
+- One sentence max for the danger explanation per card. No academic prose.
+- Use ⚠️ (not ✅) for controls that pass but create false confidence, with a
+  brief inline note explaining why.
+- The Quickfix column in Section 2 should be a short plain-language label +
+  fix reference — never just a raw command, never blank.
 
 > [!TIP]
 > See `examples/sample_assessment.md` for a complete example of expected

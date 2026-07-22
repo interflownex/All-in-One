@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 PLAN_PATH = ROOT / "config" / "operations" / "load_test_plan.json"
 
@@ -37,8 +36,16 @@ def test_load_test_plan_covers_critical_journeys_with_evidence() -> None:
     plan = load_plan()
 
     assert set(plan["scenarios"]) == REQUIRED_SCENARIOS
-    critical = {name for name, scenario in plan["scenarios"].items() if scenario["priority"] == "critical"}
-    assert {"api_hub_gateway_catalog", "identity_auth_mfa", "finance_escrow_ledger"} <= critical
+    critical = {
+        name
+        for name, scenario in plan["scenarios"].items()
+        if scenario["priority"] == "critical"
+    }
+    assert {
+        "api_hub_gateway_catalog",
+        "identity_auth_mfa",
+        "finance_escrow_ledger",
+    } <= critical
 
     for name, scenario in plan["scenarios"].items():
         assert scenario["entrypoint"], name
@@ -61,4 +68,7 @@ def test_load_test_plan_blocks_promotion_without_homologation_evidence() -> None
     assert "evidencias_sem_payload_sensivel" in plan["promotion_gate"]
     assert "aprovacao_humana_para_teste_em_producao" in plan["promotion_gate"]
     assert "tests/test_load_test_plan.py" in plan["tooling"]["local_contract_tests"]
-    assert "python3 scripts/validate_repository.py" in plan["tooling"]["local_contract_tests"]
+    assert (
+        "python3 scripts/validate_repository.py"
+        in plan["tooling"]["local_contract_tests"]
+    )

@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `business.companies`
+
 - `business.branches`
 - `business.company_documents`
 - `business.user_company_memberships`

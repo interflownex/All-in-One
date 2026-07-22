@@ -53,15 +53,8 @@
     {
       "module": "identity",
       "entity": "users",
-      "required_fields": [
-        "full_name",
-        "email",
-        "password_hash"
-      ],
-      "unique_fields": [
-        "email",
-        "document_cpf"
-      ],
+      "required_fields": ["full_name", "email", "password_hash"],
+      "unique_fields": ["email", "document_cpf"],
       "monetary_fields": [],
       "initial_status": "PENDING_KYC",
       "sensitive": true,
@@ -76,11 +69,7 @@
     {
       "module": "identity",
       "entity": "documents",
-      "required_fields": [
-        "document_type",
-        "document_number_hash",
-        "storage_key"
-      ],
+      "required_fields": ["document_type", "document_number_hash", "storage_key"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_review",
@@ -96,10 +85,7 @@
     {
       "module": "identity",
       "entity": "biometrics",
-      "required_fields": [
-        "face_hash",
-        "consent_recorded_at"
-      ],
+      "required_fields": ["face_hash", "consent_recorded_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "captured",
@@ -115,12 +101,7 @@
     {
       "module": "identity",
       "entity": "sessions",
-      "required_fields": [
-        "token_hash",
-        "device_fingerprint",
-        "ip_address",
-        "expires_at"
-      ],
+      "required_fields": ["token_hash", "device_fingerprint", "ip_address", "expires_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -136,9 +117,7 @@
     {
       "module": "identity",
       "entity": "identity_verifications",
-      "required_fields": [
-        "verification_type"
-      ],
+      "required_fields": ["verification_type"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "PROCESSING",
@@ -154,11 +133,7 @@
     {
       "module": "identity",
       "entity": "consent_records",
-      "required_fields": [
-        "consent_type",
-        "policy_version",
-        "accepted_at"
-      ],
+      "required_fields": ["consent_type", "policy_version", "accepted_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "accepted",
@@ -174,15 +149,8 @@
     {
       "module": "business",
       "entity": "companies",
-      "required_fields": [
-        "cnpj",
-        "root_cnpj",
-        "legal_name",
-        "legal_representative_user_id"
-      ],
-      "unique_fields": [
-        "cnpj"
-      ],
+      "required_fields": ["cnpj", "root_cnpj", "legal_name", "legal_representative_user_id"],
+      "unique_fields": ["cnpj"],
       "monetary_fields": [],
       "initial_status": "pending_validation",
       "sensitive": true,
@@ -229,10 +197,7 @@
     {
       "module": "business",
       "entity": "user_company_memberships",
-      "required_fields": [
-        "company_id",
-        "role"
-      ],
+      "required_fields": ["company_id", "role"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "invited",
@@ -259,10 +224,7 @@
         "source_resource_type"
       ],
       "unique_fields": [],
-      "monetary_fields": [
-        "price_brl",
-        "price_amount"
-      ],
+      "monetary_fields": ["price_brl", "price_amount"],
       "initial_status": "draft",
       "sensitive": false,
       "immutable": false,
@@ -276,12 +238,8 @@
     {
       "module": "permissions",
       "entity": "roles",
-      "required_fields": [
-        "name"
-      ],
-      "unique_fields": [
-        "name"
-      ],
+      "required_fields": ["name"],
+      "unique_fields": ["name"],
       "monetary_fields": [],
       "initial_status": "active",
       "sensitive": false,
@@ -344,14 +302,9 @@
     {
       "module": "permissions",
       "entity": "approval_limits",
-      "required_fields": [
-        "scope",
-        "limit_brl"
-      ],
+      "required_fields": ["scope", "limit_brl"],
       "unique_fields": [],
-      "monetary_fields": [
-        "limit_brl"
-      ],
+      "monetary_fields": ["limit_brl"],
       "initial_status": "active",
       "sensitive": false,
       "immutable": false,
@@ -365,9 +318,7 @@
     {
       "module": "finance",
       "entity": "wallets",
-      "required_fields": [
-        "wallet_type"
-      ],
+      "required_fields": ["wallet_type"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -383,18 +334,9 @@
     {
       "module": "finance",
       "entity": "ledger_entries",
-      "required_fields": [
-        "wallet_id",
-        "currency",
-        "idempotency_key"
-      ],
-      "unique_fields": [
-        "idempotency_key"
-      ],
-      "monetary_fields": [
-        "amount_brl",
-        "amount_nex"
-      ],
+      "required_fields": ["wallet_id", "currency", "idempotency_key"],
+      "unique_fields": ["idempotency_key"],
+      "monetary_fields": ["amount_brl", "amount_nex"],
       "initial_status": "posted",
       "sensitive": true,
       "immutable": true,
@@ -408,15 +350,9 @@
     {
       "module": "finance",
       "entity": "escrows",
-      "required_fields": [
-        "wallet_id",
-        "beneficiary_user_id",
-        "amount_brl"
-      ],
+      "required_fields": ["wallet_id", "beneficiary_user_id", "amount_brl"],
       "unique_fields": [],
-      "monetary_fields": [
-        "amount_brl"
-      ],
+      "monetary_fields": ["amount_brl"],
       "initial_status": "created",
       "sensitive": true,
       "immutable": false,
@@ -432,9 +368,7 @@
       "entity": "splits",
       "required_fields": [],
       "unique_fields": [],
-      "monetary_fields": [
-        "amount_brl"
-      ],
+      "monetary_fields": ["amount_brl"],
       "initial_status": "draft",
       "sensitive": true,
       "immutable": false,
@@ -450,9 +384,7 @@
       "entity": "invoices",
       "required_fields": [],
       "unique_fields": [],
-      "monetary_fields": [
-        "amount_brl"
-      ],
+      "monetary_fields": ["amount_brl"],
       "initial_status": "draft",
       "sensitive": true,
       "immutable": false,
@@ -472,9 +404,7 @@
         "amount_gold_delta",
         "reference_type"
       ],
-      "unique_fields": [
-        "idempotency_key"
-      ],
+      "unique_fields": ["idempotency_key"],
       "monetary_fields": [],
       "initial_status": "posted",
       "sensitive": true,
@@ -489,11 +419,7 @@
     {
       "module": "marketplace",
       "entity": "stores",
-      "required_fields": [
-        "company_id",
-        "company_status",
-        "name"
-      ],
+      "required_fields": ["company_id", "company_status", "name"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_validation",
@@ -509,19 +435,9 @@
     {
       "module": "marketplace",
       "entity": "products",
-      "required_fields": [
-        "store_id",
-        "sku",
-        "name",
-        "price_brl",
-        "stock_location_type"
-      ],
-      "unique_fields": [
-        "sku"
-      ],
-      "monetary_fields": [
-        "price_brl"
-      ],
+      "required_fields": ["store_id", "sku", "name", "price_brl", "stock_location_type"],
+      "unique_fields": ["sku"],
+      "monetary_fields": ["price_brl"],
       "initial_status": "draft",
       "sensitive": false,
       "immutable": false,
@@ -551,13 +467,9 @@
     {
       "module": "marketplace",
       "entity": "orders",
-      "required_fields": [
-        "total_brl"
-      ],
+      "required_fields": ["total_brl"],
       "unique_fields": [],
-      "monetary_fields": [
-        "total_brl"
-      ],
+      "monetary_fields": ["total_brl"],
       "initial_status": "created",
       "sensitive": false,
       "immutable": false,
@@ -571,10 +483,7 @@
     {
       "module": "marketplace",
       "entity": "reviews",
-      "required_fields": [
-        "order_id",
-        "rating"
-      ],
+      "required_fields": ["order_id", "rating"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_review",
@@ -590,11 +499,7 @@
     {
       "module": "marketplace",
       "entity": "disputes",
-      "required_fields": [
-        "order_id",
-        "case_type",
-        "message"
-      ],
+      "required_fields": ["order_id", "case_type", "message"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "open",
@@ -610,12 +515,7 @@
     {
       "module": "marketplace",
       "entity": "pepita_grants",
-      "required_fields": [
-        "order_id",
-        "customer_user_id",
-        "pepitas",
-        "merchant_gold_ledger_id"
-      ],
+      "required_fields": ["order_id", "customer_user_id", "pepitas", "merchant_gold_ledger_id"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "posted",
@@ -631,10 +531,7 @@
     {
       "module": "stock",
       "entity": "suppliers",
-      "required_fields": [
-        "company_id",
-        "company_status"
-      ],
+      "required_fields": ["company_id", "company_status"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_validation",
@@ -650,18 +547,9 @@
     {
       "module": "stock",
       "entity": "catalog_products",
-      "required_fields": [
-        "supplier_id",
-        "external_sku",
-        "name",
-        "list_price_brl"
-      ],
-      "unique_fields": [
-        "external_sku"
-      ],
-      "monetary_fields": [
-        "list_price_brl"
-      ],
+      "required_fields": ["supplier_id", "external_sku", "name", "list_price_brl"],
+      "unique_fields": ["external_sku"],
+      "monetary_fields": ["list_price_brl"],
       "initial_status": "draft",
       "sensitive": false,
       "immutable": false,
@@ -691,17 +579,9 @@
     {
       "module": "stock",
       "entity": "supplier_orders",
-      "required_fields": [
-        "supplier_id",
-        "catalog_product_id",
-        "external_order_id"
-      ],
-      "unique_fields": [
-        "external_order_id"
-      ],
-      "monetary_fields": [
-        "cost_brl"
-      ],
+      "required_fields": ["supplier_id", "catalog_product_id", "external_order_id"],
+      "unique_fields": ["external_order_id"],
+      "monetary_fields": ["cost_brl"],
       "initial_status": "created",
       "sensitive": false,
       "immutable": false,
@@ -715,17 +595,9 @@
     {
       "module": "stock",
       "entity": "discount_quotes",
-      "required_fields": [
-        "catalog_product_id",
-        "selected_percent",
-        "pepitas_required"
-      ],
+      "required_fields": ["catalog_product_id", "selected_percent", "pepitas_required"],
       "unique_fields": [],
-      "monetary_fields": [
-        "original_price_brl",
-        "discount_brl",
-        "final_price_brl"
-      ],
+      "monetary_fields": ["original_price_brl", "discount_brl", "final_price_brl"],
       "initial_status": "quoted",
       "sensitive": false,
       "immutable": true,
@@ -739,15 +611,9 @@
     {
       "module": "delivery",
       "entity": "delivery_requests",
-      "required_fields": [
-        "service_type",
-        "origin",
-        "destination"
-      ],
+      "required_fields": ["service_type", "origin", "destination"],
       "unique_fields": [],
-      "monetary_fields": [
-        "quoted_brl"
-      ],
+      "monetary_fields": ["quoted_brl"],
       "initial_status": "created",
       "sensitive": false,
       "immutable": false,
@@ -793,15 +659,8 @@
     {
       "module": "delivery",
       "entity": "proofs",
-      "required_fields": [
-        "delivery_request_id",
-        "file_sha256",
-        "storage_key",
-        "captured_at"
-      ],
-      "unique_fields": [
-        "file_sha256"
-      ],
+      "required_fields": ["delivery_request_id", "file_sha256", "storage_key", "captured_at"],
+      "unique_fields": ["file_sha256"],
       "monetary_fields": [],
       "initial_status": "recorded",
       "sensitive": true,
@@ -832,11 +691,7 @@
     {
       "module": "riders",
       "entity": "rider_profiles",
-      "required_fields": [
-        "cnh_number_hash",
-        "cnh_category",
-        "wallet_id"
-      ],
+      "required_fields": ["cnh_number_hash", "cnh_category", "wallet_id"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_documents",
@@ -868,11 +723,7 @@
     {
       "module": "riders",
       "entity": "vehicles",
-      "required_fields": [
-        "rider_profile_id",
-        "type",
-        "license_plate"
-      ],
+      "required_fields": ["rider_profile_id", "type", "license_plate"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_review",
@@ -904,9 +755,7 @@
     {
       "module": "services",
       "entity": "providers",
-      "required_fields": [
-        "category"
-      ],
+      "required_fields": ["category"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_review",
@@ -954,14 +803,9 @@
     {
       "module": "services",
       "entity": "service_contracts",
-      "required_fields": [
-        "visit_price_brl"
-      ],
+      "required_fields": ["visit_price_brl"],
       "unique_fields": [],
-      "monetary_fields": [
-        "visit_price_brl",
-        "contracted_price_brl"
-      ],
+      "monetary_fields": ["visit_price_brl", "contracted_price_brl"],
       "initial_status": "draft",
       "sensitive": false,
       "immutable": false,
@@ -991,15 +835,9 @@
     {
       "module": "mobility",
       "entity": "rides",
-      "required_fields": [
-        "origin",
-        "destination",
-        "vehicle_type"
-      ],
+      "required_fields": ["origin", "destination", "vehicle_type"],
       "unique_fields": [],
-      "monetary_fields": [
-        "fare_brl"
-      ],
+      "monetary_fields": ["fare_brl"],
       "initial_status": "requested",
       "sensitive": false,
       "immutable": false,
@@ -1051,18 +889,9 @@
     {
       "module": "mobility",
       "entity": "tickets",
-      "required_fields": [
-        "route_code",
-        "amount_brl",
-        "qr_token_hash",
-        "nfc_token_hash"
-      ],
-      "unique_fields": [
-        "qr_token_hash"
-      ],
-      "monetary_fields": [
-        "amount_brl"
-      ],
+      "required_fields": ["route_code", "amount_brl", "qr_token_hash", "nfc_token_hash"],
+      "unique_fields": ["qr_token_hash"],
+      "monetary_fields": ["amount_brl"],
       "initial_status": "active",
       "sensitive": true,
       "immutable": false,
@@ -1076,20 +905,9 @@
     {
       "module": "mobility",
       "entity": "fare_rules",
-      "required_fields": [
-        "rule_name",
-        "base_fare_brl",
-        "per_km_brl",
-        "vehicle_type"
-      ],
-      "unique_fields": [
-        "rule_name"
-      ],
-      "monetary_fields": [
-        "base_fare_brl",
-        "per_km_brl",
-        "minimum_fare_brl"
-      ],
+      "required_fields": ["rule_name", "base_fare_brl", "per_km_brl", "vehicle_type"],
+      "unique_fields": ["rule_name"],
+      "monetary_fields": ["base_fare_brl", "per_km_brl", "minimum_fare_brl"],
       "initial_status": "active",
       "sensitive": false,
       "immutable": true,
@@ -1103,10 +921,7 @@
     {
       "module": "jobs",
       "entity": "resumes",
-      "required_fields": [
-        "headline",
-        "recruiter_visibility"
-      ],
+      "required_fields": ["headline", "recruiter_visibility"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1122,12 +937,7 @@
     {
       "module": "jobs",
       "entity": "employment_records",
-      "required_fields": [
-        "resume_id",
-        "source_type",
-        "employer_name",
-        "started_on"
-      ],
+      "required_fields": ["resume_id", "source_type", "employer_name", "started_on"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1150,9 +960,7 @@
         "evidence_status",
         "official_verification_status"
       ],
-      "unique_fields": [
-        "sha256"
-      ],
+      "unique_fields": ["sha256"],
       "monetary_fields": [],
       "initial_status": "imported",
       "sensitive": true,
@@ -1167,12 +975,7 @@
     {
       "module": "jobs",
       "entity": "job_postings",
-      "required_fields": [
-        "company_id",
-        "company_status",
-        "title",
-        "description"
-      ],
+      "required_fields": ["company_id", "company_status", "title", "description"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1188,10 +991,7 @@
     {
       "module": "jobs",
       "entity": "applications",
-      "required_fields": [
-        "job_posting_id",
-        "resume_id"
-      ],
+      "required_fields": ["job_posting_id", "resume_id"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "submitted",
@@ -1207,11 +1007,7 @@
     {
       "module": "jobs",
       "entity": "resume_access_logs",
-      "required_fields": [
-        "resume_id",
-        "business_id",
-        "purpose"
-      ],
+      "required_fields": ["resume_id", "business_id", "purpose"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "recorded",
@@ -1227,10 +1023,7 @@
     {
       "module": "erp",
       "entity": "accounts",
-      "required_fields": [
-        "account_code",
-        "name"
-      ],
+      "required_fields": ["account_code", "name"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1246,16 +1039,9 @@
     {
       "module": "erp",
       "entity": "payables",
-      "required_fields": [
-        "supplier_name",
-        "due_at",
-        "amount_brl",
-        "cost_center_id"
-      ],
+      "required_fields": ["supplier_name", "due_at", "amount_brl", "cost_center_id"],
       "unique_fields": [],
-      "monetary_fields": [
-        "amount_brl"
-      ],
+      "monetary_fields": ["amount_brl"],
       "initial_status": "open",
       "sensitive": true,
       "immutable": false,
@@ -1269,16 +1055,9 @@
     {
       "module": "erp",
       "entity": "receivables",
-      "required_fields": [
-        "customer_name",
-        "due_at",
-        "amount_brl",
-        "account_id"
-      ],
+      "required_fields": ["customer_name", "due_at", "amount_brl", "account_id"],
       "unique_fields": [],
-      "monetary_fields": [
-        "amount_brl"
-      ],
+      "monetary_fields": ["amount_brl"],
       "initial_status": "issued",
       "sensitive": true,
       "immutable": false,
@@ -1292,10 +1071,7 @@
     {
       "module": "erp",
       "entity": "cost_centers",
-      "required_fields": [
-        "cost_center_code",
-        "name"
-      ],
+      "required_fields": ["cost_center_code", "name"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1311,10 +1087,7 @@
     {
       "module": "erp",
       "entity": "fiscal_documents",
-      "required_fields": [
-        "document_type",
-        "amount_brl"
-      ],
+      "required_fields": ["document_type", "amount_brl"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1330,9 +1103,7 @@
     {
       "module": "wms",
       "entity": "warehouses",
-      "required_fields": [
-        "name"
-      ],
+      "required_fields": ["name"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1348,10 +1119,7 @@
     {
       "module": "wms",
       "entity": "bins",
-      "required_fields": [
-        "warehouse_id",
-        "code"
-      ],
+      "required_fields": ["warehouse_id", "code"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1367,12 +1135,7 @@
     {
       "module": "wms",
       "entity": "inventory",
-      "required_fields": [
-        "warehouse_id",
-        "sku",
-        "quantity",
-        "received_at"
-      ],
+      "required_fields": ["warehouse_id", "sku", "quantity", "received_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "received",
@@ -1388,12 +1151,7 @@
     {
       "module": "wms",
       "entity": "picking_waves",
-      "required_fields": [
-        "warehouse_id",
-        "order_reference",
-        "sku",
-        "quantity"
-      ],
+      "required_fields": ["warehouse_id", "order_reference", "sku", "quantity"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "open",
@@ -1409,11 +1167,7 @@
     {
       "module": "wms",
       "entity": "shipments",
-      "required_fields": [
-        "warehouse_id",
-        "picking_wave_id",
-        "carrier_reference"
-      ],
+      "required_fields": ["warehouse_id", "picking_wave_id", "carrier_reference"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "ready",
@@ -1429,10 +1183,7 @@
     {
       "module": "tms",
       "entity": "carriers",
-      "required_fields": [
-        "name",
-        "coverage"
-      ],
+      "required_fields": ["name", "coverage"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_review",
@@ -1448,17 +1199,9 @@
     {
       "module": "tms",
       "entity": "freights",
-      "required_fields": [
-        "carrier_id",
-        "route_id",
-        "freight_brl",
-        "scheduled_at"
-      ],
+      "required_fields": ["carrier_id", "route_id", "freight_brl", "scheduled_at"],
       "unique_fields": [],
-      "monetary_fields": [
-        "freight_brl",
-        "toll_brl"
-      ],
+      "monetary_fields": ["freight_brl", "toll_brl"],
       "initial_status": "quoted",
       "sensitive": false,
       "immutable": false,
@@ -1472,12 +1215,7 @@
     {
       "module": "tms",
       "entity": "routes",
-      "required_fields": [
-        "origin",
-        "destination",
-        "distance_km",
-        "eta_minutes"
-      ],
+      "required_fields": ["origin", "destination", "distance_km", "eta_minutes"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "planned",
@@ -1493,12 +1231,7 @@
     {
       "module": "tms",
       "entity": "proofs_of_delivery",
-      "required_fields": [
-        "freight_id",
-        "file_sha256",
-        "storage_key",
-        "delivered_at"
-      ],
+      "required_fields": ["freight_id", "file_sha256", "storage_key", "delivered_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "recorded",
@@ -1514,11 +1247,7 @@
     {
       "module": "tms",
       "entity": "freight_audits",
-      "required_fields": [
-        "freight_id",
-        "audit_result",
-        "audited_at"
-      ],
+      "required_fields": ["freight_id", "audit_result", "audited_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "reviewed",
@@ -1534,10 +1263,7 @@
     {
       "module": "crm",
       "entity": "leads",
-      "required_fields": [
-        "name",
-        "source"
-      ],
+      "required_fields": ["name", "source"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "new",
@@ -1553,15 +1279,9 @@
     {
       "module": "crm",
       "entity": "opportunities",
-      "required_fields": [
-        "lead_id",
-        "title",
-        "expected_value_brl"
-      ],
+      "required_fields": ["lead_id", "title", "expected_value_brl"],
       "unique_fields": [],
-      "monetary_fields": [
-        "expected_value_brl"
-      ],
+      "monetary_fields": ["expected_value_brl"],
       "initial_status": "open",
       "sensitive": true,
       "immutable": false,
@@ -1575,11 +1295,7 @@
     {
       "module": "crm",
       "entity": "activities",
-      "required_fields": [
-        "lead_id",
-        "activity_type",
-        "scheduled_at"
-      ],
+      "required_fields": ["lead_id", "activity_type", "scheduled_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "scheduled",
@@ -1595,10 +1311,7 @@
     {
       "module": "crm",
       "entity": "campaigns",
-      "required_fields": [
-        "campaign_key",
-        "channel"
-      ],
+      "required_fields": ["campaign_key", "channel"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1630,11 +1343,7 @@
     {
       "module": "bpm",
       "entity": "workflow_instances",
-      "required_fields": [
-        "process_key",
-        "sla_policy_id",
-        "started_at"
-      ],
+      "required_fields": ["process_key", "sla_policy_id", "started_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "running",
@@ -1650,12 +1359,7 @@
     {
       "module": "bpm",
       "entity": "tasks",
-      "required_fields": [
-        "workflow_instance_id",
-        "assignee_user_id",
-        "due_at",
-        "sla_policy_id"
-      ],
+      "required_fields": ["workflow_instance_id", "assignee_user_id", "due_at", "sla_policy_id"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "open",
@@ -1671,14 +1375,8 @@
     {
       "module": "bpm",
       "entity": "sla_policies",
-      "required_fields": [
-        "policy_key",
-        "response_minutes",
-        "escalation_role"
-      ],
-      "unique_fields": [
-        "policy_key"
-      ],
+      "required_fields": ["policy_key", "response_minutes", "escalation_role"],
+      "unique_fields": ["policy_key"],
       "monetary_fields": [],
       "initial_status": "active",
       "sensitive": false,
@@ -1771,11 +1469,7 @@
     {
       "module": "hr",
       "entity": "employees",
-      "required_fields": [
-        "company_id",
-        "employment_type",
-        "admission_date"
-      ],
+      "required_fields": ["company_id", "employment_type", "admission_date"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1791,16 +1485,9 @@
     {
       "module": "hr",
       "entity": "payroll_runs",
-      "required_fields": [
-        "company_id",
-        "period",
-        "gross_amount_brl"
-      ],
+      "required_fields": ["company_id", "period", "gross_amount_brl"],
       "unique_fields": [],
-      "monetary_fields": [
-        "gross_amount_brl",
-        "net_amount_brl"
-      ],
+      "monetary_fields": ["gross_amount_brl", "net_amount_brl"],
       "initial_status": "open",
       "sensitive": true,
       "immutable": false,
@@ -1830,12 +1517,7 @@
     {
       "module": "hr",
       "entity": "courses",
-      "required_fields": [
-        "employee_id",
-        "course_code",
-        "title",
-        "due_at"
-      ],
+      "required_fields": ["employee_id", "course_code", "title", "due_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "assigned",
@@ -1851,9 +1533,7 @@
     {
       "module": "hr",
       "entity": "occupational_records",
-      "required_fields": [
-        "employee_id"
-      ],
+      "required_fields": ["employee_id"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1869,9 +1549,7 @@
     {
       "module": "health",
       "entity": "patients",
-      "required_fields": [
-        "health_identifier"
-      ],
+      "required_fields": ["health_identifier"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1887,9 +1565,7 @@
     {
       "module": "health",
       "entity": "appointments",
-      "required_fields": [
-        "scheduled_at"
-      ],
+      "required_fields": ["scheduled_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1905,9 +1581,7 @@
     {
       "module": "health",
       "entity": "medical_records",
-      "required_fields": [
-        "patient_id"
-      ],
+      "required_fields": ["patient_id"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1923,9 +1597,7 @@
     {
       "module": "health",
       "entity": "prescriptions",
-      "required_fields": [
-        "patient_id"
-      ],
+      "required_fields": ["patient_id"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1941,9 +1613,7 @@
     {
       "module": "health",
       "entity": "beds",
-      "required_fields": [
-        "unit"
-      ],
+      "required_fields": ["unit"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1959,9 +1629,7 @@
     {
       "module": "vision",
       "entity": "devices",
-      "required_fields": [
-        "device_fingerprint"
-      ],
+      "required_fields": ["device_fingerprint"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1977,12 +1645,7 @@
     {
       "module": "vision",
       "entity": "streams",
-      "required_fields": [
-        "device_id",
-        "stream_url_hash",
-        "protocol",
-        "started_at"
-      ],
+      "required_fields": ["device_id", "stream_url_hash", "protocol", "started_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1998,12 +1661,7 @@
     {
       "module": "vision",
       "entity": "recordings",
-      "required_fields": [
-        "stream_id",
-        "storage_key",
-        "file_sha256",
-        "started_at"
-      ],
+      "required_fields": ["stream_id", "storage_key", "file_sha256", "started_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "recorded",
@@ -2019,12 +1677,7 @@
     {
       "module": "vision",
       "entity": "motion_alerts",
-      "required_fields": [
-        "device_id",
-        "stream_id",
-        "detected_at",
-        "confidence_score"
-      ],
+      "required_fields": ["device_id", "stream_id", "detected_at", "confidence_score"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "detected",
@@ -2040,15 +1693,9 @@
     {
       "module": "legal",
       "entity": "cases",
-      "required_fields": [
-        "case_number",
-        "case_type",
-        "opened_at"
-      ],
+      "required_fields": ["case_number", "case_type", "opened_at"],
       "unique_fields": [],
-      "monetary_fields": [
-        "risk_brl"
-      ],
+      "monetary_fields": ["risk_brl"],
       "initial_status": "draft",
       "sensitive": true,
       "immutable": false,
@@ -2062,11 +1709,7 @@
     {
       "module": "legal",
       "entity": "deadlines",
-      "required_fields": [
-        "case_id",
-        "deadline_type",
-        "due_at"
-      ],
+      "required_fields": ["case_id", "deadline_type", "due_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending",
@@ -2082,10 +1725,7 @@
     {
       "module": "legal",
       "entity": "hearings",
-      "required_fields": [
-        "case_id",
-        "scheduled_at"
-      ],
+      "required_fields": ["case_id", "scheduled_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "scheduled",
@@ -2117,10 +1757,7 @@
     {
       "module": "property",
       "entity": "properties",
-      "required_fields": [
-        "address",
-        "property_type"
-      ],
+      "required_fields": ["address", "property_type"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -2152,17 +1789,9 @@
     {
       "module": "property",
       "entity": "leases",
-      "required_fields": [
-        "property_id",
-        "tenant_user_id",
-        "starts_at",
-        "rent_amount_brl"
-      ],
+      "required_fields": ["property_id", "tenant_user_id", "starts_at", "rent_amount_brl"],
       "unique_fields": [],
-      "monetary_fields": [
-        "rent_amount_brl",
-        "deposit_amount_brl"
-      ],
+      "monetary_fields": ["rent_amount_brl", "deposit_amount_brl"],
       "initial_status": "draft",
       "sensitive": false,
       "immutable": false,
@@ -2192,15 +1821,9 @@
     {
       "module": "property",
       "entity": "maintenance_orders",
-      "required_fields": [
-        "property_id",
-        "issue_type",
-        "requested_at"
-      ],
+      "required_fields": ["property_id", "issue_type", "requested_at"],
       "unique_fields": [],
-      "monetary_fields": [
-        "estimated_cost_brl"
-      ],
+      "monetary_fields": ["estimated_cost_brl"],
       "initial_status": "requested",
       "sensitive": false,
       "immutable": false,
@@ -2214,12 +1837,7 @@
     {
       "module": "bi",
       "entity": "datasets",
-      "required_fields": [
-        "name",
-        "source_module",
-        "source_resource_type",
-        "refresh_mode"
-      ],
+      "required_fields": ["name", "source_module", "source_resource_type", "refresh_mode"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -2235,12 +1853,7 @@
     {
       "module": "bi",
       "entity": "dashboards",
-      "required_fields": [
-        "dataset_id",
-        "name",
-        "definition",
-        "allowed_roles"
-      ],
+      "required_fields": ["dataset_id", "name", "definition", "allowed_roles"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -2272,11 +1885,7 @@
     {
       "module": "bi",
       "entity": "exports",
-      "required_fields": [
-        "dashboard_id",
-        "export_format",
-        "requested_at"
-      ],
+      "required_fields": ["dashboard_id", "export_format", "requested_at"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "requested",
@@ -2292,10 +1901,7 @@
     {
       "module": "ai_core",
       "entity": "ai_memories",
-      "required_fields": [
-        "memory_key",
-        "summary"
-      ],
+      "required_fields": ["memory_key", "summary"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -2311,10 +1917,7 @@
     {
       "module": "ai_core",
       "entity": "moderation_decisions",
-      "required_fields": [
-        "module",
-        "risk_score"
-      ],
+      "required_fields": ["module", "risk_score"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -2340,9 +1943,7 @@
         "requested_at"
       ],
       "unique_fields": [],
-      "monetary_fields": [
-        "estimated_cost_brl"
-      ],
+      "monetary_fields": ["estimated_cost_brl"],
       "initial_status": "requested",
       "sensitive": true,
       "immutable": false,
@@ -2356,10 +1957,7 @@
     {
       "module": "api_hub",
       "entity": "api_clients",
-      "required_fields": [
-        "client_name",
-        "scopes"
-      ],
+      "required_fields": ["client_name", "scopes"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -2375,12 +1973,7 @@
     {
       "module": "api_hub",
       "entity": "api_keys",
-      "required_fields": [
-        "key_name",
-        "key_hash",
-        "key_hint",
-        "scopes"
-      ],
+      "required_fields": ["key_name", "key_hash", "key_hint", "scopes"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -2396,11 +1989,7 @@
     {
       "module": "api_hub",
       "entity": "webhooks",
-      "required_fields": [
-        "target_url",
-        "event_patterns",
-        "signing_secret_reference"
-      ],
+      "required_fields": ["target_url", "event_patterns", "signing_secret_reference"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -2416,10 +2005,7 @@
     {
       "module": "api_hub",
       "entity": "integration_runs",
-      "required_fields": [
-        "integration_type",
-        "provider_name"
-      ],
+      "required_fields": ["integration_type", "provider_name"],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",

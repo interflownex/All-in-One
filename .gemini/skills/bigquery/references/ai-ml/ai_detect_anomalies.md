@@ -24,37 +24,37 @@ FROM AI.DETECT_ANOMALIES(
 
 ### Input Arguments
 
-Argument                     | Requirement  | Type          | Description
-:--------------------------- | :----------- | :------------ | :----------
-**`historical_data`**        | **Required** | Table/Query   | The source table or subquery containing historical data for training context.
-**`target_data`**            | **Required** | Table/Query   | The source table or subquery containing data to analyze for anomalies.
-**`data_col`**               | **Required** | String        | The numeric column to analyze.
-**`timestamp_col`**          | **Required** | String        | The column containing dates/timestamps.
-**`id_cols`**                | Optional     | Array<String> | Grouping columns for multiple series (e.g., `['store_id']`).
-**`anomaly_prob_threshold`** | Optional     | Float64       | Threshold for anomaly detection (0 to 1). Defaults to 0.95.
-**`model`**                  | Optional     | String        | Model version. Defaults to `'TimesFM 2.0'`.
+| Argument                     | Requirement  | Type          | Description                                                                   |
+| :--------------------------- | :----------- | :------------ | :---------------------------------------------------------------------------- |
+| **`historical_data`**        | **Required** | Table/Query   | The source table or subquery containing historical data for training context. |
+| **`target_data`**            | **Required** | Table/Query   | The source table or subquery containing data to analyze for anomalies.        |
+| **`data_col`**               | **Required** | String        | The numeric column to analyze.                                                |
+| **`timestamp_col`**          | **Required** | String        | The column containing dates/timestamps.                                       |
+| **`id_cols`**                | Optional     | Array<String> | Grouping columns for multiple series (e.g., `['store_id']`).                  |
+| **`anomaly_prob_threshold`** | Optional     | Float64       | Threshold for anomaly detection (0 to 1). Defaults to 0.95.                   |
+| **`model`**                  | Optional     | String        | Model version. Defaults to `'TimesFM 2.0'`.                                   |
 
 ### Output Schema
 
-| Column                           | Type       | Description                  |
-| :------------------------------- | :--------- | :--------------------------- |
-| **`id_cols`**                    | (As Input) | Original identifiers for the |
-:                                  :            : series.                      :
-| **`time_series_timestamp`**      | TIMESTAMP  | Timestamp for the analyzed   |
-:                                  :            : points.                      :
-| **`time_series_data`**           | FLOAT64    | The original data value.     |
-| **`is_anomaly`**                 | BOOL       | TRUE if the point is         |
-:                                  :            : identified as an anomaly.    :
-| **`lower_bound`**                | FLOAT64    | Lower bound of the expected  |
-:                                  :            : range.                       :
-| **`upper_bound`**                | FLOAT64    | Upper bound of the expected  |
-:                                  :            : range.                       :
-| **`anomaly_probability`**        | FLOAT64    | Probability that the point   |
-:                                  :            : is an anomaly.               :
-| **`ai_detect_anomalies_status`** | STRING     | Error messages or empty      |
-:                                  :            : string on success. A minimum :
-:                                  :            : of 3 data points is          :
-:                                  :            : required.                    :
+| Column                               | Type       | Description                  |
+| :----------------------------------- | :--------- | :--------------------------- |
+| **`id_cols`**                        | (As Input) | Original identifiers for the |
+| : : : series. :                      |
+| **`time_series_timestamp`**          | TIMESTAMP  | Timestamp for the analyzed   |
+| : : : points. :                      |
+| **`time_series_data`**               | FLOAT64    | The original data value.     |
+| **`is_anomaly`**                     | BOOL       | TRUE if the point is         |
+| : : : identified as an anomaly. :    |
+| **`lower_bound`**                    | FLOAT64    | Lower bound of the expected  |
+| : : : range. :                       |
+| **`upper_bound`**                    | FLOAT64    | Upper bound of the expected  |
+| : : : range. :                       |
+| **`anomaly_probability`**            | FLOAT64    | Probability that the point   |
+| : : : is an anomaly. :               |
+| **`ai_detect_anomalies_status`**     | STRING     | Error messages or empty      |
+| : : : string on success. A minimum : |
+| : : : of 3 data points is :          |
+| : : : required. :                    |
 
 ## Examples
 

@@ -5,9 +5,10 @@ from pathlib import Path
 
 import yaml
 
-
 ROOT = Path(__file__).resolve().parents[1]
-CATALOG = json.loads((ROOT / "config" / "module_catalog.json").read_text(encoding="utf-8"))
+CATALOG = json.loads(
+    (ROOT / "config" / "module_catalog.json").read_text(encoding="utf-8")
+)
 REQUIRED_OPERATIONS = {
     ("/health", "get"),
     ("/version", "get"),
@@ -68,12 +69,16 @@ def main() -> int:
         }
         for path, operation in required_by_module.get(slug, []):
             if operation not in paths.get(path, {}):
-                errors.append(f"{slug}: operacao especializada ausente {operation.upper()} {path}")
+                errors.append(
+                    f"{slug}: operacao especializada ausente {operation.upper()} {path}"
+                )
     if errors:
         print("OpenAPI invalido:")
         print("\n".join(f"- {error}" for error in errors))
         return 1
-    print(f"OpenAPI valido para {len(CATALOG['modules'])} modulos e todas as operacoes minimas.")
+    print(
+        f"OpenAPI valido para {len(CATALOG['modules'])} modulos e todas as operacoes minimas."
+    )
     return 0
 
 

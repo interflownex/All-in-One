@@ -21,10 +21,10 @@ metadata:
 > provisioned through the **gcp pipeline resource provisioning** framework,
 > which includes generating a `deployment.yaml`.
 >
-> -   **Do NOT** use imperative CLI commands (e.g., `bq mk` or `gcloud`) to
->     create or update configurations.
-> -   CLI commands are permitted **only** for discovery (listing/showing) and
->     triggering manual runs.
+> - **Do NOT** use imperative CLI commands (e.g., `bq mk` or `gcloud`) to
+>   create or update configurations.
+> - CLI commands are permitted **only** for discovery (listing/showing) and
+>   triggering manual runs.
 
 This guide enables the discovery of existing ingestion resources and provides
 metadata related to ingestion when needed.
@@ -65,27 +65,27 @@ region.
 
 2.  **Analyze Existing Transfers**:
 
-    -   **Single Transfer Found**:
+    - **Single Transfer Found**:
 
-        -   Check if the transfer has at least one successful run: `bq ls
-            --transfer_run --transfer_config=<RESOURCE_NAME>`
-        -   If found: Use existing transfer config.
-        -   If not found: Confirm with user if it's ok to trigger the transfer
-            run.
+      - Check if the transfer has at least one successful run: `bq ls
+--transfer_run --transfer_config=<RESOURCE_NAME>`
+      - If found: Use existing transfer config.
+      - If not found: Confirm with user if it's ok to trigger the transfer
+        run.
 
-    -   **Multiple Transfers Found**:
+    - **Multiple Transfers Found**:
 
-        -   Attempt to guess the correct one based on context.
-        -   Ask user to confirm.
+      - Attempt to guess the correct one based on context.
+      - Ask user to confirm.
 
-    -   **Disabled Transfers Found**:
+    - **Disabled Transfers Found**:
 
-        -   Ask user if they want to enable it or create a new one.
-        -   To Enable: Instruct the user to update the transfer configuration
-            within their `deployment.yaml` file by setting the `disabled` field
-            to `false` for the specific transfer resource.
+      - Ask user if they want to enable it or create a new one.
+      - To Enable: Instruct the user to update the transfer configuration
+        within their `deployment.yaml` file by setting the `disabled` field
+        to `false` for the specific transfer resource.
 
-    -   **No Transfers Found**: Proceed to create new if needed.
+    - **No Transfers Found**: Proceed to create new if needed.
 
 ### Step 2: Discover & Validate Parameters (New Transfers)
 
@@ -117,22 +117,21 @@ python3 scripts/bigquery_dts.py --project_id=<PROJECT_ID>
 2.  > [!CAUTION]
     >
     > **Mandatory User Questionnaire (CRITICAL)**:
-
-    -   **Explicitly identify ALL specific parameters** returned by the
-        discovery script. **You MUST NOT generalize or vaguely summarize them.**
-    -   **OAuth Authorization (Google Data Sources)**: For Google ecosystem data
-        sources (Google Ads, Youtube, etc.), if the user is not using a service
-        account to configure the DTS transfer config (meaning the user is using
-        End User Credentials or EUC to configure the transfer config), then
-        generate an OAuth URI. Ask the user to visit this URL to authorize. Once
-        the user provides the versionInfo code, use the code as
-        `definition.versionInfo` in `deployment.yaml` and then you can proceed.
-    -   If any parameters are related to authentication, explicitly ask the user
-        to provide the Secret Manager Resource ID (e.g.,
-        projects/my-project/secrets/my-secret) for these parameters
-    -   Present every required parameter to the user BEFORE generating config
-        files.
-    -   Ask for verification of assets/tables to be ingested.
+    - **Explicitly identify ALL specific parameters** returned by the
+      discovery script. **You MUST NOT generalize or vaguely summarize them.**
+    - **OAuth Authorization (Google Data Sources)**: For Google ecosystem data
+      sources (Google Ads, Youtube, etc.), if the user is not using a service
+      account to configure the DTS transfer config (meaning the user is using
+      End User Credentials or EUC to configure the transfer config), then
+      generate an OAuth URI. Ask the user to visit this URL to authorize. Once
+      the user provides the versionInfo code, use the code as
+      `definition.versionInfo` in `deployment.yaml` and then you can proceed.
+    - If any parameters are related to authentication, explicitly ask the user
+      to provide the Secret Manager Resource ID (e.g.,
+      projects/my-project/secrets/my-secret) for these parameters
+    - Present every required parameter to the user BEFORE generating config
+      files.
+    - Ask for verification of assets/tables to be ingested.
 
 3.  **Wait for User Response**: You **MUST NOT** proceed until parameters are
     confirmed.
@@ -167,15 +166,15 @@ of the tasks.
     bq ls --format=prettyjson --transfer_run --transfer_config=<RESOURCE_NAME>
     ```
 
-    -   **Success**: If the run completes successfully, proceed with the rest of
-        the pipeline.
-    -   **Failure**: If the run fails, analyze the logs and ask the user for
-        help.
-    -   **Timeout (5 mins)**: If the run is still in progress after 5 minutes,
-        **STOP** and ask the user: "The Data Transfer Service ingestion is still
-        in progress. Please provide 'proceed guidance' once the ingestion has
-        finished so that I can continue building the rest of the data pipeline
-        using the ingested schema and samples."
+    - **Success**: If the run completes successfully, proceed with the rest of
+      the pipeline.
+    - **Failure**: If the run fails, analyze the logs and ask the user for
+      help.
+    - **Timeout (5 mins)**: If the run is still in progress after 5 minutes,
+      **STOP** and ask the user: "The Data Transfer Service ingestion is still
+      in progress. Please provide 'proceed guidance' once the ingestion has
+      finished so that I can continue building the rest of the data pipeline
+      using the ingested schema and samples."
 
 3.  **Wait for User Guidance**: Do NOT proceed until the user confirms ingestion
     is complete or provides guidance.
@@ -184,11 +183,11 @@ of the tasks.
 
 ## Definition of Done
 
--   A BigQuery DTS transfer configuration has been discovered or provisioned
-    declaratively (via **gcp pipeline resource provisioning** with a generated
-    `deployment.yaml`).
--   Mandatory datasource parameters have been identified and confirmed with the
-    user.
--   A manual transfer run has been triggered and monitored.
--   The transfer run has completed successfully OR the user has provided
-    "proceed guidance" for a long-running transfer.
+- A BigQuery DTS transfer configuration has been discovered or provisioned
+  declaratively (via **gcp pipeline resource provisioning** with a generated
+  `deployment.yaml`).
+- Mandatory datasource parameters have been identified and confirmed with the
+  user.
+- A manual transfer run has been triggered and monitored.
+- The transfer run has completed successfully OR the user has provided
+  "proceed guidance" for a long-running transfer.

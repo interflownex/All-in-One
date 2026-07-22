@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `stock.suppliers`
+
 - `stock.catalog_products`
 - `stock.price_rules`
 - `stock.supplier_orders`

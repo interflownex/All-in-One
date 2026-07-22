@@ -6,12 +6,16 @@ from decimal import Decimal
 from pathlib import Path
 
 import pytest
-
-from modules.shared.units_tax import ConversionRule, TaxRule, calculate_tax, convert_quantity
 from fastapi.testclient import TestClient
-from modules.erp.main import app as erp_app
-from modules.stock.main import app as stock_app
 
+from modules.erp.main import app as erp_app
+from modules.shared.units_tax import (
+    ConversionRule,
+    TaxRule,
+    calculate_tax,
+    convert_quantity,
+)
+from modules.stock.main import app as stock_app
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION = ROOT / "database/postgres/migrations/025_units_tax_governance.sql"
@@ -40,7 +44,9 @@ def test_units_tax_migration_implements_every_proposed_entity_and_rollback() -> 
         "erp.tax_calculation_snapshots",
     }
 
-    assert all(f"CREATE TABLE IF NOT EXISTS {entity}" in migration for entity in entities)
+    assert all(
+        f"CREATE TABLE IF NOT EXISTS {entity}" in migration for entity in entities
+    )
     assert all(f"DROP TABLE IF EXISTS {entity}" in rollback for entity in entities)
     assert "DOUBLE PRECISION" not in migration and " REAL " not in migration
     assert "conversion_factor_snapshot NUMERIC" in migration
@@ -49,14 +55,20 @@ def test_units_tax_migration_implements_every_proposed_entity_and_rollback() -> 
 
 def test_units_tax_physical_catalog_covers_every_proposed_field() -> None:
     proposal = json.loads(
-        (ROOT / "config/data_audit/product_units_tax_model_proposal.json").read_text(encoding="utf-8")
+        (ROOT / "config/data_audit/product_units_tax_model_proposal.json").read_text(
+            encoding="utf-8"
+        )
     )
     dictionary = json.loads(
-        (ROOT / "docs/data-audit/artifacts/dicionario_de_dados.json").read_text(encoding="utf-8")
+        (ROOT / "docs/data-audit/artifacts/dicionario_de_dados.json").read_text(
+            encoding="utf-8"
+        )
     )
     physical: dict[str, set[str]] = {}
     for field in dictionary["fields"]:
-        physical.setdefault(f'{field["schema"]}.{field["table"]}', set()).add(field["physical_name"])
+        physical.setdefault(f"{field['schema']}.{field['table']}", set()).add(
+            field["physical_name"]
+        )
 
     for entity, fields in proposal["measurement_entities"].items():
         assert set(fields) <= physical[f"stock.{entity}"]

@@ -7,23 +7,23 @@ metadata:
 spec:
   replicas: 2
   selector:
-    matchLabels: {app: mobility}
+    matchLabels: { app: mobility }
   template:
     metadata:
-      labels: {app: mobility}
+      labels: { app: mobility }
     spec:
       containers:
         - name: mobility
           image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/mobility:latest
           imagePullPolicy: IfNotPresent
-          ports: [{containerPort: 8000}]
+          ports: [{ containerPort: 8000 }]
           readinessProbe:
             httpGet:
               path: /health
               port: 8000
           envFrom:
-            - configMapRef: {name: platform-config}
-            - secretRef: {name: platform-secrets-placeholder}
+            - configMapRef: { name: platform-config }
+            - secretRef: { name: platform-secrets-placeholder }
 ---
 apiVersion: v1
 kind: Service
@@ -31,5 +31,5 @@ metadata:
   name: mobility
   namespace: all-in-one
 spec:
-  selector: {app: mobility}
-  ports: [{port: 80, targetPort: 8000}]
+  selector: { app: mobility }
+  ports: [{ port: 80, targetPort: 8000 }]

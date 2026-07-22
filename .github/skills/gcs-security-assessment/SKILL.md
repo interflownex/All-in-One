@@ -1,10 +1,10 @@
 ---
 name: gcs-security-assessment
-description: 'Assesses security posture, evaluates risks, and checks SAIF compliance
+description: "Assesses security posture, evaluates risks, and checks SAIF compliance
   for Google Cloud Storage buckets or projects. Use when the user requests security
-  scans, vulnerability checks, or SAIF assessments. Don''t use when: The user is asking
+  scans, vulnerability checks, or SAIF assessments. Don't use when: The user is asking
   about non-GCS resources (Compute Engine, GKE, etc.), investigating a live production
-  outage, or asking general security questions not tied to a specific project or bucket.'
+  outage, or asking general security questions not tied to a specific project or bucket."
 license: Apache-2.0
 metadata:
   version: v1
@@ -49,13 +49,13 @@ and no audit logging.
 
 ## Phase Summary Table
 
-Phase                             | Inputs                                   | Outputs                               | Reference
-:-------------------------------- | :--------------------------------------- | :------------------------------------ | :--------
-**1. Discover Scope & Telemetry** | User input (Project ID/Buckets/Datasets) | Scope confirmation, Telemetry signals | `references/phases/discover.md`
-**2. Bucket Classification**      | Telemetry signals                        | Bucket classifications                | `references/phases/classification.md`
-**3. Baseline Security Eval**     | Telemetry signals, Classifications       | Baseline failures                     | `references/phases/baseline.md`
-**4. Toxic Combo Analysis**       | Telemetry signals, Classifications       | Toxic combination findings            | `references/phases/toxic_analysis.md`
-**5. Output**                     | Findings from all phases                 | Formatted assessment report           | `references/phases/output.md`
+| Phase                             | Inputs                                   | Outputs                               | Reference                             |
+| :-------------------------------- | :--------------------------------------- | :------------------------------------ | :------------------------------------ |
+| **1. Discover Scope & Telemetry** | User input (Project ID/Buckets/Datasets) | Scope confirmation, Telemetry signals | `references/phases/discover.md`       |
+| **2. Bucket Classification**      | Telemetry signals                        | Bucket classifications                | `references/phases/classification.md` |
+| **3. Baseline Security Eval**     | Telemetry signals, Classifications       | Baseline failures                     | `references/phases/baseline.md`       |
+| **4. Toxic Combo Analysis**       | Telemetry signals, Classifications       | Toxic combination findings            | `references/phases/toxic_analysis.md` |
+| **5. Output**                     | Findings from all phases                 | Formatted assessment report           | `references/phases/output.md`         |
 
 ## Workflow Execution
 
@@ -82,14 +82,14 @@ When invoked, the agent **MUST follow this exact sequence**:
 
 ## Error Handling
 
-Problem                             | Cause                                                                       | Fix
------------------------------------ | --------------------------------------------------------------------------- | ---
-PermissionDenied on VPC-SC check    | Caller lacks `accesscontextmanager.policies.list`                           | Inform user. Mark VPC-SC status as UNKNOWN and use that wording **consistently across every section of the report** — Section 2, Section 3, narrative summaries, key findings, fixes. Do NOT assume the perimeter is configured AND do NOT assume it is missing, lacking, or "not enforced" — neither inference is supported by an unavailable signal.
-PermissionDenied on IAM Recommender | Caller lacks `recommender.iamPolicyRecommendations.list`                    | Fall back to manual IAM policy inspection. Flag over-broad roles like `roles/storage.admin` and `roles/storage.objectAdmin`.
-Model Armor API not enabled         | `modelarmor.googleapis.com` not in services list                            | This IS a finding (not an error). Flag it as "Model Armor not enabled" in your assessment.
-Storage Insights API not enabled    | `storageinsights.googleapis.com` not enabled on the project                 | **DO NOT STOP.** `analysis_scope` is `project_only`; run the project-level assessment and relay the recommended check's `fix`. See `discover.md`.
-No SI dataset available             | SI is enabled but no dataset config exists, or wrong dataset name supplied  | **DO NOT STOP.** `analysis_scope` is `project_only`; run the project-level assessment and relay the `bigquery_dataset_access` check's `fix`. See `discover.md`.
-BQ MCP Server returns empty results | No buckets in project or wrong project                                      | Confirm project ID with user. If correct and empty, report "No buckets found."
-Data Access audit logs check fails  | Caller lacks `resourcemanager.projects.getIamPolicy`                        | Inform user. Note that audit log status is unknown.
-Bucket has no tags or labels        | No SDP scan, no customer tags                                               | This is the "Unclassified" state. Treat as potentially sensitive. Recommend SDP.
-Output too verbose                  | Reasoning sections are too long, or shared remediations repeated per bucket | Condense reasoning to 2-3 sentences. Move shared remediations to Cross-Cutting Recommendations. If output exceeds ~80 lines, you are being too verbose.
+| Problem                             | Cause                                                                       | Fix                                                                                                                                                                                                                                                                                                                                                    |
+| ----------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| PermissionDenied on VPC-SC check    | Caller lacks `accesscontextmanager.policies.list`                           | Inform user. Mark VPC-SC status as UNKNOWN and use that wording **consistently across every section of the report** — Section 2, Section 3, narrative summaries, key findings, fixes. Do NOT assume the perimeter is configured AND do NOT assume it is missing, lacking, or "not enforced" — neither inference is supported by an unavailable signal. |
+| PermissionDenied on IAM Recommender | Caller lacks `recommender.iamPolicyRecommendations.list`                    | Fall back to manual IAM policy inspection. Flag over-broad roles like `roles/storage.admin` and `roles/storage.objectAdmin`.                                                                                                                                                                                                                           |
+| Model Armor API not enabled         | `modelarmor.googleapis.com` not in services list                            | This IS a finding (not an error). Flag it as "Model Armor not enabled" in your assessment.                                                                                                                                                                                                                                                             |
+| Storage Insights API not enabled    | `storageinsights.googleapis.com` not enabled on the project                 | **DO NOT STOP.** `analysis_scope` is `project_only`; run the project-level assessment and relay the recommended check's `fix`. See `discover.md`.                                                                                                                                                                                                      |
+| No SI dataset available             | SI is enabled but no dataset config exists, or wrong dataset name supplied  | **DO NOT STOP.** `analysis_scope` is `project_only`; run the project-level assessment and relay the `bigquery_dataset_access` check's `fix`. See `discover.md`.                                                                                                                                                                                        |
+| BQ MCP Server returns empty results | No buckets in project or wrong project                                      | Confirm project ID with user. If correct and empty, report "No buckets found."                                                                                                                                                                                                                                                                         |
+| Data Access audit logs check fails  | Caller lacks `resourcemanager.projects.getIamPolicy`                        | Inform user. Note that audit log status is unknown.                                                                                                                                                                                                                                                                                                    |
+| Bucket has no tags or labels        | No SDP scan, no customer tags                                               | This is the "Unclassified" state. Treat as potentially sensitive. Recommend SDP.                                                                                                                                                                                                                                                                       |
+| Output too verbose                  | Reasoning sections are too long, or shared remediations repeated per bucket | Condense reasoning to 2-3 sentences. Move shared remediations to Cross-Cutting Recommendations. If output exceeds ~80 lines, you are being too verbose.                                                                                                                                                                                                |

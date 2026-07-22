@@ -7,6 +7,7 @@
         ## Entidades
 
         - `users`
+
 - `documents`
 - `biometrics`
 - `sessions`
@@ -16,6 +17,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -45,10 +47,10 @@
 - `POST /mfa/verify` rejeita replay e emite novo access token com a claim `mfa_verified=true` vinculada a sessao ativa.
 - Cadastro, login, refresh e logout exigem `X-Play-Integrity-Token` em producao. O token e decodificado pelo Google com ADC e vinculado ao corpo exato por `requestHash`; pacote, certificado Play App Signing, frescor, licenca, integridade do app/dispositivo e risco de captura/controle sao validados antes da operacao.
 
-
         ## Eventos
 
         - `identity.user.created`
+
 - `identity.user.verified`
 - `identity.user.duplicate_detected`
 - `identity.document.created`

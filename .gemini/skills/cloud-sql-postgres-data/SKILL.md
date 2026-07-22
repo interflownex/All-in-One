@@ -32,11 +32,11 @@ Use this tool to execute a single SQL statement.
 
 #### Parameters
 
-Name | Type   | Description         | Required | Default
-:--- | :----- | :------------------ | :------- | :------
-sql  | string | The sql to execute. | Yes      |
+| Name | Type   | Description         | Required | Default |
+| :--- | :----- | :------------------ | :------- | :------ |
+| sql  | string | The sql to execute. | Yes      |
 
---------------------------------------------------------------------------------
+---
 
 ### list_indexes
 
@@ -50,27 +50,27 @@ index scans, and a boolean indicating if the index has been used at least once.
 
 #### Parameters
 
-| Name        | Type    | Description                     | Required | Default |
-| :---------- | :------ | :------------------------------ | :------- | :------ |
-| schema_name | string  | Optional: a text to filter      | No       | ``      |
-:             :         : results by schema name. The     :          :         :
-:             :         : input is used within a LIKE     :          :         :
-:             :         : clause.                         :          :         :
-| table_name  | string  | Optional: a text to filter      | No       | ``      |
-:             :         : results by table name. The      :          :         :
-:             :         : input is used within a LIKE     :          :         :
-:             :         : clause.                         :          :         :
-| index_name  | string  | Optional: a text to filter      | No       | ``      |
-:             :         : results by index name. The      :          :         :
-:             :         : input is used within a LIKE     :          :         :
-:             :         : clause.                         :          :         :
-| only_unused | boolean | Optional: If true, only returns | No       | `false` |
-:             :         : indexes that have never been    :          :         :
-:             :         : used.                           :          :         :
-| limit       | integer | Optional: The maximum number of | No       | `50`    |
-:             :         : rows to return. Default is 50   :          :         :
+| Name                                      | Type    | Description                     | Required | Default |
+| :---------------------------------------- | :------ | :------------------------------ | :------- | :------ |
+| schema_name                               | string  | Optional: a text to filter      | No       | ``      |
+| : : : results by schema name. The : : :   |
+| : : : input is used within a LIKE : : :   |
+| : : : clause. : : :                       |
+| table_name                                | string  | Optional: a text to filter      | No       | ``      |
+| : : : results by table name. The : : :    |
+| : : : input is used within a LIKE : : :   |
+| : : : clause. : : :                       |
+| index_name                                | string  | Optional: a text to filter      | No       | ``      |
+| : : : results by index name. The : : :    |
+| : : : input is used within a LIKE : : :   |
+| : : : clause. : : :                       |
+| only_unused                               | boolean | Optional: If true, only returns | No       | `false` |
+| : : : indexes that have never been : : :  |
+| : : : used. : : :                         |
+| limit                                     | integer | Optional: The maximum number of | No       | `50`    |
+| : : : rows to return. Default is 50 : : : |
 
---------------------------------------------------------------------------------
+---
 
 ### list_schemas
 
@@ -80,17 +80,17 @@ of functions, number of tables and number of views within each schema.
 
 #### Parameters
 
-| Name        | Type    | Description                     | Required | Default |
-| :---------- | :------ | :------------------------------ | :------- | :------ |
-| schema_name | string  | Optional: A specific schema     | No       | ``      |
-:             :         : name pattern to search for.     :          :         :
-| owner       | string  | Optional: A specific schema     | No       | ``      |
-:             :         : owner name pattern to search    :          :         :
-:             :         : for.                            :          :         :
-| limit       | integer | Optional: The maximum number of | No       | `10`    |
-:             :         : schemas to return.              :          :         :
+| Name                                     | Type    | Description                     | Required | Default |
+| :--------------------------------------- | :------ | :------------------------------ | :------- | :------ |
+| schema_name                              | string  | Optional: A specific schema     | No       | ``      |
+| : : : name pattern to search for. : : :  |
+| owner                                    | string  | Optional: A specific schema     | No       | ``      |
+| : : : owner name pattern to search : : : |
+| : : : for. : : :                         |
+| limit                                    | integer | Optional: The maximum number of | No       | `10`    |
+| : : : schemas to return. : : :           |
 
---------------------------------------------------------------------------------
+---
 
 ### list_sequences
 
@@ -101,17 +101,17 @@ value generated by the sequence in the current session
 
 #### Parameters
 
-| Name          | Type    | Description                   | Required | Default |
-| :------------ | :------ | :---------------------------- | :------- | :------ |
-| schema_name   | string  | Optional: A specific schema   | No       | ``      |
-:               :         : name pattern to search for.   :          :         :
-| sequence_name | string  | Optional: A specific sequence | No       | ``      |
-:               :         : name pattern to search for.   :          :         :
-| limit         | integer | Optional: The maximum number  | No       | `50`    |
-:               :         : of rows to return. Default is :          :         :
-:               :         : 50                            :          :         :
+| Name                                      | Type    | Description                   | Required | Default |
+| :---------------------------------------- | :------ | :---------------------------- | :------- | :------ |
+| schema_name                               | string  | Optional: A specific schema   | No       | ``      |
+| : : : name pattern to search for. : : :   |
+| sequence_name                             | string  | Optional: A specific sequence | No       | ``      |
+| : : : name pattern to search for. : : :   |
+| limit                                     | integer | Optional: The maximum number  | No       | `50`    |
+| : : : of rows to return. Default is : : : |
+| : : : 50 : : :                            |
 
---------------------------------------------------------------------------------
+---
 
 ### list_stored_procedure
 
@@ -121,19 +121,19 @@ role name (procedure owner), schema name, and limit (default 20).
 
 #### Parameters
 
-| Name        | Type    | Description                     | Required | Default |
-| :---------- | :------ | :------------------------------ | :------- | :------ |
-| role_name   | string  | Optional: The owner name to     | No       |         |
-:             :         : filter the stored procedures    :          :         :
-:             :         : by. Defaults to NULL.           :          :         :
-| schema_name | string  | Optional: The schema name to    | No       |         |
-:             :         : filter the stored procedures    :          :         :
-:             :         : by. Defaults to NULL.           :          :         :
-| limit       | integer | Optional: The maximum number of | No       | `20`    |
-:             :         : stored procedures to return.    :          :         :
-:             :         : Defaults to 20.                 :          :         :
+| Name                                     | Type    | Description                     | Required | Default |
+| :--------------------------------------- | :------ | :------------------------------ | :------- | :------ |
+| role_name                                | string  | Optional: The owner name to     | No       |         |
+| : : : filter the stored procedures : : : |
+| : : : by. Defaults to NULL. : : :        |
+| schema_name                              | string  | Optional: The schema name to    | No       |         |
+| : : : filter the stored procedures : : : |
+| : : : by. Defaults to NULL. : : :        |
+| limit                                    | integer | Optional: The maximum number of | No       | `20`    |
+| : : : stored procedures to return. : : : |
+| : : : Defaults to 20. : : :              |
 
---------------------------------------------------------------------------------
+---
 
 ### list_tables
 
@@ -144,22 +144,22 @@ lists all tables in user schemas.
 
 #### Parameters
 
-| Name          | Type   | Description     | Required | Default    |
-| :------------ | :----- | :-------------- | :------- | :--------- |
-| table_names   | string | Optional: A     | No       | ``         |
-:               :        : comma-separated :          :            :
-:               :        : list of table   :          :            :
-:               :        : names. If       :          :            :
-:               :        : empty, details  :          :            :
-:               :        : for all tables  :          :            :
-:               :        : will be listed. :          :            :
-| output_format | string | Optional: Use   | No       | `detailed` |
-:               :        : 'simple' for    :          :            :
-:               :        : names only or   :          :            :
-:               :        : 'detailed' for  :          :            :
-:               :        : full info.      :          :            :
+| Name                        | Type   | Description   | Required | Default    |
+| :-------------------------- | :----- | :------------ | :------- | :--------- |
+| table_names                 | string | Optional: A   | No       | ``         |
+| : : : comma-separated : : : |
+| : : : list of table : : :   |
+| : : : names. If : : :       |
+| : : : empty, details : : :  |
+| : : : for all tables : : :  |
+| : : : will be listed. : : : |
+| output_format               | string | Optional: Use | No       | `detailed` |
+| : : : 'simple' for : : :    |
+| : : : names only or : : :   |
+| : : : 'detailed' for : : :  |
+| : : : full info. : : :      |
 
---------------------------------------------------------------------------------
+---
 
 ### list_triggers
 
@@ -171,18 +171,18 @@ function executed by the trigger and full definition.
 
 #### Parameters
 
-| Name         | Type    | Description                  | Required | Default |
-| :----------- | :------ | :--------------------------- | :------- | :------ |
-| trigger_name | string  | Optional: A specific trigger | No       | ``      |
-:              :         : name pattern to search for.  :          :         :
-| schema_name  | string  | Optional: A specific schema  | No       | ``      |
-:              :         : name pattern to search for.  :          :         :
-| table_name   | string  | Optional: A specific table   | No       | ``      |
-:              :         : name pattern to search for.  :          :         :
-| limit        | integer | Optional: The maximum number | No       | `50`    |
-:              :         : of rows to return.           :          :         :
+| Name                                    | Type    | Description                  | Required | Default |
+| :-------------------------------------- | :------ | :--------------------------- | :------- | :------ |
+| trigger_name                            | string  | Optional: A specific trigger | No       | ``      |
+| : : : name pattern to search for. : : : |
+| schema_name                             | string  | Optional: A specific schema  | No       | ``      |
+| : : : name pattern to search for. : : : |
+| table_name                              | string  | Optional: A specific table   | No       | ``      |
+| : : : name pattern to search for. : : : |
+| limit                                   | integer | Optional: The maximum number | No       | `50`    |
+| : : : of rows to return. : : :          |
 
---------------------------------------------------------------------------------
+---
 
 ### list_views
 
@@ -191,13 +191,13 @@ Returns schemaname, viewname, ownername and the definition.
 
 #### Parameters
 
-| Name        | Type    | Description                     | Required | Default |
-| :---------- | :------ | :------------------------------ | :------- | :------ |
-| view_name   | string  | Optional: A specific view name  | No       | ``      |
-:             :         : to search for.                  :          :         :
-| schema_name | string  | Optional: A specific schema     | No       | ``      |
-:             :         : name to search for.             :          :         :
-| limit       | integer | Optional: The maximum number of | No       | `50`    |
-:             :         : rows to return.                 :          :         :
+| Name                            | Type    | Description                     | Required | Default |
+| :------------------------------ | :------ | :------------------------------ | :------- | :------ |
+| view_name                       | string  | Optional: A specific view name  | No       | ``      |
+| : : : to search for. : : :      |
+| schema_name                     | string  | Optional: A specific schema     | No       | ``      |
+| : : : name to search for. : : : |
+| limit                           | integer | Optional: The maximum number of | No       | `50`    |
+| : : : rows to return. : : :     |
 
---------------------------------------------------------------------------------
+---

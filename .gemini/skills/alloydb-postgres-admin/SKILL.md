@@ -21,9 +21,7 @@ All scripts can be executed using Node.js. Replace `<param_name>` and `<param_va
 
 Note: The scripts automatically load the environment variables from various .env files. Do not ask the user to set vars unless skill executions fails due to env var absence.
 
-
 ## Scripts
-
 
 ### create_cluster
 
@@ -31,15 +29,14 @@ Creates a new AlloyDB cluster. This is a long-running operation, but the API cal
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| project | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No |  |
-| location | string | The location to create the cluster in. The default value is us-central1. If quota is exhausted then use other regions. | No | `us-central1` |
-| cluster | string | A unique ID for the AlloyDB cluster. | Yes |  |
-| password | string | A secure password for the initial user. | Yes |  |
-| network | string | The name of the VPC network to connect the cluster to (e.g., 'default'). | No | `default` |
-| user | string | The name for the initial superuser. Defaults to 'postgres' if not provided. | No |  |
-
+| Name     | Type   | Description                                                                                                            | Required | Default       |
+| :------- | :----- | :--------------------------------------------------------------------------------------------------------------------- | :------- | :------------ |
+| project  | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one.     | No       |               |
+| location | string | The location to create the cluster in. The default value is us-central1. If quota is exhausted then use other regions. | No       | `us-central1` |
+| cluster  | string | A unique ID for the AlloyDB cluster.                                                                                   | Yes      |               |
+| password | string | A secure password for the initial user.                                                                                | Yes      |               |
+| network  | string | The name of the VPC network to connect the cluster to (e.g., 'default').                                               | No       | `default`     |
+| user     | string | The name for the initial superuser. Defaults to 'postgres' if not provided.                                            | No       |               |
 
 ---
 
@@ -49,24 +46,21 @@ Creates a new AlloyDB instance (PRIMARY or READ_POOL) within a cluster. This is 
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| project | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No |  |
-| location | string | The location of the cluster (e.g., 'us-central1'). | Yes |  |
-| cluster | string | The ID of the cluster to create the instance in. | Yes |  |
-| instance | string | A unique ID for the new AlloyDB instance. | Yes |  |
-| instanceType | string | The type of instance to create. Valid values are: PRIMARY and READ_POOL. Default is PRIMARY | No | `PRIMARY` |
-| displayName | string | An optional, user-friendly name for the instance. | No |  |
-| nodeCount | integer | The number of nodes in the read pool. Required only if instanceType is READ_POOL. Default is 1. | No | `1` |
-
+| Name         | Type    | Description                                                                                                        | Required | Default   |
+| :----------- | :------ | :----------------------------------------------------------------------------------------------------------------- | :------- | :-------- |
+| project      | string  | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No       |           |
+| location     | string  | The location of the cluster (e.g., 'us-central1').                                                                 | Yes      |           |
+| cluster      | string  | The ID of the cluster to create the instance in.                                                                   | Yes      |           |
+| instance     | string  | A unique ID for the new AlloyDB instance.                                                                          | Yes      |           |
+| instanceType | string  | The type of instance to create. Valid values are: PRIMARY and READ_POOL. Default is PRIMARY                        | No       | `PRIMARY` |
+| displayName  | string  | An optional, user-friendly name for the instance.                                                                  | No       |           |
+| nodeCount    | integer | The number of nodes in the read pool. Required only if instanceType is READ_POOL. Default is 1.                    | No       | `1`       |
 
 ---
 
 ### database_overview
 
 Fetches the current state of the PostgreSQL server, returning the version, whether it's a replica, uptime duration, maximum connection limit, number of current connections, number of active connections, and the percentage of connections in use.
-
-
 
 ---
 
@@ -76,12 +70,11 @@ Retrieves details about a specific AlloyDB cluster.
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| project | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No |  |
-| location | string | The location of the cluster (e.g., 'us-central1'). | Yes |  |
-| cluster | string | The ID of the cluster. | Yes |  |
-
+| Name     | Type   | Description                                                                                                        | Required | Default |
+| :------- | :----- | :----------------------------------------------------------------------------------------------------------------- | :------- | :------ |
+| project  | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No       |         |
+| location | string | The location of the cluster (e.g., 'us-central1').                                                                 | Yes      |         |
+| cluster  | string | The ID of the cluster.                                                                                             | Yes      |         |
 
 ---
 
@@ -91,13 +84,12 @@ Retrieves details about a specific AlloyDB instance.
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| project | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No |  |
-| location | string | The location of the instance (e.g., 'us-central1'). | Yes |  |
-| cluster | string | The ID of the cluster. | Yes |  |
-| instance | string | The ID of the instance. | Yes |  |
-
+| Name     | Type   | Description                                                                                                        | Required | Default |
+| :------- | :----- | :----------------------------------------------------------------------------------------------------------------- | :------- | :------ |
+| project  | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No       |         |
+| location | string | The location of the instance (e.g., 'us-central1').                                                                | Yes      |         |
+| cluster  | string | The ID of the cluster.                                                                                             | Yes      |         |
+| instance | string | The ID of the instance.                                                                                            | Yes      |         |
 
 ---
 
@@ -107,11 +99,10 @@ Lists all AlloyDB clusters in a given project and location.
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| project | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No |  |
-| location | string | Optional: The location to list clusters in (e.g., 'us-central1'). Use '-' to list clusters across all locations.(Default: '-') | No | `-` |
-
+| Name     | Type   | Description                                                                                                                    | Required | Default |
+| :------- | :----- | :----------------------------------------------------------------------------------------------------------------------------- | :------- | :------ |
+| project  | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one.             | No       |         |
+| location | string | Optional: The location to list clusters in (e.g., 'us-central1'). Use '-' to list clusters across all locations.(Default: '-') | No       | `-`     |
 
 ---
 
@@ -121,12 +112,11 @@ Lists all AlloyDB instances in a given project, location and cluster.
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| project | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No |  |
-| location | string | Optional: The location of the cluster (e.g., 'us-central1'). Use '-' to get results for all regions.(Default: '-') | No | `-` |
-| cluster | string | Optional: The ID of the cluster to list instances from. Use '-' to get results for all clusters.(Default: '-') | No | `-` |
-
+| Name     | Type   | Description                                                                                                        | Required | Default |
+| :------- | :----- | :----------------------------------------------------------------------------------------------------------------- | :------- | :------ |
+| project  | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No       |         |
+| location | string | Optional: The location of the cluster (e.g., 'us-central1'). Use '-' to get results for all regions.(Default: '-') | No       | `-`     |
+| cluster  | string | Optional: The ID of the cluster to list instances from. Use '-' to get results for all clusters.(Default: '-')     | No       | `-`     |
 
 ---
 
@@ -136,12 +126,10 @@ This will poll on operations API until the operation is done. For checking opera
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| project | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No |  |
-| location | string | The location ID | Yes |  |
-| operation | string | The operation ID | Yes |  |
-
+| Name      | Type   | Description                                                                                                        | Required | Default |
+| :-------- | :----- | :----------------------------------------------------------------------------------------------------------------- | :------- | :------ |
+| project   | string | The GCP project ID. This is pre-configured; do not ask for it unless the user explicitly provides a different one. | No       |         |
+| location  | string | The location ID                                                                                                    | Yes      |         |
+| operation | string | The operation ID                                                                                                   | Yes      |         |
 
 ---
-

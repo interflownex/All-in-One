@@ -80,8 +80,7 @@ def test_business_membership_invite_and_role_assignment_flow() -> None:
     outbox = client.get("/events/outbox", headers=actor_headers(owner_id))
     assert outbox.status_code == 200
     assert any(
-        event["routing_key"] == "business.user.invited"
-        for event in outbox.json()
+        event["routing_key"] == "business.user.invited" for event in outbox.json()
     )
 
     denied = client.post(

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from typing import Any
+
 from psycopg import Connection
-from psycopg.types.json import Jsonb
+
 from .postgres_store import BasePostgresStore
+
 
 class BiPostgresStore(BasePostgresStore):
     """Production Bi adapter backed by typed PostgreSQL relations and central audit/outbox."""
@@ -16,7 +18,7 @@ class BiPostgresStore(BasePostgresStore):
         "indicators": "bi.indicators",
         "exports": "bi.exports",
     }
-    soft_deletable = frozenset(['datasets', 'dashboards', 'indicators', 'exports'])
+    soft_deletable = frozenset(["datasets", "dashboards", "indicators", "exports"])
 
     def _insert(
         self,
@@ -31,10 +33,26 @@ class BiPostgresStore(BasePostgresStore):
         idempotency_key: str | None,
     ) -> dict[str, Any]:
         return self._insert_generic(
-            connection, resource_type, resource_id, user_id, entity_id, status, payload, actor, idempotency_key
+            connection,
+            resource_type,
+            resource_id,
+            user_id,
+            entity_id,
+            status,
+            payload,
+            actor,
+            idempotency_key,
         )
 
     def _update(
-        self, connection: Connection, resource_type: str, resource_id: str, payload: dict[str, Any], status: str, actor: str
+        self,
+        connection: Connection,
+        resource_type: str,
+        resource_id: str,
+        payload: dict[str, Any],
+        status: str,
+        actor: str,
     ) -> dict[str, Any]:
-        return self._update_generic(connection, resource_type, resource_id, payload, status, actor)
+        return self._update_generic(
+            connection, resource_type, resource_id, payload, status, actor
+        )

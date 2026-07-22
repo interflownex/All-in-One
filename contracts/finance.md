@@ -7,6 +7,7 @@
         ## Entidades
 
         - `wallets`
+
 - `ledger_entries`
 - `escrows`
 - `splits`
@@ -16,6 +17,7 @@
         ## APIs
 
         - `GET /health`
+
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -38,10 +40,10 @@
 - `POST /reject`
 - `POST /audit`
 
-
         ## Eventos
 
         - `payment.escrow.created`
+
 - `payment.escrow.released`
 - `payment.refunded`
 - `payment.split.executed`

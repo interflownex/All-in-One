@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `stock.product.imported`
+
 - `stock.supplier_order.created`
 - `stock.supplier_order.acknowledged`
 - `stock.supplier_order.shipped`

@@ -16,9 +16,7 @@
     "google_stitch_mcp",
     "google_cloud_data_agent_kit"
   ],
-  "explicit_exceptions": [
-    "google_cloud_data_agent_kit"
-  ],
+  "explicit_exceptions": ["google_cloud_data_agent_kit"],
   "rules": [
     "Manter arquivos, contratos, documentacao e estado versionado para retomada futura.",
     "Nao depender de Google Cloud SDK, Google AI Studio, AlloyDB, Stitch remoto ou Google Code CLI para operacao local obrigatoria.",

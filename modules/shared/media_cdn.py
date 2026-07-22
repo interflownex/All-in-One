@@ -7,7 +7,6 @@ from pathlib import PurePosixPath
 from typing import Any
 from urllib.parse import quote, urlparse
 
-
 CDN_ENV = "VALLEY_MEDIA_CDN_BASE_URL"
 IMAGE_EXTENSIONS = {".avif", ".jpeg", ".jpg", ".png", ".webp"}
 VIDEO_EXTENSIONS = {".m4v", ".mp4", ".webm"}
@@ -18,8 +17,17 @@ def configured_cdn_base() -> str | None:
     if not raw:
         return None
     parsed = urlparse(raw)
-    if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password or parsed.query or parsed.fragment:
-        raise RuntimeError(f"{CDN_ENV} deve ser uma origem HTTPS sem credenciais, query ou fragmento")
+    if (
+        parsed.scheme != "https"
+        or not parsed.netloc
+        or parsed.username
+        or parsed.password
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise RuntimeError(
+            f"{CDN_ENV} deve ser uma origem HTTPS sem credenciais, query ou fragmento"
+        )
     return raw
 
 
@@ -61,9 +69,19 @@ def _normalize_item(item: Any, base: str) -> dict[str, str] | None:
     if clean_path.is_absolute() or ".." in clean_path.parts:
         return None
     suffix = clean_path.suffix.lower()
-    inferred_type = "image" if suffix in IMAGE_EXTENSIONS else "video" if suffix in VIDEO_EXTENSIONS else ""
+    inferred_type = (
+        "image"
+        if suffix in IMAGE_EXTENSIONS
+        else "video"
+        if suffix in VIDEO_EXTENSIONS
+        else ""
+    )
     media_type = declared_type if declared_type in {"image", "video"} else inferred_type
-    if not media_type or (media_type == "image" and suffix not in IMAGE_EXTENSIONS) or (media_type == "video" and suffix not in VIDEO_EXTENSIONS):
+    if (
+        not media_type
+        or (media_type == "image" and suffix not in IMAGE_EXTENSIONS)
+        or (media_type == "video" and suffix not in VIDEO_EXTENSIONS)
+    ):
         return None
     encoded_key = "/".join(quote(part, safe="-._~") for part in clean_path.parts)
     return {"type": media_type, "url": f"{base}/{encoded_key}"}

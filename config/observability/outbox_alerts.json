@@ -24,7 +24,12 @@
       "expr": "all_in_one_outbox_oldest_pending_age_seconds > 1800",
       "for": "10m",
       "response_sla_minutes": 30,
-      "evidence": ["oldest_pending_age_seconds", "event_selector_hash", "dispatcher_logs", "incident_ticket"]
+      "evidence": [
+        "oldest_pending_age_seconds",
+        "event_selector_hash",
+        "dispatcher_logs",
+        "incident_ticket"
+      ]
     },
     "OutboxRetryableFailuresHigh": {
       "severity": "high",
@@ -32,7 +37,12 @@
       "expr": "increase(all_in_one_outbox_failed_retryable_total[15m]) > 10",
       "for": "10m",
       "response_sla_minutes": 60,
-      "evidence": ["failed_retryable_delta", "last_error_type", "rabbitmq_status", "incident_ticket"]
+      "evidence": [
+        "failed_retryable_delta",
+        "last_error_type",
+        "rabbitmq_status",
+        "incident_ticket"
+      ]
     },
     "OutboxDueWithoutDeliveries": {
       "severity": "medium",

@@ -9,7 +9,6 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "config/autonomy/firebase_auth_policy.json"
 GCLOUD = Path.home() / "google-cloud-sdk/bin/gcloud"
@@ -39,7 +38,9 @@ def get_json(url: str, token: str, project_id: str) -> dict:
             return json.load(response)
     except urllib.error.HTTPError as error:
         detail = error.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"Firebase remoto respondeu HTTP {error.code}: {detail}") from error
+        raise RuntimeError(
+            f"Firebase remoto respondeu HTTP {error.code}: {detail}"
+        ) from error
 
 
 def normalized_hash(value: str) -> str:
@@ -54,7 +55,9 @@ def check_remote() -> list[str]:
     errors: list[str] = []
 
     project = get_json(
-        f"https://firebase.googleapis.com/v1beta1/projects/{project_id}", token, project_id
+        f"https://firebase.googleapis.com/v1beta1/projects/{project_id}",
+        token,
+        project_id,
     )
     if project.get("projectId") != project_id or project.get("state") != "ACTIVE":
         errors.append("Projeto Firebase remoto ausente ou inativo.")
@@ -64,8 +67,13 @@ def check_remote() -> list[str]:
         token,
         project_id,
     )
-    if app.get("packageName") != policy["android_package"] or app.get("state") != "ACTIVE":
-        errors.append("App Android Firebase remoto ausente, inativo ou com pacote divergente.")
+    if (
+        app.get("packageName") != policy["android_package"]
+        or app.get("state") != "ACTIVE"
+    ):
+        errors.append(
+            "App Android Firebase remoto ausente, inativo ou com pacote divergente."
+        )
 
     certificates = get_json(
         f"https://firebase.googleapis.com/v1beta1/projects/{project_id}/androidApps/{app_id}/sha",
@@ -101,7 +109,10 @@ def check_remote() -> list[str]:
         .get("allowedApplications", [])
     }
     for variant in ("debug", "release"):
-        expected = (policy["android_package"], normalized_hash(policy["certificates"][variant]["sha1"]))
+        expected = (
+            policy["android_package"],
+            normalized_hash(policy["certificates"][variant]["sha1"]),
+        )
         if expected not in allowed:
             errors.append(f"Chave API Firebase nao autoriza a assinatura {variant}.")
     return errors

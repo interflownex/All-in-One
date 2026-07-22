@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_AUDIT_EVENTS = {
     "compliance.retention.reviewed",
@@ -15,20 +14,40 @@ REQUIRED_JOBS = {
     "deletion_worker_daily",
     "legal_hold_reconciliation_daily",
 }
-CRITICAL_MODULES = {"identity", "finance", "jobs", "document", "hr", "health", "vision", "ai_core", "api_hub"}
+CRITICAL_MODULES = {
+    "identity",
+    "finance",
+    "jobs",
+    "document",
+    "hr",
+    "health",
+    "vision",
+    "ai_core",
+    "api_hub",
+}
 
 
 def load_catalog_modules() -> set[str]:
-    catalog = json.loads((ROOT / "config" / "module_catalog.json").read_text(encoding="utf-8"))
+    catalog = json.loads(
+        (ROOT / "config" / "module_catalog.json").read_text(encoding="utf-8")
+    )
     return {module["slug"] for module in catalog["modules"]}
 
 
 def load_rights() -> dict:
-    return json.loads((ROOT / "config" / "compliance" / "data_subject_rights.json").read_text(encoding="utf-8"))
+    return json.loads(
+        (ROOT / "config" / "compliance" / "data_subject_rights.json").read_text(
+            encoding="utf-8"
+        )
+    )
 
 
 def load_retention() -> dict:
-    return json.loads((ROOT / "config" / "compliance" / "retention_jobs.json").read_text(encoding="utf-8"))
+    return json.loads(
+        (ROOT / "config" / "compliance" / "retention_jobs.json").read_text(
+            encoding="utf-8"
+        )
+    )
 
 
 def test_retention_jobs_cover_all_modules_and_subject_rights() -> None:
@@ -36,7 +55,11 @@ def test_retention_jobs_cover_all_modules_and_subject_rights() -> None:
     rights = load_rights()
 
     assert retention["safety_rules"]["requires_subject_rights_link"] is True
-    assert set(retention["module_rules"]) == set(rights["module_coverage"]) == load_catalog_modules()
+    assert (
+        set(retention["module_rules"])
+        == set(rights["module_coverage"])
+        == load_catalog_modules()
+    )
     assert set(retention["jobs"]) == REQUIRED_JOBS
     assert set(retention["audit_events"]) == EXPECTED_AUDIT_EVENTS
 
@@ -72,6 +95,14 @@ def test_destructive_actions_are_blocked_without_legal_review() -> None:
     retention = load_retention()
     forbidden = set(retention["safety_rules"]["forbidden_without_legal_review"])
 
-    assert retention["safety_rules"]["requires_dry_run_before_first_production_deletion"] is True
+    assert (
+        retention["safety_rules"]["requires_dry_run_before_first_production_deletion"]
+        is True
+    )
     assert retention["safety_rules"]["requires_immutable_audit"] is True
-    assert {"delete_ledger", "delete_tax_record", "delete_medical_record", "delete_labor_record"}.issubset(forbidden)
+    assert {
+        "delete_ledger",
+        "delete_tax_record",
+        "delete_medical_record",
+        "delete_labor_record",
+    }.issubset(forbidden)

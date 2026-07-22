@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 RUNBOOKS_PATH = ROOT / "config" / "operations" / "incident_response_runbooks.json"
 
@@ -19,7 +18,9 @@ def load_runbooks() -> dict:
     return json.loads(RUNBOOKS_PATH.read_text(encoding="utf-8"))
 
 
-def test_incident_response_runbooks_cover_critical_classes_without_sensitive_payloads() -> None:
+def test_incident_response_runbooks_cover_critical_classes_without_sensitive_payloads() -> (
+    None
+):
     catalog = load_runbooks()
 
     assert catalog["version"] == "2026-07-15"
@@ -68,4 +69,6 @@ def test_incident_runbooks_reference_existing_operational_sections() -> None:
         if runbook["runbook"].startswith("docs/OPERATIONS.md"):
             anchor = runbook["runbook"].split("#", 1)[1]
             normalized = anchor.replace("-", " ").casefold()
-            assert any(token in operations.casefold() for token in normalized.split()), runbook["runbook"]
+            assert any(
+                token in operations.casefold() for token in normalized.split()
+            ), runbook["runbook"]

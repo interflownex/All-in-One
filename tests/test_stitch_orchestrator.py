@@ -13,7 +13,6 @@ from scripts.stitch_orchestrator import (
     versioned_manifest,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -21,16 +20,23 @@ def test_manifest_creates_one_project_per_microservice_and_jobs_surfaces() -> No
     manifest = build_manifest(load_catalog())
     assert manifest["project_count"] == 25
     assert len({project["module"] for project in manifest["projects"]}) == 25
-    jobs = next(project for project in manifest["projects"] if project["module"] == "jobs")
-    assert jobs["integrated_apps"] == ["all-in-one-user", "all-in-one-business"]
-    assert {"candidate_resume", "ctps_import", "vacancy_search", "recruiter_resume_review"}.issubset(
-        {screen["key"] for screen in jobs["screens"]}
+    jobs = next(
+        project for project in manifest["projects"] if project["module"] == "jobs"
     )
+    assert jobs["integrated_apps"] == ["all-in-one-user", "all-in-one-business"]
+    assert {
+        "candidate_resume",
+        "ctps_import",
+        "vacancy_search",
+        "recruiter_resume_review",
+    }.issubset({screen["key"] for screen in jobs["screens"]})
 
 
 def test_prompts_never_embed_credentials_or_private_document_content() -> None:
     module = next(item for item in load_catalog()["modules"] if item["slug"] == "jobs")
-    prompt = screen_prompt(module, "ctps_import", "Importacao documental segura.", ["all-in-one-user"])
+    prompt = screen_prompt(
+        module, "ctps_import", "Importacao documental segura.", ["all-in-one-user"]
+    )
     normalized = prompt.lower()
     assert "api key" not in normalized
     assert "chaves" in normalized
@@ -40,8 +46,12 @@ def test_prompts_never_embed_credentials_or_private_document_content() -> None:
 
 
 def test_prompts_apply_all_in_one_and_valley_official_branding() -> None:
-    module = next(item for item in load_catalog()["modules"] if item["slug"] == "marketplace")
-    prompt = screen_prompt(module, "overview", "Catalogo Valley.", ["all-in-one-user", "valley"])
+    module = next(
+        item for item in load_catalog()["modules"] if item["slug"] == "marketplace"
+    )
+    prompt = screen_prompt(
+        module, "overview", "Catalogo Valley.", ["all-in-one-user", "valley"]
+    )
     assert "assets/brand/all-in-one-logo-official.png" in prompt
     assert "assets/brand/valley-logo-official.png" in prompt
     assert "Nao redesenhe, distorca, corte, rotacione ou recolora" in prompt
@@ -66,7 +76,9 @@ def test_sync_summary_reports_remote_gaps_without_credentials() -> None:
     assert summary["expected_screens"] == manifest["screen_count"]
     assert summary["synced_screens"] == 0
     assert summary["branding_pending"] == {}
-    assert set(summary["missing_projects"]) == {project["module"] for project in manifest["projects"]}
+    assert set(summary["missing_projects"]) == {
+        project["module"] for project in manifest["projects"]
+    }
 
 
 def test_sync_summary_reports_branding_pending_for_legacy_screens() -> None:
@@ -78,7 +90,12 @@ def test_sync_summary_reports_branding_pending_for_legacy_screens() -> None:
         "projects": {
             first["module"]: {
                 "project_id": "123",
-                "screens": {first_screen["key"]: {"screen_id": "abc", "name": first_screen["name"]}},
+                "screens": {
+                    first_screen["key"]: {
+                        "screen_id": "abc",
+                        "name": first_screen["name"],
+                    }
+                },
             }
         },
     }
@@ -101,7 +118,9 @@ def test_stitch_auto_sync_dry_run_is_safe_and_does_not_require_remote_secret() -
 
 
 def test_stitch_remote_sync_workflow_is_active_and_secret_driven() -> None:
-    workflow = (ROOT / ".github" / "workflows" / "stitch-sync.yml").read_text(encoding="utf-8")
+    workflow = (ROOT / ".github" / "workflows" / "stitch-sync.yml").read_text(
+        encoding="utf-8"
+    )
     assert "workflow_dispatch:" in workflow
     assert "schedule:" in workflow
     assert "branches: [main]" in workflow

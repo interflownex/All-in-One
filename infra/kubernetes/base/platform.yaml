@@ -39,14 +39,14 @@ metadata:
   name: api-hub
   namespace: all-in-one
 spec:
-  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: api-hub}
+  scaleTargetRef: { apiVersion: apps/v1, kind: Deployment, name: api-hub }
   minReplicas: 2
   maxReplicas: 10
   metrics:
     - type: Resource
       resource:
         name: cpu
-        target: {type: Utilization, averageUtilization: 70}
+        target: { type: Utilization, averageUtilization: 70 }
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -61,4 +61,4 @@ spec:
           - path: /
             pathType: Prefix
             backend:
-              service: {name: api-hub, port: {number: 80}}
+              service: { name: api-hub, port: { number: 80 } }

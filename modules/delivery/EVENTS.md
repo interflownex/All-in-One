@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `delivery.request.created`
+
 - `delivery.rider.assigned`
 - `delivery.picked_up`
 - `delivery.completed`

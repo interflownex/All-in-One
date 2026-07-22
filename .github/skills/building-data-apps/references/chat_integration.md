@@ -71,16 +71,16 @@ work. Review the comprehensive **streaming parser** reference implementation in:
 > [!CAUTION]
 > If available, you MUST use browser testing capabilities (such as
 > `browser_subagent`, Puppeteer, Playwright, or an equivalent available tool)
-> to visually verify the frontend application is working correctly *before*
+> to visually verify the frontend application is working correctly _before_
 > notifying the user that the task is complete.
 
 > [!IMPORTANT]
 > You must include these items in whatever format you use to track your work
 > (e.g., your task list, implementation plan, or internal checklist).
 
--   [ ] Is the chat interface functional and working correctly when asked a question?
--   [ ] Does it work with follow up questions?
--   [ ] Are the data sources correct?
--   [ ] Is the final response being rendered as markdown?
--   [ ] Are thoughts separate from the final response chat bubble?
--   [ ] Are thoughts streamed as they are generated and updating the UI to indicate progress?
+- [ ] Is the chat interface functional and working correctly when asked a question?
+- [ ] Does it work with follow up questions?
+- [ ] Are the data sources correct?
+- [ ] Is the final response being rendered as markdown?
+- [ ] Are thoughts separate from the final response chat bubble?
+- [ ] Are thoughts streamed as they are generated and updating the UI to indicate progress?

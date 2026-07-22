@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `services.visit.created`
+
 - `services.visit.completed`
 - `services.quote.created`
 - `services.contract.created`

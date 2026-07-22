@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `api_hub.api_clients`
+
 - `api_hub.api_keys`
 - `api_hub.webhooks`
 - `api_hub.integration_runs`

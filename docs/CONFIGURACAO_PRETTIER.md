@@ -5,10 +5,12 @@ Este documento descreve como instalar, configurar e utilizar o **Prettier** como
 ## 1. Instalação
 
 ### Pré-requisitos
+
 - Node.js (v18 ou superior)
 - npm ou yarn
 
 ### Instalação no Projeto
+
 Para garantir que todos usem a mesma versão, o Prettier deve ser instalado como uma dependência de desenvolvimento:
 
 ```bash
@@ -32,6 +34,7 @@ O projeto já possui um arquivo `.prettierrc` na raiz com as definições oficia
 ```
 
 ### Arquivos Ignorados
+
 Crie um arquivo `.prettierignore` para evitar a formatação de artefatos de build ou dependências:
 
 ```text
@@ -71,4 +74,5 @@ npx prettier . --write
 - **Conflitos:** Em caso de conflito com o `EditorConfig`, o Prettier possui precedência para as regras de estilo que ele gerencia.
 
 ---
-*Este documento é parte integrante das diretrizes de engenharia do All-in-One.*
+
+_Este documento é parte integrante das diretrizes de engenharia do All-in-One._

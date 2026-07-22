@@ -504,7 +504,7 @@
 - `stock.supplier_orders` ganhou contrato local de criacao com
   `supplier_id`, `catalog_product_id` e `external_order_id`.
 - O pedido fornecedor agora percorre `created -> acknowledged -> shipped ->
-  delivered`, preservando `tracking_code`, `tracking_url` e transportadora no
+delivered`, preservando `tracking_code`, `tracking_url` e transportadora no
   payload auditado quando enviado.
 - Eventos Stock foram detalhados para `created`, `acknowledged`, `shipped`,
   `delivered` e `cancelled`, mantendo o tracking local visivel no outbox.
@@ -697,7 +697,7 @@
 
 - Renovar ADC em terminal interativo legitimo antes de novo apply remoto.
 - Definir o projeto no SDK Linux com `gcloud config set project
-  all-in-one-498012` se o status continuar retornando `(unset)`.
+all-in-one-498012` se o status continuar retornando `(unset)`.
 - O grant KMS do API Hub segue dependente de billing ativo no projeto, sem
   contorno de politica do provedor.
 
@@ -723,7 +723,7 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_crm_domain.py`: 1 teste aprovado.
+-q -s tests/test_crm_domain.py`: 1 teste aprovado.
 
 ### Pendencias rastreadas
 
@@ -753,7 +753,7 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_tms_domain.py`: 1 teste aprovado.
+-q -s tests/test_tms_domain.py`: 1 teste aprovado.
 
 ### Pendencias rastreadas
 
@@ -783,7 +783,7 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_wms_domain.py`: 1 teste aprovado.
+-q -s tests/test_wms_domain.py`: 1 teste aprovado.
 
 ### Pendencias rastreadas
 
@@ -812,7 +812,7 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_erp_domain.py`: 1 teste aprovado.
+-q -s tests/test_erp_domain.py`: 1 teste aprovado.
 
 ### Pendencias rastreadas
 
@@ -841,7 +841,7 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_ai_core_domain.py`: 1 teste aprovado.
+-q -s tests/test_ai_core_domain.py`: 1 teste aprovado.
 
 ### Pendencias rastreadas
 
@@ -872,7 +872,7 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_bi_domain.py`: 1 teste aprovado.
+-q -s tests/test_bi_domain.py`: 1 teste aprovado.
 
 ### Pendencias rastreadas
 
@@ -904,7 +904,7 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_property_domain.py`: 1 teste aprovado.
+-q -s tests/test_property_domain.py`: 1 teste aprovado.
 
 ### Pendencias rastreadas
 
@@ -932,7 +932,7 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_legal_domain.py`: 1 teste aprovado.
+-q -s tests/test_legal_domain.py`: 1 teste aprovado.
 
 ### Pendencias rastreadas
 
@@ -962,12 +962,12 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_vision_domain.py modules/vision/tests/test_create_flow.py
-  tests/test_sensitive_permissions_review.py tests/test_frontend_journeys_contract.py`:
+-q -s tests/test_vision_domain.py modules/vision/tests/test_create_flow.py
+tests/test_sensitive_permissions_review.py tests/test_frontend_journeys_contract.py`:
   11 testes aprovados.
 - `./.venv/bin/ruff check tests/test_vision_domain.py`: aprovado.
 - `./.venv/bin/python -m py_compile modules/shared/domain_rules.py
-  tests/test_vision_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
+tests/test_vision_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
   aprovado.
 
 ### Pendencias rastreadas
@@ -998,12 +998,12 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_hr_domain.py modules/hr/tests/test_create_flow.py
-  tests/test_sensitive_permissions_review.py tests/test_frontend_journeys_contract.py`:
+-q -s tests/test_hr_domain.py modules/hr/tests/test_create_flow.py
+tests/test_sensitive_permissions_review.py tests/test_frontend_journeys_contract.py`:
   11 testes aprovados.
 - `./.venv/bin/ruff check tests/test_hr_domain.py`: aprovado.
 - `./.venv/bin/python -m py_compile modules/shared/domain_rules.py
-  tests/test_hr_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
+tests/test_hr_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
   aprovado.
 
 ### Pendencias rastreadas
@@ -1034,11 +1034,11 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_bpm_domain.py modules/bpm/tests/test_create_flow.py
-  tests/test_frontend_journeys_contract.py`: 8 testes aprovados.
+-q -s tests/test_bpm_domain.py modules/bpm/tests/test_create_flow.py
+tests/test_frontend_journeys_contract.py`: 8 testes aprovados.
 - `./.venv/bin/ruff check tests/test_bpm_domain.py`: aprovado.
 - `./.venv/bin/python -m py_compile modules/shared/domain_rules.py
-  tests/test_bpm_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
+tests/test_bpm_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
   aprovado.
 
 ### Pendencias rastreadas
@@ -1067,14 +1067,14 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_document_domain.py modules/document/tests/test_create_flow.py
-  tests/test_frontend_journeys_contract.py tests/test_sensitive_permissions_review.py`:
+-q -s tests/test_document_domain.py modules/document/tests/test_create_flow.py
+tests/test_frontend_journeys_contract.py tests/test_sensitive_permissions_review.py`:
   11 testes aprovados.
 - `python3 scripts/check_generated_artifacts.py`: aprovado apos atualizar o
   template `scripts/scaffold_modules.py`.
 - `./.venv/bin/ruff check tests/test_document_domain.py`: aprovado.
 - `./.venv/bin/python -m py_compile modules/shared/domain_rules.py
-  tests/test_document_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
+tests/test_document_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
   aprovado.
 
 ### Pendencias rastreadas
@@ -1104,12 +1104,12 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_permissions_enforcement_matrix.py
-  tests/test_sensitive_permissions_review.py`: 10 testes aprovados.
+-q -s tests/test_permissions_enforcement_matrix.py
+tests/test_sensitive_permissions_review.py`: 10 testes aprovados.
 - `./.venv/bin/ruff check tests/test_permissions_enforcement_matrix.py`:
   aprovado.
 - `./.venv/bin/python -m py_compile modules/shared/domain_rules.py
-  tests/test_permissions_enforcement_matrix.py`: aprovado.
+tests/test_permissions_enforcement_matrix.py`: aprovado.
 
 ### Pendencias rastreadas
 
@@ -1283,9 +1283,9 @@
 ### Evidencias
 
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest
-  -q -s tests/test_permissions_enforcement_matrix.py
-  modules/permissions/tests/test_create_flow.py
-  modules/permissions/tests/test_permissions.py`: 6 testes aprovados.
+-q -s tests/test_permissions_enforcement_matrix.py
+modules/permissions/tests/test_create_flow.py
+modules/permissions/tests/test_permissions.py`: 6 testes aprovados.
 - `python3 scripts/check_generated_artifacts.py`: aprovado, preservando
   `modules/permissions/tests/test_create_flow.py` como artefato customizado.
 
@@ -1402,9 +1402,9 @@
   `origin/main: behind=0 ahead=0` e apenas avisa que `fork` esta ausente neste
   checkout.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 TMPDIR=/tmp ./.venv/bin/python -m pytest -q
-  -s tests/test_git_sync_gate.py`: 4 testes aprovados.
+-s tests/test_git_sync_gate.py`: 4 testes aprovados.
 - `./.venv/bin/python -m ruff check scripts/check_git_sync.py
-  tests/test_git_sync_gate.py`: aprovado.
+tests/test_git_sync_gate.py`: aprovado.
 
 ### Pendencias rastreadas
 
@@ -1449,7 +1449,7 @@
   (`Google Cloud SDK 576.0.0`), sem alterar PATH global nem material de
   credencial.
 - Evidencia local atual: `GCLOUD_TIMEOUT_SECONDS=20 python3
-  scripts/google_cloud_control.py auth --project all-in-one-498012` usa
+scripts/google_cloud_control.py auth --project all-in-one-498012` usa
   `/home/eretazan/google-cloud-sdk/bin/gcloud`, retorna `cli_responsive=true`,
   identifica a conta ativa `nazareteandersoncarvalho@gmail.com` e mantém
   `data_agent_ready=false` apenas porque ADC retorna `missing_or_unresponsive`.
@@ -1468,7 +1468,7 @@
 - Confirmar/renovar login CLI somente se a conta ativa deixar de aparecer:
   `~/google-cloud-sdk/bin/gcloud auth login`.
 - Depois do login, rodar `GCLOUD_TIMEOUT_SECONDS=20 python3
-  scripts/google_cloud_control.py auth --project all-in-one-498012` e entao
+scripts/google_cloud_control.py auth --project all-in-one-498012` e entao
   retomar `scripts/configure_apigee_api_hub.py --apply`.
 
 ### Git
@@ -1503,7 +1503,7 @@
   segue bloqueado por `BILLING_DISABLED` no projeto `864981916504`.
 - Apos billing legitimo ser associado/reativado, reexecutar
   `PATH="$HOME/google-cloud-sdk/bin:$PATH" python3
-  scripts/configure_apigee_api_hub.py --apply --timeout 120`.
+scripts/configure_apigee_api_hub.py --apply --timeout 120`.
 - Antes de novo apply remoto, renovar ADC em terminal interativo com
   `~/google-cloud-sdk/bin/gcloud auth application-default login`.
 
@@ -1570,7 +1570,7 @@
 ### Concluido neste ciclo
 
 - `.github/workflows/security.yml` passou a executar tambem `npm audit
-  --omit=dev --audit-level=critical` para todos os apps frontend e
+--omit=dev --audit-level=critical` para todos os apps frontend e
   `desktop/valley-erp`, alem dos scans Python ja existentes.
 - Criado `tests/test_security_workflow_contract.py` para impedir remocao de
   `pip-audit`, `bandit` e do audit JavaScript bloqueante.
@@ -1744,7 +1744,7 @@
   estado de forma idempotente e sem sudo.
 - `docker compose version`, `docker buildx version`, `docker mcp version`,
   `python3 scripts/configure_docker_dx.py --check` e `docker compose config
-  --quiet` responderam com sucesso.
+--quiet` responderam com sucesso.
 - O gate vivo `scripts/validate_compose_health.py` deixou de falhar por plugins
   ausentes e avancou ate build dos servicos, mas excedeu 300s antes dos
   healthchecks; a proxima tentativa precisa de timeout de build maior ou cache
@@ -1766,10 +1766,10 @@
   evitar falso negativo em inicializacao limpa.
 - Gate Compose vivo concluido neste host com banco limpo e projeto isolado:
   `python3 scripts/validate_compose_health.py --env-file .env.docker-dx
-  --project-name all-in-one-dx --require-free-ports --down-after
-  --command-timeout-seconds 900 --timeout-seconds 600
-  --probe-timeout-seconds 1` retornou `Docker Compose validado: 13 APIs FastAPI
-  healthy.`
+--project-name all-in-one-dx --require-free-ports --down-after
+--command-timeout-seconds 900 --timeout-seconds 600
+--probe-timeout-seconds 1` retornou `Docker Compose validado: 13 APIs FastAPI
+healthy.`
 
 ### Pendencias rastreadas
 
@@ -1898,7 +1898,7 @@
   filtros operacionais por status, metricas de registros carregados/visiveis e
   resumo de aprovados/publicados/registrados versus pendentes.
 - As acoes vivas Business agora registram painel `Auditoria operacional
-  Business` com ultima acao, recurso, identificador e status retornado pelo API
+Business` com ultima acao, recurso, identificador e status retornado pelo API
   Hub.
 - Os testes Playwright Business passaram a validar seletor de status, resumo
   filtrado, painel de auditoria e badges reais de status sem ambiguidade com
@@ -2775,7 +2775,7 @@
   subprocessos `docker compose config` e `docker compose up`.
 - `.github/workflows/compose-health.yml` chama o gate com
   `--command-timeout-seconds 300`, evitando que a etapa `Validate compose
-  services and HTTP healthchecks` fique presa antes do loop de health HTTP.
+services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 - `tests/test_compose_health_gate.py` cobre que os comandos Docker recebem
   timeout e que o workflow usa o novo parametro.
 
@@ -3898,6 +3898,7 @@
 ## STATUS OPERACIONAL - 2026-06-09 Instalação do Antigravity CLI
 
 ### Concluído neste ciclo
+
 - Instalado o Antigravity CLI versão 1.0.7 no ambiente Linux/Ubuntu via script oficial.
 - Configurada a integração do PATH nos perfis de shell (`~/.bashrc` e `~/.profile`).
 - Executada a higienização mandatória de armazenamento GCP (`scripts/gcp_storage_hygiene.py`), mantendo uso abaixo de 85%.
@@ -3905,11 +3906,13 @@
 - Organizados componentes UI Neo-brutalistas (`PepitaWidget`, `CalculatorWidget`, `LedgerTransactionList`) da raiz para suas respectivas aplicações (`valley` e `valley_business`), seguindo a arquitetura modular.
 
 ### Estado Operacional
+
 - **Ferramentas:** Antigravity CLI 1.0.7 ativo.
 - **Ambiente:** PATH configurado para `/root/.local/bin`.
 - **Git:** Sincronizado e monitorado pelo Multi-Agent Sync Guard.
 
 ### Próximos Passos Naturais
+
 - Executar o primeiro lançamento do `agy` para configuração de Trust do Workspace.
 - Validar a conectividade dos servidores MCP listados em `.agents/antigravity.json`.
 
@@ -5183,11 +5186,11 @@
 ### Concluído neste ciclo
 
 - **Geração de Pacotes Web (Build):** Compilados com sucesso os 5 aplicativos frontend da plataforma:
-    - `all-in-one` (Core Platform)
-    - `all-in-one-business` (B2B Admin)
-    - `valley` (Consumer Super App)
-    - `valley_business` (Merchant App)
-    - `valley_rider` (Logistics Rider App)
+  - `all-in-one` (Core Platform)
+  - `all-in-one-business` (B2B Admin)
+  - `valley` (Consumer Super App)
+  - `valley_business` (Merchant App)
+  - `valley_rider` (Logistics Rider App)
 - **Correção de Colisões Massivas:** Implementado script `fix_route_collisions.py` para resolver conflitos de nomes de componentes idênticos em diferentes módulos (ex: `RoutesForm` em Mobility vs Logistics), garantindo builds limpos.
 - **Sintaxe JSX de Produção:** Corrigidos erros de fechamento de chaves em objetos `style` injetados dinamicamente que bloqueavam a minificação do Vite.
 - **Artefatos Distribuíveis:** Todos os aplicativos agora possuem diretórios `dist/` prontos para deploy imediato em qualquer servidor web estático.

@@ -3,12 +3,12 @@ name: Valley Android Security
 on:
   pull_request:
     paths:
-      - 'apps/valley-android/**'
-      - '.github/workflows/valley-android-security.yml'
+      - "apps/valley-android/**"
+      - ".github/workflows/valley-android-security.yml"
   push:
     branches: [main]
     paths:
-      - 'apps/valley-android/**'
+      - "apps/valley-android/**"
 
 permissions:
   contents: read
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
           cache: gradle
       - name: Bloquear chave debug em release
         run: |

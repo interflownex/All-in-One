@@ -16,7 +16,6 @@ metadata:
 This skill provides comprehensive guidance for BigQuery services, optimizations,
 and data handling. It acts as a routing table for specialized BigQuery topics.
 
-
 > [!IMPORTANT]
 >
 > You MUST check the data size before deciding on which libraries to use. Use
@@ -72,7 +71,7 @@ Guidelines and best practices for querying property graphs in BigQuery.
 
 - **Property Graph Guidelines**: [graph_queries.md](references/graph/graph_queries.md) - Standard GQL syntax and query patterns.
 - **Semantic Graph Guidelines**: [semantic_queries.md](references/graph/semantic_queries.md) - Semantic graph operations and expand functions.
--   **Graph Schema DDL Advisor**:
-    [graph_schema_ddl_advisor.md](references/graph/graph-schema/graph_schema_ddl_advisor.md)
-    -   Assists in defining, correcting, and optimizing BigQuery Property Graph
-        and Semantic Graph schemas.
+- **Graph Schema DDL Advisor**:
+  [graph_schema_ddl_advisor.md](references/graph/graph-schema/graph_schema_ddl_advisor.md)
+  - Assists in defining, correcting, and optimizing BigQuery Property Graph
+    and Semantic Graph schemas.

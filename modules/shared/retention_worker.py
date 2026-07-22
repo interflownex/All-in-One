@@ -5,14 +5,14 @@ import hashlib
 import json
 import os
 import sys
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from modules.shared.correlation import get_correlation_id
 from modules.shared.event_contract import EVENT_SCHEMA_VERSION, build_event_envelope
-
 
 ROOT = Path(__file__).resolve().parents[2]
 RETENTION_CONFIG = ROOT / "config" / "compliance" / "retention_jobs.json"
@@ -50,7 +50,7 @@ class RetentionCandidate:
     legal_review_approved: bool = False
 
     @classmethod
-    def from_dict(cls, raw: dict[str, Any]) -> "RetentionCandidate":
+    def from_dict(cls, raw: dict[str, Any]) -> RetentionCandidate:
         return cls(
             module=str(raw["module"]),
             record_id=str(raw["record_id"]),
@@ -58,7 +58,9 @@ class RetentionCandidate:
             subject_id=str(raw["subject_id"]) if raw.get("subject_id") else None,
             payload=dict(raw.get("payload") or {}),
             legal_hold=[str(item) for item in raw.get("legal_hold", [])],
-            requested_action=str(raw["requested_action"]) if raw.get("requested_action") else None,
+            requested_action=str(raw["requested_action"])
+            if raw.get("requested_action")
+            else None,
             legal_review_approved=bool(raw.get("legal_review_approved", False)),
         )
 
@@ -95,8 +97,10 @@ class RetentionPostgresSettings:
     batch_size: int = 100
 
     @classmethod
-    def from_environment(cls) -> "RetentionPostgresSettings":
-        dsn = os.getenv("ALL_IN_ONE_RETENTION_POSTGRES_DSN") or os.getenv("ALL_IN_ONE_POSTGRES_DSN")
+    def from_environment(cls) -> RetentionPostgresSettings:
+        dsn = os.getenv("ALL_IN_ONE_RETENTION_POSTGRES_DSN") or os.getenv(
+            "ALL_IN_ONE_POSTGRES_DSN"
+        )
         if not dsn:
             raise RuntimeError("ALL_IN_ONE_RETENTION_POSTGRES_DSN nao configurada.")
         return cls(
@@ -116,10 +120,14 @@ def selector_hash(candidate: RetentionCandidate) -> str:
         "resource_type": candidate.resource_type,
         "subject_id": candidate.subject_id,
     }
-    return hashlib.sha256(json.dumps(source, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    return hashlib.sha256(
+        json.dumps(source, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
 
 
-def deletion_receipt_hash(candidate: RetentionCandidate, job_name: str, observed_at: datetime) -> str:
+def deletion_receipt_hash(
+    candidate: RetentionCandidate, job_name: str, observed_at: datetime
+) -> str:
     source = {
         "job_name": job_name,
         "module": candidate.module,
@@ -127,19 +135,26 @@ def deletion_receipt_hash(candidate: RetentionCandidate, job_name: str, observed
         "selector_hash": selector_hash(candidate),
         "observed_at": observed_at.isoformat(),
     }
-    return hashlib.sha256(json.dumps(source, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    return hashlib.sha256(
+        json.dumps(source, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
 
 
 def anonymize_payload(payload: dict[str, Any]) -> dict[str, Any]:
     redacted: dict[str, Any] = {}
     for key, value in payload.items():
         normalized_key = key.casefold()
-        if normalized_key in SENSITIVE_PAYLOAD_KEYS or any(token in normalized_key for token in SENSITIVE_PAYLOAD_KEYS):
+        if normalized_key in SENSITIVE_PAYLOAD_KEYS or any(
+            token in normalized_key for token in SENSITIVE_PAYLOAD_KEYS
+        ):
             redacted[key] = "[anonymized]"
         elif isinstance(value, dict):
             redacted[key] = anonymize_payload(value)
         elif isinstance(value, list):
-            redacted[key] = [anonymize_payload(item) if isinstance(item, dict) else item for item in value]
+            redacted[key] = [
+                anonymize_payload(item) if isinstance(item, dict) else item
+                for item in value
+            ]
         else:
             redacted[key] = value
     return redacted
@@ -179,9 +194,13 @@ def decide_retention(
 
     rule = config["module_rules"][candidate.module]
     evidence = _base_evidence(candidate, config, job_name, observed)
-    hold_reasons = sorted(set(candidate.legal_hold).intersection(set(rule["legal_hold"])))
+    hold_reasons = sorted(
+        set(candidate.legal_hold).intersection(set(rule["legal_hold"]))
+    )
     if hold_reasons:
-        evidence.update({"hold_reason": ",".join(hold_reasons), "hold_until": "manual_review"})
+        evidence.update(
+            {"hold_reason": ",".join(hold_reasons), "hold_until": "manual_review"}
+        )
         return RetentionDecision(
             module=candidate.module,
             record_id=candidate.record_id,
@@ -197,7 +216,9 @@ def decide_retention(
     action = candidate.requested_action or rule["default_action"]
     forbidden = set(config["safety_rules"]["forbidden_without_legal_review"])
     if action in forbidden and not candidate.legal_review_approved:
-        evidence.update({"hold_reason": "legal_review_required", "hold_until": "approval"})
+        evidence.update(
+            {"hold_reason": "legal_review_required", "hold_until": "approval"}
+        )
         return RetentionDecision(
             module=candidate.module,
             record_id=candidate.record_id,
@@ -235,11 +256,15 @@ def decide_retention(
             status="dry_run" if dry_run else "applied",
             audit_event="compliance.data.anonymized",
             evidence=evidence,
-            payload=candidate.payload if dry_run else anonymize_payload(candidate.payload),
+            payload=candidate.payload
+            if dry_run
+            else anonymize_payload(candidate.payload),
         )
 
     if job_name == "deletion_worker_daily":
-        evidence["deletion_receipt_hash"] = deletion_receipt_hash(candidate, job_name, observed)
+        evidence["deletion_receipt_hash"] = deletion_receipt_hash(
+            candidate, job_name, observed
+        )
         return RetentionDecision(
             module=candidate.module,
             record_id=candidate.record_id,
@@ -249,10 +274,14 @@ def decide_retention(
             status="dry_run" if dry_run else "applied",
             audit_event="compliance.data.deleted",
             evidence=evidence,
-            payload=candidate.payload if dry_run else {"deleted": True, "deleted_at": observed.isoformat()},
+            payload=candidate.payload
+            if dry_run
+            else {"deleted": True, "deleted_at": observed.isoformat()},
         )
 
-    evidence.update({"hold_reason": "legal_hold_reconciliation", "hold_until": "policy_review"})
+    evidence.update(
+        {"hold_reason": "legal_hold_reconciliation", "hold_until": "policy_review"}
+    )
     return RetentionDecision(
         module=candidate.module,
         record_id=candidate.record_id,
@@ -276,7 +305,12 @@ def process_candidates(
 ) -> list[RetentionDecision]:
     config = config or load_retention_config()
     observed = observed_at or datetime.now(UTC)
-    return [decide_retention(candidate, job_name, dry_run=dry_run, observed_at=observed, config=config) for candidate in candidates]
+    return [
+        decide_retention(
+            candidate, job_name, dry_run=dry_run, observed_at=observed, config=config
+        )
+        for candidate in candidates
+    ]
 
 
 def candidate_from_postgres_row(row: dict[str, Any]) -> RetentionCandidate:
@@ -290,12 +324,16 @@ def candidate_from_postgres_row(row: dict[str, Any]) -> RetentionCandidate:
         subject_id=str(row["subject_id"]) if row.get("subject_id") else None,
         payload=dict(row.get("payload") or {}),
         legal_hold=[str(item) for item in legal_hold],
-        requested_action=str(row["requested_action"]) if row.get("requested_action") else None,
+        requested_action=str(row["requested_action"])
+        if row.get("requested_action")
+        else None,
         legal_review_approved=bool(row.get("legal_review_approved", False)),
     )
 
 
-def decision_event_payload(decision: RetentionDecision, candidate_id: str) -> dict[str, Any]:
+def decision_event_payload(
+    decision: RetentionDecision, candidate_id: str
+) -> dict[str, Any]:
     return {
         "candidate_id": candidate_id,
         "module": decision.module,
@@ -331,7 +369,9 @@ class RetentionPostgresStore:
         config = config or load_retention_config()
         observed = observed_at or datetime.now(UTC)
         decisions: list[RetentionDecision] = []
-        with psycopg.connect(self.settings.postgres_dsn, row_factory=dict_row) as connection:
+        with psycopg.connect(
+            self.settings.postgres_dsn, row_factory=dict_row
+        ) as connection:
             with connection.transaction():
                 rows = connection.execute(
                     """SELECT *
@@ -384,7 +424,13 @@ class RetentionPostgresStore:
                 row.get("created_by"),
             ),
         ).fetchone()
-        next_status = "blocked" if decision.status == "blocked" else "dry_run" if dry_run else "processed"
+        next_status = (
+            "blocked"
+            if decision.status == "blocked"
+            else "dry_run"
+            if dry_run
+            else "processed"
+        )
         connection.execute(
             """UPDATE compliance.retention_candidates
                SET status = %s, locked_at = NOW(), updated_at = NOW(), updated_by = %s
@@ -404,7 +450,12 @@ class RetentionPostgresStore:
                 decision.resource_type,
                 decision.record_id,
                 Jsonb(decision.to_dict()),
-                Jsonb({"retention_candidate_id": str(row["id"]), "retention_decision_id": str(decision_row["id"])}),
+                Jsonb(
+                    {
+                        "retention_candidate_id": str(row["id"]),
+                        "retention_decision_id": str(decision_row["id"]),
+                    }
+                ),
                 row.get("created_by"),
             ),
         )
@@ -454,13 +505,32 @@ def _load_jsonl(path: Path) -> list[RetentionCandidate]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Processa candidatos de retencao LGPD em JSONL.")
-    parser.add_argument("--job", required=True, choices=sorted(load_retention_config()["jobs"]))
-    parser.add_argument("--input", type=Path, help="Arquivo JSONL com candidatos de retencao.")
-    parser.add_argument("--postgres", action="store_true", help="Processa candidatos pendentes em compliance.retention_candidates.")
-    parser.add_argument("--postgres-dsn", help="DSN PostgreSQL; se omitido usa ALL_IN_ONE_RETENTION_POSTGRES_DSN.")
-    parser.add_argument("--batch-size", type=int, help="Limite de candidatos PostgreSQL por lote.")
-    parser.add_argument("--dry-run", action="store_true", help="Calcula decisoes sem aplicar transformacoes destrutivas.")
+    parser = argparse.ArgumentParser(
+        description="Processa candidatos de retencao LGPD em JSONL."
+    )
+    parser.add_argument(
+        "--job", required=True, choices=sorted(load_retention_config()["jobs"])
+    )
+    parser.add_argument(
+        "--input", type=Path, help="Arquivo JSONL com candidatos de retencao."
+    )
+    parser.add_argument(
+        "--postgres",
+        action="store_true",
+        help="Processa candidatos pendentes em compliance.retention_candidates.",
+    )
+    parser.add_argument(
+        "--postgres-dsn",
+        help="DSN PostgreSQL; se omitido usa ALL_IN_ONE_RETENTION_POSTGRES_DSN.",
+    )
+    parser.add_argument(
+        "--batch-size", type=int, help="Limite de candidatos PostgreSQL por lote."
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Calcula decisoes sem aplicar transformacoes destrutivas.",
+    )
     args = parser.parse_args(argv)
 
     if args.postgres:
@@ -470,14 +540,27 @@ def main(argv: list[str] | None = None) -> int:
             else RetentionPostgresSettings.from_environment()
         )
         if args.batch_size and not args.postgres_dsn:
-            settings = RetentionPostgresSettings(settings.postgres_dsn, max(1, args.batch_size))
-        decisions = RetentionPostgresStore(settings).process_pending(args.job, dry_run=args.dry_run)
+            settings = RetentionPostgresSettings(
+                settings.postgres_dsn, max(1, args.batch_size)
+            )
+        decisions = RetentionPostgresStore(settings).process_pending(
+            args.job, dry_run=args.dry_run
+        )
     else:
         if not args.input:
             parser.error("--input e obrigatorio quando --postgres nao for usado.")
-        decisions = process_candidates(_load_jsonl(args.input), args.job, dry_run=args.dry_run)
+        decisions = process_candidates(
+            _load_jsonl(args.input), args.job, dry_run=args.dry_run
+        )
     for decision in decisions:
-        print(json.dumps(decision.to_dict(), ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+        print(
+            json.dumps(
+                decision.to_dict(),
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+        )
     return 0
 
 

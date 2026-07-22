@@ -16,42 +16,42 @@ AI.CLASSIFY(
 
 ### Input Arguments
 
-| Argument            | Requirement  | Type          | Description           |
-| :------------------ | :----------- | :------------ | :-------------------- |
-| **`input`**         | **Required** | String        | The text content to   |
-:                     :              :               : classify.             :
-| **`categories`**    | **Required** | Array<String> | A list of target      |
-:                     :              :               : categories/labels.    :
-:                     :              :               : Can be                :
-:                     :              :               : `ARRAY<STRING>` or    :
-:                     :              :               : `ARRAY<STRUCT<STRING, :
-:                     :              :               : STRING>>` (label,     :
-:                     :              :               : description).         :
-| **`connection_id`** | Optional     | String        | The connection ID to  |
-:                     :              :               : use for the LLM.      :
-| **`endpoint`**      | Optional     | String        | The model name, e.g., |
-:                     :              :               : `'gemini-2.5-flash'`. :
-| **`output_mode`**   | Optional     | String        | `'single'` (default)  |
-:                     :              :               : or `'multi'`.         :
-:                     :              :               : Determines the output :
-:                     :              :               : type.                 :
+| Argument                        | Requirement  | Type          | Description           |
+| :------------------------------ | :----------- | :------------ | :-------------------- |
+| **`input`**                     | **Required** | String        | The text content to   |
+| : : : : classify. :             |
+| **`categories`**                | **Required** | Array<String> | A list of target      |
+| : : : : categories/labels. :    |
+| : : : : Can be :                |
+| : : : : `ARRAY<STRING>` or :    |
+| : : : : `ARRAY<STRUCT<STRING, : |
+| : : : : STRING>>` (label, :     |
+| : : : : description). :         |
+| **`connection_id`**             | Optional     | String        | The connection ID to  |
+| : : : : use for the LLM. :      |
+| **`endpoint`**                  | Optional     | String        | The model name, e.g., |
+| : : : : `'gemini-2.5-flash'`. : |
+| **`output_mode`**               | Optional     | String        | `'single'` (default)  |
+| : : : : or `'multi'`. :         |
+| : : : : Determines the output : |
+| : : : : type. :                 |
 
 ### Output Schema
 
 The output type depends on the `output_mode` argument:
 
-| Output Mode      | output_mode Value | Type            | Description         |
-| :--------------- | :---------------- | :-------------- | :------------------ |
-| **Single Label** | `NULL` (Default)  | `STRING`        | The single category |
-:                  :                   :                 : that best fits the  :
-:                  :                   :                 : input.              :
-| **Single Label   | `'single'`        | `ARRAY<STRING>` | An array containing |
-: (Explicit)**     :                   :                 : exactly one         :
-:                  :                   :                 : category string.    :
-| **Multi Label**  | `'multi'`         | `ARRAY<STRING>` | An array containing |
-:                  :                   :                 : zero or more        :
-:                  :                   :                 : matching            :
-:                  :                   :                 : categories.         :
+| Output Mode                        | output_mode Value | Type            | Description         |
+| :--------------------------------- | :---------------- | :-------------- | :------------------ |
+| **Single Label**                   | `NULL` (Default)  | `STRING`        | The single category |
+| : : : : that best fits the :       |
+| : : : : input. :                   |
+| **Single Label                     | `'single'`        | `ARRAY<STRING>` | An array containing |
+| : (Explicit)** : : : exactly one : |
+| : : : : category string. :         |
+| **Multi Label**                    | `'multi'`         | `ARRAY<STRING>` | An array containing |
+| : : : : zero or more :             |
+| : : : : matching :                 |
+| : : : : categories. :              |
 
 ## Examples
 

@@ -11,7 +11,6 @@ from modules.shared.event_contract import (
 )
 from modules.shared.store import SQLiteStore
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -20,7 +19,10 @@ def test_sanitize_event_payload_redacts_nested_credentials() -> None:
         {
             "name": "registro permitido",
             "password": "senha-em-texto",
-            "nested": {"api-key": "chave-em-texto", "secret_reference": "cofre://segredo"},
+            "nested": {
+                "api-key": "chave-em-texto",
+                "secret_reference": "cofre://segredo",
+            },
             "items": [{"authorization": "Bearer proibido"}],
         }
     )

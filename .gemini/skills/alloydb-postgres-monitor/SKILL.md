@@ -21,9 +21,7 @@ All scripts can be executed using Node.js. Replace `<param_name>` and `<param_va
 
 Note: The scripts automatically load the environment variables from various .env files. Do not ask the user to set vars unless skill executions fails due to env var absence.
 
-
 ## Scripts
-
 
 ### get_query_metrics
 
@@ -33,9 +31,11 @@ To use this tool, you must provide the Google Cloud `projectId` and a PromQL `qu
 Generate the PromQL `query` for AlloyDB query metrics using the provided metrics and rules. Get labels like `cluster_id`, `instance_id`, and `query_hash` from the user's intent. If `query_hash` is provided, use the per-query metrics.
 
 Defaults:
+
 1. Interval: Use a default interval of `5m` for `_over_time` aggregation functions unless a different window is specified by the user.
 
 PromQL Query Examples:
+
 1. Basic Time Series: `avg_over_time({"__name__"="alloydb.googleapis.com/instance/cpu/average_utilization","monitored_resource"="alloydb.googleapis.com/Instance","instance_id"="alloydb-instance"}[5m])`
 2. Top K: `topk(30, avg_over_time({"__name__"="alloydb.googleapis.com/instance/cpu/average_utilization","monitored_resource"="alloydb.googleapis.com/Instance","instance_id"="alloydb-instance"}[5m]))`
 3. Mean: `avg(avg_over_time({"__name__"="alloydb.googleapis.com/instance/cpu/average_utilization","monitored_resource"="alloydb.googleapis.com/Instance","instance_id"="my-instance","cluster_id"="my-cluster"}[5m]))`
@@ -46,6 +46,7 @@ PromQL Query Examples:
 8. Percentile with groupby on instanceid, clusterid: `quantile by ("instance_id","cluster_id")(0.99,avg_over_time({"__name__"="alloydb.googleapis.com/instance/cpu/average_utilization","monitored_resource"="alloydb.googleapis.com/Instance","cluster_id"="my-cluster","instance_id"="my-instance"}[5m]))`
 
 Available Metrics List: metricname. description. monitored resource. labels. aggregate is the aggregated values for all query stats, Use aggregate metrics if query id is not provided. For perquery metrics do not fetch querystring unless specified by user specifically. Have the aggregation on query hash to avoid fetching the querystring. Do not use latency metrics for anything.
+
 1. `alloydb.googleapis.com/database/postgresql/insights/aggregate/latencies`: Aggregated query latency distribution. `alloydb.googleapis.com/Database`. `user`, `client_addr`.
 2. `alloydb.googleapis.com/database/postgresql/insights/aggregate/execution_time`: Accumulated aggregated query execution time since the last sample. `alloydb.googleapis.com/Database`. `user`, `client_addr`.
 3. `alloydb.googleapis.com/database/postgresql/insights/aggregate/io_time`: Accumulated aggregated IO time since the last sample. `alloydb.googleapis.com/Database`. `user`, `client_addr`, `io_type`.
@@ -65,14 +66,12 @@ Available Metrics List: metricname. description. monitored resource. labels. agg
 17. `alloydb.googleapis.com/database/postgresql/insights/pertag/shared_blk_access_count`: Shared blocks accessed by statement execution per tag. `alloydb.googleapis.com/Database`. `user`, `client_addr`, `action`, `application`, `controller`, `db_driver`, `framework`, `route`, `access_type`, `tag_hash`.
 18. `alloydb.googleapis.com/database/postgresql/insights/pertag/row_count`: The number of retrieved or affected rows since the last sample per tag. `alloydb.googleapis.com/Database`. `user`, `client_addr`, `action`, `application`, `controller`, `db_driver`, `framework`, `route`, `tag_hash`.
 
-
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| projectId | string | The Id of the Google Cloud project. | Yes |  |
-| query | string | The promql query to execute. | Yes |  |
-
+| Name      | Type   | Description                         | Required | Default |
+| :-------- | :----- | :---------------------------------- | :------- | :------ |
+| projectId | string | The Id of the Google Cloud project. | Yes      |         |
+| query     | string | The promql query to execute.        | Yes      |         |
 
 ---
 
@@ -82,10 +81,9 @@ Generate a PostgreSQL EXPLAIN plan in JSON format for a single SQL statement—w
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| query | string | The SQL statement for which you want to generate plan (omit the EXPLAIN keyword). | Yes |  |
-
+| Name  | Type   | Description                                                                       | Required | Default |
+| :---- | :----- | :-------------------------------------------------------------------------------- | :------- | :------ |
+| query | string | The SQL statement for which you want to generate plan (omit the EXPLAIN keyword). | Yes      |         |
 
 ---
 
@@ -97,9 +95,11 @@ To use this tool, you must provide the Google Cloud `projectId` and a PromQL `qu
 Generate the PromQL `query` for AlloyDB system metrics using the provided metrics and rules. Get labels like `cluster_id` and `instance_id` from the user's intent.
 
 Defaults:
+
 1. Interval: Use a default interval of `5m` for `_over_time` aggregation functions unless a different window is specified by the user.
 
 PromQL Query Examples:
+
 1. Basic Time Series: `avg_over_time({"__name__"="alloydb.googleapis.com/instance/cpu/average_utilization","monitored_resource"="alloydb.googleapis.com/Instance","instance_id"="alloydb-instance"}[5m])`
 2. Top K: `topk(30, avg_over_time({"__name__"="alloydb.googleapis.com/instance/cpu/average_utilization","monitored_resource"="alloydb.googleapis.com/Instance","instance_id"="alloydb-instance"}[5m]))`
 3. Mean: `avg(avg_over_time({"__name__"="alloydb.googleapis.com/instance/cpu/average_utilization","monitored_resource"="alloydb.googleapis.com/Instance","instance_id"="my-instance","cluster_id"="my-cluster"}[5m]))`
@@ -110,6 +110,7 @@ PromQL Query Examples:
 8. Percentile with groupby on instanceid, clusterid: `quantile by ("instance_id","cluster_id")(0.99,avg_over_time({"__name__"="alloydb.googleapis.com/instance/cpu/average_utilization","monitored_resource"="alloydb.googleapis.com/Instance","cluster_id"="my-cluster","instance_id"="my-instance"}[5m]))`
 
 Available Metrics List: metricname. description. monitored resource. labels
+
 1. `alloydb.googleapis.com/instance/cpu/average_utilization`: The percentage of CPU being used on an instance. `alloydb.googleapis.com/Instance`. `cluster_id`, `instance_id`.
 2. `alloydb.googleapis.com/instance/cpu/maximum_utilization`: Maximum CPU utilization across all currently serving nodes of the instance from 0 to 100. `alloydb.googleapis.com/Instance`. `cluster_id`, `instance_id`.
 3. `alloydb.googleapis.com/cluster/storage/usage`: The total AlloyDB storage in bytes across the entire cluster. `alloydb.googleapis.com/Cluster`. `cluster_id`.
@@ -122,7 +123,7 @@ Available Metrics List: metricname. description. monitored resource. labels
 10. `alloydb.googleapis.com/database/postgresql/temp_files_written_for_top_databases`: The number of temporary files used for writing data per database while performing internal algorithms like join, sort etc for top 500 dbs. `alloydb.googleapis.com/Database`. `cluster_id`, `instance_id`, `database`.
 11. `alloydb.googleapis.com/database/postgresql/inserted_tuples_count_for_top_databases`: The total number of rows inserted per db for top 500 dbs as a result of the queries in the instance. `alloydb.googleapis.com/Database`. `cluster_id`, `instance_id`, `database`.
 12. `alloydb.googleapis.com/database/postgresql/updated_tuples_count_for_top_databases`: The total number of rows updated per db for top 500 dbs as a result of the queries in the instance. `alloydb.googleapis.com/Database`. `cluster_id`, `instance_id`, `database`.
-13. `alloydb.googleapis.com/database/postgresql/deleted_tuples_count_for_top_databases`: The total  number of rows deleted per db for top 500 dbs as a result of the queries in the instance. `alloydb.googleapis.com/Database`. `cluster_id`, `instance_id`, `database`.
+13. `alloydb.googleapis.com/database/postgresql/deleted_tuples_count_for_top_databases`: The total number of rows deleted per db for top 500 dbs as a result of the queries in the instance. `alloydb.googleapis.com/Database`. `cluster_id`, `instance_id`, `database`.
 14. `alloydb.googleapis.com/database/postgresql/backends_for_top_databases`: The current number of connections per database to the instance for top 500 dbs. `alloydb.googleapis.com/Database`. `cluster_id`, `instance_id`, `database`.
 15. `alloydb.googleapis.com/instance/postgresql/backends_by_state`: The current number of connections to the instance grouped by the state like idle, active, idle_in_transaction, idle_in_transaction_aborted, disabled, and fastpath_function_call. `alloydb.googleapis.com/Instance`. `cluster_id`, `instance_id`, `state`.
 16. `alloydb.googleapis.com/instance/postgresql/backends_for_top_applications`: The current number of connections to the AlloyDB instance, grouped by applications for top 500 applications. `alloydb.googleapis.com/Instance`. `cluster_id`, `instance_id`, `application_name`.
@@ -145,14 +146,12 @@ Available Metrics List: metricname. description. monitored resource. labels
 33. `alloydb.googleapis.com/instance/postgresql/wait_time`: Total elapsed wait time for each wait event in the instance. `alloydb.googleapis.com/Instance`. `cluster_id`, `instance_id`, `wait_event_type`, `wait_event_name`.
 34. `alloydb.googleapis.com/instance/postgres/transaction_count`: The number of committed and rolled back transactions across all serving nodes of the instance. `alloydb.googleapis.com/Instance`. `cluster_id`, `instance_id`.
 
-
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| projectId | string | The Id of the Google Cloud project. | Yes |  |
-| query | string | The promql query to execute. | Yes |  |
-
+| Name      | Type   | Description                         | Required | Default |
+| :-------- | :----- | :---------------------------------- | :------- | :------ |
+| projectId | string | The Id of the Google Cloud project. | Yes      |         |
+| query     | string | The promql query to execute.        | Yes      |         |
 
 ---
 
@@ -162,38 +161,32 @@ List the top N (default 50) currently running queries (state='active') from pg_s
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| min_duration | string | Optional: Only show queries running at least this long (e.g., '1 minute', '1 second', '2 seconds'). | No | `1 minute` |
-| exclude_application_names | string | Optional: A comma-separated list of application names to exclude from the query results. This is useful for filtering out queries from specific applications (e.g., 'psql', 'pgAdmin', 'DBeaver'). The match is case-sensitive. Whitespace around commas and names is automatically handled. If this parameter is omitted, no applications are excluded. | No | `` |
-| limit | integer | Optional: The maximum number of rows to return. | No | `50` |
-
+| Name                      | Type    | Description                                                                                                                                                                                                                                                                                                                                              | Required | Default    |
+| :------------------------ | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------- | :--------- |
+| min_duration              | string  | Optional: Only show queries running at least this long (e.g., '1 minute', '1 second', '2 seconds').                                                                                                                                                                                                                                                      | No       | `1 minute` |
+| exclude_application_names | string  | Optional: A comma-separated list of application names to exclude from the query results. This is useful for filtering out queries from specific applications (e.g., 'psql', 'pgAdmin', 'DBeaver'). The match is case-sensitive. Whitespace around commas and names is automatically handled. If this parameter is omitted, no applications are excluded. | No       | ``         |
+| limit                     | integer | Optional: The maximum number of rows to return.                                                                                                                                                                                                                                                                                                          | No       | `50`       |
 
 ---
 
 ### list_database_stats
 
-
-
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| database_name | string | Optional: A specific database name pattern to search for. | No | `` |
-| include_templates | boolean | Optional: Whether to include template databases in the results. | No | `false` |
-| database_owner | string | Optional: A specific database owner name pattern to search for. | No | `` |
-| default_tablespace | string | Optional: A specific default tablespace name pattern to search for. | No | `` |
-| order_by | string | Optional: The field to order the results by. Valid values are 'size' and 'commit'. | No | `` |
-| limit | integer | Optional: The maximum number of rows to return. | No | `10` |
-
+| Name               | Type    | Description                                                                        | Required | Default |
+| :----------------- | :------ | :--------------------------------------------------------------------------------- | :------- | :------ |
+| database_name      | string  | Optional: A specific database name pattern to search for.                          | No       | ``      |
+| include_templates  | boolean | Optional: Whether to include template databases in the results.                    | No       | `false` |
+| database_owner     | string  | Optional: A specific database owner name pattern to search for.                    | No       | ``      |
+| default_tablespace | string  | Optional: A specific default tablespace name pattern to search for.                | No       | ``      |
+| order_by           | string  | Optional: The field to order the results by. Valid values are 'size' and 'commit'. | No       | ``      |
+| limit              | integer | Optional: The maximum number of rows to return.                                    | No       | `10`    |
 
 ---
 
 ### list_locks
 
 Identifies all locks held by active processes showing the process ID, user, query text, and an aggregated list of all transactions and specific locks (relation, mode, grant status) associated with each process.
-
-
 
 ---
 
@@ -203,11 +196,10 @@ Lists performance statistics for executed queries ordered by total time, filteri
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| database_name | string | Optional: The database name to list query stats for. | No | `` |
-| limit | integer | Optional: The maximum number of results to return. Defaults to 50. | No | `50` |
-
+| Name          | Type    | Description                                                        | Required | Default |
+| :------------ | :------ | :----------------------------------------------------------------- | :------- | :------ |
+| database_name | string  | Optional: The database name to list query stats for.               | No       | ``      |
+| limit         | integer | Optional: The maximum number of results to return. Defaults to 50. | No       | `50`    |
 
 ---
 
@@ -217,11 +209,9 @@ Identifies and lists database transactions that exceed a specified time limit. F
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| min_duration | string | Optional: Only show transactions running at least this long (e.g., '1 minute', '15 minutes', '30 seconds'). | No | `5 minutes` |
-| limit | integer | Optional: The maximum number of long-running transactions to return. Defaults to 20. | No | `20` |
-
+| Name         | Type    | Description                                                                                                 | Required | Default     |
+| :----------- | :------ | :---------------------------------------------------------------------------------------------------------- | :------- | :---------- |
+| min_duration | string  | Optional: Only show transactions running at least this long (e.g., '1 minute', '15 minutes', '30 seconds'). | No       | `5 minutes` |
+| limit        | integer | Optional: The maximum number of long-running transactions to return. Defaults to 20.                        | No       | `20`        |
 
 ---
-

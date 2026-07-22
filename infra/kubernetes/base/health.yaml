@@ -7,23 +7,23 @@ metadata:
 spec:
   replicas: 2
   selector:
-    matchLabels: {app: health}
+    matchLabels: { app: health }
   template:
     metadata:
-      labels: {app: health}
+      labels: { app: health }
     spec:
       containers:
         - name: health
           image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/health:latest
           imagePullPolicy: IfNotPresent
-          ports: [{containerPort: 8000}]
+          ports: [{ containerPort: 8000 }]
           readinessProbe:
             httpGet:
               path: /health
               port: 8000
           envFrom:
-            - configMapRef: {name: platform-config}
-            - secretRef: {name: platform-secrets-placeholder}
+            - configMapRef: { name: platform-config }
+            - secretRef: { name: platform-secrets-placeholder }
 ---
 apiVersion: v1
 kind: Service
@@ -31,5 +31,5 @@ metadata:
   name: health
   namespace: all-in-one
 spec:
-  selector: {app: health}
-  ports: [{port: 80, targetPort: 8000}]
+  selector: { app: health }
+  ports: [{ port: 80, targetPort: 8000 }]

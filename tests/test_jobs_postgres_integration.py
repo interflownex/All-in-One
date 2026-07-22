@@ -1,19 +1,20 @@
 import base64
-from io import BytesIO
 import os
+from io import BytesIO
 from uuid import UUID, uuid4
 
+import psycopg
+import pytest
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from fastapi.testclient import TestClient
 from pypdf import PdfWriter
-import psycopg
-import pytest
 
 from modules.shared.runtime import create_module_app
 
-
 POSTGRES_DSN = os.getenv("ALL_IN_ONE_JOBS_POSTGRES_TEST_DSN")
-pytestmark = pytest.mark.skipif(not POSTGRES_DSN, reason="DSN PostgreSQL de integracao nao configurado.")
+pytestmark = pytest.mark.skipif(
+    not POSTGRES_DSN, reason="DSN PostgreSQL de integracao nao configurado."
+)
 
 
 def seed_user(connection, user_id: UUID, nonce: str) -> None:
@@ -34,7 +35,9 @@ def seed_user(connection, user_id: UUID, nonce: str) -> None:
     )
 
 
-def headers(user_id: UUID, business_id: UUID | None = None, scope: str | None = None) -> dict[str, str]:
+def headers(
+    user_id: UUID, business_id: UUID | None = None, scope: str | None = None
+) -> dict[str, str]:
     result = {"X-Actor-User-Id": str(user_id)}
     if business_id:
         result.update(
@@ -49,7 +52,9 @@ def headers(user_id: UUID, business_id: UUID | None = None, scope: str | None = 
     return result
 
 
-def test_jobs_postgres_typed_store_and_private_ctps(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
+def test_jobs_postgres_typed_store_and_private_ctps(
+    monkeypatch: pytest.MonkeyPatch, tmp_path
+) -> None:
     candidate_id = uuid4()
     recruiter_id = uuid4()
     business_id = uuid4()
@@ -60,7 +65,15 @@ def test_jobs_postgres_typed_store_and_private_ctps(monkeypatch: pytest.MonkeyPa
             """INSERT INTO business.companies
                (id, user_id, cnpj, root_cnpj, legal_name, legal_representative_user_id, status, created_by, updated_by)
                VALUES (%s, %s, %s, %s, 'Empresa Jobs', %s, 'active', %s, %s)""",
-            (business_id, recruiter_id, "12345678000191", "12345678", recruiter_id, recruiter_id, recruiter_id),
+            (
+                business_id,
+                recruiter_id,
+                "12345678000191",
+                "12345678",
+                recruiter_id,
+                recruiter_id,
+                recruiter_id,
+            ),
         )
         connection.execute(
             """INSERT INTO business.user_company_memberships
@@ -83,7 +96,10 @@ def test_jobs_postgres_typed_store_and_private_ctps(monkeypatch: pytest.MonkeyPa
         headers=headers(candidate_id),
         json={
             "user_id": str(candidate_id),
-            "payload": {"headline": "Pessoa candidata", "recruiter_visibility": "business_recruiters"},
+            "payload": {
+                "headline": "Pessoa candidata",
+                "recruiter_visibility": "business_recruiters",
+            },
         },
     )
     assert resume.status_code == 201
@@ -128,8 +144,35 @@ def test_jobs_postgres_typed_store_and_private_ctps(monkeypatch: pytest.MonkeyPa
     assert viewed.status_code == 200
 
     with psycopg.connect(POSTGRES_DSN) as connection:
-        assert connection.execute("SELECT COUNT(*) FROM jobs.resumes WHERE id = %s", (resume_id,)).fetchone()[0] == 1
-        assert connection.execute("SELECT COUNT(*) FROM jobs.resume_documents WHERE resume_id = %s", (resume_id,)).fetchone()[0] == 1
-        assert connection.execute("SELECT COUNT(*) FROM jobs.resume_access_logs WHERE resume_id = %s", (resume_id,)).fetchone()[0] == 1
-        assert connection.execute("SELECT COUNT(*) FROM audit.logs WHERE module = 'jobs'").fetchone()[0] >= 4
-        assert connection.execute("SELECT COUNT(*) FROM audit.domain_events WHERE routing_key LIKE 'jobs.%'").fetchone()[0] >= 4
+        assert (
+            connection.execute(
+                "SELECT COUNT(*) FROM jobs.resumes WHERE id = %s", (resume_id,)
+            ).fetchone()[0]
+            == 1
+        )
+        assert (
+            connection.execute(
+                "SELECT COUNT(*) FROM jobs.resume_documents WHERE resume_id = %s",
+                (resume_id,),
+            ).fetchone()[0]
+            == 1
+        )
+        assert (
+            connection.execute(
+                "SELECT COUNT(*) FROM jobs.resume_access_logs WHERE resume_id = %s",
+                (resume_id,),
+            ).fetchone()[0]
+            == 1
+        )
+        assert (
+            connection.execute(
+                "SELECT COUNT(*) FROM audit.logs WHERE module = 'jobs'"
+            ).fetchone()[0]
+            >= 4
+        )
+        assert (
+            connection.execute(
+                "SELECT COUNT(*) FROM audit.domain_events WHERE routing_key LIKE 'jobs.%'"
+            ).fetchone()[0]
+            >= 4
+        )

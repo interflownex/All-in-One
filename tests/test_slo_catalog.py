@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SLO_CATALOG = ROOT / "config" / "observability" / "slo_catalog.json"
 OUTBOX_ALERTS = ROOT / "config" / "observability" / "outbox_alerts.json"
@@ -58,9 +57,17 @@ def test_slo_catalog_reuses_materialized_outbox_and_retention_alerts() -> None:
     assert outbox_alert["materialized_alert"] == "OutboxOldestPendingTooOld"
     assert outbox_alert["expr"] == outbox["OutboxOldestPendingTooOld"]["expr"]
     assert outbox_alert["for"] == outbox["OutboxOldestPendingTooOld"]["for"]
-    assert outbox_alert["response_sla_minutes"] == outbox["OutboxOldestPendingTooOld"]["response_sla_minutes"]
+    assert (
+        outbox_alert["response_sla_minutes"]
+        == outbox["OutboxOldestPendingTooOld"]["response_sla_minutes"]
+    )
 
     assert retention_alert["materialized_alert"] == "RetentionOldestCandidateTooOld"
-    assert retention_alert["expr"] == retention["RetentionOldestCandidateTooOld"]["expr"]
+    assert (
+        retention_alert["expr"] == retention["RetentionOldestCandidateTooOld"]["expr"]
+    )
     assert retention_alert["for"] == retention["RetentionOldestCandidateTooOld"]["for"]
-    assert retention_alert["response_sla_minutes"] == retention["RetentionOldestCandidateTooOld"]["response_sla_minutes"]
+    assert (
+        retention_alert["response_sla_minutes"]
+        == retention["RetentionOldestCandidateTooOld"]["response_sla_minutes"]
+    )

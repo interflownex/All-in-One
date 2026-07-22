@@ -98,10 +98,7 @@
     "gcloud_path": "/home/eretazan/google-cloud-sdk/bin/gcloud",
     "data_agent_ready": true,
     "service_identity_created_or_verified": true,
-    "project_iam_roles_verified": [
-      "roles/apihub.admin",
-      "roles/apihub.runtimeProjectServiceAgent"
-    ],
+    "project_iam_roles_verified": ["roles/apihub.admin", "roles/apihub.runtimeProjectServiceAgent"],
     "kms_binding_blocked_reason": "BILLING_DISABLED for project 864981916504",
     "remaining_command": "gcloud kms keys add-iam-policy-binding Software --keyring=Github --location=southamerica-east1 --project=all-in-one-498012 --member=serviceAccount:service-864981916504@gcp-sa-apihub.iam.gserviceaccount.com --role=roles/cloudkms.cryptoKeyEncrypterDecrypter",
     "hmac_created_at": "2026-07-19",

@@ -1,10 +1,11 @@
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 MATRIX_PATH = ROOT / "config" / "integrations" / "provider_matrix.json"
-ENVIRONMENT_PROFILES_PATH = ROOT / "config" / "integrations" / "environment_profiles.json"
+ENVIRONMENT_PROFILES_PATH = (
+    ROOT / "config" / "integrations" / "environment_profiles.json"
+)
 CATALOG_PATH = ROOT / "config" / "module_catalog.json"
 
 REQUIRED_KEYS = {
@@ -59,10 +60,17 @@ def test_integration_provider_matrix_is_complete_and_secret_safe() -> None:
         assert REQUIRED_KEYS <= set(integration), integration["key"]
         assert integration["key"] not in integration_keys
         integration_keys.add(integration["key"])
-        assert integration["stage"] in {"planned", "sandbox_required", "provider_discovery", "partially_implemented"}
+        assert integration["stage"] in {
+            "planned",
+            "sandbox_required",
+            "provider_discovery",
+            "partially_implemented",
+        }
         assert integration["modules"], integration["key"]
         assert set(integration["modules"]) <= catalog_modules
-        assert integration["sandbox_adapter"].startswith("local_") or integration["sandbox_adapter"].endswith("_simulator")
+        assert integration["sandbox_adapter"].startswith("local_") or integration[
+            "sandbox_adapter"
+        ].endswith("_simulator")
         assert integration["primary_candidates"], integration["key"]
         assert integration["fallback_candidates"], integration["key"]
         assert integration["required_env"], integration["key"]
@@ -126,5 +134,12 @@ def test_integration_environment_profiles_gate_promotion() -> None:
 
     matrix_stages = {integration["stage"] for integration in matrix["integrations"]}
     for environment_name in REQUIRED_ENVIRONMENTS:
-        allowed_stages = set(profiles["profiles"][environment_name]["required_matrix_stage"])
-        assert allowed_stages <= matrix_stages | {"planned", "sandbox_required", "provider_discovery", "partially_implemented"}
+        allowed_stages = set(
+            profiles["profiles"][environment_name]["required_matrix_stage"]
+        )
+        assert allowed_stages <= matrix_stages | {
+            "planned",
+            "sandbox_required",
+            "provider_discovery",
+            "partially_implemented",
+        }

@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `mobility.rides`
+
 - `mobility.routes`
 - `mobility.stops`
 - `mobility.tickets`

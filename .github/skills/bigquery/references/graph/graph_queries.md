@@ -48,14 +48,14 @@ output of one clause provides the input (the "working table") to the next.
 
 Common sequential statements include:
 
--   `MATCH`: Identifies topological patterns in the graph.
--   `WITH`: Projects variables from current scope into the next scope,
-    optionally sorting, limiting or grouping.
--   `LET`: Defines a new variable or alias within the query scope.
--   `FILTER`: Filters intermediate graph mappings.
--   `RETURN`: Ends a GQL query or subquery, projecting the final graph
-    variables.
--   `ORDER BY`, `LIMIT`, `OFFSET`: Control sorting and pagination.
+- `MATCH`: Identifies topological patterns in the graph.
+- `WITH`: Projects variables from current scope into the next scope,
+  optionally sorting, limiting or grouping.
+- `LET`: Defines a new variable or alias within the query scope.
+- `FILTER`: Filters intermediate graph mappings.
+- `RETURN`: Ends a GQL query or subquery, projecting the final graph
+  variables.
+- `ORDER BY`, `LIMIT`, `OFFSET`: Control sorting and pagination.
 
 **Chaining with `NEXT`:** Multiple linear statements can be composed into a
 compound query using the `NEXT` keyword. The results of the first statement pipe
@@ -103,17 +103,17 @@ Node patterns are enclosed in parentheses `()`. They identify entities in the
 graph and can optionally bind to a variable or specify label and property
 filters.
 
--   `MATCH (n)`: Matches any node and binds it to the variable `n`.
--   `MATCH (p:Person)`: Matches nodes explicitly labeled with `Person`.
--   `MATCH (p:Person|Account)`: Uses a label expression `|` (OR) to match nodes
-    that have *either* the `Person` or `Account` label.
--   `MATCH (p:Person {id: 1})`: Matches nodes that satisfy a specific property
-    filter.
--   `MATCH (p:Person WHERE p.age > 18)`: Matches nodes applying a `WHERE`
-    condition on properties.
+- `MATCH (n)`: Matches any node and binds it to the variable `n`.
+- `MATCH (p:Person)`: Matches nodes explicitly labeled with `Person`.
+- `MATCH (p:Person|Account)`: Uses a label expression `|` (OR) to match nodes
+  that have _either_ the `Person` or `Account` label.
+- `MATCH (p:Person {id: 1})`: Matches nodes that satisfy a specific property
+  filter.
+- `MATCH (p:Person WHERE p.age > 18)`: Matches nodes applying a `WHERE`
+  condition on properties.
 
 **Important Note on Label Expressions**: BigQuery matches a node if it possesses
-*any* of the labels listed in an `OR` (`|`) expression. You cannot use `&`
+_any_ of the labels listed in an `OR` (`|`) expression. You cannot use `&`
 directly in label expressions.
 
 ### Edge Patterns
@@ -122,24 +122,24 @@ Edge patterns represent the relationships between nodes. They are enclosed in
 square brackets `[]` and connected using arrows (`-`, `->`, `<-`) to denote
 directionality.
 
--   `MATCH (a)-[e]->(b)`: Matches any directed edge from `a` to `b`, binding the
-    edge to `e`.
--   `MATCH (a)-[e:Transfers]->(b)`: Directed edge specifically labeled
-    `Transfers`.
--   `MATCH (a)-[e:Transfers {amount: 50}]->(b)`: Edge with a specific property
-    filter applied.
--   `MATCH (a)-[e:Transfers]-(b)`: Matches an undirected (any direction) edge
-    between `a` and `b`. Use preferred explicit direction when possible for
-    better performance.
+- `MATCH (a)-[e]->(b)`: Matches any directed edge from `a` to `b`, binding the
+  edge to `e`.
+- `MATCH (a)-[e:Transfers]->(b)`: Directed edge specifically labeled
+  `Transfers`.
+- `MATCH (a)-[e:Transfers {amount: 50}]->(b)`: Edge with a specific property
+  filter applied.
+- `MATCH (a)-[e:Transfers]-(b)`: Matches an undirected (any direction) edge
+  between `a` and `b`. Use preferred explicit direction when possible for
+  better performance.
 
 ### Pattern Joins and Commas
 
 A complex graph pattern consists of one or more path patterns separated by
 commas `,`. When multiple comma-separated patterns are used:
 
--   If they do not share any variables, they result in a **cross join**.
--   If they share a common variable, BigQuery automatically performs an
-    **equijoin** on that variable.
+- If they do not share any variables, they result in a **cross join**.
+- If they share a common variable, BigQuery automatically performs an
+  **equijoin** on that variable.
 
 ```sql
 -- Equijoin example where 'interm' connects the two paths
@@ -167,12 +167,12 @@ Variable-length paths can result in exponential combinations and repeating
 paths. You can constrain the search between source and destination pairs using
 search prefixes placed immediately before the path pattern:
 
--   `ANY`: Returns exactly one arbitrary matching path between each unique pair
-    of source and destination nodes.
--   `ANY SHORTEST`: Returns a single path for each unique pair, specifically
-    choosing from those with the minimum number of edges (hops).
--   `ANY CHEAPEST`: Returns a single path with the minimum total cost, computed
-    by aggregating `COST` expressions defined on the edges.
+- `ANY`: Returns exactly one arbitrary matching path between each unique pair
+  of source and destination nodes.
+- `ANY SHORTEST`: Returns a single path for each unique pair, specifically
+  choosing from those with the minimum number of edges (hops).
+- `ANY CHEAPEST`: Returns a single path with the minimum total cost, computed
+  by aggregating `COST` expressions defined on the edges.
 
 ```sql
 GRAPH <project>.<dataset>.<graph>
@@ -192,14 +192,14 @@ directly within `MATCH`, `WHERE`, `LET`, and `RETURN`/`COLUMNS` clauses.
 When an entire path pattern is bound to a variable (e.g., `MATCH p = (...)`),
 you can extract specific metadata and elements from it:
 
--   `PATH_FIRST(p)`: Extracts and returns the starting node of path `p`.
--   `PATH_LAST(p)`: Extracts and returns the terminal (ending) node of path `p`.
--   `PATH_LENGTH(p)`: Returns an `INT64` count representing the number of edge
-    hops in path `p`.
--   `NODES(p)`: Returns an array of node elements, ordered by their sequence in
-    the path.
--   `EDGES(p)`: Returns an array of edge elements, ordered by their sequence in
-    the path.
+- `PATH_FIRST(p)`: Extracts and returns the starting node of path `p`.
+- `PATH_LAST(p)`: Extracts and returns the terminal (ending) node of path `p`.
+- `PATH_LENGTH(p)`: Returns an `INT64` count representing the number of edge
+  hops in path `p`.
+- `NODES(p)`: Returns an array of node elements, ordered by their sequence in
+  the path.
+- `EDGES(p)`: Returns an array of edge elements, ordered by their sequence in
+  the path.
 
 ```sql
 GRAPH <project>.<dataset>.<graph>
@@ -211,14 +211,14 @@ RETURN PATH_LENGTH(p) AS hops, TO_JSON(NODES(p)) AS path_nodes
 
 These functions operate on individual node or edge element variables:
 
--   `DESTINATION_NODE_ID(e)`: Retrieves the unique internal string identifier of
-    an edge `e`'s destination node.
--   `SOURCE_NODE_ID(e)`: Retrieves the unique internal string identifier of an
-    edge `e`'s source node.
--   `ELEMENT_ID(x)`: Returns the unique internal identifier for the given node
-    or edge `x`.
--   `LABELS(x)`: Returns an array of string labels bound to a node or edge
-    element `x`.
+- `DESTINATION_NODE_ID(e)`: Retrieves the unique internal string identifier of
+  an edge `e`'s destination node.
+- `SOURCE_NODE_ID(e)`: Retrieves the unique internal string identifier of an
+  edge `e`'s source node.
+- `ELEMENT_ID(x)`: Returns the unique internal identifier for the given node
+  or edge `x`.
+- `LABELS(x)`: Returns an array of string labels bound to a node or edge
+  element `x`.
 
 ## Output Formatting: Graph Visualization vs. Tabular Data
 
@@ -244,17 +244,17 @@ In this example, `p` represents the full path, encapsulating the nodes `a` and
 Use this when the user wants to see relationships, paths, topology, networks,
 connectivity or entire entities (nodes/edges) as a whole.
 
--   **Trigger & Keywords**: "visualize", "show the graph", "network",
-    "connections", "find the path", "relationship between X and Y".
--   **Default JSON Serialization (`TO_JSON`)**: Unless specific properties
-    (e.g., `n.name`) or path metrics (e.g., `PATH_LENGTH(p)`) are explicitly
-    requested, you **MUST** wrap all graph topology outputs (nodes, edges, and
-    path variables) in the standard `TO_JSON()` function. This ensures
-    compatibility with graphing UI components that expect full JSON objects.
--   **Example**: `RETURN TO_JSON(src) AS source, TO_JSON(p) AS full_path`
--   **Limit**: Always append `LIMIT 500` to the query to prevent overwhelming
-    the UI with too many nodes/edges, unless the user explicitly requests a
-    different number.
+- **Trigger & Keywords**: "visualize", "show the graph", "network",
+  "connections", "find the path", "relationship between X and Y".
+- **Default JSON Serialization (`TO_JSON`)**: Unless specific properties
+  (e.g., `n.name`) or path metrics (e.g., `PATH_LENGTH(p)`) are explicitly
+  requested, you **MUST** wrap all graph topology outputs (nodes, edges, and
+  path variables) in the standard `TO_JSON()` function. This ensures
+  compatibility with graphing UI components that expect full JSON objects.
+- **Example**: `RETURN TO_JSON(src) AS source, TO_JSON(p) AS full_path`
+- **Limit**: Always append `LIMIT 500` to the query to prevent overwhelming
+  the UI with too many nodes/edges, unless the user explicitly requests a
+  different number.
 
 ```sql
 GRAPH <project>.<dataset>.<graph>
@@ -271,11 +271,11 @@ LIMIT 500
 
 Use this when the user focuses on specific attributes, statistics, or metrics.
 
--   **Trigger & Keywords**: "what is the name", "list", "how many", "count",
-    "average", "top 10", "aggregate".
--   **Action**: Return ONLY the specific required properties or aggregates. **Do
-    NOT** use `TO_JSON()`.
--   **Example**: `RETURN account.id, SUM(t.amount) AS total_transfer`
+- **Trigger & Keywords**: "what is the name", "list", "how many", "count",
+  "average", "top 10", "aggregate".
+- **Action**: Return ONLY the specific required properties or aggregates. **Do
+  NOT** use `TO_JSON()`.
+- **Example**: `RETURN account.id, SUM(t.amount) AS total_transfer`
 
 ## GRAPH_TABLE Syntax and SQL Integration
 
@@ -287,12 +287,12 @@ property graph queries with standard SQL operations in BigQuery.
 You **SHOULD** use `GRAPH_TABLE()` only when your query requires integration
 with SQL capabilities beyond basic graph pattern matching. Use it for:
 
--   **SQL Aggregations & Analysis**: Mixing graph pattern matching with standard
-    SQL aggregations (e.g., `SUM`, `COUNT`, `GROUP BY`).
--   **Relational Joins**: Joining graph query results with relational tables or
-    other `GRAPH_TABLE` calls.
--   **Advanced SQL Operations**: Utilizing advanced SQL filtering, reporting, or
-    pagination on the graph results.
+- **SQL Aggregations & Analysis**: Mixing graph pattern matching with standard
+  SQL aggregations (e.g., `SUM`, `COUNT`, `GROUP BY`).
+- **Relational Joins**: Joining graph query results with relational tables or
+  other `GRAPH_TABLE` calls.
+- **Advanced SQL Operations**: Utilizing advanced SQL filtering, reporting, or
+  pagination on the graph results.
 
 ### Basic Syntax
 
@@ -321,17 +321,17 @@ ORDER BY total_transfer_volume DESC
 The `COLUMNS` clause is mandatory if you want to explicitly define the returned
 table's schema.
 
--   **Explicit Projection**: It limits the output to only the specified
-    expressions from the graph query scope.
--   **Anonymous Columns**: You *must* alias any expressions in the `COLUMNS`
-    clause if they generate an anonymous column (e.g., `COLUMNS (t.amount * 2 AS
-    doubled_amount)`).
--   **Default Behavior**: If the `COLUMNS` clause is entirely omitted,
-    `GRAPH_TABLE` returns all graph pattern variables present in the query
-    scope.
--   **Aggregations**: You can include standard SQL aggregate functions directly
-    within the `COLUMNS` clause to perform grouping and aggregation across the
-    rows of the resulting graph matches.
+- **Explicit Projection**: It limits the output to only the specified
+  expressions from the graph query scope.
+- **Anonymous Columns**: You _must_ alias any expressions in the `COLUMNS`
+  clause if they generate an anonymous column (e.g., `COLUMNS (t.amount * 2 AS
+doubled_amount)`).
+- **Default Behavior**: If the `COLUMNS` clause is entirely omitted,
+  `GRAPH_TABLE` returns all graph pattern variables present in the query
+  scope.
+- **Aggregations**: You can include standard SQL aggregate functions directly
+  within the `COLUMNS` clause to perform grouping and aggregation across the
+  rows of the resulting graph matches.
 
 ### Joins with Relational Tables
 
@@ -401,15 +401,15 @@ ANY/SOME/ALL` subqueries.
 
 ### Supported Subquery Types and Correlations
 
--   **`ARRAY` Subquery**: Fully Supported. Evaluates the query block and returns
-    an array of the results.
--   **`VALUE` Subquery**: Partially Supported. Evaluates the internal query and
-    returns a single scalar value. **Limitation**: `VALUE` subqueries throw
-    errors when correlated variables from the outer block are referenced inside
-    the `VALUE` subquery.
--   **`EXISTS`, `IN`, `LIKE` Subqueries**: Partially Supported. **Limitation**:
-    Throw errors when correlated variables are used. Throw errors when used in
-    `WHERE` filter (Must use `FILTER`).
+- **`ARRAY` Subquery**: Fully Supported. Evaluates the query block and returns
+  an array of the results.
+- **`VALUE` Subquery**: Partially Supported. Evaluates the internal query and
+  returns a single scalar value. **Limitation**: `VALUE` subqueries throw
+  errors when correlated variables from the outer block are referenced inside
+  the `VALUE` subquery.
+- **`EXISTS`, `IN`, `LIKE` Subqueries**: Partially Supported. **Limitation**:
+  Throw errors when correlated variables are used. Throw errors when used in
+  `WHERE` filter (Must use `FILTER`).
 
 ## Query Optimization and Best Practices
 
@@ -423,12 +423,12 @@ nodes (the most specific entities). This drastically reduces the intermediate
 result set sizes and speeds up execution, especially for variable-length
 traversals.
 
--   **Example**: Instead of starting from a highly active `Account` node and
-    traversing backwards to find the owner, start with the specific `Person`
-    node and traverse forward.
--   **Filter Early**: Push specific properties (e.g., `Account {id: 7}`) as
-    early as possible in your `MATCH` clause to prune the search space
-    immediately.
+- **Example**: Instead of starting from a highly active `Account` node and
+  traversing backwards to find the owner, start with the specific `Person`
+  node and traverse forward.
+- **Filter Early**: Push specific properties (e.g., `Account {id: 7}`) as
+  early as possible in your `MATCH` clause to prune the search space
+  immediately.
 
 ### 2. Specify Labels Explicitly
 

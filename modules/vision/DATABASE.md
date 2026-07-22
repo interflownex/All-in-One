@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `vision.devices`
+
 - `vision.streams`
 - `vision.recordings`
 - `vision.motion_alerts`

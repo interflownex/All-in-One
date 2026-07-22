@@ -45,15 +45,17 @@ ENV FLEX_TEMPLATE_PYTHON_PY_FILE=/template/<PATH_TO_PIPELINE_LAUNCHER_FILE>
 
 > [!IMPORTANT]
 > **CRITICAL RULES:**
+>
 > - Do NOT override ENTRYPOINT (Workers need /opt/apache/beam/boot).
 > - Do NOT set FLEX_TEMPLATE_PYTHON_REQUIREMENTS_FILE or
 >   FLEX_TEMPLATE_PYTHON_SETUP_FILE
 >   (These dependencies are already installed in the image).
+
 ---
 
 ## 2. Launch Guidance
 
-*   **Explicitly Pass Custom Worker Image**:
-    *   If you build a custom image for your Flex Template,
-        you **must supply it at runtime** when launching the template.
-    *   **Example (using `gcloud`)**: Pass it as a parameter string: `--parameters sdk_container_image="[IMAGE_URI]"`
+- **Explicitly Pass Custom Worker Image**:
+  - If you build a custom image for your Flex Template,
+    you **must supply it at runtime** when launching the template.
+  - **Example (using `gcloud`)**: Pass it as a parameter string: `--parameters sdk_container_image="[IMAGE_URI]"`

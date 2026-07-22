@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 from decimal import Decimal
+
 
 def calculate_valley_discount_visibility(balance_brl: Decimal) -> float:
     """
@@ -14,11 +16,13 @@ def calculate_valley_discount_visibility(balance_brl: Decimal) -> float:
         return 0.10
     return 0.00
 
+
 def validate_pepita_gamification(amount: int) -> bool:
     """
     Garante que a opção manual de Pepitas seja apenas 1, 10 ou 100.
     """
     return amount in {1, 10, 100}
+
 
 def apply_essential_plan_restrictions(cnpj: str, integration_key: str) -> bool:
     """

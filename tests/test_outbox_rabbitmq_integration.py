@@ -9,7 +9,6 @@ from psycopg.types.json import Jsonb
 
 from modules.shared.outbox_dispatcher import OutboxDispatcher, OutboxSettings
 
-
 POSTGRES_DSN = os.getenv("ALL_IN_ONE_OUTBOX_POSTGRES_TEST_DSN")
 RABBITMQ_URL = os.getenv("ALL_IN_ONE_RABBITMQ_TEST_URL")
 pytestmark = pytest.mark.skipif(
@@ -32,7 +31,9 @@ def create_event(payload: dict) -> str:
 
 def test_dispatcher_publishes_minimized_payload_once_and_records_delivery() -> None:
     exchange = f"all-in-one.test.{uuid4()}"
-    settings = OutboxSettings(POSTGRES_DSN, RABBITMQ_URL, exchange=exchange, batch_size=100)
+    settings = OutboxSettings(
+        POSTGRES_DSN, RABBITMQ_URL, exchange=exchange, batch_size=100
+    )
     event_id = create_event(
         {
             "resume_id": str(uuid4()),
@@ -70,15 +71,19 @@ def test_dispatcher_publishes_minimized_payload_once_and_records_delivery() -> N
         assert "raw_document_text" not in message["payload"]
         with psycopg.connect(POSTGRES_DSN) as connection:
             status = connection.execute(
-                "SELECT status, published_at FROM audit.domain_events WHERE id = %s", (event_id,)
+                "SELECT status, published_at FROM audit.domain_events WHERE id = %s",
+                (event_id,),
             ).fetchone()
             assert status[0] == "published"
             assert status[1] is not None
-            assert connection.execute(
-                """SELECT COUNT(*) FROM audit.event_deliveries
+            assert (
+                connection.execute(
+                    """SELECT COUNT(*) FROM audit.event_deliveries
                    WHERE event_id = %s AND delivery_status = 'publisher_confirmed'""",
-                (event_id,),
-            ).fetchone()[0] == 1
+                    (event_id,),
+                ).fetchone()[0]
+                == 1
+            )
     finally:
         dispatcher.close()
         rabbit.close()
@@ -87,20 +92,29 @@ def test_dispatcher_publishes_minimized_payload_once_and_records_delivery() -> N
 def test_dispatcher_leaves_failed_event_pending_for_retry() -> None:
     event_id = create_event({"resume_id": str(uuid4()), "sha256": "retry-hash"})
     dispatcher = OutboxDispatcher(
-        OutboxSettings(POSTGRES_DSN, "amqp://guest:guest@127.0.0.1:1/%2F", exchange="all-in-one.unreachable", batch_size=1)
+        OutboxSettings(
+            POSTGRES_DSN,
+            "amqp://guest:guest@127.0.0.1:1/%2F",
+            exchange="all-in-one.unreachable",
+            batch_size=1,
+        )
     )
     try:
         result = dispatcher.publish_batch()
         assert result.failed == 1
         with psycopg.connect(POSTGRES_DSN) as connection:
             event = connection.execute(
-                "SELECT status, published_at FROM audit.domain_events WHERE id = %s", (event_id,)
+                "SELECT status, published_at FROM audit.domain_events WHERE id = %s",
+                (event_id,),
             ).fetchone()
             assert event == ("pending", None)
-            assert connection.execute(
-                """SELECT COUNT(*) FROM audit.event_deliveries
+            assert (
+                connection.execute(
+                    """SELECT COUNT(*) FROM audit.event_deliveries
                    WHERE event_id = %s AND delivery_status = 'failed_retryable'""",
-                (event_id,),
-            ).fetchone()[0] == 1
+                    (event_id,),
+                ).fetchone()[0]
+                == 1
+            )
     finally:
         dispatcher.close()

@@ -22,21 +22,21 @@ heuristics.
 
 Use a notebook if you meet at least one of these criteria:
 
-*   📈 **Data Insights & Storytelling**: Use a notebook for any request to "give
-    insights", "find trends", "explore data", or "analyze data". These tasks
-    benefit from using visualizations to present the data.
-*   📊 **Visualizations are requested**: The user explicitly asks for charts or
-    plots.
-*   🔄 **Stateful / Iterative Exploration**: You need to run a query, inspect
-    results, and decide the next query based on those results while keeping
-    state in memory.
+- 📈 **Data Insights & Storytelling**: Use a notebook for any request to "give
+  insights", "find trends", "explore data", or "analyze data". These tasks
+  benefit from using visualizations to present the data.
+- 📊 **Visualizations are requested**: The user explicitly asks for charts or
+  plots.
+- 🔄 **Stateful / Iterative Exploration**: You need to run a query, inspect
+  results, and decide the next query based on those results while keeping
+  state in memory.
 
 Do NOT use a notebook ONLY if:
 
-*   📝 **Simple Fact/Status**: The request only requires a single number (e.g.,
-    "how many rows") or a status check (e.g., "when was this table updated").
-*   🏃‍♂️ **Schema Preview**: The request is only about the schema or field
-    types.
+- 📝 **Simple Fact/Status**: The request only requires a single number (e.g.,
+  "how many rows") or a status check (e.g., "when was this table updated").
+- 🏃‍♂️ **Schema Preview**: The request is only about the schema or field
+  types.
 
 **Golden Rule of Data Storytelling:** If any analytical insight, trend, or
 comparison is involved, favor a notebook and a visualization. A notebook is the
@@ -55,18 +55,18 @@ comparison is involved, favor a notebook and a visualization. A notebook is the
 > user execution.
 
 1.  **CONDITIONAL EXECUTION FLOW**:
-    *   **If notebook `execute_cell` tool is available**: Follow the **STEP BY
-        STEP GENERATE CELL -> EXECUTE CELL -> VALIDATE OUTPUT** flow. Generate
-        ONE cell, execute it, then verify the output. If the output is data
-        (e.g. a dataframe), you MUST inspect it to confirm the logic is correct
-        before generating the next step. Batch generation of an entire notebook
-        is strictly prohibited because error propagation in notebooks is
-        expensive to fix.
-    *   **If notebook `execute_cell` tool is NOT available**:
-        *   Create the whole notebook at once.
-        *   Tell the user to run the notebook.
-        *   Tell the user to let you know once the notebook run is completed so
-            you can check the outputs to verify it's correct and fix any errors.
+    - **If notebook `execute_cell` tool is available**: Follow the **STEP BY
+      STEP GENERATE CELL -> EXECUTE CELL -> VALIDATE OUTPUT** flow. Generate
+      ONE cell, execute it, then verify the output. If the output is data
+      (e.g. a dataframe), you MUST inspect it to confirm the logic is correct
+      before generating the next step. Batch generation of an entire notebook
+      is strictly prohibited because error propagation in notebooks is
+      expensive to fix.
+    - **If notebook `execute_cell` tool is NOT available**:
+      - Create the whole notebook at once.
+      - Tell the user to run the notebook.
+      - Tell the user to let you know once the notebook run is completed so
+        you can check the outputs to verify it's correct and fix any errors.
 2.  **IDENTIFY DATA EARLY**: Use `@skill:discovering-gcp-data-assets` or
     BigQuery list tools to find the correct `project.dataset.table` before
     writing ANY code. If the table ID is missing, ask the user.
@@ -101,14 +101,14 @@ kernel’s Python environment contains the necessary libraries (`bigframes`,
 ### No Active Kernel / Setup Check
 
 1.  **Infer or Ask about Kernel Preferences**:
-    -   **Infer from Context**:
-        -   If the task mentions "Spark", "PySpark", or "distributed compute",
-            or if the active workspace is already a Spark cluster, lean towards
-            **Remote Spark**.
-        -   If the task is focused on "BigQuery", "BigFrames", or standard API
-            calls, lean towards **Local Python**.
-    -   **Ask when Ambiguous**: If multiple options fit, ask if they prefer a
-        **Local Python** or a **Cloud/Remote Kernel** (e.g., Colab, Spark).
+    - **Infer from Context**:
+      - If the task mentions "Spark", "PySpark", or "distributed compute",
+        or if the active workspace is already a Spark cluster, lean towards
+        **Remote Spark**.
+      - If the task is focused on "BigQuery", "BigFrames", or standard API
+        calls, lean towards **Local Python**.
+    - **Ask when Ambiguous**: If multiple options fit, ask if they prefer a
+      **Local Python** or a **Cloud/Remote Kernel** (e.g., Colab, Spark).
 2.  **For Local Setup**: Use `@skill:managing-python-dependencies` to verify if
     a virtual environment exists. If not, create one. Ensure `ipykernel` is
     installed in that environment. Install any other relevant libraries.
@@ -136,12 +136,12 @@ managed in the project.
 
 Since these are often ephemeral or managed by GCP:
 
-*   **Check first (REQUIRED)**: Before writing any `%pip install` cell, run
-    `%pip list` or `import <package>` to confirm the package is not already
-    present. Managed runtimes (Dataproc Serverless, Colab) pre-install many
-    common packages. Only install what is confirmed missing.
-*   Use `%pip install <package>` in the first cell if a package is confirmed
-    missing and it's the only way to modify the runtime.
+- **Check first (REQUIRED)**: Before writing any `%pip install` cell, run
+  `%pip list` or `import <package>` to confirm the package is not already
+  present. Managed runtimes (Dataproc Serverless, Colab) pre-install many
+  common packages. Only install what is confirmed missing.
+- Use `%pip install <package>` in the first cell if a package is confirmed
+  missing and it's the only way to modify the runtime.
 
 When in doubt about the kernel type or preferred installation method, ask the
 user for clarification.
@@ -158,39 +158,39 @@ multiple visualizations for one data cell, or data cells building on each
 other), aim for this general flow:
 
 1.  **Title & Objective** (Markdown Cell)
-    *   What is this notebook for? (e.g., `# Retention Analysis`)
+    - What is this notebook for? (e.g., `# Retention Analysis`)
 2.  **Section Header** (Markdown Cell)
-    *   What are we looking at now? (e.g., `## Exploring User Retention`)
+    - What are we looking at now? (e.g., `## Exploring User Retention`)
 3.  **Data Acquisition/Transformation** (Python cell, may contain `%%bqsql`
     magics)
-    *   Query BigQuery or transform data.
+    - Query BigQuery or transform data.
 4.  **Verification (Optional but Recommended)** (Python Cell)
-    *   `df.head()` or assert sanity checks.
+    - `df.head()` or assert sanity checks.
 5.  **Visualization (The Goal)** (Python Cell)
-    *   Plot the insight (e.g., `df.plot()`).
+    - Plot the insight (e.g., `df.plot()`).
 
-*Repeat steps 2-5 for each new sub-topic or insight. You can have multiple Data
+_Repeat steps 2-5 for each new sub-topic or insight. You can have multiple Data
 cells before a Visualization, or multiple Visualizations from one Data cell. The
-key is to keep them grouped logically and separated by Markdown headers.*
+key is to keep them grouped logically and separated by Markdown headers._
 
 1.  **Final Summary** (Markdown Cell)
 
-    *   At the end of the notebook, add a markdown cell containing a summary
-        paragraph that summarizes the findings to the user. The summary MUST
-        follow these guidelines:
-    *   MUST NOT add Python code to the summary.
-    *   The summary MUST NOT start with a code block.
-    *   The summary MUST be strictly grounded in the numerical data verified in
-        the notebook.
-    *   The summary MUST ONLY contain the following three sections:
-        *   ### Q&A If the data analysis task contains questions (implied or
-            explicit), you MUST answer them based on the solving process. Skip
-            this section if there are no questions to answer.
-        *   ### Data Analysis Key Findings Summarize the key analysis findings
-            in bullet points, it's a plus to quote the numbers in the previous
-            steps. Only report high-value findings, skip the obvious ones.
-        *   ### Insights or Next Steps Provide 1-2 concise insights or next
-            steps in bullet points.
+    - At the end of the notebook, add a markdown cell containing a summary
+      paragraph that summarizes the findings to the user. The summary MUST
+      follow these guidelines:
+    - MUST NOT add Python code to the summary.
+    - The summary MUST NOT start with a code block.
+    - The summary MUST be strictly grounded in the numerical data verified in
+      the notebook.
+    - The summary MUST ONLY contain the following three sections:
+      - ### Q&A If the data analysis task contains questions (implied or
+        explicit), you MUST answer them based on the solving process. Skip
+        this section if there are no questions to answer.
+      - ### Data Analysis Key Findings Summarize the key analysis findings
+        in bullet points, it's a plus to quote the numbers in the previous
+        steps. Only report high-value findings, skip the obvious ones.
+      - ### Insights or Next Steps Provide 1-2 concise insights or next
+        steps in bullet points.
 
 2.  **Next Steps**: After the notebook has been successfully executed and
     verified, and the summary is complete, notify the user and propose next step
@@ -229,15 +229,15 @@ native BigQuery SQL execution and data export to BigFrames dataframes.
 
 > [!IMPORTANT]
 >
-> *   Unless specified by the user, **always use SQL for querying BigQuery.**
-> *   DO NOT use the standard BigQuery Python client library
->     (`google.cloud.bigquery`) or `pandas.read_gbq`.
-> *   **Mandatory dataframe export**: Always provide a dataframe name e.g.
->     `%%bqsql <df_name>`. This makes it easy to use results in follow up Python
->     cells.
-> *   Verify that `bigframes` version number `2.38.0` and above is installed in
->     the notebook runtime environment. If it is missing, ask the user if they
->     would like you to upgrade for them.
+> - Unless specified by the user, **always use SQL for querying BigQuery.**
+> - DO NOT use the standard BigQuery Python client library
+>   (`google.cloud.bigquery`) or `pandas.read_gbq`.
+> - **Mandatory dataframe export**: Always provide a dataframe name e.g.
+>   `%%bqsql <df_name>`. This makes it easy to use results in follow up Python
+>   cells.
+> - Verify that `bigframes` version number `2.38.0` and above is installed in
+>   the notebook runtime environment. If it is missing, ask the user if they
+>   would like you to upgrade for them.
 
 **Example %%bqsql magic usage:**
 
@@ -287,33 +287,33 @@ subsequent cells, you can use `<df_name>` directly.
 
 ##### BigQuery DataFrame Tips
 
-*   **Avoid `.to_pandas()`**: You MUST NOT use `.to_pandas()` to download the
-    entire dataset into memory. There are some exceptions:
-    *   An error message explicitly requests you to use `to_pandas()`
-    *   You are going to visualize the data, **and** the visualization library
-        does not accept BigFrames Dataframe/Series instances. In this case,
-        reduce the amount of data you are going to download before calling
-        `.to_pandas()`
-*   **Avoid `read_gbq()` for SQL**: Do not write SQL queries and execute them
-    with `read_gbq()`. Use BigFrames Dataframe/Series methods instead.
-*   **Use BigFrames ML package for Machine Learning Tasks**: Do not use
-    Scikit-learn or other ML libraries with BigFrames dataframes. Import your
-    tools/classes from `bigframes.ml`.
-*   **Stay in the Cloud**: Perform data cleaning, transformation, and analysis
-    via BigFrames methods to leverage BigQuery's scale.
-*   **Accessors over UDFs/Lambdas**:
-    *   Prefer built-in accessors (e.g., `df.col.str.*`, `df.col.dt.*`) over
-        remote UDFs.
-    *   **Do not use lambdas** with `Series.map()` or `DataFrame.apply()`.
-*   **Schema Verification**: Do not assume schema of intermediate outputs. Check
-    `.dtypes` after loading, and use `display()` with `.head()` or `.peek()`.
-*   **Visualization**: BigFrames Dataframe mostly works directly with
-    Matplotlib, Seaborn, and other plotting libraries. If your attempt didn't
-    work, try using the "plot" accessor. If that didn't work either, you MUST
-    sample or aggregate your data to make it small enough before calling
-    "to_pandas()".
-*   **Model Persistence**: To persist a model. use `model.to_gbq()`. To load a
-    persisted model, use `bpd.read_gbq_model()`.
+- **Avoid `.to_pandas()`**: You MUST NOT use `.to_pandas()` to download the
+  entire dataset into memory. There are some exceptions:
+  - An error message explicitly requests you to use `to_pandas()`
+  - You are going to visualize the data, **and** the visualization library
+    does not accept BigFrames Dataframe/Series instances. In this case,
+    reduce the amount of data you are going to download before calling
+    `.to_pandas()`
+- **Avoid `read_gbq()` for SQL**: Do not write SQL queries and execute them
+  with `read_gbq()`. Use BigFrames Dataframe/Series methods instead.
+- **Use BigFrames ML package for Machine Learning Tasks**: Do not use
+  Scikit-learn or other ML libraries with BigFrames dataframes. Import your
+  tools/classes from `bigframes.ml`.
+- **Stay in the Cloud**: Perform data cleaning, transformation, and analysis
+  via BigFrames methods to leverage BigQuery's scale.
+- **Accessors over UDFs/Lambdas**:
+  - Prefer built-in accessors (e.g., `df.col.str.*`, `df.col.dt.*`) over
+    remote UDFs.
+  - **Do not use lambdas** with `Series.map()` or `DataFrame.apply()`.
+- **Schema Verification**: Do not assume schema of intermediate outputs. Check
+  `.dtypes` after loading, and use `display()` with `.head()` or `.peek()`.
+- **Visualization**: BigFrames Dataframe mostly works directly with
+  Matplotlib, Seaborn, and other plotting libraries. If your attempt didn't
+  work, try using the "plot" accessor. If that didn't work either, you MUST
+  sample or aggregate your data to make it small enough before calling
+  "to_pandas()".
+- **Model Persistence**: To persist a model. use `model.to_gbq()`. To load a
+  persisted model, use `bpd.read_gbq_model()`.
 
 ### 2. Machine Learning in Notebooks
 

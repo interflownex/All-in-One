@@ -4,11 +4,7 @@
   "source_matrix": "config/integrations/provider_matrix.json",
   "active_environment_variable": "ALL_IN_ONE_INTEGRATION_ENV",
   "default_environment": "sandbox",
-  "promotion_order": [
-    "sandbox",
-    "homologacao",
-    "producao"
-  ],
+  "promotion_order": ["sandbox", "homologacao", "producao"],
   "profiles": {
     "sandbox": {
       "description": "Ambiente local deterministico para desenvolvimento, testes automatizados e demos sem dependencia de provedor externo.",
@@ -28,10 +24,7 @@
         "provider_discovery",
         "partially_implemented"
       ],
-      "secret_storage": [
-        "nenhum_valor_real_no_git",
-        "fixtures_nao_sensiveis"
-      ],
+      "secret_storage": ["nenhum_valor_real_no_git", "fixtures_nao_sensiveis"],
       "rollback_policy": "desativar provider port e manter adapter sandbox como fallback obrigatorio"
     },
     "homologacao": {
@@ -48,10 +41,7 @@
         "registro_de_custo_e_limites",
         "plano_de_rollback_para_sandbox"
       ],
-      "required_matrix_stage": [
-        "provider_discovery",
-        "partially_implemented"
-      ],
+      "required_matrix_stage": ["provider_discovery", "partially_implemented"],
       "secret_storage": [
         "GitHub Actions Secrets",
         "Google Secret Manager",
@@ -73,9 +63,7 @@
         "runbook_de_incidente",
         "rollback_testado"
       ],
-      "required_matrix_stage": [
-        "partially_implemented"
-      ],
+      "required_matrix_stage": ["partially_implemented"],
       "secret_storage": [
         "Google Secret Manager",
         "GitHub Actions Secrets",

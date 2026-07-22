@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `finance.wallets`
+
 - `finance.ledger_entries`
 - `finance.escrows`
 - `finance.splits`

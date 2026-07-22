@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `wms.warehouses`
+
 - `wms.bins`
 - `wms.inventory`
 - `wms.picking_waves`

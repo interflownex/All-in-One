@@ -2,7 +2,6 @@ from pathlib import Path
 
 from modules.dynamic_forms.main import app
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -20,11 +19,17 @@ def test_openapi_expoe_ciclo_governado_com_modelos_de_request() -> None:
     }
     assert expected.issubset(schema["paths"])
     for path in expected - {"/catalog", "/catalog/bindings"}:
-        assert any(operation.get("requestBody") for operation in schema["paths"][path].values())
+        assert any(
+            operation.get("requestBody") for operation in schema["paths"][path].values()
+        )
 
 
-def test_store_aplica_tenant_lock_idempotencia_evento_e_persistencia_normalizada() -> None:
-    source = (ROOT / "modules/shared/dynamic_forms_postgres_store.py").read_text(encoding="utf-8")
+def test_store_aplica_tenant_lock_idempotencia_evento_e_persistencia_normalizada() -> (
+    None
+):
+    source = (ROOT / "modules/shared/dynamic_forms_postgres_store.py").read_text(
+        encoding="utf-8"
+    )
     assert source.count("tenant_id") >= 30
     assert "FOR UPDATE" in source
     assert "idempotency_key" in source

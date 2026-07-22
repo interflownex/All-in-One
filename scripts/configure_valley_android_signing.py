@@ -11,7 +11,6 @@ import string
 import subprocess
 from pathlib import Path
 
-
 DEFAULT_DIR = Path.home() / ".config" / "all-in-one"
 DEFAULT_KEYSTORE = DEFAULT_DIR / "valley-release.jks"
 DEFAULT_PROPERTIES = DEFAULT_DIR / "valley-release.properties"
@@ -44,12 +43,16 @@ def write_private(path: Path, content: str) -> None:
 def validate_private(path: Path) -> None:
     mode = stat.S_IMODE(path.stat().st_mode)
     if mode & 0o077:
-        raise RuntimeError(f"Permissoes inseguras em {path}: esperado 600, obtido {mode:o}.")
+        raise RuntimeError(
+            f"Permissoes inseguras em {path}: esperado 600, obtido {mode:o}."
+        )
 
 
 def create_signing_material(keystore: Path, properties: Path, alias: str) -> None:
     if keystore.exists() or properties.exists():
-        raise RuntimeError("Assinatura release ja existe; use --check para validar sem sobrescrever.")
+        raise RuntimeError(
+            "Assinatura release ja existe; use --check para validar sem sobrescrever."
+        )
     store_password = strong_password()
     key_password = strong_password()
     keystore.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -128,8 +131,12 @@ def validate(keystore: Path, properties: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--create", action="store_true", help="Cria a assinatura quando ausente.")
-    parser.add_argument("--check", action="store_true", help="Valida a assinatura existente.")
+    parser.add_argument(
+        "--create", action="store_true", help="Cria a assinatura quando ausente."
+    )
+    parser.add_argument(
+        "--check", action="store_true", help="Valida a assinatura existente."
+    )
     parser.add_argument("--keystore", type=Path, default=DEFAULT_KEYSTORE)
     parser.add_argument("--properties", type=Path, default=DEFAULT_PROPERTIES)
     parser.add_argument("--alias", default=DEFAULT_ALIAS)

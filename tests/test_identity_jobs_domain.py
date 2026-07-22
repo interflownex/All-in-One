@@ -2,10 +2,10 @@ import base64
 from io import BytesIO
 from uuid import uuid4
 
+import pytest
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from fastapi.testclient import TestClient
 from pypdf import PdfWriter
-import pytest
 
 from modules.shared.ctps_import import parse_employment_text
 from modules.shared.runtime import create_module_app
@@ -16,7 +16,9 @@ def owner_headers(user_id: str) -> dict[str, str]:
     return {"X-Actor-User-Id": user_id}
 
 
-def recruiter_headers(user_id: str, business_id: str, scope: str = "jobs:resumes:read") -> dict[str, str]:
+def recruiter_headers(
+    user_id: str, business_id: str, scope: str = "jobs:resumes:read"
+) -> dict[str, str]:
     return {
         "X-Actor-User-Id": user_id,
         "X-Actor-Roles": "recruiter",
@@ -101,7 +103,10 @@ def test_jobs_curriculum_provenance_recruiter_gate_and_ctps_document() -> None:
         headers=owner_headers(owner_id),
         json={
             "user_id": owner_id,
-            "payload": {"headline": "Operador logistico", "recruiter_visibility": "business_recruiters"},
+            "payload": {
+                "headline": "Operador logistico",
+                "recruiter_visibility": "business_recruiters",
+            },
         },
     )
     assert resume.status_code == 201
@@ -135,7 +140,10 @@ def test_jobs_curriculum_provenance_recruiter_gate_and_ctps_document() -> None:
         content=stream.getvalue(),
     )
     assert imported.status_code == 201
-    assert imported.json()["document"]["payload"]["evidence_status"] == "validated_by_document_import"
+    assert (
+        imported.json()["document"]["payload"]["evidence_status"]
+        == "validated_by_document_import"
+    )
     assert imported.json()["official_verification_status"] == "not_verified_externally"
 
     denied = client.get(
@@ -198,7 +206,10 @@ def test_jobs_active_business_can_publish_vacancy_for_candidates() -> None:
         headers=owner_headers(candidate_id),
         json={
             "user_id": candidate_id,
-            "payload": {"headline": "Candidato", "recruiter_visibility": "business_recruiters"},
+            "payload": {
+                "headline": "Candidato",
+                "recruiter_visibility": "business_recruiters",
+            },
         },
     )
     application = client.post(
@@ -206,7 +217,10 @@ def test_jobs_active_business_can_publish_vacancy_for_candidates() -> None:
         headers=owner_headers(candidate_id),
         json={
             "user_id": candidate_id,
-            "payload": {"resume_id": resume.json()["id"], "job_posting_id": created.json()["id"]},
+            "payload": {
+                "resume_id": resume.json()["id"],
+                "job_posting_id": created.json()["id"],
+            },
         },
     )
     assert application.status_code == 201
@@ -263,7 +277,9 @@ def test_jobs_active_business_can_publish_vacancy_for_candidates() -> None:
     } <= routing_keys
 
 
-def test_jobs_ctps_pdf_is_encrypted_and_downloadable_only_by_owner(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
+def test_jobs_ctps_pdf_is_encrypted_and_downloadable_only_by_owner(
+    monkeypatch: pytest.MonkeyPatch, tmp_path
+) -> None:
     key = base64.urlsafe_b64encode(AESGCM.generate_key(bit_length=256)).decode("ascii")
     monkeypatch.setenv("ALL_IN_ONE_PRIVATE_DOCUMENT_DIR", str(tmp_path))
     monkeypatch.setenv("ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY", key)
@@ -274,7 +290,10 @@ def test_jobs_ctps_pdf_is_encrypted_and_downloadable_only_by_owner(monkeypatch: 
         headers=owner_headers(owner_id),
         json={
             "user_id": owner_id,
-            "payload": {"headline": "Candidato protegido", "recruiter_visibility": "business_recruiters"},
+            "payload": {
+                "headline": "Candidato protegido",
+                "recruiter_visibility": "business_recruiters",
+            },
         },
     )
     resume_id = resume.json()["id"]
@@ -309,7 +328,9 @@ def test_jobs_ctps_pdf_is_encrypted_and_downloadable_only_by_owner(monkeypatch: 
     assert denied.status_code == 403
 
 
-def test_jobs_requires_document_secret_in_production(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
+def test_jobs_requires_document_secret_in_production(
+    monkeypatch: pytest.MonkeyPatch, tmp_path
+) -> None:
     monkeypatch.setenv("ALL_IN_ONE_ENV", "production")
     monkeypatch.setenv("ALL_IN_ONE_PRIVATE_DOCUMENT_DIR", str(tmp_path))
     monkeypatch.delenv("ALL_IN_ONE_DOCUMENT_ENCRYPTION_KEY", raising=False)

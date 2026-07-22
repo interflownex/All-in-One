@@ -9,7 +9,6 @@ from modules.shared.domain_rules import (
     rule_for,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 REVIEW_PATH = ROOT / "config" / "security" / "sensitive_permissions_review.json"
 COMPLIANCE_PATH = ROOT / "config" / "compliance" / "data_classification.json"
@@ -49,7 +48,9 @@ def test_sensitive_permissions_review_covers_critical_modules_and_evidence() -> 
         assert module_review["denied_read_roles"], module_name
         assert module_review["negative_tests"], module_name
         assert "audit_event_id" in module_review["required_evidence"], module_name
-        assert "payload" not in " ".join(module_review["required_evidence"]).casefold(), module_name
+        assert (
+            "payload" not in " ".join(module_review["required_evidence"]).casefold()
+        ), module_name
         assert module_review["runtime_rule"] in RUNTIME_ROLES
 
 
@@ -58,9 +59,21 @@ def test_sensitive_permissions_review_matches_runtime_role_sets() -> None:
 
     for module_name, module_review in review["modules"].items():
         expected_roles = RUNTIME_ROLES[module_review["runtime_rule"]]
-        assert set(module_review["allowed_read_roles"]) == set(expected_roles), module_name
-        assert can_read_sensitive(module_name, frozenset(module_review["allowed_read_roles"])) is True
-        assert can_read_sensitive(module_name, frozenset(module_review["denied_read_roles"])) is False
+        assert set(module_review["allowed_read_roles"]) == set(expected_roles), (
+            module_name
+        )
+        assert (
+            can_read_sensitive(
+                module_name, frozenset(module_review["allowed_read_roles"])
+            )
+            is True
+        )
+        assert (
+            can_read_sensitive(
+                module_name, frozenset(module_review["denied_read_roles"])
+            )
+            is False
+        )
 
 
 def test_sensitive_permissions_review_points_to_sensitive_runtime_resources() -> None:
@@ -69,4 +82,6 @@ def test_sensitive_permissions_review_points_to_sensitive_runtime_resources() ->
     for module_name, module_review in review["modules"].items():
         for resource in module_review["sensitive_resources"]:
             rule = rule_for(module_name, resource)
-            assert rule.sensitive is True or rule.immutable is True, f"{module_name}.{resource}"
+            assert rule.sensitive is True or rule.immutable is True, (
+                f"{module_name}.{resource}"
+            )

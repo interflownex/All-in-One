@@ -1,14 +1,16 @@
 from __future__ import annotations
 
+import re
 from hashlib import sha256
 from io import BytesIO
-import re
 from typing import Any
 
 CPF_PATTERN = re.compile(r"\b\d{3}\.?\d{3}\.?\d{3}-?\d{2}\b")
 CNPJ_PATTERN = re.compile(r"\b\d{2}\.?\d{3}\.?\d{3}/?\d{4}-?\d{2}\b")
 DATE_PATTERN = re.compile(r"\b\d{2}/\d{2}/\d{4}\b")
-BLOCK_START = re.compile(r"(?:empregador|contrato\s+de\s+trabalho|vinculo)", re.IGNORECASE)
+BLOCK_START = re.compile(
+    r"(?:empregador|contrato\s+de\s+trabalho|vinculo)", re.IGNORECASE
+)
 EMPLOYER_LABEL = re.compile(
     r"(?:empregador|razao\s+social|nome\s+empresarial)\s*:?\s*(.+)", re.IGNORECASE
 )
@@ -16,7 +18,9 @@ ROLE_LABEL = re.compile(r"(?:ocupacao|cargo|cbo)\s*:?\s*(.+)", re.IGNORECASE)
 
 
 def _clean_lines(text: str) -> list[str]:
-    return [line.strip() for line in text.replace("\r", "\n").split("\n") if line.strip()]
+    return [
+        line.strip() for line in text.replace("\r", "\n").split("\n") if line.strip()
+    ]
 
 
 def _value_for(pattern: re.Pattern[str], lines: list[str]) -> str | None:
@@ -90,6 +94,8 @@ def extract_ctps_pdf(contents: bytes) -> dict[str, Any]:
         "cpf_extracted": cpf_match.group(0) if cpf_match else None,
         "evidence_status": "validated_by_document_import",
         "official_verification_status": "not_verified_externally",
-        "extraction_status": "records_extracted" if records else "requires_manual_review",
+        "extraction_status": "records_extracted"
+        if records
+        else "requires_manual_review",
         "employment_records": records,
     }

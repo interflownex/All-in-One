@@ -5,7 +5,6 @@ from decimal import Decimal
 from typing import Any
 from uuid import UUID, uuid4
 
-
 EVENT_SCHEMA_VERSION = 1
 REDACTED_VALUE = "[REDACTED]"
 PROHIBITED_FIELD_MARKERS = (
@@ -30,12 +29,18 @@ PROHIBITED_TOKEN_FIELDS = frozenset(
 
 def _is_prohibited_field(field: str) -> bool:
     normalized = field.casefold().replace("-", "_")
-    return normalized in PROHIBITED_TOKEN_FIELDS or any(marker in normalized for marker in PROHIBITED_FIELD_MARKERS)
+    return normalized in PROHIBITED_TOKEN_FIELDS or any(
+        marker in normalized for marker in PROHIBITED_FIELD_MARKERS
+    )
 
 
 def _json_value(value: Any) -> Any:
     if isinstance(value, datetime):
-        return value.astimezone(UTC).isoformat() if value.tzinfo else value.replace(tzinfo=UTC).isoformat()
+        return (
+            value.astimezone(UTC).isoformat()
+            if value.tzinfo
+            else value.replace(tzinfo=UTC).isoformat()
+        )
     if isinstance(value, date):
         return value.isoformat()
     if isinstance(value, (Decimal, UUID)):
@@ -101,11 +106,27 @@ def build_event_envelope(
         "origin": "all-in-one",
         "payload": payload,
         "data_policy": {
-            "prohibited": ["credenciais", "senhas", "segredos", "tokens de acesso", "chaves privadas"],
+            "prohibited": [
+                "credenciais",
+                "senhas",
+                "segredos",
+                "tokens de acesso",
+                "chaves privadas",
+            ],
             "redacted_fields": redacted_fields,
         },
         "retention": {"policy": "audit_business_event", "days": 2555},
-        "failure_handling": {"strategy": "outbox_retry_with_dead_letter", "delivery_evidence": True},
-        "replay": {"supported": True, "deduplicate_by": "event_id", "preserve_order_by": "aggregate_id"},
-        "backward_compatibility": {"policy": "additive", "breaking_change_requires_new_schema_version": True},
+        "failure_handling": {
+            "strategy": "outbox_retry_with_dead_letter",
+            "delivery_evidence": True,
+        },
+        "replay": {
+            "supported": True,
+            "deduplicate_by": "event_id",
+            "preserve_order_by": "aggregate_id",
+        },
+        "backward_compatibility": {
+            "policy": "additive",
+            "breaking_change_requires_new_schema_version": True,
+        },
     }

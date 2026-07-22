@@ -4,7 +4,11 @@ import subprocess
 from pathlib import Path
 
 from scripts import audit_valley_apk
-from scripts.audit_valley_apk import forbidden_entries, forbidden_text, verify_permissions
+from scripts.audit_valley_apk import (
+    forbidden_entries,
+    forbidden_text,
+    verify_permissions,
+)
 
 
 def test_apk_audit_rejects_internal_material() -> None:
@@ -24,8 +28,16 @@ def test_apk_audit_rejects_internal_material() -> None:
 
 
 def test_apk_audit_accepts_public_assets() -> None:
-    assert forbidden_entries(["assets/valley/index.html", "assets/valley/catalog.json"]) == []
-    assert forbidden_text("assets/valley/index.js", b"https://api.valley.example/v1/catalog") == []
+    assert (
+        forbidden_entries(["assets/valley/index.html", "assets/valley/catalog.json"])
+        == []
+    )
+    assert (
+        forbidden_text(
+            "assets/valley/index.js", b"https://api.valley.example/v1/catalog"
+        )
+        == []
+    )
 
 
 def test_apk_audit_rejects_local_and_administrative_endpoints() -> None:

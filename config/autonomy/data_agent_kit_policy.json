@@ -17,12 +17,7 @@
     "bigquery_location_environment_variable": "BIGQUERY_LOCATION",
     "bigquery_location": "southamerica-east1"
   },
-  "supported_agents": [
-    "codex",
-    "gemini_cli",
-    "gemini_code_assist",
-    "antigravity"
-  ],
+  "supported_agents": ["codex", "gemini_cli", "gemini_code_assist", "antigravity"],
   "required_apis": [
     "aiplatform.googleapis.com",
     "alloydb.googleapis.com",

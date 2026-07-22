@@ -6,10 +6,10 @@ natural language.
 The function can be used to filter and join data based on conditions described
 in natural language or multimodal input. The following are common use cases:
 
--   Sentiment analysis: Find customer reviews with negative sentiment.
--   Topic analysis: Identify news articles related to a specific subject.
--   Image analysis: Select images that contain a specific item.
--   Security: Identify suspicious emails.
+- Sentiment analysis: Find customer reviews with negative sentiment.
+- Topic analysis: Identify news articles related to a specific subject.
+- Image analysis: Select images that contain a specific item.
+- Security: Identify suspicious emails.
 
 ## Syntax Reference
 
@@ -23,24 +23,24 @@ AI.IF(
 
 ### Input Arguments
 
-| Argument            | Requirement  | Type          | Description            |
-| :------------------ | :----------- | :------------ | :--------------------- |
-| **`prompt`**        | **Required** | String/Struct | The prompt text or a   |
-:                     :              :               : struct/tuple of        :
-:                     :              :               : `(data, instruction)`. :
-| **`connection_id`** | Optional     | String        | The connection ID to   |
-:                     :              :               : use for the LLM.       :
-| **`endpoint`**      | Optional     | String        | The model endpoint     |
-:                     :              :               : (e.g.                  :
-:                     :              :               : `'gemini-2.5-flash'`). :
+| Argument                         | Requirement  | Type          | Description          |
+| :------------------------------- | :----------- | :------------ | :------------------- |
+| **`prompt`**                     | **Required** | String/Struct | The prompt text or a |
+| : : : : struct/tuple of :        |
+| : : : : `(data, instruction)`. : |
+| **`connection_id`**              | Optional     | String        | The connection ID to |
+| : : : : use for the LLM. :       |
+| **`endpoint`**                   | Optional     | String        | The model endpoint   |
+| : : : : (e.g. :                  |
+| : : : : `'gemini-2.5-flash'`). : |
 
 ### Output Schema
 
-| Column Name         | Type   | Description                               |
-| :------------------ | :----- | :---------------------------------------- |
-| **(Scalar Result)** | `BOOL` | `TRUE` if the condition is met, `FALSE`   |
-:                     :        : otherwise. Returns `NULL` on error/safety :
-:                     :        : filter.                                   :
+| Column Name                                       | Type   | Description                             |
+| :------------------------------------------------ | :----- | :-------------------------------------- |
+| **(Scalar Result)**                               | `BOOL` | `TRUE` if the condition is met, `FALSE` |
+| : : : otherwise. Returns `NULL` on error/safety : |
+| : : : filter. :                                   |
 
 ## Examples
 

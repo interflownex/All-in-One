@@ -1,4 +1,5 @@
 # 🐳 DOCKER PUSH - STATUS CONSOLIDADO
+
 **Data**: 2026-06-04  
 **Projeto**: All-in-One (14 microserviços)  
 **Usuário Docker Hub**: andersoninterflow  
@@ -8,29 +9,29 @@
 
 ## ✅ SUCESSO (8/14) - Imagens Publicadas
 
-| # | Microserviço | Status | URL |
-|---|---|---|---|
-| 1 | api-hub | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-api-hub |
-| 2 | finance | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-finance |
-| 3 | identity | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-identity |
-| 4 | delivery | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-delivery |
-| 5 | services | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-services |
-| 6 | marketplace | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-marketplace |
-| 7 | erp | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-erp |
-| 8 | jobs | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-jobs |
+| #   | Microserviço | Status       | URL                                                               |
+| --- | ------------ | ------------ | ----------------------------------------------------------------- |
+| 1   | api-hub      | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-api-hub     |
+| 2   | finance      | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-finance     |
+| 3   | identity     | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-identity    |
+| 4   | delivery     | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-delivery    |
+| 5   | services     | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-services    |
+| 6   | marketplace  | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-marketplace |
+| 7   | erp          | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-erp         |
+| 8   | jobs         | ✅ Publicado | https://hub.docker.com/r/andersoninterflow/all-in-one-jobs        |
 
 ---
 
 ## ⏳ EM RETENTATIVA (6/14) - Última Tentativa em Andamento
 
-| # | Microserviço | Tentativas | Status |
-|---|---|---|---|
-| 9 | wms | 4+ | ⏳ Retentando... |
-| 10 | tms | 4+ | ⏳ Retentando... |
-| 11 | mobility | 3+ | ⏳ Retentando... |
-| 12 | crm | 3+ | ⏳ Retentando... |
-| 13 | health | 3+ | ⏳ Retentando... |
-| 14 | outbox-dispatcher | 3+ | ⏳ Retentando... |
+| #   | Microserviço      | Tentativas | Status           |
+| --- | ----------------- | ---------- | ---------------- |
+| 9   | wms               | 4+         | ⏳ Retentando... |
+| 10  | tms               | 4+         | ⏳ Retentando... |
+| 11  | mobility          | 3+         | ⏳ Retentando... |
+| 12  | crm               | 3+         | ⏳ Retentando... |
+| 13  | health            | 3+         | ⏳ Retentando... |
+| 14  | outbox-dispatcher | 3+         | ⏳ Retentando... |
 
 **ETA**: ~4 minutos (retentativa sequencial com delay de 30s)
 

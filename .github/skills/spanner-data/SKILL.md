@@ -21,9 +21,7 @@ All scripts can be executed using Node.js. Replace `<param_name>` and `<param_va
 
 Note: The scripts automatically load the environment variables from various .env files. Do not ask the user to set vars unless skill executions fails due to env var absence.
 
-
 ## Scripts
-
 
 ### execute_sql
 
@@ -31,10 +29,9 @@ Use this tool to execute DML SQL. Please use the googlesql interface for Spanner
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| sql | string | The sql to execute. | Yes |  |
-
+| Name | Type   | Description         | Required | Default |
+| :--- | :----- | :------------------ | :------- | :------ |
+| sql  | string | The sql to execute. | Yes      |         |
 
 ---
 
@@ -44,10 +41,9 @@ Use this tool to execute DQL SQL. Please use the googlesql interface for Spanner
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| sql | string | The sql to execute. | Yes |  |
-
+| Name | Type   | Description         | Required | Default |
+| :--- | :----- | :------------------ | :------- | :------ |
+| sql  | string | The sql to execute. | Yes      |         |
 
 ---
 
@@ -57,11 +53,10 @@ Lists detailed graph schema information (node tables, edge tables, labels and pr
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| graph_names | string | Optional: A comma-separated list of graph names. If empty, details for all graphs in user-accessible schemas will be listed. | No | `` |
-| output_format | string | Optional: Use 'simple' to return graph names only or use 'detailed' to return the full information schema. | No | `detailed` |
-
+| Name          | Type   | Description                                                                                                                  | Required | Default    |
+| :------------ | :----- | :--------------------------------------------------------------------------------------------------------------------------- | :------- | :--------- |
+| graph_names   | string | Optional: A comma-separated list of graph names. If empty, details for all graphs in user-accessible schemas will be listed. | No       | ``         |
+| output_format | string | Optional: Use 'simple' to return graph names only or use 'detailed' to return the full information schema.                   | No       | `detailed` |
 
 ---
 
@@ -71,11 +66,9 @@ Lists detailed schema information (object type, columns, constraints, indexes) a
 
 #### Parameters
 
-| Name | Type | Description | Required | Default |
-| :--- | :--- | :--- | :--- | :--- |
-| table_names | string | Optional: A comma-separated list of table names. If empty, details for all tables in user-accessible schemas will be listed. | No | `` |
-| output_format | string | Optional: Use 'simple' to return table names only or use 'detailed' to return the full information schema. | No | `detailed` |
-
+| Name          | Type   | Description                                                                                                                  | Required | Default    |
+| :------------ | :----- | :--------------------------------------------------------------------------------------------------------------------------- | :------- | :--------- |
+| table_names   | string | Optional: A comma-separated list of table names. If empty, details for all tables in user-accessible schemas will be listed. | No       | ``         |
+| output_format | string | Optional: Use 'simple' to return table names only or use 'detailed' to return the full information schema.                   | No       | `detailed` |
 
 ---
-

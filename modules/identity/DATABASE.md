@@ -5,6 +5,7 @@
         ## Entidades planejadas
 
         - `identity.users`
+
 - `identity.documents`
 - `identity.biometrics`
 - `identity.sessions`

@@ -56,17 +56,11 @@
       "module": "ai_core",
       "entity": "ai_memories",
       "action": "index",
-      "source_statuses": [
-        "draft",
-        "updated"
-      ],
+      "source_statuses": ["draft", "updated"],
       "target_status": "indexed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "memory_key",
-        "summary"
-      ],
+      "payload_fields": ["memory_key", "summary"],
       "producer": "ai_core",
       "consumers": [],
       "prohibited_data": [
@@ -96,18 +90,11 @@
       "module": "ai_core",
       "entity": "ai_memories",
       "action": "update",
-      "source_statuses": [
-        "draft",
-        "indexed",
-        "updated"
-      ],
+      "source_statuses": ["draft", "indexed", "updated"],
       "target_status": "updated",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "memory_key",
-        "summary"
-      ],
+      "payload_fields": ["memory_key", "summary"],
       "producer": "ai_core",
       "consumers": [],
       "prohibited_data": [
@@ -137,17 +124,9 @@
       "module": "ai_core",
       "entity": "model_runs",
       "action": "approve_cost",
-      "source_statuses": [
-        "completed"
-      ],
+      "source_statuses": ["completed"],
       "target_status": "cost_approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
       "payload_fields": [
         "provider_adapter",
@@ -187,9 +166,7 @@
       "module": "ai_core",
       "entity": "model_runs",
       "action": "complete",
-      "source_statuses": [
-        "requested"
-      ],
+      "source_statuses": ["requested"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
@@ -231,9 +208,7 @@
       "module": "ai_core",
       "entity": "model_runs",
       "action": "fail",
-      "source_statuses": [
-        "requested"
-      ],
+      "source_statuses": ["requested"],
       "target_status": "failed",
       "roles": [],
       "requires_mfa": false,
@@ -275,25 +250,11 @@
       "module": "ai_core",
       "entity": "moderation_decisions",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "module",
-        "risk_score"
-      ],
+      "payload_fields": ["module", "risk_score"],
       "producer": "ai_core",
       "consumers": [],
       "prohibited_data": [
@@ -323,25 +284,11 @@
       "module": "ai_core",
       "entity": "moderation_decisions",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "module",
-        "risk_score"
-      ],
+      "payload_fields": ["module", "risk_score"],
       "producer": "ai_core",
       "consumers": [],
       "prohibited_data": [
@@ -371,17 +318,11 @@
       "module": "ai_core",
       "entity": "moderation_decisions",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "module",
-        "risk_score"
-      ],
+      "payload_fields": ["module", "risk_score"],
       "producer": "ai_core",
       "consumers": [],
       "prohibited_data": [
@@ -411,25 +352,11 @@
       "module": "api_hub",
       "entity": "api_clients",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "client_name",
-        "scopes"
-      ],
+      "payload_fields": ["client_name", "scopes"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -459,25 +386,11 @@
       "module": "api_hub",
       "entity": "api_clients",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "client_name",
-        "scopes"
-      ],
+      "payload_fields": ["client_name", "scopes"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -507,17 +420,11 @@
       "module": "api_hub",
       "entity": "api_clients",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "client_name",
-        "scopes"
-      ],
+      "payload_fields": ["client_name", "scopes"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -547,27 +454,11 @@
       "module": "api_hub",
       "entity": "api_keys",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "key_name",
-        "key_hash",
-        "key_hint",
-        "scopes"
-      ],
+      "payload_fields": ["key_name", "key_hash", "key_hint", "scopes"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -597,27 +488,11 @@
       "module": "api_hub",
       "entity": "api_keys",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "key_name",
-        "key_hash",
-        "key_hint",
-        "scopes"
-      ],
+      "payload_fields": ["key_name", "key_hash", "key_hint", "scopes"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -647,19 +522,11 @@
       "module": "api_hub",
       "entity": "api_keys",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "key_name",
-        "key_hash",
-        "key_hint",
-        "scopes"
-      ],
+      "payload_fields": ["key_name", "key_hash", "key_hint", "scopes"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -689,25 +556,11 @@
       "module": "api_hub",
       "entity": "integration_runs",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "integration_type",
-        "provider_name"
-      ],
+      "payload_fields": ["integration_type", "provider_name"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -737,25 +590,11 @@
       "module": "api_hub",
       "entity": "integration_runs",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "integration_type",
-        "provider_name"
-      ],
+      "payload_fields": ["integration_type", "provider_name"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -785,17 +624,11 @@
       "module": "api_hub",
       "entity": "integration_runs",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "integration_type",
-        "provider_name"
-      ],
+      "payload_fields": ["integration_type", "provider_name"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -825,26 +658,11 @@
       "module": "api_hub",
       "entity": "webhooks",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "target_url",
-        "event_patterns",
-        "signing_secret_reference"
-      ],
+      "payload_fields": ["target_url", "event_patterns", "signing_secret_reference"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -874,26 +692,11 @@
       "module": "api_hub",
       "entity": "webhooks",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "target_url",
-        "event_patterns",
-        "signing_secret_reference"
-      ],
+      "payload_fields": ["target_url", "event_patterns", "signing_secret_reference"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -923,18 +726,11 @@
       "module": "api_hub",
       "entity": "webhooks",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "target_url",
-        "event_patterns",
-        "signing_secret_reference"
-      ],
+      "payload_fields": ["target_url", "event_patterns", "signing_secret_reference"],
       "producer": "api_hub",
       "consumers": [],
       "prohibited_data": [
@@ -964,24 +760,11 @@
       "module": "bi",
       "entity": "dashboards",
       "action": "archive",
-      "source_statuses": [
-        "published"
-      ],
+      "source_statuses": ["published"],
       "target_status": "archived",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "dataset_id",
-        "name",
-        "definition",
-        "allowed_roles"
-      ],
+      "payload_fields": ["dataset_id", "name", "definition", "allowed_roles"],
       "producer": "bi",
       "consumers": [],
       "prohibited_data": [
@@ -1011,24 +794,11 @@
       "module": "bi",
       "entity": "dashboards",
       "action": "publish",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "published",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "dataset_id",
-        "name",
-        "definition",
-        "allowed_roles"
-      ],
+      "payload_fields": ["dataset_id", "name", "definition", "allowed_roles"],
       "producer": "bi",
       "consumers": [],
       "prohibited_data": [
@@ -1058,25 +828,11 @@
       "module": "bi",
       "entity": "datasets",
       "action": "publish",
-      "source_statuses": [
-        "draft",
-        "refreshed"
-      ],
+      "source_statuses": ["draft", "refreshed"],
       "target_status": "published",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "name",
-        "source_module",
-        "source_resource_type",
-        "refresh_mode"
-      ],
+      "payload_fields": ["name", "source_module", "source_resource_type", "refresh_mode"],
       "producer": "bi",
       "consumers": [],
       "prohibited_data": [
@@ -1106,20 +862,11 @@
       "module": "bi",
       "entity": "datasets",
       "action": "refresh",
-      "source_statuses": [
-        "draft",
-        "published",
-        "refreshed"
-      ],
+      "source_statuses": ["draft", "published", "refreshed"],
       "target_status": "refreshed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "name",
-        "source_module",
-        "source_resource_type",
-        "refresh_mode"
-      ],
+      "payload_fields": ["name", "source_module", "source_resource_type", "refresh_mode"],
       "producer": "bi",
       "consumers": [],
       "prohibited_data": [
@@ -1149,17 +896,11 @@
       "module": "bi",
       "entity": "exports",
       "action": "complete",
-      "source_statuses": [
-        "requested"
-      ],
+      "source_statuses": ["requested"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "dashboard_id",
-        "export_format",
-        "requested_at"
-      ],
+      "payload_fields": ["dashboard_id", "export_format", "requested_at"],
       "producer": "bi",
       "consumers": [],
       "prohibited_data": [
@@ -1189,20 +930,11 @@
       "module": "bpm",
       "entity": "tasks",
       "action": "complete",
-      "source_statuses": [
-        "escalated",
-        "in_progress",
-        "open"
-      ],
+      "source_statuses": ["escalated", "in_progress", "open"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "workflow_instance_id",
-        "assignee_user_id",
-        "due_at",
-        "sla_policy_id"
-      ],
+      "payload_fields": ["workflow_instance_id", "assignee_user_id", "due_at", "sla_policy_id"],
       "producer": "bpm",
       "consumers": [],
       "prohibited_data": [
@@ -1232,25 +964,11 @@
       "module": "bpm",
       "entity": "tasks",
       "action": "escalate",
-      "source_statuses": [
-        "in_progress",
-        "open"
-      ],
+      "source_statuses": ["in_progress", "open"],
       "target_status": "escalated",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "workflow_instance_id",
-        "assignee_user_id",
-        "due_at",
-        "sla_policy_id"
-      ],
+      "payload_fields": ["workflow_instance_id", "assignee_user_id", "due_at", "sla_policy_id"],
       "producer": "bpm",
       "consumers": [],
       "prohibited_data": [
@@ -1280,24 +998,11 @@
       "module": "bpm",
       "entity": "workflow_instances",
       "action": "cancel",
-      "source_statuses": [
-        "in_progress",
-        "running"
-      ],
+      "source_statuses": ["in_progress", "running"],
       "target_status": "cancelled",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "process_key",
-        "sla_policy_id",
-        "started_at"
-      ],
+      "payload_fields": ["process_key", "sla_policy_id", "started_at"],
       "producer": "bpm",
       "consumers": [],
       "prohibited_data": [
@@ -1327,18 +1032,11 @@
       "module": "bpm",
       "entity": "workflow_instances",
       "action": "complete",
-      "source_statuses": [
-        "in_progress",
-        "running"
-      ],
+      "source_statuses": ["in_progress", "running"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "process_key",
-        "sla_policy_id",
-        "started_at"
-      ],
+      "payload_fields": ["process_key", "sla_policy_id", "started_at"],
       "producer": "bpm",
       "consumers": [],
       "prohibited_data": [
@@ -1368,12 +1066,7 @@
       "module": "business",
       "entity": "catalog_offers",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
@@ -1416,11 +1109,7 @@
       "module": "business",
       "entity": "catalog_offers",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
@@ -1463,19 +1152,9 @@
       "module": "business",
       "entity": "catalog_offers",
       "action": "pause",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "paused",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
       "payload_fields": [
         "title",
@@ -1516,19 +1195,9 @@
       "module": "business",
       "entity": "catalog_offers",
       "action": "publish",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "published",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
       "payload_fields": [
         "title",
@@ -1569,9 +1238,7 @@
       "module": "business",
       "entity": "catalog_offers",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
@@ -1614,27 +1281,11 @@
       "module": "business",
       "entity": "companies",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "cnpj",
-        "root_cnpj",
-        "legal_name",
-        "legal_representative_user_id"
-      ],
+      "payload_fields": ["cnpj", "root_cnpj", "legal_name", "legal_representative_user_id"],
       "producer": "business",
       "consumers": [],
       "prohibited_data": [
@@ -1664,27 +1315,11 @@
       "module": "business",
       "entity": "companies",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "cnpj",
-        "root_cnpj",
-        "legal_name",
-        "legal_representative_user_id"
-      ],
+      "payload_fields": ["cnpj", "root_cnpj", "legal_name", "legal_representative_user_id"],
       "producer": "business",
       "consumers": [],
       "prohibited_data": [
@@ -1714,19 +1349,11 @@
       "module": "business",
       "entity": "companies",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "cnpj",
-        "root_cnpj",
-        "legal_name",
-        "legal_representative_user_id"
-      ],
+      "payload_fields": ["cnpj", "root_cnpj", "legal_name", "legal_representative_user_id"],
       "producer": "business",
       "consumers": [],
       "prohibited_data": [
@@ -1756,23 +1383,11 @@
       "module": "business",
       "entity": "user_company_memberships",
       "action": "activate",
-      "source_statuses": [
-        "invited",
-        "pending_review"
-      ],
+      "source_statuses": ["invited", "pending_review"],
       "target_status": "active",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "role"
-      ],
+      "payload_fields": ["company_id", "role"],
       "producer": "business",
       "consumers": [],
       "prohibited_data": [
@@ -1802,24 +1417,11 @@
       "module": "business",
       "entity": "user_company_memberships",
       "action": "revoke",
-      "source_statuses": [
-        "active",
-        "invited",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "invited", "pending_review"],
       "target_status": "revoked",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "role"
-      ],
+      "payload_fields": ["company_id", "role"],
       "producer": "business",
       "consumers": [],
       "prohibited_data": [
@@ -1849,17 +1451,11 @@
       "module": "crm",
       "entity": "activities",
       "action": "complete",
-      "source_statuses": [
-        "scheduled"
-      ],
+      "source_statuses": ["scheduled"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "lead_id",
-        "activity_type",
-        "scheduled_at"
-      ],
+      "payload_fields": ["lead_id", "activity_type", "scheduled_at"],
       "producer": "crm",
       "consumers": [],
       "prohibited_data": [
@@ -1889,16 +1485,11 @@
       "module": "crm",
       "entity": "campaigns",
       "action": "close",
-      "source_statuses": [
-        "active"
-      ],
+      "source_statuses": ["active"],
       "target_status": "closed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "campaign_key",
-        "channel"
-      ],
+      "payload_fields": ["campaign_key", "channel"],
       "producer": "crm",
       "consumers": [],
       "prohibited_data": [
@@ -1928,22 +1519,11 @@
       "module": "crm",
       "entity": "campaigns",
       "action": "launch",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "active",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "campaign_key",
-        "channel"
-      ],
+      "payload_fields": ["campaign_key", "channel"],
       "producer": "crm",
       "consumers": [],
       "prohibited_data": [
@@ -1973,18 +1553,11 @@
       "module": "crm",
       "entity": "leads",
       "action": "disqualify",
-      "source_statuses": [
-        "contacted",
-        "new",
-        "qualified"
-      ],
+      "source_statuses": ["contacted", "new", "qualified"],
       "target_status": "disqualified",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "name",
-        "source"
-      ],
+      "payload_fields": ["name", "source"],
       "producer": "crm",
       "consumers": [],
       "prohibited_data": [
@@ -2014,17 +1587,11 @@
       "module": "crm",
       "entity": "leads",
       "action": "qualify",
-      "source_statuses": [
-        "contacted",
-        "new"
-      ],
+      "source_statuses": ["contacted", "new"],
       "target_status": "qualified",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "name",
-        "source"
-      ],
+      "payload_fields": ["name", "source"],
       "producer": "crm",
       "consumers": [],
       "prohibited_data": [
@@ -2054,18 +1621,11 @@
       "module": "crm",
       "entity": "opportunities",
       "action": "lose",
-      "source_statuses": [
-        "open",
-        "proposal_sent"
-      ],
+      "source_statuses": ["open", "proposal_sent"],
       "target_status": "lost",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "lead_id",
-        "title",
-        "expected_value_brl"
-      ],
+      "payload_fields": ["lead_id", "title", "expected_value_brl"],
       "producer": "crm",
       "consumers": [],
       "prohibited_data": [
@@ -2095,23 +1655,11 @@
       "module": "crm",
       "entity": "opportunities",
       "action": "propose",
-      "source_statuses": [
-        "open"
-      ],
+      "source_statuses": ["open"],
       "target_status": "proposal_sent",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "lead_id",
-        "title",
-        "expected_value_brl"
-      ],
+      "payload_fields": ["lead_id", "title", "expected_value_brl"],
       "producer": "crm",
       "consumers": [],
       "prohibited_data": [
@@ -2141,23 +1689,11 @@
       "module": "crm",
       "entity": "opportunities",
       "action": "win",
-      "source_statuses": [
-        "proposal_sent"
-      ],
+      "source_statuses": ["proposal_sent"],
       "target_status": "won",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "lead_id",
-        "title",
-        "expected_value_brl"
-      ],
+      "payload_fields": ["lead_id", "title", "expected_value_brl"],
       "producer": "crm",
       "consumers": [],
       "prohibited_data": [
@@ -2187,18 +1723,11 @@
       "module": "delivery",
       "entity": "delivery_requests",
       "action": "assign",
-      "source_statuses": [
-        "created",
-        "quoted"
-      ],
+      "source_statuses": ["created", "quoted"],
       "target_status": "assigned",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "service_type",
-        "origin",
-        "destination"
-      ],
+      "payload_fields": ["service_type", "origin", "destination"],
       "producer": "delivery",
       "consumers": [],
       "prohibited_data": [
@@ -2228,19 +1757,11 @@
       "module": "delivery",
       "entity": "delivery_requests",
       "action": "cancel",
-      "source_statuses": [
-        "assigned",
-        "created",
-        "quoted"
-      ],
+      "source_statuses": ["assigned", "created", "quoted"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "service_type",
-        "origin",
-        "destination"
-      ],
+      "payload_fields": ["service_type", "origin", "destination"],
       "producer": "delivery",
       "consumers": [],
       "prohibited_data": [
@@ -2270,17 +1791,11 @@
       "module": "delivery",
       "entity": "delivery_requests",
       "action": "complete",
-      "source_statuses": [
-        "picked_up"
-      ],
+      "source_statuses": ["picked_up"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "service_type",
-        "origin",
-        "destination"
-      ],
+      "payload_fields": ["service_type", "origin", "destination"],
       "producer": "delivery",
       "consumers": [],
       "prohibited_data": [
@@ -2310,17 +1825,11 @@
       "module": "delivery",
       "entity": "delivery_requests",
       "action": "pickup",
-      "source_statuses": [
-        "assigned"
-      ],
+      "source_statuses": ["assigned"],
       "target_status": "picked_up",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "service_type",
-        "origin",
-        "destination"
-      ],
+      "payload_fields": ["service_type", "origin", "destination"],
       "producer": "delivery",
       "consumers": [],
       "prohibited_data": [
@@ -2350,12 +1859,7 @@
       "module": "document",
       "entity": "documents",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
@@ -2397,11 +1901,7 @@
       "module": "document",
       "entity": "documents",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
@@ -2443,9 +1943,7 @@
       "module": "document",
       "entity": "documents",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
@@ -2487,19 +1985,11 @@
       "module": "erp",
       "entity": "fiscal_documents",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "document_type",
-        "amount_brl"
-      ],
+      "payload_fields": ["document_type", "amount_brl"],
       "producer": "erp",
       "consumers": [],
       "prohibited_data": [
@@ -2529,18 +2019,11 @@
       "module": "erp",
       "entity": "fiscal_documents",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "document_type",
-        "amount_brl"
-      ],
+      "payload_fields": ["document_type", "amount_brl"],
       "producer": "erp",
       "consumers": [],
       "prohibited_data": [
@@ -2570,16 +2053,11 @@
       "module": "erp",
       "entity": "fiscal_documents",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "document_type",
-        "amount_brl"
-      ],
+      "payload_fields": ["document_type", "amount_brl"],
       "producer": "erp",
       "consumers": [],
       "prohibited_data": [
@@ -2609,24 +2087,11 @@
       "module": "erp",
       "entity": "payables",
       "action": "approve_payment",
-      "source_statuses": [
-        "open"
-      ],
+      "source_statuses": ["open"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "supplier_name",
-        "due_at",
-        "amount_brl",
-        "cost_center_id"
-      ],
+      "payload_fields": ["supplier_name", "due_at", "amount_brl", "cost_center_id"],
       "producer": "erp",
       "consumers": [],
       "prohibited_data": [
@@ -2656,18 +2121,11 @@
       "module": "erp",
       "entity": "payables",
       "action": "settle",
-      "source_statuses": [
-        "approved"
-      ],
+      "source_statuses": ["approved"],
       "target_status": "paid",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "supplier_name",
-        "due_at",
-        "amount_brl",
-        "cost_center_id"
-      ],
+      "payload_fields": ["supplier_name", "due_at", "amount_brl", "cost_center_id"],
       "producer": "erp",
       "consumers": [],
       "prohibited_data": [
@@ -2697,18 +2155,11 @@
       "module": "erp",
       "entity": "receivables",
       "action": "receive",
-      "source_statuses": [
-        "issued"
-      ],
+      "source_statuses": ["issued"],
       "target_status": "received",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "customer_name",
-        "due_at",
-        "amount_brl",
-        "account_id"
-      ],
+      "payload_fields": ["customer_name", "due_at", "amount_brl", "account_id"],
       "producer": "erp",
       "consumers": [],
       "prohibited_data": [
@@ -2738,24 +2189,11 @@
       "module": "erp",
       "entity": "receivables",
       "action": "reconcile",
-      "source_statuses": [
-        "received"
-      ],
+      "source_statuses": ["received"],
       "target_status": "reconciled",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "customer_name",
-        "due_at",
-        "amount_brl",
-        "account_id"
-      ],
+      "payload_fields": ["customer_name", "due_at", "amount_brl", "account_id"],
       "producer": "erp",
       "consumers": [],
       "prohibited_data": [
@@ -2785,23 +2223,11 @@
       "module": "finance",
       "entity": "escrows",
       "action": "capture",
-      "source_statuses": [
-        "authorized"
-      ],
+      "source_statuses": ["authorized"],
       "target_status": "held",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "wallet_id",
-        "beneficiary_user_id",
-        "amount_brl"
-      ],
+      "payload_fields": ["wallet_id", "beneficiary_user_id", "amount_brl"],
       "producer": "finance",
       "consumers": [],
       "prohibited_data": [
@@ -2831,17 +2257,11 @@
       "module": "finance",
       "entity": "escrows",
       "action": "dispute",
-      "source_statuses": [
-        "held"
-      ],
+      "source_statuses": ["held"],
       "target_status": "disputed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "wallet_id",
-        "beneficiary_user_id",
-        "amount_brl"
-      ],
+      "payload_fields": ["wallet_id", "beneficiary_user_id", "amount_brl"],
       "producer": "finance",
       "consumers": [],
       "prohibited_data": [
@@ -2871,25 +2291,11 @@
       "module": "finance",
       "entity": "escrows",
       "action": "refund",
-      "source_statuses": [
-        "authorized",
-        "disputed",
-        "held"
-      ],
+      "source_statuses": ["authorized", "disputed", "held"],
       "target_status": "refunded",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "wallet_id",
-        "beneficiary_user_id",
-        "amount_brl"
-      ],
+      "payload_fields": ["wallet_id", "beneficiary_user_id", "amount_brl"],
       "producer": "finance",
       "consumers": [],
       "prohibited_data": [
@@ -2919,23 +2325,11 @@
       "module": "finance",
       "entity": "escrows",
       "action": "release",
-      "source_statuses": [
-        "held"
-      ],
+      "source_statuses": ["held"],
       "target_status": "released",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "wallet_id",
-        "beneficiary_user_id",
-        "amount_brl"
-      ],
+      "payload_fields": ["wallet_id", "beneficiary_user_id", "amount_brl"],
       "producer": "finance",
       "consumers": [],
       "prohibited_data": [
@@ -2965,12 +2359,7 @@
       "module": "finance",
       "entity": "invoices",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
@@ -3004,11 +2393,7 @@
       "module": "finance",
       "entity": "invoices",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
@@ -3042,9 +2427,7 @@
       "module": "finance",
       "entity": "invoices",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
@@ -3078,12 +2461,7 @@
       "module": "finance",
       "entity": "splits",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
@@ -3117,11 +2495,7 @@
       "module": "finance",
       "entity": "splits",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
@@ -3155,9 +2529,7 @@
       "module": "finance",
       "entity": "splits",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
@@ -3191,18 +2563,11 @@
       "module": "health",
       "entity": "appointments",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "scheduled_at"
-      ],
+      "payload_fields": ["scheduled_at"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3232,17 +2597,11 @@
       "module": "health",
       "entity": "appointments",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "scheduled_at"
-      ],
+      "payload_fields": ["scheduled_at"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3272,23 +2631,11 @@
       "module": "health",
       "entity": "appointments",
       "action": "pause",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "paused",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "scheduled_at"
-      ],
+      "payload_fields": ["scheduled_at"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3318,23 +2665,11 @@
       "module": "health",
       "entity": "appointments",
       "action": "publish",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "published",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "scheduled_at"
-      ],
+      "payload_fields": ["scheduled_at"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3364,15 +2699,11 @@
       "module": "health",
       "entity": "appointments",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "scheduled_at"
-      ],
+      "payload_fields": ["scheduled_at"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3402,18 +2733,11 @@
       "module": "health",
       "entity": "beds",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "unit"
-      ],
+      "payload_fields": ["unit"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3443,17 +2767,11 @@
       "module": "health",
       "entity": "beds",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "unit"
-      ],
+      "payload_fields": ["unit"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3483,15 +2801,11 @@
       "module": "health",
       "entity": "beds",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "unit"
-      ],
+      "payload_fields": ["unit"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3521,24 +2835,11 @@
       "module": "health",
       "entity": "medical_records",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "patient_id"
-      ],
+      "payload_fields": ["patient_id"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3568,24 +2869,11 @@
       "module": "health",
       "entity": "medical_records",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "patient_id"
-      ],
+      "payload_fields": ["patient_id"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3615,16 +2903,11 @@
       "module": "health",
       "entity": "medical_records",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "patient_id"
-      ],
+      "payload_fields": ["patient_id"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3654,24 +2937,11 @@
       "module": "health",
       "entity": "prescriptions",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "patient_id"
-      ],
+      "payload_fields": ["patient_id"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3701,24 +2971,11 @@
       "module": "health",
       "entity": "prescriptions",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "patient_id"
-      ],
+      "payload_fields": ["patient_id"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3748,16 +3005,11 @@
       "module": "health",
       "entity": "prescriptions",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "patient_id"
-      ],
+      "payload_fields": ["patient_id"],
       "producer": "health",
       "consumers": [],
       "prohibited_data": [
@@ -3787,19 +3039,11 @@
       "module": "hr",
       "entity": "courses",
       "action": "complete",
-      "source_statuses": [
-        "assigned",
-        "in_progress"
-      ],
+      "source_statuses": ["assigned", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "employee_id",
-        "course_code",
-        "title",
-        "due_at"
-      ],
+      "payload_fields": ["employee_id", "course_code", "title", "due_at"],
       "producer": "hr",
       "consumers": [],
       "prohibited_data": [
@@ -3829,26 +3073,11 @@
       "module": "hr",
       "entity": "employees",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "employment_type",
-        "admission_date"
-      ],
+      "payload_fields": ["company_id", "employment_type", "admission_date"],
       "producer": "hr",
       "consumers": [],
       "prohibited_data": [
@@ -3878,26 +3107,11 @@
       "module": "hr",
       "entity": "employees",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "employment_type",
-        "admission_date"
-      ],
+      "payload_fields": ["company_id", "employment_type", "admission_date"],
       "producer": "hr",
       "consumers": [],
       "prohibited_data": [
@@ -3927,18 +3141,11 @@
       "module": "hr",
       "entity": "employees",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "company_id",
-        "employment_type",
-        "admission_date"
-      ],
+      "payload_fields": ["company_id", "employment_type", "admission_date"],
       "producer": "hr",
       "consumers": [],
       "prohibited_data": [
@@ -3968,24 +3175,11 @@
       "module": "hr",
       "entity": "occupational_records",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "employee_id"
-      ],
+      "payload_fields": ["employee_id"],
       "producer": "hr",
       "consumers": [],
       "prohibited_data": [
@@ -4015,24 +3209,11 @@
       "module": "hr",
       "entity": "occupational_records",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "employee_id"
-      ],
+      "payload_fields": ["employee_id"],
       "producer": "hr",
       "consumers": [],
       "prohibited_data": [
@@ -4062,16 +3243,11 @@
       "module": "hr",
       "entity": "occupational_records",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "employee_id"
-      ],
+      "payload_fields": ["employee_id"],
       "producer": "hr",
       "consumers": [],
       "prohibited_data": [
@@ -4101,25 +3277,11 @@
       "module": "hr",
       "entity": "payroll_runs",
       "action": "close",
-      "source_statuses": [
-        "approved",
-        "open",
-        "pending_review"
-      ],
+      "source_statuses": ["approved", "open", "pending_review"],
       "target_status": "closed",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "period",
-        "gross_amount_brl"
-      ],
+      "payload_fields": ["company_id", "period", "gross_amount_brl"],
       "producer": "hr",
       "consumers": [],
       "prohibited_data": [
@@ -4149,23 +3311,11 @@
       "module": "identity",
       "entity": "documents",
       "action": "approve",
-      "source_statuses": [
-        "pending_review"
-      ],
+      "source_statuses": ["pending_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "document_type",
-        "document_number_hash",
-        "storage_key"
-      ],
+      "payload_fields": ["document_type", "document_number_hash", "storage_key"],
       "producer": "identity",
       "consumers": [],
       "prohibited_data": [
@@ -4195,23 +3345,11 @@
       "module": "identity",
       "entity": "documents",
       "action": "reject",
-      "source_statuses": [
-        "pending_review"
-      ],
+      "source_statuses": ["pending_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "document_type",
-        "document_number_hash",
-        "storage_key"
-      ],
+      "payload_fields": ["document_type", "document_number_hash", "storage_key"],
       "producer": "identity",
       "consumers": [],
       "prohibited_data": [
@@ -4241,21 +3379,11 @@
       "module": "identity",
       "entity": "identity_verifications",
       "action": "approve",
-      "source_statuses": [
-        "PROCESSING"
-      ],
+      "source_statuses": ["PROCESSING"],
       "target_status": "APPROVED",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "verification_type"
-      ],
+      "payload_fields": ["verification_type"],
       "producer": "identity",
       "consumers": [],
       "prohibited_data": [
@@ -4285,21 +3413,11 @@
       "module": "identity",
       "entity": "identity_verifications",
       "action": "reject",
-      "source_statuses": [
-        "PROCESSING"
-      ],
+      "source_statuses": ["PROCESSING"],
       "target_status": "REJECTED",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "verification_type"
-      ],
+      "payload_fields": ["verification_type"],
       "producer": "identity",
       "consumers": [],
       "prohibited_data": [
@@ -4329,17 +3447,9 @@
       "module": "identity",
       "entity": "kyc_records",
       "action": "approve",
-      "source_statuses": [
-        "PROCESSING"
-      ],
+      "source_statuses": ["PROCESSING"],
       "target_status": "APPROVED",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
       "payload_fields": [],
       "producer": "identity",
@@ -4371,17 +3481,9 @@
       "module": "identity",
       "entity": "kyc_records",
       "action": "reject",
-      "source_statuses": [
-        "PROCESSING"
-      ],
+      "source_statuses": ["PROCESSING"],
       "target_status": "REJECTED",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
       "payload_fields": [],
       "producer": "identity",
@@ -4413,18 +3515,11 @@
       "module": "identity",
       "entity": "sessions",
       "action": "revoke",
-      "source_statuses": [
-        "active"
-      ],
+      "source_statuses": ["active"],
       "target_status": "revoked",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "token_hash",
-        "device_fingerprint",
-        "ip_address",
-        "expires_at"
-      ],
+      "payload_fields": ["token_hash", "device_fingerprint", "ip_address", "expires_at"],
       "producer": "identity",
       "consumers": [],
       "prohibited_data": [
@@ -4454,23 +3549,11 @@
       "module": "identity",
       "entity": "users",
       "action": "verify",
-      "source_statuses": [
-        "PENDING_KYC"
-      ],
+      "source_statuses": ["PENDING_KYC"],
       "target_status": "ACTIVE",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "full_name",
-        "email",
-        "password_hash"
-      ],
+      "payload_fields": ["full_name", "email", "password_hash"],
       "producer": "identity",
       "consumers": [],
       "prohibited_data": [
@@ -4500,24 +3583,11 @@
       "module": "jobs",
       "entity": "applications",
       "action": "reject",
-      "source_statuses": [
-        "shortlisted",
-        "submitted",
-        "under_review"
-      ],
+      "source_statuses": ["shortlisted", "submitted", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "roles": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "requires_mfa": true,
-      "payload_fields": [
-        "job_posting_id",
-        "resume_id"
-      ],
+      "payload_fields": ["job_posting_id", "resume_id"],
       "producer": "jobs",
       "consumers": [],
       "prohibited_data": [
@@ -4547,22 +3617,11 @@
       "module": "jobs",
       "entity": "applications",
       "action": "review",
-      "source_statuses": [
-        "submitted"
-      ],
+      "source_statuses": ["submitted"],
       "target_status": "under_review",
-      "roles": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "roles": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "requires_mfa": false,
-      "payload_fields": [
-        "job_posting_id",
-        "resume_id"
-      ],
+      "payload_fields": ["job_posting_id", "resume_id"],
       "producer": "jobs",
       "consumers": [],
       "prohibited_data": [
@@ -4592,22 +3651,11 @@
       "module": "jobs",
       "entity": "applications",
       "action": "schedule_interview",
-      "source_statuses": [
-        "shortlisted"
-      ],
+      "source_statuses": ["shortlisted"],
       "target_status": "interview_scheduled",
-      "roles": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "roles": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "requires_mfa": true,
-      "payload_fields": [
-        "job_posting_id",
-        "resume_id"
-      ],
+      "payload_fields": ["job_posting_id", "resume_id"],
       "producer": "jobs",
       "consumers": [],
       "prohibited_data": [
@@ -4637,23 +3685,11 @@
       "module": "jobs",
       "entity": "applications",
       "action": "shortlist",
-      "source_statuses": [
-        "submitted",
-        "under_review"
-      ],
+      "source_statuses": ["submitted", "under_review"],
       "target_status": "shortlisted",
-      "roles": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "roles": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "requires_mfa": true,
-      "payload_fields": [
-        "job_posting_id",
-        "resume_id"
-      ],
+      "payload_fields": ["job_posting_id", "resume_id"],
       "producer": "jobs",
       "consumers": [],
       "prohibited_data": [
@@ -4683,17 +3719,11 @@
       "module": "jobs",
       "entity": "applications",
       "action": "withdraw",
-      "source_statuses": [
-        "submitted",
-        "under_review"
-      ],
+      "source_statuses": ["submitted", "under_review"],
       "target_status": "withdrawn",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "job_posting_id",
-        "resume_id"
-      ],
+      "payload_fields": ["job_posting_id", "resume_id"],
       "producer": "jobs",
       "consumers": [],
       "prohibited_data": [
@@ -4723,24 +3753,11 @@
       "module": "jobs",
       "entity": "job_postings",
       "action": "close",
-      "source_statuses": [
-        "published"
-      ],
+      "source_statuses": ["published"],
       "target_status": "closed",
-      "roles": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "roles": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "company_status",
-        "title",
-        "description"
-      ],
+      "payload_fields": ["company_id", "company_status", "title", "description"],
       "producer": "jobs",
       "consumers": [],
       "prohibited_data": [
@@ -4770,25 +3787,11 @@
       "module": "jobs",
       "entity": "job_postings",
       "action": "publish",
-      "source_statuses": [
-        "approved",
-        "draft"
-      ],
+      "source_statuses": ["approved", "draft"],
       "target_status": "published",
-      "roles": [
-        "administrator",
-        "auditor",
-        "hr_manager",
-        "owner",
-        "recruiter"
-      ],
+      "roles": ["administrator", "auditor", "hr_manager", "owner", "recruiter"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "company_status",
-        "title",
-        "description"
-      ],
+      "payload_fields": ["company_id", "company_status", "title", "description"],
       "producer": "jobs",
       "consumers": [],
       "prohibited_data": [
@@ -4818,20 +3821,11 @@
       "module": "legal",
       "entity": "cases",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "case_number",
-        "case_type",
-        "opened_at"
-      ],
+      "payload_fields": ["case_number", "case_type", "opened_at"],
       "producer": "legal",
       "consumers": [],
       "prohibited_data": [
@@ -4861,19 +3855,11 @@
       "module": "legal",
       "entity": "cases",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "case_number",
-        "case_type",
-        "opened_at"
-      ],
+      "payload_fields": ["case_number", "case_type", "opened_at"],
       "producer": "legal",
       "consumers": [],
       "prohibited_data": [
@@ -4903,17 +3889,11 @@
       "module": "legal",
       "entity": "cases",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "case_number",
-        "case_type",
-        "opened_at"
-      ],
+      "payload_fields": ["case_number", "case_type", "opened_at"],
       "producer": "legal",
       "consumers": [],
       "prohibited_data": [
@@ -4943,23 +3923,11 @@
       "module": "legal",
       "entity": "deadlines",
       "action": "alert",
-      "source_statuses": [
-        "pending"
-      ],
+      "source_statuses": ["pending"],
       "target_status": "alerted",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "case_id",
-        "deadline_type",
-        "due_at"
-      ],
+      "payload_fields": ["case_id", "deadline_type", "due_at"],
       "producer": "legal",
       "consumers": [],
       "prohibited_data": [
@@ -4989,18 +3957,11 @@
       "module": "legal",
       "entity": "deadlines",
       "action": "complete",
-      "source_statuses": [
-        "alerted",
-        "pending"
-      ],
+      "source_statuses": ["alerted", "pending"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "case_id",
-        "deadline_type",
-        "due_at"
-      ],
+      "payload_fields": ["case_id", "deadline_type", "due_at"],
       "producer": "legal",
       "consumers": [],
       "prohibited_data": [
@@ -5030,25 +3991,11 @@
       "module": "marketplace",
       "entity": "disputes",
       "action": "close",
-      "source_statuses": [
-        "open",
-        "resolved",
-        "under_review"
-      ],
+      "source_statuses": ["open", "resolved", "under_review"],
       "target_status": "closed",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "order_id",
-        "case_type",
-        "message"
-      ],
+      "payload_fields": ["order_id", "case_type", "message"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5078,24 +4025,11 @@
       "module": "marketplace",
       "entity": "disputes",
       "action": "resolve",
-      "source_statuses": [
-        "open",
-        "under_review"
-      ],
+      "source_statuses": ["open", "under_review"],
       "target_status": "resolved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "order_id",
-        "case_type",
-        "message"
-      ],
+      "payload_fields": ["order_id", "case_type", "message"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5125,23 +4059,11 @@
       "module": "marketplace",
       "entity": "disputes",
       "action": "triage",
-      "source_statuses": [
-        "open"
-      ],
+      "source_statuses": ["open"],
       "target_status": "under_review",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "order_id",
-        "case_type",
-        "message"
-      ],
+      "payload_fields": ["order_id", "case_type", "message"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5171,16 +4093,11 @@
       "module": "marketplace",
       "entity": "orders",
       "action": "cancel",
-      "source_statuses": [
-        "created",
-        "paid"
-      ],
+      "source_statuses": ["created", "paid"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "total_brl"
-      ],
+      "payload_fields": ["total_brl"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5210,16 +4127,11 @@
       "module": "marketplace",
       "entity": "orders",
       "action": "deliver",
-      "source_statuses": [
-        "paid",
-        "shipped"
-      ],
+      "source_statuses": ["paid", "shipped"],
       "target_status": "delivered",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "total_brl"
-      ],
+      "payload_fields": ["total_brl"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5249,15 +4161,11 @@
       "module": "marketplace",
       "entity": "orders",
       "action": "pay",
-      "source_statuses": [
-        "created"
-      ],
+      "source_statuses": ["created"],
       "target_status": "paid",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "total_brl"
-      ],
+      "payload_fields": ["total_brl"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5287,22 +4195,11 @@
       "module": "marketplace",
       "entity": "products",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "store_id",
-        "sku",
-        "name",
-        "price_brl",
-        "stock_location_type"
-      ],
+      "payload_fields": ["store_id", "sku", "name", "price_brl", "stock_location_type"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5332,21 +4229,11 @@
       "module": "marketplace",
       "entity": "products",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "store_id",
-        "sku",
-        "name",
-        "price_brl",
-        "stock_location_type"
-      ],
+      "payload_fields": ["store_id", "sku", "name", "price_brl", "stock_location_type"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5376,27 +4263,11 @@
       "module": "marketplace",
       "entity": "products",
       "action": "pause",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "paused",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "store_id",
-        "sku",
-        "name",
-        "price_brl",
-        "stock_location_type"
-      ],
+      "payload_fields": ["store_id", "sku", "name", "price_brl", "stock_location_type"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5426,27 +4297,11 @@
       "module": "marketplace",
       "entity": "products",
       "action": "publish",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "published",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "store_id",
-        "sku",
-        "name",
-        "price_brl",
-        "stock_location_type"
-      ],
+      "payload_fields": ["store_id", "sku", "name", "price_brl", "stock_location_type"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5476,19 +4331,11 @@
       "module": "marketplace",
       "entity": "products",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "store_id",
-        "sku",
-        "name",
-        "price_brl",
-        "stock_location_type"
-      ],
+      "payload_fields": ["store_id", "sku", "name", "price_brl", "stock_location_type"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5518,22 +4365,11 @@
       "module": "marketplace",
       "entity": "reviews",
       "action": "publish",
-      "source_statuses": [
-        "pending_review"
-      ],
+      "source_statuses": ["pending_review"],
       "target_status": "published",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "order_id",
-        "rating"
-      ],
+      "payload_fields": ["order_id", "rating"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5563,22 +4399,11 @@
       "module": "marketplace",
       "entity": "reviews",
       "action": "reject",
-      "source_statuses": [
-        "pending_review"
-      ],
+      "source_statuses": ["pending_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "order_id",
-        "rating"
-      ],
+      "payload_fields": ["order_id", "rating"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5608,26 +4433,11 @@
       "module": "marketplace",
       "entity": "stores",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "company_status",
-        "name"
-      ],
+      "payload_fields": ["company_id", "company_status", "name"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5657,26 +4467,11 @@
       "module": "marketplace",
       "entity": "stores",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "company_status",
-        "name"
-      ],
+      "payload_fields": ["company_id", "company_status", "name"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5706,18 +4501,11 @@
       "module": "marketplace",
       "entity": "stores",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "company_id",
-        "company_status",
-        "name"
-      ],
+      "payload_fields": ["company_id", "company_status", "name"],
       "producer": "marketplace",
       "consumers": [],
       "prohibited_data": [
@@ -5747,17 +4535,11 @@
       "module": "mobility",
       "entity": "rides",
       "action": "accept",
-      "source_statuses": [
-        "requested"
-      ],
+      "source_statuses": ["requested"],
       "target_status": "accepted",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "origin",
-        "destination",
-        "vehicle_type"
-      ],
+      "payload_fields": ["origin", "destination", "vehicle_type"],
       "producer": "mobility",
       "consumers": [],
       "prohibited_data": [
@@ -5787,18 +4569,11 @@
       "module": "mobility",
       "entity": "rides",
       "action": "cancel",
-      "source_statuses": [
-        "accepted",
-        "requested"
-      ],
+      "source_statuses": ["accepted", "requested"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "origin",
-        "destination",
-        "vehicle_type"
-      ],
+      "payload_fields": ["origin", "destination", "vehicle_type"],
       "producer": "mobility",
       "consumers": [],
       "prohibited_data": [
@@ -5828,18 +4603,11 @@
       "module": "mobility",
       "entity": "rides",
       "action": "complete",
-      "source_statuses": [
-        "accepted",
-        "in_progress"
-      ],
+      "source_statuses": ["accepted", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "origin",
-        "destination",
-        "vehicle_type"
-      ],
+      "payload_fields": ["origin", "destination", "vehicle_type"],
       "producer": "mobility",
       "consumers": [],
       "prohibited_data": [
@@ -5869,18 +4637,11 @@
       "module": "mobility",
       "entity": "tickets",
       "action": "use",
-      "source_statuses": [
-        "active"
-      ],
+      "source_statuses": ["active"],
       "target_status": "used",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "route_code",
-        "amount_brl",
-        "qr_token_hash",
-        "nfc_token_hash"
-      ],
+      "payload_fields": ["route_code", "amount_brl", "qr_token_hash", "nfc_token_hash"],
       "producer": "mobility",
       "consumers": [],
       "prohibited_data": [
@@ -5910,25 +4671,11 @@
       "module": "property",
       "entity": "leases",
       "action": "activate",
-      "source_statuses": [
-        "draft",
-        "pending"
-      ],
+      "source_statuses": ["draft", "pending"],
       "target_status": "active",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "property_id",
-        "tenant_user_id",
-        "starts_at",
-        "rent_amount_brl"
-      ],
+      "payload_fields": ["property_id", "tenant_user_id", "starts_at", "rent_amount_brl"],
       "producer": "property",
       "consumers": [],
       "prohibited_data": [
@@ -5958,24 +4705,11 @@
       "module": "property",
       "entity": "leases",
       "action": "terminate",
-      "source_statuses": [
-        "active"
-      ],
+      "source_statuses": ["active"],
       "target_status": "terminated",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "property_id",
-        "tenant_user_id",
-        "starts_at",
-        "rent_amount_brl"
-      ],
+      "payload_fields": ["property_id", "tenant_user_id", "starts_at", "rent_amount_brl"],
       "producer": "property",
       "consumers": [],
       "prohibited_data": [
@@ -6005,24 +4739,11 @@
       "module": "property",
       "entity": "maintenance_orders",
       "action": "complete",
-      "source_statuses": [
-        "requested",
-        "scheduled"
-      ],
+      "source_statuses": ["requested", "scheduled"],
       "target_status": "completed",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "property_id",
-        "issue_type",
-        "requested_at"
-      ],
+      "payload_fields": ["property_id", "issue_type", "requested_at"],
       "producer": "property",
       "consumers": [],
       "prohibited_data": [
@@ -6052,17 +4773,11 @@
       "module": "property",
       "entity": "maintenance_orders",
       "action": "schedule",
-      "source_statuses": [
-        "requested"
-      ],
+      "source_statuses": ["requested"],
       "target_status": "scheduled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "property_id",
-        "issue_type",
-        "requested_at"
-      ],
+      "payload_fields": ["property_id", "issue_type", "requested_at"],
       "producer": "property",
       "consumers": [],
       "prohibited_data": [
@@ -6092,19 +4807,11 @@
       "module": "property",
       "entity": "properties",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "address",
-        "property_type"
-      ],
+      "payload_fields": ["address", "property_type"],
       "producer": "property",
       "consumers": [],
       "prohibited_data": [
@@ -6134,18 +4841,11 @@
       "module": "property",
       "entity": "properties",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "address",
-        "property_type"
-      ],
+      "payload_fields": ["address", "property_type"],
       "producer": "property",
       "consumers": [],
       "prohibited_data": [
@@ -6175,24 +4875,11 @@
       "module": "property",
       "entity": "properties",
       "action": "pause",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "paused",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "address",
-        "property_type"
-      ],
+      "payload_fields": ["address", "property_type"],
       "producer": "property",
       "consumers": [],
       "prohibited_data": [
@@ -6222,24 +4909,11 @@
       "module": "property",
       "entity": "properties",
       "action": "publish",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "published",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "address",
-        "property_type"
-      ],
+      "payload_fields": ["address", "property_type"],
       "producer": "property",
       "consumers": [],
       "prohibited_data": [
@@ -6269,16 +4943,11 @@
       "module": "property",
       "entity": "properties",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "address",
-        "property_type"
-      ],
+      "payload_fields": ["address", "property_type"],
       "producer": "property",
       "consumers": [],
       "prohibited_data": [
@@ -6308,26 +4977,11 @@
       "module": "riders",
       "entity": "rider_profiles",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "cnh_number_hash",
-        "cnh_category",
-        "wallet_id"
-      ],
+      "payload_fields": ["cnh_number_hash", "cnh_category", "wallet_id"],
       "producer": "riders",
       "consumers": [],
       "prohibited_data": [
@@ -6357,26 +5011,11 @@
       "module": "riders",
       "entity": "rider_profiles",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "cnh_number_hash",
-        "cnh_category",
-        "wallet_id"
-      ],
+      "payload_fields": ["cnh_number_hash", "cnh_category", "wallet_id"],
       "producer": "riders",
       "consumers": [],
       "prohibited_data": [
@@ -6406,18 +5045,11 @@
       "module": "riders",
       "entity": "rider_profiles",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "cnh_number_hash",
-        "cnh_category",
-        "wallet_id"
-      ],
+      "payload_fields": ["cnh_number_hash", "cnh_category", "wallet_id"],
       "producer": "riders",
       "consumers": [],
       "prohibited_data": [
@@ -6447,26 +5079,11 @@
       "module": "riders",
       "entity": "vehicles",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "rider_profile_id",
-        "type",
-        "license_plate"
-      ],
+      "payload_fields": ["rider_profile_id", "type", "license_plate"],
       "producer": "riders",
       "consumers": [],
       "prohibited_data": [
@@ -6496,26 +5113,11 @@
       "module": "riders",
       "entity": "vehicles",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "rider_profile_id",
-        "type",
-        "license_plate"
-      ],
+      "payload_fields": ["rider_profile_id", "type", "license_plate"],
       "producer": "riders",
       "consumers": [],
       "prohibited_data": [
@@ -6545,18 +5147,11 @@
       "module": "riders",
       "entity": "vehicles",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "rider_profile_id",
-        "type",
-        "license_plate"
-      ],
+      "payload_fields": ["rider_profile_id", "type", "license_plate"],
       "producer": "riders",
       "consumers": [],
       "prohibited_data": [
@@ -6586,18 +5181,11 @@
       "module": "services",
       "entity": "providers",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "category"
-      ],
+      "payload_fields": ["category"],
       "producer": "services",
       "consumers": [],
       "prohibited_data": [
@@ -6627,17 +5215,11 @@
       "module": "services",
       "entity": "providers",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "category"
-      ],
+      "payload_fields": ["category"],
       "producer": "services",
       "consumers": [],
       "prohibited_data": [
@@ -6667,23 +5249,11 @@
       "module": "services",
       "entity": "providers",
       "action": "pause",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "paused",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "category"
-      ],
+      "payload_fields": ["category"],
       "producer": "services",
       "consumers": [],
       "prohibited_data": [
@@ -6713,23 +5283,11 @@
       "module": "services",
       "entity": "providers",
       "action": "publish",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "published",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "category"
-      ],
+      "payload_fields": ["category"],
       "producer": "services",
       "consumers": [],
       "prohibited_data": [
@@ -6759,15 +5317,11 @@
       "module": "services",
       "entity": "providers",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "category"
-      ],
+      "payload_fields": ["category"],
       "producer": "services",
       "consumers": [],
       "prohibited_data": [
@@ -6797,15 +5351,11 @@
       "module": "services",
       "entity": "service_contracts",
       "action": "accept",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "held",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "visit_price_brl"
-      ],
+      "payload_fields": ["visit_price_brl"],
       "producer": "services",
       "consumers": [],
       "prohibited_data": [
@@ -6835,16 +5385,11 @@
       "module": "services",
       "entity": "service_contracts",
       "action": "complete",
-      "source_statuses": [
-        "held",
-        "in_progress"
-      ],
+      "source_statuses": ["held", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "visit_price_brl"
-      ],
+      "payload_fields": ["visit_price_brl"],
       "producer": "services",
       "consumers": [],
       "prohibited_data": [
@@ -6874,16 +5419,11 @@
       "module": "services",
       "entity": "service_contracts",
       "action": "dispute",
-      "source_statuses": [
-        "held",
-        "in_progress"
-      ],
+      "source_statuses": ["held", "in_progress"],
       "target_status": "disputed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "visit_price_brl"
-      ],
+      "payload_fields": ["visit_price_brl"],
       "producer": "services",
       "consumers": [],
       "prohibited_data": [
@@ -6913,21 +5453,11 @@
       "module": "stock",
       "entity": "catalog_products",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "supplier_id",
-        "external_sku",
-        "name",
-        "list_price_brl"
-      ],
+      "payload_fields": ["supplier_id", "external_sku", "name", "list_price_brl"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -6957,20 +5487,11 @@
       "module": "stock",
       "entity": "catalog_products",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "supplier_id",
-        "external_sku",
-        "name",
-        "list_price_brl"
-      ],
+      "payload_fields": ["supplier_id", "external_sku", "name", "list_price_brl"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7000,26 +5521,11 @@
       "module": "stock",
       "entity": "catalog_products",
       "action": "pause",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "paused",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "supplier_id",
-        "external_sku",
-        "name",
-        "list_price_brl"
-      ],
+      "payload_fields": ["supplier_id", "external_sku", "name", "list_price_brl"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7049,26 +5555,11 @@
       "module": "stock",
       "entity": "catalog_products",
       "action": "publish",
-      "source_statuses": [
-        "active",
-        "approved",
-        "published"
-      ],
+      "source_statuses": ["active", "approved", "published"],
       "target_status": "published",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "supplier_id",
-        "external_sku",
-        "name",
-        "list_price_brl"
-      ],
+      "payload_fields": ["supplier_id", "external_sku", "name", "list_price_brl"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7098,18 +5589,11 @@
       "module": "stock",
       "entity": "catalog_products",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "supplier_id",
-        "external_sku",
-        "name",
-        "list_price_brl"
-      ],
+      "payload_fields": ["supplier_id", "external_sku", "name", "list_price_brl"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7139,17 +5623,11 @@
       "module": "stock",
       "entity": "supplier_orders",
       "action": "acknowledge",
-      "source_statuses": [
-        "created"
-      ],
+      "source_statuses": ["created"],
       "target_status": "acknowledged",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "supplier_id",
-        "catalog_product_id",
-        "external_order_id"
-      ],
+      "payload_fields": ["supplier_id", "catalog_product_id", "external_order_id"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7179,18 +5657,11 @@
       "module": "stock",
       "entity": "supplier_orders",
       "action": "cancel",
-      "source_statuses": [
-        "acknowledged",
-        "created"
-      ],
+      "source_statuses": ["acknowledged", "created"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "supplier_id",
-        "catalog_product_id",
-        "external_order_id"
-      ],
+      "payload_fields": ["supplier_id", "catalog_product_id", "external_order_id"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7220,17 +5691,11 @@
       "module": "stock",
       "entity": "supplier_orders",
       "action": "deliver",
-      "source_statuses": [
-        "shipped"
-      ],
+      "source_statuses": ["shipped"],
       "target_status": "delivered",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "supplier_id",
-        "catalog_product_id",
-        "external_order_id"
-      ],
+      "payload_fields": ["supplier_id", "catalog_product_id", "external_order_id"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7260,17 +5725,11 @@
       "module": "stock",
       "entity": "supplier_orders",
       "action": "ship",
-      "source_statuses": [
-        "acknowledged"
-      ],
+      "source_statuses": ["acknowledged"],
       "target_status": "shipped",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "supplier_id",
-        "catalog_product_id",
-        "external_order_id"
-      ],
+      "payload_fields": ["supplier_id", "catalog_product_id", "external_order_id"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7300,25 +5759,11 @@
       "module": "stock",
       "entity": "suppliers",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "company_status"
-      ],
+      "payload_fields": ["company_id", "company_status"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7348,25 +5793,11 @@
       "module": "stock",
       "entity": "suppliers",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "company_id",
-        "company_status"
-      ],
+      "payload_fields": ["company_id", "company_status"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7396,17 +5827,11 @@
       "module": "stock",
       "entity": "suppliers",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "company_id",
-        "company_status"
-      ],
+      "payload_fields": ["company_id", "company_status"],
       "producer": "stock",
       "consumers": [],
       "prohibited_data": [
@@ -7436,25 +5861,11 @@
       "module": "tms",
       "entity": "carriers",
       "action": "approve",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "name",
-        "coverage"
-      ],
+      "payload_fields": ["name", "coverage"],
       "producer": "tms",
       "consumers": [],
       "prohibited_data": [
@@ -7484,25 +5895,11 @@
       "module": "tms",
       "entity": "carriers",
       "action": "reject",
-      "source_statuses": [
-        "draft",
-        "pending_review",
-        "pending_validation",
-        "under_review"
-      ],
+      "source_statuses": ["draft", "pending_review", "pending_validation", "under_review"],
       "target_status": "rejected",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "name",
-        "coverage"
-      ],
+      "payload_fields": ["name", "coverage"],
       "producer": "tms",
       "consumers": [],
       "prohibited_data": [
@@ -7532,17 +5929,11 @@
       "module": "tms",
       "entity": "carriers",
       "action": "submit",
-      "source_statuses": [
-        "draft",
-        "pending_documents"
-      ],
+      "source_statuses": ["draft", "pending_documents"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "name",
-        "coverage"
-      ],
+      "payload_fields": ["name", "coverage"],
       "producer": "tms",
       "consumers": [],
       "prohibited_data": [
@@ -7572,23 +5963,11 @@
       "module": "tms",
       "entity": "freight_audits",
       "action": "close",
-      "source_statuses": [
-        "reviewed"
-      ],
+      "source_statuses": ["reviewed"],
       "target_status": "closed",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "freight_id",
-        "audit_result",
-        "audited_at"
-      ],
+      "payload_fields": ["freight_id", "audit_result", "audited_at"],
       "producer": "tms",
       "consumers": [],
       "prohibited_data": [
@@ -7618,24 +5997,11 @@
       "module": "tms",
       "entity": "freights",
       "action": "approve",
-      "source_statuses": [
-        "quoted"
-      ],
+      "source_statuses": ["quoted"],
       "target_status": "approved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "carrier_id",
-        "route_id",
-        "freight_brl",
-        "scheduled_at"
-      ],
+      "payload_fields": ["carrier_id", "route_id", "freight_brl", "scheduled_at"],
       "producer": "tms",
       "consumers": [],
       "prohibited_data": [
@@ -7665,24 +6031,11 @@
       "module": "tms",
       "entity": "freights",
       "action": "complete",
-      "source_statuses": [
-        "in_transit"
-      ],
+      "source_statuses": ["in_transit"],
       "target_status": "completed",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "carrier_id",
-        "route_id",
-        "freight_brl",
-        "scheduled_at"
-      ],
+      "payload_fields": ["carrier_id", "route_id", "freight_brl", "scheduled_at"],
       "producer": "tms",
       "consumers": [],
       "prohibited_data": [
@@ -7712,18 +6065,11 @@
       "module": "tms",
       "entity": "freights",
       "action": "dispatch",
-      "source_statuses": [
-        "approved"
-      ],
+      "source_statuses": ["approved"],
       "target_status": "in_transit",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "carrier_id",
-        "route_id",
-        "freight_brl",
-        "scheduled_at"
-      ],
+      "payload_fields": ["carrier_id", "route_id", "freight_brl", "scheduled_at"],
       "producer": "tms",
       "consumers": [],
       "prohibited_data": [
@@ -7753,18 +6099,11 @@
       "module": "tms",
       "entity": "routes",
       "action": "activate",
-      "source_statuses": [
-        "planned"
-      ],
+      "source_statuses": ["planned"],
       "target_status": "active",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "origin",
-        "destination",
-        "distance_km",
-        "eta_minutes"
-      ],
+      "payload_fields": ["origin", "destination", "distance_km", "eta_minutes"],
       "producer": "tms",
       "consumers": [],
       "prohibited_data": [
@@ -7794,18 +6133,11 @@
       "module": "vision",
       "entity": "devices",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "device_fingerprint"
-      ],
+      "payload_fields": ["device_fingerprint"],
       "producer": "vision",
       "consumers": [],
       "prohibited_data": [
@@ -7835,17 +6167,11 @@
       "module": "vision",
       "entity": "devices",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "device_fingerprint"
-      ],
+      "payload_fields": ["device_fingerprint"],
       "producer": "vision",
       "consumers": [],
       "prohibited_data": [
@@ -7875,15 +6201,11 @@
       "module": "vision",
       "entity": "devices",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "device_fingerprint"
-      ],
+      "payload_fields": ["device_fingerprint"],
       "producer": "vision",
       "consumers": [],
       "prohibited_data": [
@@ -7913,25 +6235,11 @@
       "module": "vision",
       "entity": "motion_alerts",
       "action": "resolve",
-      "source_statuses": [
-        "detected",
-        "under_review"
-      ],
+      "source_statuses": ["detected", "under_review"],
       "target_status": "resolved",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "device_id",
-        "stream_id",
-        "detected_at",
-        "confidence_score"
-      ],
+      "payload_fields": ["device_id", "stream_id", "detected_at", "confidence_score"],
       "producer": "vision",
       "consumers": [],
       "prohibited_data": [
@@ -7961,24 +6269,11 @@
       "module": "vision",
       "entity": "motion_alerts",
       "action": "triage",
-      "source_statuses": [
-        "detected"
-      ],
+      "source_statuses": ["detected"],
       "target_status": "under_review",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "device_id",
-        "stream_id",
-        "detected_at",
-        "confidence_score"
-      ],
+      "payload_fields": ["device_id", "stream_id", "detected_at", "confidence_score"],
       "producer": "vision",
       "consumers": [],
       "prohibited_data": [
@@ -8008,24 +6303,11 @@
       "module": "vision",
       "entity": "streams",
       "action": "pause",
-      "source_statuses": [
-        "active"
-      ],
+      "source_statuses": ["active"],
       "target_status": "paused",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "device_id",
-        "stream_url_hash",
-        "protocol",
-        "started_at"
-      ],
+      "payload_fields": ["device_id", "stream_url_hash", "protocol", "started_at"],
       "producer": "vision",
       "consumers": [],
       "prohibited_data": [
@@ -8055,24 +6337,11 @@
       "module": "vision",
       "entity": "streams",
       "action": "resume",
-      "source_statuses": [
-        "paused"
-      ],
+      "source_statuses": ["paused"],
       "target_status": "active",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "device_id",
-        "stream_url_hash",
-        "protocol",
-        "started_at"
-      ],
+      "payload_fields": ["device_id", "stream_url_hash", "protocol", "started_at"],
       "producer": "vision",
       "consumers": [],
       "prohibited_data": [
@@ -8102,19 +6371,11 @@
       "module": "wms",
       "entity": "bins",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "warehouse_id",
-        "code"
-      ],
+      "payload_fields": ["warehouse_id", "code"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [
@@ -8144,18 +6405,11 @@
       "module": "wms",
       "entity": "bins",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "warehouse_id",
-        "code"
-      ],
+      "payload_fields": ["warehouse_id", "code"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [
@@ -8185,16 +6439,11 @@
       "module": "wms",
       "entity": "bins",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "warehouse_id",
-        "code"
-      ],
+      "payload_fields": ["warehouse_id", "code"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [
@@ -8224,18 +6473,11 @@
       "module": "wms",
       "entity": "inventory",
       "action": "allocate",
-      "source_statuses": [
-        "received"
-      ],
+      "source_statuses": ["received"],
       "target_status": "allocated",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "warehouse_id",
-        "sku",
-        "quantity",
-        "received_at"
-      ],
+      "payload_fields": ["warehouse_id", "sku", "quantity", "received_at"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [
@@ -8265,19 +6507,11 @@
       "module": "wms",
       "entity": "inventory",
       "action": "receive",
-      "source_statuses": [
-        "draft",
-        "received"
-      ],
+      "source_statuses": ["draft", "received"],
       "target_status": "received",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "warehouse_id",
-        "sku",
-        "quantity",
-        "received_at"
-      ],
+      "payload_fields": ["warehouse_id", "sku", "quantity", "received_at"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [
@@ -8307,24 +6541,11 @@
       "module": "wms",
       "entity": "picking_waves",
       "action": "close",
-      "source_statuses": [
-        "picked"
-      ],
+      "source_statuses": ["picked"],
       "target_status": "closed",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "warehouse_id",
-        "order_reference",
-        "sku",
-        "quantity"
-      ],
+      "payload_fields": ["warehouse_id", "order_reference", "sku", "quantity"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [
@@ -8354,18 +6575,11 @@
       "module": "wms",
       "entity": "picking_waves",
       "action": "pick",
-      "source_statuses": [
-        "open"
-      ],
+      "source_statuses": ["open"],
       "target_status": "picked",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "warehouse_id",
-        "order_reference",
-        "sku",
-        "quantity"
-      ],
+      "payload_fields": ["warehouse_id", "order_reference", "sku", "quantity"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [
@@ -8395,23 +6609,11 @@
       "module": "wms",
       "entity": "shipments",
       "action": "dispatch",
-      "source_statuses": [
-        "ready"
-      ],
+      "source_statuses": ["ready"],
       "target_status": "dispatched",
-      "roles": [
-        "administrator",
-        "auditor",
-        "compliance_officer",
-        "legal_representative",
-        "owner"
-      ],
+      "roles": ["administrator", "auditor", "compliance_officer", "legal_representative", "owner"],
       "requires_mfa": true,
-      "payload_fields": [
-        "warehouse_id",
-        "picking_wave_id",
-        "carrier_reference"
-      ],
+      "payload_fields": ["warehouse_id", "picking_wave_id", "carrier_reference"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [
@@ -8441,18 +6643,11 @@
       "module": "wms",
       "entity": "warehouses",
       "action": "cancel",
-      "source_statuses": [
-        "active",
-        "approved",
-        "draft",
-        "pending_review"
-      ],
+      "source_statuses": ["active", "approved", "draft", "pending_review"],
       "target_status": "cancelled",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "name"
-      ],
+      "payload_fields": ["name"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [
@@ -8482,17 +6677,11 @@
       "module": "wms",
       "entity": "warehouses",
       "action": "complete",
-      "source_statuses": [
-        "active",
-        "approved",
-        "in_progress"
-      ],
+      "source_statuses": ["active", "approved", "in_progress"],
       "target_status": "completed",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "name"
-      ],
+      "payload_fields": ["name"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [
@@ -8522,15 +6711,11 @@
       "module": "wms",
       "entity": "warehouses",
       "action": "submit",
-      "source_statuses": [
-        "draft"
-      ],
+      "source_statuses": ["draft"],
       "target_status": "pending_review",
       "roles": [],
       "requires_mfa": false,
-      "payload_fields": [
-        "name"
-      ],
+      "payload_fields": ["name"],
       "producer": "wms",
       "consumers": [],
       "prohibited_data": [

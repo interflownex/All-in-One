@@ -12,7 +12,6 @@ import textwrap
 import zlib
 from pathlib import Path
 
-
 PAGE_W = 595.28
 PAGE_H = 841.89
 MARGIN_LEFT = 85.04
@@ -51,7 +50,9 @@ def normalize_line(line: str) -> tuple[str, str]:
 def wrap_text(text: str, width: int = MAX_CHARS) -> list[str]:
     if not text:
         return [""]
-    return textwrap.wrap(text, width=width, replace_whitespace=False, drop_whitespace=True) or [""]
+    return textwrap.wrap(
+        text, width=width, replace_whitespace=False, drop_whitespace=True
+    ) or [""]
 
 
 def iter_render_lines(markdown: str) -> list[tuple[str, str]]:
@@ -60,7 +61,10 @@ def iter_render_lines(markdown: str) -> list[tuple[str, str]]:
     for raw in markdown.splitlines():
         kind, text = normalize_line(raw)
         if kind == "table":
-            if set(text.replace("|", "").replace(":", "").replace("-", "").strip()) == set():
+            if (
+                set(text.replace("|", "").replace(":", "").replace("-", "").strip())
+                == set()
+            ):
                 continue
             cells = [cell.strip() for cell in text.strip("|").split("|")]
             text = " | ".join(cells)
@@ -124,7 +128,9 @@ def page_stream(page: list[tuple[str, str]], page_num: int, total: int) -> bytes
         cmds.append(f"{-MARGIN_LEFT:.2f} {-LINE_HEIGHT:.2f} Td")
         y -= LINE_HEIGHT
     footer = f"Pagina {page_num} de {total}"
-    cmds.append(f"/F1 9 Tf {PAGE_W - MARGIN_RIGHT - 70:.2f} {MARGIN_BOTTOM - 18:.2f} Td ({pdf_escape(footer)}) Tj")
+    cmds.append(
+        f"/F1 9 Tf {PAGE_W - MARGIN_RIGHT - 70:.2f} {MARGIN_BOTTOM - 18:.2f} Td ({pdf_escape(footer)}) Tj"
+    )
     cmds.append("ET")
     return "\n".join(cmds).encode("cp1252", errors="replace")
 
@@ -140,9 +146,15 @@ def write_pdf(markdown: str, output: Path) -> None:
     catalog_id = add(b"<< /Type /Catalog /Pages 2 0 R >>")
     assert catalog_id == 1
     pages_id = add(b"")
-    font1_id = add(b"<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>")
-    font2_id = add(b"<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold /Encoding /WinAnsiEncoding >>")
-    font3_id = add(b"<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>")
+    font1_id = add(
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>"
+    )
+    font2_id = add(
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold /Encoding /WinAnsiEncoding >>"
+    )
+    font3_id = add(
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>"
+    )
 
     page_ids: list[int] = []
     for idx, page in enumerate(pages, start=1):
@@ -163,7 +175,9 @@ def write_pdf(markdown: str, output: Path) -> None:
         page_ids.append(page_id)
 
     kids = " ".join(f"{pid} 0 R" for pid in page_ids)
-    objects[pages_id - 1] = f"<< /Type /Pages /Kids [{kids}] /Count {len(page_ids)} >>".encode()
+    objects[pages_id - 1] = (
+        f"<< /Type /Pages /Kids [{kids}] /Count {len(page_ids)} >>".encode()
+    )
 
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("wb") as fh:

@@ -14,7 +14,6 @@ import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_COMPOSE_FILE = Path("infra/docker/docker-compose.yml")
 REQUIRED_HOST_PORTS = (
@@ -129,7 +128,9 @@ def bound_ports(ports: tuple[int, ...] = REQUIRED_HOST_PORTS) -> list[int]:
 def print_compose_diagnostics(compose: list[str], pending: set[str]) -> None:
     subprocess.run([*compose, "ps"], cwd=ROOT, check=False)
     if pending:
-        subprocess.run([*compose, "logs", "--tail", "80", *sorted(pending)], cwd=ROOT, check=False)
+        subprocess.run(
+            [*compose, "logs", "--tail", "80", *sorted(pending)], cwd=ROOT, check=False
+        )
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -183,7 +184,10 @@ def main(argv: list[str] | None = None) -> int:
                     file=sys.stderr,
                 )
                 return 1
-        run_checked([*compose, "config", "--quiet"], timeout_seconds=args.command_timeout_seconds)
+        run_checked(
+            [*compose, "config", "--quiet"],
+            timeout_seconds=args.command_timeout_seconds,
+        )
         run_checked(up_args, timeout_seconds=args.command_timeout_seconds)
         pending = wait_for_health(args.timeout_seconds, args.probe_timeout_seconds)
         if pending:
@@ -201,7 +205,9 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     finally:
         if args.down_after:
-            subprocess.run([*compose, "down", "--remove-orphans", "-v"], cwd=ROOT, check=False)
+            subprocess.run(
+                [*compose, "down", "--remove-orphans", "-v"], cwd=ROOT, check=False
+            )
 
 
 if __name__ == "__main__":

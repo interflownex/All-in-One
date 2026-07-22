@@ -1,5 +1,5 @@
-from pathlib import Path
 import sys
+from pathlib import Path
 from typing import Any, Literal
 from uuid import UUID
 
@@ -10,7 +10,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from shared.runtime import create_module_app
 from shared.security import Actor, actor_from_headers
-
 
 app = create_module_app("marketplace")
 
@@ -34,9 +33,20 @@ def create_order_support_case(
     if order is None:
         raise HTTPException(status_code=404, detail="Pedido nao encontrado.")
     if str(order["user_id"]) != str(actor.user_id):
-        raise HTTPException(status_code=403, detail="Pedido nao pertence ao consumidor autenticado.")
-    if order["status"] not in {"paid", "accepted", "in_progress", "delivered", "completed"}:
-        raise HTTPException(status_code=409, detail="Suporte fica disponivel apos a confirmacao do pedido.")
+        raise HTTPException(
+            status_code=403, detail="Pedido nao pertence ao consumidor autenticado."
+        )
+    if order["status"] not in {
+        "paid",
+        "accepted",
+        "in_progress",
+        "delivered",
+        "completed",
+    }:
+        raise HTTPException(
+            status_code=409,
+            detail="Suporte fica disponivel apos a confirmacao do pedido.",
+        )
 
     payload = order.get("payload") if isinstance(order.get("payload"), dict) else {}
     case = store.create(
@@ -50,13 +60,16 @@ def create_order_support_case(
             "company_id": payload.get("company_id"),
             "offer_id": payload.get("offer_id") or payload.get("valley_offer_id"),
             "case_type": body.kind,
-            "subject": body.subject or ("Suporte ao pedido" if body.kind == "support" else "Disputa do pedido"),
+            "subject": body.subject
+            or ("Suporte ao pedido" if body.kind == "support" else "Disputa do pedido"),
             "message": body.message,
             "desired_resolution": body.desired_resolution,
         },
         str(actor.user_id),
         (),
-        "support.ticket.created" if body.kind == "support" else "marketplace.dispute.created",
+        "support.ticket.created"
+        if body.kind == "support"
+        else "marketplace.dispute.created",
         body.idempotency_key,
     )
     return {
@@ -75,10 +88,21 @@ def commercial_insights(actor: Actor = Depends(actor_from_headers)) -> dict[str,
     reviews = store.list("reviews")
     disputes = store.list("disputes")
 
-    paid_orders = [item for item in orders if item["status"] in {"paid", "accepted", "in_progress", "delivered", "completed"}]
-    completed_orders = [item for item in orders if item["status"] in {"delivered", "completed"}]
-    resolved_cases = [item for item in disputes if item["status"] in {"resolved", "closed"}]
-    open_cases = [item for item in disputes if item["status"] in {"open", "under_review"}]
+    paid_orders = [
+        item
+        for item in orders
+        if item["status"]
+        in {"paid", "accepted", "in_progress", "delivered", "completed"}
+    ]
+    completed_orders = [
+        item for item in orders if item["status"] in {"delivered", "completed"}
+    ]
+    resolved_cases = [
+        item for item in disputes if item["status"] in {"resolved", "closed"}
+    ]
+    open_cases = [
+        item for item in disputes if item["status"] in {"open", "under_review"}
+    ]
     published_reviews = [item for item in reviews if item["status"] == "published"]
     pending_reviews = [item for item in reviews if item["status"] == "pending_review"]
     ratings = [
@@ -87,7 +111,9 @@ def commercial_insights(actor: Actor = Depends(actor_from_headers)) -> dict[str,
         if str(item["payload"].get("rating") or "").isdigit()
     ]
     average_rating = round(sum(ratings) / len(ratings), 2) if ratings else None
-    conversion_rate = round((len(paid_orders) / len(orders)) * 100, 2) if orders else 0.0
+    conversion_rate = (
+        round((len(paid_orders) / len(orders)) * 100, 2) if orders else 0.0
+    )
 
     return {
         "orders_total": len(orders),

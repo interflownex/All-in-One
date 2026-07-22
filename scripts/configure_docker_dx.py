@@ -11,7 +11,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "config" / "autonomy" / "docker_dx_policy.json"
 USER_PLUGIN_DIR = Path.home() / ".docker" / "cli-plugins"
@@ -137,7 +136,9 @@ def validate_policy(policy: dict[str, object]) -> list[str]:
         )
         missing = sorted(set(required) - dockerignore_lines)
         if missing:
-            errors.append(f".dockerignore sem entradas obrigatorias: {', '.join(missing)}")
+            errors.append(
+                f".dockerignore sem entradas obrigatorias: {', '.join(missing)}"
+            )
 
     if not docker_socket_is_safe():
         errors.append("/var/run/docker.sock esta world-writable; nao use chmod 666.")
@@ -147,9 +148,17 @@ def validate_policy(policy: dict[str, object]) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="Valida sem gravar arquivos.")
-    parser.add_argument("--dry-run", action="store_true", help="Mostra o que mudaria sem gravar.")
-    parser.add_argument("--print-status", action="store_true", help="Mostra capacidades Docker detectadas.")
+    parser.add_argument(
+        "--check", action="store_true", help="Valida sem gravar arquivos."
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Mostra o que mudaria sem gravar."
+    )
+    parser.add_argument(
+        "--print-status",
+        action="store_true",
+        help="Mostra capacidades Docker detectadas.",
+    )
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
 
     policy = load_policy()
@@ -160,8 +169,12 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     env_path = ROOT / str(policy["env_file"])
-    env_changed = write_if_changed(env_path, render_env(policy), dry_run=args.check or args.dry_run)
-    plugin_links_changed = ensure_user_cli_plugin_links(dry_run=args.check or args.dry_run)
+    env_changed = write_if_changed(
+        env_path, render_env(policy), dry_run=args.check or args.dry_run
+    )
+    plugin_links_changed = ensure_user_cli_plugin_links(
+        dry_run=args.check or args.dry_run
+    )
 
     if args.print_status:
         status = {

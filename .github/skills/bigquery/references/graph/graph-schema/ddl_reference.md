@@ -15,14 +15,14 @@ property_graph_content:
   [ edge_tables ]
 ```
 
-*   **`OR REPLACE`**: Replaces any property graph with the same name if it
-    exists. Cannot appear with `IF NOT EXISTS`.
-*   **`IF NOT EXISTS`**: If a property graph with the same name exists, the
-    statement has no effect. Cannot appear with `OR REPLACE`.
-*   **`property_graph_name`**: The name of the property graph (can be a path
-    expression e.g. `project.dataset.graph`).
+- **`OR REPLACE`**: Replaces any property graph with the same name if it
+  exists. Cannot appear with `IF NOT EXISTS`.
+- **`IF NOT EXISTS`**: If a property graph with the same name exists, the
+  statement has no effect. Cannot appear with `OR REPLACE`.
+- **`property_graph_name`**: The name of the property graph (can be a path
+  expression e.g. `project.dataset.graph`).
 
---------------------------------------------------------------------------------
+---
 
 ## 2. Node Tables (`NODE TABLES`)
 
@@ -41,21 +41,21 @@ node_element:
     [ PROPERTIES (property_element_list) | NO PROPERTIES | PROPERTIES ALL COLUMNS ]
 ```
 
-*   **`table_name`**: The source BigQuery table/view.
-*   **`AS node_alias`**: A unique alias for the node type. **Highly
-    recommended** to avoid unsafe characters in generated column names.
-*   **`KEY (column_name_list)`**: Specifies the unique identifier (Primary Key)
-    for the node. Defaults to the source table's primary key if omitted.
-*   **`LABEL label_name`**: Assigns a label to the node (used in queries).
-    Defaults to the table name (or alias) if `DEFAULT LABEL` or omitted.
-*   **`PROPERTIES`**: Specifies which columns are exposed as properties.
-    *   `PROPERTIES (col1, col2)`: Exposes only specified columns. (Recommended
-        for performance).
-    *   `PROPERTIES ALL COLUMNS [ EXCEPT (col1, ...) ]`: Exposes all columns
-        (optionally excluding some).
-    *   `NO PROPERTIES`: Exposes no properties.
+- **`table_name`**: The source BigQuery table/view.
+- **`AS node_alias`**: A unique alias for the node type. **Highly
+  recommended** to avoid unsafe characters in generated column names.
+- **`KEY (column_name_list)`**: Specifies the unique identifier (Primary Key)
+  for the node. Defaults to the source table's primary key if omitted.
+- **`LABEL label_name`**: Assigns a label to the node (used in queries).
+  Defaults to the table name (or alias) if `DEFAULT LABEL` or omitted.
+- **`PROPERTIES`**: Specifies which columns are exposed as properties.
+  - `PROPERTIES (col1, col2)`: Exposes only specified columns. (Recommended
+    for performance).
+  - `PROPERTIES ALL COLUMNS [ EXCEPT (col1, ...) ]`: Exposes all columns
+    (optionally excluding some).
+  - `NO PROPERTIES`: Exposes no properties.
 
---------------------------------------------------------------------------------
+---
 
 ## 3. Edge Tables (`EDGE TABLES`)
 
@@ -76,13 +76,13 @@ edge_element:
     [ PROPERTIES (property_element_list) | NO PROPERTIES | PROPERTIES ALL COLUMNS ]
 ```
 
-*   **`SOURCE KEY`**: Maps foreign key columns in the edge table to the `KEY`
-    columns of the source node table.
-*   **`DESTINATION KEY`**: Maps foreign key columns in the edge table to the
-    `KEY` columns of the destination node table.
-*   **`REFERENCES node_alias`**: Specifies the alias of the target node table.
+- **`SOURCE KEY`**: Maps foreign key columns in the edge table to the `KEY`
+  columns of the source node table.
+- **`DESTINATION KEY`**: Maps foreign key columns in the edge table to the
+  `KEY` columns of the destination node table.
+- **`REFERENCES node_alias`**: Specifies the alias of the target node table.
 
---------------------------------------------------------------------------------
+---
 
 ## 4. Semantic Extensions (Measures & Options)
 
@@ -96,7 +96,7 @@ metrics) defined inside the `PROPERTIES` list.
 
 > [!IMPORTANT] **Dimension Property Requirement**: Any source column referenced
 > inside a `MEASURE` aggregate expression **MUST** also be explicitly declared
-> as a standard dimension property in the *same* `PROPERTIES(...)` block. If you
+> as a standard dimension property in the _same_ `PROPERTIES(...)` block. If you
 > aggregate a column that is not exposed as a dimension, the query will fail.
 
 ```sql
@@ -106,12 +106,12 @@ PROPERTIES (
 )
 ```
 
-*   **Syntax**: `MEASURE(AGG_FUNC(column)) AS measure_name`
-*   **Example**: `MEASURE(SUM(amount)) AS total_amount`
-*   **Aggregations**: Supports standard aggregate functions like `SUM`, `COUNT`,
-    `AVG`, `MIN`, `MAX`, `COUNT(DISTINCT ...)`.
-*   **Limitation**: Measures must be explicitly aliased (anonymous measures are
-    not allowed).
+- **Syntax**: `MEASURE(AGG_FUNC(column)) AS measure_name`
+- **Example**: `MEASURE(SUM(amount)) AS total_amount`
+- **Aggregations**: Supports standard aggregate functions like `SUM`, `COUNT`,
+  `AVG`, `MIN`, `MAX`, `COUNT(DISTINCT ...)`.
+- **Limitation**: Measures must be explicitly aliased (anonymous measures are
+  not allowed).
 
 ### B. Property Options (`OPTIONS`)
 
@@ -126,8 +126,8 @@ property_name OPTIONS (
 )
 ```
 
-*   **`description`**: A string describing the property.
-*   **`synonyms`**: An array of alternative names.
+- **`description`**: A string describing the property.
+- **`synonyms`**: An array of alternative names.
 
 ### C. Label and Node Table Options (`OPTIONS`)
 
@@ -146,7 +146,7 @@ NODE TABLES (
 )
 ```
 
---------------------------------------------------------------------------------
+---
 
 ## 5. Complete Example: Standard Property Graph
 
@@ -175,7 +175,7 @@ CREATE OR REPLACE PROPERTY GRAPH `my-project.my_dataset.ecomm_standard_graph`
   );
 ```
 
---------------------------------------------------------------------------------
+---
 
 ## 6. Complete Example: Semantic Graph
 

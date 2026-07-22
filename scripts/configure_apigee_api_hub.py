@@ -156,7 +156,10 @@ def validate_plan(plan: dict[str, Any], inventory: dict[str, Any]) -> list[str]:
     if plan.get("encryption", {}).get("secret_material_in_git") is not False:
         errors.append("Plano nao pode permitir material criptografico no Git.")
     hmac = plan.get("cloud_storage_hmac", {})
-    if hmac.get("service_account") != "service-account@all-in-one-498012.iam.gserviceaccount.com":
+    if (
+        hmac.get("service_account")
+        != "service-account@all-in-one-498012.iam.gserviceaccount.com"
+    ):
         errors.append("Conta de servico HMAC inesperada.")
     if hmac.get("project_id") != "all-in-one-498012":
         errors.append("Projeto da chave HMAC inesperado.")
@@ -238,7 +241,9 @@ def main() -> int:
 
     if args.create_hmac and not args.hmac_secret_output:
         parser.error("--create-hmac exige --hmac-secret-output")
-    if args.hmac_secret_output and args.hmac_secret_output.resolve().is_relative_to(ROOT):
+    if args.hmac_secret_output and args.hmac_secret_output.resolve().is_relative_to(
+        ROOT
+    ):
         parser.error("O segredo HMAC deve ser armazenado fora do workspace Git.")
 
     if args.print_status or args.apply or args.create_hmac:
@@ -309,7 +314,12 @@ def main() -> int:
         if args.create_hmac:
             output = args.hmac_secret_output.resolve()
             if output.exists():
-                print_json({"ok": False, "error": "Destino do segredo HMAC ja existe; sobrescrita recusada."})
+                print_json(
+                    {
+                        "ok": False,
+                        "error": "Destino do segredo HMAC ja existe; sobrescrita recusada.",
+                    }
+                )
                 return 1
             hmac = plan["cloud_storage_hmac"]
             result = run_command(
@@ -326,18 +336,41 @@ def main() -> int:
                 max(args.timeout, 60),
             )
             if not result["ok"]:
-                print_json({"ok": False, "error": result["stderr"], "secret_written": False})
+                print_json(
+                    {"ok": False, "error": result["stderr"], "secret_written": False}
+                )
                 return 1
             payload = json.loads(result["stdout"])
             output.parent.mkdir(parents=True, exist_ok=True)
-            descriptor = os.open(output, os.O_WRONLY | os.O_CREAT | os.O_EXCL, stat.S_IRUSR | stat.S_IWUSR)
+            descriptor = os.open(
+                output,
+                os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+                stat.S_IRUSR | stat.S_IWUSR,
+            )
             with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
                 json.dump(payload, handle, indent=2)
                 handle.write("\n")
-            access_id = payload.get("accessId") or payload.get("metadata", {}).get("accessId")
-            print_json({"ok": True, "access_id": access_id, "secret_written": True, "secret_output": str(output)})
+            access_id = payload.get("accessId") or payload.get("metadata", {}).get(
+                "accessId"
+            )
+            print_json(
+                {
+                    "ok": True,
+                    "access_id": access_id,
+                    "secret_written": True,
+                    "secret_output": str(output),
+                }
+            )
             return 0
-    if not any([args.check, args.print_commands, args.print_status, args.apply, args.create_hmac]):
+    if not any(
+        [
+            args.check,
+            args.print_commands,
+            args.print_status,
+            args.apply,
+            args.create_hmac,
+        ]
+    ):
         parser.print_help()
     return 0
 

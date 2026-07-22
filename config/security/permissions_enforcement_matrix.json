@@ -10,14 +10,8 @@
     "data_protection_officer",
     "auditor"
   ],
-  "write_roles": [
-    "owner",
-    "administrator",
-    "compliance_officer"
-  ],
-  "mfa_required_for_resources": [
-    "approval_limits"
-  ],
+  "write_roles": ["owner", "administrator", "compliance_officer"],
+  "mfa_required_for_resources": ["approval_limits"],
   "resources": {
     "roles": {
       "read": "read_roles",
@@ -54,15 +48,35 @@
     "modules": {
       "identity": {
         "runtime_rule": "SENSITIVE_ROLES",
-        "sensitive_resources": ["users", "documents", "biometrics", "sessions", "identity_verifications", "consent_records"]
+        "sensitive_resources": [
+          "users",
+          "documents",
+          "biometrics",
+          "sessions",
+          "identity_verifications",
+          "consent_records"
+        ]
       },
       "finance": {
         "runtime_rule": "SENSITIVE_ROLES",
-        "sensitive_resources": ["wallets", "ledger_entries", "escrows", "splits", "invoices", "valley_gold_ledger_entries"]
+        "sensitive_resources": [
+          "wallets",
+          "ledger_entries",
+          "escrows",
+          "splits",
+          "invoices",
+          "valley_gold_ledger_entries"
+        ]
       },
       "jobs": {
         "runtime_rule": "RECRUITER_ROLES",
-        "sensitive_resources": ["resumes", "employment_records", "resume_documents", "applications", "resume_access_logs"]
+        "sensitive_resources": [
+          "resumes",
+          "employment_records",
+          "resume_documents",
+          "applications",
+          "resume_access_logs"
+        ]
       },
       "document": {
         "runtime_rule": "SENSITIVE_ROLES",
@@ -70,7 +84,13 @@
       },
       "health": {
         "runtime_rule": "MEDICAL_ROLES",
-        "sensitive_resources": ["patients", "appointments", "medical_records", "prescriptions", "beds"]
+        "sensitive_resources": [
+          "patients",
+          "appointments",
+          "medical_records",
+          "prescriptions",
+          "beds"
+        ]
       },
       "hr": {
         "runtime_rule": "SENSITIVE_ROLES",

@@ -7,7 +7,14 @@
     "granular_consent": ["analytics", "crash_reports"],
     "advertising_id_collection": false,
     "ad_personalization": false,
-    "forbidden_fields": ["access_token", "refresh_token", "password", "email", "request_body", "response_body"]
+    "forbidden_fields": [
+      "access_token",
+      "refresh_token",
+      "password",
+      "email",
+      "request_body",
+      "response_body"
+    ]
   },
   "events": {
     "api_request_completed": {

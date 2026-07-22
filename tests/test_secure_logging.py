@@ -25,7 +25,9 @@ def test_structured_log_always_contains_correlation_and_core_fields() -> None:
 
 
 def test_structured_log_redacts_pii_and_secret_keys() -> None:
-    payload = _render({"email": "ana@example.com", "access_token": "secret-value", "status": "ok"})
+    payload = _render(
+        {"email": "ana@example.com", "access_token": "secret-value", "status": "ok"}
+    )
     serialized = json.dumps(payload)
 
     assert "ana@example.com" not in serialized

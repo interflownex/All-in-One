@@ -7,23 +7,23 @@ metadata:
 spec:
   replicas: 2
   selector:
-    matchLabels: {app: bi}
+    matchLabels: { app: bi }
   template:
     metadata:
-      labels: {app: bi}
+      labels: { app: bi }
     spec:
       containers:
         - name: bi
           image: us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/bi:latest
           imagePullPolicy: IfNotPresent
-          ports: [{containerPort: 8000}]
+          ports: [{ containerPort: 8000 }]
           readinessProbe:
             httpGet:
               path: /health
               port: 8000
           envFrom:
-            - configMapRef: {name: platform-config}
-            - secretRef: {name: platform-secrets-placeholder}
+            - configMapRef: { name: platform-config }
+            - secretRef: { name: platform-secrets-placeholder }
 ---
 apiVersion: v1
 kind: Service
@@ -31,5 +31,5 @@ metadata:
   name: bi
   namespace: all-in-one
 spec:
-  selector: {app: bi}
-  ports: [{port: 80, targetPort: 8000}]
+  selector: { app: bi }
+  ports: [{ port: 80, targetPort: 8000 }]

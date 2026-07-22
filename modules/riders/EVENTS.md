@@ -3,6 +3,7 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `rider.submitted`
+
 - `rider.approved`
 - `rider.rejected`
 - `rider.vehicle.approved`

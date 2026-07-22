@@ -5,7 +5,6 @@ from uuid import uuid4
 
 from psycopg import Connection
 from psycopg.errors import UniqueViolation
-from psycopg.types.json import Jsonb
 
 from .postgres_store import BasePostgresStore
 from .store import DuplicateValueError
@@ -25,7 +24,17 @@ class IdentityPostgresStore(BasePostgresStore):
         "kyc_records": "identity.identity_verifications",
         "consent_records": "identity.consent_records",
     }
-    soft_deletable = frozenset({"users", "documents", "biometrics", "sessions", "identity_verifications", "kyc_records", "consent_records"})
+    soft_deletable = frozenset(
+        {
+            "users",
+            "documents",
+            "biometrics",
+            "sessions",
+            "identity_verifications",
+            "kyc_records",
+            "consent_records",
+        }
+    )
 
     def create(
         self,
@@ -40,7 +49,17 @@ class IdentityPostgresStore(BasePostgresStore):
         idempotency_key: str | None,
     ) -> dict[str, Any]:
         if resource_type != "users":
-            return super().create(resource_type, user_id, entity_id, status, payload, actor, unique_fields, event, idempotency_key)
+            return super().create(
+                resource_type,
+                user_id,
+                entity_id,
+                status,
+                payload,
+                actor,
+                unique_fields,
+                event,
+                idempotency_key,
+            )
 
         previous = self.find_idempotent(resource_type, idempotency_key)
         if previous:
@@ -49,11 +68,33 @@ class IdentityPostgresStore(BasePostgresStore):
         resource_id = str(payload.get("id") or user_id or uuid4())
         try:
             with self.transaction() as connection:
-                row = self._insert(connection, resource_type, resource_id, resource_id, entity_id, status, payload, resource_id, idempotency_key)
+                row = self._insert(
+                    connection,
+                    resource_type,
+                    resource_id,
+                    resource_id,
+                    entity_id,
+                    status,
+                    payload,
+                    resource_id,
+                    idempotency_key,
+                )
                 item = self._resource(resource_type, row)
                 if item is None:
-                    raise RuntimeError("PostgreSQL nao retornou usuario Identity criado.")
-                self._audit(connection, resource_id, "create", resource_type, item["id"], None, item, item["user_id"], entity_id)
+                    raise RuntimeError(
+                        "PostgreSQL nao retornou usuario Identity criado."
+                    )
+                self._audit(
+                    connection,
+                    resource_id,
+                    "create",
+                    resource_type,
+                    item["id"],
+                    None,
+                    item,
+                    item["user_id"],
+                    entity_id,
+                )
                 self._event(connection, event, resource_id, item)
                 return item
         except UniqueViolation as exc:
@@ -80,10 +121,22 @@ class IdentityPostgresStore(BasePostgresStore):
                     status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, payload["full_name"], payload["cpf_document"], payload["birth_date"],
-                    payload["email"], payload["phone_e164"], payload["password_hash"],
-                    payload["face_hash"], payload["liveness_score"], payload["terms_accepted_at"],
-                    payload["lgpd_consent_at"], status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    payload["full_name"],
+                    payload["cpf_document"],
+                    payload["birth_date"],
+                    payload["email"],
+                    payload["phone_e164"],
+                    payload["password_hash"],
+                    payload["face_hash"],
+                    payload["liveness_score"],
+                    payload["terms_accepted_at"],
+                    payload["lgpd_consent_at"],
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "documents":
@@ -92,8 +145,16 @@ class IdentityPostgresStore(BasePostgresStore):
                    (id, user_id, document_type, document_number_hash, storage_key, status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, payload["document_type"], payload["document_number_hash"],
-                    payload["storage_key"], status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    payload["document_type"],
+                    payload["document_number_hash"],
+                    payload["storage_key"],
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type == "biometrics":
@@ -101,7 +162,17 @@ class IdentityPostgresStore(BasePostgresStore):
                 """INSERT INTO identity.biometrics
                    (id, user_id, face_hash, consent_recorded_at, status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
-                (resource_id, user_id, payload["face_hash"], payload["consent_recorded_at"], status, metadata, actor, actor, idempotency_key),
+                (
+                    resource_id,
+                    user_id,
+                    payload["face_hash"],
+                    payload["consent_recorded_at"],
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
+                ),
             ).fetchone()
         if resource_type == "sessions":
             return connection.execute(
@@ -109,8 +180,17 @@ class IdentityPostgresStore(BasePostgresStore):
                    (id, user_id, token_hash, device_fingerprint, ip_address, expires_at, status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, payload["token_hash"], payload["device_fingerprint"],
-                    payload["ip_address"], payload["expires_at"], status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    payload["token_hash"],
+                    payload["device_fingerprint"],
+                    payload["ip_address"],
+                    payload["expires_at"],
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         if resource_type in {"identity_verifications", "kyc_records"}:
@@ -118,7 +198,16 @@ class IdentityPostgresStore(BasePostgresStore):
                 """INSERT INTO identity.identity_verifications
                    (id, user_id, verification_type, status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
-                (resource_id, user_id, payload.get("verification_type", "kyc"), status, metadata, actor, actor, idempotency_key),
+                (
+                    resource_id,
+                    user_id,
+                    payload.get("verification_type", "kyc"),
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
+                ),
             ).fetchone()
         if resource_type == "consent_records":
             return connection.execute(
@@ -126,14 +215,28 @@ class IdentityPostgresStore(BasePostgresStore):
                    (id, user_id, consent_type, policy_version, accepted_at, status, metadata, created_by, updated_by, idempotency_key)
                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
                 (
-                    resource_id, user_id, payload["consent_type"], payload["policy_version"],
-                    payload["accepted_at"], status, metadata, actor, actor, idempotency_key,
+                    resource_id,
+                    user_id,
+                    payload["consent_type"],
+                    payload["policy_version"],
+                    payload["accepted_at"],
+                    status,
+                    metadata,
+                    actor,
+                    actor,
+                    idempotency_key,
                 ),
             ).fetchone()
         raise ValueError(f"Recurso Identity desconhecido: {resource_type}")
 
     def _update(
-        self, connection: Connection, resource_type: str, resource_id: str, payload: dict[str, Any], status: str, actor: str
+        self,
+        connection: Connection,
+        resource_type: str,
+        resource_id: str,
+        payload: dict[str, Any],
+        status: str,
+        actor: str,
     ) -> dict[str, Any]:
         metadata = self._metadata(payload)
         if resource_type == "users":
@@ -148,9 +251,17 @@ class IdentityPostgresStore(BasePostgresStore):
                    WHERE id = %s RETURNING *""",
                 (payload.get("revoked_at"), status, metadata, actor, resource_id),
             ).fetchone()
-        if resource_type in {"documents", "biometrics", "identity_verifications", "kyc_records", "consent_records"}:
+        if resource_type in {
+            "documents",
+            "biometrics",
+            "identity_verifications",
+            "kyc_records",
+            "consent_records",
+        }:
             return connection.execute(
-                sql.SQL("UPDATE {} SET status = %s, metadata = %s, updated_by = %s, updated_at = NOW() WHERE id = %s RETURNING *").format(self._table(resource_type)),
+                sql.SQL(
+                    "UPDATE {} SET status = %s, metadata = %s, updated_by = %s, updated_at = NOW() WHERE id = %s RETURNING *"
+                ).format(self._table(resource_type)),
                 (status, metadata, actor, resource_id),
             ).fetchone()
         raise ValueError(f"Recurso Identity imutavel ou desconhecido: {resource_type}")
