@@ -163,9 +163,18 @@ REQUIRED_MULTI_AGENT_RULES = [
     "STATUS.md",
 ]
 
+APP_DIR_OVERRIDES = {
+    "valley-business": "valley_business",
+    "valley-rider": "valley_rider",
+}
+
 
 def fail(message: str, errors: list[str]) -> None:
     errors.append(message)
+
+
+def resolve_app_dir(slug: str) -> Path:
+    return ROOT / "apps" / APP_DIR_OVERRIDES.get(slug, slug)
 
 
 def main() -> int:
@@ -182,7 +191,7 @@ def main() -> int:
         if not (ROOT / "contracts" / f"{module['slug']}.md").is_file():
             fail(f"Contrato ausente: {module['slug']}", errors)
     for app in CATALOG["apps"]:
-        if not (ROOT / "apps" / app["slug"] / "README.md").is_file():
+        if not (resolve_app_dir(app["slug"]) / "README.md").is_file():
             fail(f"App ausente: {app['slug']}", errors)
     migrations = "\n".join(
         item.read_text(encoding="utf-8")

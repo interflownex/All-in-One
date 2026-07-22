@@ -156,7 +156,7 @@
     },
     {
       "slug": "valley-business",
-      "app_dir": "apps/valley-business",
+      "app_dir": "apps/valley_business",
       "shell_dir": "apps/valley_business",
       "package_name": "@all-in-one/valley-business",
       "persona": "Lojista Valley Business",
@@ -173,7 +173,7 @@
     },
     {
       "slug": "valley-rider",
-      "app_dir": "apps/valley-rider",
+      "app_dir": "apps/valley_rider",
       "shell_dir": "apps/valley_rider",
       "package_name": "@all-in-one/valley-rider",
       "persona": "Entregador Valley",

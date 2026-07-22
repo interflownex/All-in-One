@@ -82,12 +82,8 @@ CUSTOMIZED_ARTIFACTS = {
     "apps/valley/README.md",
     "apps/valley/STATUS.md",
     # Shells operacionais do ecossistema tambem mantem status manual por design.
-    "apps/all-in-one-user/STATUS.md",
-    "apps/all-in-one-business/STATUS.md",
-    "apps/all-in-one-services/README.md",
-    "apps/all-in-one-services/STATUS.md",
-    "apps/valley-business/STATUS.md",
-    "apps/valley-rider/STATUS.md",
+    "apps/valley_business/STATUS.md",
+    "apps/valley_rider/STATUS.md",
 }
 
 

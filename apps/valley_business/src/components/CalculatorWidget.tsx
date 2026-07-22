@@ -8,6 +8,37 @@ const CalculatorWidget: React.FC = () => {
   const [display, setDisplay] = useState("0");
   const [equation, setEquation] = useState("");
 
+  const evaluateExpression = (expression: string) => {
+    const tokens = expression.trim().split(/\s+/);
+    if (tokens.length !== 3) {
+      throw new Error("Expressao invalida");
+    }
+
+    const [leftValue, operator, rightValue] = tokens;
+    const left = Number(leftValue);
+    const right = Number(rightValue);
+
+    if (Number.isNaN(left) || Number.isNaN(right)) {
+      throw new Error("Operando invalido");
+    }
+
+    switch (operator) {
+      case "+":
+        return left + right;
+      case "-":
+        return left - right;
+      case "*":
+        return left * right;
+      case "/":
+        if (right === 0) {
+          throw new Error("Divisao por zero");
+        }
+        return left / right;
+      default:
+        throw new Error("Operador invalido");
+    }
+  };
+
   const handleNumber = (num: string) => {
     setDisplay(display === "0" ? num : display + num);
   };
@@ -19,7 +50,7 @@ const CalculatorWidget: React.FC = () => {
 
   const calculate = () => {
     try {
-      const result = eval(equation + display);
+      const result = evaluateExpression(equation + display);
       setDisplay(String(result));
       setEquation("");
     } catch {
