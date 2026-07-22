@@ -15,6 +15,13 @@
       "problemMatcher": []
     },
     {
+      "label": "bootstrap: ambiente dev linux",
+      "type": "shell",
+      "command": "bash",
+      "args": ["-lc", "./scripts/bootstrap_wsl_dev_environment.sh"],
+      "problemMatcher": []
+    },
+    {
       "label": "cleanup: artifacts",
       "type": "shell",
       "command": "${config:python.defaultInterpreterPath}",
