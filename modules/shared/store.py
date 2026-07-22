@@ -10,6 +10,7 @@ from typing import Any, Iterator
 from uuid import uuid4
 
 from .correlation import get_correlation_id
+from .event_contract import build_event_envelope
 
 
 def now() -> str:
@@ -300,6 +301,14 @@ class SQLiteStore:
         return evidence
 
     def _event(self, connection: sqlite3.Connection, routing_key: str, actor: str, item: dict[str, Any]) -> None:
+        correlation_id = get_correlation_id()
+        envelope = build_event_envelope(
+            module=self.module,
+            routing_key=routing_key,
+            actor_user_id=actor,
+            item=item,
+            correlation_id=correlation_id,
+        )
         connection.execute(
             """
             INSERT INTO domain_events
@@ -308,16 +317,16 @@ class SQLiteStore:
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
-                str(uuid4()),
+                envelope["event_id"],
                 self.module,
                 routing_key,
                 item["user_id"],
                 item["resource_type"],
                 item["id"],
                 actor,
-                get_correlation_id(),
-                json.dumps(item["payload"], sort_keys=True),
-                now(),
+                correlation_id,
+                json.dumps(envelope, sort_keys=True),
+                envelope["occurred_at"],
                 None,
             ),
         )

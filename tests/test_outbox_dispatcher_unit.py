@@ -4,6 +4,42 @@ from uuid import uuid4
 from modules.shared.outbox_dispatcher import OutboxMetrics, OutboxSettings, prometheus_metrics, publication_message, retry_observation
 
 
+def test_versioned_envelope_preserves_contract_and_safe_payload() -> None:
+    event_id = uuid4()
+    occurred_at = "2026-07-22T00:00:00+00:00"
+    message = publication_message(
+        {
+            "id": event_id,
+            "routing_key": "business.company.created",
+            "schema_version": 1,
+            "aggregate_type": "companies",
+            "aggregate_id": uuid4(),
+            "correlation_id": uuid4(),
+            "entity_id": uuid4(),
+            "created_at": datetime.now(timezone.utc),
+            "payload": {
+                "event_id": str(event_id),
+                "producer": "business",
+                "idempotency_key": "request-1",
+                "causation_id": "command-1",
+                "tenant_id": "tenant-1",
+                "origin": "all-in-one",
+                "occurred_at": occurred_at,
+                "retention": {"days": 2555},
+                "replay": {"supported": True},
+                "backward_compatibility": {"policy": "additive"},
+                "payload": {"legal_name": "Empresa", "password": "[REDACTED]"},
+            },
+        }
+    )
+
+    assert message["event_id"] == str(event_id)
+    assert message["producer"] == "business"
+    assert message["idempotency_key"] == "request-1"
+    assert message["occurred_at"] == occurred_at
+    assert message["payload"] == {"legal_name": "Empresa"}
+
+
 def test_jobs_document_publication_uses_safe_allowlist() -> None:
     message = publication_message(
         {

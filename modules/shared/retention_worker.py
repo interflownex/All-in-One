@@ -10,6 +10,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Iterable
 
+from modules.shared.correlation import get_correlation_id
+from modules.shared.event_contract import EVENT_SCHEMA_VERSION, build_event_envelope
+
 
 ROOT = Path(__file__).resolve().parents[2]
 RETENTION_CONFIG = ROOT / "config" / "compliance" / "retention_jobs.json"
@@ -405,17 +408,38 @@ class RetentionPostgresStore:
                 row.get("created_by"),
             ),
         )
+        correlation_id = get_correlation_id()
+        actor_user_id = str(row.get("created_by") or row.get("subject_id") or "system")
+        event_payload = decision_event_payload(decision, str(row["id"]))
+        envelope = build_event_envelope(
+            module="compliance",
+            routing_key=decision.audit_event,
+            actor_user_id=actor_user_id,
+            item={
+                "id": str(decision_row["id"]),
+                "resource_type": "retention_decisions",
+                "user_id": str(row["subject_id"]) if row.get("subject_id") else None,
+                "entity_id": None,
+                "idempotency_key": f"{decision.job_name}:{row['id']}:{decision.action}",
+                "payload": event_payload,
+            },
+            correlation_id=correlation_id,
+            causation_id=str(row["id"]),
+        )
         connection.execute(
             """INSERT INTO audit.domain_events
-               (user_id, actor_user_id, routing_key, aggregate_type, aggregate_id,
-                payload, created_by)
-               VALUES (%s, %s, %s, 'retention_decisions', %s, %s, %s)""",
+               (id, user_id, actor_user_id, routing_key, aggregate_type, aggregate_id,
+                correlation_id, schema_version, payload, created_by)
+               VALUES (%s, %s, %s, %s, 'retention_decisions', %s, %s, %s, %s, %s)""",
             (
+                envelope["event_id"],
                 row.get("subject_id"),
                 row.get("created_by"),
                 decision.audit_event,
                 decision_row["id"],
-                Jsonb(decision_event_payload(decision, str(row["id"]))),
+                correlation_id,
+                EVENT_SCHEMA_VERSION,
+                Jsonb(envelope),
                 row.get("created_by"),
             ),
         )

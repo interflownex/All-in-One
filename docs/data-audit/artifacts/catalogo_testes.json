@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 498,
-    "tests_with_assertions": 464,
+    "test_functions": 503,
+    "tests_with_assertions": 469,
     "tests_with_http_calls": 194,
-    "test_functions_in_execution_reports": 473,
-    "test_functions_passed": 440,
+    "test_functions_in_execution_reports": 478,
+    "test_functions_passed": 445,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -4372,6 +4372,78 @@
       "evidence": "tests/test_erp_event_catalog.py:10"
     },
     {
+      "test_id": "tests/test_event_contract.py::test_build_event_envelope_declares_required_contract",
+      "file": "tests/test_event_contract.py",
+      "function": "test_build_event_envelope_declares_required_contract",
+      "line": 46,
+      "async": false,
+      "assertions": 14,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_event_contract.py:46"
+    },
+    {
+      "test_id": "tests/test_event_contract.py::test_every_persisted_domain_event_uses_the_shared_contract",
+      "file": "tests/test_event_contract.py",
+      "function": "test_every_persisted_domain_event_uses_the_shared_contract",
+      "line": 102,
+      "async": false,
+      "assertions": 3,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_event_contract.py:102"
+    },
+    {
+      "test_id": "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials",
+      "file": "tests/test_event_contract.py",
+      "function": "test_sanitize_event_payload_redacts_nested_credentials",
+      "line": 18,
+      "async": false,
+      "assertions": 5,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_event_contract.py:18"
+    },
+    {
+      "test_id": "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
+      "file": "tests/test_event_contract.py",
+      "function": "test_sqlite_outbox_persists_envelope_and_original_idempotency",
+      "line": 80,
+      "async": false,
+      "assertions": 4,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_event_contract.py:80"
+    },
+    {
       "test_id": "tests/test_frontend_journeys_contract.py::test_frontend_contract_links_to_existing_e2e_and_pytest_evidence",
       "file": "tests/test_frontend_journeys_contract.py",
       "function": "test_frontend_contract_links_to_existing_e2e_and_pytest_evidence",
@@ -5917,7 +5989,7 @@
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_business_catalog_offer_publication_uses_safe_payload",
-      "line": 202,
+      "line": 238,
       "async": false,
       "assertions": 6,
       "status_code_assertions": 0,
@@ -5929,13 +6001,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:202"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:238"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_core_api_hub_publication_omits_secret_material",
-      "line": 335,
+      "line": 371,
       "async": false,
       "assertions": 1,
       "status_code_assertions": 0,
@@ -5947,13 +6019,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:335"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:371"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_core_business_publication_uses_minimal_safe_payload",
-      "line": 289,
+      "line": 325,
       "async": false,
       "assertions": 1,
       "status_code_assertions": 0,
@@ -5965,13 +6037,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:289"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:325"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_core_finance_publication_omits_balances_and_user_identifiers",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_core_finance_publication_omits_balances_and_user_identifiers",
-      "line": 312,
+      "line": 348,
       "async": false,
       "assertions": 1,
       "status_code_assertions": 0,
@@ -5983,13 +6055,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:312"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:348"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_core_logistics_publication_omits_location_payloads",
-      "line": 358,
+      "line": 394,
       "async": false,
       "assertions": 2,
       "status_code_assertions": 0,
@@ -6001,13 +6073,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:358"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:394"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_core_operations_publication_uses_safe_payloads",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_core_operations_publication_uses_safe_payloads",
-      "line": 401,
+      "line": 437,
       "async": false,
       "assertions": 2,
       "status_code_assertions": 0,
@@ -6019,13 +6091,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:401"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:437"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_jobs_document_publication_uses_safe_allowlist",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_jobs_document_publication_uses_safe_allowlist",
-      "line": 7,
+      "line": 43,
       "async": false,
       "assertions": 3,
       "status_code_assertions": 0,
@@ -6037,13 +6109,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:7"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:43"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_prometheus_metrics_exposes_outbox_operational_signals",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_prometheus_metrics_exposes_outbox_operational_signals",
-      "line": 470,
+      "line": 506,
       "async": false,
       "assertions": 6,
       "status_code_assertions": 0,
@@ -6055,13 +6127,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:470"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:506"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_retention_decision_publication_uses_safe_payload",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_retention_decision_publication_uses_safe_payload",
-      "line": 258,
+      "line": 294,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -6073,13 +6145,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:258"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:294"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_retry_observation_truncates_error_for_metadata",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_retry_observation_truncates_error_for_metadata",
-      "line": 460,
+      "line": 496,
       "async": false,
       "assertions": 2,
       "status_code_assertions": 0,
@@ -6091,13 +6163,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:460"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:496"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_retry_observation_uses_exponential_backoff_with_cap",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_retry_observation_uses_exponential_backoff_with_cap",
-      "line": 438,
+      "line": 474,
       "async": false,
       "assertions": 8,
       "status_code_assertions": 0,
@@ -6109,13 +6181,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:438"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:474"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_unknown_domain_publishes_no_unreviewed_payload",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_unknown_domain_publishes_no_unreviewed_payload",
-      "line": 32,
+      "line": 68,
       "async": false,
       "assertions": 1,
       "status_code_assertions": 0,
@@ -6127,13 +6199,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:32"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:68"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_valley_catalog_publication_uses_safe_payload",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_valley_catalog_publication_uses_safe_payload",
-      "line": 140,
+      "line": 176,
       "async": false,
       "assertions": 9,
       "status_code_assertions": 0,
@@ -6145,13 +6217,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:140"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:176"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_valley_discount_publication_uses_progressive_discount_allowlist",
-      "line": 110,
+      "line": 146,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -6163,13 +6235,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:110"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:146"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_valley_gold_ledger_publication_uses_safe_payload",
-      "line": 81,
+      "line": 117,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -6181,13 +6253,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:81"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:117"
     },
     {
       "test_id": "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
       "file": "tests/test_outbox_dispatcher_unit.py",
       "function": "test_valley_pepita_publication_notifies_consumer_with_safe_payload",
-      "line": 49,
+      "line": 85,
       "async": false,
       "assertions": 6,
       "status_code_assertions": 0,
@@ -6199,7 +6271,25 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_outbox_dispatcher_unit.py:49"
+      "evidence": "tests/test_outbox_dispatcher_unit.py:85"
+    },
+    {
+      "test_id": "tests/test_outbox_dispatcher_unit.py::test_versioned_envelope_preserves_contract_and_safe_payload",
+      "file": "tests/test_outbox_dispatcher_unit.py",
+      "function": "test_versioned_envelope_preserves_contract_and_safe_payload",
+      "line": 7,
+      "async": false,
+      "assertions": 5,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_outbox_dispatcher_unit.py:7"
     },
     {
       "test_id": "tests/test_outbox_rabbitmq_integration.py::test_dispatcher_leaves_failed_event_pending_for_retry",

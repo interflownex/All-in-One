@@ -230,9 +230,11 @@ class OutboxMetrics:
 
 
 def publication_message(event: dict[str, Any]) -> dict[str, Any]:
-    source_payload = event.get("payload") or {}
+    stored_payload = event.get("payload") or {}
+    is_envelope = isinstance(stored_payload, dict) and "event_id" in stored_payload and "payload" in stored_payload
+    source_payload = stored_payload.get("payload") or {} if is_envelope else stored_payload
     safe_fields = SAFE_PAYLOAD_FIELDS.get(event["aggregate_type"], frozenset())
-    return {
+    message = {
         "event_id": str(event["id"]),
         "routing_key": event["routing_key"],
         "schema_version": event["schema_version"],
@@ -241,8 +243,22 @@ def publication_message(event: dict[str, Any]) -> dict[str, Any]:
         "correlation_id": str(event["correlation_id"]),
         "entity_id": str(event["entity_id"]) if event.get("entity_id") else None,
         "payload": {key: source_payload[key] for key in sorted(safe_fields) if key in source_payload},
-        "occurred_at": event["created_at"].isoformat(),
+        "occurred_at": stored_payload.get("occurred_at") if is_envelope else event["created_at"].isoformat(),
     }
+    if is_envelope:
+        message.update(
+            {
+                "producer": stored_payload.get("producer"),
+                "idempotency_key": stored_payload.get("idempotency_key"),
+                "causation_id": stored_payload.get("causation_id"),
+                "tenant_id": stored_payload.get("tenant_id"),
+                "origin": stored_payload.get("origin"),
+                "retention": stored_payload.get("retention"),
+                "replay": stored_payload.get("replay"),
+                "backward_compatibility": stored_payload.get("backward_compatibility"),
+            }
+        )
+    return message
 
 
 def prometheus_metrics(metrics: OutboxMetrics) -> str:

@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 498,
-    "tests_with_assertions": 464,
+    "test_functions": 503,
+    "tests_with_assertions": 469,
     "tests_with_http_calls": 194,
-    "test_functions_in_execution_reports": 473,
-    "test_functions_passed": 440,
+    "test_functions_in_execution_reports": 478,
+    "test_functions_passed": 445,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -11056,7 +11056,7 @@
       "test_evidence": [
         "tests/test_ai_core_domain.py:40"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "ai_core",
@@ -11076,7 +11076,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "ai_core",
@@ -11102,7 +11102,7 @@
       "test_evidence": [
         "tests/test_ai_core_domain.py:67"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "ai_core",
@@ -11124,7 +11124,7 @@
       "test_evidence": [
         "tests/test_ai_core_domain.py:67"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "ai_core",
@@ -11144,7 +11144,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "ai_core",
@@ -11168,7 +11168,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "ai_core",
@@ -11192,7 +11192,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "ai_core",
@@ -11212,7 +11212,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11236,7 +11236,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11260,7 +11260,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11280,7 +11280,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11304,7 +11304,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11328,7 +11328,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11348,7 +11348,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11372,7 +11372,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11396,7 +11396,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11416,7 +11416,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11440,7 +11440,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11464,7 +11464,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "api_hub",
@@ -11484,7 +11484,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "bi",
@@ -11508,7 +11508,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "bi",
@@ -11534,7 +11534,7 @@
       "test_evidence": [
         "tests/test_bi_domain.py:81"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "bi",
@@ -11560,7 +11560,7 @@
       "test_evidence": [
         "tests/test_bi_domain.py:42"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "bi",
@@ -11582,7 +11582,7 @@
       "test_evidence": [
         "tests/test_bi_domain.py:42"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "bi",
@@ -11604,7 +11604,7 @@
       "test_evidence": [
         "tests/test_bi_domain.py:111"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "bpm",
@@ -11624,7 +11624,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "bpm",
@@ -11650,7 +11650,7 @@
       "test_evidence": [
         "tests/test_bpm_domain.py:73"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "bpm",
@@ -11674,7 +11674,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "bpm",
@@ -11694,7 +11694,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "business",
@@ -11714,7 +11714,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "business",
@@ -11734,7 +11734,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "business",
@@ -11758,7 +11758,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "business",
@@ -11782,7 +11782,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "business",
@@ -11802,7 +11802,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "business",
@@ -11828,7 +11828,7 @@
       "test_evidence": [
         "tests/test_business_jobs_journey.py:52"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "business",
@@ -11852,7 +11852,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "business",
@@ -11872,7 +11872,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "business",
@@ -11896,7 +11896,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "business",
@@ -11920,7 +11920,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "crm",
@@ -11942,7 +11942,7 @@
       "test_evidence": [
         "tests/test_crm_domain.py:63"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "crm",
@@ -11962,7 +11962,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "crm",
@@ -11988,7 +11988,7 @@
       "test_evidence": [
         "tests/test_crm_domain.py:137"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "crm",
@@ -12008,7 +12008,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "crm",
@@ -12030,7 +12030,7 @@
       "test_evidence": [
         "tests/test_crm_domain.py:40"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "crm",
@@ -12050,7 +12050,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "crm",
@@ -12076,7 +12076,7 @@
       "test_evidence": [
         "tests/test_crm_domain.py:86"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "crm",
@@ -12100,7 +12100,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "delivery",
@@ -12122,7 +12122,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:57"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "delivery",
@@ -12142,7 +12142,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "delivery",
@@ -12162,7 +12162,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "delivery",
@@ -12184,7 +12184,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:57"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "document",
@@ -12204,7 +12204,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "document",
@@ -12224,7 +12224,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "document",
@@ -12244,7 +12244,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "erp",
@@ -12264,7 +12264,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "erp",
@@ -12284,7 +12284,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "erp",
@@ -12304,7 +12304,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "erp",
@@ -12330,7 +12330,7 @@
       "test_evidence": [
         "tests/test_erp_domain.py:70"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "erp",
@@ -12350,7 +12350,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "erp",
@@ -12372,7 +12372,7 @@
       "test_evidence": [
         "tests/test_erp_domain.py:109"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "erp",
@@ -12398,7 +12398,7 @@
       "test_evidence": [
         "tests/test_erp_domain.py:109"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "finance",
@@ -12422,7 +12422,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "finance",
@@ -12442,7 +12442,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "finance",
@@ -12466,7 +12466,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "finance",
@@ -12490,7 +12490,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "finance",
@@ -12510,7 +12510,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "finance",
@@ -12530,7 +12530,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "finance",
@@ -12550,7 +12550,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "finance",
@@ -12570,7 +12570,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "finance",
@@ -12590,7 +12590,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "finance",
@@ -12610,7 +12610,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12630,7 +12630,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12652,7 +12652,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:400"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12676,7 +12676,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12700,7 +12700,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12720,7 +12720,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12740,7 +12740,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12760,7 +12760,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12780,7 +12780,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12804,7 +12804,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12828,7 +12828,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12848,7 +12848,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12872,7 +12872,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12896,7 +12896,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "health",
@@ -12916,7 +12916,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "hr",
@@ -12938,7 +12938,7 @@
       "test_evidence": [
         "tests/test_hr_domain.py:90"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "hr",
@@ -12962,7 +12962,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "hr",
@@ -12986,7 +12986,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "hr",
@@ -13006,7 +13006,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "hr",
@@ -13030,7 +13030,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "hr",
@@ -13054,7 +13054,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "hr",
@@ -13074,7 +13074,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "hr",
@@ -13100,7 +13100,7 @@
       "test_evidence": [
         "tests/test_hr_domain.py:59"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "identity",
@@ -13124,7 +13124,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "identity",
@@ -13148,7 +13148,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "identity",
@@ -13172,7 +13172,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "identity",
@@ -13196,7 +13196,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "identity",
@@ -13220,7 +13220,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "identity",
@@ -13244,7 +13244,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "identity",
@@ -13264,7 +13264,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "identity",
@@ -13288,7 +13288,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "jobs",
@@ -13312,7 +13312,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "jobs",
@@ -13338,7 +13338,7 @@
       "test_evidence": [
         "tests/test_identity_jobs_domain.py:215"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "jobs",
@@ -13362,7 +13362,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "jobs",
@@ -13388,7 +13388,7 @@
       "test_evidence": [
         "tests/test_identity_jobs_domain.py:215"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "jobs",
@@ -13408,7 +13408,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "jobs",
@@ -13432,7 +13432,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "jobs",
@@ -13460,7 +13460,7 @@
         "tests/test_identity_jobs_domain.py:183",
         "tests/test_jobs_postgres_integration.py:117"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "legal",
@@ -13480,7 +13480,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "legal",
@@ -13500,7 +13500,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "legal",
@@ -13520,7 +13520,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "legal",
@@ -13546,7 +13546,7 @@
       "test_evidence": [
         "tests/test_legal_domain.py:57"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "legal",
@@ -13566,7 +13566,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13590,7 +13590,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13614,7 +13614,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13638,7 +13638,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13658,7 +13658,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13678,7 +13678,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13702,7 +13702,7 @@
         "tests/test_user_marketplace_journey.py:85",
         "tests/test_valley_ecosystem.py:242"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13722,7 +13722,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13742,7 +13742,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13766,7 +13766,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13790,7 +13790,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13810,7 +13810,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13837,7 +13837,7 @@
         "tests/test_marketplace_support_metrics.py:82",
         "tests/test_valley_reviews.py:61"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13861,7 +13861,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13885,7 +13885,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13909,7 +13909,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "marketplace",
@@ -13929,7 +13929,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "mobility",
@@ -13951,7 +13951,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:310"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "mobility",
@@ -13971,7 +13971,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "mobility",
@@ -13993,7 +13993,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:310"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "mobility",
@@ -14015,7 +14015,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:343"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "property",
@@ -14041,7 +14041,7 @@
       "test_evidence": [
         "tests/test_property_domain.py:57"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "property",
@@ -14065,7 +14065,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "property",
@@ -14091,7 +14091,7 @@
       "test_evidence": [
         "tests/test_property_domain.py:88"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "property",
@@ -14113,7 +14113,7 @@
       "test_evidence": [
         "tests/test_property_domain.py:88"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "property",
@@ -14133,7 +14133,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "property",
@@ -14153,7 +14153,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "property",
@@ -14177,7 +14177,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "property",
@@ -14201,7 +14201,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "property",
@@ -14221,7 +14221,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "riders",
@@ -14247,7 +14247,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:135"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "riders",
@@ -14271,7 +14271,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "riders",
@@ -14293,7 +14293,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:135"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "riders",
@@ -14317,7 +14317,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "riders",
@@ -14341,7 +14341,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "riders",
@@ -14361,7 +14361,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "services",
@@ -14381,7 +14381,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "services",
@@ -14401,7 +14401,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "services",
@@ -14425,7 +14425,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "services",
@@ -14449,7 +14449,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "services",
@@ -14469,7 +14469,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "services",
@@ -14491,7 +14491,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:221"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "services",
@@ -14513,7 +14513,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:221"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "services",
@@ -14533,7 +14533,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14553,7 +14553,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14573,7 +14573,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14597,7 +14597,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14621,7 +14621,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14641,7 +14641,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14663,7 +14663,7 @@
       "test_evidence": [
         "tests/test_valley_ecosystem.py:176"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14683,7 +14683,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14703,7 +14703,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14725,7 +14725,7 @@
       "test_evidence": [
         "tests/test_valley_ecosystem.py:176"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14749,7 +14749,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14773,7 +14773,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "stock",
@@ -14793,7 +14793,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "tms",
@@ -14817,7 +14817,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "tms",
@@ -14841,7 +14841,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "tms",
@@ -14861,7 +14861,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "tms",
@@ -14887,7 +14887,7 @@
       "test_evidence": [
         "tests/test_tms_domain.py:150"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "tms",
@@ -14913,7 +14913,7 @@
       "test_evidence": [
         "tests/test_tms_domain.py:73"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "tms",
@@ -14937,7 +14937,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "tms",
@@ -14957,7 +14957,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "tms",
@@ -14977,7 +14977,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "vision",
@@ -14997,7 +14997,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "vision",
@@ -15017,7 +15017,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "vision",
@@ -15037,7 +15037,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "vision",
@@ -15061,7 +15061,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "vision",
@@ -15087,7 +15087,7 @@
       "test_evidence": [
         "tests/test_vision_domain.py:88"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "vision",
@@ -15111,7 +15111,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "vision",
@@ -15135,7 +15135,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15155,7 +15155,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15175,7 +15175,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15195,7 +15195,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15217,7 +15217,7 @@
       "test_evidence": [
         "tests/test_wms_domain.py:71"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15237,7 +15237,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15263,7 +15263,7 @@
       "test_evidence": [
         "tests/test_wms_domain.py:95"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15285,7 +15285,7 @@
       "test_evidence": [
         "tests/test_wms_domain.py:95"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15311,7 +15311,7 @@
       "test_evidence": [
         "tests/test_wms_domain.py:133"
       ],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15331,7 +15331,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15351,7 +15351,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     },
     {
       "module": "wms",
@@ -15371,7 +15371,7 @@
       "idempotency": "não exigida genericamente na rota de transição",
       "enforcement_status": "regra_backend_estatica; teste_endpoint_requerido",
       "test_evidence": [],
-      "evidence": "modules/shared/domain_rules.py"
+      "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py"
     }
   ]
 }

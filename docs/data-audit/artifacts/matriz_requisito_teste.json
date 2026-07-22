@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 498,
-    "tests_with_assertions": 464,
+    "test_functions": 503,
+    "tests_with_assertions": 469,
     "tests_with_http_calls": 194,
-    "test_functions_in_execution_reports": 473,
-    "test_functions_passed": 440,
+    "test_functions_in_execution_reports": 478,
+    "test_functions_passed": 445,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -58,6 +58,7 @@
       "requirement": "100% dos bancos forem catalogados",
       "test_candidates": [
         "tests/test_compose_health_gate.py::test_compose_postgres_healthcheck_allows_cold_initdb",
+        "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
         "tests/test_jobs_postgres_integration.py::test_jobs_postgres_typed_store_and_private_ctps",
         "tests/test_mongodb_contract.py::test_mongodb_contract_declares_expected_collections_and_retention",
         "tests/test_mongodb_contract.py::test_mongodb_init_script_declares_all_contract_indexes",
@@ -75,12 +76,12 @@
         "tests/test_postgres_priority_stores_integration.py::test_api_hub_client_create_update_and_soft_delete",
         "tests/test_postgres_priority_stores_integration.py::test_bi_dataset_create_update_and_soft_delete",
         "tests/test_postgres_priority_stores_integration.py::test_bpm_process_create_update_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_business_company_create_get_list_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_crm_lead_create_update_and_soft_delete"
+        "tests/test_postgres_priority_stores_integration.py::test_business_company_create_get_list_and_soft_delete"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
         "tests/test_compose_health_gate.py::test_compose_postgres_healthcheck_allows_cold_initdb",
+        "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
         "tests/test_mongodb_contract.py::test_mongodb_contract_declares_expected_collections_and_retention",
         "tests/test_mongodb_contract.py::test_mongodb_init_script_declares_all_contract_indexes",
         "tests/test_mongodb_contract.py::test_mongodb_init_script_matches_collection_contract",
@@ -93,7 +94,7 @@
         "tests/test_postgres_contract_static.py::test_postgres_priority_store_event_prefix_aliases_are_documented",
         "tests/test_postgres_contract_static.py::test_user_reference_columns_are_not_treated_as_business_entities"
       ],
-      "passed_candidate_count": 12,
+      "passed_candidate_count": 13,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -199,7 +200,7 @@
         "tests/test_compliance_matrix.py::test_compliance_matrix_covers_all_catalog_modules",
         "tests/test_data_subject_rights.py::test_data_subject_rights_match_lgpd_policy_and_catalog_modules",
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
-        "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events"
+        "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -221,7 +222,7 @@
         "tests/test_compliance_matrix.py::test_compliance_matrix_covers_all_catalog_modules",
         "tests/test_data_subject_rights.py::test_data_subject_rights_match_lgpd_policy_and_catalog_modules",
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
-        "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events"
+        "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials"
       ],
       "passed_candidate_count": 19,
       "trace_status": "candidatos_localizados",
@@ -493,10 +494,10 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_outbox_dispatcher_unit.py::test_versioned_envelope_preserves_contract_and_safe_payload",
         "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
         "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
-        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
-        "tests/test_units_tax_governance.py::test_unit_conversion_http_contract_is_backend_authoritative"
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -516,10 +517,10 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_outbox_dispatcher_unit.py::test_versioned_envelope_preserves_contract_and_safe_payload",
         "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
         "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
-        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding",
-        "tests/test_units_tax_governance.py::test_unit_conversion_http_contract_is_backend_authoritative"
+        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -993,6 +994,10 @@
         "tests/test_business_event_catalog.py::test_business_catalog_declares_runtime_domain_events",
         "tests/test_correlation_id.py::test_mutation_outbox_uses_request_correlation_id",
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
+        "tests/test_event_contract.py::test_build_event_envelope_declares_required_contract",
+        "tests/test_event_contract.py::test_every_persisted_domain_event_uses_the_shared_contract",
+        "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials",
+        "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
         "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events",
         "tests/test_jobs_event_catalog.py::test_jobs_catalog_declares_runtime_domain_events",
         "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
@@ -1002,11 +1007,7 @@
         "tests/test_outbox_alerts.py::test_outbox_alerts_cover_backlog_staleness_failures_and_delivery_gap",
         "tests/test_outbox_alerts.py::test_outbox_alerts_have_prometheus_expr_sla_and_evidence",
         "tests/test_outbox_alerts.py::test_outbox_dashboard_covers_all_exported_operational_metrics",
-        "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
-        "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_core_finance_publication_omits_balances_and_user_identifiers",
-        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads"
+        "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -1016,6 +1017,10 @@
         "tests/test_business_event_catalog.py::test_business_catalog_declares_runtime_domain_events",
         "tests/test_correlation_id.py::test_mutation_outbox_uses_request_correlation_id",
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
+        "tests/test_event_contract.py::test_build_event_envelope_declares_required_contract",
+        "tests/test_event_contract.py::test_every_persisted_domain_event_uses_the_shared_contract",
+        "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials",
+        "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
         "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events",
         "tests/test_jobs_event_catalog.py::test_jobs_catalog_declares_runtime_domain_events",
         "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
@@ -1025,11 +1030,7 @@
         "tests/test_outbox_alerts.py::test_outbox_alerts_cover_backlog_staleness_failures_and_delivery_gap",
         "tests/test_outbox_alerts.py::test_outbox_alerts_have_prometheus_expr_sla_and_evidence",
         "tests/test_outbox_alerts.py::test_outbox_dashboard_covers_all_exported_operational_metrics",
-        "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
-        "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_core_finance_publication_omits_balances_and_user_identifiers",
-        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads"
+        "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -1204,6 +1205,7 @@
       "requirement": "Catalogar bancos",
       "test_candidates": [
         "tests/test_compose_health_gate.py::test_compose_postgres_healthcheck_allows_cold_initdb",
+        "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
         "tests/test_jobs_postgres_integration.py::test_jobs_postgres_typed_store_and_private_ctps",
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_mongodb_contract.py::test_mongodb_contract_declares_expected_collections_and_retention",
@@ -1221,12 +1223,12 @@
         "tests/test_postgres_priority_stores_integration.py::test_ai_core_memory_create_update_and_soft_delete",
         "tests/test_postgres_priority_stores_integration.py::test_api_hub_client_create_update_and_soft_delete",
         "tests/test_postgres_priority_stores_integration.py::test_bi_dataset_create_update_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_bpm_process_create_update_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_business_company_create_get_list_and_soft_delete"
+        "tests/test_postgres_priority_stores_integration.py::test_bpm_process_create_update_and_soft_delete"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
         "tests/test_compose_health_gate.py::test_compose_postgres_healthcheck_allows_cold_initdb",
+        "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
         "tests/test_mongodb_contract.py::test_mongodb_contract_declares_expected_collections_and_retention",
         "tests/test_mongodb_contract.py::test_mongodb_init_script_declares_all_contract_indexes",
@@ -1240,7 +1242,7 @@
         "tests/test_postgres_contract_static.py::test_postgres_priority_store_event_prefix_aliases_are_documented",
         "tests/test_postgres_contract_static.py::test_user_reference_columns_are_not_treated_as_business_entities"
       ],
-      "passed_candidate_count": 13,
+      "passed_candidate_count": 14,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1322,7 +1324,7 @@
         "tests/test_compliance_matrix.py::test_compliance_matrix_covers_all_catalog_modules",
         "tests/test_data_subject_rights.py::test_data_subject_rights_match_lgpd_policy_and_catalog_modules",
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
-        "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events"
+        "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -1344,7 +1346,7 @@
         "tests/test_compliance_matrix.py::test_compliance_matrix_covers_all_catalog_modules",
         "tests/test_data_subject_rights.py::test_data_subject_rights_match_lgpd_policy_and_catalog_modules",
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
-        "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events"
+        "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials"
       ],
       "passed_candidate_count": 19,
       "trace_status": "candidatos_localizados",
@@ -1375,9 +1377,9 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_outbox_dispatcher_unit.py::test_versioned_envelope_preserves_contract_and_safe_payload",
         "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
-        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
-        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -1398,9 +1400,9 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_outbox_dispatcher_unit.py::test_versioned_envelope_preserves_contract_and_safe_payload",
         "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
-        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
-        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -1584,6 +1586,10 @@
         "tests/test_business_event_catalog.py::test_business_catalog_declares_runtime_domain_events",
         "tests/test_correlation_id.py::test_mutation_outbox_uses_request_correlation_id",
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
+        "tests/test_event_contract.py::test_build_event_envelope_declares_required_contract",
+        "tests/test_event_contract.py::test_every_persisted_domain_event_uses_the_shared_contract",
+        "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials",
+        "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
         "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events",
         "tests/test_jobs_event_catalog.py::test_jobs_catalog_declares_runtime_domain_events",
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
@@ -1593,11 +1599,7 @@
         "tests/test_outbox_alerts.py::test_outbox_alerts_cover_backlog_staleness_failures_and_delivery_gap",
         "tests/test_outbox_alerts.py::test_outbox_alerts_have_prometheus_expr_sla_and_evidence",
         "tests/test_outbox_alerts.py::test_outbox_dashboard_covers_all_exported_operational_metrics",
-        "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
-        "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_core_finance_publication_omits_balances_and_user_identifiers",
-        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads"
+        "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -1607,6 +1609,10 @@
         "tests/test_business_event_catalog.py::test_business_catalog_declares_runtime_domain_events",
         "tests/test_correlation_id.py::test_mutation_outbox_uses_request_correlation_id",
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
+        "tests/test_event_contract.py::test_build_event_envelope_declares_required_contract",
+        "tests/test_event_contract.py::test_every_persisted_domain_event_uses_the_shared_contract",
+        "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials",
+        "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
         "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events",
         "tests/test_jobs_event_catalog.py::test_jobs_catalog_declares_runtime_domain_events",
         "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
@@ -1616,11 +1622,7 @@
         "tests/test_outbox_alerts.py::test_outbox_alerts_cover_backlog_staleness_failures_and_delivery_gap",
         "tests/test_outbox_alerts.py::test_outbox_alerts_have_prometheus_expr_sla_and_evidence",
         "tests/test_outbox_alerts.py::test_outbox_dashboard_covers_all_exported_operational_metrics",
-        "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_core_api_hub_publication_omits_secret_material",
-        "tests/test_outbox_dispatcher_unit.py::test_core_business_publication_uses_minimal_safe_payload",
-        "tests/test_outbox_dispatcher_unit.py::test_core_finance_publication_omits_balances_and_user_identifiers",
-        "tests/test_outbox_dispatcher_unit.py::test_core_logistics_publication_omits_location_payloads"
+        "tests/test_outbox_dispatcher_unit.py::test_business_catalog_offer_publication_uses_safe_payload"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -1759,9 +1761,9 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_outbox_dispatcher_unit.py::test_versioned_envelope_preserves_contract_and_safe_payload",
         "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
-        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
-        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -1782,9 +1784,9 @@
         "tests/test_outbox_dispatcher_unit.py::test_valley_discount_publication_uses_progressive_discount_allowlist",
         "tests/test_outbox_dispatcher_unit.py::test_valley_gold_ledger_publication_uses_safe_payload",
         "tests/test_outbox_dispatcher_unit.py::test_valley_pepita_publication_notifies_consumer_with_safe_payload",
+        "tests/test_outbox_dispatcher_unit.py::test_versioned_envelope_preserves_contract_and_safe_payload",
         "tests/test_units_tax_governance.py::test_conversion_rejects_float_unapproved_and_expired_rules",
-        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density",
-        "tests/test_units_tax_governance.py::test_decimal_conversion_preserves_precision_and_rounding"
+        "tests/test_units_tax_governance.py::test_cross_dimension_conversion_requires_positive_density"
       ],
       "passed_candidate_count": 20,
       "trace_status": "candidatos_localizados",
@@ -2289,7 +2291,7 @@
         "tests/test_compliance_matrix.py::test_compliance_matrix_covers_all_catalog_modules",
         "tests/test_data_subject_rights.py::test_data_subject_rights_match_lgpd_policy_and_catalog_modules",
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
-        "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events"
+        "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
@@ -2311,7 +2313,7 @@
         "tests/test_compliance_matrix.py::test_compliance_matrix_covers_all_catalog_modules",
         "tests/test_data_subject_rights.py::test_data_subject_rights_match_lgpd_policy_and_catalog_modules",
         "tests/test_erp_event_catalog.py::test_erp_catalog_declares_runtime_domain_events",
-        "tests/test_identity_event_catalog.py::test_identity_catalog_declares_runtime_domain_events"
+        "tests/test_event_contract.py::test_sanitize_event_payload_redacts_nested_credentials"
       ],
       "passed_candidate_count": 19,
       "trace_status": "candidatos_localizados",

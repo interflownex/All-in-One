@@ -11,6 +11,7 @@ from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
 from .correlation import get_correlation_id
+from .event_contract import EVENT_SCHEMA_VERSION, build_event_envelope
 from .store import DuplicateValueError
 
 
@@ -283,19 +284,23 @@ class ApiHubPostgresStore:
         return dict(evidence)
 
     def _event(self, connection: Connection, routing_key: str, actor: str, item: dict[str, Any]) -> None:
+        correlation_id = get_correlation_id()
+        envelope = build_event_envelope(module=self.module, routing_key=routing_key, actor_user_id=actor, item=item, correlation_id=correlation_id)
         connection.execute(
             """INSERT INTO audit.domain_events
-               (user_id, actor_user_id, entity_id, routing_key, aggregate_type, aggregate_id, correlation_id, payload, created_by)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+               (id, user_id, actor_user_id, entity_id, routing_key, aggregate_type, aggregate_id, correlation_id, schema_version, payload, created_by)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
             (
+                envelope["event_id"],
                 item["user_id"],
                 actor,
                 item["entity_id"],
                 routing_key,
                 item["resource_type"],
                 item["id"],
-                get_correlation_id(),
-                Jsonb(item["payload"]),
+                correlation_id,
+                EVENT_SCHEMA_VERSION,
+                Jsonb(envelope),
                 actor,
             ),
         )

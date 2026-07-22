@@ -538,7 +538,7 @@ def discover_transitions(logical_rules: list[dict[str, object]]) -> list[dict[st
             rows.append(
                 {
                     "event": transition.event,
-                    "version": "não declarada",
+                    "version": 1,
                     "module": module,
                     "entity": entity,
                     "action": action,
@@ -549,9 +549,20 @@ def discover_transitions(logical_rules: list[dict[str, object]]) -> list[dict[st
                     "payload_fields": required_by_resource.get((module, entity), []),
                     "producer": module,
                     "consumers": [],
-                    "idempotency_key": "não comprovada no schema do evento",
-                    "correlation_id": "exigido pelo runtime compartilhado",
-                    "evidence": "modules/shared/domain_rules.py",
+                    "prohibited_data": ["credenciais", "senhas", "segredos", "tokens de acesso", "chaves privadas"],
+                    "idempotency_key": "idempotency_key do comando ou event_name:aggregate_id",
+                    "correlation_id": "obrigatório no envelope e na coluna do outbox",
+                    "causation_id": "opcional e explícito no envelope",
+                    "timestamp": "occurred_at UTC ISO-8601",
+                    "tenant": "tenant_id derivado de entity_id/company_id",
+                    "user": "user_id e actor_user_id",
+                    "origin": "all-in-one",
+                    "retention": "audit_business_event por 2555 dias",
+                    "failure_handling": "outbox_retry_with_dead_letter com evidência de entrega",
+                    "replay": "suportado; deduplicação por event_id e ordem por aggregate_id",
+                    "backward_compatibility": "aditiva; quebra exige nova schema_version",
+                    "contract_evidence": "modules/shared/event_contract.py",
+                    "evidence": "modules/shared/domain_rules.py; modules/shared/event_contract.py; tests/test_event_contract.py",
                 }
             )
     return rows
@@ -1076,12 +1087,13 @@ def build_delivery() -> None:
             "roles": ";".join(row["roles"]),
             "payload_fields": ";".join(row["payload_fields"]),
             "consumers": ";".join(row["consumers"]),
+            "prohibited_data": ";".join(row["prohibited_data"]),
         }
         for row in transitions
     ]
     write_csv(
         ARTIFACTS / "catalogo_eventos.csv",
-        ["event", "version", "module", "entity", "action", "source_statuses", "target_status", "roles", "requires_mfa", "payload_fields", "producer", "consumers", "idempotency_key", "correlation_id", "evidence"],
+        ["event", "version", "module", "entity", "action", "source_statuses", "target_status", "roles", "requires_mfa", "payload_fields", "producer", "consumers", "prohibited_data", "idempotency_key", "correlation_id", "causation_id", "timestamp", "tenant", "user", "origin", "retention", "failure_handling", "replay", "backward_compatibility", "contract_evidence", "evidence"],
         event_csv_rows,
     )
     write_json(ARTIFACTS / "catalogo_eventos.json", {"version": 1, "counts": counts, "events": transitions})
@@ -1309,7 +1321,7 @@ def build_delivery() -> None:
         },
         {
             "id": "AUD-P1-003", "priority": "P1", "module": "eventos", "title": "Eventos não possuem catálogo integral de payload versionado",
-            "description": "As transições identificam nomes e produtores, mas consumidores e contratos completos não são demonstrados para todos os eventos.", "evidence": ["docs/data-audit/artifacts/catalogo_eventos.json", "docs/data-audit/artifacts/matriz_evento_campo.csv"], "impact": "Mudanças podem quebrar consumidores ou impedir replay seguro.", "risk": "Inconsistência assíncrona e duplicidade de processamento.", "proposal": "Versionar schemas, consumidores, idempotência, correlação, retenção e compatibilidade por evento.", "dependencies": ["produtores", "consumidores", "mensageria"], "affected_files": ["modules", "contracts"], "migration": "não aplicável", "backend": "publicar e consumir contrato versionado", "frontend": "não aplicável salvo atualizações em tempo real", "tests": "contrato, idempotência, replay e compatibilidade", "documentation": "12_APIS_EVENTOS_E_INTEGRACOES.md", "acceptance": "Cada evento possui produtor, consumidor, schema, dados proibidos, idempotência, correlação, retenção e compatibilidade testados.", "status": "pendente", "owner_suggestion": "arquitetura de integração", "dimensions": ["campos", "relacionamentos"]
+            "description": "Os produtores persistentes usam envelope v1 compartilhado com sanitização, idempotência, correlação, causação, retenção, replay e compatibilidade; consumidores downstream específicos ainda não estão demonstrados para todos os eventos.", "evidence": ["modules/shared/event_contract.py", "tests/test_event_contract.py", "docs/data-audit/artifacts/catalogo_eventos.json", "docs/data-audit/artifacts/matriz_evento_campo.csv"], "impact": "Sem consumidores declarados por evento, mudanças ainda podem quebrar integrações downstream.", "risk": "Entrega assíncrona sem ownership integral do consumidor.", "proposal": "Registrar e testar consumidores reais por evento, mantendo o envelope compartilhado como gate de produtor.", "dependencies": ["consumidores downstream", "mensageria homologada"], "affected_files": ["modules/shared/event_contract.py", "modules/shared/outbox_dispatcher.py", "contracts"], "migration": "não aplicável", "backend": "contrato de publicação implementado; conectar consumidores reais", "frontend": "não aplicável salvo atualizações em tempo real", "tests": "envelope, sigilo, idempotência, correlação, replay e compatibilidade aprovados; E2E de consumidor pendente", "documentation": "12_APIS_EVENTOS_E_INTEGRACOES.md", "acceptance": "Cada evento possui produtor, consumidor, schema, dados proibidos, idempotência, correlação, retenção e compatibilidade testados.", "status": "implementacao_parcial", "owner_suggestion": "arquitetura de integração", "dimensions": ["campos", "relacionamentos"]
         },
         {
             "id": "AUD-P1-004", "priority": "P1", "module": "formulários dinâmicos", "title": "Construtor de formulários dinâmicos é proposta, não implementação",
@@ -1589,7 +1601,7 @@ EVIDÊNCIAS: `config/data_audit/field_classification_policy.json`, `artifacts/po
     write_markdown(
         "12_APIS_EVENTOS_E_INTEGRACOES.md",
         "APIs, Eventos e Integrações",
-        f"""A varredura AST localizou {counts['endpoints']} endpoints, {counts['endpoints_with_response_model']} declarações de `response_model` e {counts['api_model_fields']} ocorrências de campo em modelos Pydantic locais. Também foram encontradas {counts['event_transitions']} transições com {counts['unique_events']} nomes de evento. Produtor, ação, estados, papéis e MFA vêm das regras do backend; versão, consumidores, payload integral, idempotência e compatibilidade continuam pendentes quando não declarados.\n\nEVIDÊNCIAS: `artifacts/catalogo_apis.json`, `artifacts/catalogo_eventos.json`, `artifacts/matriz_api_campo.csv`, `artifacts/matriz_evento_campo.csv` e `artifacts/matriz_permissao_acao.csv`. Lacuna: `AUD-P1-003`.""",
+        f"""A varredura AST localizou {counts['endpoints']} endpoints, {counts['endpoints_with_response_model']} declarações de `response_model` e {counts['api_model_fields']} ocorrências de campo em modelos Pydantic locais. Também foram encontradas {counts['event_transitions']} transições com {counts['unique_events']} nomes de evento. Todos os produtores persistentes passam pelo envelope v1 compartilhado, que registra produtor, payload sanitizado, dados proibidos, idempotência, correlação, causação, timestamp, tenant, usuário, origem, retenção, falha, replay e compatibilidade. A lacuna remanescente é declarar e homologar consumidores downstream reais para cada evento.\n\nEVIDÊNCIAS: `modules/shared/event_contract.py`, `tests/test_event_contract.py`, `artifacts/catalogo_apis.json`, `artifacts/catalogo_eventos.json`, `artifacts/matriz_api_campo.csv`, `artifacts/matriz_evento_campo.csv` e `artifacts/matriz_permissao_acao.csv`. Lacuna parcial: `AUD-P1-003`.""",
     )
     write_markdown(
         "13_VALIDACAO_E_TESTES.md",
