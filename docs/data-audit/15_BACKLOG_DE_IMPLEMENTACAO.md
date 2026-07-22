@@ -9,6 +9,6 @@
 | 5 | AUD-P1-004 | produto, arquitetura e engenharia | Metadados, API, homologação, segurança, publicação, cobrança, auditoria e testes estão implementados. | PostgreSQL de homologação | implementacao_parcial |
 | 6 | AUD-P1-005 | catálogo, estoque, ERP e fiscal | Unidades, conversões, perfis fiscais, vigência e cálculos possuem migrations, backend, frontend, integração e homologação aprovados. | especialista fiscal, ambiente PostgreSQL | implementacao_parcial |
 | 7 | AUD-P1-006 | arquitetura e responsáveis de domínio | Cada entidade possui decisão explícita de persistência, ownership e coordenada UI, ou justificativa versionada de ausência. |  | resolvido |
-| 8 | AUD-P1-007 | segurança, plataforma e compliance | Os 35 requisitos de auditoria têm implementação ou decisão justificada por operação, com integridade, retenção e testes aprovados. | segurança, compliance, proprietários de domínio | parcial |
+| 8 | AUD-P1-007 | segurança, plataforma e compliance | Os 35 requisitos de auditoria têm implementação ou decisão justificada por operação, com integridade, retenção e testes aprovados. | segurança, compliance, proprietários de domínio | implementacao_parcial |
 
 A ordem prioriza P0, integridade contratual e funcionalidades P1. EVIDÊNCIAS: `14_REGISTRO_DE_LACUNAS.md`.

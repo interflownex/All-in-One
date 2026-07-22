@@ -1,6 +1,6 @@
 # Permissões, Segurança e Privacidade
 
-Foram triados 518 campos potencialmente pessoais, sensíveis, financeiros, restritos ou pseudônimos vinculáveis. A política versionada registra categoria, padrão que motivou a triagem, criptografia, mascaramento e retenção. A classificação automática exige homologação pelo proprietário do domínio e revisão jurídica/privacidade quando aplicável.
+Foram triados 520 campos potencialmente pessoais, sensíveis, financeiros, restritos ou pseudônimos vinculáveis. A política versionada registra categoria, padrão que motivou a triagem, criptografia, mascaramento e retenção. A classificação automática exige homologação pelo proprietário do domínio e revisão jurídica/privacidade quando aplicável.
 
 Foram catalogadas 794 operações backend: 600 operações CRUD sobre 120 entidades e 194 transições. 129 possuem ao menos um arquivo de teste candidato localizado; isso não equivale a prova positiva/negativa completa por endpoint.
 

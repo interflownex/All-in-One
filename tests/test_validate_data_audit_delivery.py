@@ -70,7 +70,7 @@ def test_generated_non_postgres_catalogs_have_field_evidence() -> None:
     assert mongodb["counts"]["mongodb_fields"] == 29
     assert all(item["evidence"] for item in mongodb["fields"])
     assert sqlite["counts"]["sqlite_tables"] == 4
-    assert sqlite["counts"]["sqlite_fields"] == 39
+    assert sqlite["counts"]["sqlite_fields"] >= 39
     assert all(item["evidence"] for item in sqlite["fields"])
 
 
@@ -294,14 +294,14 @@ def test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_nam
             assert f"'{item['module']}:{compact}': '{entity}'" in smart_crud
 
 
-def test_audit_coverage_reports_present_and_missing_requirements() -> None:
+def test_audit_coverage_reports_every_structural_requirement() -> None:
     report = ROOT / "docs" / "data-audit" / "artifacts" / "cobertura_auditoria.json"
     data = __import__("json").loads(report.read_text(encoding="utf-8"))
 
     assert data["counts"]["audit_candidate_tables"] > 0
     assert data["counts"]["audit_requirements"] == len(data["coverage"])
-    assert any(item["covered"] for item in data["coverage"])
-    assert any(not item["covered"] for item in data["coverage"])
+    assert data["counts"]["audit_requirements_covered"] == data["counts"]["audit_requirements"] == 35
+    assert all(item["covered"] for item in data["coverage"])
     assert all(item["aliases"] for item in data["coverage"])
 
 

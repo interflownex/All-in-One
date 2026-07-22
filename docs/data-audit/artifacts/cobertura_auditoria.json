@@ -177,19 +177,19 @@
     ]
   },
   "counts": {
-    "migrations": 28,
+    "migrations": 29,
     "schemas": 32,
     "tables": 164,
-    "fields": 2276,
+    "fields": 2302,
     "mongodb_collections": 4,
     "mongodb_fields": 29,
     "sqlite_tables": 4,
-    "sqlite_fields": 39,
+    "sqlite_fields": 53,
     "redis_key_patterns": 1,
     "object_storage_stores": 4,
     "browser_storage_key_patterns": 12,
-    "relationships": 566,
-    "indexes": 118,
+    "relationships": 568,
+    "indexes": 123,
     "endpoints": 112,
     "endpoints_with_response_model": 8,
     "api_model_fields": 150,
@@ -204,11 +204,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 529,
-    "tests_with_assertions": 488,
+    "test_functions": 535,
+    "tests_with_assertions": 494,
     "tests_with_http_calls": 204,
-    "test_functions_in_execution_reports": 504,
-    "test_functions_passed": 471,
+    "test_functions_in_execution_reports": 510,
+    "test_functions_passed": 477,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -217,13 +217,13 @@
     "logical_without_ui_surface": 0,
     "event_transitions": 194,
     "unique_events": 187,
-    "sensitive_candidates": 518,
+    "sensitive_candidates": 520,
     "dynamic_form_entities_proposed": 15,
     "measurement_entities_proposed": 6,
     "fiscal_entities_proposed": 5,
     "audit_candidate_tables": 7,
     "audit_requirements": 35,
-    "audit_requirements_covered": 20
+    "audit_requirements_covered": 35
   },
   "candidate_tables": [
     "audit.domain_events",
@@ -247,7 +247,8 @@
       "covered": true,
       "matching_tables": {
         "audit.logs": [
-          "action"
+          "action",
+          "event"
         ],
         "audit.domain_events": [
           "routing_key"
@@ -315,11 +316,15 @@
       ],
       "covered": true,
       "matching_tables": {
+        "audit.logs": [
+          "tenant_id"
+        ],
         "forms.form_billing_events": [
           "tenant_id"
         ]
       },
       "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md",
         "docs/data-audit/databases/postgresql/tables/forms.form_billing_events.md"
       ]
     },
@@ -332,11 +337,15 @@
       ],
       "covered": true,
       "matching_tables": {
+        "audit.logs": [
+          "company_id"
+        ],
         "tms.freight_audits": [
           "company_id"
         ]
       },
       "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md",
         "docs/data-audit/databases/postgresql/tables/tms.freight_audits.md"
       ]
     },
@@ -396,9 +405,15 @@
         "role",
         "actor_role"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "actor_role"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -406,9 +421,15 @@
       "aliases": [
         "session_id"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "session_id"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -420,7 +441,8 @@
       "covered": true,
       "matching_tables": {
         "audit.logs": [
-          "device_fingerprint"
+          "device_fingerprint",
+          "device_id"
         ]
       },
       "evidence": [
@@ -472,9 +494,15 @@
         "origin",
         "source"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "origin"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -482,9 +510,15 @@
       "aliases": [
         "channel"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "channel"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -550,9 +584,15 @@
       "aliases": [
         "changed_fields"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "changed_fields"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -561,9 +601,15 @@
         "reason",
         "change_reason"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "reason"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -573,11 +619,15 @@
       ],
       "covered": true,
       "matching_tables": {
+        "audit.logs": [
+          "correlation_id"
+        ],
         "audit.domain_events": [
           "correlation_id"
         ]
       },
       "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md",
         "docs/data-audit/databases/postgresql/tables/audit.domain_events.md"
       ]
     },
@@ -587,9 +637,15 @@
       "aliases": [
         "causation_id"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "causation_id"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -602,7 +658,8 @@
       "covered": true,
       "matching_tables": {
         "audit.logs": [
-          "created_at"
+          "created_at",
+          "occurred_at"
         ],
         "audit.domain_events": [
           "created_at"
@@ -639,6 +696,7 @@
       "covered": true,
       "matching_tables": {
         "audit.logs": [
+          "result",
           "status"
         ],
         "audit.domain_events": [
@@ -669,9 +727,15 @@
         "error",
         "error_detail"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "error_detail"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -680,9 +744,16 @@
         "approved_by",
         "approval_id"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "approval_id",
+          "approved_by"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -692,9 +763,15 @@
         "checksum",
         "signature"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "row_hash"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -703,9 +780,15 @@
         "retention_until",
         "expires_at"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "retention_until"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "read_audit",
@@ -784,11 +867,15 @@
       ],
       "covered": true,
       "matching_tables": {
+        "audit.logs": [
+          "reason"
+        ],
         "jobs.resume_access_logs": [
           "purpose"
         ]
       },
       "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md",
         "docs/data-audit/databases/postgresql/tables/jobs.resume_access_logs.md"
       ]
     },
@@ -800,9 +887,15 @@
         "permission",
         "role"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "authorization"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "read_audit",
@@ -815,7 +908,8 @@
       "covered": true,
       "matching_tables": {
         "audit.logs": [
-          "created_at"
+          "created_at",
+          "occurred_at"
         ],
         "audit.domain_events": [
           "created_at"
@@ -856,6 +950,7 @@
       "covered": true,
       "matching_tables": {
         "audit.logs": [
+          "result",
           "status"
         ],
         "audit.domain_events": [
@@ -886,9 +981,15 @@
         "exported",
         "export_id"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "exported"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "read_audit",
@@ -896,9 +997,15 @@
       "aliases": [
         "printed"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "printed"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     },
     {
       "audit_type": "read_audit",
@@ -907,9 +1014,15 @@
         "shared",
         "shared_with"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "audit.logs": [
+          "shared"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/audit.logs.md"
+      ]
     }
   ]
 }

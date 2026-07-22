@@ -159,6 +159,32 @@ erDiagram
     JSONB metadata
     TIMESTAMPTZ created_at
     UUID created_by FK
+    INTEGER schema_version
+    VARCHAR(180) event
+    VARCHAR(40) log_type
+    UUID tenant_id
+    UUID company_id FK
+    VARCHAR(100) actor_role
+    VARCHAR(180) session_id
+    VARCHAR(180) device_id
+    VARCHAR(100) origin
+    VARCHAR(80) channel
+    JSONB changed_fields
+    TEXT reason
+    UUID correlation_id
+    UUID causation_id
+    TIMESTAMPTZ occurred_at
+    VARCHAR(40) result
+    TEXT error_detail
+    TEXT authorization
+    UUID approval_id
+    UUID approved_by FK
+    BOOLEAN exported
+    BOOLEAN printed
+    BOOLEAN shared
+    CHAR(64) previous_hash
+    CHAR(64) row_hash
+    TIMESTAMPTZ retention_until
   }
   bi_dashboards {
     UUID id PK
@@ -2806,6 +2832,8 @@ erDiagram
   audit_logs }o--|| identity_users : "actor_user_id"
   audit_logs }o--|| business_companies : "actor_entity_id"
   audit_logs }o--|| identity_users : "created_by"
+  audit_logs }o--|| business_companies : "company_id"
+  audit_logs }o--|| identity_users : "approved_by"
   audit_domain_events }o--|| identity_users : "user_id"
   audit_domain_events }o--|| identity_users : "actor_user_id"
   audit_domain_events }o--|| business_companies : "entity_id"

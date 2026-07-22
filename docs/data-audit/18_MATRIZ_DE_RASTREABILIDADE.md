@@ -4,9 +4,9 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 
 | ID | Seção | Requisito | Candidatos | Aprovados | Status |
 | --- | --- | --- | --- | --- | --- |
-| CONCL-001 | criterios_de_conclusao | 100% dos bancos forem catalogados | 20 | 13 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CONCL-002 | criterios_de_conclusao | 100% dos schemas forem catalogados | 9 | 9 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CONCL-003 | criterios_de_conclusao | 100% das tabelas e coleções forem catalogadas | 20 | 16 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CONCL-001 | criterios_de_conclusao | 100% dos bancos forem catalogados | 20 | 14 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CONCL-002 | criterios_de_conclusao | 100% dos schemas forem catalogados | 12 | 12 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CONCL-003 | criterios_de_conclusao | 100% das tabelas e coleções forem catalogadas | 20 | 17 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-004 | criterios_de_conclusao | 100% dos campos forem descritos | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-005 | criterios_de_conclusao | 100% dos relacionamentos forem descritos | 2 | 2 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-006 | criterios_de_conclusao | 100% dos campos usados no frontend tiverem binding | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
@@ -33,19 +33,19 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CHECK-009 | planejar | Definir prioridades | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-010 | planejar | Definir entregáveis | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-011 | planejar | Definir critérios de aceite | 2 | 2 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-012 | construir | Catalogar bancos | 20 | 14 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-012 | construir | Catalogar bancos | 20 | 15 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-013 | construir | Catalogar tabelas | 20 | 15 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-014 | construir | Catalogar campos | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-015 | construir | Catalogar unidades | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-016 | construir | Catalogar impostos | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-017 | construir | Catalogar cálculos | 7 | 7 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-018 | construir | Catalogar logs | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-019 | construir | Catalogar permissões | 19 | 17 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-019 | construir | Catalogar permissões | 20 | 18 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-020 | construir | Catalogar APIs | 20 | 16 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-021 | construir | Catalogar eventos | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-022 | construir | Catalogar formulários | 4 | 4 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-023 | construir | Modelar formulário dinâmico | 3 | 3 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-024 | validar | Validar schema | 10 | 10 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-024 | validar | Validar schema | 13 | 13 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-025 | validar | Validar integridade | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-026 | validar | Validar regras | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-027 | validar | Validar unidades | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |

@@ -9,6 +9,7 @@ from threading import RLock
 from typing import Any, Iterator
 from uuid import uuid4
 
+from .audit_contract import AuditContext, build_audit_record
 from .correlation import get_correlation_id
 from .event_contract import build_event_envelope
 
@@ -86,6 +87,20 @@ class SQLiteStore:
                     correlation_id TEXT NOT NULL,
                     before_data TEXT,
                     after_data TEXT,
+                    changed_fields TEXT NOT NULL DEFAULT '[]',
+                    event TEXT,
+                    log_type TEXT NOT NULL DEFAULT 'audit',
+                    origin TEXT NOT NULL DEFAULT 'backend',
+                    channel TEXT NOT NULL DEFAULT 'api',
+                    occurred_at TEXT,
+                    result TEXT NOT NULL DEFAULT 'success',
+                    exported INTEGER NOT NULL DEFAULT 0,
+                    printed INTEGER NOT NULL DEFAULT 0,
+                    shared INTEGER NOT NULL DEFAULT 0,
+                    retention_until TEXT,
+                    previous_hash TEXT,
+                    row_hash TEXT,
+                    metadata TEXT NOT NULL DEFAULT '{}',
                     created_at TEXT NOT NULL
                 );
                 CREATE TABLE IF NOT EXISTS domain_events (
@@ -104,6 +119,14 @@ class SQLiteStore:
                 """
             )
             self._ensure_column(connection, "audit_events", "correlation_id TEXT")
+            for definition in (
+                "changed_fields TEXT NOT NULL DEFAULT '[]'", "event TEXT", "log_type TEXT NOT NULL DEFAULT 'audit'",
+                "origin TEXT NOT NULL DEFAULT 'backend'", "channel TEXT NOT NULL DEFAULT 'api'", "occurred_at TEXT",
+                "result TEXT NOT NULL DEFAULT 'success'", "retention_until TEXT", "previous_hash TEXT", "row_hash TEXT",
+                "exported INTEGER NOT NULL DEFAULT 0", "printed INTEGER NOT NULL DEFAULT 0", "shared INTEGER NOT NULL DEFAULT 0",
+                "metadata TEXT NOT NULL DEFAULT '{}'",
+            ):
+                self._ensure_column(connection, "audit_events", definition)
             self._ensure_column(connection, "domain_events", "correlation_id TEXT")
 
     @staticmethod
@@ -266,24 +289,23 @@ class SQLiteStore:
         before: Any,
         after: Any,
     ) -> dict[str, Any]:
-        evidence = {
-            "id": str(uuid4()),
-            "module": self.module,
-            "actor_user_id": actor,
-            "action": action,
-            "resource_type": resource_type,
-            "resource_id": resource_id,
-            "correlation_id": get_correlation_id(),
-            "before_data": before,
-            "after_data": after,
-            "created_at": now(),
-        }
+        previous = connection.execute(
+            "SELECT row_hash FROM audit_events WHERE module = ? ORDER BY created_at DESC LIMIT 1", (self.module,)
+        ).fetchone()
+        evidence = build_audit_record(
+            module=self.module, actor_user_id=actor, action=action, resource_type=resource_type,
+            resource_id=resource_id, before=before, after=after,
+            context=AuditContext(company_id=(after or before or {}).get("entity_id") if isinstance(after or before, dict) else None),
+            previous_hash=previous["row_hash"] if previous else None,
+        )
+        evidence["created_at"] = evidence["occurred_at"]
         connection.execute(
             """
             INSERT INTO audit_events
             (id, module, actor_user_id, action, resource_type, resource_id, correlation_id,
-             before_data, after_data, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             before_data, after_data, changed_fields, event, log_type, origin, channel, occurred_at,
+             result, exported, printed, shared, retention_until, previous_hash, row_hash, metadata, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 evidence["id"],
@@ -295,6 +317,10 @@ class SQLiteStore:
                 evidence["correlation_id"],
                 json.dumps(before, sort_keys=True) if before else None,
                 json.dumps(after, sort_keys=True) if after else None,
+                json.dumps(evidence["changed_fields"]), evidence["event"], evidence["log_type"], evidence["origin"],
+                evidence["channel"], evidence["occurred_at"], evidence["result"],
+                int(evidence["exported"]), int(evidence["printed"]), int(evidence["shared"]), evidence["retention_until"],
+                evidence["previous_hash"], evidence["row_hash"], json.dumps(evidence["metadata"], sort_keys=True),
                 evidence["created_at"],
             ),
         )
