@@ -74,6 +74,9 @@
   "files.insertFinalNewline": true,
   "files.autoSave": "afterDelay",
   "files.trimTrailingWhitespace": true,
+  "window.restoreWindows": "all",
+  "workbench.editor.restoreViewState": true,
+  "workbench.editor.enablePreview": false,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
