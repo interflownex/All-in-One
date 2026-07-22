@@ -63,6 +63,15 @@ SAFE_PAYLOAD_FIELDS: dict[str, frozenset[str]] = {
             "reference_id",
         }
     ),
+    "payment": frozenset(
+        {
+            "payment_id",
+            "amount_brl",
+            "provider_environment",
+            "idempotency_key_hash",
+            "reason_hash",
+        }
+    ),
     "pepita_grants": frozenset(
         {
             "order_id",

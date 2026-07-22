@@ -88,8 +88,9 @@ saem na mensagem.
   `jobs.job_posting.created`, `jobs.job_posting.published`,
   `jobs.application.created`, `jobs.resume.viewed`.
 - Finance e seguros: `payment.escrow.created`, `payment.escrow.released`,
-  `payment.refunded`, `payment.split.executed`, `insurance.quote.created`,
-  `insurance.policy.created`, `insurance.claim.created`.
+  `payment.refunded`, `payment.split.executed`, `valley.gold.ledger.posted`,
+  `insurance.quote.created`, `insurance.policy.created`,
+  `insurance.claim.created`.
 - Health e ERP: `health.appointment.created`,
   `health.telemedicine.started`, `health.prescription.issued`,
   `erp.invoice.created`.

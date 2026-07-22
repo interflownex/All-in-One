@@ -12,8 +12,25 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
   exibivel e consulta restrita a empresas Business ativas.
 - Jobs com adapter PostgreSQL tipado e cofre CTPS AES-256-GCM para execucao
   configurada por DSN/chave secreta.
+- Matriz completa de stores PostgreSQL validada em 25 modulos com
+  create/get/list/update/soft_delete/idempotency condicional e audit/outbox em
+  banco real local.
 - Dispatcher RabbitMQ da outbox PostgreSQL com publisher confirms, retry
   auditavel e payload Jobs minimizado.
+- Geracao de eventos reais de criacao e transicao do recurso primario
+  validada em todos os modulos catalogados com o store compartilhado.
+- Ponte do dispatcher verificada em eventos reais do Jobs e na matrix
+  PostgreSQL, reforcando o envelope minimo antes da publicacao.
+- Harness isolado do dispatcher validado sobre eventos reais do runtime em
+  todo o catalogo de modulos, com fake broker para manter o teste
+  reproduzivel no ambiente atual.
+- Validacao real da outbox e do fluxo Jobs em compose local com PostgreSQL e
+  RabbitMQ saudaveis.
+- Ligacao entre os metrics Prometheus text do worker da outbox e o dashboard
+  Grafana versionado validada em teste automatizado.
+- Observabilidade comercial do Marketplace materializada com metricas
+  Prometheus text, dashboard Grafana, alertas e serie historica de pedidos,
+  suporte, reputacao e conversao.
 - Orquestracao Google Stitch declarativa com um projeto visual por
   microservico e telas Jobs/Business/User especializadas.
 - Docker, Kubernetes inicial, CI/CD e documentacao operacional.
@@ -24,8 +41,8 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
 
 ## Proximos incrementos bloqueadores para beta
 
-1. Expandir o adapter PostgreSQL ja implementado para Jobs aos demais dominios;
-   a publicacao da outbox no RabbitMQ ja esta implementada.
+1. Consolidar o dispatcher real e a observabilidade operacional com eventos de
+   todos os dominios, dashboards e alertas.
 2. Integrar Identity/API Hub com OIDC, MFA, KMS, KYC/KYB e liveness aprovados.
 3. Integrar verificador oficial autorizado para CTPS Digital, sem alterar a
    classificacao historica dos itens autodeclarados; storage privado cifrado

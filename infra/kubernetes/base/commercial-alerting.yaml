@@ -1,0 +1,97 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: marketplace-commercial-alerts
+  namespace: all-in-one
+  labels:
+    app: marketplace
+    domain: marketplace
+    data-classification: operational
+spec:
+  groups:
+    - name: all-in-one.marketplace-commercial
+      rules:
+        - alert: MarketplaceOrdersPaidStalled
+          expr: all_in_one_marketplace_orders_total >= 25 and all_in_one_marketplace_orders_paid == 0
+          for: 15m
+          labels:
+            severity: critical
+            service: marketplace-commercial
+            domain: marketplace
+          annotations:
+            summary: Pedidos existem, mas nao ha pedidos pagos na janela operacional.
+            runbook_url: docs/OPERATIONS.md#observabilidade-comercial
+            evidence: orders_total,orders_paid,orders_completed,conversion_rate_percent,incident_ticket
+        - alert: MarketplaceConversionLow
+          expr: all_in_one_marketplace_orders_total >= 50 and all_in_one_marketplace_conversion_rate_percent < 8
+          for: 30m
+          labels:
+            severity: medium
+            service: marketplace-commercial
+            domain: marketplace
+          annotations:
+            summary: Conversao do Marketplace caiu abaixo do minimo esperado.
+            runbook_url: docs/OPERATIONS.md#observabilidade-comercial
+            evidence: orders_total,orders_paid,orders_completed,conversion_rate_percent,commercial_dashboard,incident_ticket
+        - alert: MarketplaceSupportBacklogHigh
+          expr: all_in_one_marketplace_support_cases_open > 25
+          for: 30m
+          labels:
+            severity: high
+            service: marketplace-commercial
+            domain: marketplace
+          annotations:
+            summary: Casos de suporte e disputa em aberto acima do limite operacional.
+            runbook_url: docs/OPERATIONS.md#observabilidade-comercial
+            evidence: support_cases_open,support_cases_resolved,support_cases_total,support_trend,incident_ticket
+        - alert: MarketplaceReputationLow
+          expr: all_in_one_marketplace_reviews_total >= 20 and all_in_one_marketplace_average_rating < 3.5
+          for: 30m
+          labels:
+            severity: high
+            service: marketplace-commercial
+            domain: marketplace
+          annotations:
+            summary: Nota media historica e avaliacao abaixo do nivel minimo esperado.
+            runbook_url: docs/OPERATIONS.md#observabilidade-comercial
+            evidence: reviews_total,average_rating,review_trend,commercial_dashboard,incident_ticket
+        - alert: MarketplaceDisputesUnresolvedHigh
+          expr: all_in_one_marketplace_support_cases_total >= 10 and all_in_one_marketplace_support_cases_resolved == 0
+          for: 30m
+          labels:
+            severity: high
+            service: marketplace-commercial
+            domain: marketplace
+          annotations:
+            summary: Casos totais crescem, mas nao ha resolucao suficiente na janela.
+            runbook_url: docs/OPERATIONS.md#observabilidade-comercial
+            evidence: support_cases_total,support_cases_open,support_cases_resolved,resolution_trend,incident_ticket
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: marketplace-commercial-routing
+  namespace: all-in-one
+  labels:
+    app: marketplace
+    domain: marketplace
+spec:
+  route:
+    receiver: business-oncall
+    groupBy: ["alertname", "service", "domain"]
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 2h
+    matchers:
+      - name: service
+        value: marketplace-commercial
+        matchType: =
+    routes:
+      - receiver: platform-oncall
+        matchers:
+          - name: severity
+            value: critical
+            matchType: =
+  receivers:
+    - name: business-oncall
+    - name: platform-oncall

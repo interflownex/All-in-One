@@ -122,6 +122,7 @@ class IdentityVerificationSandbox:
         document: str,
         full_name: str,
         selfie_hash: str | None = None,
+        liveness_score: float | None = None,
     ) -> SandboxResult:
         status = (
             "approved"
@@ -129,12 +130,14 @@ class IdentityVerificationSandbox:
             else "manual_review"
         )
         score = 0.97 if status == "approved" else 0.61
+        liveness = liveness_score if liveness_score is not None else (0.99 if selfie_hash else 0.74)
         payload = {
             "user_id": user_id,
             "document_hash": _digest("document", document),
             "full_name_hash": _digest("name", full_name.casefold()),
             "selfie_hash": selfie_hash,
             "verification_score": str(score),
+            "liveness_score": str(liveness),
             "provider_environment": "sandbox",
             "manual_review_required": status != "approved",
         }
@@ -254,6 +257,32 @@ class PspLedgerSandbox:
             _stable_id("escrow_release", escrow_id, amount_brl),
             payload,
             (_event("payment.escrow.released", payload),),
+        )
+
+    def refund_payment(
+        self,
+        payment_id: str,
+        amount_brl: str,
+        idempotency_key: str,
+        reason: str | None = None,
+    ) -> SandboxResult:
+        amount = _money(amount_brl)
+        status = "refunded" if amount > Decimal("0") else "rejected"
+        payload = {
+            "payment_id": payment_id,
+            "amount_brl": str(amount),
+            "idempotency_key_hash": _digest("refund-idempotency", idempotency_key),
+            "reason_hash": _digest("refund-reason", reason or "") if reason else None,
+            "provider_environment": "sandbox",
+        }
+        events = (_event("payment.refunded", payload),) if status == "refunded" else ()
+        return SandboxResult(
+            self.provider_key,
+            self.adapter,
+            status,
+            _stable_id("refund", payment_id, idempotency_key, amount),
+            payload,
+            events,
         )
 
 

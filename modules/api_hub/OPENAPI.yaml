@@ -210,6 +210,28 @@ paths:
           description: Pedido pertence a outro consumidor
         "409":
           description: Pedido ainda nao permite suporte
+  /gateway/payments/sandbox/refund:
+    post:
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CatalogRefundRequest'
+      responses:
+        '200':
+          description: Refund sandbox processado com sucesso
+        '403':
+          description: Pedido pertence a outro consumidor
+        '409':
+          description: Pedido ainda nao aceita refund
   /gateway/insights/commercial:
     get:
       responses:
@@ -330,6 +352,21 @@ components:
           type: string
           minLength: 8
           maxLength: 120
+    CatalogRefundRequest:
+      type: object
+      required: [order_id, idempotency_key, reason]
+      properties:
+        order_id:
+          type: string
+          format: uuid
+        idempotency_key:
+          type: string
+          minLength: 8
+          maxLength: 120
+        reason:
+          type: string
+          minLength: 3
+          maxLength: 300
     SupportCaseRequest:
       type: object
       required: [kind, message, idempotency_key]

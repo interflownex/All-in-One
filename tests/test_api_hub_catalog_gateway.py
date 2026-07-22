@@ -43,6 +43,8 @@ class FakeCatalogClient:
                         "store_id": "00000000-0000-4000-8000-000000000099",
                         "business_id": "00000000-0000-4000-8000-000000000099",
                         "offer_id": "business:catalog_offers:offer-1",
+                        "seller_user_id": "seller-1",
+                        "total_brl": "99.90",
                     },
                 },
             )
@@ -186,6 +188,8 @@ class FakeCatalogClient:
             )
         if url.endswith("finance:8000/integrations/sandbox/psp/escrows"):
             return FakeResponse(200, {"status": "held", "reference_id": "escrow-ref"})
+        if url.endswith("finance:8000/integrations/sandbox/psp/refunds"):
+            return FakeResponse(200, {"status": "refunded", "reference_id": "refund-ref"})
         if url.endswith(
             "marketplace:8000/resources/orders/00000000-0000-4000-8000-000000000001/actions/pay"
         ):
@@ -387,6 +391,71 @@ def test_gateway_authorizes_pix_sandbox_using_server_side_order_data(
     pay_payload = fake_client.posts[-1][1]
     assert "Pix" not in pay_payload["reason"]
     assert "pix" not in pay_payload["payload"]["payment_provider"]
+
+
+def test_gateway_refunds_completed_order_via_sandbox_psp(monkeypatch) -> None:
+    fake_client = FakeCatalogClient()
+    monkeypatch.setattr(api_hub, "client", fake_client)
+    monkeypatch.setattr(api_hub, "redis_client", None)
+    client = TestClient(api_hub.app)
+    user_id = "11111111-1111-4111-8111-111111111111"
+    token = api_hub.jwt.encode({"sub": user_id}, api_hub.JWT_SECRET, algorithm="HS256")
+
+    response = client.post(
+        "/gateway/payments/sandbox/refund",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "order_id": "00000000-0000-4000-8000-000000000002",
+            "idempotency_key": "refund-resource-completed",
+            "reason": "pedido concluido com necessidade de estorno",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "refunded"
+    assert response.json()["provider_environment"] == "sandbox"
+    assert response.json()["refund_reference"] == "refund-ref"
+    refund_call = next(call for call in fake_client.posts if call[0].endswith("/psp/refunds"))
+    assert refund_call[1]["payment_id"] == "order:00000000-0000-4000-8000-000000000002"
+    assert refund_call[1]["amount_brl"] == "99.90"
+    assert refund_call[2]["X-Actor-Roles"] == "compliance_officer"
+    assert refund_call[2]["X-MFA-Verified"] == "true"
+
+
+def test_gateway_issues_oauth2_token_and_accepts_it_for_consumer_history(monkeypatch) -> None:
+    fake_client = FakeCatalogClient()
+    monkeypatch.setattr(api_hub, "client", fake_client)
+    monkeypatch.setattr(api_hub, "redis_client", None)
+    client = TestClient(api_hub.app)
+
+    token_response = client.post(
+        "/gateway/oauth2/token",
+        json={
+            "grant_type": "client_credentials",
+            "client_id": "local-client",
+            "api_key": "local-api-key",
+            "scope": "gateway:read",
+        },
+    )
+
+    assert token_response.status_code == 200
+    token_payload = token_response.json()
+    assert token_payload["token_type"] == "bearer"
+    assert token_payload["client_id"] == "local-client"
+    assert token_payload["scope"] == "gateway:read"
+    claims = api_hub.jwt.decode(token_payload["access_token"], api_hub.JWT_SECRET, algorithms=["HS256"])
+    assert claims["client_id"] == "local-client"
+    assert claims["grant_type"] == "client_credentials"
+    assert claims["scope"] == "gateway:read"
+
+    history_response = client.get(
+        "/gateway/consumer/orders",
+        headers={"Authorization": f"Bearer {token_payload['access_token']}"},
+    )
+
+    assert history_response.status_code == 200
+    assert history_response.json()["total"] == 1
+    assert history_response.json()["partial"] is False
 
 
 def test_gateway_returns_normalized_consumer_history(monkeypatch) -> None:

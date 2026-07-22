@@ -81,6 +81,13 @@ CUSTOMIZED_ARTIFACTS = {
     "apps/all-in-one-user/STATUS.md",
     "apps/valley/README.md",
     "apps/valley/STATUS.md",
+    # Shells operacionais do ecossistema tambem mantem status manual por design.
+    "apps/all-in-one-user/STATUS.md",
+    "apps/all-in-one-business/STATUS.md",
+    "apps/all-in-one-services/README.md",
+    "apps/all-in-one-services/STATUS.md",
+    "apps/valley-business/STATUS.md",
+    "apps/valley-rider/STATUS.md",
 }
 
 
@@ -310,6 +317,7 @@ def render_contract(module: dict) -> str:
     events = "\n".join(f"- `{item}`" for item in module["events"])
     routes = "\n".join(f"- `{item}`" for item in ENDPOINTS)
     special = ""
+    post_events = ""
     if module["slug"] == "identity":
         special = "\n- `POST /registrations` cria o All-in-One ID inicial sem ator preexistente e preserva controles de duplicidade.\n"
     if module["slug"] == "jobs":
@@ -534,6 +542,11 @@ def render_contract(module: dict) -> str:
             - `campaigns` exige `campaign_key` e `channel`; `launch` exige papel aprovador, MFA e emite `crm.campaign.launched`.
             """
         )
+    if module["slug"] == "permissions":
+        post_events = (
+            "\n\nAs criacoes de `user_roles` e `access_policies` publicam esses eventos\n"
+            "respectivamente, mantendo o contrato de business-facing events do modulo."
+        )
     return dedent(
         f"""\
         # Contrato: {module["title"]}
@@ -553,7 +566,7 @@ def render_contract(module: dict) -> str:
 
         ## Eventos
 
-        {events}
+        {events}{post_events}
 
         ## Regras
 

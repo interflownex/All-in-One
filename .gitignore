@@ -21,6 +21,7 @@ htmlcov/
 .ruff_cache/
 .mypy_cache/
 node_modules/
+apps/*/node_modules
 dist/
 .wrangler/
 tmp/

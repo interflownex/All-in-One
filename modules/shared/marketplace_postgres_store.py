@@ -574,3 +574,68 @@ class MarketplacePostgresStore:
             "SELECT COUNT(*) AS count FROM audit.domain_events WHERE routing_key LIKE 'marketplace.%' OR routing_key LIKE 'valley.%'"
         ).fetchone()["count"]
         return records, audits, events
+
+    def commercial_metrics(self) -> dict[str, float | int]:
+        orders_total = int(
+            self.connection.execute(
+                "SELECT COUNT(*) AS count FROM marketplace.orders WHERE deleted_at IS NULL"
+            ).fetchone()["count"]
+        )
+        orders_paid = int(
+            self.connection.execute(
+                """SELECT COUNT(*) AS count
+                   FROM marketplace.orders
+                   WHERE deleted_at IS NULL
+                     AND status IN ('paid', 'accepted', 'in_progress', 'delivered', 'completed')"""
+            ).fetchone()["count"]
+        )
+        orders_completed = int(
+            self.connection.execute(
+                """SELECT COUNT(*) AS count
+                   FROM marketplace.orders
+                   WHERE deleted_at IS NULL
+                     AND status IN ('delivered', 'completed')"""
+            ).fetchone()["count"]
+        )
+        reviews_total = int(
+            self.connection.execute(
+                "SELECT COUNT(*) AS count FROM marketplace.reviews"
+            ).fetchone()["count"]
+        )
+        support_cases_total = int(
+            self.connection.execute(
+                "SELECT COUNT(*) AS count FROM marketplace.disputes"
+            ).fetchone()["count"]
+        )
+        support_cases_open = int(
+            self.connection.execute(
+                """SELECT COUNT(*) AS count
+                   FROM marketplace.disputes
+                   WHERE status IN ('open', 'under_review')"""
+            ).fetchone()["count"]
+        )
+        support_cases_resolved = int(
+            self.connection.execute(
+                """SELECT COUNT(*) AS count
+                   FROM marketplace.disputes
+                   WHERE status IN ('resolved', 'closed')"""
+            ).fetchone()["count"]
+        )
+        average_rating_row = self.connection.execute(
+            "SELECT AVG(rating) AS average_rating FROM marketplace.reviews"
+        ).fetchone()
+        average_rating_raw = average_rating_row["average_rating"]
+        average_rating = round(float(average_rating_raw), 2) if average_rating_raw is not None else 0.0
+        conversion_rate_percent = round((orders_paid / orders_total) * 100, 2) if orders_total else 0.0
+
+        return {
+            "orders_total": orders_total,
+            "orders_paid": orders_paid,
+            "orders_completed": orders_completed,
+            "reviews_total": reviews_total,
+            "average_rating": average_rating,
+            "support_cases_total": support_cases_total,
+            "support_cases_open": support_cases_open,
+            "support_cases_resolved": support_cases_resolved,
+            "conversion_rate_percent": conversion_rate_percent,
+        }
