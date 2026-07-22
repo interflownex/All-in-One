@@ -11,7 +11,7 @@
 | relacionamentos | 99 | AUD-P1-003; AUD-P1-006 |
 | bindings_frontend | 23 | AUD-P1-002 |
 | campos_sensiveis | 0 | AUD-P0-001; AUD-P1-007 |
-| auditoria | 54 | AUD-P1-004; AUD-P1-007 |
+| auditoria | 57 | AUD-P1-004; AUD-P1-007 |
 | calculos | 80 | AUD-P1-004; AUD-P1-005 |
 | unidades | 99 | AUD-P1-005 |
 | regras_fiscais | 86 | AUD-P1-005 |

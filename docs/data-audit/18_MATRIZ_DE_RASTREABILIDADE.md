@@ -5,7 +5,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | ID | Seção | Requisito | Candidatos | Aprovados | Status |
 | --- | --- | --- | --- | --- | --- |
 | CONCL-001 | criterios_de_conclusao | 100% dos bancos forem catalogados | 20 | 13 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CONCL-002 | criterios_de_conclusao | 100% dos schemas forem catalogados | 4 | 4 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CONCL-002 | criterios_de_conclusao | 100% dos schemas forem catalogados | 9 | 9 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-003 | criterios_de_conclusao | 100% das tabelas e coleções forem catalogadas | 20 | 15 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-004 | criterios_de_conclusao | 100% dos campos forem descritos | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-005 | criterios_de_conclusao | 100% dos relacionamentos forem descritos | 2 | 2 | não comprovado; candidatos aprovados exigem revisão de escopo |
@@ -38,19 +38,19 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CHECK-014 | construir | Catalogar campos | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-015 | construir | Catalogar unidades | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-016 | construir | Catalogar impostos | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-017 | construir | Catalogar cálculos | 6 | 6 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-017 | construir | Catalogar cálculos | 7 | 7 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-018 | construir | Catalogar logs | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-019 | construir | Catalogar permissões | 17 | 15 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-020 | construir | Catalogar APIs | 20 | 16 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-021 | construir | Catalogar eventos | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-022 | construir | Catalogar formulários | 4 | 4 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-023 | construir | Modelar formulário dinâmico | 3 | 3 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-024 | validar | Validar schema | 5 | 5 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-024 | validar | Validar schema | 10 | 10 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-025 | validar | Validar integridade | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-026 | validar | Validar regras | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-027 | validar | Validar unidades | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-028 | validar | Validar tributos | 12 | 12 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-029 | validar | Validar cálculos | 6 | 6 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-029 | validar | Validar cálculos | 7 | 7 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-030 | validar | Validar segurança | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-031 | validar | Validar auditoria | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-032 | validar | Validar frontend | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
@@ -65,7 +65,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CHECK-041 | documentar | Gerar evidências | 11 | 11 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-042 | orientar_stitch | Gerar coordenada por tela | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-043 | orientar_stitch | Gerar campos | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-044 | orientar_stitch | Gerar componentes | 7 | 7 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-044 | orientar_stitch | Gerar componentes | 8 | 8 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-045 | orientar_stitch | Gerar validações | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-046 | orientar_stitch | Gerar ações | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-047 | orientar_stitch | Gerar estados | 6 | 6 | não comprovado; candidatos aprovados exigem revisão de escopo |

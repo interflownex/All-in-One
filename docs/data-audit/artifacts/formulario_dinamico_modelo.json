@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "status": "proposta",
+  "status": "implementacao_parcial",
   "source": "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md#12",
   "principles": [
     "binding somente por comando, DTO ou path lógico allowlist",
@@ -241,6 +241,18 @@
       "sensitivity",
       "encryption",
       "schema_version"
+    ],
+    "form_billing_events": [
+      "id",
+      "tenant_id",
+      "form_definition_id",
+      "form_version_id",
+      "event_type",
+      "occurred_at",
+      "actor_user_id",
+      "idempotency_key",
+      "billing_reference",
+      "status"
     ]
   },
   "lifecycle": [
@@ -314,7 +326,7 @@
     "advanced_customization"
   ],
   "implementation_gate": {
-    "migration_reversible": false,
+    "migration_reversible": true,
     "backend_implemented": false,
     "frontend_implemented": false,
     "security_tests_implemented": false,

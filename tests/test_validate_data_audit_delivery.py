@@ -120,7 +120,7 @@ def test_generated_coverage_does_not_claim_false_completion() -> None:
     data = __import__("json").loads(coverage.read_text(encoding="utf-8"))
 
     assert data["status"] == "em_execucao"
-    assert data["counts"]["migrations"] == 27
+    assert data["counts"]["migrations"] >= 28
     assert data["counts"]["tables"] >= 80
     assert any(item["percentual"] < 100 for item in data["dimensoes"].values())
 
@@ -128,7 +128,10 @@ def test_generated_coverage_does_not_claim_false_completion() -> None:
 def test_generated_summary_is_rendered_markdown() -> None:
     summary = (ROOT / "docs" / "data-audit" / "00_RESUMO_EXECUTIVO.md").read_text(encoding="utf-8")
 
-    assert "27 migrations PostgreSQL" in summary
+    coverage = __import__("json").loads(
+        (ROOT / "docs" / "data-audit" / "artifacts" / "checklist_cobertura.json").read_text(encoding="utf-8")
+    )
+    assert f'{coverage["counts"]["migrations"]} migrations PostgreSQL' in summary
     assert 'f"A varredura' not in summary
     assert "conclusão de 100% não declarada" in summary
 
@@ -163,15 +166,19 @@ def test_api_catalog_exposes_models_and_untyped_payloads() -> None:
     assert any(not item["response_model"] for item in data["endpoints"])
 
 
-def test_dynamic_form_model_is_explicitly_a_non_implemented_proposal() -> None:
+def test_dynamic_form_model_exposes_partial_implementation_without_false_completion() -> None:
     model = ROOT / "docs" / "data-audit" / "artifacts" / "formulario_dinamico_modelo.json"
     data = __import__("json").loads(model.read_text(encoding="utf-8"))
 
-    assert data["status"] == "proposta"
-    assert len(data["entities"]) == 14
+    assert data["status"] == "implementacao_parcial"
+    assert len(data["entities"]) == 15
     assert "field_bindings" in data["entities"]
     assert "physical_table_selection" in data["forbidden"]
-    assert not any(data["implementation_gate"].values())
+    assert data["implementation_gate"]["migration_reversible"] is True
+    assert data["implementation_gate"]["backend_implemented"] is False
+    assert data["implementation_gate"]["frontend_implemented"] is False
+    assert data["implementation_gate"]["security_tests_implemented"] is False
+    assert data["implementation_gate"]["homologated"] is False
 
 
 def test_every_smartcrud_surface_has_a_stitch_coordinate_and_route() -> None:

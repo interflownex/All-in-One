@@ -968,6 +968,271 @@ erDiagram
     UUID updated_by FK
     VARCHAR(120) idempotency_key
   }
+  forms_field_bindings {
+    UUID id PK
+    UUID field_catalog_id FK
+    VARCHAR(160) command
+    VARCHAR(240) api
+    VARCHAR(160) dto
+    VARCHAR(240) logical_path
+    VARCHAR(40) data_type
+    VARCHAR(120) transformation
+    INTEGER version
+    JSONB validation_policy
+    JSONB authorization_policy
+    VARCHAR(30) status
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  forms_field_catalog {
+    UUID id PK
+    VARCHAR(80) domain
+    VARCHAR(120) logical_entity
+    VARCHAR(120) logical_field
+    VARCHAR(40) data_type
+    TEXT description
+    JSONB allowed_components
+    JSONB mandatory_validations
+    VARCHAR(40) sensitivity
+    JSONB permissions
+    VARCHAR(240) authorized_binding
+    JSONB allowed_operations
+    JSONB allowed_calculations
+    VARCHAR(40) unit
+    VARCHAR(80) format
+    VARCHAR(30) status
+    INTEGER version
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+    TIMESTAMPTZ updated_at
+    UUID updated_by FK
+  }
+  forms_form_billing_events {
+    UUID id PK
+    UUID tenant_id
+    UUID form_definition_id FK
+    UUID form_version_id FK
+    VARCHAR(60) event_type
+    TIMESTAMPTZ occurred_at
+    UUID actor_user_id FK
+    VARCHAR(160) idempotency_key
+    JSONB billing_reference
+    VARCHAR(30) status
+  }
+  forms_form_blocks {
+    UUID id PK
+    UUID form_version_id FK
+    VARCHAR(30) block_type
+    UUID parent_block_id FK
+    INTEGER display_order
+    VARCHAR(160) title
+    TEXT description
+    SMALLINT width
+    BOOLEAN collapsible
+    UUID visibility_rule_id
+    BOOLEAN repeatable
+    VARCHAR(40) allowed_style
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  forms_form_calculations {
+    UUID id PK
+    UUID form_version_id FK
+    VARCHAR(120) name
+    UUID result_field_id FK
+    JSONB operand_field_ids
+    VARCHAR(40) operation
+    JSONB safe_expression
+    INTEGER display_order
+    SMALLINT precision
+    VARCHAR(20) rounding
+    VARCHAR(30) trigger_mode
+    JSONB condition
+    VARCHAR(40) unit
+    VARCHAR(30) null_handling
+    VARCHAR(30) division_by_zero_handling
+    VARCHAR(30) visibility
+    JSONB validation
+    VARCHAR(30) status
+    INTEGER version
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  forms_form_definitions {
+    UUID id PK
+    UUID tenant_id
+    UUID company_id FK
+    VARCHAR(80) module_id
+    VARCHAR(120) business_context
+    VARCHAR(160) name
+    TEXT description
+    VARCHAR(30) status
+    UUID current_version_id
+    UUID created_by FK
+    TIMESTAMPTZ created_at
+    UUID updated_by FK
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+  }
+  forms_form_fields {
+    UUID id PK
+    UUID form_version_id FK
+    UUID block_id FK
+    UUID field_catalog_id FK
+    UUID field_binding_id FK
+    VARCHAR(40) component
+    VARCHAR(160) label
+    TEXT help_text
+    VARCHAR(240) placeholder
+    BOOLEAN required
+    BOOLEAN read_only
+    BOOLEAN hidden
+    INTEGER display_order
+    SMALLINT width
+    VARCHAR(80) mask
+    VARCHAR(80) format
+    JSONB default_value
+    VARCHAR(40) value_source
+    VARCHAR(40) unit
+    JSONB permissions
+    UUID visibility_rule_id
+    JSONB validation_ids
+    JSONB audit_policy
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  forms_form_homologations {
+    UUID id PK
+    UUID form_version_id FK
+    UUID requester_id FK
+    TIMESTAMPTZ requested_at
+    JSONB checklist
+    VARCHAR(30) result
+    UUID reviewer_id FK
+    TIMESTAMPTZ reviewed_at
+    TEXT notes
+    JSONB problems
+    JSONB corrections
+    JSONB revalidation
+    JSONB evidence
+    VARCHAR(30) status
+    TIMESTAMPTZ created_at
+  }
+  forms_form_permissions {
+    UUID id PK
+    UUID form_definition_id FK
+    UUID form_version_id FK
+    VARCHAR(80) role
+    JSONB attribute_condition
+    BOOLEAN can_view
+    BOOLEAN can_create
+    BOOLEAN can_edit
+    BOOLEAN can_approve
+    BOOLEAN can_publish
+    BOOLEAN can_export
+    BOOLEAN can_print
+    BOOLEAN can_access_sensitive
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  forms_form_publications {
+    UUID id PK
+    UUID form_version_id FK
+    VARCHAR(30) environment
+    TIMESTAMPTZ published_at
+    UUID published_by FK
+    JSONB rollout_policy
+    UUID rollback_version_id FK
+    JSONB tenant_scope
+    JSONB channels
+    CHAR(64) checksum
+    VARCHAR(30) status
+  }
+  forms_form_submission_values {
+    UUID id PK
+    UUID submission_id FK
+    UUID field_catalog_id FK
+    VARCHAR(40) data_type
+    JSONB normalized_value
+    TEXT display_value
+    VARCHAR(40) unit
+    VARCHAR(30) source
+    JSONB validation_result
+    VARCHAR(40) sensitivity
+    VARCHAR(40) encryption
+    INTEGER schema_version
+    TIMESTAMPTZ created_at
+  }
+  forms_form_submissions {
+    UUID id PK
+    UUID form_definition_id FK
+    UUID form_version_id FK
+    UUID user_id FK
+    UUID tenant_id
+    JSONB context
+    VARCHAR(120) target_entity
+    UUID target_entity_id
+    VARCHAR(30) status
+    TIMESTAMPTZ started_at
+    TIMESTAMPTZ completed_at
+    VARCHAR(30) source
+    UUID correlation_id
+    VARCHAR(160) idempotency_key
+    JSONB validation_result
+    UUID audit_event_id FK
+  }
+  forms_form_validations {
+    UUID id PK
+    UUID form_version_id FK
+    UUID field_id FK
+    VARCHAR(40) validation_type
+    JSONB parameters
+    VARCHAR(300) message_pt_br
+    VARCHAR(20) severity
+    JSONB condition
+    BOOLEAN run_frontend
+    BOOLEAN run_backend
+    VARCHAR(30) status
+    INTEGER version
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
+  forms_form_versions {
+    UUID id PK
+    UUID form_definition_id FK
+    INTEGER version_number
+    INTEGER schema_version
+    VARCHAR(30) status
+    TEXT change_summary
+    UUID created_by FK
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ submitted_at
+    UUID submitted_by FK
+    TIMESTAMPTZ approved_at
+    UUID approved_by FK
+    TIMESTAMPTZ rejected_at
+    UUID rejected_by FK
+    TEXT rejection_reason
+    TIMESTAMPTZ published_at
+    UUID published_by FK
+    TIMESTAMPTZ retired_at
+    CHAR(64) checksum
+  }
+  forms_form_visibility_rules {
+    UUID id PK
+    UUID form_version_id FK
+    VARCHAR(20) target_type
+    UUID target_id
+    JSONB condition
+    VARCHAR(30) operator
+    JSONB comparison_value
+    VARCHAR(30) result
+    INTEGER priority
+    VARCHAR(10) combination
+    VARCHAR(30) status
+    TIMESTAMPTZ created_at
+    UUID created_by FK
+  }
   health_appointments {
     UUID id PK
     UUID user_id FK
@@ -2857,3 +3122,50 @@ erDiagram
   mobility_fare_rules }o--|| identity_users : "user_id"
   mobility_fare_rules }o--|| identity_users : "created_by"
   mobility_fare_rules }o--|| identity_users : "updated_by"
+  forms_field_catalog }o--|| identity_users : "created_by"
+  forms_field_catalog }o--|| identity_users : "updated_by"
+  forms_field_bindings }o--|| forms_field_catalog : "field_catalog_id"
+  forms_field_bindings }o--|| identity_users : "created_by"
+  forms_form_definitions }o--|| business_companies : "company_id"
+  forms_form_definitions }o--|| identity_users : "created_by"
+  forms_form_definitions }o--|| identity_users : "updated_by"
+  forms_form_versions }o--|| forms_form_definitions : "form_definition_id"
+  forms_form_versions }o--|| identity_users : "created_by"
+  forms_form_versions }o--|| identity_users : "submitted_by"
+  forms_form_versions }o--|| identity_users : "approved_by"
+  forms_form_versions }o--|| identity_users : "rejected_by"
+  forms_form_versions }o--|| identity_users : "published_by"
+  forms_form_blocks }o--|| forms_form_versions : "form_version_id"
+  forms_form_blocks }o--|| forms_form_blocks : "parent_block_id"
+  forms_form_blocks }o--|| identity_users : "created_by"
+  forms_form_fields }o--|| forms_form_versions : "form_version_id"
+  forms_form_fields }o--|| forms_form_blocks : "block_id"
+  forms_form_fields }o--|| forms_field_catalog : "field_catalog_id"
+  forms_form_fields }o--|| forms_field_bindings : "field_binding_id"
+  forms_form_fields }o--|| identity_users : "created_by"
+  forms_form_calculations }o--|| forms_form_versions : "form_version_id"
+  forms_form_calculations }o--|| forms_form_fields : "result_field_id"
+  forms_form_calculations }o--|| identity_users : "created_by"
+  forms_form_validations }o--|| forms_form_versions : "form_version_id"
+  forms_form_validations }o--|| forms_form_fields : "field_id"
+  forms_form_validations }o--|| identity_users : "created_by"
+  forms_form_visibility_rules }o--|| forms_form_versions : "form_version_id"
+  forms_form_visibility_rules }o--|| identity_users : "created_by"
+  forms_form_permissions }o--|| forms_form_definitions : "form_definition_id"
+  forms_form_permissions }o--|| forms_form_versions : "form_version_id"
+  forms_form_permissions }o--|| identity_users : "created_by"
+  forms_form_homologations }o--|| forms_form_versions : "form_version_id"
+  forms_form_homologations }o--|| identity_users : "requester_id"
+  forms_form_homologations }o--|| identity_users : "reviewer_id"
+  forms_form_publications }o--|| forms_form_versions : "form_version_id"
+  forms_form_publications }o--|| identity_users : "published_by"
+  forms_form_publications }o--|| forms_form_versions : "rollback_version_id"
+  forms_form_submissions }o--|| forms_form_definitions : "form_definition_id"
+  forms_form_submissions }o--|| forms_form_versions : "form_version_id"
+  forms_form_submissions }o--|| identity_users : "user_id"
+  forms_form_submissions }o--|| audit_domain_events : "audit_event_id"
+  forms_form_submission_values }o--|| forms_form_submissions : "submission_id"
+  forms_form_submission_values }o--|| forms_field_catalog : "field_catalog_id"
+  forms_form_billing_events }o--|| forms_form_definitions : "form_definition_id"
+  forms_form_billing_events }o--|| forms_form_versions : "form_version_id"
+  forms_form_billing_events }o--|| identity_users : "actor_user_id"

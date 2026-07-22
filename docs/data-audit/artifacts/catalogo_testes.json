@@ -2,10 +2,10 @@
   "version": 1,
   "status": "inventario_estatico",
   "counts": {
-    "migrations": 27,
-    "schemas": 31,
-    "tables": 149,
-    "fields": 2041,
+    "migrations": 28,
+    "schemas": 32,
+    "tables": 164,
+    "fields": 2276,
     "mongodb_collections": 4,
     "mongodb_fields": 29,
     "sqlite_tables": 4,
@@ -13,8 +13,8 @@
     "redis_key_patterns": 1,
     "object_storage_stores": 4,
     "browser_storage_key_patterns": 12,
-    "relationships": 519,
-    "indexes": 109,
+    "relationships": 566,
+    "indexes": 118,
     "endpoints": 101,
     "endpoints_with_response_model": 8,
     "api_model_fields": 126,
@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 503,
-    "tests_with_assertions": 469,
+    "test_functions": 508,
+    "tests_with_assertions": 474,
     "tests_with_http_calls": 194,
-    "test_functions_in_execution_reports": 478,
-    "test_functions_passed": 445,
+    "test_functions_in_execution_reports": 483,
+    "test_functions_passed": 450,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -42,13 +42,13 @@
     "logical_without_ui_surface": 0,
     "event_transitions": 194,
     "unique_events": 187,
-    "sensitive_candidates": 503,
-    "dynamic_form_entities_proposed": 14,
+    "sensitive_candidates": 518,
+    "dynamic_form_entities_proposed": 15,
     "measurement_entities_proposed": 6,
     "fiscal_entities_proposed": 5,
-    "audit_candidate_tables": 6,
+    "audit_candidate_tables": 7,
     "audit_requirements": 35,
-    "audit_requirements_covered": 19
+    "audit_requirements_covered": 20
   },
   "tests": [
     {
@@ -4321,6 +4321,96 @@
       "evidence": "tests/test_document_domain.py:34"
     },
     {
+      "test_id": "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_enforces_tenant_idempotency_and_review",
+      "file": "tests/test_dynamic_forms_migration.py",
+      "function": "test_dynamic_forms_migration_enforces_tenant_idempotency_and_review",
+      "line": 34,
+      "async": false,
+      "assertions": 7,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_dynamic_forms_migration.py:34"
+    },
+    {
+      "test_id": "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_forbids_executable_or_physical_bindings",
+      "file": "tests/test_dynamic_forms_migration.py",
+      "function": "test_dynamic_forms_migration_forbids_executable_or_physical_bindings",
+      "line": 45,
+      "async": false,
+      "assertions": 5,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_dynamic_forms_migration.py:45"
+    },
+    {
+      "test_id": "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_has_safe_calculation_and_component_allowlists",
+      "file": "tests/test_dynamic_forms_migration.py",
+      "function": "test_dynamic_forms_migration_has_safe_calculation_and_component_allowlists",
+      "line": 54,
+      "async": false,
+      "assertions": 4,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_dynamic_forms_migration.py:54"
+    },
+    {
+      "test_id": "tests/test_dynamic_forms_migration.py::test_dynamic_forms_migration_materializes_every_governed_entity",
+      "file": "tests/test_dynamic_forms_migration.py",
+      "function": "test_dynamic_forms_migration_materializes_every_governed_entity",
+      "line": 27,
+      "async": false,
+      "assertions": 2,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_dynamic_forms_migration.py:27"
+    },
+    {
+      "test_id": "tests/test_dynamic_forms_migration.py::test_dynamic_forms_rollback_is_transactional_and_removes_schema_last",
+      "file": "tests/test_dynamic_forms_migration.py",
+      "function": "test_dynamic_forms_rollback_is_transactional_and_removes_schema_last",
+      "line": 62,
+      "async": false,
+      "assertions": 3,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_dynamic_forms_migration.py:62"
+    },
+    {
       "test_id": "tests/test_erp_domain.py::test_erp_payables_receivables_and_reconciliation_journey",
       "file": "tests/test_erp_domain.py",
       "function": "test_erp_payables_receivables_and_reconciliation_journey",
@@ -5418,7 +5508,7 @@
       "test_id": "tests/test_master_memo_completion_contract.py::test_catalogar_impostos_e_logs",
       "file": "tests/test_master_memo_completion_contract.py",
       "function": "test_catalogar_impostos_e_logs",
-      "line": 56,
+      "line": 57,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -5430,13 +5520,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_master_memo_completion_contract.py:56"
+      "evidence": "tests/test_master_memo_completion_contract.py:57"
     },
     {
       "test_id": "tests/test_master_memo_completion_contract.py::test_documentar_csv_json_erd_e_matrizes",
       "file": "tests/test_master_memo_completion_contract.py",
       "function": "test_documentar_csv_json_erd_e_matrizes",
-      "line": 78,
+      "line": 79,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -5448,13 +5538,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_master_memo_completion_contract.py:78"
+      "evidence": "tests/test_master_memo_completion_contract.py:79"
     },
     {
       "test_id": "tests/test_master_memo_completion_contract.py::test_mapear_ecossistema_e_fontes_de_verdade",
       "file": "tests/test_master_memo_completion_contract.py",
       "function": "test_mapear_ecossistema_e_fontes_de_verdade",
-      "line": 30,
+      "line": 31,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -5466,13 +5556,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_master_memo_completion_contract.py:30"
+      "evidence": "tests/test_master_memo_completion_contract.py:31"
     },
     {
       "test_id": "tests/test_master_memo_completion_contract.py::test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite",
       "file": "tests/test_master_memo_completion_contract.py",
       "function": "test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite",
-      "line": 98,
+      "line": 99,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
@@ -5484,13 +5574,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_master_memo_completion_contract.py:98"
+      "evidence": "tests/test_master_memo_completion_contract.py:99"
     },
     {
       "test_id": "tests/test_master_memo_completion_contract.py::test_orientar_stitch_coordenada_por_tela_validacoes_acoes",
       "file": "tests/test_master_memo_completion_contract.py",
       "function": "test_orientar_stitch_coordenada_por_tela_validacoes_acoes",
-      "line": 89,
+      "line": 90,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
@@ -5502,13 +5592,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_master_memo_completion_contract.py:89"
+      "evidence": "tests/test_master_memo_completion_contract.py:90"
     },
     {
       "test_id": "tests/test_master_memo_completion_contract.py::test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite",
       "file": "tests/test_master_memo_completion_contract.py",
       "function": "test_planejar_ordem_de_leitura_matriz_de_comparacao_prioridades_entregaveis_criterios_de_aceite",
-      "line": 45,
+      "line": 46,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -5520,7 +5610,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_master_memo_completion_contract.py:45"
+      "evidence": "tests/test_master_memo_completion_contract.py:46"
     },
     {
       "test_id": "tests/test_master_memo_completion_contract.py::test_todos_relacionamentos_descritos_no_dicionario_e_erd",
@@ -5528,7 +5618,7 @@
       "function": "test_todos_relacionamentos_descritos_no_dicionario_e_erd",
       "line": 16,
       "async": false,
-      "assertions": 4,
+      "assertions": 5,
       "status_code_assertions": 0,
       "http_methods": [],
       "endpoint_literals": [],
@@ -5544,7 +5634,7 @@
       "test_id": "tests/test_master_memo_completion_contract.py::test_validar_integridade_e_regras",
       "file": "tests/test_master_memo_completion_contract.py",
       "function": "test_validar_integridade_e_regras",
-      "line": 67,
+      "line": 68,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
@@ -5556,7 +5646,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_master_memo_completion_contract.py:67"
+      "evidence": "tests/test_master_memo_completion_contract.py:68"
     },
     {
       "test_id": "tests/test_mongodb_contract.py::test_mongodb_contract_declares_expected_collections_and_retention",
@@ -8776,7 +8866,7 @@
       "test_id": "tests/test_validate_data_audit_delivery.py::test_api_catalog_exposes_models_and_untyped_payloads",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_api_catalog_exposes_models_and_untyped_payloads",
-      "line": 156,
+      "line": 159,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
@@ -8788,13 +8878,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:156"
+      "evidence": "tests/test_validate_data_audit_delivery.py:159"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_audit_coverage_reports_present_and_missing_requirements",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_audit_coverage_reports_present_and_missing_requirements",
-      "line": 290,
+      "line": 297,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -8806,7 +8896,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:290"
+      "evidence": "tests/test_validate_data_audit_delivery.py:297"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_complementary_format",
@@ -8866,7 +8956,7 @@
       "test_id": "tests/test_validate_data_audit_delivery.py::test_coverage_links_only_dimension_specific_gaps_and_evidence",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_coverage_links_only_dimension_specific_gaps_and_evidence",
-      "line": 313,
+      "line": 320,
       "async": false,
       "assertions": 7,
       "status_code_assertions": 0,
@@ -8878,15 +8968,15 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:313"
+      "evidence": "tests/test_validate_data_audit_delivery.py:320"
     },
     {
-      "test_id": "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
+      "test_id": "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_exposes_partial_implementation_without_false_completion",
       "file": "tests/test_validate_data_audit_delivery.py",
-      "function": "test_dynamic_form_model_is_explicitly_a_non_implemented_proposal",
-      "line": 166,
+      "function": "test_dynamic_form_model_exposes_partial_implementation_without_false_completion",
+      "line": 169,
       "async": false,
-      "assertions": 5,
+      "assertions": 9,
       "status_code_assertions": 0,
       "http_methods": [],
       "endpoint_literals": [],
@@ -8896,7 +8986,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:166"
+      "evidence": "tests/test_validate_data_audit_delivery.py:169"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_ephemeral_and_object_storage_catalogs_are_explicitly_static",
@@ -8920,7 +9010,7 @@
       "test_id": "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_event_catalog_preserves_backend_transition_contract",
-      "line": 146,
+      "line": 149,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
@@ -8932,13 +9022,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:146"
+      "evidence": "tests/test_validate_data_audit_delivery.py:149"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_every_gap_has_the_mandatory_execution_coordinate",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_every_gap_has_the_mandatory_execution_coordinate",
-      "line": 301,
+      "line": 308,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -8950,13 +9040,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:301"
+      "evidence": "tests/test_validate_data_audit_delivery.py:308"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name",
-      "line": 273,
+      "line": 280,
       "async": false,
       "assertions": 3,
       "status_code_assertions": 0,
@@ -8968,13 +9058,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:273"
+      "evidence": "tests/test_validate_data_audit_delivery.py:280"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_every_physical_field_has_classification_basis_and_retention",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_every_physical_field_has_classification_basis_and_retention",
-      "line": 262,
+      "line": 269,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -8986,13 +9076,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:262"
+      "evidence": "tests/test_validate_data_audit_delivery.py:269"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-      "line": 177,
+      "line": 184,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -9006,7 +9096,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:177"
+      "evidence": "tests/test_validate_data_audit_delivery.py:184"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion",
@@ -9066,7 +9156,7 @@
       "test_id": "tests/test_validate_data_audit_delivery.py::test_logical_catalog_exposes_cross_layer_gaps",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_logical_catalog_exposes_cross_layer_gaps",
-      "line": 136,
+      "line": 139,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
@@ -9078,13 +9168,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:136"
+      "evidence": "tests/test_validate_data_audit_delivery.py:139"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_permission_matrix_proves_horizontal_read_authorization_enforcement",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_permission_matrix_proves_horizontal_read_authorization_enforcement",
-      "line": 206,
+      "line": 213,
       "async": false,
       "assertions": 6,
       "status_code_assertions": 0,
@@ -9096,13 +9186,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:206"
+      "evidence": "tests/test_validate_data_audit_delivery.py:213"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_requirement_test_matrix_does_not_promote_candidates_to_proof",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_requirement_test_matrix_does_not_promote_candidates_to_proof",
-      "line": 221,
+      "line": 228,
       "async": false,
       "assertions": 12,
       "status_code_assertions": 0,
@@ -9114,7 +9204,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:221"
+      "evidence": "tests/test_validate_data_audit_delivery.py:228"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_stitch_coordinate_requires_exactly_three_resumable_product_projects",
@@ -9138,7 +9228,7 @@
       "test_id": "tests/test_validate_data_audit_delivery.py::test_ui_action_matrix_proves_the_generic_save_contract_alignment",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_ui_action_matrix_proves_the_generic_save_contract_alignment",
-      "line": 188,
+      "line": 195,
       "async": false,
       "assertions": 9,
       "status_code_assertions": 0,
@@ -9150,13 +9240,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:188"
+      "evidence": "tests/test_validate_data_audit_delivery.py:195"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_units_and_tax_model_covers_precision_and_fiscal_governance",
-      "line": 241,
+      "line": 248,
       "async": false,
       "assertions": 15,
       "status_code_assertions": 0,
@@ -9168,7 +9258,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:241"
+      "evidence": "tests/test_validate_data_audit_delivery.py:248"
     },
     {
       "test_id": "tests/test_validate_openrouter.py::test_update_provider_matrix_persistence",

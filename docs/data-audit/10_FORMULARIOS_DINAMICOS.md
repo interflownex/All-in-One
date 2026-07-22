@@ -4,7 +4,7 @@
 
 ## Modelo versionado
 
-A proposta contém 14 estruturas: `form_definitions`, `form_versions`, `form_blocks`, `form_fields`, `field_catalog`, `field_bindings`, `form_calculations`, `form_validations`, `form_visibility_rules`, `form_permissions`, `form_homologations`, `form_publications`, `form_submissions`, `form_submission_values`. Cada campo está enumerado em `artifacts/formulario_dinamico_modelo.json`.
+A proposta contém 15 estruturas: `form_definitions`, `form_versions`, `form_blocks`, `form_fields`, `field_catalog`, `field_bindings`, `form_calculations`, `form_validations`, `form_visibility_rules`, `form_permissions`, `form_homologations`, `form_publications`, `form_submissions`, `form_submission_values`, `form_billing_events`. Cada campo está enumerado em `artifacts/formulario_dinamico_modelo.json`.
 
 ## Ciclo de vida
 
@@ -22,6 +22,6 @@ Eventos faturáveis estão separados de autosave e rascunho. Valores e estratég
 
 ## Gate de implementação
 
-Migration reversível, backend, frontend, testes de segurança e homologação permanecem `false`. Portanto, este documento é modelagem e não afirma funcionalidade existente.
+Migration reversível e testes estáticos de schema estão implementados. Backend, frontend, testes de segurança em runtime e homologação permanecem pendentes; portanto, o produto ainda não é declarado operacional.
 
-EVIDÊNCIAS: `config/data_audit/dynamic_form_model_proposal.json`, `artifacts/formulario_dinamico_modelo.json`, `docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md:1583`. Lacuna: `AUD-P1-004`.
+EVIDÊNCIAS: `config/data_audit/dynamic_form_model_proposal.json`, `database/postgres/migrations/028_dynamic_forms_governance.sql`, `database/postgres/rollbacks/028_dynamic_forms_governance.down.sql`, `tests/test_dynamic_forms_migration.py`, `artifacts/formulario_dinamico_modelo.json`. Lacuna parcial: `AUD-P1-004`.
