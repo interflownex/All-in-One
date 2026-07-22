@@ -101,6 +101,7 @@ const modulesData = [
         { title: "Versions", path: "/document/versions" }
     ] },
     { slug: "erp", title: "Erp", icon: "📊", screens: [
+        { title: "Construtor de formulários", path: "/governance/dynamic-forms" },
         { title: "Unidades e Fiscal", path: "/governance/units-tax" },
         { title: "Accounts", path: "/erp/accounts-form" },
         { title: "Accounts", path: "/erp/accounts" },

@@ -21,6 +21,10 @@ class FakeStore:
         self.calls.append(("list_definitions", (tenant_id,), {"status": status}))
         return [{"id": "definition-1", "tenant_id": tenant_id}]
 
+    def list_bindings(self, catalog_ids):
+        self.calls.append(("list_bindings", (catalog_ids,), {}))
+        return [{"id": "binding-1", "field_catalog_id": catalog_ids[0]}]
+
     def get_blueprint(self, tenant_id, version_id):
         return self._call("get_blueprint", tenant_id, version_id)
 
@@ -87,6 +91,16 @@ def test_catalogo_exige_role_e_escopo() -> None:
     allowed = client.get("/catalog?domain=business", headers=headers(roles="form_designer", scopes="forms:read"))
     assert allowed.status_code == 200
     assert allowed.json()[0]["domain"] == "business"
+
+
+def test_bindings_sao_consultados_apenas_por_ids_de_catalogo() -> None:
+    catalog_id = uuid4()
+    response = client.get(
+        f"/catalog/bindings?catalog_ids={catalog_id}",
+        headers=headers(roles="form_designer", scopes="forms:read"),
+    )
+    assert response.status_code == 200
+    assert response.json()[0]["field_catalog_id"] == str(catalog_id)
 
 
 def test_criacao_exige_idempotencia_e_encaminha_tenant_autoritativo() -> None:

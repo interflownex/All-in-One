@@ -10,6 +10,7 @@ def test_openapi_expoe_ciclo_governado_com_modelos_de_request() -> None:
     schema = app.openapi()
     expected = {
         "/catalog",
+        "/catalog/bindings",
         "/definitions",
         "/versions/{version_id}/blueprint",
         "/versions/{version_id}/homologations",
@@ -18,7 +19,7 @@ def test_openapi_expoe_ciclo_governado_com_modelos_de_request() -> None:
         "/forms/{definition_id}/submissions",
     }
     assert expected.issubset(schema["paths"])
-    for path in expected - {"/catalog"}:
+    for path in expected - {"/catalog", "/catalog/bindings"}:
         assert any(operation.get("requestBody") for operation in schema["paths"][path].values())
 
 

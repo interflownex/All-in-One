@@ -15,7 +15,7 @@
     "browser_storage_key_patterns": 12,
     "relationships": 566,
     "indexes": 118,
-    "endpoints": 111,
+    "endpoints": 112,
     "endpoints_with_response_model": 8,
     "api_model_fields": 150,
     "ui_candidates": 1068,
@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 528,
-    "tests_with_assertions": 487,
-    "tests_with_http_calls": 203,
-    "test_functions_in_execution_reports": 503,
-    "test_functions_passed": 470,
+    "test_functions": 529,
+    "tests_with_assertions": 488,
+    "tests_with_http_calls": 204,
+    "test_functions_in_execution_reports": 504,
+    "test_functions_passed": 471,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -4324,7 +4324,7 @@
       "test_id": "tests/test_dynamic_forms_api.py::test_api_exige_ator_e_tenant",
       "file": "tests/test_dynamic_forms_api.py",
       "function": "test_api_exige_ator_e_tenant",
-      "line": 67,
+      "line": 71,
       "async": false,
       "assertions": 2,
       "status_code_assertions": 2,
@@ -4340,13 +4340,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_dynamic_forms_api.py:67"
+      "evidence": "tests/test_dynamic_forms_api.py:71"
     },
     {
       "test_id": "tests/test_dynamic_forms_api.py::test_api_rejeita_tenant_divergente_do_contexto_empresarial",
       "file": "tests/test_dynamic_forms_api.py",
       "function": "test_api_rejeita_tenant_divergente_do_contexto_empresarial",
-      "line": 73,
+      "line": 77,
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
@@ -4362,13 +4362,35 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_dynamic_forms_api.py:73"
+      "evidence": "tests/test_dynamic_forms_api.py:77"
+    },
+    {
+      "test_id": "tests/test_dynamic_forms_api.py::test_bindings_sao_consultados_apenas_por_ids_de_catalogo",
+      "file": "tests/test_dynamic_forms_api.py",
+      "function": "test_bindings_sao_consultados_apenas_por_ids_de_catalogo",
+      "line": 96,
+      "async": false,
+      "assertions": 2,
+      "status_code_assertions": 1,
+      "http_methods": [
+        "GET"
+      ],
+      "endpoint_literals": [
+        "/catalog/bindings?catalog_ids="
+      ],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "aprovado",
+      "execution_cases": 1,
+      "passed_cases": 1,
+      "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
+      "evidence": "tests/test_dynamic_forms_api.py:96"
     },
     {
       "test_id": "tests/test_dynamic_forms_api.py::test_blueprint_tem_limites_pydantic_antes_do_store",
       "file": "tests/test_dynamic_forms_api.py",
       "function": "test_blueprint_tem_limites_pydantic_antes_do_store",
-      "line": 108,
+      "line": 122,
       "async": false,
       "assertions": 1,
       "status_code_assertions": 1,
@@ -4385,13 +4407,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_dynamic_forms_api.py:108"
+      "evidence": "tests/test_dynamic_forms_api.py:122"
     },
     {
       "test_id": "tests/test_dynamic_forms_api.py::test_catalogo_exige_role_e_escopo",
       "file": "tests/test_dynamic_forms_api.py",
       "function": "test_catalogo_exige_role_e_escopo",
-      "line": 82,
+      "line": 86,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 3,
@@ -4408,13 +4430,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_dynamic_forms_api.py:82"
+      "evidence": "tests/test_dynamic_forms_api.py:86"
     },
     {
       "test_id": "tests/test_dynamic_forms_api.py::test_criacao_exige_idempotencia_e_encaminha_tenant_autoritativo",
       "file": "tests/test_dynamic_forms_api.py",
       "function": "test_criacao_exige_idempotencia_e_encaminha_tenant_autoritativo",
-      "line": 92,
+      "line": 106,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 2,
@@ -4430,13 +4452,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_dynamic_forms_api.py:92"
+      "evidence": "tests/test_dynamic_forms_api.py:106"
     },
     {
       "test_id": "tests/test_dynamic_forms_api.py::test_homologacao_exige_mfa",
       "file": "tests/test_dynamic_forms_api.py",
       "function": "test_homologacao_exige_mfa",
-      "line": 117,
+      "line": 131,
       "async": false,
       "assertions": 2,
       "status_code_assertions": 1,
@@ -4453,13 +4475,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_dynamic_forms_api.py:117"
+      "evidence": "tests/test_dynamic_forms_api.py:131"
     },
     {
       "test_id": "tests/test_dynamic_forms_api.py::test_publicacao_exige_role_escopo_mfa_e_idempotencia",
       "file": "tests/test_dynamic_forms_api.py",
       "function": "test_publicacao_exige_role_escopo_mfa_e_idempotencia",
-      "line": 128,
+      "line": 142,
       "async": false,
       "assertions": 3,
       "status_code_assertions": 1,
@@ -4476,13 +4498,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_dynamic_forms_api.py:128"
+      "evidence": "tests/test_dynamic_forms_api.py:142"
     },
     {
       "test_id": "tests/test_dynamic_forms_api.py::test_usuario_pode_submeter_somente_com_escopo_e_idempotencia",
       "file": "tests/test_dynamic_forms_api.py",
       "function": "test_usuario_pode_submeter_somente_com_escopo_e_idempotencia",
-      "line": 138,
+      "line": 152,
       "async": false,
       "assertions": 3,
       "status_code_assertions": 1,
@@ -4499,13 +4521,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_dynamic_forms_api.py:138"
+      "evidence": "tests/test_dynamic_forms_api.py:152"
     },
     {
       "test_id": "tests/test_dynamic_forms_backend_contract.py::test_api_hub_e_compose_publicam_servico_sem_segredo_versionado",
       "file": "tests/test_dynamic_forms_backend_contract.py",
       "function": "test_api_hub_e_compose_publicam_servico_sem_segredo_versionado",
-      "line": 36,
+      "line": 37,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
@@ -4517,7 +4539,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_dynamic_forms_backend_contract.py:36"
+      "evidence": "tests/test_dynamic_forms_backend_contract.py:37"
     },
     {
       "test_id": "tests/test_dynamic_forms_backend_contract.py::test_openapi_expoe_ciclo_governado_com_modelos_de_request",
@@ -4532,6 +4554,7 @@
       ],
       "endpoint_literals": [
         "/catalog",
+        "/catalog/bindings",
         "/definitions",
         "/forms/{definition_id}/submissions",
         "/homologations/{homologation_id}/review",
@@ -4551,7 +4574,7 @@
       "test_id": "tests/test_dynamic_forms_backend_contract.py::test_store_aplica_tenant_lock_idempotencia_evento_e_persistencia_normalizada",
       "file": "tests/test_dynamic_forms_backend_contract.py",
       "function": "test_store_aplica_tenant_lock_idempotencia_evento_e_persistencia_normalizada",
-      "line": 25,
+      "line": 26,
       "async": false,
       "assertions": 7,
       "status_code_assertions": 0,
@@ -4563,7 +4586,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_dynamic_forms_backend_contract.py:25"
+      "evidence": "tests/test_dynamic_forms_backend_contract.py:26"
     },
     {
       "test_id": "tests/test_dynamic_forms_domain.py::test_blueprint_rejeita_binding_de_outro_campo",

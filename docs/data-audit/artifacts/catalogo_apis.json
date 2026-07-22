@@ -14,7 +14,7 @@
     "browser_storage_key_patterns": 12,
     "relationships": 566,
     "indexes": 118,
-    "endpoints": 111,
+    "endpoints": 112,
     "endpoints_with_response_model": 8,
     "api_model_fields": 150,
     "ui_candidates": 1068,
@@ -28,11 +28,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 528,
-    "tests_with_assertions": 487,
-    "tests_with_http_calls": 203,
-    "test_functions_in_execution_reports": 503,
-    "test_functions_passed": 470,
+    "test_functions": 529,
+    "tests_with_assertions": 488,
+    "tests_with_http_calls": 204,
+    "test_functions_in_execution_reports": 504,
+    "test_functions_passed": 471,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -530,6 +530,31 @@
       "evidence": "modules/dynamic_forms/main.py:115"
     },
     {
+      "method": "GET",
+      "path": "/catalog/bindings",
+      "module": "dynamic_forms",
+      "function": "list_bindings",
+      "parameters": [
+        {
+          "name": "catalog_ids",
+          "annotation": "Annotated[list[UUID], Query(min_length=1, max_length=200)]",
+          "model_fields": []
+        },
+        {
+          "name": "context",
+          "annotation": "Annotated[tuple[str, Actor], Depends(tenant_actor)]",
+          "model_fields": []
+        },
+        {
+          "name": "store",
+          "annotation": "Annotated[DynamicFormsPostgresStore, Depends(get_store)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/dynamic_forms/main.py:126"
+    },
+    {
       "method": "POST",
       "path": "/definitions",
       "module": "dynamic_forms",
@@ -564,7 +589,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:126"
+      "evidence": "modules/dynamic_forms/main.py:137"
     },
     {
       "method": "GET",
@@ -589,7 +614,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:150"
+      "evidence": "modules/dynamic_forms/main.py:161"
     },
     {
       "method": "GET",
@@ -614,7 +639,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:161"
+      "evidence": "modules/dynamic_forms/main.py:172"
     },
     {
       "method": "PUT",
@@ -650,7 +675,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:172"
+      "evidence": "modules/dynamic_forms/main.py:183"
     },
     {
       "method": "POST",
@@ -687,7 +712,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:184"
+      "evidence": "modules/dynamic_forms/main.py:195"
     },
     {
       "method": "POST",
@@ -728,7 +753,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:197"
+      "evidence": "modules/dynamic_forms/main.py:208"
     },
     {
       "method": "POST",
@@ -768,7 +793,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:221"
+      "evidence": "modules/dynamic_forms/main.py:232"
     },
     {
       "method": "POST",
@@ -807,7 +832,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:244"
+      "evidence": "modules/dynamic_forms/main.py:255"
     },
     {
       "method": "POST",

@@ -328,7 +328,7 @@
   "implementation_gate": {
     "migration_reversible": true,
     "backend_implemented": true,
-    "frontend_implemented": false,
+    "frontend_implemented": true,
     "security_tests_implemented": true,
     "homologated": false
   }

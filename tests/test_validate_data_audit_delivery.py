@@ -176,7 +176,7 @@ def test_dynamic_form_model_exposes_partial_implementation_without_false_complet
     assert "physical_table_selection" in data["forbidden"]
     assert data["implementation_gate"]["migration_reversible"] is True
     assert data["implementation_gate"]["backend_implemented"] is True
-    assert data["implementation_gate"]["frontend_implemented"] is False
+    assert data["implementation_gate"]["frontend_implemented"] is True
     assert data["implementation_gate"]["security_tests_implemented"] is True
     assert data["implementation_gate"]["homologated"] is False
 

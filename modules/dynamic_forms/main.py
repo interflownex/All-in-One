@@ -123,6 +123,17 @@ def list_catalog(
     return store.list_catalog(domain)
 
 
+@app.get("/catalog/bindings")
+def list_bindings(
+    catalog_ids: Annotated[list[UUID], Query(min_length=1, max_length=200)],
+    context: Annotated[tuple[str, Actor], Depends(tenant_actor)],
+    store: Annotated[DynamicFormsPostgresStore, Depends(get_store)],
+) -> list[dict[str, Any]]:
+    _tenant_id, actor = context
+    demand_forms_access(actor, READ_ROLES, "forms:read", "consultar bindings logicos")
+    return store.list_bindings([str(item) for item in catalog_ids])
+
+
 @app.post("/definitions", status_code=201)
 def create_definition(
     body: DefinitionCreate,

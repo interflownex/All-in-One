@@ -174,20 +174,20 @@
       "priority": "P1",
       "module": "formulários dinâmicos",
       "title": "Construtor de formulários dinâmicos possui persistência, mas ainda não está operacional",
-      "description": "A migration 028 e o serviço dynamic_forms implementam catálogo, bindings, versões, blueprint, cálculos allowlist, homologação segregada, publicação com MFA, submissões idempotentes, eventos e cobrança; builder web e homologação PostgreSQL operacional permanecem pendentes.",
+      "description": "A migration 028, o serviço dynamic_forms e o builder web implementam catálogo, bindings, versões, blueprint, prévia responsiva, cálculos allowlist, homologação segregada, publicação com MFA, submissões idempotentes, eventos e cobrança; a homologação PostgreSQL operacional permanece pendente.",
       "evidence": [
         "database/postgres/migrations/028_dynamic_forms_governance.sql",
         "modules/dynamic_forms/main.py",
         "modules/shared/dynamic_forms.py",
         "modules/shared/dynamic_forms_postgres_store.py",
+        "apps/all-in-one/src/pages/DynamicFormBuilder.tsx",
         "tests/test_dynamic_forms_api.py",
         "tests/test_dynamic_forms_domain.py"
       ],
-      "impact": "Sem UI e validação em PostgreSQL vivo, o produto ainda não pode ser homologado ponta a ponta.",
-      "risk": "Experiência indisponível ao usuário empresarial e comportamento SQL ainda não comprovado em ambiente real.",
-      "proposal": "Implementar builder allowlist e prévia web; executar migration e fluxos completos em PostgreSQL homologado.",
+      "impact": "Sem validação em PostgreSQL vivo, o produto ainda não pode ser homologado ponta a ponta.",
+      "risk": "Comportamento SQL ainda não comprovado em ambiente real.",
+      "proposal": "Executar a migration e os fluxos completos em PostgreSQL homologado.",
       "dependencies": [
-        "builder web",
         "PostgreSQL de homologação"
       ],
       "affected_files": [
@@ -197,8 +197,8 @@
       ],
       "migration": "implementada e reversível",
       "backend": "APIs, RBAC/ABAC, homologação, publicação, submissão e eventos implementados",
-      "frontend": "implementar builder, preview e publicação",
-      "tests": "domínio, segurança HTTP, tenant, MFA e idempotência aprovados; PostgreSQL vivo pendente",
+      "frontend": "builder allowlist, preview responsivo e fluxo de publicação implementados",
+      "tests": "domínio, segurança HTTP, tenant, MFA, idempotência e QA visual aprovados; PostgreSQL vivo pendente",
       "documentation": "10_FORMULARIOS_DINAMICOS.md",
       "acceptance": "Metadados, API, homologação, segurança, publicação, cobrança, auditoria e testes estão implementados.",
       "status": "implementacao_parcial",
