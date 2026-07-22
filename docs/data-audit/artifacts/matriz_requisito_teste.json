@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 535,
-    "tests_with_assertions": 494,
+    "test_functions": 537,
+    "tests_with_assertions": 496,
     "tests_with_http_calls": 204,
-    "test_functions_in_execution_reports": 510,
-    "test_functions_passed": 477,
+    "test_functions_in_execution_reports": 512,
+    "test_functions_passed": 479,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -57,6 +57,8 @@
       "subsection": "criterios_de_conclusao",
       "requirement": "100% dos bancos forem catalogados",
       "test_candidates": [
+        "tests/test_audit_contract.py::test_postgres_writer_persists_the_full_request_context",
+        "tests/test_audit_contract.py::test_specialized_postgres_stores_do_not_bypass_the_unified_writer",
         "tests/test_audit_contract.py::test_sqlite_store_persists_a_hash_chained_append_only_contract",
         "tests/test_compose_health_gate.py::test_compose_postgres_healthcheck_allows_cold_initdb",
         "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
@@ -74,12 +76,12 @@
         "tests/test_postgres_contract_static.py::test_user_reference_columns_are_not_treated_as_business_entities",
         "tests/test_postgres_migrations_smoke.py::test_postgres_migrations_apply_cleanly_on_fresh_database",
         "tests/test_postgres_priority_stores_integration.py::test_ai_core_memory_create_update_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_api_hub_client_create_update_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_bi_dataset_create_update_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_bpm_process_create_update_and_soft_delete"
+        "tests/test_postgres_priority_stores_integration.py::test_api_hub_client_create_update_and_soft_delete"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
+        "tests/test_audit_contract.py::test_postgres_writer_persists_the_full_request_context",
+        "tests/test_audit_contract.py::test_specialized_postgres_stores_do_not_bypass_the_unified_writer",
         "tests/test_audit_contract.py::test_sqlite_store_persists_a_hash_chained_append_only_contract",
         "tests/test_compose_health_gate.py::test_compose_postgres_healthcheck_allows_cold_initdb",
         "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
@@ -95,7 +97,7 @@
         "tests/test_postgres_contract_static.py::test_postgres_priority_store_event_prefix_aliases_are_documented",
         "tests/test_postgres_contract_static.py::test_user_reference_columns_are_not_treated_as_business_entities"
       ],
-      "passed_candidate_count": 14,
+      "passed_candidate_count": 16,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -386,7 +388,9 @@
       "subsection": "criterios_de_conclusao",
       "requirement": "100% das alterações relevantes tiverem auditoria",
       "test_candidates": [
+        "tests/test_audit_contract.py::test_postgres_writer_persists_the_full_request_context",
         "tests/test_audit_contract.py::test_sensitive_read_contract_records_purpose_authorization_and_outputs",
+        "tests/test_audit_contract.py::test_specialized_postgres_stores_do_not_bypass_the_unified_writer",
         "tests/test_audit_contract.py::test_sqlite_store_persists_a_hash_chained_append_only_contract",
         "tests/test_audit_contract.py::test_unified_audit_contract_covers_context_integrity_and_retention",
         "tests/test_integration_sandbox_adapters.py::test_sandbox_results_include_audit_record_without_raw_sensitive_input",
@@ -403,13 +407,13 @@
         "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_complementary_format",
         "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_mandatory_markdown_document",
         "tests/test_validate_data_audit_delivery.py::test_contract_requires_all_completion_dimensions",
-        "tests/test_validate_data_audit_delivery.py::test_coverage_links_only_dimension_specific_gaps_and_evidence",
-        "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_exposes_partial_implementation_without_false_completion",
-        "tests/test_validate_data_audit_delivery.py::test_ephemeral_and_object_storage_catalogs_are_explicitly_static"
+        "tests/test_validate_data_audit_delivery.py::test_coverage_links_only_dimension_specific_gaps_and_evidence"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
+        "tests/test_audit_contract.py::test_postgres_writer_persists_the_full_request_context",
         "tests/test_audit_contract.py::test_sensitive_read_contract_records_purpose_authorization_and_outputs",
+        "tests/test_audit_contract.py::test_specialized_postgres_stores_do_not_bypass_the_unified_writer",
         "tests/test_audit_contract.py::test_sqlite_store_persists_a_hash_chained_append_only_contract",
         "tests/test_audit_contract.py::test_unified_audit_contract_covers_context_integrity_and_retention",
         "tests/test_integration_sandbox_adapters.py::test_sandbox_results_include_audit_record_without_raw_sensitive_input",
@@ -425,9 +429,7 @@
         "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_complementary_format",
         "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_mandatory_markdown_document",
         "tests/test_validate_data_audit_delivery.py::test_contract_requires_all_completion_dimensions",
-        "tests/test_validate_data_audit_delivery.py::test_coverage_links_only_dimension_specific_gaps_and_evidence",
-        "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_exposes_partial_implementation_without_false_completion",
-        "tests/test_validate_data_audit_delivery.py::test_ephemeral_and_object_storage_catalogs_are_explicitly_static"
+        "tests/test_validate_data_audit_delivery.py::test_coverage_links_only_dimension_specific_gaps_and_evidence"
       ],
       "passed_candidate_count": 19,
       "trace_status": "candidatos_localizados",
@@ -1232,6 +1234,8 @@
       "subsection": "construir",
       "requirement": "Catalogar bancos",
       "test_candidates": [
+        "tests/test_audit_contract.py::test_postgres_writer_persists_the_full_request_context",
+        "tests/test_audit_contract.py::test_specialized_postgres_stores_do_not_bypass_the_unified_writer",
         "tests/test_audit_contract.py::test_sqlite_store_persists_a_hash_chained_append_only_contract",
         "tests/test_compose_health_gate.py::test_compose_postgres_healthcheck_allows_cold_initdb",
         "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
@@ -1249,12 +1253,12 @@
         "tests/test_postgres_contract_static.py::test_postgres_priority_store_event_prefix_aliases_are_documented",
         "tests/test_postgres_contract_static.py::test_user_reference_columns_are_not_treated_as_business_entities",
         "tests/test_postgres_migrations_smoke.py::test_postgres_migrations_apply_cleanly_on_fresh_database",
-        "tests/test_postgres_priority_stores_integration.py::test_ai_core_memory_create_update_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_api_hub_client_create_update_and_soft_delete",
-        "tests/test_postgres_priority_stores_integration.py::test_bi_dataset_create_update_and_soft_delete"
+        "tests/test_postgres_priority_stores_integration.py::test_ai_core_memory_create_update_and_soft_delete"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
+        "tests/test_audit_contract.py::test_postgres_writer_persists_the_full_request_context",
+        "tests/test_audit_contract.py::test_specialized_postgres_stores_do_not_bypass_the_unified_writer",
         "tests/test_audit_contract.py::test_sqlite_store_persists_a_hash_chained_append_only_contract",
         "tests/test_compose_health_gate.py::test_compose_postgres_healthcheck_allows_cold_initdb",
         "tests/test_event_contract.py::test_sqlite_outbox_persists_envelope_and_original_idempotency",
@@ -1271,7 +1275,7 @@
         "tests/test_postgres_contract_static.py::test_postgres_priority_store_event_prefix_aliases_are_documented",
         "tests/test_postgres_contract_static.py::test_user_reference_columns_are_not_treated_as_business_entities"
       ],
-      "passed_candidate_count": 15,
+      "passed_candidate_count": 17,
       "trace_status": "candidatos_localizados",
       "execution_status": "candidatos_aprovados",
       "proof_status": "não comprovado; candidatos aprovados exigem revisão de escopo",
@@ -1979,7 +1983,9 @@
       "subsection": "validar",
       "requirement": "Validar auditoria",
       "test_candidates": [
+        "tests/test_audit_contract.py::test_postgres_writer_persists_the_full_request_context",
         "tests/test_audit_contract.py::test_sensitive_read_contract_records_purpose_authorization_and_outputs",
+        "tests/test_audit_contract.py::test_specialized_postgres_stores_do_not_bypass_the_unified_writer",
         "tests/test_audit_contract.py::test_sqlite_store_persists_a_hash_chained_append_only_contract",
         "tests/test_audit_contract.py::test_unified_audit_contract_covers_context_integrity_and_retention",
         "tests/test_integration_sandbox_adapters.py::test_sandbox_results_include_audit_record_without_raw_sensitive_input",
@@ -1996,13 +2002,13 @@
         "tests/test_validate_data_audit_delivery.py::test_audit_coverage_reports_every_structural_requirement",
         "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_complementary_format",
         "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_mandatory_markdown_document",
-        "tests/test_validate_data_audit_delivery.py::test_contract_requires_all_completion_dimensions",
-        "tests/test_validate_data_audit_delivery.py::test_coverage_links_only_dimension_specific_gaps_and_evidence",
-        "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_exposes_partial_implementation_without_false_completion"
+        "tests/test_validate_data_audit_delivery.py::test_contract_requires_all_completion_dimensions"
       ],
       "candidate_count": 20,
       "passed_test_candidates": [
+        "tests/test_audit_contract.py::test_postgres_writer_persists_the_full_request_context",
         "tests/test_audit_contract.py::test_sensitive_read_contract_records_purpose_authorization_and_outputs",
+        "tests/test_audit_contract.py::test_specialized_postgres_stores_do_not_bypass_the_unified_writer",
         "tests/test_audit_contract.py::test_sqlite_store_persists_a_hash_chained_append_only_contract",
         "tests/test_audit_contract.py::test_unified_audit_contract_covers_context_integrity_and_retention",
         "tests/test_integration_sandbox_adapters.py::test_sandbox_results_include_audit_record_without_raw_sensitive_input",
@@ -2018,9 +2024,7 @@
         "tests/test_validate_data_audit_delivery.py::test_audit_coverage_reports_every_structural_requirement",
         "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_complementary_format",
         "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_mandatory_markdown_document",
-        "tests/test_validate_data_audit_delivery.py::test_contract_requires_all_completion_dimensions",
-        "tests/test_validate_data_audit_delivery.py::test_coverage_links_only_dimension_specific_gaps_and_evidence",
-        "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_exposes_partial_implementation_without_false_completion"
+        "tests/test_validate_data_audit_delivery.py::test_contract_requires_all_completion_dimensions"
       ],
       "passed_candidate_count": 19,
       "trace_status": "candidatos_localizados",

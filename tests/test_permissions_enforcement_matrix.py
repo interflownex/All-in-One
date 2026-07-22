@@ -281,8 +281,23 @@ def test_domain_endpoint_uses_medical_roles_for_health_sensitive_read() -> None:
     )
     allowed = client.get(
         f"/resources/patients/{created.json()['id']}",
-        headers=headers(clinician, "doctor"),
+        headers={
+            **headers(clinician, "doctor"),
+            "X-Actor-Scopes": "health:records:read",
+            "X-Audit-Session-Id": "clinical-session-1",
+            "X-Device-Fingerprint": "trusted-clinical-device",
+            "X-Client-Channel": "web",
+            "X-Access-Purpose": "Atendimento assistencial",
+        },
     )
 
     assert denied.status_code == 403
     assert allowed.status_code == 200
+    audit = client.get("/audit/events", headers=headers(auditor, "auditor"))
+    assert audit.status_code == 200
+    sensitive_read = next(item for item in audit.json() if item["action"] == "sensitive_read")
+    audit_context = json.loads(sensitive_read["metadata"])["context"]
+    assert json.loads(sensitive_read["after_data"])["purpose"] == "Atendimento assistencial"
+    assert audit_context["session_id"] == "clinical-session-1"
+    assert audit_context["device_id"] == "trusted-clinical-device"
+    assert sensitive_read["channel"] == "web"

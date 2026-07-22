@@ -29,11 +29,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 535,
-    "tests_with_assertions": 494,
+    "test_functions": 537,
+    "tests_with_assertions": 496,
     "tests_with_http_calls": 204,
-    "test_functions_in_execution_reports": 510,
-    "test_functions_passed": 477,
+    "test_functions_in_execution_reports": 512,
+    "test_functions_passed": 479,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -69,7 +69,7 @@
       "test_evidence": [
         "tests/test_permissions_enforcement_matrix.py:238"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "identity",
@@ -87,7 +87,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "identity",
@@ -107,7 +107,7 @@
       "test_evidence": [
         "tests/test_permissions_enforcement_matrix.py:252"
       ],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "identity",
@@ -125,7 +125,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "identity",
@@ -143,7 +143,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "identity",
@@ -163,7 +163,7 @@
       "test_evidence": [
         "tests/test_document_domain.py:39"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "identity",
@@ -181,7 +181,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "identity",
@@ -199,7 +199,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "identity",
@@ -217,7 +217,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "identity",
@@ -235,7 +235,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "identity",
@@ -253,7 +253,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "identity",
@@ -271,7 +271,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "identity",
@@ -289,7 +289,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "identity",
@@ -307,7 +307,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "identity",
@@ -325,7 +325,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "identity",
@@ -343,7 +343,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "identity",
@@ -363,7 +363,7 @@
       "test_evidence": [
         "tests/test_identity_session_security.py:52"
       ],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "identity",
@@ -381,7 +381,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "identity",
@@ -399,7 +399,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "identity",
@@ -417,7 +417,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "identity",
@@ -435,7 +435,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "identity",
@@ -455,7 +455,7 @@
       "test_evidence": [
         "tests/test_identity_session_security.py:135"
       ],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "identity",
@@ -473,7 +473,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "identity",
@@ -491,7 +491,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "identity",
@@ -509,7 +509,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "identity",
@@ -527,7 +527,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "identity",
@@ -545,7 +545,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "identity",
@@ -563,7 +563,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "identity",
@@ -581,7 +581,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "identity",
@@ -599,7 +599,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "business",
@@ -619,7 +619,7 @@
       "test_evidence": [
         "tests/test_business_jobs_journey.py:35"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "business",
@@ -637,7 +637,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "business",
@@ -655,7 +655,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "business",
@@ -673,7 +673,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "business",
@@ -691,7 +691,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "business",
@@ -712,7 +712,7 @@
         "tests/test_permissions_enforcement_matrix.py:208",
         "tests/test_valley_ecosystem.py:37"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "business",
@@ -730,7 +730,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "business",
@@ -750,7 +750,7 @@
       "test_evidence": [
         "tests/test_permissions_enforcement_matrix.py:220"
       ],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "business",
@@ -768,7 +768,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "business",
@@ -786,7 +786,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "business",
@@ -804,7 +804,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "business",
@@ -822,7 +822,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "business",
@@ -840,7 +840,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "business",
@@ -858,7 +858,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "business",
@@ -876,7 +876,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "business",
@@ -894,7 +894,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "business",
@@ -912,7 +912,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "business",
@@ -930,7 +930,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "business",
@@ -948,7 +948,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "business",
@@ -966,7 +966,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "business",
@@ -987,7 +987,7 @@
         "tests/e2e/test_valley_catalog_journey.py:37",
         "tests/test_valley_catalog.py:328"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "business",
@@ -1005,7 +1005,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "business",
@@ -1023,7 +1023,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "business",
@@ -1041,7 +1041,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "business",
@@ -1059,7 +1059,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "permissions",
@@ -1079,7 +1079,7 @@
       "test_evidence": [
         "tests/test_permissions_enforcement_matrix.py:126"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "permissions",
@@ -1099,7 +1099,7 @@
       "test_evidence": [
         "tests/test_permissions_enforcement_matrix.py:131"
       ],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "permissions",
@@ -1117,7 +1117,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "permissions",
@@ -1135,7 +1135,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "permissions",
@@ -1153,7 +1153,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "permissions",
@@ -1171,7 +1171,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "permissions",
@@ -1189,7 +1189,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "permissions",
@@ -1207,7 +1207,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "permissions",
@@ -1225,7 +1225,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "permissions",
@@ -1243,7 +1243,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "permissions",
@@ -1261,7 +1261,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "permissions",
@@ -1279,7 +1279,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "permissions",
@@ -1297,7 +1297,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "permissions",
@@ -1315,7 +1315,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "permissions",
@@ -1333,7 +1333,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "permissions",
@@ -1351,7 +1351,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "permissions",
@@ -1369,7 +1369,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "permissions",
@@ -1387,7 +1387,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "permissions",
@@ -1405,7 +1405,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "permissions",
@@ -1423,7 +1423,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "permissions",
@@ -1443,7 +1443,7 @@
       "test_evidence": [
         "tests/test_permissions_enforcement_matrix.py:163"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "permissions",
@@ -1461,7 +1461,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "permissions",
@@ -1479,7 +1479,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "permissions",
@@ -1497,7 +1497,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "permissions",
@@ -1515,7 +1515,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "finance",
@@ -1536,7 +1536,7 @@
         "tests/test_permissions_enforcement_matrix.py:183",
         "tests/test_user_marketplace_journey.py:33"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "finance",
@@ -1554,7 +1554,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "finance",
@@ -1574,7 +1574,7 @@
       "test_evidence": [
         "tests/test_permissions_enforcement_matrix.py:190"
       ],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "finance",
@@ -1592,7 +1592,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "finance",
@@ -1610,7 +1610,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "finance",
@@ -1628,7 +1628,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "finance",
@@ -1646,7 +1646,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "finance",
@@ -1664,7 +1664,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "finance",
@@ -1682,7 +1682,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "finance",
@@ -1700,7 +1700,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "finance",
@@ -1720,7 +1720,7 @@
       "test_evidence": [
         "tests/test_user_marketplace_journey.py:49"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "finance",
@@ -1738,7 +1738,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "finance",
@@ -1756,7 +1756,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "finance",
@@ -1774,7 +1774,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "finance",
@@ -1792,7 +1792,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "finance",
@@ -1810,7 +1810,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "finance",
@@ -1828,7 +1828,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "finance",
@@ -1846,7 +1846,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "finance",
@@ -1864,7 +1864,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "finance",
@@ -1882,7 +1882,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "finance",
@@ -1900,7 +1900,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "finance",
@@ -1918,7 +1918,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "finance",
@@ -1936,7 +1936,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "finance",
@@ -1954,7 +1954,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "finance",
@@ -1972,7 +1972,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "finance",
@@ -1992,7 +1992,7 @@
       "test_evidence": [
         "tests/test_valley_gold_ledger.py:35"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "finance",
@@ -2010,7 +2010,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "finance",
@@ -2028,7 +2028,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "finance",
@@ -2048,7 +2048,7 @@
       "test_evidence": [
         "tests/test_valley_gold_ledger.py:102"
       ],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "finance",
@@ -2068,7 +2068,7 @@
       "test_evidence": [
         "tests/test_valley_gold_ledger.py:109"
       ],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "marketplace",
@@ -2088,7 +2088,7 @@
       "test_evidence": [
         "tests/test_valley_ecosystem.py:303"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "marketplace",
@@ -2106,7 +2106,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "marketplace",
@@ -2124,7 +2124,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "marketplace",
@@ -2142,7 +2142,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "marketplace",
@@ -2160,7 +2160,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "marketplace",
@@ -2181,7 +2181,7 @@
         "tests/test_valley_catalog.py:49",
         "tests/test_valley_ecosystem.py:58"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "marketplace",
@@ -2199,7 +2199,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "marketplace",
@@ -2217,7 +2217,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "marketplace",
@@ -2235,7 +2235,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "marketplace",
@@ -2253,7 +2253,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "marketplace",
@@ -2271,7 +2271,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "marketplace",
@@ -2289,7 +2289,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "marketplace",
@@ -2307,7 +2307,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "marketplace",
@@ -2325,7 +2325,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "marketplace",
@@ -2343,7 +2343,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "marketplace",
@@ -2365,7 +2365,7 @@
         "tests/test_marketplace_support_metrics.py:23",
         "tests/test_user_marketplace_journey.py:67"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "marketplace",
@@ -2383,7 +2383,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "marketplace",
@@ -2401,7 +2401,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "marketplace",
@@ -2419,7 +2419,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "marketplace",
@@ -2437,7 +2437,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "marketplace",
@@ -2458,7 +2458,7 @@
         "tests/test_marketplace_support_metrics.py:58",
         "tests/test_valley_reviews.py:25"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "marketplace",
@@ -2476,7 +2476,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "marketplace",
@@ -2494,7 +2494,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "marketplace",
@@ -2514,7 +2514,7 @@
       "test_evidence": [
         "tests/test_valley_reviews.py:45"
       ],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "marketplace",
@@ -2532,7 +2532,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "marketplace",
@@ -2550,7 +2550,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "marketplace",
@@ -2568,7 +2568,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "marketplace",
@@ -2586,7 +2586,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "marketplace",
@@ -2604,7 +2604,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "marketplace",
@@ -2622,7 +2622,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "marketplace",
@@ -2640,7 +2640,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "marketplace",
@@ -2658,7 +2658,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "marketplace",
@@ -2676,7 +2676,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "marketplace",
@@ -2694,7 +2694,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "marketplace",
@@ -2712,7 +2712,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "stock",
@@ -2730,7 +2730,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "stock",
@@ -2748,7 +2748,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "stock",
@@ -2766,7 +2766,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "stock",
@@ -2784,7 +2784,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "stock",
@@ -2802,7 +2802,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "stock",
@@ -2822,7 +2822,7 @@
       "test_evidence": [
         "tests/test_valley_ecosystem.py:100"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "stock",
@@ -2840,7 +2840,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "stock",
@@ -2858,7 +2858,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "stock",
@@ -2876,7 +2876,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "stock",
@@ -2894,7 +2894,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "stock",
@@ -2912,7 +2912,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "stock",
@@ -2930,7 +2930,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "stock",
@@ -2948,7 +2948,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "stock",
@@ -2966,7 +2966,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "stock",
@@ -2984,7 +2984,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "stock",
@@ -3004,7 +3004,7 @@
       "test_evidence": [
         "tests/test_valley_ecosystem.py:160"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "stock",
@@ -3022,7 +3022,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "stock",
@@ -3040,7 +3040,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "stock",
@@ -3058,7 +3058,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "stock",
@@ -3076,7 +3076,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "stock",
@@ -3094,7 +3094,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "stock",
@@ -3112,7 +3112,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "stock",
@@ -3130,7 +3130,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "stock",
@@ -3148,7 +3148,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "stock",
@@ -3166,7 +3166,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "delivery",
@@ -3187,7 +3187,7 @@
         "tests/test_correlation_id.py:67",
         "tests/test_operational_journeys.py:39"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "delivery",
@@ -3205,7 +3205,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "delivery",
@@ -3223,7 +3223,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "delivery",
@@ -3241,7 +3241,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "delivery",
@@ -3259,7 +3259,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "delivery",
@@ -3277,7 +3277,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "delivery",
@@ -3295,7 +3295,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "delivery",
@@ -3313,7 +3313,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "delivery",
@@ -3331,7 +3331,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "delivery",
@@ -3349,7 +3349,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "delivery",
@@ -3367,7 +3367,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "delivery",
@@ -3385,7 +3385,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "delivery",
@@ -3403,7 +3403,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "delivery",
@@ -3421,7 +3421,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "delivery",
@@ -3439,7 +3439,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "delivery",
@@ -3459,7 +3459,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:82"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "delivery",
@@ -3477,7 +3477,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "delivery",
@@ -3495,7 +3495,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "delivery",
@@ -3513,7 +3513,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "delivery",
@@ -3533,7 +3533,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:101"
       ],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "delivery",
@@ -3551,7 +3551,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "delivery",
@@ -3569,7 +3569,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "delivery",
@@ -3587,7 +3587,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "delivery",
@@ -3605,7 +3605,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "delivery",
@@ -3623,7 +3623,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "riders",
@@ -3643,7 +3643,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:119"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "riders",
@@ -3661,7 +3661,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "riders",
@@ -3679,7 +3679,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "riders",
@@ -3697,7 +3697,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "riders",
@@ -3715,7 +3715,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "riders",
@@ -3733,7 +3733,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "riders",
@@ -3751,7 +3751,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "riders",
@@ -3769,7 +3769,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "riders",
@@ -3787,7 +3787,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "riders",
@@ -3805,7 +3805,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "riders",
@@ -3825,7 +3825,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:159"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "riders",
@@ -3843,7 +3843,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "riders",
@@ -3861,7 +3861,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "riders",
@@ -3879,7 +3879,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "riders",
@@ -3897,7 +3897,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "riders",
@@ -3915,7 +3915,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "riders",
@@ -3933,7 +3933,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "riders",
@@ -3951,7 +3951,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "riders",
@@ -3969,7 +3969,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "riders",
@@ -3987,7 +3987,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "services",
@@ -4009,7 +4009,7 @@
         "tests/test_operational_journeys.py:187",
         "tests/test_valley_catalog.py:210"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "services",
@@ -4027,7 +4027,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "services",
@@ -4045,7 +4045,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "services",
@@ -4063,7 +4063,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "services",
@@ -4081,7 +4081,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "services",
@@ -4099,7 +4099,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "services",
@@ -4117,7 +4117,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "services",
@@ -4135,7 +4135,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "services",
@@ -4153,7 +4153,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "services",
@@ -4171,7 +4171,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "services",
@@ -4189,7 +4189,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "services",
@@ -4207,7 +4207,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "services",
@@ -4225,7 +4225,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "services",
@@ -4243,7 +4243,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "services",
@@ -4261,7 +4261,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "services",
@@ -4281,7 +4281,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:203"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "services",
@@ -4299,7 +4299,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "services",
@@ -4317,7 +4317,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "services",
@@ -4335,7 +4335,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "services",
@@ -4353,7 +4353,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "services",
@@ -4371,7 +4371,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "services",
@@ -4389,7 +4389,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "services",
@@ -4407,7 +4407,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "services",
@@ -4425,7 +4425,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "services",
@@ -4443,7 +4443,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "mobility",
@@ -4463,7 +4463,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:290"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "mobility",
@@ -4481,7 +4481,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "mobility",
@@ -4499,7 +4499,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "mobility",
@@ -4517,7 +4517,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "mobility",
@@ -4535,7 +4535,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "mobility",
@@ -4556,7 +4556,7 @@
         "tests/test_operational_journeys.py:273",
         "tests/test_tms_domain.py:40"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "mobility",
@@ -4574,7 +4574,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "mobility",
@@ -4592,7 +4592,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "mobility",
@@ -4610,7 +4610,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "mobility",
@@ -4628,7 +4628,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "mobility",
@@ -4646,7 +4646,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "mobility",
@@ -4664,7 +4664,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "mobility",
@@ -4682,7 +4682,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "mobility",
@@ -4700,7 +4700,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "mobility",
@@ -4718,7 +4718,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "mobility",
@@ -4738,7 +4738,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:327"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "mobility",
@@ -4756,7 +4756,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "mobility",
@@ -4774,7 +4774,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "mobility",
@@ -4792,7 +4792,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "mobility",
@@ -4810,7 +4810,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "mobility",
@@ -4830,7 +4830,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:256"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "mobility",
@@ -4848,7 +4848,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "mobility",
@@ -4866,7 +4866,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "mobility",
@@ -4884,7 +4884,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "mobility",
@@ -4902,7 +4902,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "jobs",
@@ -4924,7 +4924,7 @@
         "tests/test_identity_jobs_domain.py:99",
         "tests/test_jobs_postgres_integration.py:81"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "jobs",
@@ -4942,7 +4942,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "jobs",
@@ -4960,7 +4960,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "jobs",
@@ -4978,7 +4978,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "jobs",
@@ -4996,7 +4996,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "jobs",
@@ -5016,7 +5016,7 @@
       "test_evidence": [
         "tests/test_identity_jobs_domain.py:110"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "jobs",
@@ -5034,7 +5034,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "jobs",
@@ -5052,7 +5052,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "jobs",
@@ -5070,7 +5070,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "jobs",
@@ -5088,7 +5088,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "jobs",
@@ -5106,7 +5106,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "jobs",
@@ -5124,7 +5124,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "jobs",
@@ -5142,7 +5142,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "jobs",
@@ -5160,7 +5160,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "jobs",
@@ -5178,7 +5178,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "jobs",
@@ -5200,7 +5200,7 @@
         "tests/test_identity_jobs_domain.py:169",
         "tests/test_jobs_postgres_integration.py:103"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "jobs",
@@ -5218,7 +5218,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "jobs",
@@ -5236,7 +5236,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "jobs",
@@ -5254,7 +5254,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "jobs",
@@ -5272,7 +5272,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "jobs",
@@ -5293,7 +5293,7 @@
         "tests/test_business_jobs_journey.py:100",
         "tests/test_identity_jobs_domain.py:204"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "jobs",
@@ -5311,7 +5311,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "jobs",
@@ -5329,7 +5329,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "jobs",
@@ -5347,7 +5347,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "jobs",
@@ -5365,7 +5365,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "jobs",
@@ -5383,7 +5383,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "jobs",
@@ -5401,7 +5401,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "jobs",
@@ -5419,7 +5419,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "jobs",
@@ -5437,7 +5437,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "jobs",
@@ -5455,7 +5455,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "erp",
@@ -5475,7 +5475,7 @@
       "test_evidence": [
         "tests/test_erp_domain.py:26"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "erp",
@@ -5493,7 +5493,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "erp",
@@ -5511,7 +5511,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "erp",
@@ -5529,7 +5529,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "erp",
@@ -5547,7 +5547,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "erp",
@@ -5567,7 +5567,7 @@
       "test_evidence": [
         "tests/test_erp_domain.py:54"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "erp",
@@ -5585,7 +5585,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "erp",
@@ -5603,7 +5603,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "erp",
@@ -5621,7 +5621,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "erp",
@@ -5639,7 +5639,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "erp",
@@ -5659,7 +5659,7 @@
       "test_evidence": [
         "tests/test_erp_domain.py:93"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "erp",
@@ -5677,7 +5677,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "erp",
@@ -5695,7 +5695,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "erp",
@@ -5713,7 +5713,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "erp",
@@ -5731,7 +5731,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "erp",
@@ -5751,7 +5751,7 @@
       "test_evidence": [
         "tests/test_erp_domain.py:40"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "erp",
@@ -5769,7 +5769,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "erp",
@@ -5787,7 +5787,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "erp",
@@ -5805,7 +5805,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "erp",
@@ -5823,7 +5823,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "erp",
@@ -5841,7 +5841,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "erp",
@@ -5859,7 +5859,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "erp",
@@ -5877,7 +5877,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "erp",
@@ -5895,7 +5895,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "erp",
@@ -5913,7 +5913,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "wms",
@@ -5933,7 +5933,7 @@
       "test_evidence": [
         "tests/test_wms_domain.py:26"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "wms",
@@ -5951,7 +5951,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "wms",
@@ -5969,7 +5969,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "wms",
@@ -5987,7 +5987,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "wms",
@@ -6005,7 +6005,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "wms",
@@ -6025,7 +6025,7 @@
       "test_evidence": [
         "tests/test_wms_domain.py:40"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "wms",
@@ -6043,7 +6043,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "wms",
@@ -6061,7 +6061,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "wms",
@@ -6079,7 +6079,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "wms",
@@ -6097,7 +6097,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "wms",
@@ -6117,7 +6117,7 @@
       "test_evidence": [
         "tests/test_wms_domain.py:54"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "wms",
@@ -6135,7 +6135,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "wms",
@@ -6153,7 +6153,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "wms",
@@ -6171,7 +6171,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "wms",
@@ -6189,7 +6189,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "wms",
@@ -6209,7 +6209,7 @@
       "test_evidence": [
         "tests/test_wms_domain.py:79"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "wms",
@@ -6227,7 +6227,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "wms",
@@ -6245,7 +6245,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "wms",
@@ -6263,7 +6263,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "wms",
@@ -6281,7 +6281,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "wms",
@@ -6301,7 +6301,7 @@
       "test_evidence": [
         "tests/test_wms_domain.py:118"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "wms",
@@ -6319,7 +6319,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "wms",
@@ -6337,7 +6337,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "wms",
@@ -6355,7 +6355,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "wms",
@@ -6373,7 +6373,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "tms",
@@ -6393,7 +6393,7 @@
       "test_evidence": [
         "tests/test_tms_domain.py:26"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "tms",
@@ -6411,7 +6411,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "tms",
@@ -6429,7 +6429,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "tms",
@@ -6447,7 +6447,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "tms",
@@ -6465,7 +6465,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "tms",
@@ -6485,7 +6485,7 @@
       "test_evidence": [
         "tests/test_tms_domain.py:56"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "tms",
@@ -6503,7 +6503,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "tms",
@@ -6521,7 +6521,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "tms",
@@ -6539,7 +6539,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "tms",
@@ -6557,7 +6557,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "tms",
@@ -6578,7 +6578,7 @@
         "tests/test_operational_journeys.py:273",
         "tests/test_tms_domain.py:40"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "tms",
@@ -6596,7 +6596,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "tms",
@@ -6614,7 +6614,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "tms",
@@ -6632,7 +6632,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "tms",
@@ -6650,7 +6650,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "tms",
@@ -6670,7 +6670,7 @@
       "test_evidence": [
         "tests/test_tms_domain.py:104"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "tms",
@@ -6688,7 +6688,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "tms",
@@ -6706,7 +6706,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "tms",
@@ -6724,7 +6724,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "tms",
@@ -6742,7 +6742,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "tms",
@@ -6762,7 +6762,7 @@
       "test_evidence": [
         "tests/test_tms_domain.py:135"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "tms",
@@ -6780,7 +6780,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "tms",
@@ -6798,7 +6798,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "tms",
@@ -6816,7 +6816,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "tms",
@@ -6834,7 +6834,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "crm",
@@ -6854,7 +6854,7 @@
       "test_evidence": [
         "tests/test_crm_domain.py:26"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "crm",
@@ -6872,7 +6872,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "crm",
@@ -6890,7 +6890,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "crm",
@@ -6908,7 +6908,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "crm",
@@ -6926,7 +6926,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "crm",
@@ -6946,7 +6946,7 @@
       "test_evidence": [
         "tests/test_crm_domain.py:71"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "crm",
@@ -6964,7 +6964,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "crm",
@@ -6982,7 +6982,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "crm",
@@ -7000,7 +7000,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "crm",
@@ -7018,7 +7018,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "crm",
@@ -7038,7 +7038,7 @@
       "test_evidence": [
         "tests/test_crm_domain.py:48"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "crm",
@@ -7056,7 +7056,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "crm",
@@ -7074,7 +7074,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "crm",
@@ -7092,7 +7092,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "crm",
@@ -7110,7 +7110,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "crm",
@@ -7130,7 +7130,7 @@
       "test_evidence": [
         "tests/test_crm_domain.py:123"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "crm",
@@ -7148,7 +7148,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "crm",
@@ -7166,7 +7166,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "crm",
@@ -7184,7 +7184,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "crm",
@@ -7202,7 +7202,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "bpm",
@@ -7220,7 +7220,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "bpm",
@@ -7238,7 +7238,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "bpm",
@@ -7256,7 +7256,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "bpm",
@@ -7274,7 +7274,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "bpm",
@@ -7292,7 +7292,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "bpm",
@@ -7312,7 +7312,7 @@
       "test_evidence": [
         "tests/test_bpm_domain.py:41"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "bpm",
@@ -7330,7 +7330,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "bpm",
@@ -7348,7 +7348,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "bpm",
@@ -7366,7 +7366,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "bpm",
@@ -7384,7 +7384,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "bpm",
@@ -7404,7 +7404,7 @@
       "test_evidence": [
         "tests/test_bpm_domain.py:56"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "bpm",
@@ -7422,7 +7422,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "bpm",
@@ -7440,7 +7440,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "bpm",
@@ -7458,7 +7458,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "bpm",
@@ -7476,7 +7476,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "bpm",
@@ -7496,7 +7496,7 @@
       "test_evidence": [
         "tests/test_bpm_domain.py:26"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "bpm",
@@ -7514,7 +7514,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "bpm",
@@ -7532,7 +7532,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "bpm",
@@ -7550,7 +7550,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "bpm",
@@ -7568,7 +7568,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "document",
@@ -7586,7 +7586,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "document",
@@ -7604,7 +7604,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "document",
@@ -7622,7 +7622,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "document",
@@ -7640,7 +7640,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "document",
@@ -7658,7 +7658,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "document",
@@ -7678,7 +7678,7 @@
       "test_evidence": [
         "tests/test_document_domain.py:39"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "document",
@@ -7696,7 +7696,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "document",
@@ -7714,7 +7714,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "document",
@@ -7732,7 +7732,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "document",
@@ -7750,7 +7750,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "document",
@@ -7770,7 +7770,7 @@
       "test_evidence": [
         "tests/test_document_domain.py:49"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "document",
@@ -7788,7 +7788,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "document",
@@ -7806,7 +7806,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "document",
@@ -7824,7 +7824,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "document",
@@ -7842,7 +7842,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "document",
@@ -7860,7 +7860,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "document",
@@ -7878,7 +7878,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "document",
@@ -7896,7 +7896,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "document",
@@ -7914,7 +7914,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "document",
@@ -7932,7 +7932,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "hr",
@@ -7952,7 +7952,7 @@
       "test_evidence": [
         "tests/test_hr_domain.py:27"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "hr",
@@ -7970,7 +7970,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "hr",
@@ -7988,7 +7988,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "hr",
@@ -8006,7 +8006,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "hr",
@@ -8024,7 +8024,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "hr",
@@ -8044,7 +8044,7 @@
       "test_evidence": [
         "tests/test_hr_domain.py:43"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "hr",
@@ -8062,7 +8062,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "hr",
@@ -8080,7 +8080,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "hr",
@@ -8098,7 +8098,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "hr",
@@ -8116,7 +8116,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "hr",
@@ -8134,7 +8134,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "hr",
@@ -8152,7 +8152,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "hr",
@@ -8170,7 +8170,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "hr",
@@ -8188,7 +8188,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "hr",
@@ -8206,7 +8206,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "hr",
@@ -8226,7 +8226,7 @@
       "test_evidence": [
         "tests/test_hr_domain.py:74"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "hr",
@@ -8244,7 +8244,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "hr",
@@ -8262,7 +8262,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "hr",
@@ -8280,7 +8280,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "hr",
@@ -8298,7 +8298,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "hr",
@@ -8316,7 +8316,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "hr",
@@ -8334,7 +8334,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "hr",
@@ -8352,7 +8352,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "hr",
@@ -8370,7 +8370,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "hr",
@@ -8388,7 +8388,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "health",
@@ -8409,7 +8409,7 @@
         "tests/test_operational_journeys.py:368",
         "tests/test_permissions_enforcement_matrix.py:271"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "health",
@@ -8427,7 +8427,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "health",
@@ -8448,7 +8448,7 @@
         "tests/test_operational_journeys.py:376",
         "tests/test_permissions_enforcement_matrix.py:278"
       ],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "health",
@@ -8466,7 +8466,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "health",
@@ -8484,7 +8484,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "health",
@@ -8504,7 +8504,7 @@
       "test_evidence": [
         "tests/test_operational_journeys.py:383"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "health",
@@ -8522,7 +8522,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "health",
@@ -8540,7 +8540,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "health",
@@ -8558,7 +8558,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "health",
@@ -8576,7 +8576,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "health",
@@ -8594,7 +8594,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "health",
@@ -8612,7 +8612,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "health",
@@ -8630,7 +8630,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "health",
@@ -8648,7 +8648,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "health",
@@ -8666,7 +8666,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "health",
@@ -8684,7 +8684,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "health",
@@ -8702,7 +8702,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "health",
@@ -8720,7 +8720,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "health",
@@ -8738,7 +8738,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "health",
@@ -8756,7 +8756,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "health",
@@ -8774,7 +8774,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "health",
@@ -8792,7 +8792,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "health",
@@ -8810,7 +8810,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "health",
@@ -8828,7 +8828,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "health",
@@ -8846,7 +8846,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "vision",
@@ -8866,7 +8866,7 @@
       "test_evidence": [
         "tests/test_vision_domain.py:26"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "vision",
@@ -8884,7 +8884,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "vision",
@@ -8902,7 +8902,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "vision",
@@ -8920,7 +8920,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "vision",
@@ -8938,7 +8938,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "vision",
@@ -8958,7 +8958,7 @@
       "test_evidence": [
         "tests/test_vision_domain.py:39"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "vision",
@@ -8976,7 +8976,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "vision",
@@ -8994,7 +8994,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "vision",
@@ -9012,7 +9012,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "vision",
@@ -9030,7 +9030,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "vision",
@@ -9050,7 +9050,7 @@
       "test_evidence": [
         "tests/test_vision_domain.py:56"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "vision",
@@ -9068,7 +9068,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "vision",
@@ -9086,7 +9086,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "vision",
@@ -9104,7 +9104,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "vision",
@@ -9122,7 +9122,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "vision",
@@ -9142,7 +9142,7 @@
       "test_evidence": [
         "tests/test_vision_domain.py:72"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "vision",
@@ -9160,7 +9160,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "vision",
@@ -9178,7 +9178,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "vision",
@@ -9196,7 +9196,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "vision",
@@ -9214,7 +9214,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "legal",
@@ -9234,7 +9234,7 @@
       "test_evidence": [
         "tests/test_legal_domain.py:26"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "legal",
@@ -9252,7 +9252,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "legal",
@@ -9270,7 +9270,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "legal",
@@ -9288,7 +9288,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "legal",
@@ -9306,7 +9306,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "legal",
@@ -9326,7 +9326,7 @@
       "test_evidence": [
         "tests/test_legal_domain.py:42"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "legal",
@@ -9344,7 +9344,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "legal",
@@ -9362,7 +9362,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "legal",
@@ -9380,7 +9380,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "legal",
@@ -9398,7 +9398,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "legal",
@@ -9416,7 +9416,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "legal",
@@ -9434,7 +9434,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "legal",
@@ -9452,7 +9452,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "legal",
@@ -9470,7 +9470,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "legal",
@@ -9488,7 +9488,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "legal",
@@ -9506,7 +9506,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "legal",
@@ -9524,7 +9524,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "legal",
@@ -9542,7 +9542,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "legal",
@@ -9560,7 +9560,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "legal",
@@ -9578,7 +9578,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "property",
@@ -9598,7 +9598,7 @@
       "test_evidence": [
         "tests/test_property_domain.py:27"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "property",
@@ -9616,7 +9616,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "property",
@@ -9634,7 +9634,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "property",
@@ -9652,7 +9652,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "property",
@@ -9670,7 +9670,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "property",
@@ -9688,7 +9688,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "property",
@@ -9706,7 +9706,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "property",
@@ -9724,7 +9724,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "property",
@@ -9742,7 +9742,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "property",
@@ -9760,7 +9760,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "property",
@@ -9780,7 +9780,7 @@
       "test_evidence": [
         "tests/test_property_domain.py:40"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "property",
@@ -9798,7 +9798,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "property",
@@ -9816,7 +9816,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "property",
@@ -9834,7 +9834,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "property",
@@ -9852,7 +9852,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "property",
@@ -9870,7 +9870,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "property",
@@ -9888,7 +9888,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "property",
@@ -9906,7 +9906,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "property",
@@ -9924,7 +9924,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "property",
@@ -9942,7 +9942,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "property",
@@ -9962,7 +9962,7 @@
       "test_evidence": [
         "tests/test_property_domain.py:72"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "property",
@@ -9980,7 +9980,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "property",
@@ -9998,7 +9998,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "property",
@@ -10016,7 +10016,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "property",
@@ -10034,7 +10034,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "bi",
@@ -10054,7 +10054,7 @@
       "test_evidence": [
         "tests/test_bi_domain.py:26"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "bi",
@@ -10072,7 +10072,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "bi",
@@ -10090,7 +10090,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "bi",
@@ -10108,7 +10108,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "bi",
@@ -10126,7 +10126,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "bi",
@@ -10146,7 +10146,7 @@
       "test_evidence": [
         "tests/test_bi_domain.py:65"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "bi",
@@ -10164,7 +10164,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "bi",
@@ -10182,7 +10182,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "bi",
@@ -10200,7 +10200,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "bi",
@@ -10218,7 +10218,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "bi",
@@ -10236,7 +10236,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "bi",
@@ -10254,7 +10254,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "bi",
@@ -10272,7 +10272,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "bi",
@@ -10290,7 +10290,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "bi",
@@ -10308,7 +10308,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "bi",
@@ -10328,7 +10328,7 @@
       "test_evidence": [
         "tests/test_bi_domain.py:96"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "bi",
@@ -10346,7 +10346,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "bi",
@@ -10364,7 +10364,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "bi",
@@ -10382,7 +10382,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "bi",
@@ -10400,7 +10400,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "ai_core",
@@ -10420,7 +10420,7 @@
       "test_evidence": [
         "tests/test_ai_core_domain.py:26"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "ai_core",
@@ -10438,7 +10438,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "ai_core",
@@ -10456,7 +10456,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "ai_core",
@@ -10474,7 +10474,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "ai_core",
@@ -10492,7 +10492,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "ai_core",
@@ -10510,7 +10510,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "ai_core",
@@ -10528,7 +10528,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "ai_core",
@@ -10546,7 +10546,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "ai_core",
@@ -10564,7 +10564,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "ai_core",
@@ -10582,7 +10582,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "ai_core",
@@ -10602,7 +10602,7 @@
       "test_evidence": [
         "tests/test_ai_core_domain.py:48"
       ],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "ai_core",
@@ -10620,7 +10620,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "ai_core",
@@ -10638,7 +10638,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "ai_core",
@@ -10656,7 +10656,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "ai_core",
@@ -10674,7 +10674,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "api_hub",
@@ -10692,7 +10692,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "api_hub",
@@ -10710,7 +10710,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "api_hub",
@@ -10728,7 +10728,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "api_hub",
@@ -10746,7 +10746,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "api_hub",
@@ -10764,7 +10764,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "api_hub",
@@ -10782,7 +10782,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "api_hub",
@@ -10800,7 +10800,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "api_hub",
@@ -10818,7 +10818,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "api_hub",
@@ -10836,7 +10836,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "api_hub",
@@ -10854,7 +10854,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "api_hub",
@@ -10872,7 +10872,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "api_hub",
@@ -10890,7 +10890,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "api_hub",
@@ -10908,7 +10908,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "api_hub",
@@ -10926,7 +10926,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "api_hub",
@@ -10944,7 +10944,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "api_hub",
@@ -10962,7 +10962,7 @@
       "idempotency": "X-Idempotency-Key somente transacionais",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:489"
+      "evidence": "modules/shared/runtime.py:520"
     },
     {
       "module": "api_hub",
@@ -10980,7 +10980,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:499"
+      "evidence": "modules/shared/runtime.py:530"
     },
     {
       "module": "api_hub",
@@ -10998,7 +10998,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:512"
+      "evidence": "modules/shared/runtime.py:543"
     },
     {
       "module": "api_hub",
@@ -11016,7 +11016,7 @@
       "idempotency": "não exigida genericamente",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:524"
+      "evidence": "modules/shared/runtime.py:565"
     },
     {
       "module": "api_hub",
@@ -11034,7 +11034,7 @@
       "idempotency": "não aplicável",
       "enforcement_status": "parcial_estatico",
       "test_evidence": [],
-      "evidence": "modules/shared/runtime.py:545"
+      "evidence": "modules/shared/runtime.py:586"
     },
     {
       "module": "ai_core",

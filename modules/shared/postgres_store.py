@@ -12,7 +12,7 @@ from psycopg.errors import UniqueViolation
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
-from .audit_contract import AuditContext, build_audit_record
+from .audit_contract import insert_postgres_audit
 from .correlation import get_correlation_id
 from .event_contract import EVENT_SCHEMA_VERSION, build_event_envelope
 from .store import DuplicateValueError
@@ -299,33 +299,11 @@ class BasePostgresStore:
         user_id: str | None,
         entity_id: str | None,
     ) -> dict[str, Any]:
-        previous = connection.execute(
-            "SELECT row_hash FROM audit.logs WHERE module = %s ORDER BY occurred_at DESC LIMIT 1 FOR SHARE",
-            (self.module,),
-        ).fetchone()
-        record = build_audit_record(
-            module=self.module, actor_user_id=actor, action=action, resource_type=resource_type,
-            resource_id=resource_id, before=before, after=after, user_id=user_id,
-            context=AuditContext(company_id=entity_id), previous_hash=previous["row_hash"] if previous else None,
+        return insert_postgres_audit(
+            connection, module=self.module, actor_user_id=actor, action=action,
+            resource_type=resource_type, resource_id=resource_id, before=before, after=after,
+            user_id=user_id, company_id=entity_id,
         )
-        evidence = connection.execute(
-            sql.SQL("""INSERT INTO audit.logs
-               (id, schema_version, event, log_type, user_id, actor_user_id, actor_entity_id, company_id,
-                action, module, resource_type, resource_id, before_data, after_data, changed_fields,
-                origin, channel, correlation_id, occurred_at, result, exported, printed, shared, previous_hash, row_hash,
-                retention_until, metadata, created_by)
-               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                       %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *"""),
-            (record["id"], record["schema_version"], record["event"], record["log_type"], user_id, actor,
-             entity_id, entity_id, action, self.module, resource_type, resource_id,
-             Jsonb(record["before_data"]) if record["before_data"] is not None else None,
-             Jsonb(record["after_data"]) if record["after_data"] is not None else None,
-             Jsonb(record["changed_fields"]), record["origin"], record["channel"], record["correlation_id"],
-             record["occurred_at"], record["result"], record["exported"], record["printed"], record["shared"],
-             record["previous_hash"], record["row_hash"],
-             record["retention_until"], Jsonb(record["metadata"]), actor),
-        ).fetchone()
-        return dict(evidence)
 
     def _event(self, connection: Connection, routing_key: str, actor: str, item: dict[str, Any]) -> None:
         correlation_id = get_correlation_id()

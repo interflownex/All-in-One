@@ -28,11 +28,11 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 535,
-    "tests_with_assertions": 494,
+    "test_functions": 537,
+    "tests_with_assertions": 496,
     "tests_with_http_calls": 204,
-    "test_functions_in_execution_reports": 510,
-    "test_functions_passed": 477,
+    "test_functions_in_execution_reports": 512,
+    "test_functions_passed": 479,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -68,7 +68,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -88,7 +88,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -108,7 +108,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -128,7 +128,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -148,7 +148,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -168,7 +168,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -188,7 +188,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -208,7 +208,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -228,7 +228,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -248,7 +248,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -268,7 +268,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -288,7 +288,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -308,7 +308,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:52"
+      "evidence": "modules/shared/store.py:53"
     },
     {
       "database": "sqlite_contract_store",
@@ -328,7 +328,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:72"
+      "evidence": "modules/shared/store.py:73"
     },
     {
       "database": "sqlite_contract_store",
@@ -348,7 +348,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:72"
+      "evidence": "modules/shared/store.py:73"
     },
     {
       "database": "sqlite_contract_store",
@@ -368,7 +368,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:72"
+      "evidence": "modules/shared/store.py:73"
     },
     {
       "database": "sqlite_contract_store",
@@ -388,7 +388,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:72"
+      "evidence": "modules/shared/store.py:73"
     },
     {
       "database": "sqlite_contract_store",
@@ -408,7 +408,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:72"
+      "evidence": "modules/shared/store.py:73"
     },
     {
       "database": "sqlite_contract_store",
@@ -428,7 +428,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -448,7 +448,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -468,7 +468,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -488,7 +488,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -508,7 +508,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -528,7 +528,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -548,7 +548,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -568,7 +568,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -588,7 +588,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -608,7 +608,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -628,7 +628,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -648,7 +648,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -668,7 +668,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -688,7 +688,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -708,7 +708,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -728,7 +728,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -748,7 +748,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -768,7 +768,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -788,7 +788,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -808,7 +808,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -828,7 +828,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -848,7 +848,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -868,7 +868,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -888,7 +888,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:80"
+      "evidence": "modules/shared/store.py:81"
     },
     {
       "database": "sqlite_contract_store",
@@ -908,7 +908,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     },
     {
       "database": "sqlite_contract_store",
@@ -928,7 +928,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     },
     {
       "database": "sqlite_contract_store",
@@ -948,7 +948,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     },
     {
       "database": "sqlite_contract_store",
@@ -968,7 +968,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     },
     {
       "database": "sqlite_contract_store",
@@ -988,7 +988,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     },
     {
       "database": "sqlite_contract_store",
@@ -1008,7 +1008,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     },
     {
       "database": "sqlite_contract_store",
@@ -1028,7 +1028,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     },
     {
       "database": "sqlite_contract_store",
@@ -1048,7 +1048,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     },
     {
       "database": "sqlite_contract_store",
@@ -1068,7 +1068,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     },
     {
       "database": "sqlite_contract_store",
@@ -1088,7 +1088,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     },
     {
       "database": "sqlite_contract_store",
@@ -1108,7 +1108,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "modules/shared/store.py:106"
+      "evidence": "modules/shared/store.py:107"
     }
   ]
 }

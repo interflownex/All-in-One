@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+from contextvars import ContextVar
 from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 import json
 from typing import Any, Literal
 from uuid import uuid4
+
+from psycopg import Connection
+from psycopg.types.json import Jsonb
 
 from .correlation import get_correlation_id
 
@@ -13,6 +17,7 @@ from .correlation import get_correlation_id
 AUDIT_SCHEMA_VERSION = 1
 DEFAULT_RETENTION_DAYS = 2555
 _SECRET_FRAGMENTS = ("password", "senha", "secret", "token", "authorization", "cookie", "private_key")
+_audit_context: ContextVar[AuditContext | None] = ContextVar("all_in_one_audit_context", default=None)
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,6 +36,15 @@ class AuditContext:
     authorization: str | None = None
     approval_id: str | None = None
     approved_by: str | None = None
+
+
+def set_audit_context(context: AuditContext) -> AuditContext:
+    _audit_context.set(context)
+    return context
+
+
+def get_audit_context() -> AuditContext:
+    return _audit_context.get() or AuditContext()
 
 
 def sanitize_audit_value(value: Any) -> Any:
@@ -77,7 +91,7 @@ def build_audit_record(
     previous_hash: str | None = None,
     occurred_at: str | None = None,
 ) -> dict[str, Any]:
-    ctx = context or AuditContext()
+    ctx = context or get_audit_context()
     timestamp = occurred_at or datetime.now(UTC).isoformat()
     retention_until = (datetime.fromisoformat(timestamp.replace("Z", "+00:00")) + timedelta(days=DEFAULT_RETENTION_DAYS)).isoformat()
     safe_before = sanitize_audit_value(before)
@@ -126,3 +140,56 @@ def build_read_audit_record(
         resource_id=resource_id, after={"purpose": purpose, "exported": exported, "printed": printed, "shared": shared},
         context=context, result=result, log_type="security",
     )
+
+
+def insert_postgres_audit(
+    connection: Connection,
+    *,
+    module: str,
+    actor_user_id: str,
+    action: str,
+    resource_type: str,
+    resource_id: str,
+    before: Any,
+    after: Any,
+    user_id: str | None,
+    company_id: str | None,
+) -> dict[str, Any]:
+    """Writer único para stores PostgreSQL; requer a migration 029 aplicada."""
+    del company_id  # entity_id legado pode representar loja/armazém; empresa vem do contexto autenticado.
+    previous = connection.execute(
+        "SELECT row_hash FROM audit.logs WHERE module = %s ORDER BY occurred_at DESC LIMIT 1 FOR SHARE",
+        (module,),
+    ).fetchone()
+    base_context = get_audit_context()
+    context = base_context
+    record = build_audit_record(
+        module=module, actor_user_id=actor_user_id, action=action, resource_type=resource_type,
+        resource_id=resource_id, before=before, after=after, user_id=user_id, context=context,
+        previous_hash=previous["row_hash"] if previous else None,
+    )
+    evidence = connection.execute(
+        """INSERT INTO audit.logs
+           (id, schema_version, event, log_type, user_id, actor_user_id, actor_entity_id, tenant_id,
+            company_id, actor_role, session_id, device_id, ip_address, user_agent, action, module,
+            resource_type, resource_id, before_data, after_data, changed_fields, reason, origin, channel,
+            correlation_id, causation_id, occurred_at, result, error_detail, authorization, approval_id,
+            approved_by, exported, printed, shared, previous_hash, row_hash, retention_until, metadata, created_by)
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                   %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                   %s, %s, %s, %s) RETURNING *""",
+        (
+            record["id"], record["schema_version"], record["event"], record["log_type"], user_id,
+            actor_user_id, record["company_id"], record["tenant_id"], record["company_id"], record["actor_role"],
+            record["session_id"], record["device_id"], record["ip_address"], record["user_agent"], action,
+            module, resource_type, resource_id,
+            Jsonb(record["before_data"]) if record["before_data"] is not None else None,
+            Jsonb(record["after_data"]) if record["after_data"] is not None else None,
+            Jsonb(record["changed_fields"]), record["reason"], record["origin"], record["channel"],
+            record["correlation_id"], record["causation_id"], record["occurred_at"], record["result"],
+            record["error_detail"], record["authorization"], record["approval_id"], record["approved_by"],
+            record["exported"], record["printed"], record["shared"], record["previous_hash"],
+            record["row_hash"], record["retention_until"], Jsonb(record["metadata"]), actor_user_id,
+        ),
+    ).fetchone()
+    return dict(evidence)

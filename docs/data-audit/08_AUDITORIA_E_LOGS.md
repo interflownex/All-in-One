@@ -2,7 +2,7 @@
 
 O inventário encontrou 7 tabelas candidatas de auditoria/log/evento. O contrato possui 35 requisitos de alteração e leitura; 35 possuem ao menos um alias físico em alguma tabela candidata.
 
-Os 35 requisitos possuem representação física no contrato unificado da migration 029. Essa cobertura estrutural não prova adoção por cada operação ou dado sensível; stores especializados, contexto HTTP e enforcement por módulo permanecem lacunas até testes de integração.
+Os 35 requisitos possuem representação física no contrato unificado da migration 029. O writer único atende a base e os sete stores PostgreSQL especializados; o runtime captura contexto HTTP governado e audita leituras sensíveis. PostgreSQL vivo e homologação positiva e negativa por operação permanecem pendentes.
 
 Logs técnicos, segurança, auditoria, negócio, métricas, traces e eventos de integração devem permanecer separados e correlacionados. Segredos e valores sensíveis não podem ser gravados em texto aberto.
 

@@ -10,6 +10,7 @@ from psycopg.errors import UniqueViolation
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
+from .audit_contract import insert_postgres_audit
 from .correlation import get_correlation_id
 from .event_contract import EVENT_SCHEMA_VERSION, build_event_envelope
 from .store import DuplicateValueError
@@ -242,14 +243,9 @@ class MobilityPostgresStore:
         user_id: str | None,
         entity_id: str | None,
     ) -> dict[str, Any]:
-        evidence = connection.execute(
-            """INSERT INTO audit.logs
-               (user_id, actor_user_id, actor_entity_id, action, module, resource_type, resource_id,
-                before_data, after_data, created_by)
-               VALUES (%s, %s, %s, %s, 'mobility', %s, %s, %s, %s, %s) RETURNING *""",
-            (user_id, actor, entity_id, action, resource_type, resource_id, Jsonb(before) if before else None, Jsonb(after), actor),
-        ).fetchone()
-        return dict(evidence)
+        return insert_postgres_audit(connection, module="mobility", actor_user_id=actor, action=action,
+            resource_type=resource_type, resource_id=resource_id, before=before, after=after,
+            user_id=user_id, company_id=entity_id)
 
     def _event(self, connection: Connection, routing_key: str, actor: str, item: dict[str, Any]) -> None:
         correlation_id = get_correlation_id()

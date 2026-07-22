@@ -9,6 +9,7 @@ from psycopg import Connection, sql
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
+from .audit_contract import insert_postgres_audit
 from .correlation import get_correlation_id
 from .event_contract import EVENT_SCHEMA_VERSION, build_event_envelope
 from .store import DuplicateValueError
@@ -106,12 +107,9 @@ class FinancePostgresStore:
                 if item is None:
                     raise RuntimeError(f"Erro ao criar recurso Finance {resource_type}.")
                 
-                connection.execute(
-                    """INSERT INTO audit.logs
-                       (user_id, actor_user_id, action, module, resource_type, resource_id, after_data)
-                       VALUES (%s, %s, %s, %s, %s, %s, %s)""",
-                    (user_id, actor, "create", self.module, resource_type, resource_id, Jsonb(item)),
-                )
+                insert_postgres_audit(connection, module=self.module, actor_user_id=actor, action="create",
+                    resource_type=resource_type, resource_id=resource_id, before=None, after=item,
+                    user_id=user_id, company_id=entity_id)
                 
                 self._event(connection, event, actor, item)
                 return item
@@ -181,12 +179,9 @@ class FinancePostgresStore:
             updated = self._resource(item["resource_type"], row)
             if updated is None:
                 raise RuntimeError("PostgreSQL nao retornou recurso Finance atualizado.")
-            connection.execute(
-                """INSERT INTO audit.logs
-                   (user_id, actor_user_id, action, module, resource_type, resource_id, before_data, after_data)
-                   VALUES (%s, %s, %s, 'finance', %s, %s, %s, %s)""",
-                (item["user_id"], actor, action, item["resource_type"], item["id"], Jsonb(before), Jsonb(updated)),
-            )
+            insert_postgres_audit(connection, module="finance", actor_user_id=actor, action=action,
+                resource_type=item["resource_type"], resource_id=item["id"], before=before, after=updated,
+                user_id=item["user_id"], company_id=item["entity_id"])
             if event:
                 self._event(connection, event, actor, updated)
             return updated
@@ -199,12 +194,9 @@ class FinancePostgresStore:
                 ),
                 (actor, item["id"]),
             )
-            connection.execute(
-                """INSERT INTO audit.logs
-                   (user_id, actor_user_id, action, module, resource_type, resource_id, before_data)
-                   VALUES (%s, %s, 'soft_delete', 'finance', %s, %s, %s)""",
-                (item["user_id"], actor, item["resource_type"], item["id"], Jsonb(item)),
-            )
+            insert_postgres_audit(connection, module="finance", actor_user_id=actor, action="soft_delete",
+                resource_type=item["resource_type"], resource_id=item["id"], before=item, after=None,
+                user_id=item["user_id"], company_id=item["entity_id"])
 
     def list(self, resource_type: str, user_id: str | None = None) -> list[dict[str, Any]]:
         query = sql.SQL("SELECT * FROM {}").format(self._table(resource_type))

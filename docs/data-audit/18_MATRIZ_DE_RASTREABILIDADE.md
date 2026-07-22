@@ -4,7 +4,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 
 | ID | Seção | Requisito | Candidatos | Aprovados | Status |
 | --- | --- | --- | --- | --- | --- |
-| CONCL-001 | criterios_de_conclusao | 100% dos bancos forem catalogados | 20 | 14 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CONCL-001 | criterios_de_conclusao | 100% dos bancos forem catalogados | 20 | 16 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-002 | criterios_de_conclusao | 100% dos schemas forem catalogados | 12 | 12 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-003 | criterios_de_conclusao | 100% das tabelas e coleções forem catalogadas | 20 | 17 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-004 | criterios_de_conclusao | 100% dos campos forem descritos | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
@@ -33,7 +33,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CHECK-009 | planejar | Definir prioridades | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-010 | planejar | Definir entregáveis | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-011 | planejar | Definir critérios de aceite | 2 | 2 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-012 | construir | Catalogar bancos | 20 | 15 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-012 | construir | Catalogar bancos | 20 | 17 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-013 | construir | Catalogar tabelas | 20 | 15 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-014 | construir | Catalogar campos | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-015 | construir | Catalogar unidades | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |

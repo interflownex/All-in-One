@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+from dataclasses import replace
 from datetime import UTC, datetime
 import json
 from pathlib import Path
@@ -9,7 +10,7 @@ from threading import RLock
 from typing import Any, Iterator
 from uuid import uuid4
 
-from .audit_contract import AuditContext, build_audit_record
+from .audit_contract import build_audit_record, get_audit_context
 from .correlation import get_correlation_id
 from .event_contract import build_event_envelope
 
@@ -292,10 +293,12 @@ class SQLiteStore:
         previous = connection.execute(
             "SELECT row_hash FROM audit_events WHERE module = ? ORDER BY created_at DESC LIMIT 1", (self.module,)
         ).fetchone()
+        audit_context = get_audit_context()
+        entity = (after or before or {}).get("entity_id") if isinstance(after or before, dict) else None
         evidence = build_audit_record(
             module=self.module, actor_user_id=actor, action=action, resource_type=resource_type,
             resource_id=resource_id, before=before, after=after,
-            context=AuditContext(company_id=(after or before or {}).get("entity_id") if isinstance(after or before, dict) else None),
+            context=replace(audit_context, company_id=entity or audit_context.company_id),
             previous_hash=previous["row_hash"] if previous else None,
         )
         evidence["created_at"] = evidence["occurred_at"]

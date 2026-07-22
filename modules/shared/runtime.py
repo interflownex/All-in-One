@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 from uuid import UUID, uuid4
 
-from fastapi import Body, Depends, FastAPI, Header, HTTPException, Query, Response
+from fastapi import Body, Depends, FastAPI, Header, HTTPException, Query, Request, Response
 from pydantic import BaseModel, Field
 
 from .calculators import (
@@ -18,6 +18,7 @@ from .calculators import (
     mobility_fare,
 )
 from .correlation import set_correlation_id
+from .audit_contract import AuditContext, set_audit_context
 from .logging_utils import setup_secure_logging, get_logger
 import subprocess
 
@@ -340,6 +341,36 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
     store = _store_for(module_name)
     legacy_rule = ResourceRule()
 
+    @app.middleware("http")
+    async def bind_audit_request_context(request: Request, call_next):
+        def valid_uuid_header(name: str) -> str | None:
+            value = request.headers.get(name)
+            if not value:
+                return None
+            try:
+                return str(UUID(value))
+            except ValueError:
+                return None
+
+        roles = sorted(item.strip().casefold() for item in request.headers.get("x-actor-roles", "").split(",") if item.strip())
+        scopes = sorted(item.strip().casefold() for item in request.headers.get("x-actor-scopes", "").split(",") if item.strip())
+        forwarded = request.headers.get("x-forwarded-for")
+        channel = request.headers.get("x-client-channel", "api").casefold()
+        if channel not in {"api", "web", "mobile", "worker", "integration", "admin"}:
+            channel = "api"
+        set_audit_context(AuditContext(
+            tenant_id=valid_uuid_header("x-tenant-id"), company_id=valid_uuid_header("x-business-id"),
+            actor_role=",".join(roles)[:200] or None,
+            session_id=(request.headers.get("x-audit-session-id") or "")[:180] or None,
+            device_id=(request.headers.get("x-device-fingerprint") or "")[:180] or None,
+            ip_address=forwarded.split(",", maxsplit=1)[0].strip()[:64] if forwarded else (request.client.host if request.client else None),
+            user_agent=(request.headers.get("user-agent") or "")[:500] or None,
+            origin=request.headers.get("x-client-origin", "web").casefold()[:100], channel=channel,
+            reason=(request.headers.get("x-audit-reason") or "")[:500] or None,
+            causation_id=valid_uuid_header("x-causation-id"), authorization=",".join(scopes)[:1000] or None,
+        ))
+        return await call_next(request)
+
     def fetch(resource_type: str, resource_id: UUID) -> dict[str, Any]:
         item = store.get(resource_type, str(resource_id))
         if item is None:
@@ -514,11 +545,21 @@ def create_module_app(module_name: str, version: str = "0.2.0") -> FastAPI:
         resource_type: str,
         resource_id: UUID,
         actor: Actor = Depends(actor_from_headers),
+        x_access_purpose: str = Header(default="consulta operacional autorizada", alias="X-Access-Purpose"),
+        x_audit_exported: bool = Header(default=False, alias="X-Audit-Exported"),
+        x_audit_printed: bool = Header(default=False, alias="X-Audit-Printed"),
+        x_audit_shared: bool = Header(default=False, alias="X-Audit-Shared"),
     ) -> dict[str, Any]:
         rule = rule_for(module_name, resource_type)
         _authorize_permissions_operation(module_name, actor, "read", resource_type)
         item = fetch(resource_type, resource_id)
         _authorize_resource_read(actor, UUID(item["user_id"]), rule, module_name)
+        if rule.sensitive:
+            store.audit_external(str(actor.user_id), "sensitive_read", resource_type, str(resource_id), {
+                "user_id": item["user_id"], "entity_id": item.get("entity_id"),
+                "purpose": x_access_purpose[:300], "exported": x_audit_exported,
+                "printed": x_audit_printed, "shared": x_audit_shared,
+            })
         return _expose(item, actor, rule, module_name)
 
     @app.patch("/resources/{resource_type}/{resource_id}")

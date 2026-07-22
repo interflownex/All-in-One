@@ -10,6 +10,8 @@ from uuid import UUID
 
 from fastapi import Header, HTTPException
 
+from .audit_contract import AuditContext, set_audit_context
+
 
 RECRUITER_ROLES = frozenset({"owner", "administrator", "hr_manager", "recruiter", "auditor"})
 
@@ -39,6 +41,15 @@ def actor_from_headers(
     x_valley_master_account: str = Header(default="false", alias="X-Valley-Master-Account"),
     x_gateway_timestamp: str | None = Header(default=None, alias="X-Gateway-Timestamp"),
     x_gateway_signature: str | None = Header(default=None, alias="X-Gateway-Signature"),
+    x_tenant_id: UUID | None = Header(default=None, alias="X-Tenant-Id"),
+    x_audit_session_id: str | None = Header(default=None, alias="X-Audit-Session-Id"),
+    x_device_fingerprint: str | None = Header(default=None, alias="X-Device-Fingerprint"),
+    x_forwarded_for: str | None = Header(default=None, alias="X-Forwarded-For"),
+    user_agent: str | None = Header(default=None, alias="User-Agent"),
+    x_client_origin: str = Header(default="web", alias="X-Client-Origin"),
+    x_client_channel: str = Header(default="api", alias="X-Client-Channel"),
+    x_audit_reason: str | None = Header(default=None, alias="X-Audit-Reason"),
+    x_causation_id: UUID | None = Header(default=None, alias="X-Causation-Id"),
 ) -> Actor:
     if x_actor_user_id is None:
         raise HTTPException(status_code=401, detail="Ator autenticado obrigatorio.")
@@ -57,6 +68,21 @@ def actor_from_headers(
     )
     if os.getenv("ALL_IN_ONE_ENV", "development").casefold() == "production":
         _verify_gateway_signature(actor, x_gateway_timestamp, x_gateway_signature)
+    allowed_channels = {"api", "web", "mobile", "worker", "integration", "admin"}
+    channel = x_client_channel.casefold() if x_client_channel.casefold() in allowed_channels else "api"
+    set_audit_context(AuditContext(
+        tenant_id=str(x_tenant_id) if x_tenant_id else None,
+        company_id=str(actor.business_id) if actor.business_id else None,
+        actor_role=",".join(sorted(actor.roles))[:200] or None,
+        session_id=x_audit_session_id[:180] if x_audit_session_id else None,
+        device_id=x_device_fingerprint[:180] if x_device_fingerprint else None,
+        ip_address=x_forwarded_for.split(",", maxsplit=1)[0].strip()[:64] if x_forwarded_for else None,
+        user_agent=user_agent[:500] if user_agent else None,
+        origin=x_client_origin.casefold()[:100], channel=channel,
+        reason=x_audit_reason[:500] if x_audit_reason else None,
+        causation_id=str(x_causation_id) if x_causation_id else None,
+        authorization=",".join(sorted(actor.scopes))[:1000] or None,
+    ))
     return actor
 
 
