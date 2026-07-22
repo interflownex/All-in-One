@@ -103,7 +103,7 @@
       "priority": "P1",
       "module": "frontend e APIs",
       "title": "Bindings frontend-backend não estão integralmente comprovados",
-      "description": "Os 47 aliases de recurso compactado foram ligados aos nomes canônicos do backend e todas as 120 entidades lógicas têm superfície UI; ainda há 932 bindings de campo genéricos/não comprovados e 136 coincidências prováveis com campo físico.",
+      "description": "Os 47 aliases de recurso compactado foram ligados aos nomes canônicos do backend e todas as 120 entidades lógicas têm superfície UI; ainda há 844 bindings de campo genéricos/não comprovados e 224 coincidências prováveis com campo físico.",
       "evidence": [
         "apps/all-in-one/src/components/SmartCRUD.tsx",
         "docs/data-audit/artifacts/matriz_formulario_campo.csv",
@@ -257,25 +257,27 @@
       "priority": "P1",
       "module": "arquitetura modular",
       "title": "Entidades lógicas sem decisão de persistência homônima",
-      "description": "Todas as 120 entidades lógicas possuem superfície UI canônica; 62 ainda não possuem tabela PostgreSQL homônima e precisam de decisão individual sobre persistência tipada, agregado ou estrutura compartilhada.",
+      "description": "Todas as 120 entidades lógicas possuem superfície UI canônica; a migration 026 materializou 44 destinos tipados e cinco aliases físicos foram reconhecidos. Restam 13 recursos de adaptadores legados sem relação tipada executável.",
       "evidence": [
         "docs/data-audit/artifacts/catalogo_logico.json",
-        "apps/all-in-one/src/components/SmartCRUD.tsx"
+        "database/postgres/migrations/026_complete_typed_store_relations.sql",
+        "database/postgres/rollbacks/026_complete_typed_store_relations.down.sql",
+        "tests/test_typed_store_persistence_contract.py"
       ],
-      "impact": "O acesso frontend foi resolvido, mas ownership e ciclo de vida físico ainda podem ficar ambíguos.",
-      "risk": "Duplicação ou persistência implícita.",
-      "proposal": "Classificar cada divergência física como agregado, estrutura embutida, persistência compartilhada, entidade futura ou lacuna real.",
+      "impact": "A maior parte da persistência declarada foi materializada, mas 13 ciclos de vida ainda não funcionam com DSN PostgreSQL.",
+      "risk": "Falha de CRUD nos recursos legados restantes.",
+      "proposal": "Migrar os cinco adaptadores legados para o BasePostgresStore ou implementar fallback tipado para os 13 recursos restantes.",
       "dependencies": [
-        "proprietários dos 25 módulos"
+        "refatoração dos adaptadores finance, marketplace, delivery, services e mobility"
       ],
       "affected_files": [
-        "modules/shared/domain_rules.py",
+        "modules/shared/*_postgres_store.py",
         "database/postgres/migrations"
       ],
-      "migration": "somente para lacunas físicas confirmadas",
-      "backend": "registrar persistência e contrato",
+      "migration": "44 relações implementadas com rollback; 13 recursos restantes exigem modelagem",
+      "backend": "todos os destinos já declarados pelos stores possuem relação física",
       "frontend": "120 de 120 entidades com superfície canônica",
-      "tests": "contrato UI canônico aprovado; decisão física restante",
+      "tests": "contrato de destino tipado e reversibilidade aprovados",
       "documentation": "02_MAPA_DE_DOMINIOS.md",
       "acceptance": "Cada entidade possui decisão explícita de persistência, ownership e coordenada UI, ou justificativa versionada de ausência.",
       "status": "implementacao_parcial",

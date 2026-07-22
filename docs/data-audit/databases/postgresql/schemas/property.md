@@ -1,5 +1,5 @@
 # Schema `property`
 
-Tabelas catalogadas: 1.
+Tabelas catalogadas: 5.
 
 EVIDÊNCIAS: `database/postgres/migrations/`.

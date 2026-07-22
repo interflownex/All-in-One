@@ -1,6 +1,6 @@
 # Auditoria, Logs e Rastreabilidade
 
-O inventário encontrou 5 tabelas candidatas de auditoria/log/evento. O contrato possui 35 requisitos de alteração e leitura; 18 possuem ao menos um alias físico em alguma tabela candidata.
+O inventário encontrou 6 tabelas candidatas de auditoria/log/evento. O contrato possui 35 requisitos de alteração e leitura; 19 possuem ao menos um alias físico em alguma tabela candidata.
 
 Essa cobertura global não prova que cada operação ou dado sensível seja auditado. Requisitos ausentes, retenção, imutabilidade, correlação e enforcement por módulo permanecem lacunas até testes de integração.
 

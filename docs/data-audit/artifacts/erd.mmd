@@ -1,4 +1,30 @@
 erDiagram
+  ai_core_ai_memories {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  ai_core_model_runs {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   ai_core_moderation_decisions {
     UUID id PK
     UUID user_id FK
@@ -149,6 +175,45 @@ erDiagram
     UUID updated_by FK
     VARCHAR(120) idempotency_key
   }
+  bi_datasets {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  bi_exports {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  bi_indicators {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   billing_subscriptions {
     UUID id PK
     UUID user_id FK
@@ -164,6 +229,45 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
     VARCHAR(120) idempotency_key
+  }
+  bpm_processes {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  bpm_sla_policies {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  bpm_tasks {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   bpm_workflow_instances {
     UUID id PK
@@ -317,6 +421,45 @@ erDiagram
     TIMESTAMPTZ created_at
     UUID created_by FK
   }
+  crm_activities {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  crm_campaigns {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  crm_leads {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   crm_opportunities {
     UUID id PK
     UUID user_id FK
@@ -443,6 +586,71 @@ erDiagram
     UUID updated_by FK
     VARCHAR(120) idempotency_key
   }
+  document_folders {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  document_retention_policies {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  document_versions {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  erp_accounts {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  erp_cost_centers {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   erp_fiscal_documents {
     UUID id PK
     UUID user_id FK
@@ -519,6 +727,19 @@ erDiagram
     TIMESTAMPTZ created_at
     TIMESTAMPTZ updated_at
   }
+  erp_payables {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   erp_product_fiscal_assignments {
     UUID id PK
     UUID tenant_id
@@ -555,6 +776,19 @@ erDiagram
     TIMESTAMPTZ effective_to
     VARCHAR(40) status
     INTEGER version
+  }
+  erp_receivables {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   erp_tax_calculation_snapshots {
     UUID id PK
@@ -675,6 +909,32 @@ erDiagram
     UUID offer_id FK
     UUID company_id FK
   }
+  health_beds {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  health_medical_records {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   health_patients {
     UUID id PK
     UUID user_id FK
@@ -688,6 +948,45 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
     VARCHAR(120) idempotency_key
+  }
+  health_prescriptions {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  hr_candidates {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  hr_courses {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   hr_employees {
     UUID id PK
@@ -704,6 +1003,32 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
     VARCHAR(120) idempotency_key
+  }
+  hr_occupational_records {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  hr_payroll_runs {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   identity_biometrics {
     UUID id PK
@@ -1073,6 +1398,45 @@ erDiagram
     UUID updated_by FK
     VARCHAR(120) idempotency_key
   }
+  legal_deadlines {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  legal_hearings {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  legal_legal_contracts {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   marketplace_disputes {
     UUID id PK
     UUID user_id FK
@@ -1296,6 +1660,45 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
   }
+  property_assemblies {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  property_leases {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  property_maintenance_orders {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   property_properties {
     UUID id PK
     UUID user_id FK
@@ -1310,6 +1713,19 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
     VARCHAR(120) idempotency_key
+  }
+  property_units {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   services_providers {
     UUID id PK
@@ -1396,6 +1812,19 @@ erDiagram
     UUID created_by FK
     TIMESTAMPTZ updated_at
     UUID updated_by FK
+  }
+  stock_price_rules {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   stock_product_lots {
     UUID id PK
@@ -1517,6 +1946,19 @@ erDiagram
     TIMESTAMPTZ occurred_at
     UUID created_by FK
   }
+  stock_supplier_orders {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   stock_suppliers {
     UUID id PK
     UUID user_id FK
@@ -1531,6 +1973,32 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
     VARCHAR(120) idempotency_key
+  }
+  tms_carriers {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  tms_freight_audits {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   tms_freights {
     UUID id PK
@@ -1549,6 +2017,32 @@ erDiagram
     UUID updated_by FK
     VARCHAR(120) idempotency_key
   }
+  tms_proofs_of_delivery {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  tms_routes {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   vision_devices {
     UUID id PK
     UUID user_id FK
@@ -1563,6 +2057,58 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
     VARCHAR(120) idempotency_key
+  }
+  vision_motion_alerts {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  vision_recordings {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  vision_streams {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  wms_bins {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   wms_inventory {
     UUID id PK
@@ -1581,6 +2127,32 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
     VARCHAR(120) idempotency_key
+  }
+  wms_picking_waves {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  wms_shipments {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   wms_warehouses {
     UUID id PK
@@ -1945,3 +2517,135 @@ erDiagram
   erp_tax_calculation_snapshots }o--|| erp_fiscal_rules : "rule_id"
   erp_tax_calculation_snapshots }o--|| erp_product_tax_classifications : "classification_id"
   erp_tax_calculation_snapshots }o--|| identity_users : "created_by"
+  stock_price_rules }o--|| identity_users : "user_id"
+  stock_price_rules }o--|| identity_users : "created_by"
+  stock_price_rules }o--|| identity_users : "updated_by"
+  stock_supplier_orders }o--|| identity_users : "user_id"
+  stock_supplier_orders }o--|| identity_users : "created_by"
+  stock_supplier_orders }o--|| identity_users : "updated_by"
+  erp_accounts }o--|| identity_users : "user_id"
+  erp_accounts }o--|| identity_users : "created_by"
+  erp_accounts }o--|| identity_users : "updated_by"
+  erp_payables }o--|| identity_users : "user_id"
+  erp_payables }o--|| identity_users : "created_by"
+  erp_payables }o--|| identity_users : "updated_by"
+  erp_receivables }o--|| identity_users : "user_id"
+  erp_receivables }o--|| identity_users : "created_by"
+  erp_receivables }o--|| identity_users : "updated_by"
+  erp_cost_centers }o--|| identity_users : "user_id"
+  erp_cost_centers }o--|| identity_users : "created_by"
+  erp_cost_centers }o--|| identity_users : "updated_by"
+  wms_bins }o--|| identity_users : "user_id"
+  wms_bins }o--|| identity_users : "created_by"
+  wms_bins }o--|| identity_users : "updated_by"
+  wms_picking_waves }o--|| identity_users : "user_id"
+  wms_picking_waves }o--|| identity_users : "created_by"
+  wms_picking_waves }o--|| identity_users : "updated_by"
+  wms_shipments }o--|| identity_users : "user_id"
+  wms_shipments }o--|| identity_users : "created_by"
+  wms_shipments }o--|| identity_users : "updated_by"
+  tms_carriers }o--|| identity_users : "user_id"
+  tms_carriers }o--|| identity_users : "created_by"
+  tms_carriers }o--|| identity_users : "updated_by"
+  tms_routes }o--|| identity_users : "user_id"
+  tms_routes }o--|| identity_users : "created_by"
+  tms_routes }o--|| identity_users : "updated_by"
+  tms_proofs_of_delivery }o--|| identity_users : "user_id"
+  tms_proofs_of_delivery }o--|| identity_users : "created_by"
+  tms_proofs_of_delivery }o--|| identity_users : "updated_by"
+  tms_freight_audits }o--|| identity_users : "user_id"
+  tms_freight_audits }o--|| identity_users : "created_by"
+  tms_freight_audits }o--|| identity_users : "updated_by"
+  crm_leads }o--|| identity_users : "user_id"
+  crm_leads }o--|| identity_users : "created_by"
+  crm_leads }o--|| identity_users : "updated_by"
+  crm_activities }o--|| identity_users : "user_id"
+  crm_activities }o--|| identity_users : "created_by"
+  crm_activities }o--|| identity_users : "updated_by"
+  crm_campaigns }o--|| identity_users : "user_id"
+  crm_campaigns }o--|| identity_users : "created_by"
+  crm_campaigns }o--|| identity_users : "updated_by"
+  bpm_processes }o--|| identity_users : "user_id"
+  bpm_processes }o--|| identity_users : "created_by"
+  bpm_processes }o--|| identity_users : "updated_by"
+  bpm_tasks }o--|| identity_users : "user_id"
+  bpm_tasks }o--|| identity_users : "created_by"
+  bpm_tasks }o--|| identity_users : "updated_by"
+  bpm_sla_policies }o--|| identity_users : "user_id"
+  bpm_sla_policies }o--|| identity_users : "created_by"
+  bpm_sla_policies }o--|| identity_users : "updated_by"
+  document_folders }o--|| identity_users : "user_id"
+  document_folders }o--|| identity_users : "created_by"
+  document_folders }o--|| identity_users : "updated_by"
+  document_versions }o--|| identity_users : "user_id"
+  document_versions }o--|| identity_users : "created_by"
+  document_versions }o--|| identity_users : "updated_by"
+  document_retention_policies }o--|| identity_users : "user_id"
+  document_retention_policies }o--|| identity_users : "created_by"
+  document_retention_policies }o--|| identity_users : "updated_by"
+  hr_payroll_runs }o--|| identity_users : "user_id"
+  hr_payroll_runs }o--|| identity_users : "created_by"
+  hr_payroll_runs }o--|| identity_users : "updated_by"
+  hr_candidates }o--|| identity_users : "user_id"
+  hr_candidates }o--|| identity_users : "created_by"
+  hr_candidates }o--|| identity_users : "updated_by"
+  hr_courses }o--|| identity_users : "user_id"
+  hr_courses }o--|| identity_users : "created_by"
+  hr_courses }o--|| identity_users : "updated_by"
+  hr_occupational_records }o--|| identity_users : "user_id"
+  hr_occupational_records }o--|| identity_users : "created_by"
+  hr_occupational_records }o--|| identity_users : "updated_by"
+  health_medical_records }o--|| identity_users : "user_id"
+  health_medical_records }o--|| identity_users : "created_by"
+  health_medical_records }o--|| identity_users : "updated_by"
+  health_prescriptions }o--|| identity_users : "user_id"
+  health_prescriptions }o--|| identity_users : "created_by"
+  health_prescriptions }o--|| identity_users : "updated_by"
+  health_beds }o--|| identity_users : "user_id"
+  health_beds }o--|| identity_users : "created_by"
+  health_beds }o--|| identity_users : "updated_by"
+  vision_streams }o--|| identity_users : "user_id"
+  vision_streams }o--|| identity_users : "created_by"
+  vision_streams }o--|| identity_users : "updated_by"
+  vision_recordings }o--|| identity_users : "user_id"
+  vision_recordings }o--|| identity_users : "created_by"
+  vision_recordings }o--|| identity_users : "updated_by"
+  vision_motion_alerts }o--|| identity_users : "user_id"
+  vision_motion_alerts }o--|| identity_users : "created_by"
+  vision_motion_alerts }o--|| identity_users : "updated_by"
+  legal_deadlines }o--|| identity_users : "user_id"
+  legal_deadlines }o--|| identity_users : "created_by"
+  legal_deadlines }o--|| identity_users : "updated_by"
+  legal_hearings }o--|| identity_users : "user_id"
+  legal_hearings }o--|| identity_users : "created_by"
+  legal_hearings }o--|| identity_users : "updated_by"
+  legal_legal_contracts }o--|| identity_users : "user_id"
+  legal_legal_contracts }o--|| identity_users : "created_by"
+  legal_legal_contracts }o--|| identity_users : "updated_by"
+  property_units }o--|| identity_users : "user_id"
+  property_units }o--|| identity_users : "created_by"
+  property_units }o--|| identity_users : "updated_by"
+  property_leases }o--|| identity_users : "user_id"
+  property_leases }o--|| identity_users : "created_by"
+  property_leases }o--|| identity_users : "updated_by"
+  property_assemblies }o--|| identity_users : "user_id"
+  property_assemblies }o--|| identity_users : "created_by"
+  property_assemblies }o--|| identity_users : "updated_by"
+  property_maintenance_orders }o--|| identity_users : "user_id"
+  property_maintenance_orders }o--|| identity_users : "created_by"
+  property_maintenance_orders }o--|| identity_users : "updated_by"
+  bi_datasets }o--|| identity_users : "user_id"
+  bi_datasets }o--|| identity_users : "created_by"
+  bi_datasets }o--|| identity_users : "updated_by"
+  bi_indicators }o--|| identity_users : "user_id"
+  bi_indicators }o--|| identity_users : "created_by"
+  bi_indicators }o--|| identity_users : "updated_by"
+  bi_exports }o--|| identity_users : "user_id"
+  bi_exports }o--|| identity_users : "created_by"
+  bi_exports }o--|| identity_users : "updated_by"
+  ai_core_ai_memories }o--|| identity_users : "user_id"
+  ai_core_ai_memories }o--|| identity_users : "created_by"
+  ai_core_ai_memories }o--|| identity_users : "updated_by"
+  ai_core_model_runs }o--|| identity_users : "user_id"
+  ai_core_model_runs }o--|| identity_users : "created_by"
+  ai_core_model_runs }o--|| identity_users : "updated_by"

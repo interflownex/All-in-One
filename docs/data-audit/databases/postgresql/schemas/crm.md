@@ -1,5 +1,5 @@
 # Schema `crm`
 
-Tabelas catalogadas: 1.
+Tabelas catalogadas: 4.
 
 EVIDÊNCIAS: `database/postgres/migrations/`.

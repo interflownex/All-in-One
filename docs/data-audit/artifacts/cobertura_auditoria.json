@@ -177,10 +177,10 @@
     ]
   },
   "counts": {
-    "migrations": 25,
+    "migrations": 26,
     "schemas": 31,
-    "tables": 92,
-    "fields": 1414,
+    "tables": 136,
+    "fields": 1898,
     "mongodb_collections": 4,
     "mongodb_fields": 29,
     "sqlite_tables": 4,
@@ -188,14 +188,14 @@
     "redis_key_patterns": 1,
     "object_storage_stores": 4,
     "browser_storage_key_patterns": 12,
-    "relationships": 348,
-    "indexes": 52,
+    "relationships": 480,
+    "indexes": 96,
     "endpoints": 101,
     "endpoints_with_response_model": 8,
     "api_model_fields": 126,
     "ui_candidates": 1068,
-    "ui_bindings_probable": 136,
-    "ui_bindings_unproven": 932,
+    "ui_bindings_probable": 224,
+    "ui_bindings_unproven": 844,
     "ui_surfaces": 299,
     "ui_forms": 128,
     "ui_actions": 1114,
@@ -204,33 +204,34 @@
     "permission_operations": 794,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 129,
-    "test_functions": 494,
-    "tests_with_assertions": 460,
+    "test_functions": 496,
+    "tests_with_assertions": 462,
     "tests_with_http_calls": 194,
-    "test_functions_in_execution_reports": 469,
-    "test_functions_passed": 436,
+    "test_functions_in_execution_reports": 471,
+    "test_functions_passed": 438,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
     "logical_entities": 120,
-    "logical_without_physical_table": 62,
+    "logical_without_physical_table": 13,
     "logical_without_ui_surface": 0,
     "event_transitions": 194,
     "unique_events": 187,
-    "sensitive_candidates": 332,
+    "sensitive_candidates": 464,
     "dynamic_form_entities_proposed": 14,
     "measurement_entities_proposed": 6,
     "fiscal_entities_proposed": 5,
-    "audit_candidate_tables": 5,
+    "audit_candidate_tables": 6,
     "audit_requirements": 35,
-    "audit_requirements_covered": 18
+    "audit_requirements_covered": 19
   },
   "candidate_tables": [
     "audit.domain_events",
     "audit.event_deliveries",
     "audit.logs",
     "identity_core.audit_logs",
-    "jobs.resume_access_logs"
+    "jobs.resume_access_logs",
+    "tms.freight_audits"
   ],
   "coverage": [
     {
@@ -318,9 +319,15 @@
         "company_id",
         "organization_id"
       ],
-      "covered": false,
-      "matching_tables": {},
-      "evidence": []
+      "covered": true,
+      "matching_tables": {
+        "tms.freight_audits": [
+          "company_id"
+        ]
+      },
+      "evidence": [
+        "docs/data-audit/databases/postgresql/tables/tms.freight_audits.md"
+      ]
     },
     {
       "audit_type": "change_audit",
@@ -352,6 +359,10 @@
         ],
         "identity_core.audit_logs": [
           "actor_user_id"
+        ],
+        "tms.freight_audits": [
+          "created_by",
+          "user_id"
         ]
       },
       "evidence": [
@@ -359,7 +370,8 @@
         "docs/data-audit/databases/postgresql/tables/audit.domain_events.md",
         "docs/data-audit/databases/postgresql/tables/audit.event_deliveries.md",
         "docs/data-audit/databases/postgresql/tables/jobs.resume_access_logs.md",
-        "docs/data-audit/databases/postgresql/tables/identity_core.audit_logs.md"
+        "docs/data-audit/databases/postgresql/tables/identity_core.audit_logs.md",
+        "docs/data-audit/databases/postgresql/tables/tms.freight_audits.md"
       ]
     },
     {
@@ -585,13 +597,17 @@
         ],
         "identity_core.audit_logs": [
           "created_at"
+        ],
+        "tms.freight_audits": [
+          "created_at"
         ]
       },
       "evidence": [
         "docs/data-audit/databases/postgresql/tables/audit.logs.md",
         "docs/data-audit/databases/postgresql/tables/audit.domain_events.md",
         "docs/data-audit/databases/postgresql/tables/audit.event_deliveries.md",
-        "docs/data-audit/databases/postgresql/tables/identity_core.audit_logs.md"
+        "docs/data-audit/databases/postgresql/tables/identity_core.audit_logs.md",
+        "docs/data-audit/databases/postgresql/tables/tms.freight_audits.md"
       ]
     },
     {
@@ -611,12 +627,16 @@
         ],
         "jobs.resume_access_logs": [
           "status"
+        ],
+        "tms.freight_audits": [
+          "status"
         ]
       },
       "evidence": [
         "docs/data-audit/databases/postgresql/tables/audit.logs.md",
         "docs/data-audit/databases/postgresql/tables/audit.domain_events.md",
-        "docs/data-audit/databases/postgresql/tables/jobs.resume_access_logs.md"
+        "docs/data-audit/databases/postgresql/tables/jobs.resume_access_logs.md",
+        "docs/data-audit/databases/postgresql/tables/tms.freight_audits.md"
       ]
     },
     {
@@ -690,6 +710,9 @@
         ],
         "identity_core.audit_logs": [
           "actor_user_id"
+        ],
+        "tms.freight_audits": [
+          "user_id"
         ]
       },
       "evidence": [
@@ -697,7 +720,8 @@
         "docs/data-audit/databases/postgresql/tables/audit.domain_events.md",
         "docs/data-audit/databases/postgresql/tables/audit.event_deliveries.md",
         "docs/data-audit/databases/postgresql/tables/jobs.resume_access_logs.md",
-        "docs/data-audit/databases/postgresql/tables/identity_core.audit_logs.md"
+        "docs/data-audit/databases/postgresql/tables/identity_core.audit_logs.md",
+        "docs/data-audit/databases/postgresql/tables/tms.freight_audits.md"
       ]
     },
     {
@@ -777,6 +801,9 @@
         ],
         "identity_core.audit_logs": [
           "created_at"
+        ],
+        "tms.freight_audits": [
+          "created_at"
         ]
       },
       "evidence": [
@@ -784,7 +811,8 @@
         "docs/data-audit/databases/postgresql/tables/audit.domain_events.md",
         "docs/data-audit/databases/postgresql/tables/audit.event_deliveries.md",
         "docs/data-audit/databases/postgresql/tables/jobs.resume_access_logs.md",
-        "docs/data-audit/databases/postgresql/tables/identity_core.audit_logs.md"
+        "docs/data-audit/databases/postgresql/tables/identity_core.audit_logs.md",
+        "docs/data-audit/databases/postgresql/tables/tms.freight_audits.md"
       ]
     },
     {
@@ -804,12 +832,16 @@
         ],
         "jobs.resume_access_logs": [
           "status"
+        ],
+        "tms.freight_audits": [
+          "status"
         ]
       },
       "evidence": [
         "docs/data-audit/databases/postgresql/tables/audit.logs.md",
         "docs/data-audit/databases/postgresql/tables/audit.domain_events.md",
-        "docs/data-audit/databases/postgresql/tables/jobs.resume_access_logs.md"
+        "docs/data-audit/databases/postgresql/tables/jobs.resume_access_logs.md",
+        "docs/data-audit/databases/postgresql/tables/tms.freight_audits.md"
       ]
     },
     {

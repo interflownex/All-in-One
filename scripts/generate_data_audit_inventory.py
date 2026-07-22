@@ -446,6 +446,25 @@ def discover_logical_rules(tables: dict[str, list[Field]], ui_bindings: list[dic
                 "evidence": f"{path.relative_to(ROOT)}:{value_node.lineno}",
             }
 
+    store_targets: dict[tuple[str, str], str] = {}
+    for module in module_entities:
+        store_path = ROOT / "modules" / "shared" / f"{module}_postgres_store.py"
+        if not store_path.exists():
+            continue
+        store_tree = ast.parse(store_path.read_text(encoding="utf-8"))
+        for node in ast.walk(store_tree):
+            if not isinstance(node, (ast.Assign, ast.AnnAssign)):
+                continue
+            target = node.target if isinstance(node, ast.AnnAssign) else node.targets[0] if len(node.targets) == 1 else None
+            if not isinstance(target, ast.Name) or target.id not in {"TABLES", "tables"}:
+                continue
+            try:
+                mapping = ast.literal_eval(node.value)
+            except (ValueError, TypeError):
+                continue
+            if isinstance(mapping, dict):
+                store_targets.update({(module, str(resource)): str(table) for resource, table in mapping.items()})
+
     canonical_by_compact = {
         (module, entity.replace("_", "")): entity
         for module, entities in module_entities.items()
@@ -459,6 +478,8 @@ def discover_logical_rules(tables: dict[str, list[Field]], ui_bindings: list[dic
     for module, entities in module_entities.items():
         for entity in entities:
             override = overrides.get((module, entity), {})
+            physical_target = store_targets.get((module, entity), f"{module}.{entity}")
+            has_physical_target = physical_target in tables
             rows.append(
                 {
                     "module": module,
@@ -470,7 +491,13 @@ def discover_logical_rules(tables: dict[str, list[Field]], ui_bindings: list[dic
                     "sensitive": override.get("sensitive", False),
                     "immutable": override.get("immutable", False),
                     "has_rule_override": (module, entity) in overrides,
-                    "has_physical_table": f"{module}.{entity}" in tables,
+                    "physical_storage_target": physical_target,
+                    "persistence_decision": (
+                        "typed_table" if physical_target == f"{module}.{entity}" and has_physical_target
+                        else "typed_alias" if has_physical_target
+                        else "missing_typed_relation"
+                    ),
+                    "has_physical_table": has_physical_target,
                     "has_ui_surface": (module, entity) in ui_resources,
                     "evidence": override.get("evidence", f"{path.relative_to(ROOT)}:74"),
                 }
@@ -1038,7 +1065,7 @@ def build_delivery() -> None:
     ]
     write_csv(
         ARTIFACTS / "catalogo_logico.csv",
-        ["module", "entity", "required_fields", "unique_fields", "monetary_fields", "initial_status", "sensitive", "immutable", "has_rule_override", "has_physical_table", "has_ui_surface", "evidence"],
+        ["module", "entity", "required_fields", "unique_fields", "monetary_fields", "initial_status", "sensitive", "immutable", "has_rule_override", "physical_storage_target", "persistence_decision", "has_physical_table", "has_ui_surface", "evidence"],
         logical_csv_rows,
     )
     write_json(ARTIFACTS / "catalogo_logico.json", {"version": 1, "counts": counts, "entities": logical_rules})
@@ -1278,7 +1305,7 @@ def build_delivery() -> None:
         },
         {
             "id": "AUD-P1-002", "priority": "P1", "module": "frontend e APIs", "title": "Bindings frontend-backend não estão integralmente comprovados",
-            "description": "Os 47 aliases de recurso compactado foram ligados aos nomes canônicos do backend e todas as 120 entidades lógicas têm superfície UI; ainda há 932 bindings de campo genéricos/não comprovados e 136 coincidências prováveis com campo físico.", "evidence": ["apps/all-in-one/src/components/SmartCRUD.tsx", "docs/data-audit/artifacts/matriz_formulario_campo.csv", "docs/data-audit/artifacts/coordenadas_stitch.json"], "impact": "Os endpoints agora recebem o recurso canônico, mas formulários genéricos ainda podem omitir campos específicos.", "risk": "Perda de dados ou validação incompleta nos campos ainda genéricos.", "proposal": "Resolver cada binding restante por rota e campo e vinculá-lo a DTO, validação, origem, destino e teste.", "dependencies": ["contratos DTO"], "affected_files": ["apps/all-in-one/src", "modules"], "migration": "não aplicável", "backend": "tipar payloads e responses", "frontend": "aliases resolvidos; declarar bindings específicos restantes", "tests": "contrato canônico aprovado; integração e E2E por campo restantes", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada campo UI aponta para DTO, endpoint, validação e teste aprovados.", "status": "implementacao_parcial", "owner_suggestion": "frontend e backend", "dimensions": ["bindings_frontend", "formularios"]
+            "description": "Os 47 aliases de recurso compactado foram ligados aos nomes canônicos do backend e todas as 120 entidades lógicas têm superfície UI; ainda há 844 bindings de campo genéricos/não comprovados e 224 coincidências prováveis com campo físico.", "evidence": ["apps/all-in-one/src/components/SmartCRUD.tsx", "docs/data-audit/artifacts/matriz_formulario_campo.csv", "docs/data-audit/artifacts/coordenadas_stitch.json"], "impact": "Os endpoints agora recebem o recurso canônico, mas formulários genéricos ainda podem omitir campos específicos.", "risk": "Perda de dados ou validação incompleta nos campos ainda genéricos.", "proposal": "Resolver cada binding restante por rota e campo e vinculá-lo a DTO, validação, origem, destino e teste.", "dependencies": ["contratos DTO"], "affected_files": ["apps/all-in-one/src", "modules"], "migration": "não aplicável", "backend": "tipar payloads e responses", "frontend": "aliases resolvidos; declarar bindings específicos restantes", "tests": "contrato canônico aprovado; integração e E2E por campo restantes", "documentation": "09_FORMULARIOS_FRONTEND.md", "acceptance": "Cada campo UI aponta para DTO, endpoint, validação e teste aprovados.", "status": "implementacao_parcial", "owner_suggestion": "frontend e backend", "dimensions": ["bindings_frontend", "formularios"]
         },
         {
             "id": "AUD-P1-003", "priority": "P1", "module": "eventos", "title": "Eventos não possuem catálogo integral de payload versionado",
@@ -1294,7 +1321,7 @@ def build_delivery() -> None:
         },
         {
             "id": "AUD-P1-006", "priority": "P1", "module": "arquitetura modular", "title": "Entidades lógicas sem decisão de persistência homônima",
-            "description": "Todas as 120 entidades lógicas possuem superfície UI canônica; 62 ainda não possuem tabela PostgreSQL homônima e precisam de decisão individual sobre persistência tipada, agregado ou estrutura compartilhada.", "evidence": ["docs/data-audit/artifacts/catalogo_logico.json", "apps/all-in-one/src/components/SmartCRUD.tsx"], "impact": "O acesso frontend foi resolvido, mas ownership e ciclo de vida físico ainda podem ficar ambíguos.", "risk": "Duplicação ou persistência implícita.", "proposal": "Classificar cada divergência física como agregado, estrutura embutida, persistência compartilhada, entidade futura ou lacuna real.", "dependencies": ["proprietários dos 25 módulos"], "affected_files": ["modules/shared/domain_rules.py", "database/postgres/migrations"], "migration": "somente para lacunas físicas confirmadas", "backend": "registrar persistência e contrato", "frontend": "120 de 120 entidades com superfície canônica", "tests": "contrato UI canônico aprovado; decisão física restante", "documentation": "02_MAPA_DE_DOMINIOS.md", "acceptance": "Cada entidade possui decisão explícita de persistência, ownership e coordenada UI, ou justificativa versionada de ausência.", "status": "implementacao_parcial", "owner_suggestion": "arquitetura e responsáveis de domínio", "dimensions": ["tabelas_colecoes", "campos", "relacionamentos", "formularios"]
+            "description": "Todas as 120 entidades lógicas possuem superfície UI canônica; a migration 026 materializou 44 destinos tipados e cinco aliases físicos foram reconhecidos. Restam 13 recursos de adaptadores legados sem relação tipada executável.", "evidence": ["docs/data-audit/artifacts/catalogo_logico.json", "database/postgres/migrations/026_complete_typed_store_relations.sql", "database/postgres/rollbacks/026_complete_typed_store_relations.down.sql", "tests/test_typed_store_persistence_contract.py"], "impact": "A maior parte da persistência declarada foi materializada, mas 13 ciclos de vida ainda não funcionam com DSN PostgreSQL.", "risk": "Falha de CRUD nos recursos legados restantes.", "proposal": "Migrar os cinco adaptadores legados para o BasePostgresStore ou implementar fallback tipado para os 13 recursos restantes.", "dependencies": ["refatoração dos adaptadores finance, marketplace, delivery, services e mobility"], "affected_files": ["modules/shared/*_postgres_store.py", "database/postgres/migrations"], "migration": "44 relações implementadas com rollback; 13 recursos restantes exigem modelagem", "backend": "todos os destinos já declarados pelos stores possuem relação física", "frontend": "120 de 120 entidades com superfície canônica", "tests": "contrato de destino tipado e reversibilidade aprovados", "documentation": "02_MAPA_DE_DOMINIOS.md", "acceptance": "Cada entidade possui decisão explícita de persistência, ownership e coordenada UI, ou justificativa versionada de ausência.", "status": "implementacao_parcial", "owner_suggestion": "arquitetura e responsáveis de domínio", "dimensions": ["tabelas_colecoes", "campos", "relacionamentos", "formularios"]
         },
         {
             "id": "AUD-P1-007", "priority": "P1", "module": "auditoria e segurança", "title": "Trilhas de auditoria não cobrem todos os atributos mandatórios",
