@@ -2,7 +2,7 @@
 
 ## PostgreSQL
 
-Fonte física versionada com 31 schemas e 136 tabelas. Proprietários são inferidos pelo schema/módulo e precisam de confirmação. Backup, restore, retenção e estado de produção não são comprovados pelas migrations.
+Fonte física versionada com 31 schemas e 149 tabelas. Proprietários são inferidos pelo schema/módulo e precisam de confirmação. Backup, restore, retenção e estado de produção não são comprovados pelas migrations.
 
 ## Persistências adicionais
 

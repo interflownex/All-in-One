@@ -120,7 +120,7 @@ def test_generated_coverage_does_not_claim_false_completion() -> None:
     data = __import__("json").loads(coverage.read_text(encoding="utf-8"))
 
     assert data["status"] == "em_execucao"
-    assert data["counts"]["migrations"] == 26
+    assert data["counts"]["migrations"] == 27
     assert data["counts"]["tables"] >= 80
     assert any(item["percentual"] < 100 for item in data["dimensoes"].values())
 
@@ -128,7 +128,7 @@ def test_generated_coverage_does_not_claim_false_completion() -> None:
 def test_generated_summary_is_rendered_markdown() -> None:
     summary = (ROOT / "docs" / "data-audit" / "00_RESUMO_EXECUTIVO.md").read_text(encoding="utf-8")
 
-    assert "26 migrations PostgreSQL" in summary
+    assert "27 migrations PostgreSQL" in summary
     assert 'f"A varredura' not in summary
     assert "conclusão de 100% não declarada" in summary
 
@@ -138,7 +138,7 @@ def test_logical_catalog_exposes_cross_layer_gaps() -> None:
     data = __import__("json").loads(catalog.read_text(encoding="utf-8"))
 
     assert data["counts"]["logical_entities"] == 120
-    assert data["counts"]["logical_without_physical_table"] > 0
+    assert data["counts"]["logical_without_physical_table"] == 0
     assert data["counts"]["logical_without_ui_surface"] == 0
     assert all(item["evidence"] for item in data["entities"])
 

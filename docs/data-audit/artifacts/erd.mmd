@@ -476,6 +476,19 @@ erDiagram
     UUID updated_by FK
     VARCHAR(120) idempotency_key
   }
+  delivery_assignments {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   delivery_delivery_requests {
     UUID id PK
     UUID user_id FK
@@ -498,6 +511,45 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
     VARCHAR(120) idempotency_key
+  }
+  delivery_insurance_options {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  delivery_proofs {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  delivery_quotes {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   delivery_rider_documents {
     UUID id PK
@@ -826,6 +878,19 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
   }
+  finance_invoices {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   finance_ledger_entries {
     UUID id PK
     UUID user_id FK
@@ -842,6 +907,19 @@ erDiagram
     JSONB metadata
     TIMESTAMPTZ created_at
     UUID created_by FK
+  }
+  finance_splits {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   finance_valley_gold_ledger_entries {
     UUID id PK
@@ -1437,6 +1515,19 @@ erDiagram
     UUID updated_by FK
     VARCHAR(160) idempotency_key
   }
+  marketplace_carts {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   marketplace_disputes {
     UUID id PK
     UUID user_id FK
@@ -1540,6 +1631,19 @@ erDiagram
     UUID updated_by FK
     VARCHAR(120) idempotency_key
   }
+  mobility_fare_rules {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   mobility_rides {
     UUID id PK
     UUID user_id FK
@@ -1557,6 +1661,32 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
     VARCHAR(120) idempotency_key
+  }
+  mobility_routes {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
+  mobility_stops {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   mobility_tickets {
     UUID id PK
@@ -1727,6 +1857,19 @@ erDiagram
     UUID updated_by FK
     VARCHAR(160) idempotency_key
   }
+  services_evidence {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
+  }
   services_providers {
     UUID id PK
     UUID user_id FK
@@ -1740,6 +1883,19 @@ erDiagram
     UUID created_by FK
     UUID updated_by FK
     VARCHAR(120) idempotency_key
+  }
+  services_quotes {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   services_service_contracts {
     UUID id PK
@@ -1760,6 +1916,19 @@ erDiagram
     UUID offer_id FK
     UUID company_id FK
     TIMESTAMPTZ scheduled_at
+  }
+  services_visits {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    TIMESTAMPTZ deleted_at
+    UUID created_by FK
+    UUID updated_by FK
+    VARCHAR(160) idempotency_key
   }
   stock_catalog_products {
     UUID id PK
@@ -2649,3 +2818,42 @@ erDiagram
   ai_core_model_runs }o--|| identity_users : "user_id"
   ai_core_model_runs }o--|| identity_users : "created_by"
   ai_core_model_runs }o--|| identity_users : "updated_by"
+  finance_splits }o--|| identity_users : "user_id"
+  finance_splits }o--|| identity_users : "created_by"
+  finance_splits }o--|| identity_users : "updated_by"
+  finance_invoices }o--|| identity_users : "user_id"
+  finance_invoices }o--|| identity_users : "created_by"
+  finance_invoices }o--|| identity_users : "updated_by"
+  marketplace_carts }o--|| identity_users : "user_id"
+  marketplace_carts }o--|| identity_users : "created_by"
+  marketplace_carts }o--|| identity_users : "updated_by"
+  delivery_quotes }o--|| identity_users : "user_id"
+  delivery_quotes }o--|| identity_users : "created_by"
+  delivery_quotes }o--|| identity_users : "updated_by"
+  delivery_assignments }o--|| identity_users : "user_id"
+  delivery_assignments }o--|| identity_users : "created_by"
+  delivery_assignments }o--|| identity_users : "updated_by"
+  delivery_proofs }o--|| identity_users : "user_id"
+  delivery_proofs }o--|| identity_users : "created_by"
+  delivery_proofs }o--|| identity_users : "updated_by"
+  delivery_insurance_options }o--|| identity_users : "user_id"
+  delivery_insurance_options }o--|| identity_users : "created_by"
+  delivery_insurance_options }o--|| identity_users : "updated_by"
+  services_visits }o--|| identity_users : "user_id"
+  services_visits }o--|| identity_users : "created_by"
+  services_visits }o--|| identity_users : "updated_by"
+  services_quotes }o--|| identity_users : "user_id"
+  services_quotes }o--|| identity_users : "created_by"
+  services_quotes }o--|| identity_users : "updated_by"
+  services_evidence }o--|| identity_users : "user_id"
+  services_evidence }o--|| identity_users : "created_by"
+  services_evidence }o--|| identity_users : "updated_by"
+  mobility_routes }o--|| identity_users : "user_id"
+  mobility_routes }o--|| identity_users : "created_by"
+  mobility_routes }o--|| identity_users : "updated_by"
+  mobility_stops }o--|| identity_users : "user_id"
+  mobility_stops }o--|| identity_users : "created_by"
+  mobility_stops }o--|| identity_users : "updated_by"
+  mobility_fare_rules }o--|| identity_users : "user_id"
+  mobility_fare_rules }o--|| identity_users : "created_by"
+  mobility_fare_rules }o--|| identity_users : "updated_by"

@@ -1,5 +1,5 @@
 # Schema `finance`
 
-Tabelas catalogadas: 4.
+Tabelas catalogadas: 6.
 
 EVIDÊNCIAS: `database/postgres/migrations/`.

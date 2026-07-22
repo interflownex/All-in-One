@@ -11,12 +11,15 @@ from psycopg.types.json import Jsonb
 
 from .correlation import get_correlation_id
 from .store import DuplicateValueError
+from .generic_postgres_resource import insert_generic_resource, update_generic_resource
 
 TABLES = {
     "wallets": "finance.wallets",
     "ledger_entries": "finance.ledger_entries",
     "escrows": "finance.escrows",
     "valley_gold_ledger_entries": "finance.valley_gold_ledger_entries",
+    "splits": "finance.splits",
+    "invoices": "finance.invoices",
 }
 
 class FinancePostgresStore:
@@ -97,7 +100,7 @@ class FinancePostgresStore:
         resource_id = str(uuid4())
         try:
             with self.transaction() as connection:
-                row = self._insert(connection, resource_type, resource_id, user_id, status, payload, actor, idempotency_key)
+                row = self._insert(connection, resource_type, resource_id, user_id, entity_id, status, payload, actor, idempotency_key)
                 item = self._resource(resource_type, row)
                 if item is None:
                     raise RuntimeError(f"Erro ao criar recurso Finance {resource_type}.")
@@ -121,7 +124,7 @@ class FinancePostgresStore:
                 raise DuplicateValueError(resource_type) from exc
             raise
 
-    def _insert(self, connection, resource_type, resource_id, user_id, status, payload, actor, idempotency_key):
+    def _insert(self, connection, resource_type, resource_id, user_id, entity_id, status, payload, actor, idempotency_key):
         metadata = Jsonb({"runtime_payload": payload})
         if resource_type == "wallets":
             return connection.execute(
@@ -163,7 +166,54 @@ class FinancePostgresStore:
                 ),
             ).fetchone()
         
-        raise ValueError(f"Recurso Finance nao mapeado: {resource_type}")
+        return insert_generic_resource(
+            connection, TABLES[resource_type], resource_id, user_id, entity_id, status, payload, actor, idempotency_key
+        )
+
+    def update(
+        self,
+        item: dict[str, Any],
+        payload: dict[str, Any],
+        status: str,
+        actor: str,
+        action: str,
+        event: str | None = None,
+    ) -> dict[str, Any]:
+        before = {**item, "payload": dict(item["payload"])}
+        with self.transaction() as connection:
+            row = update_generic_resource(connection, TABLES[item["resource_type"]], item["id"], payload, status, actor)
+            updated = self._resource(item["resource_type"], row)
+            if updated is None:
+                raise RuntimeError("PostgreSQL nao retornou recurso Finance atualizado.")
+            connection.execute(
+                """INSERT INTO audit.logs
+                   (user_id, actor_user_id, action, module, resource_type, resource_id, before_data, after_data)
+                   VALUES (%s, %s, %s, 'finance', %s, %s, %s, %s)""",
+                (item["user_id"], actor, action, item["resource_type"], item["id"], Jsonb(before), Jsonb(updated)),
+            )
+            if event:
+                connection.execute(
+                    """INSERT INTO audit.domain_events
+                       (user_id, actor_user_id, routing_key, aggregate_type, aggregate_id, correlation_id, payload)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+                    (item["user_id"], actor, event, item["resource_type"], item["id"], get_correlation_id(), Jsonb(updated)),
+                )
+            return updated
+
+    def soft_delete(self, item: dict[str, Any], actor: str) -> None:
+        with self.transaction() as connection:
+            connection.execute(
+                sql.SQL("UPDATE {} SET deleted_at = NOW(), updated_by = %s, updated_at = NOW() WHERE id = %s").format(
+                    self._table(item["resource_type"])
+                ),
+                (actor, item["id"]),
+            )
+            connection.execute(
+                """INSERT INTO audit.logs
+                   (user_id, actor_user_id, action, module, resource_type, resource_id, before_data)
+                   VALUES (%s, %s, 'soft_delete', 'finance', %s, %s, %s)""",
+                (item["user_id"], actor, item["resource_type"], item["id"], Jsonb(item)),
+            )
 
     def list(self, resource_type: str, user_id: str | None = None) -> list[dict[str, Any]]:
         query = sql.SQL("SELECT * FROM {}").format(self._table(resource_type))

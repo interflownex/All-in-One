@@ -1,5 +1,5 @@
 # Schema `marketplace`
 
-Tabelas catalogadas: 6.
+Tabelas catalogadas: 7.
 
 EVIDÊNCIAS: `database/postgres/migrations/`.

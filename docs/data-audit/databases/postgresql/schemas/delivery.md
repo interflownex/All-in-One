@@ -1,5 +1,5 @@
 # Schema `delivery`
 
-Tabelas catalogadas: 5.
+Tabelas catalogadas: 9.
 
 EVIDÊNCIAS: `database/postgres/migrations/`.

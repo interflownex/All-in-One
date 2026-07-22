@@ -57,3 +57,35 @@ def test_migration_026_is_reversible_for_every_created_relation() -> None:
 
     assert len(created) == 44
     assert created == dropped
+
+
+def test_migration_027_is_reversible_for_legacy_adapter_relations() -> None:
+    migration = (ROOT / "database/postgres/migrations/027_complete_legacy_adapter_relations.sql").read_text(
+        encoding="utf-8"
+    )
+    rollback = (ROOT / "database/postgres/rollbacks/027_complete_legacy_adapter_relations.down.sql").read_text(
+        encoding="utf-8"
+    )
+    created = {
+        line.split()[5]
+        for line in migration.splitlines()
+        if line.startswith("CREATE TABLE IF NOT EXISTS ")
+    }
+    dropped = {
+        line.removeprefix("DROP TABLE IF EXISTS ").rstrip(";")
+        for line in rollback.splitlines()
+        if line.startswith("DROP TABLE IF EXISTS ")
+    }
+
+    assert len(created) == 13
+    assert created == dropped
+
+
+def test_every_logical_entity_has_an_executable_physical_storage_decision() -> None:
+    catalog = json.loads(
+        (ROOT / "docs/data-audit/artifacts/catalogo_logico.json").read_text(encoding="utf-8")
+    )
+
+    assert catalog["counts"]["logical_without_physical_table"] == 0
+    assert all(entity["has_physical_table"] for entity in catalog["entities"])
+    assert {entity["persistence_decision"] for entity in catalog["entities"]} <= {"typed_table", "typed_alias"}

@@ -5,7 +5,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | ID | Seção | Requisito | Candidatos | Aprovados | Status |
 | --- | --- | --- | --- | --- | --- |
 | CONCL-001 | criterios_de_conclusao | 100% dos bancos forem catalogados | 20 | 12 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CONCL-002 | criterios_de_conclusao | 100% dos schemas forem catalogados | 3 | 3 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CONCL-002 | criterios_de_conclusao | 100% dos schemas forem catalogados | 4 | 4 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-003 | criterios_de_conclusao | 100% das tabelas e coleções forem catalogadas | 20 | 15 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-004 | criterios_de_conclusao | 100% dos campos forem descritos | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-005 | criterios_de_conclusao | 100% dos relacionamentos forem descritos | 2 | 2 | não comprovado; candidatos aprovados exigem revisão de escopo |
@@ -45,7 +45,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CHECK-021 | construir | Catalogar eventos | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-022 | construir | Catalogar formulários | 4 | 4 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-023 | construir | Modelar formulário dinâmico | 3 | 3 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-024 | validar | Validar schema | 4 | 4 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-024 | validar | Validar schema | 5 | 5 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-025 | validar | Validar integridade | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-026 | validar | Validar regras | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-027 | validar | Validar unidades | 20 | 20 | não comprovado; candidatos aprovados exigem revisão de escopo |

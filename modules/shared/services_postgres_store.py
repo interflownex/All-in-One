@@ -12,13 +12,17 @@ from psycopg.types.json import Jsonb
 
 from .correlation import get_correlation_id
 from .store import DuplicateValueError
+from .generic_postgres_resource import insert_generic_resource, update_generic_resource
 
 
 TABLES = {
     "providers": "services.providers",
     "service_contracts": "services.service_contracts",
+    "visits": "services.visits",
+    "quotes": "services.quotes",
+    "evidence": "services.evidence",
 }
-SOFT_DELETABLE = frozenset({"providers", "service_contracts"})
+SOFT_DELETABLE = frozenset(TABLES)
 
 
 class ServicesPostgresStore:
@@ -144,7 +148,9 @@ class ServicesPostgresStore:
                     status, metadata, actor, actor, idempotency_key,
                 ),
             ).fetchone()
-        raise ValueError(f"Recurso Services desconhecido: {resource_type}")
+        return insert_generic_resource(
+            connection, TABLES[resource_type], resource_id, user_id, entity_id, status, payload, actor, idempotency_key
+        )
 
     def get(self, resource_type: str, resource_id: str) -> dict[str, Any] | None:
         deleted = sql.SQL(" AND deleted_at IS NULL") if resource_type in SOFT_DELETABLE else sql.SQL("")
@@ -204,7 +210,7 @@ class ServicesPostgresStore:
                    WHERE id = %s RETURNING *""",
                 (payload.get("contracted_price_brl"), status, metadata, actor, resource_id),
             ).fetchone()
-        raise ValueError(f"Recurso Services imutavel ou desconhecido: {resource_type}")
+        return update_generic_resource(connection, TABLES[resource_type], resource_id, payload, status, actor)
 
     def soft_delete(self, item: dict[str, Any], actor: str) -> None:
         with self.transaction() as connection:

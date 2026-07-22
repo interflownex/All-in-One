@@ -12,13 +12,17 @@ from psycopg.types.json import Jsonb
 
 from .correlation import get_correlation_id
 from .store import DuplicateValueError
+from .generic_postgres_resource import insert_generic_resource, update_generic_resource
 
 
 TABLES = {
     "rides": "mobility.rides",
     "tickets": "mobility.tickets",
+    "routes": "mobility.routes",
+    "stops": "mobility.stops",
+    "fare_rules": "mobility.fare_rules",
 }
-SOFT_DELETABLE = frozenset({"rides", "tickets"})
+SOFT_DELETABLE = frozenset(TABLES)
 
 
 class MobilityPostgresStore:
@@ -147,7 +151,9 @@ class MobilityPostgresStore:
                     payload["qr_token_hash"], status, metadata, actor, actor, idempotency_key,
                 ),
             ).fetchone()
-        raise ValueError(f"Recurso Mobility desconhecido: {resource_type}")
+        return insert_generic_resource(
+            connection, TABLES[resource_type], resource_id, user_id, entity_id, status, payload, actor, idempotency_key
+        )
 
     def get(self, resource_type: str, resource_id: str) -> dict[str, Any] | None:
         deleted = sql.SQL(" AND deleted_at IS NULL") if resource_type in SOFT_DELETABLE else sql.SQL("")
@@ -207,7 +213,7 @@ class MobilityPostgresStore:
                    WHERE id = %s RETURNING *""",
                 (payload.get("used_at"), status, metadata, actor, resource_id),
             ).fetchone()
-        raise ValueError(f"Recurso Mobility imutavel ou desconhecido: {resource_type}")
+        return update_generic_resource(connection, TABLES[resource_type], resource_id, payload, status, actor)
 
     def soft_delete(self, item: dict[str, Any], actor: str) -> None:
         with self.transaction() as connection:
