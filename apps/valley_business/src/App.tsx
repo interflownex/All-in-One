@@ -22,7 +22,7 @@ function App() {
           }}
         >
           <img
-            src="/assets/brand/all-in-one-logo-transparent.svg"
+            src="/assets/brand/valley-logo-transparent.svg"
             alt="All-in-One"
             style={{ width: "100%", maxWidth: "120px", height: "auto" }}
           />

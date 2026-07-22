@@ -19,7 +19,7 @@ function App() {
       >
         <div className="brand-group" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <img
-            src="/assets/brand/all-in-one-logo-transparent.svg"
+            src="/assets/brand/valley-logo-transparent.svg"
             alt="All-in-One"
             style={{ height: "24px", width: "auto" }}
           />
