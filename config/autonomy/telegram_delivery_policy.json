@@ -5,6 +5,53 @@
   "required_secrets": ["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"],
   "credentials_outside_git": true,
   "delivery_script": "scripts/send_ready_artifact_to_telegram.py",
+  "activity_notifications": {
+    "enabled": true,
+    "channel": "telegram",
+    "events": ["activity_started", "activity_completed"],
+    "start_payload": {
+      "required_fields": [
+        "activity_name",
+        "technical_description",
+        "estimated_completion_time",
+        "reported_difficulty",
+        "initial_progress_percent"
+      ],
+      "defaults": {
+        "initial_progress_percent": 0
+      }
+    },
+    "completion_payload": {
+      "required_fields": [
+        "activity_name",
+        "status",
+        "completion_percent",
+        "failure_detected",
+        "failure_summary",
+        "failure_cause",
+        "resolution_action",
+        "resolvable",
+        "pending_items",
+        "next_steps"
+      ],
+      "status_values": ["success", "partial_success", "failed"]
+    }
+  },
+  "developer_pending_reports": {
+    "enabled": true,
+    "channel": "telegram",
+    "frequency_per_day": 4,
+    "schedule_timezone": "America/Sao_Paulo",
+    "required_fields": [
+      "report_index",
+      "generated_at",
+      "open_pendings",
+      "blocked_pendings",
+      "risk_summary",
+      "eta_summary"
+    ],
+    "auto_include_from_activity_updates": true
+  },
   "targets": {
     "web": {
       "application": "apps/all-in-one",
@@ -29,6 +76,11 @@
     }
   },
   "rules": [
+    "Enviar via Telegram no inicio e no fim de cada atividade gerada pela IA.",
+    "No inicio da atividade, informar nome da atividade, descricao tecnica detalhada, dificuldade percebida e tempo estimado de conclusao.",
+    "No encerramento da atividade, informar status final, percentual concluido, falhas identificadas, causa da falha, acao de resolucao e proximos passos.",
+    "Incluir automaticamente as pendencias detectadas nas atualizacoes do desenvolvedor.",
+    "Encaminhar 4 vezes por dia relatorio de pendencias do desenvolvedor via Telegram.",
     "Enviar via Telegram assim que o ambiente web ou o aplicativo estiver realmente pronto.",
     "Nao declarar prontidao com build parcial, deploy incompleto ou artefato nao verificado.",
     "O ambiente web deve enviar a URL publica e a identificacao da versao.",
