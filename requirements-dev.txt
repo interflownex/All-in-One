@@ -17,3 +17,4 @@ playwright
 tenacity==9.0.0
 ruff
 mypy
+GitPython
