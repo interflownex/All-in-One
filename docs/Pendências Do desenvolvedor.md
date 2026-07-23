@@ -1,13 +1,13 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 2.1  
+**Versão:** 2.2  
 **Data da verificação:** 23/07/2026  
 **Repositório verificado:** `interflownex/All-in-One`  
 **Branch de referência:** `main`  
-**Commit de referência:** `61b18d2da27f536bcbbd7c7ff14a2e14bb2a48a3`  
+**Commit de referência:** `3842a64e4f5439a8c8021e60ee71369485c11073`  
 **Pasta lógica do projeto:** `Pendências > Técnico > Equipe técnica`  
 **Público principal:** IA desenvolvedora, desenvolvimento, DevOps, segurança e gestão técnica  
-**Objetivo:** consolidar pendências reais, remover duplicidades, registrar novas divergências e dimensionar o próximo ciclo técnico de 8 horas.
+**Objetivo:** consolidar pendências reais, remover duplicidades, registrar novas divergências e dimensionar os próximos ciclos técnicos.
 
 ## 1. Regra de governança
 
@@ -25,6 +25,8 @@
 
 O projeto continua ativo e recebeu uma nova política de automação para notificações via Telegram. A configuração declara avisos de início e término de atividades e quatro relatórios diários de pendências. Entretanto, a implementação executável encontrada ainda cobre apenas o envio de ambiente web pronto ou APK pronto. Não foi encontrada integração executável para os novos eventos de atividade nem para a agenda de quatro relatórios por dia.
 
+A análise do PDV confirmou que o repositório já possui partes fundamentais distribuídas entre Marketplace, Finance, ERP, WMS, Business e Valley Business, incluindo lojas, produtos, carrinhos, pedidos, pagamentos, Pix, conciliação, estoque, fiscal, permissões e auditoria. Entretanto, ainda não existe um módulo de frente de caixa completo e explicitamente consolidado, com abertura e fechamento de caixa, turno de operador, venda presencial, troco, cancelamento controlado, operação offline, pareamento com o aplicativo Valley e integração operacional com equipamentos.
+
 Também foram confirmadas as seguintes divergências:
 
 1. o repositório permite `merge commit`, `rebase merge` e `squash merge`, portanto o uso exclusivo de **Squash and Merge** ainda não está imposto;
@@ -32,15 +34,16 @@ Também foram confirmadas as seguintes divergências:
 3. não existem issues abertas como backlog oficial;
 4. `config/module_catalog.json` contém 25 módulos, mas `MODULE_NAMES` contém 21;
 5. os módulos `vision`, `legal`, `property` e `ai_core` estão ausentes da configuração empresarial;
-6. o auditor `scripts/audit_confirmation_v7.py` não foi encontrado na branch `main`, impedindo a reprodução direta do relatório v7 anteriormente apresentado.
+6. o auditor `scripts/audit_confirmation_v7.py` não foi encontrado na branch `main`, impedindo a reprodução direta do relatório v7 anteriormente apresentado;
+7. as diretrizes funcionais do PDV ainda não possuem contrato de domínio, modelo de dados, telas Stitch, jornadas E2E nem critérios de homologação próprios.
 
 ### Contagem consolidada
 
 | Classificação | Quantidade |
 |---|---:|
 | Críticas | 5 |
-| Altas | 9 |
-| Médias | 5 |
+| Altas | 14 |
+| Médias | 7 |
 | Secundárias | 2 |
 | Resolvidas em princípio, aguardando validação | 2 |
 
@@ -62,6 +65,11 @@ Também foram confirmadas as seguintes divergências:
 | Automação Telegram | Implementar eventos de atividade e relatórios periódicos | Criar executor, testes e integração com scheduler | 4 | 35% | 2h | 6 | 2 | 4 |
 | Auditoria v7 reproduzível | Restaurar o auditor e torná-lo gate de CI | Localizar ou recriar script, fixtures e relatório | 4 | 30% | 1h30 | 5 | 1 | 4 |
 | Backlog oficial | Converter pendências em issues ou project board | Definir modelo, responsáveis e critérios | 3 | 0% | 1h | 4 | 0 | 4 |
+| Núcleo do PDV | Consolidar venda presencial, caixa, operador, pedidos, estoque e financeiro | Definir contrato, entidades e jornada mínima | 5 | 15% | 4h | 8 | 1 | 7 |
+| Venda offline | Permitir operação sem internet e sincronização posterior segura | Projetar fila local, idempotência e resolução de conflitos | 5 | 5% | 4h | 7 | 0 | 7 |
+| Integração Valley no caixa | Parear aplicativo e PDV por QR Code ou Bluetooth autorizado | Definir sessão temporária e confirmação do cliente | 4 | 10% | 3h | 7 | 1 | 6 |
+| Promoções e fila digital | Gerenciar combos temporários, presença em loja e acompanhamento de pedidos | Definir regras, consentimentos e notificações | 4 | 10% | 3h | 7 | 1 | 6 |
+| Personalização responsável | Evitar ofertas inadequadas e governar preferências sensíveis | Submeter desenho à privacidade e ao jurídico | 5 | 0% | 3h | 8 | 0 | 8 |
 
 ## 4. Pendências críticas
 
@@ -199,6 +207,116 @@ Também foram confirmadas as seguintes divergências:
 
 **Critério de aceite:** qualquer pessoa autorizada consegue reproduzir o mesmo resultado a partir do commit informado.
 
+### 5.10 Consolidar o núcleo funcional do PDV
+
+**Contexto:** o PDV não será apenas uma tela de checkout. Ele deve funcionar como a frente de operação presencial integrada ao ecossistema All-in-One e Valley.
+
+**Necessidade:** definir contrato de domínio, APIs, migrations, eventos, permissões e telas para:
+
+- abertura, pausa, retomada e fechamento de caixa;
+- turno e identificação do operador;
+- venda com ou sem cliente identificado;
+- busca, leitura e inclusão de produtos;
+- alteração de quantidade e desconto conforme alçada;
+- dinheiro, Pix, cartão, carteira Valley e pagamento combinado;
+- cálculo de troco;
+- cancelamento, estorno, devolução, sangria e suprimento;
+- baixa de estoque, pedido, financeiro, conciliação e documento fiscal;
+- comprovante digital ou impresso;
+- funcionamento adaptável a varejo, alimentação, serviços e redes de lojas.
+
+**Critério de aceite:** jornada presencial completa, auditável e integrada, sem depender exclusivamente do aplicativo Valley.
+
+### 5.11 Implementar venda offline com sincronização segura
+
+**Diretriz aprovada:** o caixa deve continuar vendendo quando houver queda de internet.
+
+**Necessidade:** projetar armazenamento local criptografado, fila de operações, identificadores idempotentes, sincronização posterior, resolução de conflitos, limite de risco e bloqueio de operações que exijam autorização online.
+
+**Regras mínimas:**
+
+- nunca duplicar pedido, pagamento ou baixa de estoque durante a reconexão;
+- informar claramente ao operador o estado offline;
+- separar pagamentos realmente autorizados de pagamentos pendentes;
+- manter trilha de auditoria local e remota;
+- permitir políticas distintas por empresa, filial e meio de pagamento.
+
+**Critério de aceite:** venda offline reproduzida, reconectada e conciliada sem duplicidade ou perda de registros.
+
+### 5.12 Integrar o aplicativo Valley ao PDV sem torná-lo obrigatório
+
+**Diretriz aprovada:** clientes com o aplicativo Valley poderão interagir com o PDV, mas clientes sem aplicativo continuarão sendo atendidos por todos os meios tradicionais.
+
+**Necessidade:** suportar duas formas complementares de vínculo:
+
+1. leitura de QR Code apresentado pelo PDV ou pelo aplicativo;
+2. descoberta por Bluetooth de baixa energia, sempre seguida de autorização e confirmação explícita.
+
+**Regras de segurança e experiência:**
+
+- não selecionar cliente apenas pela intensidade do sinal Bluetooth;
+- não abrir pedido apenas porque um aparelho foi detectado;
+- criar sessão temporária, curta e vinculada à venda atual;
+- solicitar confirmação no aplicativo do cliente;
+- permitir confirmação verbal pelo operador somente como etapa adicional, nunca como autenticação única;
+- evitar exposição de uma lista ampla de nomes de clientes presentes na loja;
+- exibir somente os dados mínimos necessários após autorização;
+- encerrar o vínculo quando a venda terminar, expirar ou for cancelada.
+
+**Critério de aceite:** três ou mais clientes próximos podem estar com o aplicativo aberto sem que pedidos, identidades ou pagamentos sejam associados à pessoa errada.
+
+### 5.13 Implementar fila digital e acompanhamento de pedidos
+
+**Diretriz aprovada:** o operador poderá perguntar se o cliente possui o aplicativo Valley. Caso possua, o cliente poderá ler um QR Code e acompanhar seu pedido pelo celular.
+
+**Necessidade:**
+
+- gerar senha ou identificador de pedido;
+- mostrar estados como recebido, em preparação, pronto, saiu para entrega, retirado, concluído e cancelado;
+- enviar atualização no aplicativo quando houver consentimento;
+- manter painel ou chamada tradicional para clientes sem aplicativo;
+- integrar pedidos do balcão, aplicativo, retirada e delivery na mesma fila operacional;
+- impedir que informações pessoais sejam exibidas publicamente no painel.
+
+**Critério de aceite:** clientes com e sem aplicativo acompanham o pedido sem depender de fluxos separados ou exclusivos.
+
+### 5.14 Implementar combos temporários e ofertas por presença na loja
+
+**Diretriz aprovada:** o gerente poderá criar, ativar, pausar e encerrar combos a qualquer momento, sem depender de campanhas fixas.
+
+**Necessidade:**
+
+- definir produto, quantidade, preço, período opcional, filial e limite de estoque;
+- ativar ou finalizar imediatamente;
+- registrar usuário responsável e histórico de alterações;
+- impedir venda após expiração, encerramento ou falta de estoque;
+- permitir oferta no PDV, no aplicativo e na fila digital;
+- detectar presença por geofencing, QR Code, Bluetooth ou combinação de sinais de baixo consumo;
+- considerar tempo mínimo configurável de permanência, inicialmente idealizado em três minutos;
+- respeitar permissão de localização, notificações e personalização;
+- limitar frequência para evitar insistência e consumo desnecessário de bateria.
+
+**Critério de aceite:** promoção correta é entregue apenas para a filial, período, público autorizado e estoque definidos, com opção fácil de ignorar ou desativar.
+
+### 5.15 Governar personalização de ofertas e dados sensíveis
+
+**Bloqueio obrigatório:** informações de saúde, prontuário ou qualquer dado que revele condição médica não podem ser reutilizados automaticamente para publicidade ou recomendação comercial.
+
+**Necessidade:** antes de qualquer implementação:
+
+- realizar análise jurídica, de privacidade e segurança;
+- produzir relatório de impacto quando aplicável;
+- separar tecnicamente o domínio clínico do domínio comercial;
+- proibir acesso direto do PDV a prontuários ou diagnósticos;
+- priorizar preferências comerciais voluntariamente declaradas, como sem açúcar, sem lactose, vegetariano ou alergênicos;
+- obter consentimento específico, destacado, informado e revogável para qualquer uso de dado sensível;
+- permitir que o usuário não responda e continue utilizando a plataforma normalmente;
+- registrar finalidade, origem, validade e revogação do consentimento;
+- criar alternativa sem perfilamento;
+- impedir inferências discriminatórias ou exposição da condição do cliente ao operador.
+
+**Critério de aceite:** aprovação formal de privacidade e jurídico, consentimentos auditáveis, isolamento de dados e testes que comprovem que o PDV não acessa informações clínicas indevidas.
+
 ## 6. Pendências de prioridade média
 
 ### 6.1 Revalidar o emulador Android e a instalação do APK
@@ -220,6 +338,30 @@ Validar compatibilidade entre DTOs, formulários, persistência, OpenAPI, evento
 ### 6.5 Revisar performance, acessibilidade e responsividade em dispositivos reais
 
 Executar Lighthouse, Web Vitals, testes de teclado, leitor de tela, contraste, zoom, telas pequenas e aparelhos Android de desempenho limitado.
+
+### 6.6 Implementar sugestões da Helena em tempo real para o operador
+
+**Diretriz aprovada:** a Helena poderá apoiar o operador durante a venda, sem executar operações financeiras sensíveis sozinha.
+
+**Sugestões previstas:**
+
+- combos ativos e produtos comprados em conjunto;
+- substitutos disponíveis quando faltar estoque;
+- alerta de produto próximo da validade;
+- confirmação de desconto fora do padrão;
+- oportunidade de fidelidade, Pepitas ou benefício disponível;
+- alerta de possível erro de quantidade, preço ou duplicidade;
+- orientação contextual sobre a próxima etapa da venda.
+
+**Restrições:** sugestões devem ser explicáveis, não invasivas, dispensáveis e submetidas às permissões da empresa. Desconto elevado, cancelamento, estorno, sangria, suprimento e alteração fiscal continuam exigindo ação humana autorizada.
+
+### 6.7 Criar destaques de venda e resumo operacional
+
+**Diretriz aprovada:** o gerente e o operador autorizado poderão visualizar os destaques do período.
+
+**Inclui:** produtos mais vendidos, horários de maior movimento, ticket médio, meios de pagamento, combos com melhor resultado, cancelamentos, devoluções, rupturas de estoque e diferenças de caixa.
+
+**Critério de aceite:** métricas reproduzíveis, filtráveis por empresa, filial, caixa, operador e período, sem exposição indevida de dados pessoais.
 
 ## 7. Pendências secundárias
 
@@ -282,20 +424,83 @@ A execução deve priorizar tarefas que aumentem rastreabilidade e evitem novas 
 3. Registrar commits, PRs, testes e bloqueios externos.
 4. Preparar a retomada para o limite operacional de 12 horas.
 
-## 10. Ordem recomendada das próximas atividades
+## 10. Trilha planejada para construção do PDV
+
+### Fase 1 — contrato e arquitetura
+
+1. decidir se o PDV será módulo próprio ou aplicação orquestradora dos módulos existentes;
+2. definir entidades, eventos, estados, permissões, APIs e migrations;
+3. mapear reutilização de Marketplace, Finance, ERP, WMS, Business, Identity e BI;
+4. criar contrato funcional e critérios de aceite.
+
+### Fase 2 — frente de caixa mínima
+
+1. criar abertura de caixa e turno do operador;
+2. implementar busca, leitura, carrinho, quantidade, desconto e total;
+3. implementar dinheiro, Pix, cartão e troco;
+4. concluir venda, comprovante, baixa de estoque e lançamento financeiro;
+5. criar fechamento e relatório de caixa.
+
+### Fase 3 — segurança e operação offline
+
+1. criar fila local criptografada;
+2. definir idempotência e reconciliação;
+3. limitar operações de risco offline;
+4. testar queda de rede durante cada etapa da venda;
+5. sincronizar sem duplicidade.
+
+### Fase 4 — integração com o aplicativo Valley
+
+1. implementar QR Code de vínculo e acompanhamento;
+2. prototipar Bluetooth de baixa energia com autorização explícita;
+3. criar sessão temporária por venda;
+4. testar múltiplos clientes próximos;
+5. manter atendimento integral sem aplicativo.
+
+### Fase 5 — fila digital, combos e presença
+
+1. integrar pedidos do balcão, aplicativo, retirada e delivery;
+2. criar painel e notificações de acompanhamento;
+3. permitir combos temporários controlados pelo gerente;
+4. implementar presença de baixo consumo e limites de frequência;
+5. registrar consentimento e preferências.
+
+### Fase 6 — inteligência e indicadores
+
+1. conectar Helena ao contexto do caixa com ações apenas sugestivas;
+2. criar destaques de venda e alertas operacionais;
+3. validar explicabilidade, permissões e auditoria;
+4. medir impacto sem expor dados pessoais.
+
+### Fase 7 — privacidade e homologação
+
+1. concluir avaliação jurídica e de proteção de dados;
+2. testar isolamento entre saúde e comércio;
+3. homologar dispositivos, impressoras, leitores e integrações fiscais escolhidas;
+4. executar testes E2E, segurança, acessibilidade e carga;
+5. publicar somente após evidências reproduzíveis.
+
+## 11. Ordem recomendada das próximas atividades
 
 1. Restaurar o auditor v7 e transformá-lo em gate.
 2. Corrigir a divergência dos quatro módulos.
 3. Implementar a automação Telegram executável.
 4. Impor Squash and Merge e proteção da `main`.
 5. Executar e registrar todos os workflows.
-6. Publicar o ambiente externo definitivo.
-7. Configurar o API Hub público.
-8. Rodar a auditoria ponta a ponta das 335 rotas.
-9. Homologar login Google e assinatura Android.
-10. Converter pendências em backlog rastreável.
+6. Definir o contrato de domínio e a arquitetura do PDV.
+7. Criar a frente de caixa mínima integrada a Marketplace, Finance, ERP e WMS.
+8. Implementar venda offline e reconciliação.
+9. Implementar integração opcional com o aplicativo Valley.
+10. Implementar fila digital, combos temporários e presença de baixo consumo.
+11. Submeter a personalização de ofertas à validação jurídica e de privacidade.
+12. Implementar Helena e destaques de venda.
+13. Publicar o ambiente externo definitivo.
+14. Configurar o API Hub público.
+15. Rodar a auditoria ponta a ponta das 335 rotas.
+16. Homologar login Google e assinatura Android.
+17. Converter pendências em backlog rastreável.
 
-## 11. Critério de encerramento
+## 12. Critério de encerramento
 
 Uma pendência somente pode ser marcada como concluída quando houver:
 
@@ -307,9 +512,10 @@ Uma pendência somente pode ser marcada como concluída quando houver:
 - atualização deste documento com data e evidência;
 - confirmação de que nenhum segredo foi exposto.
 
-## 12. Histórico de versões
+## 13. Histórico de versões
 
 | Versão | Data | Alteração principal |
 |---|---|---|
 | 2.0 | 22/07/2026 | Consolidação inicial de pendências críticas, altas, médias e secundárias. |
 | 2.1 | 23/07/2026 | Inclusão de governança de merge, divergência de quatro módulos, ausência de CI no commit atual, lacuna da automação Telegram e falta do auditor v7 reproduzível. |
+| 2.2 | 23/07/2026 | Registro das diretrizes planejadas do PDV: núcleo de caixa, venda offline, integração opcional com Valley, Bluetooth e QR Code autorizados, fila digital, combos temporários, presença em loja, Helena, destaques de venda e governança de dados sensíveis. |
