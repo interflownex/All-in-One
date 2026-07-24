@@ -1,6 +1,6 @@
 import type { CSSProperties, ImgHTMLAttributes } from "react";
 
-const OFFICIAL_LOGO_SRC = "/assets/brand/all-in-one-logo-transparent.svg" as const;
+const OFFICIAL_LOGO_SRC = "/assets/brand/all-in-one-logo-official.png" as const;
 
 type BrandLogoProps = Omit<
   ImgHTMLAttributes<HTMLImageElement>,
@@ -12,14 +12,14 @@ type BrandLogoProps = Omit<
 };
 
 /**
- * Renderiza a logomarca oficial do All-in-One sem permitir substituição,
+ * Renderiza a logomarca oficial do All in One sem permitir substituição,
  * filtros, recortes, distorções, rotações, mudanças de cor ou composição.
  *
  * A única customização visual aceita é o redimensionamento proporcional.
  */
 export function BrandLogo({
   maxWidth = 120,
-  alt = "All-in-One",
+  alt = "All in One",
   className,
   loading = "eager",
   decoding = "async",
