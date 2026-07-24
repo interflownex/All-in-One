@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://render.com/schema/render.yaml.json
+#
+# Blueprint inicial e seguro para validar a implantação do All-in-One na Render.
+# Publica somente o API Hub e um Render Key Value compatível com Redis.
+# A expansão para os demais microsserviços deve ser feita de forma gradual.
+
+previews:
+  generation: off
+
+services:
+  - type: keyvalue
+    name: all-in-one-cache
+    plan: free
+    region: oregon
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru
+
+  - type: web
+    name: all-in-one-api-hub
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./modules/api_hub/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    maxShutdownDelaySeconds: 30
+    envVars:
+      - key: ALL_IN_ONE_REDIS_URL
+        fromService:
+          type: keyvalue
+          name: all-in-one-cache
+          property: connectionString
+      - key: ALL_IN_ONE_STORAGE_DIR
+        value: /tmp/all-in-one
+      - key: ALL_IN_ONE_JWT_SECRET
+        generateValue: true
+      - key: ALL_IN_ONE_WEBHOOK_SECRET
+        generateValue: true
+      - key: API_HUB_PROXY_TIMEOUT_SECONDS
+        value: "20"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: ALL_IN_ONE_CORS_ORIGINS
+        sync: false
