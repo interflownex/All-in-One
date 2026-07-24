@@ -42,3 +42,14 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 - Discover, sync e operacoes Google podem executar quando credenciais legitimas estiverem disponiveis fora do Git.
 - Docker, VS Code, Antigravity, workflows e scripts devem manter as flags Google, AlloyDB, Gemini e Stitch ativas.
 - Nao contornar billing, IAM, compliance, enforcement ou suspensao administrativa do provedor.
+
+# Governanca inviolavel de marca
+
+- A fonte de verdade dos ativos autorizados e `config/branding/authorized_assets.json`, complementada por `config/branding/brand_identity.json` e `assets/brand/README.md`.
+- As marcas oficiais abrangidas sao All in One, Valley e Valley Riders.
+- Sem autorizacao explicita do proprietario da marca, somente duas operacoes sao permitidas: remover exclusivamente o fundo externo sem tocar na arte e redimensionar proporcionalmente.
+- E proibido redesenhar, recolorir, recortar, girar, distorcer, trocar tipografia, alterar linhas, curvas, formas ou composicao, aplicar filtros, mascaras ou opacidade decorativa, ou criar simbolo substituto.
+- Todo ativo digital deve manter fundo externo totalmente transparente.
+- Quando o binario original de uma marca nao estiver disponivel, o agente deve bloquear qualquer substituto ou aproximacao e registrar a pendencia. Nunca deve fabricar uma versao.
+- Ao identificar uma violacao clara e objetiva dessa politica, o proprio agente deve restaurar imediatamente o ativo canonico, executar `python3 scripts/check_brand_integrity.py --fix` e `python3 scripts/check_brand_integrity.py`, validar o repositorio e sincronizar a correcao no Git. Nao e necessario solicitar nova autorizacao para restaurar conformidade.
+- A autorizacao de remediacao imediata nao permite alterar a arte oficial nem tomar decisoes criativas sobre a marca.
