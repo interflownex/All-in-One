@@ -1,16 +1,16 @@
 {
-  "version": "2026-06-01",
+  "version": "2026-07-24",
+  "asset_manifest": "config/branding/authorized_assets.json",
   "platform_brand": {
-    "name": "All-in-One",
+    "name": "All in One",
     "logo_asset": "assets/brand/all-in-one-logo-official.png",
-    "light_logo_asset": "assets/brand/all-in-one-logo-light-official.png",
-    "transparent_logo_asset": "assets/brand/all-in-one-logo-transparent.svg",
+    "transparent_background_required": true,
     "favicon_assets": {
       "v1": "assets/brand/favicon-all-in-one.svg",
       "v2": "assets/brand/favicon-all-in-one.svg",
       "v3": "assets/brand/favicon-all-in-one.svg"
     },
-    "wordmark": "All-in-One",
+    "wordmark": "All in One",
     "placement": "top-left app shell or authenticated header",
     "minimum_width_px": 120,
     "safe_area_px": 16,
@@ -20,26 +20,50 @@
   "valley_brand": {
     "name": "Valley",
     "logo_asset": "assets/brand/valley-logo-official.png",
-    "transparent_logo_asset": "assets/brand/valley-logo-transparent.svg",
+    "transparent_background_required": true,
     "favicon_assets": {
       "v1": "assets/brand/favicon-valley.svg",
       "v2": "assets/brand/favicon-valley.svg",
       "v3": "assets/brand/favicon-valley.svg"
     },
     "wordmark": "Valley",
-    "placement": "top-left inside every Valley surface, near the All-in-One platform mark when both brands appear",
+    "placement": "top-left inside every Valley surface, near the All in One platform mark when both brands appear",
     "minimum_width_px": 104,
     "safe_area_px": 16,
     "primary_color": "#120B2E",
     "accent_color": "#22D3EE",
     "secondary_color": "#7C3AED"
   },
-  "valley_apps": ["valley", "valley-business", "valley-rider"],
+  "riders_brand": {
+    "name": "Valley Riders",
+    "logo_asset": "assets/brand/valley-riders-logo-official.png",
+    "original_filename": "LOGO OFICIAL VALLEY RIDERS_2.png",
+    "transparent_background_required": true,
+    "asset_status": "original_binary_pending_ingestion",
+    "substitution_allowed": false,
+    "placement": "top-left inside Riders surfaces, alongside the All in One platform mark when required",
+    "safe_area_px": 16
+  },
+  "valley_apps": ["valley", "valley-business"],
+  "riders_apps": ["valley-rider", "all-in-one-riders"],
+  "authorized_operations": [
+    "remove_external_background_without_touching_the_mark",
+    "proportional_resize"
+  ],
+  "autonomous_remediation": {
+    "enabled": true,
+    "rule": "When a clear brand violation is detected, restore the canonical asset immediately without asking for additional permission.",
+    "boundary": "Never invent, redraw or approximate an unavailable official asset."
+  },
   "rules": [
-    "Every Stitch screen must include the All-in-One platform wordmark or logo in the global shell/header.",
-    "Every screen generated for valley, valley-business or valley-rider must also include the Valley logo and Valley wordmark.",
-    "Do not redraw, recolor, stretch, crop or rotate the logos; preserve safe area and minimum width.",
-    "Use text alternatives: All-in-One and Valley.",
+    "Every application shell must include the canonical All in One platform logo.",
+    "Every Valley screen must also include the canonical Valley logo.",
+    "Every Riders screen must use the canonical Valley Riders logo after the original binary is ingested; alternative or reconstructed logos are forbidden.",
+    "Do not redraw, recolor, stretch, crop, rotate, distort, filter, mask, alter typography or change the composition of any logo.",
+    "Only external background removal and proportional resizing are authorized without a new explicit approval.",
+    "All digital brand assets must keep a fully transparent external background.",
+    "Use text alternatives: All in One, Valley and Valley Riders.",
+    "A clear violation must be corrected immediately by the agent that identifies it, followed by integrity validation and Git synchronization.",
     "Never place secrets, document images, biometric samples or sensitive records inside logo examples or brand mockups."
   ]
 }
