@@ -1,42 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" fill="none" role="img" aria-label="All-in-One">
-  <defs>
-    <linearGradient id="aio-ring" x1="184" y1="96" x2="776" y2="544" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#8B5CF6" />
-      <stop offset="0.5" stop-color="#7C3AED" />
-      <stop offset="1" stop-color="#22D3EE" />
-    </linearGradient>
-    <linearGradient id="aio-fill" x1="286" y1="132" x2="674" y2="474" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#F8FAFF" />
-      <stop offset="0.38" stop-color="#EDE9FE" />
-      <stop offset="0.58" stop-color="#7C3AED" />
-      <stop offset="0.82" stop-color="#1D4ED8" />
-      <stop offset="1" stop-color="#22D3EE" />
-    </linearGradient>
-    <linearGradient id="aio-dark" x1="370" y1="210" x2="600" y2="468" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#1E1B4B" />
-      <stop offset="0.5" stop-color="#0F172A" />
-      <stop offset="1" stop-color="#0EA5E9" />
-    </linearGradient>
-    <filter id="aio-glow" x="0" y="0" width="960" height="640" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#0F172A" flood-opacity="0.34" />
-      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#8B5CF6" flood-opacity="0.28" />
-    </filter>
-    <filter id="aio-star" x="380" y="364" width="200" height="200" filterUnits="userSpaceOnUse">
-      <feGaussianBlur stdDeviation="6" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-  </defs>
-  <g filter="url(#aio-glow)">
-    <circle cx="480" cy="236" r="200" stroke="url(#aio-ring)" stroke-width="10" opacity="0.9" />
-    <path d="M288 468L420 214C434 188 452 172 480 172C508 172 526 188 540 214L672 468" fill="none" stroke="url(#aio-fill)" stroke-linecap="round" stroke-linejoin="round" stroke-width="84" />
-    <path d="M352 446L480 264L608 446" fill="none" stroke="url(#aio-dark)" stroke-linecap="round" stroke-linejoin="round" stroke-width="80" opacity="0.95" />
-    <path d="M432 392L480 304L528 392" fill="none" stroke="#0F172A" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" opacity="0.95" />
-    <circle cx="480" cy="436" r="22" fill="#F8FAFF" opacity="0.92" filter="url(#aio-star)" />
-    <path d="M480 410V462M454 436H506" stroke="#FFFFFF" stroke-linecap="round" stroke-width="4" opacity="0.9" />
-    <path d="M316 470C372 520 588 520 644 470" stroke="url(#aio-ring)" stroke-linecap="round" stroke-width="8" opacity="0.55" />
-  </g>
-  <text x="480" y="590" text-anchor="middle" fill="#F8FAFF" font-family="Montserrat, Inter, Arial, sans-serif" font-size="66" font-weight="800" letter-spacing="0.18em">ALL IN ONE</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-label="All in One">
+  <title>All in One</title>
+  <image
+    href="./all-in-one-logo-official.png"
+    x="0"
+    y="0"
+    width="960"
+    height="640"
+    preserveAspectRatio="xMidYMid meet"
+  />
 </svg>
