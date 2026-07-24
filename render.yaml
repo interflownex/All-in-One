@@ -1,52 +1,58 @@
-# Render Blueprint do bootstrap do All-in-One.
-# O servico existente "All-in-One" usa o runtime Python nativo e publica
-# somente o API Hub nesta primeira etapa, evitando criar todos os microsservicos.
+version: "1"
 
-previews:
-  generation: "off"
-
-services:
-  - type: web
-    name: All-in-One
-    runtime: python
-    plan: free
-    branch: main
-    numInstances: 1
-    buildCommand: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
-    healthCheckPath: /health
-    autoDeployTrigger: commit
-    maxShutdownDelaySeconds: 30
-    buildFilter:
-      paths:
-        - modules/api_hub/**
-        - modules/shared/**
-        - requirements.txt
-        - main.py
-        - .python-version
-        - render.yaml
-    envVars:
-      - key: PYTHONUNBUFFERED
-        value: "1"
-      - key: ALL_IN_ONE_STORAGE_DIR
-        value: /tmp/all-in-one
-      - key: ALL_IN_ONE_CORS_ORIGINS
-        value: https://all-in-one-web.codexanderson100.chatgpt.site,https://brasildesconto.com.br,https://www.brasildesconto.com.br
-      - key: API_HUB_PROXY_TIMEOUT_SECONDS
-        value: "5"
-      - key: GOOGLE_INTEGRATIONS_ENABLED
-        value: "false"
-      - key: GOOGLE_CLOUD_ENABLED
-        value: "false"
-      - key: GOOGLE_AI_STUDIO_ENABLED
-        value: "false"
-      - key: GOOGLE_CODE_CLI_ENABLED
-        value: "false"
-      - key: ALLOYDB_ENABLED
-        value: "false"
-      - key: STITCH_REMOTE_SYNC_ENABLED
-        value: "false"
-      - key: ALL_IN_ONE_JWT_SECRET
-        generateValue: true
-      - key: ALL_IN_ONE_WEBHOOK_SECRET
-        generateValue: true
+projects:
+  - name: My project
+    environments:
+      - name: Production
+        services:
+          - type: web
+            name: All-in-One
+            runtime: python
+            repo: https://github.com/interflownex/All-in-One
+            branch: main
+            plan: free
+            region: ohio
+            numInstances: 1
+            buildCommand: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+            startCommand: python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+            healthCheckPath: /health
+            autoDeployTrigger: commit
+            maxShutdownDelaySeconds: 30
+            buildFilter:
+              paths:
+                - modules/api_hub/**
+                - modules/shared/**
+                - requirements.txt
+                - main.py
+                - .python-version
+                - pyproject.toml
+                - render.yaml
+            envVars:
+              - key: PYTHON_VERSION
+                value: 3.12.11
+              - key: PYTHONUNBUFFERED
+                value: "1"
+              - key: ALL_IN_ONE_STORAGE_DIR
+                value: /tmp/all-in-one
+              - key: ALL_IN_ONE_CORS_ORIGINS
+                value: https://all-in-one-web.codexanderson100.chatgpt.site,https://brasildesconto.com.br,https://www.brasildesconto.com.br
+              - key: API_HUB_PROXY_TIMEOUT_SECONDS
+                value: "5"
+              - key: GOOGLE_INTEGRATIONS_ENABLED
+                value: "false"
+              - key: GOOGLE_CLOUD_ENABLED
+                value: "false"
+              - key: GOOGLE_AI_STUDIO_ENABLED
+                value: "false"
+              - key: GOOGLE_CODE_CLI_ENABLED
+                value: "false"
+              - key: ALLOYDB_ENABLED
+                value: "false"
+              - key: STITCH_REMOTE_SYNC_ENABLED
+                value: "false"
+              - key: ALL_IN_ONE_JWT_SECRET
+                generateValue: true
+              - key: ALL_IN_ONE_WEBHOOK_SECRET
+                generateValue: true
+              - key: X-Goog-Api-Key
+                sync: false
