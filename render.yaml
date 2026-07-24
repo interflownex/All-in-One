@@ -1,0 +1,52 @@
+# Render Blueprint de bootstrap para o All-in-One.
+# Publica somente o API Hub em plano gratuito para validar o pipeline sem
+# provisionar, de uma vez, todos os microsservicos e datastores do monorepo.
+
+previews:
+  generation: "off"
+
+services:
+  - type: web
+    name: all-in-one-api-hub
+    runtime: docker
+    plan: free
+    region: virginia
+    branch: main
+    numInstances: 1
+    dockerContext: .
+    dockerfilePath: ./modules/api_hub/Dockerfile
+    dockerCommand: >-
+      sh -c 'uvicorn main:app --host 0.0.0.0 --port "${PORT:-10000}"'
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    maxShutdownDelaySeconds: 30
+    buildFilter:
+      paths:
+        - modules/api_hub/**
+        - modules/shared/**
+        - render.yaml
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: ALL_IN_ONE_STORAGE_DIR
+        value: /tmp/all-in-one
+      - key: ALL_IN_ONE_CORS_ORIGINS
+        value: https://all-in-one-web.codexanderson100.chatgpt.site,https://brasildesconto.com.br,https://www.brasildesconto.com.br
+      - key: API_HUB_PROXY_TIMEOUT_SECONDS
+        value: "5"
+      - key: GOOGLE_INTEGRATIONS_ENABLED
+        value: "false"
+      - key: GOOGLE_CLOUD_ENABLED
+        value: "false"
+      - key: GOOGLE_AI_STUDIO_ENABLED
+        value: "false"
+      - key: GOOGLE_CODE_CLI_ENABLED
+        value: "false"
+      - key: ALLOYDB_ENABLED
+        value: "false"
+      - key: STITCH_REMOTE_SYNC_ENABLED
+        value: "false"
+      - key: ALL_IN_ONE_JWT_SECRET
+        generateValue: true
+      - key: ALL_IN_ONE_WEBHOOK_SECRET
+        generateValue: true
