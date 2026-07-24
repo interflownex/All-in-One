@@ -1,22 +1,19 @@
-# Render Blueprint de bootstrap para o All-in-One.
-# Publica somente o API Hub em plano gratuito para validar o pipeline sem
-# provisionar, de uma vez, todos os microsservicos e datastores do monorepo.
+# Render Blueprint do bootstrap do All-in-One.
+# O servico existente "All-in-One" usa o runtime Python nativo e publica
+# somente o API Hub nesta primeira etapa, evitando criar todos os microsservicos.
 
 previews:
   generation: "off"
 
 services:
   - type: web
-    name: all-in-one-api-hub
-    runtime: docker
+    name: All-in-One
+    runtime: python
     plan: free
-    region: virginia
     branch: main
     numInstances: 1
-    dockerContext: .
-    dockerfilePath: ./modules/api_hub/Dockerfile
-    dockerCommand: >-
-      sh -c 'uvicorn main:app --host 0.0.0.0 --port "${PORT:-10000}"'
+    buildCommand: python -m pip install --upgrade pip && python -m pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     autoDeployTrigger: commit
     maxShutdownDelaySeconds: 30
@@ -24,6 +21,9 @@ services:
       paths:
         - modules/api_hub/**
         - modules/shared/**
+        - requirements.txt
+        - main.py
+        - .python-version
         - render.yaml
     envVars:
       - key: PYTHONUNBUFFERED
