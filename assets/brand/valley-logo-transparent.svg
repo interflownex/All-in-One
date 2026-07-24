@@ -1,39 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" fill="none" role="img" aria-label="Valley">
-  <defs>
-    <linearGradient id="valley-ring" x1="168" y1="92" x2="792" y2="548" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#A855F7" />
-      <stop offset="0.42" stop-color="#7C3AED" />
-      <stop offset="1" stop-color="#22D3EE" />
-    </linearGradient>
-    <linearGradient id="valley-mountain" x1="262" y1="176" x2="698" y2="458" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#F8FAFF" />
-      <stop offset="0.35" stop-color="#EDE9FE" />
-      <stop offset="0.6" stop-color="#7C3AED" />
-      <stop offset="1" stop-color="#0EA5E9" />
-    </linearGradient>
-    <linearGradient id="valley-shadow" x1="316" y1="300" x2="652" y2="448" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#17123B" />
-      <stop offset="1" stop-color="#0A84FF" />
-    </linearGradient>
-    <filter id="valley-glow" x="0" y="0" width="960" height="640" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#0F172A" flood-opacity="0.34" />
-      <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#8B5CF6" flood-opacity="0.2" />
-    </filter>
-    <filter id="valley-star" x="404" y="112" width="152" height="152" filterUnits="userSpaceOnUse">
-      <feGaussianBlur stdDeviation="5" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-  </defs>
-  <g filter="url(#valley-glow)">
-    <circle cx="480" cy="238" r="200" stroke="url(#valley-ring)" stroke-width="10" opacity="0.9" />
-    <path d="M192 480L402 246C432 214 456 198 480 198C504 198 528 214 558 246L768 480" fill="none" stroke="url(#valley-mountain)" stroke-linecap="round" stroke-linejoin="round" stroke-width="82" />
-    <path d="M236 470L396 314L480 228L564 314L724 470" fill="none" stroke="url(#valley-shadow)" stroke-linecap="round" stroke-linejoin="round" stroke-width="52" opacity="0.95" />
-    <path d="M280 470C350 440 408 404 480 332C552 404 610 440 680 470" fill="none" stroke="#F8FAFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" opacity="0.65" />
-    <circle cx="480" cy="168" r="18" fill="#FFFFFF" opacity="0.92" filter="url(#valley-star)" />
-    <path d="M480 138V198M450 168H510" stroke="#FFFFFF" stroke-linecap="round" stroke-width="4" opacity="0.95" />
-  </g>
-  <text x="480" y="590" text-anchor="middle" fill="#F8FAFF" font-family="Montserrat, Inter, Arial, sans-serif" font-size="78" font-weight="800" letter-spacing="0.02em">Valley</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-label="Valley">
+  <title>Valley</title>
+  <image
+    href="./valley-logo-official.png"
+    x="0"
+    y="0"
+    width="960"
+    height="640"
+    preserveAspectRatio="xMidYMid meet"
+  />
 </svg>
