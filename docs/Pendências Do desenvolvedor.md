@@ -1,506 +1,329 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 2.2  
-**Data da verificação:** 23/07/2026  
+**Versão:** 2.3  
+**Data da verificação:** 24/07/2026  
 **Repositório verificado:** `interflownex/All-in-One`  
 **Branch de referência:** `main`  
-**Commit de referência:** `3842a64e4f5439a8c8021e60ee71369485c11073`  
+**Commit de referência:** `c63396d8238140870195854070892c4f5d94ce97`  
+**Versão anterior:** 2.2  
 **Pasta lógica do projeto:** `Pendências > Técnico > Equipe técnica`  
 **Público principal:** IA desenvolvedora, desenvolvimento, DevOps, segurança e gestão técnica  
-**Objetivo:** consolidar pendências reais, remover duplicidades, registrar novas divergências e dimensionar os próximos ciclos técnicos.
+**Objetivo:** consolidar as pendências reais, registrar avanços confirmados, remover informações ultrapassadas e preparar o próximo ciclo de execução.
 
-## 1. Regra de governança
+## 1. Regras de governança
 
-- **Crítica:** bloqueia publicação, segurança, integridade financeira, autenticação ou operação real.
-- **Alta:** impede homologação completa, rastreabilidade ou integração de uma frente importante.
-- **Média:** não bloqueia a base local, mas reduz confiabilidade, qualidade ou capacidade de auditoria.
+- **Crítica:** bloqueia publicação, segurança, autenticação, integridade financeira ou operação real.
+- **Alta:** impede homologação completa, rastreabilidade, governança ou integração de uma frente importante.
+- **Média:** reduz confiabilidade, qualidade, acessibilidade ou capacidade de auditoria.
 - **Secundária:** melhoria planejada que não impede o funcionamento atual.
-- Nenhum item é concluído apenas porque existe código, configuração, documento ou PR fechado.
+- Nenhum item é concluído apenas porque existe código, configuração, documento, commit ou PR fechado.
 - A conclusão exige implementação versionada, teste reproduzível e evidência no ambiente correto.
 - Segredos, tokens, senhas, chaves de assinatura e credenciais devem permanecer fora do Git.
-- Toda alteração funcional deve passar por branch, revisão e **Squash and Merge**.
-- Este documento não autoriza commit de credenciais, publicação de custos internos, margens ou lucros.
+- Toda alteração funcional deve passar por branch, revisão, checks e **Squash and Merge**.
+- Workflows automáticos não devem gravar diretamente na `main`; correções automáticas devem abrir PR ou produzir artefato para revisão.
+- Este documento não autoriza divulgação de custos internos, margens ou lucros.
 
-## 2. Resumo atualizado
+## 2. Resumo da atualização
 
-O projeto continua ativo e recebeu uma nova política de automação para notificações via Telegram. A configuração declara avisos de início e término de atividades e quatro relatórios diários de pendências. Entretanto, a implementação executável encontrada ainda cobre apenas o envio de ambiente web pronto ou APK pronto. Não foi encontrada integração executável para os novos eventos de atividade nem para a agenda de quatro relatórios por dia.
+Desde a versão 2.2, o repositório avançou na governança visual e recebeu o PR `#25`, que registrou os ativos oficiais do All in One, Valley e Valley Riders, fortaleceu as regras multiagente, adicionou testes e criou o workflow de integridade das marcas.
 
-A análise do PDV confirmou que o repositório já possui partes fundamentais distribuídas entre Marketplace, Finance, ERP, WMS, Business e Valley Business, incluindo lojas, produtos, carrinhos, pedidos, pagamentos, Pix, conciliação, estoque, fiscal, permissões e auditoria. Entretanto, ainda não existe um módulo de frente de caixa completo e explicitamente consolidado, com abertura e fechamento de caixa, turno de operador, venda presencial, troco, cancelamento controlado, operação offline, pareamento com o aplicativo Valley e integração operacional com equipamentos.
+Os ativos oficiais do **All in One** e da **Valley** foram versionados como arquivos canônicos. Os aliases SVG antigos passaram a apontar para os PNGs oficiais, reduzindo o risco de uso de reconstruções visuais não autorizadas.
 
-Também foram confirmadas as seguintes divergências:
+O arquivo binário oficial da **Valley Riders** ainda não foi incorporado. O manifesto bloqueia substitutos, mas a pendência continua aberta até que o PNG original aprovado seja versionado e validado.
 
-1. o repositório permite `merge commit`, `rebase merge` e `squash merge`, portanto o uso exclusivo de **Squash and Merge** ainda não está imposto;
-2. o commit atual não possui status checks nem execução de workflow associada;
-3. não existem issues abertas como backlog oficial;
-4. `config/module_catalog.json` contém 25 módulos, mas `MODULE_NAMES` contém 21;
-5. os módulos `vision`, `legal`, `property` e `ai_core` estão ausentes da configuração empresarial;
-6. o auditor `scripts/audit_confirmation_v7.py` não foi encontrado na branch `main`, impedindo a reprodução direta do relatório v7 anteriormente apresentado;
-7. as diretrizes funcionais do PDV ainda não possuem contrato de domínio, modelo de dados, telas Stitch, jornadas E2E nem critérios de homologação próprios.
+Foi criada a issue `#24`, iniciando o uso de issues como backlog oficial. Entretanto, uma única issue não cobre as pendências críticas e altas já identificadas; o backlog precisa ser ampliado e governado.
 
-### Contagem consolidada
+A governança de merge continua incompleta. O repositório ainda permite `merge commit`, `rebase merge` e `squash merge`. Além disso, o workflow de integridade de marca possui permissão de escrita e executa `git push origin HEAD:main` quando realiza correções, contrariando a diretriz de PR obrigatório e uso exclusivo de Squash and Merge.
+
+O commit atual não apresenta status checks nem execução de workflow associada. A existência do arquivo `.github/workflows/brand-integrity.yml` não comprova que o gate foi executado com sucesso no commit atual.
+
+As divergências de módulos, a automação Telegram, o auditor v7, a homologação externa, o API Hub público, o APK e o núcleo do PDV permanecem pendentes.
+
+## 3. Mudanças confirmadas desde a versão 2.2
+
+### 3.1 Avanços confirmados
+
+1. PR `#25` integrado para governança das marcas oficiais.
+2. Ativo oficial do All in One versionado e referenciado.
+3. Ativo oficial da Valley versionado e referenciado.
+4. Aliases legados do All in One e Valley convertidos em ponteiros para os PNGs oficiais.
+5. Manifesto `config/branding/authorized_assets.json` criado.
+6. Workflow `.github/workflows/brand-integrity.yml` criado.
+7. Testes e script de verificação de integridade visual ampliados.
+8. Primeira issue oficial de backlog criada: `#24`.
+9. Diretrizes e pendências planejadas do PDV adicionadas ao documento anterior.
+
+### 3.2 Pendências novas ou reclassificadas
+
+1. Alterar o workflow de marca para não realizar push direto na `main`.
+2. Validar a execução real do workflow de integridade visual.
+3. Incorporar o PNG original aprovado da Valley Riders.
+4. Expandir o backlog para todas as pendências críticas e altas.
+5. Implementar a issue `#24`, referente à Promoção do Dia na homepage Valley Consumidor.
+6. Corrigir a contagem das pendências altas da versão 2.2.
+7. Atualizar a referência do documento, que ainda apontava para um commit anterior ao estado atual.
+
+## 4. Contagem consolidada
 
 | Classificação | Quantidade |
 |---|---:|
 | Críticas | 5 |
-| Altas | 14 |
+| Altas | 17 |
 | Médias | 7 |
 | Secundárias | 2 |
-| Resolvidas em princípio, aguardando validação | 2 |
+| Resolvidas em princípio, aguardando evidência final | 1 |
 
-## 3. Quadro de acompanhamento
+## 5. Quadro de acompanhamento
 
-> Os percentuais e tempos abaixo são estimativas gerenciais para organização do trabalho. Eles não substituem evidência técnica.
+> Percentuais e tempos são estimativas gerenciais. Não substituem testes nem evidências.
 
-| Nome da atividade | Descrição | Passo sendo executado | Dificuldade [1 a 5] | % concluído | Tempo previsto | Etapas [Total] | Concluídas [X] | Pendentes [Y] |
+| Nome da atividade | Descrição | Passo atual | Dificuldade [1 a 5] | % concluído | Tempo previsto | Etapas [Total] | Concluídas [X] | Pendentes [Y] |
 |---|---|---|---:|---:|---|---:|---:|---:|
-| Publicação externa definitiva | Homologar domínio, HTTPS, DNS, cache e headers | Aguardar credenciais e validação do ambiente final | 5 | 40% | 2h | 5 | 2 | 3 |
-| API Hub público | Conectar front-end aos microsserviços reais | Configurar URL pública e repetir jornadas | 5 | 50% | 2h | 6 | 3 | 3 |
-| Auditoria das 335 rotas | Validar jornadas ponta a ponta no ambiente publicado | Preparar execução e evidências | 5 | 35% | 2h30 | 6 | 2 | 4 |
-| Assinatura Android | Proteger keystore, upload key e Play App Signing | Definir cofre e procedimento de recuperação | 5 | 45% | 1h30 | 4 | 2 | 2 |
-| Login Google no APK | Homologar autenticação real e sessão | Executar teste com conta real | 4 | 55% | 1h30 | 5 | 3 | 2 |
-| Stitch remoto | Sincronizar a tela e os manifestos pendentes | Fornecer secret e executar sincronização | 3 | 95% | 1h | 4 | 3 | 1 |
-| GitHub Actions | Validar testes, segurança, web, Android, banco e artefatos | Reativar ou disparar os workflows do `main` | 5 | 25% | 2h | 5 | 1 | 4 |
-| Governança de merge | Permitir exclusivamente Squash and Merge | Ajustar configurações e proteção da branch | 3 | 25% | 45min | 4 | 1 | 3 |
-| Catálogo de módulos | Sincronizar catálogo, diretórios, OpenAPI e Business | Incluir quatro módulos ausentes e revalidar presets | 4 | 60% | 1h30 | 5 | 3 | 2 |
-| Automação Telegram | Implementar eventos de atividade e relatórios periódicos | Criar executor, testes e integração com scheduler | 4 | 35% | 2h | 6 | 2 | 4 |
-| Auditoria v7 reproduzível | Restaurar o auditor e torná-lo gate de CI | Localizar ou recriar script, fixtures e relatório | 4 | 30% | 1h30 | 5 | 1 | 4 |
-| Backlog oficial | Converter pendências em issues ou project board | Definir modelo, responsáveis e critérios | 3 | 0% | 1h | 4 | 0 | 4 |
-| Núcleo do PDV | Consolidar venda presencial, caixa, operador, pedidos, estoque e financeiro | Definir contrato, entidades e jornada mínima | 5 | 15% | 4h | 8 | 1 | 7 |
-| Venda offline | Permitir operação sem internet e sincronização posterior segura | Projetar fila local, idempotência e resolução de conflitos | 5 | 5% | 4h | 7 | 0 | 7 |
-| Integração Valley no caixa | Parear aplicativo e PDV por QR Code ou Bluetooth autorizado | Definir sessão temporária e confirmação do cliente | 4 | 10% | 3h | 7 | 1 | 6 |
-| Promoções e fila digital | Gerenciar combos temporários, presença em loja e acompanhamento de pedidos | Definir regras, consentimentos e notificações | 4 | 10% | 3h | 7 | 1 | 6 |
-| Personalização responsável | Evitar ofertas inadequadas e governar preferências sensíveis | Submeter desenho à privacidade e ao jurídico | 5 | 0% | 3h | 8 | 0 | 8 |
+| Publicação externa definitiva | Homologar domínio, HTTPS, DNS, cache e headers | Aguardar credenciais e validação final | 5 | 40% | 2h | 5 | 2 | 3 |
+| API Hub público | Conectar o front-end aos microsserviços reais | Configurar URL pública e repetir jornadas | 5 | 50% | 2h | 6 | 3 | 3 |
+| Auditoria das 335 rotas | Validar jornadas ponta a ponta | Preparar execução no ambiente publicado | 5 | 35% | 2h30 | 6 | 2 | 4 |
+| Assinatura Android | Proteger keystore e Play App Signing | Definir cofre e recuperação | 5 | 45% | 1h30 | 4 | 2 | 2 |
+| Login Google no APK | Homologar autenticação e sessão | Executar com conta real | 4 | 55% | 1h30 | 5 | 3 | 2 |
+| GitHub Actions | Tornar checks executáveis e obrigatórios | Validar workflows no commit atual | 5 | 25% | 2h | 5 | 1 | 4 |
+| Governança de merge | Exigir PR e Squash and Merge | Remover push direto e outros métodos | 4 | 25% | 1h | 5 | 1 | 4 |
+| Integridade visual | Validar marcas oficiais e bloquear alterações | Executar workflow e arquivar evidência | 4 | 75% | 1h | 5 | 4 | 1 |
+| Ativo Valley Riders | Incorporar o PNG oficial aprovado | Obter e versionar o binário original | 3 | 35% | 45min | 4 | 1 | 3 |
+| Catálogo de módulos | Sincronizar os 25 módulos | Incluir quatro módulos na configuração Business | 4 | 60% | 1h30 | 5 | 3 | 2 |
+| Automação Telegram | Implementar eventos e relatórios periódicos | Criar executor e testes | 4 | 35% | 2h | 6 | 2 | 4 |
+| Auditoria v7 | Restaurar o auditor e integrá-lo à CI | Localizar ou recriar script e fixtures | 4 | 30% | 1h30 | 5 | 1 | 4 |
+| Backlog oficial | Transformar pendências em issues | Expandir a partir da issue `#24` | 3 | 10% | 1h30 | 6 | 1 | 5 |
+| Promoção do Dia | Implementar modal comercial auditável | Executar a issue `#24` no projeto Stitch existente | 4 | 5% | 3h | 7 | 0 | 7 |
+| Núcleo do PDV | Consolidar venda presencial e caixa | Definir contrato e jornada mínima | 5 | 15% | 4h | 8 | 1 | 7 |
+| Venda offline | Sincronizar operações sem duplicidade | Projetar fila local e reconciliação | 5 | 5% | 4h | 7 | 0 | 7 |
+| Integração Valley no caixa | Parear aplicativo e PDV com autorização | Definir sessão temporária | 4 | 10% | 3h | 7 | 1 | 6 |
+| Fila digital e combos | Integrar pedidos, presença e promoções | Definir regras e consentimentos | 4 | 10% | 3h | 7 | 1 | 6 |
+| Personalização responsável | Isolar dados sensíveis e governar consentimento | Aguardar privacidade e jurídico | 5 | 0% | 3h | 8 | 0 | 8 |
 
-## 4. Pendências críticas
+## 6. Pendências críticas
 
-### 4.1 Publicar e homologar o ambiente externo definitivo
+### 6.1 Publicar e homologar o ambiente externo definitivo
 
-**Categoria:** Crítica  
-**Necessidade:** concluir a publicação real no Cloudflare Pages ou no ambiente definitivo aprovado, configurar credenciais operacionais fora do repositório e validar o domínio público final.
+Concluir domínio público, DNS, HTTPS, cache, fallback SPA, headers de segurança e registro da URL oficial. Credenciais devem permanecer em secrets ou cofre externo.
 
-**Inclui:**
+**Critério de aceite:** URL oficial acessível, certificado válido, rotas funcionais e evidência versionada.
 
-- disponibilizar `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID` por cofre ou secrets;
-- realizar, pelo titular, os aceites jurídicos exigidos pelo provedor;
-- validar DNS, HTTPS, cache, fallback SPA e headers de segurança;
-- registrar a URL pública oficial e substituir referências temporárias.
+### 6.2 Conectar o front-end ao API Hub público
 
-**Critério de aceite:** URL oficial acessível, certificado válido, rotas SPA funcionais, headers verificados e evidência versionada.
+Configurar `VITE_API_HUB_URL` e executar autenticação, CRUD, uploads, pagamentos sandbox, auditoria, eventos e tratamento de falhas contra os serviços reais.
 
-### 4.2 Conectar o front-end ao API Hub público e aos microsserviços reais
+**Critério de aceite:** jornadas principais sem fallback local, com persistência e evidência no backend correto.
 
-**Categoria:** Crítica  
-**Necessidade:** configurar `VITE_API_HUB_URL` público e executar as jornadas contra os 25 microsserviços no ambiente externo.
+### 6.3 Reexecutar a auditoria integral das 335 rotas
 
-**Inclui:** autenticação, autorização, CRUD, persistência, upload, pagamentos sandbox, auditoria, eventos, outbox e tratamento de falhas.
+Executar a auditoria no ambiente publicado, verificando erros JavaScript, telas travadas, botões mortos, formulários, persistência e autenticação.
 
-**Critério de aceite:** as jornadas principais devem funcionar sem fallback local e registrar evidências no backend correto.
+### 6.4 Proteger a assinatura Android de produção
 
-### 4.3 Reexecutar a auditoria integral das 335 rotas no ambiente publicado
+Armazenar keystore e credenciais em cofre, definir backup, Play App Signing, upload key e procedimento de recuperação.
 
-**Categoria:** Crítica  
-**Necessidade:** repetir a auditoria automatizada das 335 rotas React contra o API Hub e a infraestrutura pública.
+### 6.5 Homologar autenticação Google real no APK
 
-**Critérios mínimos:** ausência de erros JavaScript, telas travadas, botões mortos, formulários sem persistência, falhas de autenticação ou respostas incoerentes.
+Validar token, sessão, renovação, logout, cancelamento, erro de rede e integração com backend em dispositivo ou emulador homologado.
 
-### 4.4 Proteger e governar a assinatura Android de produção
+## 7. Pendências de prioridade alta
 
-**Categoria:** Crítica  
-**Necessidade:** armazenar keystore e credenciais em cofre seguro, criar backup controlado e definir formalmente Play App Signing e upload key.
+### 7.1 Concluir sincronização remota do Google Stitch
 
-**Critério de aceite:** procedimento de assinatura e recuperação testado sem expor chaves no repositório.
+Fornecer `STITCH_API_KEY` por secret e validar projetos, manifestos e telas pendentes, incluindo `finance/entity_valley_gold_ledger_entries`.
 
-### 4.5 Homologar autenticação Google real no APK
+### 7.2 Homologar infraestrutura produtiva
 
-**Categoria:** Crítica  
-**Necessidade:** executar login completo com conta de teste real, validar token, sessão, renovação, logout, cancelamento, erro de rede e vínculo com o backend.
+Validar billing, IAM, cluster, bancos, mensageria, observabilidade, backups, restauração, secrets e políticas de rede.
 
-**Critério de aceite:** fluxo completo reproduzido em dispositivo ou emulador homologado com evidência de backend.
+### 7.3 Validar e tornar obrigatórios os workflows do GitHub Actions
 
-## 5. Pendências de prioridade alta
+O commit atual não possui checks ou workflow associado. Executar segurança, testes, banco, Android, web, Docker, artefatos, marca e publicação.
 
-### 5.1 Concluir sincronização remota do Google Stitch
+**Critério de aceite:** merges bloqueados quando checks obrigatórios falharem.
 
-**Necessidade:** fornecer `STITCH_API_KEY` por secret e executar a sincronização remota dos projetos e telas.
+### 7.4 Expandir e governar o backlog oficial
 
-**Escopo imediato:** validar `finance/entity_valley_gold_ledger_entries` e qualquer tela adicionada após o último manifesto.
+A issue `#24` iniciou o backlog, mas as demais pendências críticas e altas ainda precisam virar issues com responsável, prioridade, dependências, critérios de aceite e evidências.
 
-### 5.2 Homologar infraestrutura produtiva e serviços externos
+### 7.5 Auditar consistência entre documentação e implementação
 
-**Necessidade:** validar billing, IAM, provedores reais, cluster produtivo, bancos gerenciados, mensageria, observabilidade, secrets, backups, restauração e políticas de rede.
+Confrontar `STATUS.md`, `ROADMAP.md`, `EXECUTION_PLAN.md`, OpenAPI, catálogo, manifests Stitch, migrations e código executável.
 
-### 5.3 Validar e tornar obrigatórios os workflows do GitHub Actions
-
-**Evidência atual:** o commit de referência não possui status checks nem execução de workflow associada.
-
-**Necessidade:** confirmar os workflows de segurança, testes, banco, Android, web, Docker, artefatos e publicação, além de torná-los obrigatórios antes do merge.
-
-**Critério de aceite:** commit do `main` com checks executados, resultados arquivados e bloqueio de merge em caso de falha.
-
-### 5.4 Criar backlog oficial por issues ou project board
-
-**Evidência atual:** não existem issues abertas no repositório.
-
-**Necessidade:** transformar as pendências deste documento em itens rastreáveis com responsável, prioridade, dependências, prazo, critérios de aceite e evidências.
-
-### 5.5 Auditar consistência entre documentação e implementação
-
-**Necessidade:** confrontar `STATUS.md`, `ROADMAP.md`, `EXECUTION_PLAN.md`, contratos OpenAPI, catálogo de módulos, manifests Stitch, migrations e código executável.
-
-### 5.6 Impor uso exclusivo de Squash and Merge
-
-**Evidência atual:** o repositório permite merge commit, rebase merge e squash merge simultaneamente.
-
-**Necessidade:**
+### 7.6 Impor uso exclusivo de Squash and Merge
 
 - desabilitar `merge commit`;
 - desabilitar `rebase merge`;
-- manter apenas `squash merge`;
-- proteger a branch `main` contra push direto;
-- exigir PR, revisão e checks obrigatórios;
-- padronizar título e mensagem do commit final.
+- proteger a `main` contra push direto;
+- exigir PR, revisão e checks;
+- impedir workflows de executar `git push` direto;
+- fazer correções automáticas abrirem PR ou gerarem patch revisável.
 
-**Critério de aceite:** nenhuma alteração chega à `main` por método diferente de Squash and Merge.
+### 7.7 Sincronizar catálogo de módulos e configuração Business
 
-### 5.7 Sincronizar o catálogo de módulos com a configuração Business
-
-**Evidência atual:** o catálogo possui 25 módulos e `MODULE_NAMES` possui 21.
-
-**Módulos ausentes:**
+`config/module_catalog.json` possui 25 módulos e `MODULE_NAMES` possui 21. Incluir e testar:
 
 - `vision`;
 - `legal`;
 - `property`;
 - `ai_core`.
 
-**Necessidade:** incluir nomes em pt-BR, presets, dependências, regras de visibilidade, recomendações e testes para os quatro módulos.
+### 7.8 Implementar o ciclo de atividade e relatórios pelo Telegram
 
-**Critério de aceite:** igualdade entre catálogo, diretórios, `MODULE_NAMES`, presets, contratos e OpenAPI.
+Criar execução real para `activity_started`, `activity_completed` e quatro relatórios diários, com logs, retry, mocks e secrets externos.
 
-### 5.8 Implementar de fato o ciclo de atividade e relatórios pelo Telegram
+### 7.9 Restaurar a auditoria de confirmação v7
 
-**Evidência atual:** a política JSON declara notificações de início e conclusão e quatro relatórios diários, mas o script executável localizado envia apenas ambiente web pronto ou APK pronto.
+Recriar ou localizar `scripts/audit_confirmation_v7.py`, versionar regras e fixtures, executar na CI e publicar relatório como artefato.
 
-**Necessidade:**
+### 7.10 Consolidar o núcleo funcional do PDV
 
-- criar comandos para `activity_started` e `activity_completed`;
-- validar todos os campos obrigatórios definidos na política;
-- gerar relatório de pendências quatro vezes por dia no fuso `America/Sao_Paulo`;
-- registrar falhas, tentativas e confirmação de entrega;
-- adicionar testes sem contato real com o Telegram;
-- integrar o executor ao mecanismo de agendamento aprovado.
+Definir caixa, operador, venda, pagamentos, troco, cancelamento, sangria, suprimento, estoque, fiscal, comprovante e auditoria.
 
-**Critério de aceite:** execução automatizada comprovada em ambiente de teste, com secrets externos e logs auditáveis.
+### 7.11 Implementar venda offline segura
 
-### 5.9 Restaurar e automatizar a auditoria de confirmação v7
+Criar armazenamento local criptografado, idempotência, sincronização, reconciliação, limites de risco e prevenção de duplicidade.
 
-**Evidência atual:** `scripts/audit_confirmation_v7.py` não foi encontrado na branch `main`, e a busca pelo relatório reproduzível não retornou artefato correspondente.
+### 7.12 Integrar o aplicativo Valley ao PDV sem obrigatoriedade
 
-**Necessidade:**
+Suportar QR Code e Bluetooth de baixa energia com autorização explícita, sessão curta e confirmação do cliente.
 
-- localizar a versão correta ou recriar o auditor;
-- versionar regras, fixtures e formato de saída;
-- comparar diretórios, catálogo, `MODULE_NAMES`, aplicações, OpenAPI e manifests;
-- executar na CI;
-- falhar o workflow quando houver divergência;
-- publicar relatório como artefato do workflow.
+### 7.13 Implementar fila digital e acompanhamento
 
-**Critério de aceite:** qualquer pessoa autorizada consegue reproduzir o mesmo resultado a partir do commit informado.
+Unificar balcão, aplicativo, retirada e delivery; manter alternativa tradicional para clientes sem aplicativo.
 
-### 5.10 Consolidar o núcleo funcional do PDV
+### 7.14 Implementar combos temporários e presença na loja
 
-**Contexto:** o PDV não será apenas uma tela de checkout. Ele deve funcionar como a frente de operação presencial integrada ao ecossistema All-in-One e Valley.
+Permitir criação, ativação e encerramento pelo gerente, com filial, estoque, validade, consentimento e limite de frequência.
 
-**Necessidade:** definir contrato de domínio, APIs, migrations, eventos, permissões e telas para:
+### 7.15 Governar personalização e dados sensíveis
 
-- abertura, pausa, retomada e fechamento de caixa;
-- turno e identificação do operador;
-- venda com ou sem cliente identificado;
-- busca, leitura e inclusão de produtos;
-- alteração de quantidade e desconto conforme alçada;
-- dinheiro, Pix, cartão, carteira Valley e pagamento combinado;
-- cálculo de troco;
-- cancelamento, estorno, devolução, sangria e suprimento;
-- baixa de estoque, pedido, financeiro, conciliação e documento fiscal;
-- comprovante digital ou impresso;
-- funcionamento adaptável a varejo, alimentação, serviços e redes de lojas.
+Impedir uso automático de prontuário ou condição médica para publicidade. Exigir isolamento técnico, consentimento específico, finalidade e alternativa sem perfilamento.
 
-**Critério de aceite:** jornada presencial completa, auditável e integrada, sem depender exclusivamente do aplicativo Valley.
+### 7.16 Implementar a Promoção do Dia da issue `#24`
 
-### 5.11 Implementar venda offline com sincronização segura
+Usar o projeto Stitch existente `VALLEY APK - Template Completo`, sem duplicar projeto ou tela. Criar modal centralizado, campanha paga, controles da empresa, interação do consumidor, auditoria, frequência e experiência não invasiva.
 
-**Diretriz aprovada:** o caixa deve continuar vendendo quando houver queda de internet.
+### 7.17 Incorporar o ativo oficial da Valley Riders
 
-**Necessidade:** projetar armazenamento local criptografado, fila de operações, identificadores idempotentes, sincronização posterior, resolução de conflitos, limite de risco e bloqueio de operações que exijam autorização online.
+Obter o arquivo original aprovado `LOGO OFICIAL VALLEY RIDERS_2.png`, versioná-lo em `assets/brand/valley-riders-logo-official.png`, registrar hash, validar transparência e impedir substitutos.
 
-**Regras mínimas:**
+## 8. Pendências de prioridade média
 
-- nunca duplicar pedido, pagamento ou baixa de estoque durante a reconexão;
-- informar claramente ao operador o estado offline;
-- separar pagamentos realmente autorizados de pagamentos pendentes;
-- manter trilha de auditoria local e remota;
-- permitir políticas distintas por empresa, filial e meio de pagamento.
+### 8.1 Revalidar emulador Android e instalação do APK
 
-**Critério de aceite:** venda offline reproduzida, reconectada e conciliada sem duplicidade ou perda de registros.
+Confirmar boot, instalar APK e repetir smoke tests.
 
-### 5.12 Integrar o aplicativo Valley ao PDV sem torná-lo obrigatório
+### 8.2 Centralizar evidências de validação
 
-**Diretriz aprovada:** clientes com o aplicativo Valley poderão interagir com o PDV, mas clientes sem aplicativo continuarão sendo atendidos por todos os meios tradicionais.
+Registrar logs, relatórios, capturas, hashes, URLs, commits, PRs e resultados por versão.
 
-**Necessidade:** suportar duas formas complementares de vínculo:
+### 8.3 Separar dados demonstrativos e ambientes
 
-1. leitura de QR Code apresentado pelo PDV ou pelo aplicativo;
-2. descoberta por Bluetooth de baixa energia, sempre seguida de autorização e confirmação explícita.
+Distinguir dados fictícios, sandbox, homologação e produção com flags e avisos claros.
 
-**Regras de segurança e experiência:**
+### 8.4 Verificar integridade dos contratos
 
-- não selecionar cliente apenas pela intensidade do sinal Bluetooth;
-- não abrir pedido apenas porque um aparelho foi detectado;
-- criar sessão temporária, curta e vinculada à venda atual;
-- solicitar confirmação no aplicativo do cliente;
-- permitir confirmação verbal pelo operador somente como etapa adicional, nunca como autenticação única;
-- evitar exposição de uma lista ampla de nomes de clientes presentes na loja;
-- exibir somente os dados mínimos necessários após autorização;
-- encerrar o vínculo quando a venda terminar, expirar ou for cancelada.
+Validar DTOs, formulários, persistência, OpenAPI, eventos e migrations.
 
-**Critério de aceite:** três ou mais clientes próximos podem estar com o aplicativo aberto sem que pedidos, identidades ou pagamentos sejam associados à pessoa errada.
+### 8.5 Revisar performance, acessibilidade e responsividade
 
-### 5.13 Implementar fila digital e acompanhamento de pedidos
+Executar Lighthouse, Web Vitals, teclado, leitor de tela, contraste, zoom e testes em aparelhos limitados.
 
-**Diretriz aprovada:** o operador poderá perguntar se o cliente possui o aplicativo Valley. Caso possua, o cliente poderá ler um QR Code e acompanhar seu pedido pelo celular.
+### 8.6 Implementar sugestões responsáveis da Helena no PDV
 
-**Necessidade:**
+Permitir sugestões explicáveis e dispensáveis, sem executar autonomamente desconto elevado, cancelamento, estorno, sangria, suprimento ou alteração fiscal.
 
-- gerar senha ou identificador de pedido;
-- mostrar estados como recebido, em preparação, pronto, saiu para entrega, retirado, concluído e cancelado;
-- enviar atualização no aplicativo quando houver consentimento;
-- manter painel ou chamada tradicional para clientes sem aplicativo;
-- integrar pedidos do balcão, aplicativo, retirada e delivery na mesma fila operacional;
-- impedir que informações pessoais sejam exibidas publicamente no painel.
+### 8.7 Criar destaques de venda e resumo operacional
 
-**Critério de aceite:** clientes com e sem aplicativo acompanham o pedido sem depender de fluxos separados ou exclusivos.
+Exibir métricas por empresa, filial, caixa, operador e período, sem exposição indevida de dados pessoais.
 
-### 5.14 Implementar combos temporários e ofertas por presença na loja
+## 9. Pendências secundárias
 
-**Diretriz aprovada:** o gerente poderá criar, ativar, pausar e encerrar combos a qualquer momento, sem depender de campanhas fixas.
+### 9.1 Ampliar documentação para pessoa física e jurídica
 
-**Necessidade:**
+Descrever módulos, serviços e microsserviços em linguagem comercial, incluindo benefícios, comodidade, usabilidade e economia, sem divulgar custos internos ou margens.
 
-- definir produto, quantidade, preço, período opcional, filial e limite de estoque;
-- ativar ou finalizar imediatamente;
-- registrar usuário responsável e histórico de alterações;
-- impedir venda após expiração, encerramento ou falta de estoque;
-- permitir oferta no PDV, no aplicativo e na fila digital;
-- detectar presença por geofencing, QR Code, Bluetooth ou combinação de sinais de baixo consumo;
-- considerar tempo mínimo configurável de permanência, inicialmente idealizado em três minutos;
-- respeitar permissão de localização, notificações e personalização;
-- limitar frequência para evitar insistência e consumo desnecessário de bateria.
+### 9.2 Padronizar nomenclatura e idioma do front-end
 
-**Critério de aceite:** promoção correta é entregue apenas para a filial, período, público autorizado e estoque definidos, com opção fácil de ignorar ou desativar.
+Concluir pt-BR, pluralização, acentuação, labels, ajuda contextual e mensagens de erro.
 
-### 5.15 Governar personalização de ofertas e dados sensíveis
+## 10. Item resolvido em princípio, aguardando evidência final
 
-**Bloqueio obrigatório:** informações de saúde, prontuário ou qualquer dado que revele condição médica não podem ser reutilizados automaticamente para publicidade ou recomendação comercial.
+### 10.1 Ativos oficiais do All in One e Valley
 
-**Necessidade:** antes de qualquer implementação:
+Os PNGs oficiais estão versionados e os aliases legados apontam para os ativos canônicos. A conclusão final depende de:
 
-- realizar análise jurídica, de privacidade e segurança;
-- produzir relatório de impacto quando aplicável;
-- separar tecnicamente o domínio clínico do domínio comercial;
-- proibir acesso direto do PDV a prontuários ou diagnósticos;
-- priorizar preferências comerciais voluntariamente declaradas, como sem açúcar, sem lactose, vegetariano ou alergênicos;
-- obter consentimento específico, destacado, informado e revogável para qualquer uso de dado sensível;
-- permitir que o usuário não responda e continue utilizando a plataforma normalmente;
-- registrar finalidade, origem, validade e revogação do consentimento;
-- criar alternativa sem perfilamento;
-- impedir inferências discriminatórias ou exposição da condição do cliente ao operador.
+1. execução comprovada do workflow de integridade;
+2. testes aprovados no commit atual;
+3. verificação das superfícies web, business, desktop e documentação;
+4. ausência de reconstruções ou versões alternativas.
 
-**Critério de aceite:** aprovação formal de privacidade e jurídico, consentimentos auditáveis, isolamento de dados e testes que comprovem que o PDV não acessa informações clínicas indevidas.
+## 11. Plano de ação para o próximo ciclo de 8 horas
 
-## 6. Pendências de prioridade média
-
-### 6.1 Revalidar o emulador Android e a instalação do APK
-
-Aguardar boot completo, confirmar `sys.boot_completed`, instalar novamente o APK e repetir smoke tests.
-
-### 6.2 Centralizar evidências de validação
-
-Registrar por versão logs, relatórios, capturas, artefatos, hashes, URLs, commits e resultados dos testes.
-
-### 6.3 Revisar dados demonstrativos e separação de ambiente
-
-Garantir separação explícita entre dados fictícios, sandbox, homologação e produção, incluindo banners e flags de ambiente.
-
-### 6.4 Verificar integridade dos contratos após padronização massiva
-
-Validar compatibilidade entre DTOs, formulários, persistência, OpenAPI, eventos e migrations de todas as entidades alteradas.
-
-### 6.5 Revisar performance, acessibilidade e responsividade em dispositivos reais
-
-Executar Lighthouse, Web Vitals, testes de teclado, leitor de tela, contraste, zoom, telas pequenas e aparelhos Android de desempenho limitado.
-
-### 6.6 Implementar sugestões da Helena em tempo real para o operador
-
-**Diretriz aprovada:** a Helena poderá apoiar o operador durante a venda, sem executar operações financeiras sensíveis sozinha.
-
-**Sugestões previstas:**
-
-- combos ativos e produtos comprados em conjunto;
-- substitutos disponíveis quando faltar estoque;
-- alerta de produto próximo da validade;
-- confirmação de desconto fora do padrão;
-- oportunidade de fidelidade, Pepitas ou benefício disponível;
-- alerta de possível erro de quantidade, preço ou duplicidade;
-- orientação contextual sobre a próxima etapa da venda.
-
-**Restrições:** sugestões devem ser explicáveis, não invasivas, dispensáveis e submetidas às permissões da empresa. Desconto elevado, cancelamento, estorno, sangria, suprimento e alteração fiscal continuam exigindo ação humana autorizada.
-
-### 6.7 Criar destaques de venda e resumo operacional
-
-**Diretriz aprovada:** o gerente e o operador autorizado poderão visualizar os destaques do período.
-
-**Inclui:** produtos mais vendidos, horários de maior movimento, ticket médio, meios de pagamento, combos com melhor resultado, cancelamentos, devoluções, rupturas de estoque e diferenças de caixa.
-
-**Critério de aceite:** métricas reproduzíveis, filtráveis por empresa, filial, caixa, operador e período, sem exposição indevida de dados pessoais.
-
-## 7. Pendências secundárias
-
-### 7.1 Ampliar documentação funcional para clientes pessoa física e jurídica
-
-Descrever cada módulo, serviço e microsserviço em linguagem comercial, incluindo aplicação, benefícios, comodidade, usabilidade, custo e economia para o cliente, sem expor custos internos, margens ou lucros.
-
-### 7.2 Padronizar nomenclatura e idioma do front-end
-
-Concluir revisão pt-BR, pluralização, acentuação, mensagens de erro, labels, ajuda contextual e manutenção apenas dos termos estrangeiros consolidados no Brasil.
-
-## 8. Itens resolvidos em princípio, aguardando validação
-
-### 8.1 Ativos oficiais da marca Valley
-
-Confirmar que todas as superfícies usam exclusivamente o ativo oficial vigente, sem redesenho, alteração de linhas, formas ou cores.
-
-### 8.2 Ativos oficiais da marca Valley Riders
-
-Confirmar presença do PNG oficial com fundo transparente e ausência de versões provisórias ou modificadas.
-
-## 9. Plano de ação para um ciclo de 8 horas
-
-A execução deve priorizar tarefas que aumentem rastreabilidade e evitem novas divergências. Atrasos de até 4 horas são considerados tolerância operacional normal. Após 12 horas, este documento deve ser atualizado com o que foi concluído e com as pendências restantes.
+Atrasos de até 4 horas são tolerância operacional normal. Após 12 horas, o documento deve ser atualizado com evidências, falhas e pendências restantes.
 
 ### Bloco 1, 0h a 1h
 
-1. Restaurar ou recriar o auditor v7.
-2. Executar a comparação de catálogo, diretórios, aplicações, OpenAPI e configuração Business.
-3. Salvar o resultado como artefato versionado.
+1. Alterar o workflow de marca para remover `git push` direto na `main`.
+2. Fazer a remediação automática abrir PR ou gerar patch revisável.
+3. Revisar permissões de escrita do workflow.
 
-### Bloco 2, 1h a 2h30
+### Bloco 2, 1h a 2h
+
+1. Executar `check_brand_integrity.py`.
+2. Executar `tests/test_branding_assets.py`.
+3. Disparar o workflow manualmente e arquivar evidências.
+
+### Bloco 3, 2h a 3h
+
+1. Incorporar o PNG oficial da Valley Riders, caso esteja disponível.
+2. Validar hash, transparência e referências.
+3. Caso o arquivo esteja indisponível, criar issue bloqueada com origem e responsável.
+
+### Bloco 4, 3h a 4h
+
+1. Criar issues para as cinco pendências críticas.
+2. Criar issues para governança de merge, CI, módulos, Telegram e auditor v7.
+3. Relacionar dependências e critérios de aceite.
+
+### Bloco 5, 4h a 5h30
+
+1. Restaurar ou recriar o auditor v7.
+2. Executar catálogo, diretórios, aplicações, OpenAPI e configuração Business.
+3. Salvar relatório versionado.
+
+### Bloco 6, 5h30 a 7h
 
 1. Incluir `vision`, `legal`, `property` e `ai_core` em `MODULE_NAMES`.
-2. Definir presets e dependências.
-3. Criar testes unitários para recomendações e visibilidade.
+2. Definir presets, dependências e visibilidade.
+3. Criar testes unitários.
 
-### Bloco 3, 2h30 a 4h
+### Bloco 7, 7h a 8h
 
-1. Implementar comandos de início e término de atividade no Telegram.
-2. Implementar geração do relatório de pendências.
-3. Criar mocks e testes de falha, timeout e resposta inválida.
+1. Preparar a primeira entrega da issue `#24` no projeto Stitch existente.
+2. Atualizar o backlog e este documento.
+3. Registrar commits, PRs, checks, evidências e bloqueios externos.
 
-### Bloco 4, 4h a 5h
+## 12. Ordem recomendada das próximas atividades
 
-1. Ajustar o repositório para uso exclusivo de Squash and Merge.
-2. Configurar proteção da `main`.
-3. Definir checks obrigatórios e revisão mínima.
-
-### Bloco 5, 5h a 7h
-
-1. Executar os workflows principais.
-2. Corrigir falhas diretamente relacionadas às mudanças do ciclo.
-3. Arquivar logs e relatórios.
-
-### Bloco 6, 7h a 8h
-
-1. Atualizar este documento.
-2. Criar ou atualizar issues do backlog.
-3. Registrar commits, PRs, testes e bloqueios externos.
-4. Preparar a retomada para o limite operacional de 12 horas.
-
-## 10. Trilha planejada para construção do PDV
-
-### Fase 1 — contrato e arquitetura
-
-1. decidir se o PDV será módulo próprio ou aplicação orquestradora dos módulos existentes;
-2. definir entidades, eventos, estados, permissões, APIs e migrations;
-3. mapear reutilização de Marketplace, Finance, ERP, WMS, Business, Identity e BI;
-4. criar contrato funcional e critérios de aceite.
-
-### Fase 2 — frente de caixa mínima
-
-1. criar abertura de caixa e turno do operador;
-2. implementar busca, leitura, carrinho, quantidade, desconto e total;
-3. implementar dinheiro, Pix, cartão e troco;
-4. concluir venda, comprovante, baixa de estoque e lançamento financeiro;
-5. criar fechamento e relatório de caixa.
-
-### Fase 3 — segurança e operação offline
-
-1. criar fila local criptografada;
-2. definir idempotência e reconciliação;
-3. limitar operações de risco offline;
-4. testar queda de rede durante cada etapa da venda;
-5. sincronizar sem duplicidade.
-
-### Fase 4 — integração com o aplicativo Valley
-
-1. implementar QR Code de vínculo e acompanhamento;
-2. prototipar Bluetooth de baixa energia com autorização explícita;
-3. criar sessão temporária por venda;
-4. testar múltiplos clientes próximos;
-5. manter atendimento integral sem aplicativo.
-
-### Fase 5 — fila digital, combos e presença
-
-1. integrar pedidos do balcão, aplicativo, retirada e delivery;
-2. criar painel e notificações de acompanhamento;
-3. permitir combos temporários controlados pelo gerente;
-4. implementar presença de baixo consumo e limites de frequência;
-5. registrar consentimento e preferências.
-
-### Fase 6 — inteligência e indicadores
-
-1. conectar Helena ao contexto do caixa com ações apenas sugestivas;
-2. criar destaques de venda e alertas operacionais;
-3. validar explicabilidade, permissões e auditoria;
-4. medir impacto sem expor dados pessoais.
-
-### Fase 7 — privacidade e homologação
-
-1. concluir avaliação jurídica e de proteção de dados;
-2. testar isolamento entre saúde e comércio;
-3. homologar dispositivos, impressoras, leitores e integrações fiscais escolhidas;
-4. executar testes E2E, segurança, acessibilidade e carga;
-5. publicar somente após evidências reproduzíveis.
-
-## 11. Ordem recomendada das próximas atividades
-
-1. Restaurar o auditor v7 e transformá-lo em gate.
-2. Corrigir a divergência dos quatro módulos.
-3. Implementar a automação Telegram executável.
-4. Impor Squash and Merge e proteção da `main`.
-5. Executar e registrar todos os workflows.
-6. Definir o contrato de domínio e a arquitetura do PDV.
-7. Criar a frente de caixa mínima integrada a Marketplace, Finance, ERP e WMS.
-8. Implementar venda offline e reconciliação.
-9. Implementar integração opcional com o aplicativo Valley.
-10. Implementar fila digital, combos temporários e presença de baixo consumo.
-11. Submeter a personalização de ofertas à validação jurídica e de privacidade.
-12. Implementar Helena e destaques de venda.
-13. Publicar o ambiente externo definitivo.
+1. Corrigir o workflow de marca para não gravar diretamente na `main`.
+2. Executar e comprovar os gates de integridade visual.
+3. Incorporar o ativo oficial da Valley Riders.
+4. Expandir o backlog oficial.
+5. Restaurar o auditor v7.
+6. Corrigir a divergência dos quatro módulos.
+7. Implementar a automação Telegram executável.
+8. Impor Squash and Merge e proteção da `main`.
+9. Executar os workflows principais.
+10. Implementar a issue `#24` sem duplicar projeto Stitch.
+11. Definir contrato e arquitetura do PDV.
+12. Implementar frente de caixa, venda offline e integração opcional Valley.
+13. Publicar e homologar o ambiente externo.
 14. Configurar o API Hub público.
-15. Rodar a auditoria ponta a ponta das 335 rotas.
+15. Rodar a auditoria das 335 rotas.
 16. Homologar login Google e assinatura Android.
-17. Converter pendências em backlog rastreável.
 
-## 12. Critério de encerramento
+## 13. Critério de encerramento
 
 Uma pendência somente pode ser marcada como concluída quando houver:
 
@@ -508,14 +331,16 @@ Uma pendência somente pode ser marcada como concluída quando houver:
 - teste automatizado ou procedimento reproduzível;
 - evidência do ambiente correto;
 - referência ao commit e ao PR;
+- checks executados e aprovados;
 - ausência de bloqueio externo não declarado;
-- atualização deste documento com data e evidência;
-- confirmação de que nenhum segredo foi exposto.
+- confirmação de que nenhum segredo foi exposto;
+- atualização deste documento.
 
-## 13. Histórico de versões
+## 14. Histórico de versões
 
 | Versão | Data | Alteração principal |
 |---|---|---|
-| 2.0 | 22/07/2026 | Consolidação inicial de pendências críticas, altas, médias e secundárias. |
-| 2.1 | 23/07/2026 | Inclusão de governança de merge, divergência de quatro módulos, ausência de CI no commit atual, lacuna da automação Telegram e falta do auditor v7 reproduzível. |
-| 2.2 | 23/07/2026 | Registro das diretrizes planejadas do PDV: núcleo de caixa, venda offline, integração opcional com Valley, Bluetooth e QR Code autorizados, fila digital, combos temporários, presença em loja, Helena, destaques de venda e governança de dados sensíveis. |
+| 2.0 | 22/07/2026 | Consolidação inicial das pendências do projeto. |
+| 2.1 | 23/07/2026 | Governança de merge, divergência de módulos, CI, Telegram e auditor v7. |
+| 2.2 | 23/07/2026 | Diretrizes planejadas do PDV, venda offline, Valley, fila digital, combos, Helena e privacidade. |
+| 2.3 | 24/07/2026 | Governança das marcas, PR #25, primeira issue oficial, reclassificação Valley Riders, conflito do workflow com a proteção da main, correção da contagem e atualização do plano de 8 horas. |
