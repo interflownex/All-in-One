@@ -1,5 +1,5 @@
 {
-  "version": "2026-06-04",
+  "version": "2026-07-24",
   "language": "pt-BR",
   "enabled": true,
   "scope": "workspace",
@@ -54,16 +54,22 @@
     "Nunca versionar segredos; STITCH_API_KEY e chaves equivalentes devem ficar somente em ambiente local, secrets do GitHub Actions ou cofres externos.",
     "Preservar config/stitch/screen_manifest.json e config/stitch/sync_state.json como estado autoritativo da sincronizacao Stitch ativa.",
     "Atualizar STATUS.md quando a atividade alterar maturidade, sincronizacao remota, contratos operacionais ou proximos passos naturais.",
-    "Manter respostas e orientacoes em portugues do Brasil neste workspace."
+    "Manter respostas e orientacoes em portugues do Brasil neste workspace.",
+    "Respeitar config/branding/authorized_assets.json como fonte de verdade das marcas All in One, Valley e Valley Riders.",
+    "Nao redesenhar, recolorir, recortar, girar, distorcer, trocar tipografia, alterar composicao nem substituir qualquer logomarca oficial sem autorizacao explicita.",
+    "Ao detectar violacao clara da identidade oficial, corrigir imediatamente para o ativo canonico, validar e sincronizar no Git sem pedir nova autorizacao.",
+    "Quando o binario oficial estiver indisponivel, bloquear aproximacoes e registrar a pendencia; nunca fabricar um substituto."
   ],
   "pre_work_commands": [
     "python3 scripts/multi_agent_sync_guard.py preflight --integrate",
     "python3 scripts/multi_agent_sync_guard.py acquire --agent <agent_id> --activity \"<descricao da atividade>\" --scope <escopo>",
     "git status --short --branch",
     "git fetch origin main",
-    "git fetch fork main"
+    "git fetch fork main",
+    "python3 scripts/check_brand_integrity.py --fix"
   ],
   "closeout_commands": [
+    "python3 scripts/check_brand_integrity.py",
     "python3 scripts/validate_repository.py",
     "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -Activity \"<descricao da atividade>\"",
     "python3 scripts/multi_agent_sync_guard.py release --agent <agent_id> --scope <escopo>"
@@ -74,7 +80,9 @@
     "on_untracked_sensitive_files": "nao_commitir",
     "on_secret_detected": "bloquear_commit",
     "on_active_agent_lock": "usar escopo distinto para atividades sem arquivos compartilhados; aguardar quando o escopo coincidir",
-    "on_stale_agent_lock": "substituir_apos_ttl_com_auditoria"
+    "on_stale_agent_lock": "substituir_apos_ttl_com_auditoria",
+    "on_clear_brand_violation": "corrigir_imediatamente_sem_nova_autorizacao",
+    "on_missing_official_brand_binary": "bloquear_substitutos_e_registrar_pendencia"
   },
   "coordination_guard": {
     "script": "scripts/multi_agent_sync_guard.py",
@@ -82,8 +90,18 @@
     "default_ttl_minutes": 120,
     "required_before_edit": true,
     "required_release_after_sync": true,
-    "remote_strategy": "origin_e_fork_devem_formar_uma_linha_de_ancestralidade; integrar_somente_fast_forward, inclusive com mudancas locais quando nao houver sobreposicao de arquivos",
-    "lock_strategy": "locks sao isolados por escopo; o mesmo agente pode renovar seu lock sem depender do PID do processo"
+    "remote_strategy": "origin_e_fork_devem_formar_uma_linha_de_ancestralidade; integrar_somente_fast_forward, inclusive_com_mudancas_locais_quando_nao_houver_sobreposicao_de_arquivos",
+    "lock_strategy": "locks_sao_isolados_por_escopo;_o_mesmo_agente_pode_renovar_seu_lock_sem_depender_do_PID_do_processo"
+  },
+  "brand_governance": {
+    "required": true,
+    "asset_manifest": "config/branding/authorized_assets.json",
+    "identity_contract": "config/branding/brand_identity.json",
+    "documentation": "assets/brand/README.md",
+    "validator": "scripts/check_brand_integrity.py",
+    "auto_fix_known_aliases": true,
+    "explicit_authorization_required_for_art_change": true,
+    "immediate_remediation_of_clear_violations": true
   },
   "stitch_alignment": {
     "required": true,
@@ -99,6 +117,6 @@
     "profile": "config/cloud/google_cloud_profile.json",
     "inventory": "config/cloud/google_cloud_inventory.json",
     "state_source_of_truth": "google_cloud_remote",
-    "required_rule": "importar o estado remoto antes de alterar infraestrutura e preservar recursos existentes"
+    "required_rule": "importar_o_estado_remoto_antes_de_alterar_infraestrutura_e_preservar_recursos_existentes"
   }
 }
