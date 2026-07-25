@@ -31,3 +31,17 @@ tmp/
 *.keystore
 valley-release.properties
 firebase-debug.log
+
+# Logs locais e depuracao de extensoes
+*.log
+.vscode/*Debug.log
+.vscode/*debug*.log
+
+# Chaves, certificados e credenciais locais
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+service-account*.json
+google-service-account*.json
