@@ -4,24 +4,40 @@
 - Essa regra vale para este workspace (`all-in-one`) e deve prevalecer sobre respostas em ingles quando nao houver conflito tecnico ou legal.
 - Codigos, nomes de arquivos, comandos, identificadores, logs e mensagens externas devem permanecer no idioma/formato original quando isso preservar precisao tecnica.
 
-# Sincronizacao Git obrigatoria
+# Sincronizacao Git obrigatoria e segura
 
-- Ao concluir cada atividade que altere arquivos neste workspace, executar sincronizacao Git automatica com `git add`, `git commit` e `git push`.
-- O comando padrao e:
+- Ao concluir cada atividade que altere arquivos neste workspace, o Codex deve versionar o trabalho no Git.
+- Antes de editar, executar `git status --short --branch`, integrar as referencias remotas permitidas e preservar mudancas existentes.
+- Se a branch atual for `main`, criar uma branch de trabalho antes de alterar arquivos.
+- O padrao de nome recomendado e `codex/<atividade>-<data>`.
+- O comando de sincronizacao automatica somente pode ser usado em branch de trabalho:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -Activity "<descricao da atividade>"
 ```
 
 - A politica persistente fica em `config/autonomy/git_auto_sync_policy.json`.
-- Neste checkout, o push automatico deve usar o remoto `fork` quando `origin` nao aceitar escrita.
+- O push deve usar a branch de trabalho no remoto autorizado. E proibido executar push direto na `main`.
+- Ao finalizar, abrir ou atualizar pull request para `main`, registrar testes e evidencias e usar **Squash and Merge**.
+- Quando a abertura do pull request nao estiver disponivel, manter a branch publicada e registrar claramente o bloqueio; nunca substituir isso por push direto na `main`.
 - Nao criar commit vazio quando nao houver mudancas.
-- O Codex deve gerar e aplicar a mensagem de commit com base na atividade e no
-  diff real, sem transferir essa responsabilidade ao usuario nem solicitar que
-  ele edite `COMMIT_EDITMSG` manualmente.
-- A mensagem deve ser concisa, rastreavel e escrita em portugues do Brasil;
-  preservar o prefixo `chore(auto-sync):` no fluxo automatico.
+- O Codex deve gerar e aplicar a mensagem de commit com base na atividade e no diff real, sem transferir essa responsabilidade ao usuario nem solicitar edicao manual de `COMMIT_EDITMSG`.
+- A mensagem deve ser concisa, rastreavel e escrita em portugues do Brasil.
 - Se houver merge ou rebase em andamento, parar e reportar o bloqueio em portugues do Brasil.
+
+# Orquestracao obrigatoria de pendencias
+
+- A fonte principal das pendencias e `docs/Pendencias Do desenvolvedor.md`, considerando o nome real versionado `docs/Pendências Do desenvolvedor.md`.
+- Toda atualizacao de pendencias deve incrementar a versao e registrar data, branch e commit de referencia.
+- A cada atualizacao, gerar obrigatoriamente dois arquivos em `docs/relatorios/pendencias/`:
+  1. `RELATORIO_VARREDURA_STATUS_v<versao>_<AAAA-MM-DD>.md`;
+  2. `PLANO_ACAO_CODEX_v<versao>_<AAAA-MM-DD>.md`.
+- O relatorio de status deve conter a tabela: Nome da atividade | Descricao | Passo sendo executado | Dificuldade [1 a 5] | % concluido | Tempo previsto | Etapas [Total] | Concluidas [X] | Pendentes [Y].
+- O plano do Codex deve ser dimensionado para 8 horas de execucao, com tolerancia operacional de ate 4 horas.
+- Apos 12 horas, atualizar os documentos com tarefas concluidas, falhas, causas, bloqueios, evidencias e proximos passos.
+- Criar ou atualizar uma issue de orquestracao vinculada a cada versao dos relatorios.
+- O Codex deve iniciar pelo plano mais recente, verificar dependencias e nao declarar conclusao sem teste reproduzivel e evidencia no ambiente correto.
+- Os relatorios devem ser inseridos no GitHub pela mesma branch e pull request da atualizacao das pendencias.
 
 # Alinhamento multiagente obrigatorio
 
@@ -51,5 +67,5 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 - E proibido redesenhar, recolorir, recortar, girar, distorcer, trocar tipografia, alterar linhas, curvas, formas ou composicao, aplicar filtros, mascaras ou opacidade decorativa, ou criar simbolo substituto.
 - Todo ativo digital deve manter fundo externo totalmente transparente.
 - Quando o binario original de uma marca nao estiver disponivel, o agente deve bloquear qualquer substituto ou aproximacao e registrar a pendencia. Nunca deve fabricar uma versao.
-- Ao identificar uma violacao clara e objetiva dessa politica, o proprio agente deve restaurar imediatamente o ativo canonico, executar `python3 scripts/check_brand_integrity.py --fix` e `python3 scripts/check_brand_integrity.py`, validar o repositorio e sincronizar a correcao no Git. Nao e necessario solicitar nova autorizacao para restaurar conformidade.
+- Ao identificar uma violacao clara e objetiva dessa politica, o proprio agente deve restaurar o ativo canonico, executar `python3 scripts/check_brand_integrity.py --fix` e `python3 scripts/check_brand_integrity.py`, validar o repositorio e sincronizar a correcao em branch de trabalho com pull request. Nao e necessario solicitar nova autorizacao para restaurar conformidade.
 - A autorizacao de remediacao imediata nao permite alterar a arte oficial nem tomar decisoes criativas sobre a marca.
