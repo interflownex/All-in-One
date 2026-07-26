@@ -82,8 +82,28 @@ jobs:
           node-version: "24"
           cache: npm
           cache-dependency-path: ${{ matrix.app }}/package-lock.json
-      - run: npm audit --omit=dev --audit-level=critical
+      - name: Auditar dependências JavaScript
         working-directory: ${{ matrix.app }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            set +e
+            output="$(npm audit --omit=dev --audit-level=critical 2>&1)"
+            status=$?
+            set -e
+            printf '%s\n' "$output"
+            if [ "$status" -eq 0 ]; then
+              exit 0
+            fi
+            if printf '%s' "$output" | grep -Eq 'audit endpoint returned an error|invalid json response body'; then
+              echo "Registro npm retornou resposta inválida; repetindo auditoria (${attempt}/3)."
+              continue
+            fi
+            exit "$status"
+          done
+          echo "Registro npm permaneceu indisponível após três tentativas."
+          exit 1
 
   valley-android-security:
     runs-on: ubuntu-latest
