@@ -21,48 +21,35 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Instalar ambiente e auditor
-        run: |
-          python -m pip install --upgrade pip==26.1.2
-          pip install -r requirements-dev.txt pip-audit
-      - name: Capturar auditoria sanitizada
+      - name: Atualizar somente a versão do pypdf no gerador
         shell: bash
         run: |
-          mkdir -p reports/ci
-          set +e
-          pip-audit --local --format json --output reports/ci/pip-audit-diagnostic.json
-          status=$?
-          echo "$status" > reports/ci/pip-audit-exit-code.txt
           python - <<'PY'
-          import json
           from pathlib import Path
 
-          source = Path("reports/ci/pip-audit-diagnostic.json")
-          payload = json.loads(source.read_text(encoding="utf-8")) if source.exists() else {}
-          dependencies = payload.get("dependencies", payload if isinstance(payload, list) else [])
-          lines = ["# Diagnóstico pip-audit", ""]
-          findings = 0
-          for dependency in dependencies:
-              vulns = dependency.get("vulns", []) if isinstance(dependency, dict) else []
-              if not vulns:
-                  continue
-              findings += len(vulns)
-              lines.append(f"## {dependency.get('name')} {dependency.get('version')}")
-              for vuln in vulns:
-                  fixes = ", ".join(vuln.get("fix_versions") or []) or "sem versão corrigida informada"
-                  lines.append(f"- {vuln.get('id')}: corrigir para {fixes}")
-              lines.append("")
-          lines.append(f"Total de vulnerabilidades: {findings}")
-          Path("reports/ci/pip-audit-diagnostic.md").write_text(
-              "\n".join(lines) + "\n", encoding="utf-8", newline="\n"
-          )
+          path = Path("scripts/scaffold_modules.py")
+          text = path.read_text(encoding="utf-8")
+          old = '            "pypdf==6.13.3\\n"\n'
+          new = '            "pypdf==6.14.2\\n"\n'
+          count = text.count(old)
+          if count != 1:
+              raise SystemExit(f"Esperada uma referência pypdf 6.13.3; encontradas {count}.")
+          path.write_text(text.replace(old, new, 1), encoding="utf-8", newline="\n")
+
+          for temporary in (
+              "reports/ci/pip-audit-diagnostic.md",
+              "reports/ci/pip-audit-diagnostic.json",
+              "reports/ci/pip-audit-exit-code.txt",
+          ):
+              candidate = Path(temporary)
+              if candidate.exists():
+                  candidate.unlink()
           PY
-          cat reports/ci/pip-audit-diagnostic.md
-          exit 0
-      - name: Commit diagnostic report
+      - name: Validar gerador e commit
         run: |
+          python scripts/scaffold_modules.py --check
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add reports/ci/pip-audit-diagnostic.md
-          git diff --cached --quiet || git commit -m "security: registrar diagnostico pip-audit"
+          git add -A scripts/scaffold_modules.py reports/ci
+          git diff --cached --quiet || git commit -m "security: alinhar gerador ao pypdf 6.14.2"
           git push origin HEAD:${{ github.head_ref }}
