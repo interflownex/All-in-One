@@ -1,78 +1,38 @@
-name: Diagnose Residual PR34 Failures
+name: Refresh Generated Contracts
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - ".github/workflows/autocommit.yml"
+  workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  diagnose:
-    if: github.head_ref == 'fix/generated-artifacts-gate'
+  refresh:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: all_in_one
-          POSTGRES_USER: all_in_one
-          POSTGRES_PASSWORD: test-password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U all_in_one -d all_in_one"
-          --health-interval 5s --health-timeout 5s --health-retries 10
-    env:
-      PGPASSWORD: test-password
-      ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-      - name: Install Python dependencies
-        run: pip install -r requirements-dev.txt
-      - name: Capture residual diagnostics
-        shell: bash
+      - name: Regenerar contratos e artefatos controlados
         run: |
-          set +e
-          mkdir -p reports/ci/residual
-
-          python -m pytest -q --tb=short --maxfail=50 --ignore=tests/e2e \
-            > reports/ci/residual/unit-tests.txt 2>&1
-          echo "pytest_exit=$?" >> reports/ci/residual/unit-tests.txt
-
-          for file in database/postgres/migrations/*.sql; do
-            psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f "$file" \
-              >> reports/ci/residual/postgres.txt 2>&1 || break
-          done
-          python scripts/validate_postgres_real_dsn.py --repeat-migrations --write-checks \
-            >> reports/ci/residual/postgres.txt 2>&1
-          echo "postgres_validator_exit=$?" >> reports/ci/residual/postgres.txt
-
-          for app in apps/all-in-one apps/all-in-one-business; do
-            safe_name="$(echo "$app" | tr '/' '-')"
-            (cd "$app" && npm audit --omit=dev --audit-level=critical --json) \
-              > "reports/ci/residual/${safe_name}-npm-audit.json" 2>&1
-            echo "$?" > "reports/ci/residual/${safe_name}-npm-audit.exit"
-          done
-
-          tail -n 300 reports/ci/residual/unit-tests.txt > reports/ci/residual/unit-tests-tail.txt
-          tail -n 240 reports/ci/residual/postgres.txt > reports/ci/residual/postgres-tail.txt
-          exit 0
-      - name: Upload residual diagnostics
-        uses: actions/upload-artifact@v4
-        with:
-          name: pr34-residual-diagnostics-${{ github.run_id }}
-          path: reports/ci/residual
-          if-no-files-found: error
-          retention-days: 2
+          python scripts/scaffold_modules.py
+          python scripts/generate_domain_event_fixtures.py
+          python scripts/generate_data_audit_inventory.py
+      - name: Validar alterações geradas
+        run: |
+          python scripts/scaffold_modules.py --check
+          python scripts/generate_domain_event_fixtures.py --check
+          python scripts/validate_openapi.py
+          python scripts/validate_repository.py
+      - name: Versionar somente alterações geradas
+        run: |
+          git config user.name "all-in-one-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add apps modules contracts config docs/data-audit
+          git diff --cached --check
+          git diff --cached --quiet || git commit -m "chore: atualizar contratos e artefatos gerados"
+          git push
