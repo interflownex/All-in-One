@@ -2,12 +2,18 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - fix/generated-artifacts-gate
+    paths:
+      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
+    if: github.ref_name == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,10 +23,11 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/scaffold_modules.py
+      - run: python scripts/generate_domain_event_fixtures.py
       - name: Commit generated changes
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add apps modules contracts
-          git diff --cached --quiet || git commit -m "refresh generated module contracts"
+          git add apps modules contracts config/events
+          git diff --cached --quiet || git commit -m "refresh generated module contracts and events"
           git push
