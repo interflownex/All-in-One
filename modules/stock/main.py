@@ -8,8 +8,10 @@ from fastapi import Header, HTTPException
 from pydantic import BaseModel, Field
 from shared.runtime import create_module_app
 from shared.units_tax import ConversionRule, convert_quantity
+from stock.integrations import router as integrations_router
 
 app = create_module_app("stock")
+app.include_router(integrations_router)
 
 
 class UnitConversionRequest(BaseModel):
