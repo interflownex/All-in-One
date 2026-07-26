@@ -200,7 +200,7 @@ CATEGORY_DEFINITIONS: dict[str, dict[str, Any]] = {
     },
     "Tecnologia, Seguranca e IA": {
         "offer_types": ("service",),
-        "modules": ("vision", "ai_core", "api_hub", "permissions"),
+        "modules": ("ai_core", "api_hub", "permissions"),
         "keywords": (
             "camera",
             "ia",

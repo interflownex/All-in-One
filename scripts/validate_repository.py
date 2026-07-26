@@ -180,8 +180,8 @@ def main() -> int:
     errors: list[str] = []
     modules = CATALOG["modules"]
     slugs = {module["slug"] for module in modules}
-    if len(slugs) != 25:
-        fail(f"Esperados 25 modulos; catalogo possui {len(slugs)}.", errors)
+    if len(slugs) != 24:
+        fail(f"Esperados 24 modulos; catalogo possui {len(slugs)}.", errors)
     for module in modules:
         base = ROOT / "modules" / module["slug"]
         for relative in REQUIRED_MODULE_FILES:
