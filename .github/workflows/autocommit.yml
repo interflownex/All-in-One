@@ -28,22 +28,31 @@ jobs:
           from pathlib import Path
 
           path = Path("modules/shared/domain_rules.py")
-          text = path.read_text(encoding="utf-8")
-          health_rule = '''    ("health", "beds"): ResourceRule(
-              ("unit",), sensitive=True, transitions=lifecycle_flow("health.bed")
-          ),
-          '''
-          legal_rule = '''    ("legal", "cases"): ResourceRule(
-          '''
-          health_start = text.find(health_rule)
-          if health_start < 0:
+          lines = path.read_text(encoding="utf-8").splitlines()
+          health_index = next(
+              (index for index, line in enumerate(lines) if '("health", "beds"): ResourceRule(' in line),
+              -1,
+          )
+          if health_index < 0:
               raise SystemExit("Regra health.beds nao encontrada.")
-          start = health_start + len(health_rule)
-          end = text.find(legal_rule, start)
-          if end < 0:
-              raise SystemExit("Regra legal.cases nao encontrada após health.beds.")
-          text = text[:start] + text[end:]
-          path.write_text(text, encoding="utf-8", newline="\n")
+          health_end = next(
+              (index for index in range(health_index + 1, len(lines)) if lines[index] == "    ),"),
+              -1,
+          )
+          legal_index = next(
+              (
+                  index
+                  for index in range(health_index + 1, len(lines))
+                  if '("legal", "cases"): ResourceRule(' in lines[index]
+              ),
+              -1,
+          )
+          if health_end < 0 or legal_index < 0 or legal_index <= health_end:
+              raise SystemExit(
+                  f"Limites invalidos: health_end={health_end}, legal_index={legal_index}."
+              )
+          cleaned = lines[: health_end + 1] + lines[legal_index:]
+          path.write_text("\n".join(cleaned) + "\n", encoding="utf-8", newline="\n")
           PY
       - name: Validar sintaxe e commit
         run: |
