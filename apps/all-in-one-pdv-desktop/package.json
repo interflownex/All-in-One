@@ -10,10 +10,10 @@
     "start": "electron .",
     "dev": "electron .",
     "test": "node --test tests/*.test.cjs",
-    "dist:win": "electron-builder --win nsis portable"
+    "dist:win": "electron-builder --win nsis --x64 --ia32 && electron-builder --win portable --x64 && electron-builder --win portable --ia32"
   },
   "devDependencies": {
-    "electron": "^37.2.0",
+    "electron": "^43.0.0",
     "electron-builder": "^26.0.12"
   },
   "build": {
@@ -32,10 +32,10 @@
       "target": [
         "nsis",
         "portable"
-      ],
-      "artifactName": "All-in-One-PDV-${version}-${arch}-${name}.${ext}"
+      ]
     },
     "nsis": {
+      "artifactName": "All-in-One-PDV-Setup-${version}.${ext}",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": "always",
