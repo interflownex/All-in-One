@@ -1,12 +1,12 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 1.1  
+**Versão:** 1.2  
 **Data da entrega:** 26/07/2026  
-**Hora da entrega:** 14:01:53  
+**Hora da entrega:** 14:32:04  
 **Fuso horário:** `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Branch de elaboração:** `docs/pendencias-v2-6-primeiro-teste-2026-07-26`  
-**Commit de referência:** `c2c8eaccc1581ed674821feaaa3336c03a5b763c`  
+**Branch de elaboração:** `feature/primicias-selecionadas-v1`  
+**Commit de referência:** `77fa6fab5f1c881ba6289dc288dc64e20421614a`  
 **Issue de orquestração:** `#43`  
 **Classificação:** `Pendências > Técnico > Equipe técnica`  
 **Destino:** Codex e demais IAs desenvolvedoras autorizadas
@@ -183,5 +183,5 @@ A próxima IA deve entregar:
 
 | Versão | Data e hora | Alteração principal |
 |---|---|---|
-| 1.0 | 26/07/2026 13:49:32 | Criação da diretriz permanente de Estudar, Pesquisa Avançada, versionamento e entrega do arquivo `tarefas.md`. |
+| 1.2 | 26/07/2026 14:32:04 | Registro da aprovação formal da primeira rodada de inovação do APK Valley Consumidor (24 ideias), com mapeamento técnico e plano de implementação por ondas em `docs/relatorios/inovacao/`. |
 | 1.1 | 26/07/2026 14:01:53 | Primeiro teste completo, consolidação v2.6, issue #43 e tarefas para checks, PRs, skills, ambiente público, Telegram, APK Admin e PDV Desktop. |
