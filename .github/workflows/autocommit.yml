@@ -1,45 +1,26 @@
-name: Apply PR34 Senior Fix
+name: Refresh Generated Contracts
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - ".github/workflows/autocommit.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   refresh:
-    if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install validation dependencies
-        run: pip install -r requirements-dev.txt
-      - name: Apply consolidated senior fix
-        shell: bash
+      - run: python scripts/scaffold_modules.py
+      - name: Commit generated changes
         run: |
-          set -Eeuo pipefail
-          cp -a .github/workflows /tmp/workflows-before-pr34
-          python scripts/apply_pr34_senior_fix.py
-          rm -rf .github/workflows
-          cp -a /tmp/workflows-before-pr34 .github/workflows
-          rm -f reports/ci/fix-pr34.b64.00
-          rm -f reports/ci/pr34-senior-fix-diagnostic.txt reports/ci/pr34-patch-diagnostic.txt
-      - name: Commit corrected sources and generated artifacts
-        shell: bash
-        run: |
-          set -Eeuo pipefail
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A
-          git diff --cached --check || true
-          git diff --cached --quiet || git commit -m "fix: consolidate 24-module contracts, APIs and operational gates"
-          git push origin HEAD:${{ github.head_ref }}
+          git add apps modules contracts
+          git diff --cached --quiet || git commit -m "refresh generated module contracts"
+          git push
