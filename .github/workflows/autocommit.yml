@@ -1,4 +1,4 @@
-name: Diagnose PR34 Repair Patch
+name: Diagnose PR34 Senior Fix
 
 on:
   pull_request:
@@ -18,32 +18,31 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
-      - name: Validate stored patch
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install validation dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Execute repair script in diagnostic mode
         shell: bash
         run: |
           set +e
           mkdir -p reports/ci
+          python scripts/apply_pr34_senior_fix.py > reports/ci/pr34-senior-fix-diagnostic.txt 2>&1
+          status=$?
           {
-            echo "HEAD=$(git rev-parse HEAD)"
-            echo "PATCH_SHA256=$(sha256sum reports/ci/fix-pr34.patch.gz | awk '{print $1}')"
-            gunzip -c reports/ci/fix-pr34.patch.gz > /tmp/fix-pr34.patch
-            echo "PATCH_LINES=$(wc -l < /tmp/fix-pr34.patch)"
-            echo "PATCH_FILES:"
-            grep '^diff --git ' /tmp/fix-pr34.patch || true
-            echo "CHECK_P0:"
-            git apply --check -p0 /tmp/fix-pr34.patch
-            echo "CHECK_P0_EXIT=$?"
-            echo "CHECK_P1:"
-            git apply --check -p1 /tmp/fix-pr34.patch
-            echo "CHECK_P1_EXIT=$?"
-          } > reports/ci/pr34-patch-diagnostic.txt 2>&1
-          cat reports/ci/pr34-patch-diagnostic.txt
+            echo
+            echo "SCRIPT_EXIT=$status"
+            echo "GIT_STATUS:"
+            git status --short
+          } >> reports/ci/pr34-senior-fix-diagnostic.txt
+          cat reports/ci/pr34-senior-fix-diagnostic.txt
           exit 0
-      - name: Upload patch diagnostic
+      - name: Upload senior fix diagnostic
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pr34-patch-diagnostic-${{ github.run_id }}
-          path: reports/ci/pr34-patch-diagnostic.txt
+          name: pr34-senior-fix-diagnostic-${{ github.run_id }}
+          path: reports/ci/pr34-senior-fix-diagnostic.txt
           if-no-files-found: error
           retention-days: 2
