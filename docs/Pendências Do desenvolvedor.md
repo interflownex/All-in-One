@@ -1,14 +1,14 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 2.5  
+**Versão:** 2.6  
 **Data da verificação:** 26/07/2026  
 **Repositório verificado:** `interflownex/All-in-One`  
-**Branch de referência:** `main`  
-**Commit de referência:** `cbbe7bd61bdf13604f5d71167dc5b54f7435cffa`  
-**Versão anterior:** 2.4  
+**Branch de referência:** `copilot/diretrizes-implantacao-primicias-selecionadas`  
+**Commit de referência:** `8af9b72f7fceb6f149198501f964af1e553ea4e9`  
+**Versão anterior:** 2.5  
 **Pasta lógica do projeto:** `Pendências > Técnico > Equipe técnica`  
 **Público principal:** Codex, IA desenvolvedora, desenvolvimento, DevOps, segurança e gestão técnica  
-**Issue de orquestração:** `#28`  
+**Issue de orquestração:** `#28` (atual) / `#TBD` (primícias selecionadas v2.6)  
 **Objetivo:** consolidar o estado verificável do projeto, versionar os relatórios dentro do GitHub e entregar ao Codex um plano executável para o próximo ciclo.
 
 ## 1. Regra permanente de atualização e orquestração
@@ -26,8 +26,8 @@ A partir desta versão, toda atualização de pendências deve obrigatoriamente:
 
 Os relatórios oficiais desta versão são:
 
-- `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v2.5_2026-07-26.md`;
-- `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v2.5_2026-07-26.md`.
+- `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v2.6_2026-07-26.md`;
+- `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v2.6_2026-07-26.md`.
 
 ## 2. Regras de governança
 
@@ -385,3 +385,68 @@ Uma pendência somente pode ser marcada como concluída quando houver:
 | 2.3 | 24/07/2026 | Governança das marcas, primeira issue oficial, Valley Riders e atualização do plano de 8 horas. |
 | 2.4 | 25/07/2026 | Bootstrap Render, PR #27 desatualizado, conflito de sincronização, issue #28 do Codex e regra permanente de inserir relatórios versionados no GitHub. |
 | 2.5 | 26/07/2026 | Remoção completa do Vision, STOCK reposicionado, site Valley corrigido, catálogo consolidado em 24 módulos, divergência de módulos reduzida para três. |
+| 2.6 | 26/07/2026 | Auditoria e decomposição das primícias 1,2,3,4,5 e 7–24; matriz de estado real publicada; recurso 6 formalmente excluído; bloqueio documentado para requisitos truncados de 18–24. |
+
+
+## 16. Diretriz de implantação das primícias selecionadas (v2.6)
+
+Escopo autorizado: recursos **1, 2, 3, 4, 5 e 7 a 24**.
+
+Diretrizes invioláveis:
+
+- **Recurso 6 excluído**: não implementar “Demanda Antes da Vitrine”.
+- **STOCK preservado integralmente**: proibido apagar, desativar, renomear ou reduzir o módulo existente.
+- **Recurso 10 Premium**: cobrança adicional configurável por entitlement `primicia.mobility.intention_route_premium`, sem valores fixos hardcoded e sem exposição de custo interno/margem/lucro.
+
+### 16.1 Auditoria obrigatória executada antes de alterar código
+
+Comandos executados no ciclo:
+
+- `git status --short --branch`
+- `git remote -v`
+- `git log --oneline --decorate -20`
+- `git diff --stat`
+- `git diff --name-status`
+
+Resultado consolidado:
+
+- branch ativa: `copilot/diretrizes-implantacao-primicias-selecionadas`;
+- sem alterações locais pendentes no início da auditoria;
+- `origin` disponível para fetch/push;
+- histórico local recente com commit `8af9b72`;
+- diffs locais iniciaram zerados no momento da varredura.
+
+### 16.2 Matriz de implantação (estado real)
+
+| Nº | Módulo | Recurso | Estado | Parte existente | Lacunas | Dependências | Risco |
+|---:|---|---|---|---|---|---|---|
+| 1 | Identity | Cofre de Provas Mínimas | estrutura-base existente | módulo Identity, schemas identity e trilha de consentimento já existem | entidades/APIs/eventos específicos de prova mínima ausentes | identity, permissions, document, outbox, auditoria | alto |
+| 2 | Business | Consórcio Relâmpago Empresarial | estrutura-base existente | empresas, memberships e fluxo de aprovação de empresa já existem | consórcios temporários, split auditável e ciclo contratual específico ausentes | business, legal, finance, document, bpm, identity | alto |
+| 3 | Permissions | Procuração Operacional Expirável | estrutura-base existente | RBAC/ABAC e limites operacionais base presentes | delegações temporais/locais com trilha de uso e negação específica ausentes | permissions, finance, audit, idempotência | alto |
+| 4 | Finance | Dinheiro com Destino | estrutura-base existente | ledger/split/escrow/faturamento existentes | regras de alocação por finalidade e reversão compensatória dedicada ausentes | finance, erp, billing, audit/outbox | alto |
+| 5 | Marketplace | Compra em Coalizão Local | estrutura-base existente | catálogo, pedidos, disputas e suporte existentes | coalizão de compradores, thresholds e bids versionados ausentes | marketplace, finance, delivery, identity | alto |
+| 6 | STOCK | Demanda Antes da Vitrine (excluído) | bloqueado por dependência externa | STOCK ativo e priorizado no catálogo | implementação proibida por diretriz executiva | governança de escopo | baixo |
+| 7 | Delivery | Entrega de Trajeto Aproveitado | estrutura-base existente | delivery e riders ativos no ecossistema | oferta de capacidade ociosa e matching seguro por trajeto ausentes | delivery, riders, identity, seguros/auditoria | alto |
+| 8 | Riders | Passaporte de Evidências Operacionais | estrutura-base existente | módulo riders e trilhas operacionais já existem | credenciais de evidência verificável, contestação e revogação ausentes | riders, identity, document, legal | alto |
+| 9 | Services | Contrato por Resultado Componível | estrutura-base existente | serviços, contratos e fluxos básicos existentes | milestones composáveis com aceite/disputa por etapa ausentes | services, finance, legal, document, bpm | alto |
+| 10 | Mobility | Rota de Intenções Premium | estrutura-base existente | módulo mobility e cálculo de rota base existentes | quote/otimização/confirm/recalculate/billing Premium e entitlement dedicado ausentes | mobility, billing, entitlements, finance, api_hub | crítico |
+| 11 | Jobs | Janela de Trabalho Reversa | estrutura-base existente | jobs/recrutamento com base operacional existe | publicação de disponibilidade reversa com privacidade granular ausente | jobs, identity, permissions, compliance | alto |
+| 12 | ERP | Fechamento Contínuo por Exceção | estrutura-base existente | ERP e faturamento presentes | engine de exceções de fechamento e snapshots reproduzíveis ausentes | erp, finance, audit, approvals | alto |
+| 13 | WMS | Mapa de Certeza do Estoque | estrutura-base existente | WMS e inventário já mapeados | score de confiança explicável e contagem dirigida ausentes | wms, stock, erp, audit | alto |
+| 14 | TMS | Bolsa Cega de Capacidade Logística | estrutura-base existente | TMS e integrações logísticas base existem | matching anonimizado com aceite mútuo e disclosure progressivo ausentes | tms, legal, permissions, audit | alto |
+| 15 | CRM | Livro de Promessas ao Cliente | estrutura-base existente | CRM e atendimento base presentes | promessas rastreáveis com confirmação do cliente e quebra/resolução ausentes | crm, ai_core, document, audit | alto |
+| 16 | BPM | Laboratório de Processo Enxuto | estrutura-base existente | BPM e workflows base existem | simulação isolada reproduzível + ativação controlada por flag ausentes | bpm, feature flags, audit, metrics | alto |
+| 17 | GED ECM | Documento Vivo de Obrigações | estrutura-base existente | document management e versionamento base existem | ancoragem de cláusula em obrigação rastreável por versão ausente | document, legal, notifications, audit | alto |
+| 18 | HR | Escala de Afinidade Justa | bloqueado por dependência externa | módulo HR existente | requisitos detalhados do recurso truncados no enunciado recebido | hr, legal, compliance | médio |
+| 19 | Health | Cápsula de Continuidade | bloqueado por dependência externa | módulo health existente | requisitos detalhados não fornecidos integralmente | health, document, identity, legal | médio |
+| 20 | Legal | Radar de Impacto | bloqueado por dependência externa | módulo legal existente | requisitos detalhados não fornecidos integralmente | legal, document, bpm, audit | médio |
+| 21 | Property | Capacidade Compartilhada | bloqueado por dependência externa | módulo property existente | requisitos detalhados não fornecidos integralmente | property, tms, services, legal | médio |
+| 22 | BI | Perguntas Não Feitas | bloqueado por dependência externa | módulo BI existente | requisitos detalhados não fornecidos integralmente | bi, ai_core, data pipelines | médio |
+| 23 | AI Core | Recibo de Memória | bloqueado por dependência externa | módulo ai_core existente | requisitos detalhados não fornecidos integralmente | ai_core, audit, identity, consent | médio |
+| 24 | API Hub | Contrato Adaptativo | bloqueado por dependência externa | módulo api_hub e openapi base existentes | requisitos detalhados não fornecidos integralmente | api_hub, contracts, security, versioning | médio |
+
+### 16.3 Observações de bloqueio e governança
+
+1. O enunciado recebido está truncado a partir do recurso 18, impedindo fechamento definitivo dos critérios de negócio dos recursos 18 a 24 sem complemento oficial.
+2. O preflight multiagente com integração remota retornou erro por indisponibilidade de remoto acessível no momento da execução; lock local foi adquirido e registrado para evitar conflito de edição concorrente.
+3. Sem teste executável não há conclusão de recurso: o estado atual é de diagnóstico e decomposição, não de implantação funcional final.
