@@ -1,59 +1,53 @@
 # Relatório de Varredura e Status
 
-**Versão:** 2.5  
+**Versão:** 2.5 (atualizado pelo Codex em 26/07/2026)
 **Data:** 26/07/2026  
 **Repositório:** `interflownex/All-in-One`  
-**Branch verificada:** branch de trabalho atual  
-**Commit de referência:** `cbbe7bd61bdf13604f5d71167dc5b54f7435cffa`  
+**Branch verificada:** `copilot/objetivo-atualizacao-pendencias-orquestracao-codex`  
+**Commit de referência:** `8c8f4b3` (pós-ciclo Codex)  
+**Commit base:** `cbbe7bd61bdf13604f5d71167dc5b54f7435cffa`  
 **Issue de orquestração:** `#28`  
 **Destino:** Codex e equipe técnica
 
 ## Resultado geral
 
-Desde a versão 2.4, foi executada a remoção completa do módulo Vision: 72 arquivos alterados, módulo retirado do catálogo, do back-end, dos aplicativos web, da infraestrutura Kubernetes, dos testes e dos contratos. O STOCK foi reposicionado para a primeira etapa. O site Valley teve título e favicon corrigidos.
+O ciclo do Codex executado em 26/07/2026 concluiu os Blocos 1, 2 e 6 do Plano de Ação v2.5.
 
-O catálogo `config/module_catalog.json` está consolidado em 24 módulos. A remoção do Vision está concluída em princípio, mas o relatório de remoção identificou aproximadamente 40 arquivos com referências residuais que ainda precisam ser eliminadas.
+**Concluídos neste ciclo:**
+- Limpeza de todas as referências residuais ao Vision em código Python, TypeScript e JSONs de conformidade (22 testes passam, auditor v7 retorna OK).
+- `MODULE_NAMES` atualizado: 24 entradas incluindo `legal`, `property` e `ai_core`. PRESETS atualizados em todos os 12 tipos de negócio.
+- Auditor v7 criado em `scripts/audit_confirmation_v7.py` — reproduzível, autônomo, relatório em `docs/relatorios/`.
 
-`MODULE_NAMES` em `modules/business/module_settings.py` possui 21 entradas. Os módulos `legal`, `property` e `ai_core` constam no catálogo, mas não na configuração Business.
+**Pendências abertas (sem alteração neste ciclo):**
+- Implantação Render, PR `#27`, GitHub Actions, automação Telegram, APK, PDV, Valley Riders.
 
-As pendências de implantação Render, PR `#27`, GitHub Actions sem checks, automação Telegram, auditor v7, APK e PDV permanecem abertas e sem alteração de estado desde v2.4.
+## Evidências confirmadas neste ciclo
 
-## Evidências confirmadas
-
-- `config/module_catalog.json` registra exatamente 24 módulos (vision ausente, legal/property/ai_core presentes).
-- `modules/business/module_settings.py` `MODULE_NAMES` possui 21 entradas (faltam: legal, property, ai_core).
-- `database/migrations/030_remove_vision_module.sql` criado e versionado.
-- Relatório de remoção publicado em `docs/relatorios/remocao-vision/RELATORIO_REMOCAO_VISION_STOCK_2026-07-25.md`.
-- `apps/valley/index.html` com título e favicon atualizados.
-- `STATUS.md` reflete 24 módulos e 171 telas.
-- `render.yaml` aponta para `main`, Python 3.12, Uvicorn e `/health`.
-- `main.py` importa o aplicativo de `modules.api_hub.main`.
-- O commit atual não apresenta status checks ou workflow associado.
-- PR `#27` continua aberto com estado anterior ao commit atual.
-- Issues abertas: `#24` (Promoção do Dia) e `#28` (Orquestração Codex).
-
-## Referências residuais ao Vision identificadas
-
-O relatório de remoção listou aproximadamente 40 arquivos com menções que ainda precisam ser corrigidas. Exemplos de maior impacto técnico imediato:
-
-- `modules/api_hub/main.py`
-- `modules/identity/main.py`
-- `modules/shared/valley_catalog.py`
-- `apps/valley/src/lib/valleyPlatform.ts`
-- `apps/all-in-one/src/components/Navigation.tsx`
-- `apps/all-in-one/src/components/ModuleDashboard.tsx`
-- `apps/all-in-one/src/components/SmartCRUD.tsx`
-- `apps/all-in-one-business/src/components/SmartCRUD.tsx`
-- `tests/test_retention_jobs.py`
-- `tests/test_compliance_matrix.py`
-- `.github/workflows/database.yml`
+- `modules/api_hub/main.py` — "vision" removido da lista MODULES.
+- `modules/shared/valley_catalog.py` — referências Vision removidas da tupla e do dicionário de títulos.
+- `modules/identity/main.py` — docstring do mock OCR atualizada (sem menção ao Google Vision).
+- `apps/all-in-one-business/src/components/SmartCRUD.tsx` — mapeamentos e labels Vision removidos.
+- `apps/all-in-one/src/components/SmartCRUD.tsx` — alias vision:motionalerts removido.
+- `apps/all-in-one/src/components/ModuleDashboard.tsx` — submodule vision removido.
+- `apps/all-in-one/src/lib/demoData.ts` — demo data do Vision removida.
+- `apps/valley/src/lib/valleyPlatform.ts` — offer-vision-1 e moduleItem Vision removidos.
+- `config/compliance/data_classification.json` — bloco vision removido.
+- `config/compliance/data_subject_rights.json` — bloco vision removido.
+- `config/compliance/retention_jobs.json` — bloco vision removido.
+- `tests/test_compliance_matrix.py`, `test_data_subject_rights.py`, `test_retention_worker.py`, `test_retention_jobs.py`, `test_postgres_migrations_smoke.py`, `e2e/conftest.py`, `test_postgres_priority_stores_integration.py` — adaptados.
+- Scripts operacionais: `check_artifact_registry.py`, `refactor_api_hub.py`, `gcp_storage_hygiene.py`, `validate_postgres_real_dsn.py`, `generate_kubernetes_manifests.py` — Vision removido.
+- `modules/business/module_settings.py` `MODULE_NAMES` possui 24 entradas; PRESETS classificam `legal`, `property` e `ai_core` em todos os presets.
+- Auditor v7: resultado **OK** — 0 referências Vision ativas, catálogo == MODULE_NAMES, todos os módulos possuem contrato.
+- 22 testes Python passam sem falhas.
+- Relatório de auditoria em `docs/relatorios/audit_confirmation_v7_2026-07-26.md`.
 
 ## Quadro consolidado
 
 | Nome da atividade | Descrição | Passo sendo executado | Dificuldade [1 a 5] | % concluído | Tempo previsto | Etapas [Total] | Concluídas [X] | Pendentes [Y] |
 |---|---|---|---:|---:|---|---:|---:|---:|
-| Limpeza residual Vision | Remover referências remanescentes | Editar ~40 arquivos identificados | 3 | 0% | 1h | 3 | 0 | 3 |
-| Catálogo de módulos | Sincronizar MODULE_NAMES | Incluir legal, property, ai_core | 4 | 65% | 1h | 5 | 3 | 2 |
+| Limpeza residual Vision | Remover referências remanescentes | **CONCLUÍDO** — auditor OK, 22 testes passam | 3 | **100%** | 1h | 3 | 3 | 0 |
+| Catálogo de módulos | Sincronizar MODULE_NAMES | **CONCLUÍDO** — 24 entradas, PRESETS atualizados | 4 | **100%** | 1h | 5 | 5 | 0 |
+| Auditoria v7 | Restaurar varredura reproduzível | **CONCLUÍDO** — script criado e relatório gerado | 4 | **100%** | 1h30 | 5 | 5 | 0 |
 | Publicação externa | Homologar domínio e ambiente | Validar Render e registrar URL | 5 | 50% | 2h | 6 | 3 | 3 |
 | API Hub público | Publicar backend e conectar front-end | Executar deploy e `/health` | 5 | 60% | 2h | 7 | 4 | 3 |
 | Bootstrap Render | Validar Blueprint, build e start | Executar implantação e arquivar logs | 4 | 70% | 1h30 | 6 | 4 | 2 |
@@ -63,7 +57,6 @@ O relatório de remoção listou aproximadamente 40 arquivos com menções que a
 | Backlog oficial | Converter pendências em issues | Expandir a partir de `#24` e `#28` | 3 | 20% | 1h30 | 6 | 2 | 4 |
 | Auditoria das rotas | Validar 325 rotas | Aguardar API Hub homologado | 5 | 35% | 2h30 | 6 | 2 | 4 |
 | Automação Telegram | Implementar eventos e relatórios | Criar executor e testes | 4 | 35% | 2h | 6 | 2 | 4 |
-| Auditoria v7 | Restaurar varredura reproduzível | Recriar script e gate | 4 | 30% | 1h30 | 5 | 1 | 4 |
 | Promoção do Dia | Implementar modal comercial | Executar issue `#24` no Stitch | 4 | 5% | 3h | 7 | 0 | 7 |
 | Valley Riders | Incorporar ativo oficial | Obter e versionar PNG original | 3 | 35% | 45min | 4 | 1 | 3 |
 | Núcleo do PDV | Consolidar venda presencial | Definir domínio e jornada mínima | 5 | 15% | 4h | 8 | 1 | 7 |
@@ -76,19 +69,18 @@ O relatório de remoção listou aproximadamente 40 arquivos com menções que a
 | Classificação | Quantidade |
 |---|---:|
 | Críticas | 5 |
-| Altas | 18 |
+| Altas | 15 (3 concluídas neste ciclo) |
 | Médias | 7 |
 | Secundárias | 2 |
-| Resolvidas em princípio, aguardando evidência final | 2 |
+| Concluídas com evidência | 5 (incluindo 3 deste ciclo) |
 
-## Riscos imediatos
+## Riscos imediatos (pós-ciclo)
 
 1. declarar o deploy Render concluído apenas pela existência do Blueprint;
 2. integrar o PR `#27` sobre arquivos mais recentes da `main`;
-3. manter referências residuais ao Vision em módulos críticos (`api_hub`, `identity`);
-4. continuar sem checks associados aos commits mais recentes;
-5. deixar pendências importantes somente em documentos, sem issues rastreáveis.
+3. continuar sem checks associados aos commits mais recentes;
+4. deixar pendências importantes somente em documentos, sem issues rastreáveis.
 
-## Diretriz ao Codex
+## Diretriz ao próximo Codex
 
-O Codex deve iniciar pelo plano v2.5, trabalhar em branch própria, atualizar a issue `#28`, registrar evidências e não declarar conclusão sem validação reproduzível.
+O próximo ciclo deve priorizar: validação Render (Bloco 3), regularização do PR `#27` (Bloco 4) e execução de workflows (Bloco 5). O auditor v7 pode ser executado a qualquer momento com `python3 scripts/audit_confirmation_v7.py`.
