@@ -3,7 +3,7 @@
   "source_catalog": "config/module_catalog.json",
   "source_catalog_version": "0.1.0",
   "exchange": "all-in-one.domain",
-  "module_count": 25,
+  "module_count": 24,
   "event_count": 79,
   "modules": {
     "identity": {
@@ -1291,47 +1291,6 @@
             "module": "health",
             "routing_key": "health.prescription.issued",
             "summary": "Fixture de evento do modulo Health"
-          }
-        }
-      ]
-    },
-    "vision": {
-      "title": "Vision",
-      "routing_keys": [
-        "vision.motion.detected",
-        "vision.incident.created"
-      ],
-      "events": [
-        {
-          "event_id": "7591e83c-4c03-5814-9cb9-07de35e5499c",
-          "routing_key": "vision.motion.detected",
-          "aggregate_type": "vision.motion",
-          "aggregate_id": "vision-fixture-01",
-          "entity_id": "vision-fixture-01",
-          "actor_user_id": "vision-fixture-actor",
-          "correlation_id": "946bc55c-96ba-5400-a69e-e1e916a85aaa",
-          "schema_version": 1,
-          "occurred_at": "2026-06-30T00:00:00Z",
-          "payload": {
-            "module": "vision",
-            "routing_key": "vision.motion.detected",
-            "summary": "Fixture de evento do modulo Vision"
-          }
-        },
-        {
-          "event_id": "212900b5-03fb-505b-847f-6989c8edc466",
-          "routing_key": "vision.incident.created",
-          "aggregate_type": "vision.incident",
-          "aggregate_id": "vision-fixture-02",
-          "entity_id": "vision-fixture-02",
-          "actor_user_id": "vision-fixture-actor",
-          "correlation_id": "71288961-46af-52de-83a7-ab79d637e09b",
-          "schema_version": 1,
-          "occurred_at": "2026-06-30T00:00:00Z",
-          "payload": {
-            "module": "vision",
-            "routing_key": "vision.incident.created",
-            "summary": "Fixture de evento do modulo Vision"
           }
         }
       ]

@@ -125,7 +125,7 @@ A separacao operacional entre `sandbox`, `homologacao` e `producao` fica em
 
 ## Acesso Unificado (All-in-One UI)
 
-O ecossistema All-in-One expõe uma interface unificada que consolida todos os 25 módulos. O roteamento é gerenciado pelo Ingress Global na GCP.
+O ecossistema All-in-One expõe uma interface unificada que consolida todos os 24 módulos. O roteamento é gerenciado pelo Ingress Global na GCP.
 
 ### Rotas de Interface
 

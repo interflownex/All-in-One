@@ -110,7 +110,7 @@ As divergências de módulos, automação Telegram, auditor v7, homologação ex
 | Publicação externa definitiva | Homologar domínio, HTTPS, DNS, cache e headers | Validar bootstrap Render e registrar URL oficial | 5 | 50% | 2h | 6 | 3 | 3 |
 | API Hub público | Publicar o API Hub e conectar o front-end | Executar deploy, `/health` e jornadas remotas | 5 | 60% | 2h | 7 | 4 | 3 |
 | Bootstrap Render | Validar Blueprint, build, start e secrets | Executar implantação e arquivar logs | 4 | 70% | 1h30 | 6 | 4 | 2 |
-| Auditoria das 335 rotas | Validar jornadas ponta a ponta | Aguardar API Hub público homologado | 5 | 35% | 2h30 | 6 | 2 | 4 |
+| Auditoria das 325 rotas | Validar jornadas ponta a ponta | Aguardar API Hub público homologado | 5 | 35% | 2h30 | 6 | 2 | 4 |
 | Assinatura Android | Proteger keystore e Play App Signing | Definir cofre e recuperação | 5 | 45% | 1h30 | 4 | 2 | 2 |
 | Login Google no APK | Homologar autenticação e sessão | Executar com conta real | 4 | 55% | 1h30 | 5 | 3 | 2 |
 | GitHub Actions | Tornar checks executáveis e obrigatórios | Executar workflows no commit atual | 5 | 25% | 2h | 5 | 1 | 4 |
@@ -118,7 +118,7 @@ As divergências de módulos, automação Telegram, auditor v7, homologação ex
 | PR Render #27 | Evitar duplicidade e regressão do Blueprint | Comparar com `main` e decidir atualização ou encerramento | 3 | 20% | 30min | 4 | 1 | 3 |
 | Integridade visual | Validar marcas oficiais e bloquear alterações | Executar workflow e arquivar evidência | 4 | 75% | 1h | 5 | 4 | 1 |
 | Ativo Valley Riders | Incorporar o PNG oficial aprovado | Obter e versionar o binário original | 3 | 35% | 45min | 4 | 1 | 3 |
-| Catálogo de módulos | Sincronizar os 25 módulos | Incluir quatro módulos na configuração Business | 4 | 60% | 1h30 | 5 | 3 | 2 |
+| Catálogo de módulos | Sincronizar os 24 módulos | Incluir quatro módulos na configuração Business | 4 | 60% | 1h30 | 5 | 3 | 2 |
 | Automação Telegram | Implementar eventos e relatórios periódicos | Criar executor e testes | 4 | 35% | 2h | 6 | 2 | 4 |
 | Auditoria v7 | Restaurar o auditor e integrá-lo à CI | Localizar ou recriar script e fixtures | 4 | 30% | 1h30 | 5 | 1 | 4 |
 | Backlog oficial | Transformar pendências em issues | Expandir a partir das issues `#24` e `#28` | 3 | 20% | 1h30 | 6 | 2 | 4 |
@@ -143,7 +143,7 @@ Executar a implantação do API Hub, registrar a URL e configurar `VITE_API_HUB_
 
 **Critério de aceite:** jornadas principais sem fallback local, com persistência e evidência no backend correto.
 
-### 7.3 Reexecutar a auditoria integral das 335 rotas
+### 7.3 Reexecutar a auditoria integral das 325 rotas
 
 Executar a auditoria no ambiente publicado, verificando erros JavaScript, telas travadas, botões mortos, formulários, persistência e autenticação.
 
@@ -190,7 +190,7 @@ Confrontar `STATUS.md`, `ROADMAP.md`, `EXECUTION_PLAN.md`, OpenAPI, catálogo, m
 
 ### 8.7 Sincronizar catálogo de módulos e configuração Business
 
-`config/module_catalog.json` possui 25 módulos e `MODULE_NAMES` possui 21. Incluir e testar:
+`config/module_catalog.json` possui 24 módulos e `MODULE_NAMES` possui 21. Incluir e testar:
 
 - `vision`;
 - `legal`;
@@ -363,7 +363,7 @@ Atrasos de até 4 horas são tolerância operacional normal. Após 12 horas, os 
 13. Definir contrato e arquitetura do PDV.
 14. Implementar frente de caixa, venda offline e integração opcional Valley.
 15. Conectar o front-end ao API Hub homologado.
-16. Rodar a auditoria das 335 rotas.
+16. Rodar a auditoria das 325 rotas.
 17. Homologar login Google e assinatura Android.
 
 ## 14. Critério de encerramento

@@ -816,41 +816,6 @@
       },
       "project_id": "17608165271835657543"
     },
-    "vision": {
-      "screens": {
-        "overview": {
-          "screen_id": "10393535271367827419",
-          "name": "Vision - Visao Geral",
-          "branding_version": "2026-06-01"
-        },
-        "entity_devices": {
-          "screen_id": "16329523909751947667",
-          "name": "Vision - Devices",
-          "branding_version": "2026-06-01"
-        },
-        "entity_streams": {
-          "screen_id": "13946839780417085943",
-          "name": "Vision - Streams",
-          "branding_version": "2026-06-01"
-        },
-        "entity_recordings": {
-          "screen_id": "7856216967837861003",
-          "name": "Vision - Recordings",
-          "branding_version": "2026-06-01"
-        },
-        "entity_motion_alerts": {
-          "screen_id": "157438755116947880",
-          "name": "Vision - Motion Alerts",
-          "branding_version": "2026-06-01"
-        },
-        "audit_permissions": {
-          "screen_id": "7936241101337866106",
-          "name": "Vision - Auditoria E Permissoes",
-          "branding_version": "2026-06-01"
-        }
-      },
-      "project_id": "628918265184082921"
-    },
     "legal": {
       "screens": {
         "overview": {

@@ -290,7 +290,6 @@ const defaultOffers: Offer[] = [
     "320.00",
     "Tecnologia, Seguranca e IA",
     "service",
-    "vision",
     "Valley Vision Labs",
     "Laboratorio remoto",
     "hire",
@@ -474,7 +473,6 @@ export const moduleShowcase: ModuleShowcaseItem[] = [
     "Cuidado digital",
   ),
   moduleItem(
-    "vision",
     "Vision",
     "IA visual para provas, leitura e classificacao.",
     "OCR, capturas e inspecoes operacionais.",

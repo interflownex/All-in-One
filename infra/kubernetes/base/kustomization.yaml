@@ -24,7 +24,6 @@ resources:
   - services.yaml
   - stock.yaml
   - tms.yaml
-  - vision.yaml
   - wms.yaml
   - outbox-dispatcher.yaml
   - outbox-alerting.yaml

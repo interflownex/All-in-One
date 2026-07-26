@@ -43,7 +43,7 @@ O API Hub materializa a vitrine unificada em
 Delivery, Mobility, Jobs, Property e Finance, preserva filtros regionais e
 comerciais, remove placeholders duplicados e pagina somente depois da agregacao.
 Assim, uma oferta configurada uma vez em `business/catalog_offers` pode apontar
-para qualquer um dos 25 modulos tecnicos e aparecer no Valley sem duplicacao.
+para qualquer um dos 24 modulos tecnicos e aparecer no Valley sem duplicacao.
 
 Quando alguma fonte estiver temporariamente indisponivel, o gateway devolve
 `partial=true` e detalha `failures`, mantendo as ofertas das fontes saudaveis

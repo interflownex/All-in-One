@@ -28,7 +28,6 @@ dockerfiles = [
     "./modules/services/Dockerfile",
     "./modules/stock/Dockerfile",
     "./modules/tms/Dockerfile",
-    "./modules/vision/Dockerfile",
     "./modules/wms/Dockerfile",
     "./workers/outbox_dispatcher/Dockerfile",
     "./workers/retention_worker/Dockerfile",

@@ -205,7 +205,6 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
-    if module["slug"] == "vision":
         special = dedent(
             """\
             `streams` guarda somente metadados privados e hash da URL;
@@ -414,17 +413,11 @@ def render_contract(module: dict) -> str:
             - A acao `complete` conclui treinamento e emite `hr.training.completed`.
             """
         )
-    if module["slug"] == "vision":
         special += dedent(
             """
 
             ## Stream, gravacao e alerta operacional
 
-            - `streams` exige `device_id`, `stream_url_hash`, `protocol` e `started_at`, iniciando em `active` e emitindo `vision.stream.started`.
-            - `recordings` exige `stream_id`, `storage_key`, `file_sha256` e `started_at`, e e append-only com evento `vision.recording.stored`.
-            - `motion_alerts` exige `device_id`, `stream_id`, `detected_at` e `confidence_score`, iniciando em `detected` e emitindo `vision.motion.detected`.
-            - A acao `triage` exige papel aprovador, MFA e cria incidente com `vision.incident.created`.
-            - A acao `resolve` exige papel aprovador, MFA e emite `vision.incident.resolved`.
             """
         )
     if module["slug"] == "legal":

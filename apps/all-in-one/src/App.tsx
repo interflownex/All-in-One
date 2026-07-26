@@ -37,7 +37,6 @@ const BpmBpmOverview = lazy(() => import("./pages/bpm/BpmOverview"));
 const DocumentDocumentOverview = lazy(() => import("./pages/document/DocumentOverview"));
 const HrHrOverview = lazy(() => import("./pages/hr/HrOverview"));
 const HealthHealthOverview = lazy(() => import("./pages/health/HealthOverview"));
-const VisionVisionOverview = lazy(() => import("./pages/vision/VisionOverview"));
 const LegalLegalOverview = lazy(() => import("./pages/legal/LegalOverview"));
 const PropertyPropertyOverview = lazy(() => import("./pages/property/PropertyOverview"));
 const BiBiOverview = lazy(() => import("./pages/bi/BiOverview"));
@@ -166,15 +165,6 @@ const RidersRiderReviewsForm = lazy(() => import("./pages/riders/RiderReviewsFor
 const RidersVehiclesList = lazy(() => import("./pages/riders/VehiclesList"));
 const RidersRiderProfilesForm = lazy(() => import("./pages/riders/RiderProfilesForm"));
 const RidersRiderReviewsList = lazy(() => import("./pages/riders/RiderReviewsList"));
-const VisionStreamsForm = lazy(() => import("./pages/vision/StreamsForm"));
-const VisionRecordingsList = lazy(() => import("./pages/vision/RecordingsList"));
-const VisionMotionAlertsForm = lazy(() => import("./pages/vision/MotionAlertsForm"));
-const VisionDevicesForm = lazy(() => import("./pages/vision/DevicesForm"));
-const VisionVisionPermissions = lazy(() => import("./pages/vision/VisionPermissions"));
-const VisionStreamsList = lazy(() => import("./pages/vision/StreamsList"));
-const VisionDevicesList = lazy(() => import("./pages/vision/DevicesList"));
-const VisionMotionAlertsList = lazy(() => import("./pages/vision/MotionAlertsList"));
-const VisionRecordingsForm = lazy(() => import("./pages/vision/RecordingsForm"));
 const PermissionsUserRolesList = lazy(() => import("./pages/permissions/UserRolesList"));
 const PermissionsRolesList = lazy(() => import("./pages/permissions/RolesList"));
 const PermissionsApprovalLimitsList = lazy(() => import("./pages/permissions/ApprovalLimitsList"));
@@ -492,10 +482,6 @@ function App() {
               <Route
                 path="/health"
                 element={HealthHealthOverview ? <HealthHealthOverview /> : <div>Carregando...</div>}
-              />
-              <Route
-                path="/vision"
-                element={VisionVisionOverview ? <VisionVisionOverview /> : <div>Carregando...</div>}
               />
               <Route
                 path="/legal"
@@ -1248,52 +1234,6 @@ function App() {
                 element={
                   RidersRiderReviewsList ? <RidersRiderReviewsList /> : <div>Carregando...</div>
                 }
-              />
-              <Route
-                path="/vision/streams-form"
-                element={VisionStreamsForm ? <VisionStreamsForm /> : <div>Carregando...</div>}
-              />
-              <Route
-                path="/vision/recordings"
-                element={VisionRecordingsList ? <VisionRecordingsList /> : <div>Carregando...</div>}
-              />
-              <Route
-                path="/vision/motionalerts-form"
-                element={
-                  VisionMotionAlertsForm ? <VisionMotionAlertsForm /> : <div>Carregando...</div>
-                }
-              />
-              <Route
-                path="/vision/devices-form"
-                element={VisionDevicesForm ? <VisionDevicesForm /> : <div>Carregando...</div>}
-              />
-              <Route
-                path="/vision/visionpermissions"
-                element={
-                  VisionVisionPermissions ? <VisionVisionPermissions /> : <div>Carregando...</div>
-                }
-              />
-              <Route
-                path="/vision/streams"
-                element={VisionStreamsList ? <VisionStreamsList /> : <div>Carregando...</div>}
-              />
-              <Route
-                path="/vision/devices"
-                element={VisionDevicesList ? <VisionDevicesList /> : <div>Carregando...</div>}
-              />
-              <Route
-                path="/vision/vision"
-                element={VisionVisionOverview ? <VisionVisionOverview /> : <div>Carregando...</div>}
-              />
-              <Route
-                path="/vision/motionalerts"
-                element={
-                  VisionMotionAlertsList ? <VisionMotionAlertsList /> : <div>Carregando...</div>
-                }
-              />
-              <Route
-                path="/vision/recordings-form"
-                element={VisionRecordingsForm ? <VisionRecordingsForm /> : <div>Carregando...</div>}
               />
               <Route
                 path="/permissions/userroles"

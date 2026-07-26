@@ -31,7 +31,7 @@ const modules = [
   ["permissions", "Permissoes", "⌘", "Funcoes, politicas RBAC/ABAC e escopos de acesso."],
   ["finance", "Financeiro", "R$", "Wallets, ledger, recebimentos, escrow e conciliacoes."],
   ["marketplace", "Marketplace", "▣", "Lojas, produtos, pedidos, avaliacoes e disputas."],
-  ["stock", "Estoque", "▤", "Produtos, saldos, reservas e rastreabilidade."],
+  ["stock", "STOCK", "▤", "Catálogo curado, fornecedores homologados, pedido sob demanda e tracking."],
   ["delivery", "Delivery", "↗", "Solicitacoes, cotacoes, seguros e comprovantes."],
   ["riders", "Riders", "◈", "Perfis, documentos, veiculos e avaliacoes."],
   ["services", "Servicos", "✦", "Solicitacoes, prestadores, agenda e execucao."],
@@ -45,7 +45,6 @@ const modules = [
   ["document", "Documentos", "▧", "Arquivos, versoes, retencao e compartilhamento seguro."],
   ["hr", "RH", "♙", "Colaboradores, vinculos, jornadas e desenvolvimento."],
   ["health", "Saude", "✚", "Jornadas de cuidado, agendamentos e servicos de saude."],
-  ["vision", "Vision", "◌", "Dispositivos, streams, gravacoes e alertas."],
   ["legal", "Legal", "§", "Contratos, politicas, obrigacoes e registros legais."],
   ["property", "Propriedades", "⌂", "Imoveis, unidades, contratos e manutencao."],
   ["bi", "BI", "▥", "Metricas, analises e paineis de toda a operacao."],
@@ -95,11 +94,11 @@ const Home = () => (
         </div>
         <div className="aio-stats" aria-label="Resumo da plataforma">
           <div>
-            <strong>25</strong>
+            <strong>24</strong>
             <span>microservicos</span>
           </div>
           <div>
-            <strong>181</strong>
+            <strong>171</strong>
             <span>telas Stitch</span>
           </div>
           <div>
@@ -146,7 +145,7 @@ const Home = () => (
         <p className="aio-eyebrow">
           <span /> Plataforma modular
         </p>
-        <h2>25 capacidades que trabalham como uma so.</h2>
+        <h2>24 capacidades que trabalham como uma só.</h2>
         <p>Cada card abre diretamente o dashboard Stitch funcional do modulo.</p>
       </div>
       <div className="aio-module-grid">

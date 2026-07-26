@@ -2,7 +2,7 @@
 
 Este documento consolida a primeira matriz operacional de compliance do
 All-in-One. A fonte versionada esta em
-`config/compliance/data_classification.json` e cobre os 25 modulos do catalogo.
+`config/compliance/data_classification.json` e cobre os 24 modulos do catalogo.
 O fluxo operacional de direitos do titular fica em
 `config/compliance/data_subject_rights.json`. O contrato dos jobs de retencao,
 anonimizacao, descarte e legal hold fica em
