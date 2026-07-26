@@ -1,84 +1,34 @@
-name: Apply PR 34 repair patch
+name: Apply PR34 Senior Fix
 
 on:
-  push:
-    branches:
-      - fix/generated-artifacts-gate
-    paths:
-      - reports/ci/fix-pr34.patch.gz
-      - .github/workflows/autocommit.yml
   pull_request:
-    branches:
-      - main
+    branches: [main]
     paths:
-      - reports/ci/fix-pr34.patch.gz
-      - .github/workflows/autocommit.yml
-  workflow_dispatch:
+      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
-  apply-repair:
-    if: >-
-      github.actor != 'github-actions[bot]' &&
-      ((github.event_name == 'pull_request' && github.head_ref == 'fix/generated-artifacts-gate') ||
-      (github.event_name != 'pull_request' && github.ref_name == 'fix/generated-artifacts-gate'))
+  refresh:
+    if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
-          fetch-depth: 2
-      - name: Validar e aplicar correções
-        shell: bash
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install validation dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Apply consolidated senior fix
+        run: python scripts/apply_pr34_senior_fix.py
+      - name: Commit corrected sources and generated artifacts
         run: |
-          set -Eeuo pipefail
-          gunzip -c reports/ci/fix-pr34.patch.gz > /tmp/fix-pr34.patch
-          git apply --check -p1 /tmp/fix-pr34.patch
-          git apply -p1 /tmp/fix-pr34.patch
-          rm -f reports/ci/fix-pr34.patch.gz
-          cat > .github/workflows/autocommit.yml <<'WORKFLOW'
-          name: Refresh Generated Contracts
-
-          on:
-            workflow_dispatch:
-            pull_request:
-              branches: [main]
-              paths:
-                - ".github/workflows/autocommit.yml"
-
-          permissions:
-            contents: read
-
-          jobs:
-            refresh:
-              if: github.head_ref == 'fix/generated-artifacts-gate'
-              runs-on: ubuntu-latest
-              steps:
-                - uses: actions/checkout@v4
-                  with:
-                    ref: ${{ github.head_ref }}
-                - name: Remover metadados Git e artefatos locais
-                  run: |
-                    rm -rf .git .pytest_cache .pytest_tmp node_modules
-                    find . -type d -name node_modules -prune -exec rm -rf {} + || true
-                - name: Publicar snapshot da branch
-                  uses: actions/upload-artifact@v4
-                  with:
-                    name: all-in-one-source-snapshot-${{ github.run_id }}
-                    path: .
-                    include-hidden-files: true
-                    if-no-files-found: error
-                    retention-days: 1
-          WORKFLOW
-      - name: Versionar correções verificadas
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          git config user.name all-in-one-repair-bot
-          git config user.email actions@users.noreply.github.com
+          git config user.name "all-in-one-bot"
+          git config user.email "actions@users.noreply.github.com"
           git add -A
-          git diff --cached --check
-          git diff --cached --quiet || git commit -m "fix: concluir correções do gate e da suíte"
-          git push origin HEAD:fix/generated-artifacts-gate
+          git diff --cached --quiet || git commit -m "fix: consolidate 24-module contracts, APIs and operational gates"
+          git push origin HEAD:${{ github.head_ref }}

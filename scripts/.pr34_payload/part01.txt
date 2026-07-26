@@ -1,0 +1,250 @@
+ason_hash": reason_hash,
+            },
+        },
+    )
+    return signed_json_response(
+        {
+            "status": "refunded",
+            "order_id": str(body.order_id),
+            "provider_environment": "sandbox",
+            "refund_reference": refund.get("reference_id"),
+            "message": "Estorno sandbox processado com sucesso.",
+        }
+    )
+
+
+'''
+if api.count(refund_anchor) != 1:
+    raise RuntimeError('telemetry anchor not found')
+api = api.replace(refund_anchor, refund_endpoint + refund_anchor, 1)
+write('modules/api_hub/main.py', api)
+
+# Add OAuth2 path/schema to the API contract.
+openapi = read('modules/api_hub/OPENAPI.yaml')
+if '/gateway/oauth2/token:' not in openapi:
+    openapi = openapi.replace(
+        '  /gateway/consumer/orders:\n',
+        '''  /gateway/oauth2/token:
+    post:
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthClientCredentialsRequest'
+      responses:
+        '200':
+          description: Token OAuth2 de curta duração emitido
+        '401':
+          description: Credenciais de cliente inv�lidas
+        '403':
+          description: Escopo não autorizado
+  /gateway/consumer/orders:
+''',
+        1,
+    )
+    openapi = openapi.replace(
+        '    CatalogRefundRequest:\n',
+        '''    OAuthClientCredentialsRequest:
+      type: object
+      required: [grant_type, client_id, api_key, scope]
+      properties:
+        grant_type:
+          type: string
+          enum: [client_credentials]
+        client_id:
+          type: string
+          minLength: 3
+          maxLength: 120
+        api_key:
+          type: string
+          minLength: 8
+          maxLength: 500
+        scope:
+          type: string
+          minLength: 1
+          maxLength: 500
+    CatalogRefundRequest:
+''',
+        1,
+    )
+write('modules/api_hub/OPENAPI.yaml', openapi)
+
+# 3) Branding scope: Valley Rider uses the Riders brand, not the generic Valley app set.
+brand_path = ROOT / 'config/branding/brand_identity.json'
+brand = json.loads(brand_path.read_text(encoding='utf-8'))
+brand['valley_apps'] = ['valley', 'valley-business']
+brand_path.write_text(json.dumps(brand, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+# 4) Tests tied to the catalog now derive the active module set.
+replace_once('tests/test_compliance_matrix.py', '    "vision",\n', '')
+replace_once('tests/test_postgres_stores_matrix.py', '    assert len(discovered_modules) == 25\n    assert set(MODULES_CONFIG) == discovered_modules\n', '    assert set(MODULES_CONFIG) == discovered_modules\n')
+replace_once('tests/test_retention_worker.py', 'candidate(module="vision", record_id="recording-1")', 'candidate(module="crm", record_id="lead-1")')
+
+# 5) Identity event documentation follows the authoritative catalog.
+catalog = json.loads((ROOT / 'config/module_catalog.json').read_text(encoding='utf-8'))
+identity = next(module for module in catalog['modules'] if module['slug'] == 'identity')
+event_lines = '\n'.join(f'- `{event}`' for event in identity['events'])
+write('modules/identity/EVENTS.md', f'''# Events: Identity
+
+Exchange: `all-in-one.domain`; routing keys:
+
+{event_lines}
+
+Eventos carregam `event_id`, `occurred_at`, `actor_user_id`, `user_id`,
+`entity_id`, `correlation_id`, `schema_version` e payload minimizado.
+Consumidores devem ser idempotentes.
+''')
+
+# 6) Git sync tests need complete refs in the CI checkout.
+ci = read('.github/workflows/ci.yml')
+ci = ci.replace('      - name: Checkout code\n        uses: actions/checkout@v4\n', '      - name: Checkout code\n        uses: actions/checkout@v4\n        with:\n          fetch-depth: 0\n', 1)
+write('.github/workflows/ci.yml', ci)
+
+# 7) Complete operational backup/restore documentation.
+ops = read('docs/OPERATIONS.md')
+backup_marker = '## Validacao PostgreSQL Real\n'
+backup_addition = '''### Execução verificável de backup e restore
+
+Os valores `rpo_minutes` e `rto_minutes` são definidos por ambiente no plano
+`config/operations/backup_restore_plan.json`. Cada drill de restore deve registrar
+horário inicial, horário final, checksum, commit, ambiente isolado e resultado dos
+healthchecks, sem anexar dados brutos.
+
+PostgreSQL:
+
+```bash
+pg_dump --format=custom --no-owner --file=postgres.dump "$DATABASE_URL"
+sha256sum postgres.dump > postgres.dump.sha256
+pg_restore --clean --if-exists --no-owner --dbname="$RESTORE_DATABASE_URL" postgres.dump
+```
+
+MongoDB:
+
+```bash
+mongodump --uri="$MONGODB_URI" --archive=mongodb.archive --gzip
+sha256sum mongodb.archive > mongodb.archive.sha256
+mongorestore --uri="$RESTORE_MONGODB_URI" --archive=mongodb.archive --gzip --drop
+```
+
+O drill de restore ocorre em rede isolada e valida `/health` do API Hub, Identity,
+Finance, Jobs e demais serv	ços prioritários. O ambiente restaurado permanece sem
+escrita externa até aprovação humana. O exercício de disaster recovery deve medir
+o RPO/RTO observado e registrar ação corretiva quando exceder o contrato.
+
+'''
+if backup_marker not in ops:
+    raise RuntimeError('operations marker missing')
+ops = ops.replace(backup_marker, backup_addition + backup_marker, 1)
+ops = ops.replace('suite viva dos 25 stores tipados', 'suite viva dos 24 stores tipados')
+write('docs/OPERATIONS.md', ops)
+
+# 8) Materialize the canonical Grafana dashboard JSON from the Kubernetes ConfigMap.
+manifest = yaml.safe_load(read('infra/kubernetes/base/outbox-dashboard.yaml'))
+dashboard = json.loads(manifest['data']['outbox-dispatcher-dashboard.json'])
+write('config/observability/outbox_dashboard.json', json.dumps(dashboard, ensure_ascii=False, indent=2) + '\n')
+
+# 9) Envelope-aware outbox assertion.
+replace_once(
+    'tests/test_outbox_dispatcher_runtime_events.py',
+    '''        expected_payload = {
+            key: row["payload"][key]
+            for key in SAFE_PAYLOAD_FIELDS.get(row["aggregate_type"], frozenset())
+            if key in row["payload"]
+        }
+''',
+    '''        stored_payload = row["payload"]
+        source_payload = (
+            stored_payload.get("payload") or {}
+            if isinstance(stored_payload, dict)
+            and "event_id" in stored_payload
+            and "payload" in stored_payload
+            else stored_payload
+        )
+        expected_payload = {
+            key: source_payload[key]
+            for key in SAFE_PAYLOAD_FIELDS.get(row["aggregate_type"], frozenset())
+            if key in source_payload
+        }
+''',
+)
+
+# 10) Business-facing permissions event mapping.
+domain_rules = read('modules/shared/domain_rules.py')
+anchor = '        ("business", "user_company_memberships"): "business.user.invited",\n'
+insert = anchor + '        ("permissions", "user_roles"): "business.role.assigned",\n        ("permissions", "access_policies"): "business.user.invited",\n'
+if domain_rules.count(anchor) != 1:
+    raise RuntimeError('permissions event anchor missing')
+domain_rules = domain_rules.replace(anchor, insert, 1)
+write('modules/shared/domain_rules.py', domain_rules)
+
+# 11) Security workflow: self-test plus image builds and Trivy gates.
+security = read('.github/workflows/security.yml')
+security = security.replace('      - run: bandit -r modules/shared scripts workers -q -ll\n', '      - run: bandit -r modules/shared scripts workers -q -ll\n      - run: python -m pytest -q tests/test_security_gates.py\n', 1)
+container_job = '''
+  container-image-security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: api-hub
+            dockerfile: modules/api_hub/Dockerfile
+            image: all-in-one-api-hub:security
+          - name: identity
+            dockerfile: modules/identity/Dockerfile
+            image: all-in-one-identity:security
+          - name: jobs
+            dockerfile: modules/jobs/Dockerfile
+            image: all-in-one-jobs:security
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build critical image
+        run: docker build -f ${{ matrix.dockerfile }} -t ${{ matrix.image }} .
+      - name: Scan critical image with Trivy
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: ${{ matrix.image }}
+          format: sarif
+          output: trivy-${{ matrix.name }}.sarif
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+      - name: Upload Trivy SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: trivy-${{ matrix.name }}.sarif
+          category: trivy-${{ matrix.name }}
+'''
+security = security.replace('\n  valley-android-security:\n', container_job + '\n  valley-android-security:\n', 1)
+write('.github/workflows/security.yml', security)
+
+# 12) Stitch tests use the catalog count; data should be regenerated, not hardcoded.
+stitch_test = read('tests/test_stitch_orchestrator.py')
+stitch_test = stitch_test.replace('    assert manifest["project_count"] == 25\n    assert len({project["module"] for project in manifest["projects"]}) == 25\n', '    expected_count = len(load_catalog()["modules"])\n    assert manifest["project_count"] == expected_count\n    assert len({project["module"] for project in manifest["projects"]}) == expected_count\n')
+stitch_test = stitch_test.replace('    assert summary["expected_projects"] == 25\n', '    assert summary["expected_projects"] == len(load_catalog()["modules"])\n')
+write('tests/test_stitch_orchestrator.py', stitch_test)
+
+# Valley catalog count derives from the catalog.
+valley_test = read('tests/test_valley_catalog.py')
+valley_test = valley_test.replace('from uuid import uuid4\n', 'import json\nfrom pathlib import Path\nfrom uuid import uuid4\n', 1)
+valley_test = valley_test.replace('from platform_test_support import fresh_client_for\n', 'from platform_test_support import fresh_client_for\n\nROOT = Path(__file__).resolve().parents[1]\n', 1)
+valley_test = valley_test.replace('    assert len(payload) == 25\n', '    expected_modules = len(json.loads((ROOT / "config/module_catalog.json").read_text(encoding="utf-8"))["modules"])\n    assert len(payload) == expected_modules\n', 1)
+valley_test = valley_test.replace('    assert len(source_modules) == 25\n', '    assert len(source_modules) == expected_modules\n', 1)
+write('tests/test_valley_catalog.py', valley_test)
+
+# UI binding tests validate semantics despite formatting.
+ui_test = read('tests/test_ui_field_bindings.py')
+ui_test = ui_test.replace('    assert "Object.fromEntries(boundFields.map" in source\n', '    assert re.search(r"Object\\.fromEntries\\(\\s*boundFields\\.map", source)\n')
+if 'import re\n' not in ui_test:
+    ui_test = ui_test.replace('import json\n', 'import json\nimport re\n', 1)
+write('tests/test_ui_field_bindings.py', ui_test)
+
+# Quoted PostgreSQL reserved identifier is the safe contract.
+audit_test = read('tests/test_unified_audit_migration.py')
+audit_test = audit_test.replace('      
