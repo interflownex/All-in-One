@@ -15,7 +15,8 @@
     "minimum_width_px": 120,
     "safe_area_px": 16,
     "primary_color": "#111827",
-    "accent_color": "#22D3EE"
+    "accent_color": "#22D3EE",
+    "light_logo_asset": "assets/brand/all-in-one-logo-official.png"
   },
   "valley_brand": {
     "name": "Valley",
@@ -44,8 +45,15 @@
     "placement": "top-left inside Riders surfaces, alongside the All in One platform mark when required",
     "safe_area_px": 16
   },
-  "valley_apps": ["valley", "valley-business"],
-  "riders_apps": ["valley-rider", "all-in-one-riders"],
+  "valley_apps": [
+    "valley",
+    "valley-business",
+    "valley-rider"
+  ],
+  "riders_apps": [
+    "valley-rider",
+    "all-in-one-riders"
+  ],
   "authorized_operations": [
     "remove_external_background_without_touching_the_mark",
     "proportional_resize"

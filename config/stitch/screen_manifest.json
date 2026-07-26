@@ -3,8 +3,8 @@
   "strategy": "one_stitch_project_per_microservice",
   "source": "config/module_catalog.json",
   "branding_source": "config/branding/brand_identity.json",
-  "project_count": 25,
-  "screen_count": 181,
+  "project_count": 24,
+  "screen_count": 175,
   "screen_generation": {
     "standard": [
       "overview",

@@ -19,6 +19,10 @@ DB_SCHEMA = {
     "ai_core": "ai_core",
     "api_hub": "api_hub",
 }
+APP_DIR_OVERRIDES = {
+    "valley-business": "valley_business",
+    "valley-rider": "valley_rider",
+}
 ENDPOINTS = [
     "GET /health",
     "GET /version",
@@ -1111,7 +1115,7 @@ def expected_files(catalog: dict) -> dict[Path, str]:
             }
         )
     for app in catalog["apps"]:
-        base = ROOT / "apps" / app["slug"]
+        base = ROOT / "apps" / APP_DIR_OVERRIDES.get(app["slug"], app["slug"])
         outputs[base / "README.md"] = render_app_readme(app)
         outputs[base / "STATUS.md"] = render_app_status()
     for relative_path in CUSTOMIZED_ARTIFACTS:

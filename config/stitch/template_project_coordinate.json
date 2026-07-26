@@ -50,8 +50,14 @@
       "id": "valley_apk_template",
       "project_name": "VALLEY APK - Template Completo",
       "product": "APK Valley",
-      "surfaces": ["android", "mobile_web_embedded"],
-      "brands": ["All-in-One", "Valley"],
+      "surfaces": [
+        "android",
+        "mobile_web_embedded"
+      ],
+      "brands": [
+        "All-in-One",
+        "Valley"
+      ],
       "objective": "Desenvolver em um unico projeto o template integral do superapp Valley para consumidor, reunindo todas as ferramentas e recursos autorizados do ecossistema.",
       "module_scope": [
         "identity",
@@ -88,7 +94,10 @@
           "key": "delivery_tracking",
           "title": "Entrega, cotacao, rastreio, prova, seguro e suporte"
         },
-        { "key": "mobility", "title": "Mobilidade, rotas, paradas, bilhetes e acompanhamento" },
+        {
+          "key": "mobility",
+          "title": "Mobilidade, rotas, paradas, bilhetes e acompanhamento"
+        },
         {
           "key": "jobs_health_documents",
           "title": "Vagas, curriculo, CTPS, saude, documentos e consentimentos"
@@ -103,9 +112,15 @@
       "id": "all_in_one_web_mobile_template",
       "project_name": "ALL IN ONE - Template Web e Mobile Completo",
       "product": "All-in-One",
-      "surfaces": ["responsive_web", "mobile_web", "mobile_app"],
-      "brands": ["All-in-One"],
-      "objective": "Desenvolver em um unico projeto o template web e mobile integral da plataforma All-in-One, cobrindo os 25 modulos oficiais sem fragmentar a experiencia administrativa e operacional.",
+      "surfaces": [
+        "responsive_web",
+        "mobile_web",
+        "mobile_app"
+      ],
+      "brands": [
+        "All-in-One"
+      ],
+      "objective": "Desenvolver em um unico projeto o template web e mobile integral da plataforma All-in-One, cobrindo os 24 modulos oficiais sem fragmentar a experiencia administrativa e operacional.",
       "module_scope": [
         "identity",
         "business",
@@ -126,7 +141,6 @@
         "document",
         "hr",
         "health",
-        "vision",
         "legal",
         "property",
         "bi",
@@ -152,7 +166,7 @@
         },
         {
           "key": "content_governance",
-          "title": "Documentos, propriedade, legal, vision, BPM, compliance e auditoria"
+          "title": "Documentos, propriedade, legal, BPM, compliance e auditoria"
         },
         {
           "key": "analytics_ai_integrations",
@@ -172,8 +186,14 @@
       "id": "valley_riders_apk_template",
       "project_name": "VALLEY RIDERS APK - Template Completo",
       "product": "APK Valley Riders",
-      "surfaces": ["android", "mobile_web_embedded"],
-      "brands": ["All-in-One", "Valley"],
+      "surfaces": [
+        "android",
+        "mobile_web_embedded"
+      ],
+      "brands": [
+        "All-in-One",
+        "Valley"
+      ],
       "objective": "Desenvolver em um unico projeto o template integral do APK Valley Riders para entregadores e motoristas, com operacao segura, rastreavel e orientada a campo.",
       "module_scope": [
         "identity",
