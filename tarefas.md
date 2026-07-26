@@ -1,178 +1,187 @@
 # Tarefas da IA Desenvolvedora
 
-**Versao:** 1.0  
+**Versão:** 1.1  
 **Data da entrega:** 26/07/2026  
-**Hora da entrega:** 13:49:32  
-**Fuso horario:** `America/Sao_Paulo`  
-**Repositorio:** `interflownex/All-in-One`  
-**Branch de elaboracao:** `docs/diretriz-tarefas-estudo-pesquisa-2026-07-26`  
-**Commit de referencia da varredura:** `44be12a9751d336f0c8094f79c893eb69008eaf4`  
-**Classificacao:** `Pendencias > Tecnico > Equipe tecnica`  
+**Hora da entrega:** 14:01:53  
+**Fuso horário:** `America/Sao_Paulo`  
+**Repositório:** `interflownex/All-in-One`  
+**Branch de elaboração:** `docs/pendencias-v2-6-primeiro-teste-2026-07-26`  
+**Commit de referência:** `c2c8eaccc1581ed674821feaaa3336c03a5b763c`  
+**Issue de orquestração:** `#43`  
+**Classificação:** `Pendências > Técnico > Equipe técnica`  
 **Destino:** Codex e demais IAs desenvolvedoras autorizadas
 
-## 1. Objetivo
+## 1. Objetivo desta versão
 
-Estabelecer a diretriz permanente de entrega tecnica do projeto All-in-One + Valley, garantindo que toda atividade seja estudada, pesquisada, versionada, registrada com data e hora e encerrada com um arquivo `tarefas.md` completo para a proxima IA desenvolvedora.
+Registrar o primeiro teste completo das diretrizes permanentes e fornecer à próxima IA desenvolvedora uma passagem operacional suficiente para executar o ciclo v2.6 sem depender de explicação adicional.
 
-## 2. Regra permanente de modo Estudar
+## 2. Resultado da varredura
 
-A IA desenvolvedora deve trabalhar com abordagem de estudo em toda atividade:
+### Confirmado
 
-1. verificar o conhecimento e o estado ja existentes;
-2. consultar as fontes de verdade antes de editar;
-3. explicar e documentar decisoes tecnicas relevantes;
-4. dividir problemas complexos em etapas verificaveis;
-5. validar o entendimento por testes e evidencias;
-6. registrar o que foi aprendido, alterado e deixado pendente.
+- catálogo e configuração Business sincronizados em 24 módulos;
+- `legal`, `property` e `ai_core` presentes em `MODULE_NAMES`;
+- auditor v7 versionado;
+- referências ativas ao Vision removidas no escopo verificado;
+- PR Render `#27` encerrado sem merge;
+- política Telegram atualizada;
+- watchdog Gemini restaurado;
+- diretrizes de Estudar, Pesquisa Avançada, data, hora e `tarefas.md` integradas;
+- issue `#28` encerrada;
+- issue `#43` aberta para o ciclo v2.6.
 
-Quando a interface nao oferecer um controle persistente para o plugin Estudar, aplicar obrigatoriamente o comportamento equivalente descrito acima.
+### Pendente
 
-## 3. Regra permanente de Pesquisa Avancada
+- executar checks no commit atual;
+- regularizar PRs `#34`, `#36`, `#37`, `#38` e `#40`;
+- resolver sobreposição entre `#34` e `#37`;
+- auditar commit `44be12a9751d336f0c8094f79c893eb69008eaf4` e o pacote `.gemini/skills`;
+- corrigir identidade pública `tmp-valley`;
+- homologar API Hub e `/health`;
+- criar executor Telegram real;
+- validar APK Admin;
+- validar PDV Desktop;
+- validar onda de inovação;
+- concluir issue `#24` no Stitch;
+- incorporar ativo oficial Valley Riders;
+- impor administrativamente uso exclusivo de Squash and Merge.
 
-Antes de orientar ou implementar qualquer item baseado em informacao externa, atual, instavel, especializada ou possivelmente desatualizada, a IA deve:
+## 3. Fontes de verdade
 
-1. realizar pesquisa avancada em fontes atuais e confiaveis;
-2. priorizar documentacao oficial e fontes primarias;
-3. comparar datas de publicacao e vigencia;
-4. registrar as fontes utilizadas no relatorio ou pull request;
-5. separar fatos confirmados de inferencias;
-6. nao declarar certeza quando a evidencia for incompleta.
+Antes de editar, consultar:
 
-Quando a interface nao oferecer um controle persistente para o plugin Pesquisa Avancada, aplicar o comportamento equivalente por consulta web, documentacao oficial e verificacao cruzada.
+1. `AGENTS.md`;
+2. este `tarefas.md`;
+3. `docs/Pendências Do desenvolvedor.md`, versão 2.6;
+4. `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v2.6_2026-07-26.md`;
+5. `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v2.6_2026-07-26.md`;
+6. issue `#43`;
+7. PRs `#34`, `#36`, `#37`, `#38` e `#40`;
+8. issues `#24`, `#39` e `#41`;
+9. `scripts/audit_confirmation_v7.py`;
+10. `config/autonomy/telegram_delivery_policy.json`;
+11. manifestos de skills em `.gemini/skills` e `.github/skills`.
 
-## 4. Fontes de verdade do projeto
-
-Antes de qualquer alteracao, consultar no minimo:
-
-- `AGENTS.md`;
-- `tarefas.md`;
-- `docs/Pendências Do desenvolvedor.md`;
-- relatorio mais recente em `docs/relatorios/pendencias/`;
-- plano mais recente do Codex em `docs/relatorios/pendencias/`;
-- issues e pull requests abertos;
-- `config/module_catalog.json`;
-- contratos OpenAPI e migrations relacionados;
-- arquivos de estado Stitch quando a atividade envolver interfaces;
-- politicas em `config/autonomy/`;
-- manifesto de marca em `config/branding/authorized_assets.json`.
-
-## 5. Pre-requisitos obrigatorios
-
-Antes de editar:
+## 4. Pré-requisitos obrigatórios
 
 1. executar `git status --short --branch`;
-2. atualizar referencias remotas permitidas;
-3. executar o preflight multiagente;
-4. adquirir o lock da atividade;
-5. confirmar que nao existe merge ou rebase em andamento;
-6. confirmar que nenhum segredo sera versionado;
-7. criar ou usar branch de trabalho;
-8. verificar se a tarefa ja foi implementada por outro agente.
+2. buscar referências remotas permitidas;
+3. executar `python3 scripts/multi_agent_sync_guard.py preflight --integrate`;
+4. adquirir lock da atividade;
+5. confirmar ausência de merge ou rebase em andamento;
+6. criar branch de trabalho se estiver na `main`;
+7. preservar mudanças de outros agentes;
+8. confirmar que nenhum segredo será versionado.
 
-## 6. Fluxo de execucao
+## 5. Ordem de execução
 
-1. estudar o problema e o contexto existente;
-2. pesquisar informacoes externas quando necessario;
-3. mapear implementado, parcial, ausente e bloqueado;
-4. definir escopo, riscos e criterios de aceite;
-5. executar alteracoes pequenas e rastreaveis;
-6. criar ou atualizar testes;
-7. executar validacoes locais e workflows aplicaveis;
-8. registrar evidencias;
-9. atualizar documentacao e pendencias;
-10. atualizar este arquivo `tarefas.md`;
-11. publicar branch;
-12. abrir ou atualizar pull request;
-13. integrar somente apos revisao e checks, usando Squash and Merge;
-14. liberar o lock multiagente.
+### Prioridade 1: checks e auditoria
 
-## 7. Conteudo obrigatorio de toda entrega
+- executar auditor v7;
+- executar validação do repositório;
+- executar testes relacionados;
+- registrar checks ausentes ou falhos.
 
-Toda entrega deve informar:
+### Prioridade 2: PRs desatualizados
 
-- versao;
-- data;
-- hora;
-- fuso horario;
-- repositorio;
-- branch;
-- commit de referencia;
-- objetivo;
-- escopo executado;
-- arquivos alterados;
-- testes realizados;
-- resultados;
-- falhas e causas;
-- riscos;
-- bloqueios externos;
-- evidencias;
-- pendencias restantes;
-- proximos passos;
-- pull request e commit final, quando existirem.
+- comparar os cinco PRs com a `main` atual;
+- resolver sobreposição `#34` e `#37`;
+- atualizar, dividir ou encerrar PRs substituídos;
+- não integrar PR com base antiga ou `mergeable` falso.
 
-## 8. Regras do arquivo `tarefas.md`
+### Prioridade 3: pacote de skills
 
-1. o nome deve permanecer exatamente `tarefas.md`;
-2. o arquivo deve existir na raiz do repositorio;
-3. deve ser atualizado ao final de toda entrega tecnica;
-4. cada atualizacao deve incrementar a versao;
-5. deve informar data e hora no fuso `America/Sao_Paulo`;
-6. deve conter instrucoes suficientes para a proxima IA continuar sem nova explicacao;
-7. deve ser versionado na mesma branch e pull request da atividade;
-8. deve preservar um historico resumido de versoes;
-9. nao pode conter credenciais, tokens, chaves ou dados pessoais desnecessarios;
-10. nao substitui os relatorios de pendencias, mas funciona como documento de passagem operacional.
+- auditar commit `44be12a`;
+- comparar manifestos;
+- identificar remoções, restaurações e alterações de conteúdo;
+- abrir issue se a atualização não for reproduzível.
 
-## 9. Testes e evidencias
+### Prioridade 4: ambiente público
 
-Nenhuma atividade deve ser marcada como concluida sem:
+- corrigir identificação `tmp-valley`;
+- validar Render, URL do API Hub e `/health`;
+- registrar CORS, logs e bloqueios externos.
 
-- teste automatizado ou procedimento reproduzivel;
-- saida ou log verificavel;
-- evidencia do ambiente correto;
-- referencia ao commit e pull request;
-- confirmacao de que nao houve regressao relevante;
-- confirmacao de que nenhum segredo foi exposto.
+### Prioridade 5: Telegram
 
-## 10. Governanca Git
+- implementar `activity_started`;
+- implementar `activity_completed`;
+- implementar quatro relatórios diários;
+- criar retry, timeout, mocks e logs seguros.
 
-- nunca executar push direto na `main`;
-- usar branch de trabalho;
-- abrir pull request;
-- registrar testes e evidencias;
-- usar Squash and Merge;
-- nao descartar trabalho de outros agentes;
-- nao executar `git reset --hard` ou limpeza destrutiva sem ordem explicita;
-- interromper e registrar bloqueio em caso de conflito, lock ou rebase ativo.
+### Prioridade 6: artefatos
 
-## 11. Estado verificado nesta entrega
+- validar APK Admin do PR `#36`;
+- validar PDV Desktop do PR `#38`;
+- registrar hash, versão, commit e smoke test.
 
-- a branch padrao e `main`;
-- o repositorio permite atualmente merge commit, rebase merge e squash merge;
-- o uso administrativo exclusivo de Squash and Merge continua pendente;
-- o documento `AGENTS.md` foi atualizado nesta atividade para registrar as novas regras;
-- este e o primeiro arquivo raiz `tarefas.md` identificado no repositorio.
+### Prioridade 7: encerramento
 
-## 12. Criterio de aceite desta diretriz
+- atualizar issue `#43`;
+- atualizar pendências e relatórios;
+- incrementar a versão deste arquivo;
+- abrir ou atualizar PR;
+- integrar apenas com checks e Squash and Merge;
+- liberar lock.
 
-A diretriz sera considerada implantada quando:
+## 6. Ciclo de tempo
 
-1. `AGENTS.md` contiver as regras de Estudar, Pesquisa Avancada, data, hora e `tarefas.md`;
-2. o arquivo raiz `tarefas.md` estiver versionado;
-3. a alteracao estiver em pull request;
-4. a integracao ocorrer por Squash and Merge;
-5. a branch `main` contiver os dois arquivos atualizados.
+- execução principal: 8 horas;
+- tolerância normal: até 4 horas;
+- limite de coleta: 12 horas;
+- após 12 horas, não iniciar nova frente e registrar tudo que restou.
 
-## 13. Pendencias administrativas relacionadas
+## 7. Testes mínimos esperados
 
-1. desabilitar `merge commit` no repositorio;
-2. desabilitar `rebase merge`;
-3. manter apenas `squash merge`;
-4. proteger a branch `main`;
-5. exigir checks obrigatorios e revisao antes do merge.
+```bash
+python3 scripts/audit_confirmation_v7.py
+python3 scripts/validate_repository.py
+```
 
-## 14. Historico de versoes
+Executar também testes específicos de cada PR e componente alterado. Não usar resultados antigos como prova do commit atual.
 
-| Versao | Data e hora | Alteracao principal |
+## 8. Critérios de aceite
+
+Uma tarefa só pode ser concluída quando houver:
+
+- implementação versionada;
+- teste reproduzível;
+- evidência do ambiente correto;
+- referência ao commit e PR;
+- checks executados;
+- ausência de regressão relevante;
+- confirmação de que nenhum segredo foi exposto;
+- atualização da issue `#43`;
+- atualização deste `tarefas.md`.
+
+## 9. Riscos e bloqueios
+
+- PRs antigos podem sobrescrever correções mais novas;
+- PRs `#34` e `#37` podem duplicar alterações;
+- APK e instalador podem existir sem homologação real;
+- domínio público possui identidade temporária;
+- pacote de skills teve mudança ampla sem PR localizado;
+- Telegram possui política, mas não executor completo localizado;
+- repositório ainda permite métodos de merge além de squash;
+- credenciais externas podem bloquear Render, Google, Stitch e Telegram.
+
+## 10. Entrega obrigatória da próxima IA
+
+A próxima IA deve entregar:
+
+1. resumo simples para o gestor;
+2. lista do que foi concluído, parcial, falhou e bloqueou;
+3. comandos e testes executados;
+4. evidências e artefatos;
+5. commits e pull requests;
+6. atualização da issue `#43`;
+7. nova versão dos relatórios, quando houver mudança;
+8. nova versão de `tarefas.md` com data e hora;
+9. integração por Squash and Merge quando os critérios forem atendidos.
+
+## 11. Histórico de versões
+
+| Versão | Data e hora | Alteração principal |
 |---|---|---|
-| 1.0 | 26/07/2026 13:49:32 | Criacao da diretriz permanente de modo Estudar, Pesquisa Avancada, versionamento, data, hora e entrega obrigatoria do arquivo `tarefas.md`. |
+| 1.0 | 26/07/2026 13:49:32 | Criação da diretriz permanente de Estudar, Pesquisa Avançada, versionamento e entrega do arquivo `tarefas.md`. |
+| 1.1 | 26/07/2026 14:01:53 | Primeiro teste completo, consolidação v2.6, issue #43 e tarefas para checks, PRs, skills, ambiente público, Telegram, APK Admin e PDV Desktop. |
