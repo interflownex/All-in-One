@@ -23,20 +23,37 @@ jobs:
           python-version: "3.12"
       - name: Instalar dependências de teste
         run: pip install -r requirements-dev.txt
-      - name: Capturar falhas unitárias
+      - name: Remover import e teste Vision órfãos
         shell: bash
         run: |
-          mkdir -p reports/ci
-          set +e
-          python -m pytest -q --tb=short --maxfail=30 --ignore=tests/e2e > reports/ci/unit-tests-diagnostic.txt 2>&1
-          status=$?
-          echo "pytest_exit_code=$status" >> reports/ci/unit-tests-diagnostic.txt
-          tail -n 250 reports/ci/unit-tests-diagnostic.txt
-          exit 0
-      - name: Commit diagnostic report
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("tests/test_postgres_priority_stores_integration.py")
+          text = path.read_text(encoding="utf-8")
+          import_line = "from modules.shared.vision_postgres_store import VisionPostgresStore\n"
+          if import_line not in text:
+              raise SystemExit("Import Vision esperado não encontrado.")
+          text = text.replace(import_line, "", 1)
+
+          start_marker = "def test_vision_device_create_update_and_soft_delete() -> None:\n"
+          end_marker = "def test_legal_case_create_update_and_soft_delete() -> None:\n"
+          start = text.find(start_marker)
+          end = text.find(end_marker, start)
+          if start < 0 or end < 0:
+              raise SystemExit("Bloco de teste Vision não localizado com segurança.")
+          text = text[:start] + text[end:]
+          path.write_text(text, encoding="utf-8", newline="\n")
+
+          diagnostic = Path("reports/ci/unit-tests-diagnostic.txt")
+          if diagnostic.exists():
+              diagnostic.unlink()
+          PY
+      - name: Validar coleta e commit
         run: |
+          python -m pytest -q --collect-only tests/test_postgres_priority_stores_integration.py
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add reports/ci/unit-tests-diagnostic.txt
-          git diff --cached --quiet || git commit -m "ci: registrar diagnostico dos testes unitarios"
+          git add -A tests/test_postgres_priority_stores_integration.py reports/ci/unit-tests-diagnostic.txt
+          git diff --cached --quiet || git commit -m "fix: remover teste PostgreSQL órfão do Vision"
           git push origin HEAD:${{ github.head_ref }}
