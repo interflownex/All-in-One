@@ -2,25 +2,56 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
+    if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: all_in_one
+          POSTGRES_USER: all_in_one
+          POSTGRES_PASSWORD: test-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U all_in_one -d all_in_one"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGPASSWORD: test-password
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: python scripts/scaffold_modules.py
-      - name: Commit generated changes
+          ref: ${{ github.head_ref }}
+      - name: Diagnosticar migrações
+        shell: bash
+        run: |
+          mkdir -p reports/ci
+          : > reports/ci/postgres-migration-diagnostic.txt
+          status=0
+          for file in database/postgres/migrations/*.sql; do
+            echo "=== $file ===" | tee -a reports/ci/postgres-migration-diagnostic.txt
+            if ! psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f "$file" >> reports/ci/postgres-migration-diagnostic.txt 2>&1; then
+              status=$?
+              echo "FALHA_EM=$file" | tee -a reports/ci/postgres-migration-diagnostic.txt
+              break
+            fi
+          done
+          tail -n 160 reports/ci/postgres-migration-diagnostic.txt
+          exit 0
+      - name: Commit diagnostic report
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add apps modules contracts
-          git diff --cached --quiet || git commit -m "refresh generated module contracts"
-          git push
+          git add reports/ci/postgres-migration-diagnostic.txt
+          git diff --cached --quiet || git commit -m "ci: registrar diagnostico das migracoes PostgreSQL"
+          git push origin HEAD:${{ github.head_ref }}
