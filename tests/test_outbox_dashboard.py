@@ -28,7 +28,8 @@ REQUIRED_METRICS = {
 
 
 def load_dashboard() -> dict:
-    return json.loads((ROOT / "config" / "observability" / "outbox_dashboard.json").read_text(encoding="utf-8"))
+    data = json.loads((ROOT / "config" / "observability" / "outbox_dashboard.json").read_text(encoding="utf-8"))
+    return data.get("dashboard", data)
 
 
 def load_prometheus_dashboard_manifest() -> str:

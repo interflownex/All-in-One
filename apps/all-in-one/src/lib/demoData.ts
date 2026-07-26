@@ -229,18 +229,6 @@ const MODULE_SCENARIOS: Record<string, string[]> = {
     "Prontuario integrado",
     "Programa de cuidado",
   ],
-  vision: [
-    "Camera de entrada",
-    "Stream de estoque",
-    "Alerta de movimento",
-    "Gravacao protegida",
-    "Camera de estacionamento",
-    "Analise de fluxo",
-    "Deteccao perimetral",
-    "Monitoramento remoto",
-    "Dispositivo corporativo",
-    "Evento de seguranca",
-  ],
   legal: [
     "Contrato em revisao",
     "Processo civel",

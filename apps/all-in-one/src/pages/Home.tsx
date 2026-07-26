@@ -98,7 +98,7 @@ const Home = () => (
             <span>microservicos</span>
           </div>
           <div>
-            <strong>171</strong>
+            <strong>175</strong>
             <span>telas Stitch</span>
           </div>
           <div>

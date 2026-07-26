@@ -1,113 +1,113 @@
 module,method,path,function,parameters,request_fields,response_model,evidence
-api_hub,GET,/gateway/security/response-signing-key,response_signing_key,,,,modules/api_hub/main.py:63
-api_hub,POST,/auth/{path:path},auth_proxy,path:str,,,modules/api_hub/main.py:500
-api_hub,POST,/registrations,registrations_proxy,,,,modules/api_hub/main.py:504
-api_hub,GET,/gateway/catalog/offers,aggregate_catalog_offers,limit:int;offset:int;q:str | None;category:str | None;offer_type:str | None;lat:float | None;lng:float | None;company_type:str | None;company_category:str | None;business_activity:str | None;price_min:float | None;price_max:float | None;availability:str | None;verified_only:bool,,,modules/api_hub/main.py:508
-api_hub,GET,/gateway/consumer/orders,get_consumer_orders,"token_payload:dict[str, Any]",,,modules/api_hub/main.py:591
-api_hub,POST,/gateway/consumer/orders/{order_id}/support,create_order_support_case,"order_id:UUID;body:SupportCaseRequest;token_payload:dict[str, Any]",kind;subject;message;desired_resolution;idempotency_key,,modules/api_hub/main.py:661
-api_hub,POST,/gateway/consumer/orders/{order_id}/reviews,create_consumer_review,"order_id:UUID;body:ConsumerReviewRequest;token_payload:dict[str, Any]",rating;comment;idempotency_key,,modules/api_hub/main.py:715
-api_hub,GET,/gateway/insights/commercial,commercial_insights,,,,modules/api_hub/main.py:772
-api_hub,POST,/gateway/catalog/actions,create_catalog_action,"body:CatalogActionRequest;token_payload:dict[str, Any]",offer_id;action;customer_user_id;idempotency_key;scheduled_at;note;quantity,,modules/api_hub/main.py:825
-api_hub,POST,/gateway/payments/sandbox/authorize,authorize_catalog_payment,"body:CatalogPaymentRequest;token_payload:dict[str, Any]",order_id;idempotency_key;method,,modules/api_hub/main.py:946
-api_hub,GET,/gateway/telemetry/outbox,outbox_telemetry,limit:int,,,modules/api_hub/main.py:1032
-api_hub,GET,/gateway/status,gateway_status,,,,modules/api_hub/main.py:1069
-api_hub,GET,/gateway/api-key/check,gateway_api_key_check,key_info:dict,,,modules/api_hub/main.py:1080
-api_hub,POST,/gateway/webhooks/verify,gateway_webhook_verify,,,,modules/api_hub/main.py:1089
-business,POST,/recommendations,preview_recommendations,body:BusinessClassificationInput,business_kind;cnae_primary;cnae_secondary;has_physical_stock;sells_online;performs_delivery;hires_people;issues_fiscal_documents;operates_fleet;has_warehouse,list[ModuleRecommendation],modules/business/module_settings.py:304
-business,POST,/companies/{company_id}/classification,classify_company,company_id:UUID;body:BusinessClassificationInput,business_kind;cnae_primary;cnae_secondary;has_physical_stock;sells_online;performs_delivery;hires_people;issues_fiscal_documents;operates_fleet;has_warehouse,BusinessClassificationRecord,modules/business/module_settings.py:309
-business,POST,/companies/{company_id}/apply-recommendations,apply_recommendations,company_id:UUID;body:ApplyRecommendationsPayload,classification;actor_id,ModuleSettingsResponse,modules/business/module_settings.py:317
-business,GET,/companies/{company_id}/modules,get_company_modules,company_id:UUID,,ModuleSettingsResponse,modules/business/module_settings.py:344
-business,PATCH,/companies/{company_id}/modules/{module_slug},patch_company_module,company_id:UUID;module_slug:str;body:ModulePatch,state;reason,CompanyModuleSetting,modules/business/module_settings.py:354
-business,GET,/companies/{company_id}/modules/{module_slug}/change-impact,get_change_impact,company_id:UUID;module_slug:str;next_state:ModuleState,,,modules/business/module_settings.py:391
-dynamic_forms,GET,/health,health,,,,modules/dynamic_forms/main.py:110
-dynamic_forms,GET,/catalog,list_catalog,"context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)];domain:str | None",,,modules/dynamic_forms/main.py:115
-dynamic_forms,GET,/catalog/bindings,list_bindings,"catalog_ids:Annotated[list[UUID], Query(min_length=1, max_length=200)];context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",,,modules/dynamic_forms/main.py:126
-dynamic_forms,POST,/definitions,create_definition,"body:DefinitionCreate;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];idempotency_key:Annotated[str, Depends(idempotency_header)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",company_id;module_id;business_context;name;description;change_summary,,modules/dynamic_forms/main.py:137
-dynamic_forms,GET,/definitions,list_definitions,"context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)];status:str | None",,,modules/dynamic_forms/main.py:161
-dynamic_forms,GET,/versions/{version_id}/blueprint,get_blueprint,"version_id:UUID;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",,,modules/dynamic_forms/main.py:172
-dynamic_forms,PUT,/versions/{version_id}/blueprint,replace_blueprint,"version_id:UUID;body:BlueprintReplace;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",blocks;fields;calculations;validations;visibility_rules,,modules/dynamic_forms/main.py:183
-dynamic_forms,POST,/versions/{version_id}/homologations,request_homologation,"version_id:UUID;body:HomologationRequest;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];idempotency_key:Annotated[str, Depends(idempotency_header)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",checklist,,modules/dynamic_forms/main.py:195
-dynamic_forms,POST,/homologations/{homologation_id}/review,review_homologation,"homologation_id:UUID;body:HomologationReview;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];idempotency_key:Annotated[str, Depends(idempotency_header)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",result;notes;problems;corrections;evidence,,modules/dynamic_forms/main.py:208
-dynamic_forms,POST,/versions/{version_id}/publish,publish_version,"version_id:UUID;body:PublicationRequest;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];idempotency_key:Annotated[str, Depends(idempotency_header)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",environment;rollout_policy;tenant_scope;channels,,modules/dynamic_forms/main.py:232
-dynamic_forms,POST,/forms/{definition_id}/submissions,submit_form,"definition_id:UUID;body:FormSubmissionRequest;context_actor:Annotated[tuple[str, Actor], Depends(tenant_actor)];idempotency_key:Annotated[str, Depends(idempotency_header)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",values;context;source,,modules/dynamic_forms/main.py:255
-erp,POST,/calculations/tax,calculate_tax_preview,x_actor_user_id:str,,,modules/erp/main.py:54
-erp,GET,/erp/billing/{document_id},get_billing,document_id:str;store:ErpPostgresStore,,,modules/erp/main.py:75
-erp,POST,/erp/billing,create_billing,x_actor_user_id:str;x_actor_company_id:str;x_idempotency_key:Optional[str];store:ErpPostgresStore,,,modules/erp/main.py:86
-erp,POST,/erp/billing/{document_id}/cancel,cancel_billing,document_id:str;x_actor_user_id:str;store:ErpPostgresStore,,,modules/erp/main.py:121
-erp,POST,/integrations/sandbox/fiscal/invoices,sandbox_fiscal_invoice,x_actor_user_id:str,,,modules/erp/main.py:148
-finance,POST,/transfers,transfer,body:TransferRequest;actor:Actor,,,modules/finance/main.py:14
-finance,POST,/pix/out,pix_out,body:PixRequest;actor:Actor,,,modules/finance/main.py:40
-finance,POST,/escrows/hold,hold_funds,body:EscrowRequest;actor:Actor,,,modules/finance/main.py:45
-finance,POST,/escrows/{escrow_id}/release,release_funds,escrow_id:str;actor:Actor,,,modules/finance/main.py:61
-finance,GET,/wallets/{user_id},get_user_wallets,user_id:str;actor:Actor,,,modules/finance/main.py:69
-finance,GET,/valley/gold/balance,valley_gold_balance,actor:Actor,,,modules/finance/main.py:76
-finance,POST,/webhooks/cash-in,mock_cash_in,body:dict,,,modules/finance/main.py:95
-finance,POST,/gateways/cash-out,mock_cash_out,actor:Actor;body:dict,,,modules/finance/main.py:114
-identity,POST,/kyc/submit,submit_kyc,body:KYCSubmission,,,modules/identity/main.py:157
-identity,GET,/kyc/status/{user_id},get_kyc_status,user_id:UUID,,KYCStatus,modules/identity/main.py:199
-identity,POST,/mfa/setup,setup_mfa,body:MFASetup;actor:Actor,,,modules/identity/main.py:217
-identity,POST,/mfa/verify,verify_mfa,body:MFAVerification;actor:Actor,,,modules/identity/main.py:254
-identity,POST,/kyc/ocr-validate,kyc_ocr_validate,body:dict,,,modules/identity/main.py:309
-identity,POST,/auth/login,login,body:LoginRequest;_integrity:IntegrityDecision,,TokenResponse,modules/identity/main.py:332
-identity,POST,/auth/refresh,refresh_session,body:RefreshTokenRequest;_integrity:IntegrityDecision,,TokenResponse,modules/identity/main.py:366
-identity,POST,/auth/logout,logout,body:RefreshTokenRequest;_integrity:IntegrityDecision,,,modules/identity/main.py:400
-identity,POST,/registrations,register_user_with_hash,"body:dict[str, Any];_integrity:IntegrityDecision",,,modules/identity/main.py:420
-marketplace,POST,/valley/orders/{order_id}/support,create_order_support_case,order_id:UUID;body:SupportCaseRequest;actor:Actor,kind;subject;message;desired_resolution;idempotency_key,,modules/marketplace/main.py:26
-marketplace,GET,/valley/insights/commercial,commercial_insights,actor:Actor,,,modules/marketplace/main.py:71
-services,GET,/providers/{provider_id}/time-slots,get_time_slots,provider_id:str;date:str,,,modules/services/main.py:12
+api_hub,GET,/gateway/security/response-signing-key,response_signing_key,,,,modules/api_hub/main.py:73
+api_hub,POST,/auth/{path:path},auth_proxy,path:str,,,modules/api_hub/main.py:609
+api_hub,POST,/registrations,registrations_proxy,,,,modules/api_hub/main.py:614
+api_hub,GET,/gateway/catalog/offers,aggregate_catalog_offers,limit:int;offset:int;q:str | None;category:str | None;offer_type:str | None;lat:float | None;lng:float | None;company_type:str | None;company_category:str | None;business_activity:str | None;price_min:float | None;price_max:float | None;availability:str | None;verified_only:bool,,,modules/api_hub/main.py:619
+api_hub,GET,/gateway/consumer/orders,get_consumer_orders,"token_payload:dict[str, Any]",,,modules/api_hub/main.py:716
+api_hub,POST,/gateway/consumer/orders/{order_id}/support,create_order_support_case,"order_id:UUID;body:SupportCaseRequest;token_payload:dict[str, Any]",kind;subject;message;desired_resolution;idempotency_key,,modules/api_hub/main.py:788
+api_hub,POST,/gateway/consumer/orders/{order_id}/reviews,create_consumer_review,"order_id:UUID;body:ConsumerReviewRequest;token_payload:dict[str, Any]",rating;comment;idempotency_key,,modules/api_hub/main.py:855
+api_hub,GET,/gateway/insights/commercial,commercial_insights,,,,modules/api_hub/main.py:919
+api_hub,POST,/gateway/catalog/actions,create_catalog_action,"body:CatalogActionRequest;token_payload:dict[str, Any]",offer_id;action;customer_user_id;idempotency_key;scheduled_at;note;quantity,,modules/api_hub/main.py:976
+api_hub,POST,/gateway/payments/sandbox/authorize,authorize_catalog_payment,"body:CatalogPaymentRequest;token_payload:dict[str, Any]",order_id;idempotency_key;method,,modules/api_hub/main.py:1123
+api_hub,GET,/gateway/telemetry/outbox,outbox_telemetry,limit:int,,,modules/api_hub/main.py:1222
+api_hub,GET,/gateway/status,gateway_status,,,,modules/api_hub/main.py:1259
+api_hub,GET,/gateway/api-key/check,gateway_api_key_check,key_info:dict,,,modules/api_hub/main.py:1270
+api_hub,POST,/gateway/webhooks/verify,gateway_webhook_verify,,,,modules/api_hub/main.py:1279
+business,POST,/recommendations,preview_recommendations,body:BusinessClassificationInput,business_kind;cnae_primary;cnae_secondary;has_physical_stock;sells_online;performs_delivery;hires_people;issues_fiscal_documents;operates_fleet;has_warehouse,list[ModuleRecommendation],modules/business/module_settings.py:345
+business,POST,/companies/{company_id}/classification,classify_company,company_id:UUID;body:BusinessClassificationInput,business_kind;cnae_primary;cnae_secondary;has_physical_stock;sells_online;performs_delivery;hires_people;issues_fiscal_documents;operates_fleet;has_warehouse,BusinessClassificationRecord,modules/business/module_settings.py:352
+business,POST,/companies/{company_id}/apply-recommendations,apply_recommendations,company_id:UUID;body:ApplyRecommendationsPayload,classification;actor_id,ModuleSettingsResponse,modules/business/module_settings.py:367
+business,GET,/companies/{company_id}/modules,get_company_modules,company_id:UUID,,ModuleSettingsResponse,modules/business/module_settings.py:408
+business,PATCH,/companies/{company_id}/modules/{module_slug},patch_company_module,company_id:UUID;module_slug:str;body:ModulePatch,state;reason,CompanyModuleSetting,modules/business/module_settings.py:418
+business,GET,/companies/{company_id}/modules/{module_slug}/change-impact,get_change_impact,company_id:UUID;module_slug:str;next_state:ModuleState,,,modules/business/module_settings.py:470
+dynamic_forms,GET,/health,health,,,,modules/dynamic_forms/main.py:139
+dynamic_forms,GET,/catalog,list_catalog,"context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)];domain:str | None",,,modules/dynamic_forms/main.py:144
+dynamic_forms,GET,/catalog/bindings,list_bindings,"catalog_ids:Annotated[list[UUID], Query(min_length=1, max_length=200)];context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",,,modules/dynamic_forms/main.py:155
+dynamic_forms,POST,/definitions,create_definition,"body:DefinitionCreate;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];idempotency_key:Annotated[str, Depends(idempotency_header)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",company_id;module_id;business_context;name;description;change_summary,,modules/dynamic_forms/main.py:166
+dynamic_forms,GET,/definitions,list_definitions,"context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)];status:str | None",,,modules/dynamic_forms/main.py:198
+dynamic_forms,GET,/versions/{version_id}/blueprint,get_blueprint,"version_id:UUID;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",,,modules/dynamic_forms/main.py:211
+dynamic_forms,PUT,/versions/{version_id}/blueprint,replace_blueprint,"version_id:UUID;body:BlueprintReplace;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",blocks;fields;calculations;validations;visibility_rules,,modules/dynamic_forms/main.py:222
+dynamic_forms,POST,/versions/{version_id}/homologations,request_homologation,"version_id:UUID;body:HomologationRequest;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];idempotency_key:Annotated[str, Depends(idempotency_header)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",checklist,,modules/dynamic_forms/main.py:236
+dynamic_forms,POST,/homologations/{homologation_id}/review,review_homologation,"homologation_id:UUID;body:HomologationReview;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];idempotency_key:Annotated[str, Depends(idempotency_header)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",result;notes;problems;corrections;evidence,,modules/dynamic_forms/main.py:251
+dynamic_forms,POST,/versions/{version_id}/publish,publish_version,"version_id:UUID;body:PublicationRequest;context:Annotated[tuple[str, Actor], Depends(tenant_actor)];idempotency_key:Annotated[str, Depends(idempotency_header)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",environment;rollout_policy;tenant_scope;channels,,modules/dynamic_forms/main.py:275
+dynamic_forms,POST,/forms/{definition_id}/submissions,submit_form,"definition_id:UUID;body:FormSubmissionRequest;context_actor:Annotated[tuple[str, Actor], Depends(tenant_actor)];idempotency_key:Annotated[str, Depends(idempotency_header)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",values;context;source,,modules/dynamic_forms/main.py:298
+erp,POST,/calculations/tax,calculate_tax_preview,x_actor_user_id:str,,,modules/erp/main.py:64
+erp,GET,/erp/billing/{document_id},get_billing,document_id:str;store:ErpPostgresStore,,,modules/erp/main.py:86
+erp,POST,/erp/billing,create_billing,x_actor_user_id:str;x_actor_company_id:str;x_idempotency_key:str | None;store:ErpPostgresStore,,,modules/erp/main.py:97
+erp,POST,/erp/billing/{document_id}/cancel,cancel_billing,document_id:str;x_actor_user_id:str;store:ErpPostgresStore,,,modules/erp/main.py:136
+erp,POST,/integrations/sandbox/fiscal/invoices,sandbox_fiscal_invoice,x_actor_user_id:str,,,modules/erp/main.py:162
+finance,POST,/transfers,transfer,body:TransferRequest;actor:Actor,,,modules/finance/main.py:15
+finance,POST,/pix/out,pix_out,body:PixRequest;actor:Actor,,,modules/finance/main.py:48
+finance,POST,/escrows/hold,hold_funds,body:EscrowRequest;actor:Actor,,,modules/finance/main.py:54
+finance,POST,/escrows/{escrow_id}/release,release_funds,escrow_id:str;actor:Actor,,,modules/finance/main.py:71
+finance,GET,/wallets/{user_id},get_user_wallets,user_id:str;actor:Actor,,,modules/finance/main.py:80
+finance,GET,/valley/gold/balance,valley_gold_balance,actor:Actor,,,modules/finance/main.py:88
+finance,POST,/webhooks/cash-in,mock_cash_in,body:dict,,,modules/finance/main.py:111
+finance,POST,/gateways/cash-out,mock_cash_out,actor:Actor;body:dict,,,modules/finance/main.py:131
+identity,POST,/kyc/submit,submit_kyc,body:KYCSubmission,,,modules/identity/main.py:169
+identity,GET,/kyc/status/{user_id},get_kyc_status,user_id:UUID,,KYCStatus,modules/identity/main.py:209
+identity,POST,/mfa/setup,setup_mfa,body:MFASetup;actor:Actor,,,modules/identity/main.py:231
+identity,POST,/mfa/verify,verify_mfa,body:MFAVerification;actor:Actor,,,modules/identity/main.py:283
+identity,POST,/kyc/ocr-validate,kyc_ocr_validate,body:dict,,,modules/identity/main.py:381
+identity,POST,/auth/login,login,body:LoginRequest;_integrity:IntegrityDecision,,TokenResponse,modules/identity/main.py:404
+identity,POST,/auth/refresh,refresh_session,body:RefreshTokenRequest;_integrity:IntegrityDecision,,TokenResponse,modules/identity/main.py:445
+identity,POST,/auth/logout,logout,body:RefreshTokenRequest;_integrity:IntegrityDecision,,,modules/identity/main.py:501
+identity,POST,/registrations,register_user_with_hash,"body:dict[str, Any];_integrity:IntegrityDecision",,,modules/identity/main.py:528
+marketplace,POST,/valley/orders/{order_id}/support,create_order_support_case,order_id:UUID;body:SupportCaseRequest;actor:Actor,kind;subject;message;desired_resolution;idempotency_key,,modules/marketplace/main.py:25
+marketplace,GET,/valley/insights/commercial,commercial_insights,actor:Actor,,,modules/marketplace/main.py:84
+services,GET,/providers/{provider_id}/time-slots,get_time_slots,provider_id:str;date:str,,,modules/services/main.py:13
 services,POST,/providers/{provider_id}/reserve-slot,reserve_slot,provider_id:str;body:dict,,,modules/services/main.py:26
-shared,GET,/health,health,,,,modules/shared/runtime.py:458
-shared,GET,/version,get_version,,,,modules/shared/runtime.py:462
-shared,GET,/status,status,actor:Actor,,,modules/shared/runtime.py:466
-shared,GET,/metrics,metrics,,,,modules/shared/runtime.py:478
-shared,GET,/catalog,catalog,,,,modules/shared/runtime.py:488
-shared,POST,/resources/{resource_type},create_resource,resource_type:str;body:ResourceCreate;actor:Actor;x_idempotency_key:str | None;x_correlation_id:UUID | None,user_id;entity_id;payload,,modules/shared/runtime.py:520
-shared,GET,/resources/{resource_type},list_resources,resource_type:str;user_id:UUID | None;actor:Actor,,,modules/shared/runtime.py:530
-shared,GET,/resources/{resource_type}/{resource_id},get_resource,resource_type:str;resource_id:UUID;actor:Actor;x_access_purpose:str;x_audit_exported:bool;x_audit_printed:bool;x_audit_shared:bool,,,modules/shared/runtime.py:543
-shared,PATCH,/resources/{resource_type}/{resource_id},patch_resource,resource_type:str;resource_id:UUID;body:ResourcePatch;actor:Actor;x_correlation_id:UUID | None,payload,,modules/shared/runtime.py:565
-shared,DELETE,/resources/{resource_type}/{resource_id},delete_resource,resource_type:str;resource_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:586
-shared,POST,/resources/{resource_type}/{resource_id}/actions/{action},transition_resource,resource_type:str;resource_id:UUID;action:str;body:ActionPayload;actor:Actor;x_correlation_id:UUID | None,reason;payload,,modules/shared/runtime.py:603
-shared,GET,/audit/events,audit_events,actor:Actor,,,modules/shared/runtime.py:640
-shared,GET,/events/outbox,outbox,actor:Actor,,,modules/shared/runtime.py:646
-shared,POST,/create,create_record,body:CreatePayload;actor:Actor;x_idempotency_key:str | None;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1048
-shared,GET,/list,list_records,user_id:UUID | None;actor:Actor,,,modules/shared/runtime.py:1070
-shared,POST,/approve,approve,body:DecisionPayload;actor:Actor;x_correlation_id:UUID | None,id;reason,,modules/shared/runtime.py:1076
-shared,POST,/reject,reject,body:DecisionPayload;actor:Actor;x_correlation_id:UUID | None,id;reason,,modules/shared/runtime.py:1088
-shared,POST,/audit,audit,body:AuditPayload;actor:Actor;x_correlation_id:UUID | None,action;resource_type;resource_id;payload,,modules/shared/runtime.py:1100
-shared,GET,/{resource_id},get_record,resource_id:UUID;actor:Actor,,,modules/shared/runtime.py:1110
-shared,PATCH,/{resource_id},patch_record,resource_id:UUID;body:PatchPayload;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1117
-shared,DELETE,/{resource_id},delete_record,resource_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1136
-shared,POST,/registrations,register_user,body:IdentityRegistration;x_correlation_id:UUID | None,full_name;email;password_hash;document_cpf;cpf_document;terms_accepted_at;lgpd_consent_at,,modules/shared/runtime.py:493
-shared,POST,/integrations/sandbox/kyc/person,sandbox_kyc_person,body:SandboxKycPersonPayload;actor:Actor,user_id;document;full_name;selfie_hash,,modules/shared/runtime.py:653
-shared,POST,/integrations/sandbox/kyb/business,sandbox_kyb_business,body:SandboxKybBusinessPayload;actor:Actor,company_id;cnpj;legal_name,,modules/shared/runtime.py:669
-shared,POST,/integrations/sandbox/psp/pix/authorize,sandbox_pix_authorize,body:SandboxPixPayload;actor:Actor,payment_id;payer_id;amount_brl;idempotency_key,,modules/shared/runtime.py:684
-shared,POST,/integrations/sandbox/psp/escrows,sandbox_escrow_create,body:SandboxEscrowPayload;actor:Actor,escrow_id;payer_id;beneficiary_id;amount_brl,,modules/shared/runtime.py:699
-shared,POST,/integrations/sandbox/psp/escrows/release,sandbox_escrow_release,body:SandboxEscrowReleasePayload;actor:Actor,escrow_id;amount_brl,,modules/shared/runtime.py:714
-shared,POST,/integrations/sandbox/fiscal/invoices,sandbox_fiscal_invoice,body:SandboxFiscalInvoicePayload;actor:Actor,invoice_id;document_type;amount_brl;issuer_document,,modules/shared/runtime.py:723
-shared,POST,/integrations/sandbox/ctps/classify,sandbox_ctps_classify,body:SandboxCtpsPayload;actor:Actor,resume_id;pdf_text,,modules/shared/runtime.py:739
-shared,POST,/integrations/sandbox/maps/route,sandbox_maps_route,body:SandboxRoutePayload;actor:Actor,route_id;origin;destination;vehicle_type,,modules/shared/runtime.py:748
-shared,POST,/integrations/sandbox/health/consents,sandbox_health_consent,body:SandboxClinicalConsentPayload;actor:Actor,patient_id;professional_id;purpose;ttl_days,,modules/shared/runtime.py:764
-shared,POST,/integrations/sandbox/api-hub/webhooks/sign,sandbox_api_hub_webhook_sign,body:SandboxWebhookSignPayload;actor:Actor,webhook_id;payload;secret,,modules/shared/runtime.py:780
-shared,POST,/integrations/sandbox/api-hub/api-key/verify,sandbox_api_hub_api_key_verify,body:SandboxApiKeyVerifyPayload;actor:Actor,api_key;allowed_hashes,,modules/shared/runtime.py:788
-shared,POST,/integrations/sandbox/suppliers/products,sandbox_supplier_product,body:SandboxSupplierProductPayload;actor:Actor,supplier_id;external_sku;cost_brl;available_quantity,,modules/shared/runtime.py:797
-shared,POST,/pricing/quote,calculate_delivery_quote,body:DeliveryQuoteRequest;actor:Actor,,,modules/shared/runtime.py:813
-shared,POST,/pricing/fare,calculate_mobility_fare,body:MobilityFareRequest;actor:Actor,,,modules/shared/runtime.py:818
-shared,POST,/pricing/commission,calculate_marketplace_commission,body:CommissionRequest;actor:Actor,,,modules/shared/runtime.py:823
-shared,POST,/resumes/{resume_id}/imports/ctps-digital,import_ctps_digital,resume_id:UUID;document:bytes;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:878
-shared,GET,/resumes/{resume_id}/documents/{document_id}/content,own_resume_document,resume_id:UUID;document_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:938
-shared,GET,/resumes/{resume_id}/complete,own_complete_resume,resume_id:UUID;actor:Actor,,,modules/shared/runtime.py:973
-shared,GET,/vacancies,vacancies,q:str | None,,,modules/shared/runtime.py:980
-shared,GET,/recruiting/resumes,candidate_resumes,q:str | None;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:992
-shared,GET,/recruiting/resumes/{resume_id},recruiter_resume_view,resume_id:UUID;purpose:str;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1020
-shared,GET,/valley/catalog/modules,valley_catalog_modules,,,,modules/shared/valley.py:109
-shared,GET,/valley/catalog/categories,valley_catalog_categories,,,,modules/shared/valley.py:113
-shared,GET,/valley/catalog/business-activities,valley_catalog_business_activities,,,,modules/shared/valley.py:117
-shared,GET,/valley/catalog/facets,valley_catalog_facets,,,,modules/shared/valley.py:121
-shared,GET,/valley/catalog,valley_catalog_home,q:str | None;category:str | None;offer_type:str | None;lat:float | None;lng:float | None;company_type:str | None;company_category:str | None;business_activity:str | None;price_min:float | None;price_max:float | None;availability:str | None;verified_only:bool,,,modules/shared/valley.py:125
-shared,GET,/valley/catalog/offers,valley_catalog_offers,,,,modules/shared/valley.py:156
-shared,GET,/valley/catalog/offers/{offer_id},valley_catalog_offer_detail,offer_id:str,,,modules/shared/valley.py:160
-shared,GET,/valley/catalog/search,valley_catalog_search,q:str | None;category:str | None;offer_type:str | None;lat:float | None;lng:float | None;company_type:str | None;company_category:str | None;business_activity:str | None;price_min:float | None;price_max:float | None;availability:str | None;verified_only:bool,,,modules/shared/valley.py:167
-shared,POST,/valley/orders/{order_id}/pepitas/grants,grant_pepitas,order_id:UUID;body:ValleyPepitaGrant;actor:Actor;x_idempotency_key:str | None,pepitas;customer_user_id;merchant_gold_ledger_id;note,,modules/shared/valley.py:200
-shared,POST,/valley/checkout/discount-options,valley_stock_discount_options,body:ValleyStockDiscountRequest,catalog_product_id;price_brl;user_pepitas_balance,,modules/shared/valley.py:241
-shared,POST,/valley/checkout/discount-quotes,valley_stock_discount_quote,body:ValleyStockDiscountQuoteRequest;actor:Actor;x_idempotency_key:str | None,,,modules/shared/valley.py:263
-stock,POST,/calculations/unit-conversion,calculate_unit_conversion,body:UnitConversionRequest;x_actor_user_id:str,quantity;multiplier;divisor;precision;rounding_mode;source_dimension;target_dimension;effective_from;effective_to;approved;density,,modules/stock/main.py:31
+shared,GET,/health,health,,,,modules/shared/runtime.py:577
+shared,GET,/version,get_version,,,,modules/shared/runtime.py:581
+shared,GET,/status,status,actor:Actor,,,modules/shared/runtime.py:585
+shared,GET,/metrics,metrics,,,,modules/shared/runtime.py:597
+shared,GET,/catalog,catalog,,,,modules/shared/runtime.py:607
+shared,POST,/resources/{resource_type},create_resource,resource_type:str;body:ResourceCreate;actor:Actor;x_idempotency_key:str | None;x_correlation_id:UUID | None,user_id;entity_id;payload,,modules/shared/runtime.py:648
+shared,GET,/resources/{resource_type},list_resources,resource_type:str;user_id:UUID | None;actor:Actor,,,modules/shared/runtime.py:660
+shared,GET,/resources/{resource_type}/{resource_id},get_resource,resource_type:str;resource_id:UUID;actor:Actor;x_access_purpose:str;x_audit_exported:bool;x_audit_printed:bool;x_audit_shared:bool,,,modules/shared/runtime.py:681
+shared,PATCH,/resources/{resource_type}/{resource_id},patch_resource,resource_type:str;resource_id:UUID;body:ResourcePatch;actor:Actor;x_correlation_id:UUID | None,payload,,modules/shared/runtime.py:714
+shared,DELETE,/resources/{resource_type}/{resource_id},delete_resource,resource_type:str;resource_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:744
+shared,POST,/resources/{resource_type}/{resource_id}/actions/{action},transition_resource,resource_type:str;resource_id:UUID;action:str;body:ActionPayload;actor:Actor;x_correlation_id:UUID | None,reason;payload,,modules/shared/runtime.py:764
+shared,GET,/audit/events,audit_events,actor:Actor,,,modules/shared/runtime.py:824
+shared,GET,/events/outbox,outbox,actor:Actor,,,modules/shared/runtime.py:832
+shared,POST,/create,create_record,body:CreatePayload;actor:Actor;x_idempotency_key:str | None;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1330
+shared,GET,/list,list_records,user_id:UUID | None;actor:Actor,,,modules/shared/runtime.py:1352
+shared,POST,/approve,approve,body:DecisionPayload;actor:Actor;x_correlation_id:UUID | None,id;reason,,modules/shared/runtime.py:1360
+shared,POST,/reject,reject,body:DecisionPayload;actor:Actor;x_correlation_id:UUID | None,id;reason,,modules/shared/runtime.py:1374
+shared,POST,/audit,audit,body:AuditPayload;actor:Actor;x_correlation_id:UUID | None,action;resource_type;resource_id;payload,,modules/shared/runtime.py:1388
+shared,GET,/{resource_id},get_record,resource_id:UUID;actor:Actor,,,modules/shared/runtime.py:1404
+shared,PATCH,/{resource_id},patch_record,resource_id:UUID;body:PatchPayload;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1413
+shared,DELETE,/{resource_id},delete_record,resource_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1432
+shared,POST,/registrations,register_user,body:IdentityRegistration;x_correlation_id:UUID | None,full_name;email;password_hash;document_cpf;cpf_document;terms_accepted_at;lgpd_consent_at,,modules/shared/runtime.py:617
+shared,POST,/integrations/sandbox/kyc/person,sandbox_kyc_person,body:SandboxKycPersonPayload;actor:Actor,user_id;document;full_name;selfie_hash,,modules/shared/runtime.py:840
+shared,POST,/integrations/sandbox/kyb/business,sandbox_kyb_business,body:SandboxKybBusinessPayload;actor:Actor,company_id;cnpj;legal_name,,modules/shared/runtime.py:857
+shared,POST,/integrations/sandbox/psp/pix/authorize,sandbox_pix_authorize,body:SandboxPixPayload;actor:Actor,payment_id;payer_id;amount_brl;idempotency_key,,modules/shared/runtime.py:873
+shared,POST,/integrations/sandbox/psp/escrows,sandbox_escrow_create,body:SandboxEscrowPayload;actor:Actor,escrow_id;payer_id;beneficiary_id;amount_brl,,modules/shared/runtime.py:888
+shared,POST,/integrations/sandbox/psp/escrows/release,sandbox_escrow_release,body:SandboxEscrowReleasePayload;actor:Actor,escrow_id;amount_brl,,modules/shared/runtime.py:903
+shared,POST,/integrations/sandbox/fiscal/invoices,sandbox_fiscal_invoice,body:SandboxFiscalInvoicePayload;actor:Actor,invoice_id;document_type;amount_brl;issuer_document,,modules/shared/runtime.py:915
+shared,POST,/integrations/sandbox/ctps/classify,sandbox_ctps_classify,body:SandboxCtpsPayload;actor:Actor,resume_id;pdf_text,,modules/shared/runtime.py:932
+shared,POST,/integrations/sandbox/maps/route,sandbox_maps_route,body:SandboxRoutePayload;actor:Actor,route_id;origin;destination;vehicle_type,,modules/shared/runtime.py:946
+shared,POST,/integrations/sandbox/health/consents,sandbox_health_consent,body:SandboxClinicalConsentPayload;actor:Actor,patient_id;professional_id;purpose;ttl_days,,modules/shared/runtime.py:963
+shared,POST,/integrations/sandbox/api-hub/webhooks/sign,sandbox_api_hub_webhook_sign,body:SandboxWebhookSignPayload;actor:Actor,webhook_id;payload;secret,,modules/shared/runtime.py:980
+shared,POST,/integrations/sandbox/api-hub/api-key/verify,sandbox_api_hub_api_key_verify,body:SandboxApiKeyVerifyPayload;actor:Actor,api_key;allowed_hashes,,modules/shared/runtime.py:990
+shared,POST,/integrations/sandbox/suppliers/products,sandbox_supplier_product,body:SandboxSupplierProductPayload;actor:Actor,supplier_id;external_sku;cost_brl;available_quantity,,modules/shared/runtime.py:1002
+shared,POST,/pricing/quote,calculate_delivery_quote,body:DeliveryQuoteRequest;actor:Actor,,,modules/shared/runtime.py:1019
+shared,POST,/pricing/fare,calculate_mobility_fare,body:MobilityFareRequest;actor:Actor,,,modules/shared/runtime.py:1027
+shared,POST,/pricing/commission,calculate_marketplace_commission,body:CommissionRequest;actor:Actor,,,modules/shared/runtime.py:1035
+shared,POST,/resumes/{resume_id}/imports/ctps-digital,import_ctps_digital,resume_id:UUID;document:bytes;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1110
+shared,GET,/resumes/{resume_id}/documents/{document_id}/content,own_resume_document,resume_id:UUID;document_id:UUID;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1181
+shared,GET,/resumes/{resume_id}/complete,own_complete_resume,resume_id:UUID;actor:Actor,,,modules/shared/runtime.py:1227
+shared,GET,/vacancies,vacancies,q:str | None,,,modules/shared/runtime.py:1239
+shared,GET,/recruiting/resumes,candidate_resumes,q:str | None;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1258
+shared,GET,/recruiting/resumes/{resume_id},recruiter_resume_view,resume_id:UUID;purpose:str;actor:Actor;x_correlation_id:UUID | None,,,modules/shared/runtime.py:1292
+shared,GET,/valley/catalog/modules,valley_catalog_modules,,,,modules/shared/valley.py:170
+shared,GET,/valley/catalog/categories,valley_catalog_categories,,,,modules/shared/valley.py:174
+shared,GET,/valley/catalog/business-activities,valley_catalog_business_activities,,,,modules/shared/valley.py:178
+shared,GET,/valley/catalog/facets,valley_catalog_facets,,,,modules/shared/valley.py:182
+shared,GET,/valley/catalog,valley_catalog_home,q:str | None;category:str | None;offer_type:str | None;lat:float | None;lng:float | None;company_type:str | None;company_category:str | None;business_activity:str | None;price_min:float | None;price_max:float | None;availability:str | None;verified_only:bool,,,modules/shared/valley.py:186
+shared,GET,/valley/catalog/offers,valley_catalog_offers,,,,modules/shared/valley.py:217
+shared,GET,/valley/catalog/offers/{offer_id},valley_catalog_offer_detail,offer_id:str,,,modules/shared/valley.py:221
+shared,GET,/valley/catalog/search,valley_catalog_search,q:str | None;category:str | None;offer_type:str | None;lat:float | None;lng:float | None;company_type:str | None;company_category:str | None;business_activity:str | None;price_min:float | None;price_max:float | None;availability:str | None;verified_only:bool,,,modules/shared/valley.py:230
+shared,POST,/valley/orders/{order_id}/pepitas/grants,grant_pepitas,order_id:UUID;body:ValleyPepitaGrant;actor:Actor;x_idempotency_key:str | None,pepitas;customer_user_id;merchant_gold_ledger_id;note,,modules/shared/valley.py:263
+shared,POST,/valley/checkout/discount-options,valley_stock_discount_options,body:ValleyStockDiscountRequest,catalog_product_id;price_brl;user_pepitas_balance,,modules/shared/valley.py:323
+shared,POST,/valley/checkout/discount-quotes,valley_stock_discount_quote,body:ValleyStockDiscountQuoteRequest;actor:Actor;x_idempotency_key:str | None,,,modules/shared/valley.py:355
+stock,POST,/calculations/unit-conversion,calculate_unit_conversion,body:UnitConversionRequest;x_actor_user_id:str,quantity;multiplier;divisor;precision;rounding_mode;source_dimension;target_dimension;effective_from;effective_to;approved;density,,modules/stock/main.py:29

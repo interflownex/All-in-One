@@ -358,18 +358,6 @@
       ],
       "special_handling": ["revisao humana obrigatoria", "nao exportar prontuario de terceiros"]
     },
-    "vision": {
-      "risk": "critical",
-      "rights": [
-        "acesso",
-        "correcao",
-        "portabilidade",
-        "anonimizacao",
-        "revogacao de consentimento",
-        "exclusao quando legalmente permitida"
-      ],
-      "special_handling": ["descartar biometria bruta", "usar hashes e embeddings minimizados"]
-    },
     "legal": {
       "risk": "high",
       "rights": [

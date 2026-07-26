@@ -1,7 +1,7 @@
 {
   "version": 1,
   "counts": {
-    "migrations": 29,
+    "migrations": 30,
     "schemas": 32,
     "tables": 164,
     "fields": 2302,
@@ -17,30 +17,30 @@
     "endpoints": 112,
     "endpoints_with_response_model": 8,
     "api_model_fields": 150,
-    "ui_candidates": 786,
-    "ui_bindings_probable": 751,
-    "ui_bindings_unproven": 35,
-    "ui_surfaces": 272,
-    "ui_forms": 128,
-    "ui_actions": 979,
+    "ui_candidates": 527,
+    "ui_bindings_probable": 404,
+    "ui_bindings_unproven": 123,
+    "ui_surfaces": 263,
+    "ui_forms": 124,
+    "ui_actions": 946,
     "ui_actions_incompatible": 0,
-    "ui_actions_without_frontend_permission_gate": 576,
-    "permission_operations": 794,
+    "ui_actions_without_frontend_permission_gate": 556,
+    "permission_operations": 767,
     "permission_horizontal_read_gaps": 0,
-    "permission_operations_with_test_candidates": 129,
-    "test_functions": 537,
-    "tests_with_assertions": 496,
-    "tests_with_http_calls": 204,
-    "test_functions_in_execution_reports": 512,
-    "test_functions_passed": 479,
+    "permission_operations_with_test_candidates": 123,
+    "test_functions": 573,
+    "tests_with_assertions": 527,
+    "tests_with_http_calls": 212,
+    "test_functions_in_execution_reports": 502,
+    "test_functions_passed": 470,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
-    "logical_entities": 120,
+    "logical_entities": 116,
     "logical_without_physical_table": 0,
     "logical_without_ui_surface": 1,
-    "event_transitions": 194,
-    "unique_events": 187,
+    "event_transitions": 187,
+    "unique_events": 180,
     "sensitive_candidates": 520,
     "dynamic_form_entities_proposed": 15,
     "measurement_entities_proposed": 6,
@@ -53,8 +53,15 @@
     {
       "module": "identity",
       "entity": "users",
-      "required_fields": ["full_name", "email", "password_hash"],
-      "unique_fields": ["email", "document_cpf"],
+      "required_fields": [
+        "full_name",
+        "email",
+        "password_hash"
+      ],
+      "unique_fields": [
+        "email",
+        "document_cpf"
+      ],
       "monetary_fields": [],
       "initial_status": "PENDING_KYC",
       "sensitive": true,
@@ -64,12 +71,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:159"
+      "evidence": "modules/shared/domain_rules.py:250"
     },
     {
       "module": "identity",
       "entity": "documents",
-      "required_fields": ["document_type", "document_number_hash", "storage_key"],
+      "required_fields": [
+        "document_type",
+        "document_number_hash",
+        "storage_key"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_review",
@@ -80,12 +91,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:179"
+      "evidence": "modules/shared/domain_rules.py:295"
     },
     {
       "module": "identity",
       "entity": "biometrics",
-      "required_fields": ["face_hash", "consent_recorded_at"],
+      "required_fields": [
+        "face_hash",
+        "consent_recorded_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "captured",
@@ -96,12 +110,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:188"
+      "evidence": "modules/shared/domain_rules.py:316"
     },
     {
       "module": "identity",
       "entity": "sessions",
-      "required_fields": ["token_hash", "device_fingerprint", "ip_address", "expires_at"],
+      "required_fields": [
+        "token_hash",
+        "device_fingerprint",
+        "ip_address",
+        "expires_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -112,12 +131,14 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:194"
+      "evidence": "modules/shared/domain_rules.py:322"
     },
     {
       "module": "identity",
       "entity": "identity_verifications",
-      "required_fields": ["verification_type"],
+      "required_fields": [
+        "verification_type"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "PROCESSING",
@@ -128,12 +149,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:202"
+      "evidence": "modules/shared/domain_rules.py:332"
     },
     {
       "module": "identity",
       "entity": "consent_records",
-      "required_fields": ["consent_type", "policy_version", "accepted_at"],
+      "required_fields": [
+        "consent_type",
+        "policy_version",
+        "accepted_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "accepted",
@@ -144,13 +169,20 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:211"
+      "evidence": "modules/shared/domain_rules.py:353"
     },
     {
       "module": "business",
       "entity": "companies",
-      "required_fields": ["cnpj", "root_cnpj", "legal_name", "legal_representative_user_id"],
-      "unique_fields": ["cnpj"],
+      "required_fields": [
+        "cnpj",
+        "root_cnpj",
+        "legal_name",
+        "legal_representative_user_id"
+      ],
+      "unique_fields": [
+        "cnpj"
+      ],
       "monetary_fields": [],
       "initial_status": "pending_validation",
       "sensitive": true,
@@ -160,7 +192,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:217"
+      "evidence": "modules/shared/domain_rules.py:359"
     },
     {
       "module": "business",
@@ -197,7 +229,10 @@
     {
       "module": "business",
       "entity": "user_company_memberships",
-      "required_fields": ["company_id", "role"],
+      "required_fields": [
+        "company_id",
+        "role"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "invited",
@@ -208,7 +243,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:224"
+      "evidence": "modules/shared/domain_rules.py:366"
     },
     {
       "module": "business",
@@ -224,7 +259,10 @@
         "source_resource_type"
       ],
       "unique_fields": [],
-      "monetary_fields": ["price_brl", "price_amount"],
+      "monetary_fields": [
+        "price_brl",
+        "price_amount"
+      ],
       "initial_status": "draft",
       "sensitive": false,
       "immutable": false,
@@ -233,13 +271,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:245"
+      "evidence": "modules/shared/domain_rules.py:387"
     },
     {
       "module": "permissions",
       "entity": "roles",
-      "required_fields": ["name"],
-      "unique_fields": ["name"],
+      "required_fields": [
+        "name"
+      ],
+      "unique_fields": [
+        "name"
+      ],
       "monetary_fields": [],
       "initial_status": "active",
       "sensitive": false,
@@ -249,7 +291,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:261"
+      "evidence": "modules/shared/domain_rules.py:403"
     },
     {
       "module": "permissions",
@@ -302,9 +344,14 @@
     {
       "module": "permissions",
       "entity": "approval_limits",
-      "required_fields": ["scope", "limit_brl"],
+      "required_fields": [
+        "scope",
+        "limit_brl"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["limit_brl"],
+      "monetary_fields": [
+        "limit_brl"
+      ],
       "initial_status": "active",
       "sensitive": false,
       "immutable": false,
@@ -313,12 +360,14 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:262"
+      "evidence": "modules/shared/domain_rules.py:404"
     },
     {
       "module": "finance",
       "entity": "wallets",
-      "required_fields": ["wallet_type"],
+      "required_fields": [
+        "wallet_type"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -329,14 +378,23 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:265"
+      "evidence": "modules/shared/domain_rules.py:407"
     },
     {
       "module": "finance",
       "entity": "ledger_entries",
-      "required_fields": ["wallet_id", "currency", "idempotency_key"],
-      "unique_fields": ["idempotency_key"],
-      "monetary_fields": ["amount_brl", "amount_nex"],
+      "required_fields": [
+        "wallet_id",
+        "currency",
+        "idempotency_key"
+      ],
+      "unique_fields": [
+        "idempotency_key"
+      ],
+      "monetary_fields": [
+        "amount_brl",
+        "amount_nex"
+      ],
       "initial_status": "posted",
       "sensitive": true,
       "immutable": true,
@@ -345,14 +403,20 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:266"
+      "evidence": "modules/shared/domain_rules.py:410"
     },
     {
       "module": "finance",
       "entity": "escrows",
-      "required_fields": ["wallet_id", "beneficiary_user_id", "amount_brl"],
+      "required_fields": [
+        "wallet_id",
+        "beneficiary_user_id",
+        "amount_brl"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["amount_brl"],
+      "monetary_fields": [
+        "amount_brl"
+      ],
       "initial_status": "created",
       "sensitive": true,
       "immutable": false,
@@ -361,14 +425,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:281"
+      "evidence": "modules/shared/domain_rules.py:425"
     },
     {
       "module": "finance",
       "entity": "splits",
       "required_fields": [],
       "unique_fields": [],
-      "monetary_fields": ["amount_brl"],
+      "monetary_fields": [
+        "amount_brl"
+      ],
       "initial_status": "draft",
       "sensitive": true,
       "immutable": false,
@@ -377,14 +443,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:294"
+      "evidence": "modules/shared/domain_rules.py:460"
     },
     {
       "module": "finance",
       "entity": "invoices",
       "required_fields": [],
       "unique_fields": [],
-      "monetary_fields": ["amount_brl"],
+      "monetary_fields": [
+        "amount_brl"
+      ],
       "initial_status": "draft",
       "sensitive": true,
       "immutable": false,
@@ -393,7 +461,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:295"
+      "evidence": "modules/shared/domain_rules.py:465"
     },
     {
       "module": "finance",
@@ -404,7 +472,9 @@
         "amount_gold_delta",
         "reference_type"
       ],
-      "unique_fields": ["idempotency_key"],
+      "unique_fields": [
+        "idempotency_key"
+      ],
       "monetary_fields": [],
       "initial_status": "posted",
       "sensitive": true,
@@ -414,12 +484,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:274"
+      "evidence": "modules/shared/domain_rules.py:418"
     },
     {
       "module": "marketplace",
       "entity": "stores",
-      "required_fields": ["company_id", "company_status", "name"],
+      "required_fields": [
+        "company_id",
+        "company_status",
+        "name"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_validation",
@@ -430,14 +504,24 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:296"
+      "evidence": "modules/shared/domain_rules.py:470"
     },
     {
       "module": "marketplace",
       "entity": "products",
-      "required_fields": ["store_id", "sku", "name", "price_brl", "stock_location_type"],
-      "unique_fields": ["sku"],
-      "monetary_fields": ["price_brl"],
+      "required_fields": [
+        "store_id",
+        "sku",
+        "name",
+        "price_brl",
+        "stock_location_type"
+      ],
+      "unique_fields": [
+        "sku"
+      ],
+      "monetary_fields": [
+        "price_brl"
+      ],
       "initial_status": "draft",
       "sensitive": false,
       "immutable": false,
@@ -446,7 +530,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:302"
+      "evidence": "modules/shared/domain_rules.py:476"
     },
     {
       "module": "marketplace",
@@ -467,9 +551,13 @@
     {
       "module": "marketplace",
       "entity": "orders",
-      "required_fields": ["total_brl"],
+      "required_fields": [
+        "total_brl"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["total_brl"],
+      "monetary_fields": [
+        "total_brl"
+      ],
       "initial_status": "created",
       "sensitive": false,
       "immutable": false,
@@ -478,12 +566,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:309"
+      "evidence": "modules/shared/domain_rules.py:483"
     },
     {
       "module": "marketplace",
       "entity": "reviews",
-      "required_fields": ["order_id", "rating"],
+      "required_fields": [
+        "order_id",
+        "rating"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_review",
@@ -494,12 +585,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:320"
+      "evidence": "modules/shared/domain_rules.py:504"
     },
     {
       "module": "marketplace",
       "entity": "disputes",
-      "required_fields": ["order_id", "case_type", "message"],
+      "required_fields": [
+        "order_id",
+        "case_type",
+        "message"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "open",
@@ -510,12 +605,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:342"
+      "evidence": "modules/shared/domain_rules.py:526"
     },
     {
       "module": "marketplace",
       "entity": "pepita_grants",
-      "required_fields": ["order_id", "customer_user_id", "pepitas", "merchant_gold_ledger_id"],
+      "required_fields": [
+        "order_id",
+        "customer_user_id",
+        "pepitas",
+        "merchant_gold_ledger_id"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "posted",
@@ -526,12 +626,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:389"
+      "evidence": "modules/shared/domain_rules.py:593"
     },
     {
       "module": "stock",
       "entity": "suppliers",
-      "required_fields": ["company_id", "company_status"],
+      "required_fields": [
+        "company_id",
+        "company_status"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_validation",
@@ -542,14 +645,23 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:352"
+      "evidence": "modules/shared/domain_rules.py:554"
     },
     {
       "module": "stock",
       "entity": "catalog_products",
-      "required_fields": ["supplier_id", "external_sku", "name", "list_price_brl"],
-      "unique_fields": ["external_sku"],
-      "monetary_fields": ["list_price_brl"],
+      "required_fields": [
+        "supplier_id",
+        "external_sku",
+        "name",
+        "list_price_brl"
+      ],
+      "unique_fields": [
+        "external_sku"
+      ],
+      "monetary_fields": [
+        "list_price_brl"
+      ],
       "initial_status": "draft",
       "sensitive": false,
       "immutable": false,
@@ -558,7 +670,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:355"
+      "evidence": "modules/shared/domain_rules.py:559"
     },
     {
       "module": "stock",
@@ -579,9 +691,17 @@
     {
       "module": "stock",
       "entity": "supplier_orders",
-      "required_fields": ["supplier_id", "catalog_product_id", "external_order_id"],
-      "unique_fields": ["external_order_id"],
-      "monetary_fields": ["cost_brl"],
+      "required_fields": [
+        "supplier_id",
+        "catalog_product_id",
+        "external_order_id"
+      ],
+      "unique_fields": [
+        "external_order_id"
+      ],
+      "monetary_fields": [
+        "cost_brl"
+      ],
       "initial_status": "created",
       "sensitive": false,
       "immutable": false,
@@ -590,14 +710,22 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:361"
+      "evidence": "modules/shared/domain_rules.py:565"
     },
     {
       "module": "stock",
       "entity": "discount_quotes",
-      "required_fields": ["catalog_product_id", "selected_percent", "pepitas_required"],
+      "required_fields": [
+        "catalog_product_id",
+        "selected_percent",
+        "pepitas_required"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["original_price_brl", "discount_brl", "final_price_brl"],
+      "monetary_fields": [
+        "original_price_brl",
+        "discount_brl",
+        "final_price_brl"
+      ],
       "initial_status": "quoted",
       "sensitive": false,
       "immutable": true,
@@ -606,14 +734,20 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:394"
+      "evidence": "modules/shared/domain_rules.py:598"
     },
     {
       "module": "delivery",
       "entity": "delivery_requests",
-      "required_fields": ["service_type", "origin", "destination"],
+      "required_fields": [
+        "service_type",
+        "origin",
+        "destination"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["quoted_brl"],
+      "monetary_fields": [
+        "quoted_brl"
+      ],
       "initial_status": "created",
       "sensitive": false,
       "immutable": false,
@@ -622,7 +756,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:400"
+      "evidence": "modules/shared/domain_rules.py:604"
     },
     {
       "module": "delivery",
@@ -659,8 +793,15 @@
     {
       "module": "delivery",
       "entity": "proofs",
-      "required_fields": ["delivery_request_id", "file_sha256", "storage_key", "captured_at"],
-      "unique_fields": ["file_sha256"],
+      "required_fields": [
+        "delivery_request_id",
+        "file_sha256",
+        "storage_key",
+        "captured_at"
+      ],
+      "unique_fields": [
+        "file_sha256"
+      ],
       "monetary_fields": [],
       "initial_status": "recorded",
       "sensitive": true,
@@ -670,7 +811,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:412"
+      "evidence": "modules/shared/domain_rules.py:628"
     },
     {
       "module": "delivery",
@@ -691,7 +832,11 @@
     {
       "module": "riders",
       "entity": "rider_profiles",
-      "required_fields": ["cnh_number_hash", "cnh_category", "wallet_id"],
+      "required_fields": [
+        "cnh_number_hash",
+        "cnh_category",
+        "wallet_id"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_documents",
@@ -702,7 +847,7 @@
       "persistence_decision": "typed_alias",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:419"
+      "evidence": "modules/shared/domain_rules.py:635"
     },
     {
       "module": "riders",
@@ -723,7 +868,11 @@
     {
       "module": "riders",
       "entity": "vehicles",
-      "required_fields": ["rider_profile_id", "type", "license_plate"],
+      "required_fields": [
+        "rider_profile_id",
+        "type",
+        "license_plate"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_review",
@@ -734,7 +883,7 @@
       "persistence_decision": "typed_alias",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:425"
+      "evidence": "modules/shared/domain_rules.py:641"
     },
     {
       "module": "riders",
@@ -755,7 +904,9 @@
     {
       "module": "services",
       "entity": "providers",
-      "required_fields": ["category"],
+      "required_fields": [
+        "category"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_review",
@@ -766,7 +917,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:428"
+      "evidence": "modules/shared/domain_rules.py:646"
     },
     {
       "module": "services",
@@ -803,9 +954,14 @@
     {
       "module": "services",
       "entity": "service_contracts",
-      "required_fields": ["visit_price_brl"],
+      "required_fields": [
+        "visit_price_brl"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["visit_price_brl", "contracted_price_brl"],
+      "monetary_fields": [
+        "visit_price_brl",
+        "contracted_price_brl"
+      ],
       "initial_status": "draft",
       "sensitive": false,
       "immutable": false,
@@ -814,7 +970,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:431"
+      "evidence": "modules/shared/domain_rules.py:652"
     },
     {
       "module": "services",
@@ -835,9 +991,15 @@
     {
       "module": "mobility",
       "entity": "rides",
-      "required_fields": ["origin", "destination", "vehicle_type"],
+      "required_fields": [
+        "origin",
+        "destination",
+        "vehicle_type"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["fare_brl"],
+      "monetary_fields": [
+        "fare_brl"
+      ],
       "initial_status": "requested",
       "sensitive": false,
       "immutable": false,
@@ -846,7 +1008,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:441"
+      "evidence": "modules/shared/domain_rules.py:672"
     },
     {
       "module": "mobility",
@@ -868,7 +1030,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:452"
+      "evidence": "modules/shared/domain_rules.py:693"
     },
     {
       "module": "mobility",
@@ -889,9 +1051,18 @@
     {
       "module": "mobility",
       "entity": "tickets",
-      "required_fields": ["route_code", "amount_brl", "qr_token_hash", "nfc_token_hash"],
-      "unique_fields": ["qr_token_hash"],
-      "monetary_fields": ["amount_brl"],
+      "required_fields": [
+        "route_code",
+        "amount_brl",
+        "qr_token_hash",
+        "nfc_token_hash"
+      ],
+      "unique_fields": [
+        "qr_token_hash"
+      ],
+      "monetary_fields": [
+        "amount_brl"
+      ],
       "initial_status": "active",
       "sensitive": true,
       "immutable": false,
@@ -900,14 +1071,25 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:458"
+      "evidence": "modules/shared/domain_rules.py:699"
     },
     {
       "module": "mobility",
       "entity": "fare_rules",
-      "required_fields": ["rule_name", "base_fare_brl", "per_km_brl", "vehicle_type"],
-      "unique_fields": ["rule_name"],
-      "monetary_fields": ["base_fare_brl", "per_km_brl", "minimum_fare_brl"],
+      "required_fields": [
+        "rule_name",
+        "base_fare_brl",
+        "per_km_brl",
+        "vehicle_type"
+      ],
+      "unique_fields": [
+        "rule_name"
+      ],
+      "monetary_fields": [
+        "base_fare_brl",
+        "per_km_brl",
+        "minimum_fare_brl"
+      ],
       "initial_status": "active",
       "sensitive": false,
       "immutable": true,
@@ -916,12 +1098,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:466"
+      "evidence": "modules/shared/domain_rules.py:711"
     },
     {
       "module": "jobs",
       "entity": "resumes",
-      "required_fields": ["headline", "recruiter_visibility"],
+      "required_fields": [
+        "headline",
+        "recruiter_visibility"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -932,12 +1117,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:473"
+      "evidence": "modules/shared/domain_rules.py:718"
     },
     {
       "module": "jobs",
       "entity": "employment_records",
-      "required_fields": ["resume_id", "source_type", "employer_name", "started_on"],
+      "required_fields": [
+        "resume_id",
+        "source_type",
+        "employer_name",
+        "started_on"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -948,7 +1138,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:478"
+      "evidence": "modules/shared/domain_rules.py:723"
     },
     {
       "module": "jobs",
@@ -960,7 +1150,9 @@
         "evidence_status",
         "official_verification_status"
       ],
-      "unique_fields": ["sha256"],
+      "unique_fields": [
+        "sha256"
+      ],
       "monetary_fields": [],
       "initial_status": "imported",
       "sensitive": true,
@@ -970,12 +1162,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:483"
+      "evidence": "modules/shared/domain_rules.py:728"
     },
     {
       "module": "jobs",
       "entity": "job_postings",
-      "required_fields": ["company_id", "company_status", "title", "description"],
+      "required_fields": [
+        "company_id",
+        "company_status",
+        "title",
+        "description"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -986,12 +1183,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:490"
+      "evidence": "modules/shared/domain_rules.py:741"
     },
     {
       "module": "jobs",
       "entity": "applications",
-      "required_fields": ["job_posting_id", "resume_id"],
+      "required_fields": [
+        "job_posting_id",
+        "resume_id"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "submitted",
@@ -1002,12 +1202,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:498"
+      "evidence": "modules/shared/domain_rules.py:761"
     },
     {
       "module": "jobs",
       "entity": "resume_access_logs",
-      "required_fields": ["resume_id", "business_id", "purpose"],
+      "required_fields": [
+        "resume_id",
+        "business_id",
+        "purpose"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "recorded",
@@ -1018,12 +1222,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:510"
+      "evidence": "modules/shared/domain_rules.py:801"
     },
     {
       "module": "erp",
       "entity": "accounts",
-      "required_fields": ["account_code", "name"],
+      "required_fields": [
+        "account_code",
+        "name"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1034,14 +1241,21 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:516"
+      "evidence": "modules/shared/domain_rules.py:807"
     },
     {
       "module": "erp",
       "entity": "payables",
-      "required_fields": ["supplier_name", "due_at", "amount_brl", "cost_center_id"],
+      "required_fields": [
+        "supplier_name",
+        "due_at",
+        "amount_brl",
+        "cost_center_id"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["amount_brl"],
+      "monetary_fields": [
+        "amount_brl"
+      ],
       "initial_status": "open",
       "sensitive": true,
       "immutable": false,
@@ -1050,14 +1264,21 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:526"
+      "evidence": "modules/shared/domain_rules.py:817"
     },
     {
       "module": "erp",
       "entity": "receivables",
-      "required_fields": ["customer_name", "due_at", "amount_brl", "account_id"],
+      "required_fields": [
+        "customer_name",
+        "due_at",
+        "amount_brl",
+        "account_id"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["amount_brl"],
+      "monetary_fields": [
+        "amount_brl"
+      ],
       "initial_status": "issued",
       "sensitive": true,
       "immutable": false,
@@ -1066,12 +1287,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:546"
+      "evidence": "modules/shared/domain_rules.py:837"
     },
     {
       "module": "erp",
       "entity": "cost_centers",
-      "required_fields": ["cost_center_code", "name"],
+      "required_fields": [
+        "cost_center_code",
+        "name"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1082,12 +1306,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:521"
+      "evidence": "modules/shared/domain_rules.py:812"
     },
     {
       "module": "erp",
       "entity": "fiscal_documents",
-      "required_fields": ["document_type", "amount_brl"],
+      "required_fields": [
+        "document_type",
+        "amount_brl"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1098,12 +1325,14 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:566"
+      "evidence": "modules/shared/domain_rules.py:857"
     },
     {
       "module": "wms",
       "entity": "warehouses",
-      "required_fields": ["name"],
+      "required_fields": [
+        "name"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1114,12 +1343,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:571"
+      "evidence": "modules/shared/domain_rules.py:862"
     },
     {
       "module": "wms",
       "entity": "bins",
-      "required_fields": ["warehouse_id", "code"],
+      "required_fields": [
+        "warehouse_id",
+        "code"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "active",
@@ -1130,12 +1362,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:576"
+      "evidence": "modules/shared/domain_rules.py:867"
     },
     {
       "module": "wms",
       "entity": "inventory",
-      "required_fields": ["warehouse_id", "sku", "quantity", "received_at"],
+      "required_fields": [
+        "warehouse_id",
+        "sku",
+        "quantity",
+        "received_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "received",
@@ -1146,12 +1383,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:581"
+      "evidence": "modules/shared/domain_rules.py:872"
     },
     {
       "module": "wms",
       "entity": "picking_waves",
-      "required_fields": ["warehouse_id", "order_reference", "sku", "quantity"],
+      "required_fields": [
+        "warehouse_id",
+        "order_reference",
+        "sku",
+        "quantity"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "open",
@@ -1162,12 +1404,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:597"
+      "evidence": "modules/shared/domain_rules.py:888"
     },
     {
       "module": "wms",
       "entity": "shipments",
-      "required_fields": ["warehouse_id", "picking_wave_id", "carrier_reference"],
+      "required_fields": [
+        "warehouse_id",
+        "picking_wave_id",
+        "carrier_reference"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "ready",
@@ -1178,12 +1424,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:615"
+      "evidence": "modules/shared/domain_rules.py:906"
     },
     {
       "module": "tms",
       "entity": "carriers",
-      "required_fields": ["name", "coverage"],
+      "required_fields": [
+        "name",
+        "coverage"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending_review",
@@ -1194,14 +1443,22 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:628"
+      "evidence": "modules/shared/domain_rules.py:919"
     },
     {
       "module": "tms",
       "entity": "freights",
-      "required_fields": ["carrier_id", "route_id", "freight_brl", "scheduled_at"],
+      "required_fields": [
+        "carrier_id",
+        "route_id",
+        "freight_brl",
+        "scheduled_at"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["freight_brl", "toll_brl"],
+      "monetary_fields": [
+        "freight_brl",
+        "toll_brl"
+      ],
       "initial_status": "quoted",
       "sensitive": false,
       "immutable": false,
@@ -1210,12 +1467,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:644"
+      "evidence": "modules/shared/domain_rules.py:935"
     },
     {
       "module": "tms",
       "entity": "routes",
-      "required_fields": ["origin", "destination", "distance_km", "eta_minutes"],
+      "required_fields": [
+        "origin",
+        "destination",
+        "distance_km",
+        "eta_minutes"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "planned",
@@ -1226,12 +1488,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:633"
+      "evidence": "modules/shared/domain_rules.py:924"
     },
     {
       "module": "tms",
       "entity": "proofs_of_delivery",
-      "required_fields": ["freight_id", "file_sha256", "storage_key", "delivered_at"],
+      "required_fields": [
+        "freight_id",
+        "file_sha256",
+        "storage_key",
+        "delivered_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "recorded",
@@ -1242,12 +1509,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:670"
+      "evidence": "modules/shared/domain_rules.py:961"
     },
     {
       "module": "tms",
       "entity": "freight_audits",
-      "required_fields": ["freight_id", "audit_result", "audited_at"],
+      "required_fields": [
+        "freight_id",
+        "audit_result",
+        "audited_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "reviewed",
@@ -1258,12 +1529,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:676"
+      "evidence": "modules/shared/domain_rules.py:967"
     },
     {
       "module": "crm",
       "entity": "leads",
-      "required_fields": ["name", "source"],
+      "required_fields": [
+        "name",
+        "source"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "new",
@@ -1274,14 +1548,20 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:690"
+      "evidence": "modules/shared/domain_rules.py:981"
     },
     {
       "module": "crm",
       "entity": "opportunities",
-      "required_fields": ["lead_id", "title", "expected_value_brl"],
+      "required_fields": [
+        "lead_id",
+        "title",
+        "expected_value_brl"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["expected_value_brl"],
+      "monetary_fields": [
+        "expected_value_brl"
+      ],
       "initial_status": "open",
       "sensitive": true,
       "immutable": false,
@@ -1290,12 +1570,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:707"
+      "evidence": "modules/shared/domain_rules.py:998"
     },
     {
       "module": "crm",
       "entity": "activities",
-      "required_fields": ["lead_id", "activity_type", "scheduled_at"],
+      "required_fields": [
+        "lead_id",
+        "activity_type",
+        "scheduled_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "scheduled",
@@ -1306,12 +1590,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:734"
+      "evidence": "modules/shared/domain_rules.py:1025"
     },
     {
       "module": "crm",
       "entity": "campaigns",
-      "required_fields": ["campaign_key", "channel"],
+      "required_fields": [
+        "campaign_key",
+        "channel"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1322,7 +1609,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:746"
+      "evidence": "modules/shared/domain_rules.py:1037"
     },
     {
       "module": "bpm",
@@ -1343,7 +1630,11 @@
     {
       "module": "bpm",
       "entity": "workflow_instances",
-      "required_fields": ["process_key", "sla_policy_id", "started_at"],
+      "required_fields": [
+        "process_key",
+        "sla_policy_id",
+        "started_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "running",
@@ -1354,12 +1645,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:764"
+      "evidence": "modules/shared/domain_rules.py:1055"
     },
     {
       "module": "bpm",
       "entity": "tasks",
-      "required_fields": ["workflow_instance_id", "assignee_user_id", "due_at", "sla_policy_id"],
+      "required_fields": [
+        "workflow_instance_id",
+        "assignee_user_id",
+        "due_at",
+        "sla_policy_id"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "open",
@@ -1370,13 +1666,19 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:782"
+      "evidence": "modules/shared/domain_rules.py:1073"
     },
     {
       "module": "bpm",
       "entity": "sla_policies",
-      "required_fields": ["policy_key", "response_minutes", "escalation_role"],
-      "unique_fields": ["policy_key"],
+      "required_fields": [
+        "policy_key",
+        "response_minutes",
+        "escalation_role"
+      ],
+      "unique_fields": [
+        "policy_key"
+      ],
       "monetary_fields": [],
       "initial_status": "active",
       "sensitive": false,
@@ -1386,7 +1688,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:800"
+      "evidence": "modules/shared/domain_rules.py:1091"
     },
     {
       "module": "document",
@@ -1426,7 +1728,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:806"
+      "evidence": "modules/shared/domain_rules.py:1097"
     },
     {
       "module": "document",
@@ -1448,7 +1750,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:819"
+      "evidence": "modules/shared/domain_rules.py:1110"
     },
     {
       "module": "document",
@@ -1469,7 +1771,11 @@
     {
       "module": "hr",
       "entity": "employees",
-      "required_fields": ["company_id", "employment_type", "admission_date"],
+      "required_fields": [
+        "company_id",
+        "employment_type",
+        "admission_date"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1480,14 +1786,21 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:830"
+      "evidence": "modules/shared/domain_rules.py:1121"
     },
     {
       "module": "hr",
       "entity": "payroll_runs",
-      "required_fields": ["company_id", "period", "gross_amount_brl"],
+      "required_fields": [
+        "company_id",
+        "period",
+        "gross_amount_brl"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["gross_amount_brl", "net_amount_brl"],
+      "monetary_fields": [
+        "gross_amount_brl",
+        "net_amount_brl"
+      ],
       "initial_status": "open",
       "sensitive": true,
       "immutable": false,
@@ -1496,7 +1809,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:835"
+      "evidence": "modules/shared/domain_rules.py:1126"
     },
     {
       "module": "hr",
@@ -1517,7 +1830,12 @@
     {
       "module": "hr",
       "entity": "courses",
-      "required_fields": ["employee_id", "course_code", "title", "due_at"],
+      "required_fields": [
+        "employee_id",
+        "course_code",
+        "title",
+        "due_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "assigned",
@@ -1528,12 +1846,14 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:850"
+      "evidence": "modules/shared/domain_rules.py:1141"
     },
     {
       "module": "hr",
       "entity": "occupational_records",
-      "required_fields": ["employee_id"],
+      "required_fields": [
+        "employee_id"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1544,12 +1864,14 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:862"
+      "evidence": "modules/shared/domain_rules.py:1153"
     },
     {
       "module": "health",
       "entity": "patients",
-      "required_fields": ["health_identifier"],
+      "required_fields": [
+        "health_identifier"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1560,12 +1882,14 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:863"
+      "evidence": "modules/shared/domain_rules.py:1158"
     },
     {
       "module": "health",
       "entity": "appointments",
-      "required_fields": ["scheduled_at"],
+      "required_fields": [
+        "scheduled_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1576,12 +1900,14 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:864"
+      "evidence": "modules/shared/domain_rules.py:1159"
     },
     {
       "module": "health",
       "entity": "medical_records",
-      "required_fields": ["patient_id"],
+      "required_fields": [
+        "patient_id"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1592,12 +1918,14 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:865"
+      "evidence": "modules/shared/domain_rules.py:1164"
     },
     {
       "module": "health",
       "entity": "prescriptions",
-      "required_fields": ["patient_id"],
+      "required_fields": [
+        "patient_id"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1608,12 +1936,14 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:866"
+      "evidence": "modules/shared/domain_rules.py:1169"
     },
     {
       "module": "health",
       "entity": "beds",
-      "required_fields": ["unit"],
+      "required_fields": [
+        "unit"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1624,78 +1954,20 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:867"
-    },
-    {
-      "module": "vision",
-      "entity": "devices",
-      "required_fields": ["device_fingerprint"],
-      "unique_fields": [],
-      "monetary_fields": [],
-      "initial_status": "draft",
-      "sensitive": true,
-      "immutable": false,
-      "has_rule_override": true,
-      "physical_storage_target": "vision.devices",
-      "persistence_decision": "typed_table",
-      "has_physical_table": true,
-      "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:868"
-    },
-    {
-      "module": "vision",
-      "entity": "streams",
-      "required_fields": ["device_id", "stream_url_hash", "protocol", "started_at"],
-      "unique_fields": [],
-      "monetary_fields": [],
-      "initial_status": "active",
-      "sensitive": true,
-      "immutable": false,
-      "has_rule_override": true,
-      "physical_storage_target": "vision.streams",
-      "persistence_decision": "typed_table",
-      "has_physical_table": true,
-      "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:873"
-    },
-    {
-      "module": "vision",
-      "entity": "recordings",
-      "required_fields": ["stream_id", "storage_key", "file_sha256", "started_at"],
-      "unique_fields": [],
-      "monetary_fields": [],
-      "initial_status": "recorded",
-      "sensitive": true,
-      "immutable": true,
-      "has_rule_override": true,
-      "physical_storage_target": "vision.recordings",
-      "persistence_decision": "typed_table",
-      "has_physical_table": true,
-      "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:894"
-    },
-    {
-      "module": "vision",
-      "entity": "motion_alerts",
-      "required_fields": ["device_id", "stream_id", "detected_at", "confidence_score"],
-      "unique_fields": [],
-      "monetary_fields": [],
-      "initial_status": "detected",
-      "sensitive": true,
-      "immutable": false,
-      "has_rule_override": true,
-      "physical_storage_target": "vision.motion_alerts",
-      "persistence_decision": "typed_table",
-      "has_physical_table": true,
-      "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:900"
+      "evidence": "modules/shared/domain_rules.py:1172"
     },
     {
       "module": "legal",
       "entity": "cases",
-      "required_fields": ["case_number", "case_type", "opened_at"],
+      "required_fields": [
+        "case_number",
+        "case_type",
+        "opened_at"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["risk_brl"],
+      "monetary_fields": [
+        "risk_brl"
+      ],
       "initial_status": "draft",
       "sensitive": true,
       "immutable": false,
@@ -1704,12 +1976,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:921"
+      "evidence": "modules/shared/domain_rules.py:1175"
     },
     {
       "module": "legal",
       "entity": "deadlines",
-      "required_fields": ["case_id", "deadline_type", "due_at"],
+      "required_fields": [
+        "case_id",
+        "deadline_type",
+        "due_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "pending",
@@ -1720,12 +1996,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:927"
+      "evidence": "modules/shared/domain_rules.py:1181"
     },
     {
       "module": "legal",
       "entity": "hearings",
-      "required_fields": ["case_id", "scheduled_at"],
+      "required_fields": [
+        "case_id",
+        "scheduled_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "scheduled",
@@ -1736,7 +2015,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:946"
+      "evidence": "modules/shared/domain_rules.py:1200"
     },
     {
       "module": "legal",
@@ -1757,7 +2036,10 @@
     {
       "module": "property",
       "entity": "properties",
-      "required_fields": ["address", "property_type"],
+      "required_fields": [
+        "address",
+        "property_type"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1768,7 +2050,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:951"
+      "evidence": "modules/shared/domain_rules.py:1205"
     },
     {
       "module": "property",
@@ -1789,9 +2071,17 @@
     {
       "module": "property",
       "entity": "leases",
-      "required_fields": ["property_id", "tenant_user_id", "starts_at", "rent_amount_brl"],
+      "required_fields": [
+        "property_id",
+        "tenant_user_id",
+        "starts_at",
+        "rent_amount_brl"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["rent_amount_brl", "deposit_amount_brl"],
+      "monetary_fields": [
+        "rent_amount_brl",
+        "deposit_amount_brl"
+      ],
       "initial_status": "draft",
       "sensitive": false,
       "immutable": false,
@@ -1800,7 +2090,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:955"
+      "evidence": "modules/shared/domain_rules.py:1209"
     },
     {
       "module": "property",
@@ -1821,9 +2111,15 @@
     {
       "module": "property",
       "entity": "maintenance_orders",
-      "required_fields": ["property_id", "issue_type", "requested_at"],
+      "required_fields": [
+        "property_id",
+        "issue_type",
+        "requested_at"
+      ],
       "unique_fields": [],
-      "monetary_fields": ["estimated_cost_brl"],
+      "monetary_fields": [
+        "estimated_cost_brl"
+      ],
       "initial_status": "requested",
       "sensitive": false,
       "immutable": false,
@@ -1832,12 +2128,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:976"
+      "evidence": "modules/shared/domain_rules.py:1230"
     },
     {
       "module": "bi",
       "entity": "datasets",
-      "required_fields": ["name", "source_module", "source_resource_type", "refresh_mode"],
+      "required_fields": [
+        "name",
+        "source_module",
+        "source_resource_type",
+        "refresh_mode"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1848,12 +2149,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:995"
+      "evidence": "modules/shared/domain_rules.py:1249"
     },
     {
       "module": "bi",
       "entity": "dashboards",
-      "required_fields": ["dataset_id", "name", "definition", "allowed_roles"],
+      "required_fields": [
+        "dataset_id",
+        "name",
+        "definition",
+        "allowed_roles"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1864,7 +2170,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:1013"
+      "evidence": "modules/shared/domain_rules.py:1267"
     },
     {
       "module": "bi",
@@ -1885,7 +2191,11 @@
     {
       "module": "bi",
       "entity": "exports",
-      "required_fields": ["dashboard_id", "export_format", "requested_at"],
+      "required_fields": [
+        "dashboard_id",
+        "export_format",
+        "requested_at"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "requested",
@@ -1896,12 +2206,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:1034"
+      "evidence": "modules/shared/domain_rules.py:1288"
     },
     {
       "module": "ai_core",
       "entity": "ai_memories",
-      "required_fields": ["memory_key", "summary"],
+      "required_fields": [
+        "memory_key",
+        "summary"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1912,12 +2225,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:1046"
+      "evidence": "modules/shared/domain_rules.py:1300"
     },
     {
       "module": "ai_core",
       "entity": "moderation_decisions",
-      "required_fields": ["module", "risk_score"],
+      "required_fields": [
+        "module",
+        "risk_score"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1928,7 +2244,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:1063"
+      "evidence": "modules/shared/domain_rules.py:1317"
     },
     {
       "module": "ai_core",
@@ -1943,7 +2259,9 @@
         "requested_at"
       ],
       "unique_fields": [],
-      "monetary_fields": ["estimated_cost_brl"],
+      "monetary_fields": [
+        "estimated_cost_brl"
+      ],
       "initial_status": "requested",
       "sensitive": true,
       "immutable": false,
@@ -1952,12 +2270,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:1068"
+      "evidence": "modules/shared/domain_rules.py:1322"
     },
     {
       "module": "api_hub",
       "entity": "api_clients",
-      "required_fields": ["client_name", "scopes"],
+      "required_fields": [
+        "client_name",
+        "scopes"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1968,12 +2289,17 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:1101"
+      "evidence": "modules/shared/domain_rules.py:1355"
     },
     {
       "module": "api_hub",
       "entity": "api_keys",
-      "required_fields": ["key_name", "key_hash", "key_hint", "scopes"],
+      "required_fields": [
+        "key_name",
+        "key_hash",
+        "key_hint",
+        "scopes"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -1984,12 +2310,16 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:1102"
+      "evidence": "modules/shared/domain_rules.py:1358"
     },
     {
       "module": "api_hub",
       "entity": "webhooks",
-      "required_fields": ["target_url", "event_patterns", "signing_secret_reference"],
+      "required_fields": [
+        "target_url",
+        "event_patterns",
+        "signing_secret_reference"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -2000,12 +2330,15 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:1103"
+      "evidence": "modules/shared/domain_rules.py:1363"
     },
     {
       "module": "api_hub",
       "entity": "integration_runs",
-      "required_fields": ["integration_type", "provider_name"],
+      "required_fields": [
+        "integration_type",
+        "provider_name"
+      ],
       "unique_fields": [],
       "monetary_fields": [],
       "initial_status": "draft",
@@ -2016,7 +2349,7 @@
       "persistence_decision": "typed_table",
       "has_physical_table": true,
       "has_ui_surface": true,
-      "evidence": "modules/shared/domain_rules.py:1104"
+      "evidence": "modules/shared/domain_rules.py:1368"
     }
   ]
 }

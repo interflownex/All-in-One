@@ -34,6 +34,18 @@ storage privado de documentos e configuracao GitOps com RPO/RTO, frequencia de
 backup, frequencia de teste de restore, validadores obrigatorios, evidencias
 aceitas e rollback por ativo.
 
+Comandos de referencia (execucao em ambiente isolado, nunca em producao sem aprovacao):
+
+- PostgreSQL: `pg_dump -Fc -h $HOST -U $USER -d $DB -f backup.dump` e restore com
+  `pg_restore -Fc -h $HOST -U $USER -d $DB backup.dump`.
+- MongoDB: `mongodump --uri=$URI --out=/tmp/mongodump-$(date +%Y%m%d)` e restore com
+  `mongorestore --uri=$URI /tmp/mongodump-<data>`.
+
+Metricas contratuais (extraidas do `backup_restore_plan.json`):
+
+- `rpo_minutes`: tempo maximo de perda de dados aceitavel por ativo.
+- `rto_minutes`: tempo maximo de recuperacao aceitavel por ativo.
+
 Regras obrigatorias:
 
 - Backup sem restore testado nao conta como gate de producao atendido.
@@ -43,8 +55,9 @@ Regras obrigatorias:
   payload sensivel; use hashes, contadores, IDs auditaveis e logs sanitizados.
 - PostgreSQL restaurado deve passar migrations repetiveis, triggers
   append-only, `audit.logs`, `audit.domain_events` e outbox antes de promover.
-- O exercicio DR trimestral deve comparar RPO/RTO observado com o contratado e
-  registrar acao corretiva quando houver desvio.
+- O exercicio DR trimestral (Drill de Restore) deve comparar RPO/RTO observado
+  com o contratado e registrar acao corretiva quando houver desvio.
+- Monitoramento de `health` de backup deve ser integrado ao runbook de incidentes.
 
 ## Validacao PostgreSQL Real
 

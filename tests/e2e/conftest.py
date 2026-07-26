@@ -806,7 +806,6 @@ def all_in_one_business_governance_live_server(tmp_path_factory):
     routes = [
         "/legal/resources/cases",
         "/property/resources/properties",
-        "/vision/resources/devices",
         "/ai_core/resources/moderation_decisions",
     ]
     try:

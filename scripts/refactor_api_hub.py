@@ -11,7 +11,7 @@ new_services = """MODULES = [
     "ai_core", "bi", "bpm", "business", "crm", "delivery", "document", "erp",
     "finance", "health", "hr", "identity", "jobs", "legal", "marketplace",
     "mobility", "permissions", "property", "riders", "services", "stock",
-    "tms", "vision", "wms"
+    "tms", "wms"
 ]
 
 SERVICES = {

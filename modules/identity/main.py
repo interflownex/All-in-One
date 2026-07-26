@@ -381,7 +381,7 @@ async def verify_mfa(
 @app.post("/kyc/ocr-validate", status_code=200)
 async def kyc_ocr_validate(request: Request, body: dict = Body(...)):
     """
-    Mock de Webhook do Google Vision (OCR) para validar documentos CNH/RG.
+    Mock de Webhook de OCR para validar documentos CNH/RG.
     Recebe um documento e retorna o texto extraído / pontuação de autenticidade.
     """
     record_id = body.get("record_id")
@@ -397,7 +397,7 @@ async def kyc_ocr_validate(request: Request, body: dict = Body(...)):
             "birth_date": "1990-01-01",
         },
         "authenticity_score": 0.98,
-        "source": "mock_google_vision",
+        "source": "mock_document_verification",
     }
 
 

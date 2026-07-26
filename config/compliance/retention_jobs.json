@@ -167,12 +167,6 @@
       "minimum_job": "legal_hold_reconciliation_daily",
       "evidence_domain": "health_privacy"
     },
-    "vision": {
-      "default_action": "delete_raw_recordings_after_short_ttl",
-      "legal_hold": ["security_incident", "investigation"],
-      "minimum_job": "deletion_worker_daily",
-      "evidence_domain": "vision_privacy"
-    },
     "legal": {
       "default_action": "retain_cases_by_mandate_and_legal_deadline",
       "legal_hold": ["legal_case", "mandate", "contract"],

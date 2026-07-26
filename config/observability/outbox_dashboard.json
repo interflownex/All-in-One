@@ -3,52 +3,71 @@
   "owner": "platform",
   "scope": "outbox-dispatcher",
   "dashboard": {
-    "title": "All-in-One Outbox Dispatcher",
-    "uid": "all-in-one-outbox-dispatcher",
-    "tags": ["all-in-one", "outbox", "rabbitmq", "postgresql"],
+    "title": "All-in-One - Outbox Dispatcher",
+    "uid": "outbox-dispatcher",
+    "tags": ["all-in-one", "outbox", "operations"],
     "timezone": "browser",
     "refresh": "30s",
+    "time": { "from": "now-6h", "to": "now" },
     "panels": [
       {
-        "title": "Eventos pendentes",
+        "title": "Pendentes",
         "type": "stat",
-        "expr": "all_in_one_outbox_pending",
         "unit": "short",
-        "thresholds": { "warning": 500, "critical": 1000 }
+        "thresholds": { "warning": 500, "critical": 1000 },
+        "targets": [{ "expr": "all_in_one_outbox_pending" }]
       },
       {
-        "title": "Eventos prontos para entrega",
+        "title": "Prontos para retry",
         "type": "stat",
-        "expr": "all_in_one_outbox_due",
         "unit": "short",
-        "thresholds": { "warning": 100, "critical": 500 }
+        "thresholds": { "warning": 100, "critical": 500 },
+        "targets": [{ "expr": "all_in_one_outbox_due" }]
       },
       {
-        "title": "Publicacoes confirmadas",
+        "title": "Publicados",
         "type": "timeseries",
-        "expr": "increase(all_in_one_outbox_published_total[5m])",
-        "unit": "ops"
+        "unit": "ops",
+        "targets": [{ "expr": "increase(all_in_one_outbox_published_total[5m])" }]
       },
       {
         "title": "Falhas retryable",
         "type": "timeseries",
-        "expr": "increase(all_in_one_outbox_failed_retryable_total[5m])",
         "unit": "ops",
-        "thresholds": { "warning": 1, "critical": 10 }
+        "thresholds": { "warning": 1, "critical": 10 },
+        "targets": [{ "expr": "increase(all_in_one_outbox_failed_retryable_total[5m])" }]
       },
       {
-        "title": "Maior contador de retry",
+        "title": "Maior retry observado",
         "type": "stat",
-        "expr": "all_in_one_outbox_max_retry_count",
         "unit": "short",
-        "thresholds": { "warning": 3, "critical": 5 }
+        "thresholds": { "warning": 3, "critical": 5 },
+        "targets": [{ "expr": "all_in_one_outbox_max_retry_count" }]
       },
       {
         "title": "Idade do pendente mais antigo",
         "type": "stat",
-        "expr": "all_in_one_outbox_oldest_pending_age_seconds",
         "unit": "seconds",
-        "thresholds": { "warning": 900, "critical": 1800 }
+        "thresholds": { "warning": 900, "critical": 1800 },
+        "targets": [{ "expr": "all_in_one_outbox_oldest_pending_age_seconds" }]
+      },
+      {
+        "title": "Tendencia do backlog",
+        "type": "timeseries",
+        "unit": "short",
+        "targets": [
+          { "expr": "all_in_one_outbox_pending" },
+          { "expr": "all_in_one_outbox_due" }
+        ]
+      },
+      {
+        "title": "Tendencia de publicacoes e falhas",
+        "type": "timeseries",
+        "unit": "ops",
+        "targets": [
+          { "expr": "increase(all_in_one_outbox_published_total[5m])" },
+          { "expr": "increase(all_in_one_outbox_failed_retryable_total[5m])" }
+        ]
       }
     ]
   }

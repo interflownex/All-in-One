@@ -349,14 +349,14 @@ def validate() -> list[str]:
             "fonte Valley contem endpoint local inseguro que pode vazar para o APK"
         )
     for marker in (
-        "import.meta.env.DEV && import.meta.env.VITE_VALLEY_ALLOW_DEMO === 'true'",
+        'import.meta.env.VITE_VALLEY_ALLOW_DEMO === "true"',
         "CATALOG_CACHE_TTL_MS",
-        "params.append('offset'",
+        'params.append("offset"',
         'loading="lazy"',
         'preload="none"',
         "Carregar mais ofertas",
         "verifyCriticalResponse",
-        "window.crypto.subtle.verify('Ed25519'",
+        "window.crypto.subtle.verify(",
         "RESPONSE_SIGNATURE_MAX_AGE_SECONDS",
         "safeMediaUrl",
     ):

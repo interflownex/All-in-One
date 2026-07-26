@@ -30,7 +30,6 @@ TARGET_IMAGES = [
     "services",
     "stock",
     "tms",
-    "vision",
     "wms",
     "outbox-dispatcher",
     "retention-worker",
