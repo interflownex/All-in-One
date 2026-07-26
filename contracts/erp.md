@@ -7,7 +7,6 @@
         ## Entidades
 
         - `accounts`
-
 - `payables`
 - `receivables`
 - `cost_centers`
@@ -16,7 +15,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -38,6 +36,7 @@
 - `POST /reject`
 - `POST /audit`
 
+
 ## Contas, pagamentos e conciliacao
 
 - `accounts` exige `account_code` e `name`, iniciando em `active` e emitindo `erp.account.created`.
@@ -47,10 +46,10 @@
 - `receivables` exige `customer_name`, `due_at`, `amount_brl` e `account_id`, iniciando em `issued` e emitindo `erp.receivable.created`.
 - A acao `receive` emite `erp.receivable.received`; `reconcile` exige papel aprovador, MFA e emite `erp.receivable.reconciled`.
 
+
         ## Eventos
 
         - `erp.account.created`
-
 - `erp.cost_center.created`
 - `erp.payable.created`
 - `erp.payment.approved`

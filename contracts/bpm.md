@@ -7,7 +7,6 @@
         ## Entidades
 
         - `processes`
-
 - `workflow_instances`
 - `tasks`
 - `sla_policies`
@@ -15,7 +14,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -37,6 +35,7 @@
 - `POST /reject`
 - `POST /audit`
 
+
 ## Timers, SLA e escalonamento
 
 - `sla_policies` exige `policy_key`, `response_minutes` e `escalation_role`, com status inicial `active`.
@@ -45,10 +44,10 @@
 - A acao `escalate` move tarefas para `escalated`, exige papel aprovador, MFA e emite `bpm.task.escalated`.
 - A acao `complete` move tarefas abertas, em progresso ou escaladas para `completed` e emite `bpm.task.completed`.
 
+
         ## Eventos
 
         - `bpm.process.started`
-
 - `bpm.task.created`
 - `bpm.task.escalated`
 - `bpm.task.completed`

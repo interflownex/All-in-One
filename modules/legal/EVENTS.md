@@ -3,7 +3,6 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `legal.case.created`
-
 - `legal.deadline.created`
 - `legal.deadline.alerted`
 - `legal.deadline.completed`

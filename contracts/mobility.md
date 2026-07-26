@@ -7,7 +7,6 @@
         ## Entidades
 
         - `rides`
-
 - `routes`
 - `stops`
 - `tickets`
@@ -16,7 +15,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -38,6 +36,7 @@
 - `POST /reject`
 - `POST /audit`
 
+
 ## ETA, NFC e tarifas
 
 - `routes` exige origem, destino, distancia, ETA e hash de rota para registrar `mobility.route.eta_quoted`.
@@ -45,10 +44,10 @@
 - `fare_rules` registra tarifas auditaveis append-only por tipo de veiculo e emite `mobility.fare_rule.published`.
 - ETA dinamico, NFC real e tarifas produtivas dependem de provider homologado; o runtime local guarda somente metadados e hashes operacionais.
 
+
         ## Eventos
 
         - `mobility.ride.requested`
-
 - `mobility.ride.accepted`
 - `mobility.ride.completed`
 - `mobility.route.eta_quoted`

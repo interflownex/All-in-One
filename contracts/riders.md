@@ -7,7 +7,6 @@
         ## Entidades
 
         - `rider_profiles`
-
 - `rider_documents`
 - `vehicles`
 - `rider_reviews`
@@ -15,7 +14,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -37,10 +35,10 @@
 - `POST /reject`
 - `POST /audit`
 
+
         ## Eventos
 
         - `rider.submitted`
-
 - `rider.approved`
 - `rider.rejected`
 - `rider.vehicle.approved`

@@ -3,7 +3,6 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `jobs.resume.created`
-
 - `jobs.resume.ctps_imported`
 - `jobs.employment.self_declared`
 - `jobs.resume_document.created`

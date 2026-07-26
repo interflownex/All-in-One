@@ -5,7 +5,6 @@
         ## Entidades planejadas
 
         - `jobs.resumes`
-
 - `jobs.employment_records`
 - `jobs.resume_documents`
 - `jobs.job_postings`
