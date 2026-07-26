@@ -100,7 +100,6 @@ MODULES = [
     "services",
     "stock",
     "tms",
-    "vision",
     "wms",
 ]
 

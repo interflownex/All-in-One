@@ -75,10 +75,6 @@ const RESOURCE_ALIASES: Record<string, string> = {
   "wms:pickingwaves": "picking_waves",
   "wms:shipments": "shipments",
   "wms:warehouses": "warehouses",
-  "vision:devices": "devices",
-  "vision:motionalerts": "motion_alerts",
-  "vision:recordings": "recordings",
-  "vision:streams": "streams",
 };
 
 const liveHeaders = () => ({
@@ -124,7 +120,6 @@ const approvalMessageForModule = (module: string) => {
   if (module === "hr") return "Registro HR aprovado no API Hub vivo.";
   if (module === "legal") return "Caso Legal aprovado no API Hub vivo.";
   if (module === "property") return "Ativo Property aprovado no API Hub vivo.";
-  if (module === "vision") return "Dispositivo Vision aprovado no API Hub vivo.";
   if (module === "ai_core") return "Decisao AI Core aprovada no API Hub vivo.";
   if (module === "api_hub") return "Cliente API Hub aprovado no API Hub vivo.";
   return "Registro operacional aprovado no API Hub vivo.";
@@ -296,7 +291,6 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
           "hr",
           "legal",
           "property",
-          "vision",
           "ai_core",
           "api_hub",
         ].includes(module)
@@ -345,9 +339,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
                             ? "Aprovar caso Legal"
                             : module === "property"
                               ? "Aprovar ativo Property"
-                              : module === "vision"
-                                ? "Aprovar dispositivo Vision"
-                                : module === "ai_core"
+                              : module === "ai_core"
                                   ? "Aprovar decisão AI Core"
                                   : module === "api_hub"
                                     ? "Aprovar cliente API Hub"

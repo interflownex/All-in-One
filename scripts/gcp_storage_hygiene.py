@@ -162,7 +162,6 @@ def clean_artifact_registry() -> None:
         "services",
         "stock",
         "tms",
-        "vision",
         "wms",
     ]
     for repo in repos:

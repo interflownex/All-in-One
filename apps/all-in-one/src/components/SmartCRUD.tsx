@@ -81,7 +81,6 @@ const LIVE_RESOURCE_ALIASES: Record<string, string> = {
   "hr:payrollruns": "payroll_runs",
   "hr:occupationalrecords": "occupational_records",
   "health:medicalrecords": "medical_records",
-  "vision:motionalerts": "motion_alerts",
   "legal:legalcontracts": "legal_contracts",
   "property:maintenanceorders": "maintenance_orders",
   "ai_core:aimemories": "ai_memories",

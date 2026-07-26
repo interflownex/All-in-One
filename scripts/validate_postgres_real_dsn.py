@@ -39,7 +39,6 @@ REQUIRED_SCHEMAS = {
     "fiscal",
     "hr",
     "health",
-    "vision",
     "legal",
     "property",
     "audit",
