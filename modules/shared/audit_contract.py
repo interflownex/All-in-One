@@ -5,6 +5,7 @@ from contextvars import ContextVar
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime, timedelta
 from hashlib import sha256
+from ipaddress import ip_address
 from typing import Any, Literal
 from uuid import uuid4
 
@@ -72,6 +73,17 @@ def sanitize_audit_value(value: Any) -> Any:
     return value
 
 
+def normalize_audit_ip(value: str | None) -> str | None:
+    """Retorna apenas endereços IPv4/IPv6 válidos para a coluna PostgreSQL INET."""
+    if not value:
+        return None
+    candidate = value.strip()
+    try:
+        return str(ip_address(candidate))
+    except ValueError:
+        return None
+
+
 def _changed_fields(before: Any, after: Any) -> list[str]:
     if not isinstance(before, dict) or not isinstance(after, dict):
         return []
@@ -126,7 +138,7 @@ def build_audit_record(
         "actor_role": ctx.actor_role,
         "session_id": ctx.session_id,
         "device_id": ctx.device_id,
-        "ip_address": ctx.ip_address,
+        "ip_address": normalize_audit_ip(ctx.ip_address),
         "user_agent": ctx.user_agent,
         "origin": ctx.origin,
         "channel": ctx.channel,
@@ -241,7 +253,7 @@ def insert_postgres_audit(
             correlation_id, causation_id, occurred_at, result, error_detail, "authorization", approval_id,
             approved_by, exported, printed, shared, previous_hash, row_hash, retention_until, metadata, created_by)
            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                   %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                   %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                    %s, %s, %s, %s) RETURNING *""",
         (
             record["id"],
