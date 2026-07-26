@@ -1,4 +1,4 @@
-name: Diagnose PR34 Senior Fix
+name: Apply PR34 Senior Fix
 
 on:
   pull_request:
@@ -9,10 +9,10 @@ on:
       - "scripts/.pr34_payload/**"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  diagnose:
+  apply:
     if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
@@ -25,26 +25,20 @@ jobs:
           python-version: "3.12"
       - name: Install validation dependencies
         run: pip install -r requirements-dev.txt
-      - name: Execute repair script in diagnostic mode
+      - name: Apply and validate consolidated repair
         shell: bash
         run: |
-          set +e
-          mkdir -p reports/ci
-          python scripts/apply_pr34_senior_fix.py > reports/ci/pr34-senior-fix-diagnostic.txt 2>&1
-          status=$?
-          {
-            echo
-            echo "SCRIPT_EXIT=$status"
-            echo "GIT_STATUS:"
-            git status --short
-          } >> reports/ci/pr34-senior-fix-diagnostic.txt
-          cat reports/ci/pr34-senior-fix-diagnostic.txt
-          exit 0
-      - name: Upload senior fix diagnostic
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pr34-senior-fix-diagnostic-${{ github.run_id }}
-          path: reports/ci/pr34-senior-fix-diagnostic.txt
-          if-no-files-found: error
-          retention-days: 2
+          set -Eeuo pipefail
+          python scripts/apply_pr34_senior_fix.py
+          rm -f reports/ci/fix-pr34.patch.gz reports/ci/fix-pr34.b64.00
+          rm -f reports/ci/pr34-senior-fix-diagnostic.txt reports/ci/pr34-patch-diagnostic.txt
+      - name: Commit corrected sources and generated artifacts
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git config user.name "all-in-one-repair-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git diff --cached --quiet || git commit -m "fix: concluir contratos, APIs e gates do PR 34"
+          git push origin HEAD:${{ github.head_ref }}
