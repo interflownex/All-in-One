@@ -1,0 +1,140 @@
+name: Finalizar remoção do Vision
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalizar:
+    if: ${{ !contains(github.event.head_commit.message || '', '[vision-finalizado]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar branch limpa
+        uses: actions/checkout@v4
+        with:
+          ref: codex/remover-vision-stock-site-limpo-2026-07-25
+          fetch-depth: 0
+
+      - name: Remover referências ativas residuais
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          def read(path: str) -> str:
+              return Path(path).read_text(encoding="utf-8")
+
+          def write(path: str, text: str) -> None:
+              Path(path).write_text(text, encoding="utf-8", newline="\n")
+
+          # Menu lateral: remove o bloco inteiro do Vision e padroniza STOCK.
+          path = "apps/all-in-one/src/components/Navigation.tsx"
+          text = read(path)
+          text, count = re.subn(
+              r'\n  \{\n    slug: "vision",.*?\n  \},(?=\n  \{\n    slug: "wms",)',
+              "",
+              text,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f"Bloco Vision no menu não removido de forma única: {count}")
+          text = text.replace('slug: "stock",\n    title: "Stock",', 'slug: "stock",\n    title: "STOCK",')
+          text = text.replace('{ title: "Stock", path: "/stock/stock" }', '{ title: "STOCK", path: "/stock/stock" }')
+          write(path, text)
+
+          # Cloud Build: remove etapa e imagem do Vision.
+          path = "infra/ci-cd/cloudbuild-all.yaml"
+          text = read(path)
+          text, count = re.subn(
+              r'\n  # vision\n.*?(?=  # wms\n)',
+              "\n",
+              text,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f"Etapa Vision no Cloud Build não removida de forma única: {count}")
+          text = "\n".join(
+              line for line in text.splitlines() if "/vision:latest" not in line
+          ) + "\n"
+          write(path, text)
+
+          # Fixtures E2E: remove as quatro entidades do Vision.
+          path = "tests/e2e/conftest.py"
+          text = read(path)
+          for resource in ("devices", "streams", "recordings", "motion_alerts"):
+              pattern = rf'\n    \("vision", "{resource}"\): \{{\n.*?\n    \}},'
+              text, count = re.subn(pattern, "", text, flags=re.S)
+              if count != 1:
+                  raise SystemExit(f"Fixture Vision/{resource} não removida de forma única: {count}")
+          write(path, text)
+
+          # Jornada E2E: remove apenas o trecho de interface do Vision.
+          path = "tests/e2e/test_all_in_one_business_shell.py"
+          text = read(path)
+          text, count = re.subn(
+              r'\n    page\.goto\(\n        f"\{all_in_one_business_governance_live_server\}/vision/devices",.*?(?=\n    page\.goto\(\n        f"\{all_in_one_business_governance_live_server\}/ai_core/)',
+              "\n",
+              text,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit(f"Trecho E2E Vision não removido de forma única: {count}")
+          write(path, text)
+
+          # Gerador: remove corretamente os dois tratamentos especializados do Vision.
+          path = "scripts/scaffold_modules.py"
+          text = read(path)
+          text = re.sub(
+              r'\n        special = dedent\(\n            """\\\n            `streams` guarda somente metadados privados e hash da URL;.*?\n        \)\n        rendered = rendered\.replace\(\n            f"\{entities\}\.\\n\\n## Execucao",\n            f"\{entities\}\.\\n\\n\{special\}\\n## Execucao",\n        \)',
+              "",
+              text,
+              flags=re.S,
+          )
+          text = re.sub(
+              r'\n        special \+= dedent\(\n            """\n\n            ## Stream, gravacao e alerta operacional\n\n            """\n        \)',
+              "",
+              text,
+              flags=re.S,
+          )
+          write(path, text)
+
+          # Teste dedicado não faz mais sentido após a retirada do domínio.
+          Path("tests/test_vision_domain.py").unlink(missing_ok=True)
+          Path("tests/test_vision_event_catalog.py").unlink(missing_ok=True)
+
+          # O procedimento é descartável e não deve permanecer no projeto.
+          Path(".github/workflows/finalizar-remocao-vision.yml").unlink(missing_ok=True)
+
+          checks = {
+              "menu": "vision" not in read("apps/all-in-one/src/components/Navigation.tsx").lower(),
+              "cloudbuild": "vision" not in read("infra/ci-cd/cloudbuild-all.yaml").lower(),
+              "fixtures": '("vision",' not in read("tests/e2e/conftest.py").lower(),
+              "jornada": "/vision/" not in read("tests/e2e/test_all_in_one_business_shell.py").lower(),
+              "catalogo": '"slug": "vision"' not in read("config/module_catalog.json").lower(),
+              "titulo": "<title>Valley | Tudo em um só lugar</title>" in read("apps/valley/index.html"),
+              "favicon": Path("apps/valley/public/assets/brand/favicon-valley.png").is_file(),
+          }
+          failed = [name for name, ok in checks.items() if not ok]
+          if failed:
+              raise SystemExit("Validações finais falharam: " + ", ".join(failed))
+          PY
+
+          python -m py_compile tests/e2e/conftest.py tests/e2e/test_all_in_one_business_shell.py scripts/scaffold_modules.py
+
+      - name: Gravar resultado limpo
+        shell: bash
+        run: |
+          set -e
+          BRANCH="codex/remover-vision-stock-site-limpo-2026-07-25"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "refactor: concluir remoção do Vision e atualizar site [vision-finalizado]"
+          git pull --rebase origin "$BRANCH"
+          git push origin "HEAD:$BRANCH"
