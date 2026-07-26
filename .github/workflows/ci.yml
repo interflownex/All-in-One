@@ -18,6 +18,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Check scaffold freshness
+        run: python scripts/scaffold_modules.py --check
+
       - name: Install dependencies
         run: pip install -r requirements-dev.txt
 
