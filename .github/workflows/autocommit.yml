@@ -8,7 +8,7 @@ on:
       - ".github/workflows/autocommit.yml"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   refresh:
@@ -18,25 +18,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-      - uses: actions/setup-python@v5
+      - name: Remover metadados Git e artefatos locais
+        run: |
+          rm -rf .git .pytest_cache .pytest_tmp node_modules
+          find . -type d -name node_modules -prune -exec rm -rf {} + || true
+      - name: Publicar snapshot da branch
+        uses: actions/upload-artifact@v4
         with:
-          python-version: "3.12"
-      - name: Instalar dependências
-        run: pip install -r requirements-dev.txt
-      - name: Capturar falhas unitárias
-        shell: bash
-        run: |
-          mkdir -p reports/ci
-          set +e
-          python -m pytest -q --tb=short --maxfail=40 --ignore=tests/e2e > reports/ci/unit-tests-final-diagnostic.txt 2>&1
-          status=$?
-          echo "pytest_exit_code=$status" >> reports/ci/unit-tests-final-diagnostic.txt
-          tail -n 300 reports/ci/unit-tests-final-diagnostic.txt
-          exit 0
-      - name: Commit diagnostic report
-        run: |
-          git config user.name "all-in-one-bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add reports/ci/unit-tests-final-diagnostic.txt
-          git diff --cached --quiet || git commit -m "ci: registrar diagnostico final dos testes unitarios"
-          git push origin HEAD:${{ github.head_ref }}
+          name: all-in-one-source-snapshot-${{ github.run_id }}
+          path: .
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
