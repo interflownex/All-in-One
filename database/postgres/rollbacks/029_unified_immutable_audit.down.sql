@@ -19,7 +19,7 @@ ALTER TABLE audit.logs
     DROP COLUMN IF EXISTS exported,
     DROP COLUMN IF EXISTS approved_by,
     DROP COLUMN IF EXISTS approval_id,
-    DROP COLUMN IF EXISTS authorization,
+    DROP COLUMN IF EXISTS "authorization",
     DROP COLUMN IF EXISTS error_detail,
     DROP COLUMN IF EXISTS result,
     DROP COLUMN IF EXISTS occurred_at,
