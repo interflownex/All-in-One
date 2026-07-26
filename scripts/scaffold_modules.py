@@ -984,7 +984,7 @@ def render_requirements(slug: str) -> str:
         return (
             "cryptography==48.0.1\n"
             "fastapi==0.136.1\n"
-            "pypdf==6.13.3\n"
+            "pypdf==6.14.2\n"
             "psycopg[binary]==3.3.4\n"
             "starlette==1.3.1\n"
             "uvicorn[standard]==0.34.2\n"
