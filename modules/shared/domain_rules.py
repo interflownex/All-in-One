@@ -1486,6 +1486,8 @@ def event_for_create(module: str, resource_type: str) -> str:
         ("identity", "consent_records"): "identity.consent.recorded",
         ("business", "companies"): "business.company.created",
         ("business", "user_company_memberships"): "business.user.invited",
+        ("permissions", "user_roles"): "business.role.assigned",
+        ("permissions", "access_policies"): "business.user.invited",
         ("bpm", "workflow_instances"): "bpm.process.started",
         ("bpm", "tasks"): "bpm.task.created",
         ("bpm", "sla_policies"): "bpm.sla_policy.published",

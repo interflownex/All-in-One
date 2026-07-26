@@ -995,10 +995,10 @@ def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, obj
     save_contract_compatible = all(
         marker in source_text
         for marker in (
-            "method: isEditing ? 'PATCH' : 'POST'",
+            'method: isEditing ? "PATCH" : "POST"',
             "isEditing ? { payload } : { user_id: actorId, payload }",
-            "'X-Idempotency-Key': crypto.randomUUID()",
-            "'X-Correlation-Id': crypto.randomUUID()",
+            '"X-Idempotency-Key": crypto.randomUUID()',
+            '"X-Correlation-Id": crypto.randomUUID()',
         )
     )
     surfaces = {
@@ -1057,7 +1057,7 @@ def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, obj
                         "states": ["saving", "saved", "failed"],
                         "test_evidence": "contrato estático compartilhado; E2E por superfície ainda necessário",
                         "evidence": source_evidence(
-                            source, "method: isEditing ? 'PATCH' : 'POST'"
+                            source, 'method: isEditing ? "PATCH" : "POST"'
                         ),
                     },
                 ]
@@ -1129,7 +1129,7 @@ def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, obj
                         "audit": "backend no salvamento",
                         "states": ["idle"],
                         "test_evidence": "contrato estático compartilhado; E2E por superfície ainda necessário",
-                        "evidence": source_evidence(source, ">Editar</button>"),
+                        "evidence": source_evidence(source, "entity}-form`, { state: { record: item } })"),
                     },
                     {
                         **common,
@@ -1167,7 +1167,7 @@ def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, obj
                     "POST x2",
                     "/jobs/resources/{resumes|applications}",
                 ),
-            }.get((module, entity))
+            }.get((module, resource))
             if journey:
                 action, method, endpoint = journey
                 rows.append(
@@ -2664,7 +2664,7 @@ def build_delivery() -> None:
             "evidence": [
                 source_evidence(
                     "apps/all-in-one/src/components/SmartCRUD.tsx",
-                    "method: isEditing ? 'PATCH' : 'POST'",
+                    'method: isEditing ? "PATCH" : "POST"',
                 ),
                 source_evidence(
                     "modules/shared/runtime.py", "class ResourceCreate(BaseModel):"
@@ -2717,7 +2717,7 @@ def build_delivery() -> None:
                     "modules/shared/runtime.py",
                     '@app.get("/resources/{resource_type}/{resource_id}"',
                 ),
-                source_evidence("modules/shared/runtime.py", "def _expose(item:"),
+                source_evidence("modules/shared/runtime.py", "def _expose("),
                 "docs/data-audit/artifacts/matriz_enforcement_permissao.json",
             ],
             "impact": "Um usuário autenticado que obtenha UUID alheio pode ler registro não sensível de outro usuário ou contexto.",

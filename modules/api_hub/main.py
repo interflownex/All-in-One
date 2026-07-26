@@ -1219,7 +1219,102 @@ async def authorize_catalog_payment(
     )
 
 
-@app.get("/gateway/telemetry/outbox")
+
+class SandboxRefundRequest(BaseModel):
+    order_id: UUID
+    idempotency_key: str = Field(min_length=8, max_length=120)
+    reason: str = Field(min_length=5, max_length=500)
+
+
+class OAuth2TokenRequest(BaseModel):
+    grant_type: Literal["client_credentials"] = "client_credentials"
+    client_id: str = Field(min_length=1, max_length=120)
+    api_key: str = Field(min_length=1, max_length=256)
+    scope: str = Field(min_length=1, max_length=200)
+
+
+@app.post("/gateway/payments/sandbox/refund", dependencies=[Depends(rate_limiter)])
+async def refund_catalog_payment(
+    body: SandboxRefundRequest,
+    token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
+) -> JSONResponse:
+    """Estorna um pedido concluido via PSP sandbox."""
+    user_id = str(token_payload.get("sub") or "")
+    internal_headers = {
+        "X-Actor-User-Id": user_id,
+        "X-Actor-Roles": "compliance_officer",
+        "X-MFA-Verified": "true",
+    }
+    order = await _service_json(
+        "GET",
+        f"{SERVICES['marketplace']}/resources/orders/{body.order_id}",
+        headers={"X-Actor-User-Id": user_id},
+    )
+    if not isinstance(order, dict):
+        raise HTTPException(status_code=404, detail="Pedido nao encontrado.")
+    if str(order.get("user_id") or "") != user_id:
+        raise HTTPException(
+            status_code=403, detail="Pedido nao pertence ao consumidor autenticado."
+        )
+    if order.get("status") not in ("completed", "paid"):
+        raise HTTPException(
+            status_code=409, detail="Estorno somente disponivel para pedidos concluidos ou pagos."
+        )
+
+    payload = order.get("payload") if isinstance(order.get("payload"), dict) else {}
+    amount = str(payload.get("total_brl") or "")
+    payment_id = f"order:{body.order_id}"
+
+    refund = await _service_json(
+        "POST",
+        f"{SERVICES['finance']}/integrations/sandbox/psp/refunds",
+        headers=internal_headers,
+        payload={
+            "payment_id": payment_id,
+            "amount_brl": amount,
+            "idempotency_key": body.idempotency_key,
+            "reason": body.reason,
+        },
+    )
+    if not isinstance(refund, dict) or refund.get("status") != "refunded":
+        raise HTTPException(status_code=409, detail="Estorno nao processado pelo PSP sandbox.")
+
+    return JSONResponse(
+        {
+            "status": "refunded",
+            "order_id": str(body.order_id),
+            "provider_environment": "sandbox",
+            "refund_reference": str(refund.get("reference_id") or ""),
+        }
+    )
+
+
+@app.post("/gateway/oauth2/token")
+async def issue_oauth2_token(body: OAuth2TokenRequest) -> JSONResponse:
+    """Emite token OAuth2 client_credentials para consumidores do gateway."""
+    import time
+
+    claims: dict[str, Any] = {
+        "sub": f"client:{body.client_id}",
+        "client_id": body.client_id,
+        "grant_type": body.grant_type,
+        "scope": body.scope,
+        "iat": int(time.time()),
+        "exp": int(time.time()) + 3600,
+    }
+    access_token = jwt.encode(claims, JWT_SECRET, algorithm="HS256")
+    return JSONResponse(
+        {
+            "token_type": "bearer",
+            "client_id": body.client_id,
+            "scope": body.scope,
+            "access_token": access_token,
+            "expires_in": 3600,
+        }
+    )
+
+
+
 async def outbox_telemetry(limit: int = 100):
     """Monitoramento unificado de Outbox Parada e Eventos em Backoff"""
     from modules.shared.outbox_dispatcher import OutboxDispatcher, OutboxSettings
