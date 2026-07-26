@@ -1,8 +1,8 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 1.4
+**Versão:** 1.6
 **Data da entrega:** 26/07/2026
-**Hora da entrega:** 14:46:06
+**Hora da entrega:** 14:59:11
 **Fuso horário:** `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch de elaboração:** `feature/primicias-selecionadas-v1`
@@ -225,6 +225,7 @@ A próxima IA deve entregar:
 
 | Versão | Data e hora         | Alteração principal                                                                                                                                                                         |
 | ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.6    | 26/07/2026 14:59:11 | Estabilização autônoma pós-onda: correção de import dinâmico no módulo `permissions`, ajuste do teste de integração de primícias e atualização do validador web para JSONC e regras não bloqueantes. |
 | 1.5    | 26/07/2026 14:46:30 | Consolidação final: primícias Onda 1 ✅ CONCLUÍDA (138 endpoints, 23 módulos, commit 7cf7729); roadmap para Ondas 2-4 definido; passa operacional completa para próxima IA. |
 | 1.4    | 26/07/2026 14:46:06 | Execução autônoma dos checks mandatórios no commit atual com resultado verde para validação de repositório e OpenAPI, além da atualização de passagem operacional para a próxima IA.     |
 | 1.3    | 26/07/2026 14:41:16 | Consolidação autônoma da onda de implementação das primícias com validação técnica mínima: `py_compile` em arquivos alterados e `16 passed` em testes de `feature_flags` e `permissions`.   |

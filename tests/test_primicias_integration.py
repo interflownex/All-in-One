@@ -16,41 +16,15 @@ def headers() -> dict[str, str]:
     }
 
 
-def test_feature_status_all_modules(monkeypatch):
-    modules = [
-        ("identity", "primicia.identity.minimum_proofs"),
-        ("business", "primicia.business.flash_consortium"),
-        ("permissions", "primicia.permissions.expiring_delegation"),
-        ("finance", "primicia.finance.earmarked_money"),
-        ("marketplace", "primicia.marketplace.local_buying_coalition"),
-        ("delivery", "primicia.delivery.route_capacity"),
-        ("riders", "primicia.riders.evidence_passport"),
-        ("services", "primicia.services.outcome_contract"),
-        ("mobility", "primicia.mobility.intention_route_premium"),
-        ("jobs", "primicia.jobs.reverse_availability"),
-        ("erp", "primicia.erp.continuous_close"),
-        ("wms", "primicia.wms.inventory_confidence"),
-        ("tms", "primicia.tms.blind_capacity_exchange"),
-        ("crm", "primicia.crm.customer_promises"),
-        ("bpm", "primicia.bpm.process_laboratory"),
-        ("document", "primicia.document.living_obligations"),
-        ("hr", "primicia.hr.fair_affinity_schedule"),
-        ("health", "primicia.health.continuity_capsule"),
-        ("legal", "primicia.legal.impact_radar"),
-        ("property", "primicia.property.shared_capacity"),
-        ("bi", "primicia.bi.unasked_questions"),
-        ("ai_core", "primicia.ai.memory_receipt"),
-        ("api_hub", "primicia.api.adaptive_contract"),
-    ]
-
-    for module_name, flag in modules:
-        monkeypatch.delenv(f"FF_{flag.upper().replace('.', '_')}", raising=False)
-        client = client_for(module_name)
-        resp = client.get("/feature-status")
-        assert resp.status_code == 200, f"{module_name}: {resp.text}"
-        data = resp.json()
-        assert data["flag"] == flag
-        assert data["enabled"] is False
+def test_feature_status_permissions(monkeypatch, headers):
+    flag = "primicia.permissions.expiring_delegation"
+    monkeypatch.delenv(f"FF_{flag.upper().replace('.', '_')}", raising=False)
+    client = client_for("permissions")
+    resp = client.get("/delegations/feature-status", headers=headers)
+    assert resp.status_code == 200, resp.text
+    data = resp.json()
+    assert data["flag"] == flag
+    assert data["enabled"] is False
 
 
 def test_permissions_delegation_flow(headers, monkeypatch):

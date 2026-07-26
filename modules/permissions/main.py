@@ -19,7 +19,19 @@ from shared.feature_flags import is_flag_enabled, require_flag
 from shared.runtime import create_module_app
 from shared.security import Actor, actor_from_headers
 
-from ._primicias import router as primacia_router
+try:
+    from ._primicias import router as primacia_router
+except ImportError:
+    import importlib.util
+    from pathlib import Path as _Path
+
+    _primicias_path = _Path(__file__).resolve().parent / "_primicias.py"
+    _spec = importlib.util.spec_from_file_location("_primicias_local", _primicias_path)
+    if _spec is None or _spec.loader is None:
+        raise
+    _module = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_module)
+    primacia_router = _module.router
 
 app = create_module_app("permissions")
 
