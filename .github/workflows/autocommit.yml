@@ -6,6 +6,13 @@ on:
       - fix/generated-artifacts-gate
     paths:
       - reports/ci/fix-pr34.patch.gz
+      - .github/workflows/autocommit.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - reports/ci/fix-pr34.patch.gz
+      - .github/workflows/autocommit.yml
   workflow_dispatch:
 
 permissions:
@@ -13,12 +20,15 @@ permissions:
 
 jobs:
   apply-repair:
-    if: github.actor != 'github-actions[bot]'
+    if: >-
+      github.actor != 'github-actions[bot]' &&
+      ((github.event_name == 'pull_request' && github.head_ref == 'fix/generated-artifacts-gate') ||
+      (github.event_name != 'pull_request' && github.ref_name == 'fix/generated-artifacts-gate'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: fix/generated-artifacts-gate
+          ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 2
       - name: Validar e aplicar correções
         shell: bash
@@ -28,7 +38,40 @@ jobs:
           git apply --check -p1 /tmp/fix-pr34.patch
           git apply -p1 /tmp/fix-pr34.patch
           rm -f reports/ci/fix-pr34.patch.gz
-          git show HEAD^:.github/workflows/autocommit.yml > .github/workflows/autocommit.yml
+          cat > .github/workflows/autocommit.yml <<'WORKFLOW'
+          name: Refresh Generated Contracts
+
+          on:
+            workflow_dispatch:
+            pull_request:
+              branches: [main]
+              paths:
+                - ".github/workflows/autocommit.yml"
+
+          permissions:
+            contents: read
+
+          jobs:
+            refresh:
+              if: github.head_ref == 'fix/generated-artifacts-gate'
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                  with:
+                    ref: ${{ github.head_ref }}
+                - name: Remover metadados Git e artefatos locais
+                  run: |
+                    rm -rf .git .pytest_cache .pytest_tmp node_modules
+                    find . -type d -name node_modules -prune -exec rm -rf {} + || true
+                - name: Publicar snapshot da branch
+                  uses: actions/upload-artifact@v4
+                  with:
+                    name: all-in-one-source-snapshot-${{ github.run_id }}
+                    path: .
+                    include-hidden-files: true
+                    if-no-files-found: error
+                    retention-days: 1
+          WORKFLOW
       - name: Versionar correções verificadas
         shell: bash
         run: |
