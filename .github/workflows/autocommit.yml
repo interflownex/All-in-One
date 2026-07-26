@@ -2,18 +2,12 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - fix/generated-artifacts-gate
-    paths:
-      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
-    if: github.ref_name == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,57 +16,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Corrigir referencias operacionais ao Vision removido
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          replacements = {
-              "scripts/validate_repository.py": [
-                  ("if len(slugs) != 25:", "if len(slugs) != 24:"),
-                  ("Esperados 25 modulos", "Esperados 24 modulos"),
-              ],
-              "modules/api_hub/main.py": [
-                  ('    "vision",\n', ""),
-              ],
-              "scripts/refactor_api_hub.py": [
-                  ('"tms", "vision", "wms"', '"tms", "wms"'),
-              ],
-              "scripts/check_artifact_registry.py": [
-                  ('    "vision",\n', ""),
-              ],
-              "scripts/generate_kubernetes_manifests.py": [
-                  ('    "vision",\n', ""),
-              ],
-              "scripts/gcp_storage_hygiene.py": [
-                  ('        "vision",\n', ""),
-              ],
-              "scripts/validate_postgres_real_dsn.py": [
-                  ('    "vision",\n', ""),
-              ],
-              "modules/shared/valley_catalog.py": [
-                  ('("vision", "ai_core", "api_hub", "permissions")', '("ai_core", "api_hub", "permissions")'),
-              ],
-          }
-
-          for file_name, changes in replacements.items():
-              path = Path(file_name)
-              text = path.read_text(encoding="utf-8")
-              original = text
-              for old, new in changes:
-                  if old not in text:
-                      raise SystemExit(f"Padrao esperado nao encontrado em {file_name}: {old!r}")
-                  text = text.replace(old, new, 1)
-              if text == original:
-                  raise SystemExit(f"Nenhuma alteracao aplicada em {file_name}")
-              path.write_text(text, encoding="utf-8", newline="\n")
-              print(f"Atualizado: {file_name}")
-          PY
-      - name: Commit operational consistency fixes
+      - run: python scripts/scaffold_modules.py
+      - name: Commit generated changes
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add scripts/validate_repository.py modules/api_hub/main.py scripts/refactor_api_hub.py scripts/check_artifact_registry.py scripts/generate_kubernetes_manifests.py scripts/gcp_storage_hygiene.py scripts/validate_postgres_real_dsn.py modules/shared/valley_catalog.py
-          git diff --cached --quiet || git commit -m "fix: alinhar runtime ao catalogo de 24 modulos"
+          git add apps modules contracts
+          git diff --cached --quiet || git commit -m "refresh generated module contracts"
           git push
