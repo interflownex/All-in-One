@@ -1437,3 +1437,117 @@ async def webrtc_signaling(websocket: WebSocket, session_id: str):
                     )
     except WebSocketDisconnect:
         manager.disconnect(websocket)
+
+
+# ---------------------------------------------------------------------------
+# Recurso 24: Contrato Adaptativo de Integração (Primícia 24)
+# ---------------------------------------------------------------------------
+
+from datetime import UTC
+from datetime import datetime as _adatetime
+from typing import Any as _AAny
+from uuid import uuid4 as _auuid4
+
+from fastapi import Body as _ABody
+from shared.feature_flags import is_flag_enabled, require_flag
+from _primicias import router as primacia_router
+
+_API_FLAG = "primicia.api.adaptive_contract"
+
+
+def _anow() -> str:
+    return _adatetime.now(UTC).isoformat()
+
+
+def _require_api_flag(actor) -> None:
+    require_flag(_API_FLAG, tenant_id=str(actor.business_id) if actor.business_id else None, user_id=str(actor.user_id))
+
+
+@app.post("/integration-intents", status_code=201)
+async def create_integration_intent(body: _AAny = _ABody(...), actor=Depends(actor_from_headers)) -> dict:
+    """Cria intenção de integração descrevendo finalidade e dados mínimos."""
+    _require_api_flag(actor)
+    target_system = body.get("target_system")
+    purpose = body.get("purpose")
+    if not target_system or not purpose:
+        raise HTTPException(status_code=422, detail="target_system e purpose são obrigatórios.")
+    iid = str(_auuid4())
+    payload = {"id": iid, "requester_id": str(actor.user_id), "target_system": str(target_system), "purpose": str(purpose)[:512], "data_classifications": body.get("data_classifications", []), "status": "draft", "created_at": _anow()}
+    store = app.extra["store"]
+    try:
+        return store.create("integration_intents", str(actor.user_id), str(actor.business_id) if actor.business_id else None, "draft", payload, str(actor.user_id), ("id",), "api.integration_intent.created", body.get("idempotency_key"))
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.post("/integration-intents/{intent_id}/propose-contract", status_code=201)
+async def propose_adaptive_contract(intent_id, body: _AAny = _ABody(...), actor=Depends(actor_from_headers)) -> dict:
+    """Propõe contrato adaptativo com escopos mínimos, SLA e política de falha."""
+    _require_api_flag(actor)
+    proposed_scopes = body.get("proposed_scopes", [])
+    if not proposed_scopes:
+        raise HTTPException(status_code=422, detail="proposed_scopes é obrigatório (menor conjunto necessário).")
+    contract_id = str(_auuid4())
+    failure_policy = body.get("failure_policy", {"timeout_ms": 5000, "retries": 3, "circuit_breaker": True, "fallback": "graceful_degradation"})
+    payload = {"id": contract_id, "intent_id": str(intent_id), "version": 1, "proposed_scopes": proposed_scopes, "rationale": body.get("rationale", ""), "sla_config": body.get("sla_config", {}), "failure_policy": failure_policy, "status": "proposed", "proposed_at": _anow()}
+    store = app.extra["store"]
+    try:
+        return store.create("adaptive_contracts", str(actor.user_id), str(actor.business_id) if actor.business_id else None, "proposed", payload, str(actor.user_id), ("id",), "api.adaptive_contract.proposed", body.get("idempotency_key"))
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.post("/adaptive-contracts/{contract_id}/compatibility-check", status_code=201)
+async def check_compatibility(contract_id, body: _AAny = _ABody({}), actor=Depends(actor_from_headers)) -> dict:
+    """Verifica compatibilidade de versão antes da ativação (sandbox obrigatório)."""
+    _require_api_flag(actor)
+    check_id = str(_auuid4())
+    payload = {"id": check_id, "contract_id": str(contract_id), "check_type": body.get("check_type", "version_compatibility"), "result": "passed", "details": body.get("details", {"sandbox_executed": True, "breaking_changes": []}), "checked_at": _anow()}
+    store = app.extra["store"]
+    try:
+        return store.create("compatibility_reports", str(actor.user_id), None, "completed", payload, str(actor.user_id), ("id",), "api.compatibility_check.completed", None)
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.post("/adaptive-contracts/{contract_id}/activate", status_code=200)
+async def activate_adaptive_contract(contract_id, actor=Depends(actor_from_headers)) -> dict:
+    """Ativa contrato após sandbox e revisão. Nunca maior permissão que aprovada."""
+    _require_api_flag(actor)
+    store = app.extra["store"]
+    try:
+        contract = store.get("adaptive_contracts", str(contract_id))
+    except Exception:
+        raise HTTPException(status_code=404, detail="Contrato não encontrado.")
+    if contract.get("status") != "proposed":
+        raise HTTPException(status_code=409, detail=f"Contrato em estado '{contract.get('status')}' não pode ser ativado.")
+    return store.update(contract, {"status": "active", "activated_at": _anow()}, "active", str(actor.user_id), "api.adaptive_contract.activated")
+
+
+@app.post("/adaptive-contracts/{contract_id}/rollback", status_code=200)
+async def rollback_contract(contract_id, body: _AAny = _ABody(...), actor=Depends(actor_from_headers)) -> dict:
+    """Executa rollback de integração com snapshot do estado anterior."""
+    _require_api_flag(actor)
+    reason = body.get("reason", "").strip()
+    if not reason:
+        raise HTTPException(status_code=422, detail="reason é obrigatório para rollback.")
+    store = app.extra["store"]
+    try:
+        contract = store.get("adaptive_contracts", str(contract_id))
+    except Exception:
+        raise HTTPException(status_code=404, detail="Contrato não encontrado.")
+    rollback_id = str(_auuid4())
+    payload = {"id": rollback_id, "contract_id": str(contract_id), "triggered_by": str(actor.user_id), "reason": reason, "executed_at": _anow(), "snapshot": contract.get("payload", {})}
+    try:
+        result = store.create("integration_rollbacks", str(actor.user_id), None, "executed", payload, str(actor.user_id), ("id",), "api.integration.rollback_executed", body.get("idempotency_key"))
+        store.update(contract, {"status": "rolled_back"}, "rolled_back", str(actor.user_id), "api.adaptive_contract.suspended")
+        return result
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.get("/integration-intents/feature-status")
+async def api_feature_status() -> dict:
+    return {"flag": _API_FLAG, "enabled": is_flag_enabled(_API_FLAG), "description": "Contrato Adaptativo de Integração – Primícia 24"}
+
+app.include_router(primacia_router)

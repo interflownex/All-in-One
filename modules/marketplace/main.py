@@ -130,3 +130,93 @@ def commercial_insights(actor: Actor = Depends(actor_from_headers)) -> dict[str,
         "source": "marketplace.commercial_insights",
         "actor": str(actor.user_id),
     }
+
+
+# ---------------------------------------------------------------------------
+# Recurso 5: Compra em Coalizão Local (Primícia 5)
+# ---------------------------------------------------------------------------
+
+from datetime import UTC
+from datetime import datetime as _mdatetime
+from uuid import uuid4 as _muuid4
+
+from shared.feature_flags import is_flag_enabled, require_flag
+from _primicias import router as primacia_router
+
+_MKT_FLAG = "primicia.marketplace.local_buying_coalition"
+
+
+def _mnow() -> str:
+    return _mdatetime.now(UTC).isoformat()
+
+
+def _require_mkt_flag(actor) -> None:
+    require_flag(_MKT_FLAG, tenant_id=str(actor.business_id) if actor.business_id else None, user_id=str(actor.user_id))
+
+
+@app.post("/coalitions", status_code=201)
+async def create_coalition(body: dict = Body(...), actor: Actor = Depends(actor_from_headers)) -> dict:
+    """Cria coalizão de compra local com quantidade mínima, região e prazo."""
+    _require_mkt_flag(actor)
+    title = body.get("title")
+    region = body.get("region")
+    if not title or not region:
+        raise HTTPException(status_code=422, detail="title e region são obrigatórios.")
+    cid = str(_muuid4())
+    payload = {"id": cid, "title": str(title)[:256], "description": body.get("description", ""), "organizer_id": str(actor.user_id), "region": str(region)[:128], "status": "open", "min_quantity": body.get("min_quantity", 2), "target_price": body.get("target_price"), "deadline": body.get("deadline"), "created_at": _mnow()}
+    store = app.extra["store"]
+    try:
+        return store.create("buying_coalitions", str(actor.user_id), None, "open", payload, str(actor.user_id), ("id",), "marketplace.coalition.created", body.get("idempotency_key"))
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.post("/coalitions/{coalition_id}/join", status_code=201)
+async def join_coalition(coalition_id, body: dict = Body({}), actor: Actor = Depends(actor_from_headers)) -> dict:
+    """Usuário entra na coalizão. Localização exata nunca revelada antes do aceite."""
+    _require_mkt_flag(actor)
+    mid = str(_muuid4())
+    payload = {"id": mid, "coalition_id": str(coalition_id), "user_id": str(actor.user_id), "quantity": body.get("quantity", 1), "status": "active", "location_approx": body.get("location_approx", ""),  # Somente bairro/cidade, NUNCA coordenada exata
+               "joined_at": _mnow()}
+    store = app.extra["store"]
+    try:
+        return store.create("coalition_members", str(actor.user_id), None, "active", payload, str(actor.user_id), ("id",), "marketplace.coalition.member_joined", body.get("idempotency_key"))
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.post("/coalitions/{coalition_id}/bids", status_code=201)
+async def submit_supplier_bid(coalition_id, body: dict = Body(...), actor: Actor = Depends(actor_from_headers)) -> dict:
+    """Fornecedor aprovado submete proposta para a coalizão."""
+    _require_mkt_flag(actor)
+    if not actor.business_id:
+        raise HTTPException(status_code=403, detail="Apenas fornecedores aprovados podem submeter propostas.")
+    unit_price = body.get("unit_price")
+    if not unit_price:
+        raise HTTPException(status_code=422, detail="unit_price é obrigatório.")
+    bid_id = str(_muuid4())
+    payload = {"id": bid_id, "coalition_id": str(coalition_id), "supplier_id": str(actor.business_id), "unit_price": float(unit_price), "valid_until": body.get("valid_until"), "status": "pending", "submitted_at": _mnow()}
+    store = app.extra["store"]
+    try:
+        return store.create("supplier_bids", str(actor.user_id), str(actor.business_id), "pending", payload, str(actor.user_id), ("id",), "marketplace.supplier_bid.submitted", body.get("idempotency_key"))
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.post("/supplier-bids/{bid_id}/accept", status_code=200)
+async def accept_supplier_bid(bid_id, actor: Actor = Depends(actor_from_headers)) -> dict:
+    """Organizador aceita proposta do fornecedor e confirma pedido coletivo."""
+    _require_mkt_flag(actor)
+    store = app.extra["store"]
+    try:
+        bid = store.get("supplier_bids", str(bid_id))
+    except Exception:
+        raise HTTPException(status_code=404, detail="Proposta não encontrada.")
+    return store.update(bid, {"status": "accepted", "accepted_at": _mnow()}, "accepted", str(actor.user_id), "marketplace.supplier_bid.accepted")
+
+
+@app.get("/coalitions/feature-status")
+async def mkt_feature_status() -> dict:
+    return {"flag": _MKT_FLAG, "enabled": is_flag_enabled(_MKT_FLAG), "description": "Compra em Coalizão Local – Primícia 5"}
+
+app.include_router(primacia_router)

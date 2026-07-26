@@ -171,3 +171,102 @@ async def sandbox_fiscal_invoice(
         request.issuer_document,
     )
     return result.to_response()
+
+
+# ---------------------------------------------------------------------------
+# Recurso 12: Fechamento Contínuo por Exceção (Primícia 12)
+# ---------------------------------------------------------------------------
+
+from datetime import UTC
+from datetime import datetime as _edatetime
+from typing import Any as _Any
+from uuid import uuid4 as _euuid4
+
+from fastapi import Body as _Body
+from shared.feature_flags import is_flag_enabled, require_flag
+from _primicias import router as primacia_router
+
+_ERP_FLAG = "primicia.erp.continuous_close"
+
+
+def _enow() -> str:
+    return _edatetime.now(UTC).isoformat()
+
+
+def _require_erp_flag(actor) -> None:
+    require_flag(_ERP_FLAG, tenant_id=str(actor.business_id) if actor.business_id else None, user_id=str(actor.user_id))
+
+
+@app.post("/close/exceptions", status_code=201)
+async def register_close_exception(
+    body: _Any = _Body(...),
+    actor=Depends(actor_from_headers),
+) -> dict:
+    """Detecta e registra inconsistência real no fechamento."""
+    _require_erp_flag(actor)
+    period = body.get("period")
+    exception_type = body.get("exception_type")
+    description = body.get("description")
+    if not period or not exception_type or not description:
+        raise HTTPException(status_code=422, detail="period, exception_type e description são obrigatórios.")
+    eid = str(_euuid4())
+    payload = {"id": eid, "tenant_id": str(actor.business_id) if actor.business_id else None, "period": str(period), "exception_type": str(exception_type), "description": str(description), "evidence": body.get("evidence", {}), "status": "open", "detected_at": _enow()}
+    store = app.extra["store"]
+    try:
+        return store.create("close_exceptions", str(actor.user_id), str(actor.business_id) if actor.business_id else None, "open", payload, str(actor.user_id), ("id",), "erp.close_exception.detected", body.get("idempotency_key"))
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.post("/close/exceptions/{exception_id}/resolve", status_code=200)
+async def resolve_exception(
+    exception_id,
+    body: _Any = _Body(...),
+    actor=Depends(actor_from_headers),
+) -> dict:
+    """Resolve exceção de fechamento com evidência e nota."""
+    _require_erp_flag(actor)
+    resolution_note = body.get("resolution_note", "").strip()
+    if not resolution_note:
+        raise HTTPException(status_code=422, detail="resolution_note é obrigatório.")
+    store = app.extra["store"]
+    try:
+        exc_record = store.get("close_exceptions", str(exception_id))
+    except Exception:
+        raise HTTPException(status_code=404, detail="Exceção não encontrada.")
+    return store.update(exc_record, {"status": "resolved", "resolved_at": _enow(), "resolved_by": str(actor.user_id), "resolution_note": resolution_note}, "resolved", str(actor.user_id), "erp.close_exception.resolved")
+
+
+@app.post("/close/periods/{period}/ready", status_code=200)
+async def mark_period_ready(period: str, actor=Depends(actor_from_headers)) -> dict:
+    """Marca período como pronto para fechamento (snapshot reproduzível)."""
+    _require_erp_flag(actor)
+    sid = str(_euuid4())
+    payload = {"id": sid, "tenant_id": str(actor.business_id) if actor.business_id else None, "period": period, "ready": True, "closed": False, "taken_at": _enow()}
+    store = app.extra["store"]
+    try:
+        return store.create("close_period_snapshots", str(actor.user_id), str(actor.business_id) if actor.business_id else None, "ready", payload, str(actor.user_id), ("id",), "erp.close_period.ready", f"close-ready-{period}")
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.post("/close/periods/{period}/approve", status_code=200)
+async def approve_period_close(period: str, body: _Any = _Body({}), actor=Depends(actor_from_headers)) -> dict:
+    """Aprova e fecha período contábil. Período fechado fica protegido."""
+    _require_erp_flag(actor)
+    if "finance_manager" not in actor.roles and "administrator" not in actor.roles:
+        raise HTTPException(status_code=403, detail="Apenas gestores financeiros podem fechar períodos.")
+    aid = str(_euuid4())
+    payload = {"id": aid, "period": period, "tenant_id": str(actor.business_id) if actor.business_id else None, "approved_by": str(actor.user_id), "approved_at": _enow(), "notes": body.get("notes", "")}
+    store = app.extra["store"]
+    try:
+        return store.create("close_approvals", str(actor.user_id), str(actor.business_id) if actor.business_id else None, "approved", payload, str(actor.user_id), ("id",), "erp.close_period.approved", f"close-approve-{period}")
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.get("/close/feature-status")
+async def erp_feature_status() -> dict:
+    return {"flag": _ERP_FLAG, "enabled": is_flag_enabled(_ERP_FLAG), "description": "Fechamento Contínuo por Exceção – Primícia 12"}
+
+app.include_router(primacia_router)

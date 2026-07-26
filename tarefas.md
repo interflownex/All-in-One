@@ -1,14 +1,14 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 1.2  
-**Data da entrega:** 26/07/2026  
-**Hora da entrega:** 14:32:04  
-**Fuso horário:** `America/Sao_Paulo`  
-**Repositório:** `interflownex/All-in-One`  
-**Branch de elaboração:** `feature/primicias-selecionadas-v1`  
-**Commit de referência:** `77fa6fab5f1c881ba6289dc288dc64e20421614a`  
-**Issue de orquestração:** `#43`  
-**Classificação:** `Pendências > Técnico > Equipe técnica`  
+**Versão:** 1.3
+**Data da entrega:** 26/07/2026
+**Hora da entrega:** 14:41:16
+**Fuso horário:** `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch de elaboração:** `feature/primicias-selecionadas-v1`
+**Commit de referência:** `86f7c3e7f2fa7b1a09e53f2b86560d1ce456c486`
+**Issue de orquestração:** `#43`
+**Classificação:** `Pendências > Técnico > Equipe técnica`
 **Destino:** Codex e demais IAs desenvolvedoras autorizadas
 
 ## 1. Objetivo desta versão
@@ -181,7 +181,8 @@ A próxima IA deve entregar:
 
 ## 11. Histórico de versões
 
-| Versão | Data e hora | Alteração principal |
-|---|---|---|
-| 1.2 | 26/07/2026 14:32:04 | Registro da aprovação formal da primeira rodada de inovação do APK Valley Consumidor (24 ideias), com mapeamento técnico e plano de implementação por ondas em `docs/relatorios/inovacao/`. |
-| 1.1 | 26/07/2026 14:01:53 | Primeiro teste completo, consolidação v2.6, issue #43 e tarefas para checks, PRs, skills, ambiente público, Telegram, APK Admin e PDV Desktop. |
+| Versão | Data e hora         | Alteração principal                                                                                                                                                                         |
+| ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.3    | 26/07/2026 14:41:16 | Consolidação autônoma da onda de implementação das primícias com validação técnica mínima: `py_compile` em arquivos alterados e `16 passed` em testes de `feature_flags` e `permissions`. |
+| 1.2    | 26/07/2026 14:32:04 | Registro da aprovação formal da primeira rodada de inovação do APK Valley Consumidor (24 ideias), com mapeamento técnico e plano de implementação por ondas em `docs/relatorios/inovacao/`. |
+| 1.1    | 26/07/2026 14:01:53 | Primeiro teste completo, consolidação v2.6, issue #43 e tarefas para checks, PRs, skills, ambiente público, Telegram, APK Admin e PDV Desktop.                                              |

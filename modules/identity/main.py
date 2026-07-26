@@ -570,3 +570,181 @@ async def register_user_with_hash(
         return _public_user(user)
     except Exception as exc:
         raise HTTPException(status_code=409, detail=f"Erro no cadastro: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Recurso 1: Cofre de Provas Mínimas (Primícia 1)
+# ---------------------------------------------------------------------------
+
+import hashlib as _hashlib
+
+from shared.feature_flags import is_flag_enabled, require_flag
+from _primicias import router as primacia_router
+
+_PROOF_FLAG = "primicia.identity.minimum_proofs"
+
+
+def _require_proof_flag(actor: Actor) -> None:
+    require_flag(
+        _PROOF_FLAG,
+        tenant_id=str(actor.business_id) if actor.business_id else None,
+        user_id=str(actor.user_id),
+    )
+
+
+def _hash_attribute(value: str) -> str:
+    """Hash do atributo – nunca armazenar dado bruto."""
+    return _hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+@app.post("/proof-requests", status_code=201)
+async def create_proof_request(
+    body: dict[str, Any] = Body(...),
+    actor: Actor = Depends(actor_from_headers),
+) -> dict[str, Any]:
+    """Cria solicitação de prova de atributo sem expor o documento completo."""
+    _require_proof_flag(actor)
+    definition_id = body.get("definition_id")
+    purpose = body.get("purpose")
+    if not definition_id or not purpose:
+        raise HTTPException(status_code=422, detail="definition_id e purpose são obrigatórios.")
+
+    request_id = str(uuid4())
+    payload = {
+        "id": request_id,
+        "requester_id": str(actor.user_id),
+        "definition_id": str(definition_id),
+        "purpose": str(purpose)[:512],
+        "status": "pending",
+        "expires_at": body.get("expires_at"),
+        "created_at": datetime.now(UTC).isoformat(),
+    }
+    store = app.extra["store"]
+    try:
+        return store.create("proof_requests", str(actor.user_id), str(actor.business_id) if actor.business_id else None, "pending", payload, str(actor.user_id), ("id",), "identity.proof.requested", body.get("idempotency_key"))
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=f"Erro ao criar solicitação de prova: {exc}") from exc
+
+
+@app.post("/proof-requests/{request_id}/approve", status_code=200)
+async def approve_proof_request(
+    request_id: UUID,
+    body: dict[str, Any] = Body(...),
+    actor: Actor = Depends(actor_from_headers),
+) -> dict[str, Any]:
+    """Usuário aprova apresentação de prova para o solicitante."""
+    _require_proof_flag(actor)
+    store = app.extra["store"]
+    try:
+        req = store.get("proof_requests", str(request_id))
+    except Exception:
+        raise HTTPException(status_code=404, detail="Solicitação de prova não encontrada.")
+    return store.update(req, {"status": "approved", "approved_at": datetime.now(UTC).isoformat(), "approved_by": str(actor.user_id)}, "approved", str(actor.user_id), "identity.proof.approved")
+
+
+@app.post("/credentials/issue", status_code=201)
+async def issue_credential(
+    body: dict[str, Any] = Body(...),
+    actor: Actor = Depends(actor_from_headers),
+) -> dict[str, Any]:
+    """Emite credencial de prova mínima – armazena apenas o hash do atributo."""
+    _require_proof_flag(actor)
+    user_id = body.get("user_id")
+    definition_id = body.get("definition_id")
+    attribute_value = body.get("attribute_value")  # Valor para hash – não persiste o original
+    if not user_id or not definition_id or not attribute_value:
+        raise HTTPException(status_code=422, detail="user_id, definition_id e attribute_value são obrigatórios.")
+
+    cred_id = str(uuid4())
+    payload = {
+        "id": cred_id,
+        "user_id": str(user_id),
+        "definition_id": str(definition_id),
+        "issuer_id": str(actor.user_id),
+        "attribute_hash": _hash_attribute(str(attribute_value)),  # Nunca o dado bruto
+        "issued_at": datetime.now(UTC).isoformat(),
+        "expires_at": body.get("expires_at"),
+        "revoked": False,
+    }
+    store = app.extra["store"]
+    try:
+        return store.create("issued_credentials", str(actor.user_id), str(actor.business_id) if actor.business_id else None, "active", payload, str(actor.user_id), ("id",), "identity.credential.issued", body.get("idempotency_key"))
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=f"Erro ao emitir credencial: {exc}") from exc
+
+
+@app.get("/credentials")
+async def list_credentials(actor: Actor = Depends(actor_from_headers)) -> dict[str, Any]:
+    """Lista credenciais do usuário autenticado."""
+    _require_proof_flag(actor)
+    store = app.extra["store"]
+    return store.list("issued_credentials", str(actor.user_id), None, page=1, page_size=50)
+
+
+@app.post("/credentials/{cred_id}/present", status_code=201)
+async def present_credential(
+    cred_id: UUID,
+    body: dict[str, Any] = Body(...),
+    actor: Actor = Depends(actor_from_headers),
+) -> dict[str, Any]:
+    """Apresenta apenas os atributos autorizados – nunca o documento completo."""
+    _require_proof_flag(actor)
+    presented_to = body.get("presented_to")
+    attributes_revealed = body.get("attributes_revealed", [])
+    if not presented_to:
+        raise HTTPException(status_code=422, detail="presented_to é obrigatório.")
+
+    store = app.extra["store"]
+    try:
+        cred = store.get("issued_credentials", str(cred_id))
+    except Exception:
+        raise HTTPException(status_code=404, detail="Credencial não encontrada.")
+
+    if cred.get("payload", {}).get("revoked"):
+        raise HTTPException(status_code=410, detail="Credencial revogada.")
+
+    cred_user_id = cred.get("payload", {}).get("user_id") or cred.get("user_id")
+    if str(actor.user_id) != str(cred_user_id):
+        raise HTTPException(status_code=403, detail="Apenas o titular pode apresentar sua credencial.")
+
+    pres_id = str(uuid4())
+    payload = {
+        "id": pres_id,
+        "credential_id": str(cred_id),
+        "presented_to": str(presented_to),
+        "attributes_revealed": attributes_revealed,  # Somente atributos autorizados
+        "consented_at": datetime.now(UTC).isoformat(),
+        "expires_at": body.get("expires_at"),
+    }
+    try:
+        result = store.create("proof_presentations", str(actor.user_id), None, "presented", payload, str(actor.user_id), ("id",), "identity.credential.presented", body.get("idempotency_key"))
+        store.audit_external("issued_credentials", str(cred_id), str(actor.user_id), "credential_presented", {"presented_to": presented_to, "attributes": attributes_revealed})
+        return result
+    except Exception as exc:
+        raise HTTPException(status_code=409, detail=f"Erro ao apresentar credencial: {exc}") from exc
+
+
+@app.post("/credentials/{cred_id}/revoke", status_code=200)
+async def revoke_credential(
+    cred_id: UUID,
+    body: dict[str, Any] = Body(...),
+    actor: Actor = Depends(actor_from_headers),
+) -> dict[str, Any]:
+    """Revoga credencial de prova."""
+    _require_proof_flag(actor)
+    reason = body.get("reason", "").strip()
+    if not reason:
+        raise HTTPException(status_code=422, detail="reason é obrigatório.")
+    store = app.extra["store"]
+    try:
+        cred = store.get("issued_credentials", str(cred_id))
+    except Exception:
+        raise HTTPException(status_code=404, detail="Credencial não encontrada.")
+    return store.update(cred, {"revoked": True, "revoked_at": datetime.now(UTC).isoformat(), "revoked_reason": reason, "revoked_by": str(actor.user_id)}, "revoked", str(actor.user_id), "identity.credential.revoked")
+
+
+@app.get("/proof-features/status")
+async def proof_feature_status() -> dict[str, Any]:
+    return {"flag": _PROOF_FLAG, "enabled": is_flag_enabled(_PROOF_FLAG), "description": "Cofre de Provas Mínimas – Primícia 1"}
+
+app.include_router(primacia_router)

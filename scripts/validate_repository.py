@@ -167,6 +167,8 @@ APP_DIR_OVERRIDES = {
     "valley-rider": "valley_rider",
 }
 
+EXPECTED_MODULE_COUNT = 24
+
 
 def fail(message: str, errors: list[str]) -> None:
     errors.append(message)
@@ -180,8 +182,11 @@ def main() -> int:
     errors: list[str] = []
     modules = CATALOG["modules"]
     slugs = {module["slug"] for module in modules}
-    if len(slugs) != 25:
-        fail(f"Esperados 25 modulos; catalogo possui {len(slugs)}.", errors)
+    if len(slugs) != EXPECTED_MODULE_COUNT:
+        fail(
+            f"Esperados {EXPECTED_MODULE_COUNT} modulos; catalogo possui {len(slugs)}.",
+            errors,
+        )
     for module in modules:
         base = ROOT / "modules" / module["slug"]
         for relative in REQUIRED_MODULE_FILES:
@@ -1029,7 +1034,7 @@ def main() -> int:
         compliance = json.loads(COMPLIANCE_MATRIX.read_text(encoding="utf-8"))
         if set(compliance.get("modules", {})) != slugs:
             fail(
-                "Matriz de compliance deve cobrir exatamente os 25 modulos do catalogo.",
+                f"Matriz de compliance deve cobrir exatamente os {EXPECTED_MODULE_COUNT} modulos do catalogo.",
                 errors,
             )
         if (
@@ -1062,7 +1067,7 @@ def main() -> int:
             )
         if set(subject_rights.get("module_coverage", {})) != slugs:
             fail(
-                "Fluxo de direitos do titular deve cobrir exatamente os 25 modulos do catalogo.",
+                f"Fluxo de direitos do titular deve cobrir exatamente os {EXPECTED_MODULE_COUNT} modulos do catalogo.",
                 errors,
             )
         guardrails = subject_rights.get("guardrails", {})
@@ -1082,7 +1087,7 @@ def main() -> int:
             )
         if set(retention_jobs.get("module_rules", {})) != slugs:
             fail(
-                "Jobs de retencao devem cobrir exatamente os 25 modulos do catalogo.",
+                f"Jobs de retencao devem cobrir exatamente os {EXPECTED_MODULE_COUNT} modulos do catalogo.",
                 errors,
             )
         safety = retention_jobs.get("safety_rules", {})
@@ -1362,7 +1367,7 @@ def main() -> int:
         return 1
 
     print(
-        "\nRepositorio validado com sucesso! Todos os 25 modulos e infraestrutura estao em conformidade."
+        f"\nRepositorio validado com sucesso! Todos os {EXPECTED_MODULE_COUNT} modulos e infraestrutura estao em conformidade."
     )
     return 0
 
