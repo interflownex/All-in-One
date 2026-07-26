@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/autocommit.yml"
+      - "scripts/apply_pr34_senior_fix.py"
+      - "scripts/.pr34_payload/**"
 
 permissions:
   contents: read
