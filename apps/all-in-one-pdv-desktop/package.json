@@ -7,9 +7,12 @@
   "author": "All in One",
   "license": "UNLICENSED",
   "scripts": {
+    "prestart": "node scripts/prepare-windows.cjs",
     "start": "electron .",
-    "dev": "electron .",
+    "dev": "npm run start",
+    "pretest": "node scripts/prepare-windows.cjs",
     "test": "node --test tests/*.test.cjs",
+    "predist:win": "node scripts/prepare-windows.cjs",
     "dist:win": "electron-builder --win nsis --x64 --ia32 && electron-builder --win portable --x64 && electron-builder --win portable --ia32"
   },
   "devDependencies": {
