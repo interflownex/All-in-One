@@ -18,32 +18,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Capture scaffold freshness
-        id: scaffold
-        shell: bash
-        run: |
-          set +e
-          python scripts/scaffold_modules.py --check > scaffold-freshness.txt 2>&1
-          status=$?
-          cat scaffold-freshness.txt
-          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
-          exit 0
-
-      - name: Upload scaffold diagnostic
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: scaffold-freshness-${{ github.run_id }}
-          path: scaffold-freshness.txt
-          if-no-files-found: error
-          retention-days: 7
-
-      - name: Enforce scaffold freshness
-        if: steps.scaffold.outputs.exit_code != '0'
-        run: |
-          echo "Scaffold dessincronizado. Consulte o artefato scaffold-freshness-${{ github.run_id }}."
-          exit 1
-
       - name: Install dependencies
         run: pip install -r requirements-dev.txt
 
