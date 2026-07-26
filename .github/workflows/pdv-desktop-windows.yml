@@ -1,0 +1,66 @@
+name: PDV Desktop Windows
+
+on:
+  push:
+    branches:
+      - feat/pdv-desktop-offline-windows-2026-07-26
+    paths:
+      - "apps/all-in-one-pdv-desktop/**"
+      - ".github/workflows/pdv-desktop-windows.yml"
+  pull_request:
+    paths:
+      - "apps/all-in-one-pdv-desktop/**"
+      - ".github/workflows/pdv-desktop-windows.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    name: Testar e gerar EXE
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    defaults:
+      run:
+        working-directory: apps/all-in-one-pdv-desktop
+
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Instalar dependências
+        run: npm install --no-audit --no-fund
+
+      - name: Verificar sintaxe
+        shell: pwsh
+        run: |
+          node --check electron/store.cjs
+          node --check electron/main.cjs
+          node --check electron/preload.cjs
+          node --check renderer/app.js
+
+      - name: Executar testes offline
+        run: npm test
+
+      - name: Gerar instalador e portáteis
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: npm run dist:win
+
+      - name: Publicar arquivos instaláveis
+        uses: actions/upload-artifact@v4
+        with:
+          name: All-in-One-PDV-Windows
+          path: |
+            apps/all-in-one-pdv-desktop/dist/*.exe
+            apps/all-in-one-pdv-desktop/dist/*.yml
+            apps/all-in-one-pdv-desktop/dist/*.blockmap
+          if-no-files-found: error
+          retention-days: 30
