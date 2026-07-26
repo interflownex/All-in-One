@@ -179,10 +179,53 @@ A próxima IA deve entregar:
 8. nova versão de `tarefas.md` com data e hora;
 9. integração por Squash and Merge quando os critérios forem atendidos.
 
-## 11. Histórico de versões
+## 11. Status de implementação: Primícias (Recursos 1-24)
+
+### Onda 1: Implementação de infraestrutura RESTful
+- **Status:** ✅ CONCLUÍDO
+- **Data de conclusão:** 26/07/2026 14:46:06
+- **Artefatos:**
+  - 23 arquivos `_primicias.py` com 138 endpoints (6 por módulo)
+  - 23 arquivos `main.py` modificados com integração de routers
+  - 4 scripts de automação (geração, integração, correção, teste)
+  - Suite de testes com 10+ casos em `tests/test_primicias_integration.py`
+  - Documentação completa em `PRIMICIAS_IMPLEMENTATION_REPORT.md`
+- **Commit:** `7cf7729` ("Implementar primícias (Recursos 1-24) em 23 módulos com 138 endpoints RESTful")
+- **Validação:** ✅ py_compile sem erros, feature flags registradas, modelos Pydantic padronizados
+- **Endpoints por módulo:** 6 cada (GET /feature-status, /health, /status, POST /delegations, GET/PATCH /delegations/{id})
+- **Recursos mapeados:** 1-5, 7-24 (Recurso 6 excluído por decisão arquitetônica)
+
+### Onda 2: Persistência e integração com PostgreSQL
+- **Status:** 🟨 PLANEJADO
+- **Dependências:** Commit 7cf7729 validado
+- **Próximos passos:**
+  1. Criar schema PostgreSQL em `database/postgres/migrations/001_create_delegations_tables.sql`
+  2. Implementar ORM SQLAlchemy em `modules/shared/delegation_repository.py`
+  3. Substituir mock responses por queries reais
+  4. Executar testes de persistência
+  5. Deploy em dev/staging
+
+### Onda 3: Segurança e autorização
+- **Status:** 🟨 PLANEJADO
+- **Escopo:**
+  1. Validação JWT em middleware
+  2. Verificação de permissões por delegação
+  3. Rate limiting e quotas
+  4. Audit logging com append-only event log
+
+### Onda 4: Cross-module integration
+- **Status:** 🟨 PLANEJADO
+- **Escopo:**
+  1. Validação de delegação em cadeia
+  2. Chamadas entre módulos via API
+  3. Event bus para async validation (RabbitMQ)
+  4. Transações distribuídas
+
+## 12. Histórico de versões
 
 | Versão | Data e hora         | Alteração principal                                                                                                                                                                         |
 | ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.5    | 26/07/2026 14:46:30 | Consolidação final: primícias Onda 1 ✅ CONCLUÍDA (138 endpoints, 23 módulos, commit 7cf7729); roadmap para Ondas 2-4 definido; passa operacional completa para próxima IA. |
 | 1.4    | 26/07/2026 14:46:06 | Execução autônoma dos checks mandatórios no commit atual com resultado verde para validação de repositório e OpenAPI, além da atualização de passagem operacional para a próxima IA.     |
 | 1.3    | 26/07/2026 14:41:16 | Consolidação autônoma da onda de implementação das primícias com validação técnica mínima: `py_compile` em arquivos alterados e `16 passed` em testes de `feature_flags` e `permissions`.   |
 | 1.2    | 26/07/2026 14:32:04 | Registro da aprovação formal da primeira rodada de inovação do APK Valley Consumidor (24 ideias), com mapeamento técnico e plano de implementação por ondas em `docs/relatorios/inovacao/`. |
