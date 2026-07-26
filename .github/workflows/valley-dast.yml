@@ -33,7 +33,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Instalar backend efêmero
-        run: pip install -r modules/identity/requirements.txt
+        run: pip install -r modules/identity/requirements.txt cryptography==48.0.1
       - name: Iniciar Identity somente no runner autorizado
         shell: bash
         run: |
