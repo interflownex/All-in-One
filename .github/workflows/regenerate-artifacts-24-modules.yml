@@ -1,20 +1,17 @@
-name: Regenerar artefatos para 24 módulos
+name: Limpar migração Vision e corrigir gerador
 
 on:
   push:
     branches:
       - codex/remover-vision-atualizar-stock-2026-07-25
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  regenerate:
-    if: ${{ !contains(github.event.head_commit.message || '', '[artifacts-24-regenerated]') }}
+  cleanup:
+    if: ${{ !contains(github.event.head_commit.message || '', '[vision-cleanup-final]') }}
     runs-on: ubuntu-latest
     steps:
       - name: Baixar branch
@@ -23,25 +20,51 @@ jobs:
           ref: codex/remover-vision-atualizar-stock-2026-07-25
           fetch-depth: 0
 
-      - name: Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Regenerar módulos e contratos
-        run: python scripts/scaffold_modules.py
-
-      - name: Regenerar catálogo de eventos
-        run: python scripts/generate_domain_event_fixtures.py
-
-      - name: Gravar artefatos atualizados
+      - name: Corrigir gerador e remover arquivos temporários
+        shell: bash
         run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/scaffold_modules.py')
+          text = path.read_text(encoding='utf-8')
+
+          readme_bug = '''        special = dedent(
+              """\\
+              `streams` guarda somente metadados privados e hash da URL;
+              `recordings` preserva hash/storage append-only; `motion_alerts`
+              registra deteccoes e incidentes auditaveis.
+              """
+          )
+          rendered = rendered.replace(
+              f"{entities}.\\n\\n## Execucao",
+              f"{entities}.\\n\\n{special}\\n## Execucao",
+          )
+'''
+          text = text.replace(readme_bug, '')
+
+          contract_bug = '''        special += dedent(
+              """
+
+              ## Stream, gravacao e alerta operacional
+
+              """
+          )
+'''
+          text = text.replace(contract_bug, '')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+          rm -f scripts/remove_vision_update_stock.py
+          rm -f .github/workflows/regenerate-artifacts-24-modules.yml
+
+      - name: Gravar limpeza
+        run: |
+          BRANCH="codex/remover-vision-atualizar-stock-2026-07-25"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          if git diff --cached --quiet; then
-            echo "Artefatos já estão atualizados."
-            exit 0
-          fi
-          git commit -m "chore: regenerar artefatos para 24 módulos [artifacts-24-regenerated]"
-          git push origin HEAD:codex/remover-vision-atualizar-stock-2026-07-25
+          git commit -m "fix: limpar migração e corrigir gerador [vision-cleanup-final]"
+          git pull --rebase origin "$BRANCH"
+          git push origin "HEAD:$BRANCH"
