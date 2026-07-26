@@ -1,4 +1,4 @@
-name: Diagnose Jobs PostgreSQL
+name: Diagnose Finance PostgreSQL
 
 on:
   pull_request:
@@ -26,7 +26,7 @@ jobs:
           --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       PGPASSWORD: test-password
-      ALL_IN_ONE_JOBS_POSTGRES_TEST_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
+      ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -38,18 +38,18 @@ jobs:
           for file in database/postgres/migrations/*.sql; do
             psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f "$file" >/dev/null
           done
-      - name: Capturar falha isolada do Jobs
+      - name: Capturar falha isolada de Finance
         shell: bash
         run: |
           set +e
-          python -m pytest tests/test_jobs_postgres_integration.py -q --tb=short --maxfail=1 > jobs-postgres-diagnostic.txt 2>&1
-          echo "exit_code=$?" >> jobs-postgres-diagnostic.txt
-          cat jobs-postgres-diagnostic.txt
+          python -m pytest tests/test_postgres_priority_stores_integration.py::test_finance_wallet_create_get_list_and_outbox -q --tb=short --maxfail=1 > finance-postgres-diagnostic.txt 2>&1
+          echo "exit_code=$?" >> finance-postgres-diagnostic.txt
+          cat finance-postgres-diagnostic.txt
           exit 0
       - name: Publicar diagnóstico
         uses: actions/upload-artifact@v4
         with:
-          name: jobs-postgres-diagnostic-${{ github.run_id }}
-          path: jobs-postgres-diagnostic.txt
+          name: finance-postgres-diagnostic-${{ github.run_id }}
+          path: finance-postgres-diagnostic.txt
           if-no-files-found: error
           retention-days: 2
