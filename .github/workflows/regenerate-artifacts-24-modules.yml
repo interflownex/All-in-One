@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - codex/remover-vision-atualizar-stock-2026-07-25
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
