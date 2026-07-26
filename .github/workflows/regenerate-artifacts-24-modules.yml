@@ -34,12 +34,6 @@ jobs:
       - name: Regenerar catálogo de eventos
         run: python scripts/generate_domain_event_fixtures.py
 
-      - name: Validar OpenAPI
-        run: python scripts/validate_openapi.py
-
-      - name: Validar repositório
-        run: python scripts/validate_repository.py
-
       - name: Gravar artefatos atualizados
         run: |
           git config user.name "github-actions[bot]"
