@@ -32,26 +32,48 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-      - name: Diagnosticar migrações
+      - name: Corrigir identificador reservado
         shell: bash
         run: |
-          mkdir -p reports/ci
-          : > reports/ci/postgres-migration-diagnostic.txt
-          status=0
+          python - <<'PY'
+          from pathlib import Path
+
+          replacements = {
+              Path("database/postgres/migrations/029_unified_immutable_audit.sql"): [
+                  ("ADD COLUMN IF NOT EXISTS authorization TEXT,", 'ADD COLUMN IF NOT EXISTS "authorization" TEXT,'),
+              ],
+              Path("database/postgres/rollbacks/029_unified_immutable_audit.down.sql"): [
+                  ("DROP COLUMN IF EXISTS authorization,", 'DROP COLUMN IF EXISTS "authorization",'),
+              ],
+              Path("modules/shared/audit_contract.py"): [
+                  ("correlation_id, causation_id, occurred_at, result, error_detail, authorization, approval_id,", 'correlation_id, causation_id, occurred_at, result, error_detail, "authorization", approval_id,'),
+              ],
+          }
+          for path, changes in replacements.items():
+              text = path.read_text(encoding="utf-8")
+              for old, new in changes:
+                  if text.count(old) != 1:
+                      raise SystemExit(f"Padrão não localizado exatamente uma vez em {path}: {old}")
+                  text = text.replace(old, new, 1)
+              path.write_text(text, encoding="utf-8", newline="\n")
+
+          diagnostic = Path("reports/ci/postgres-migration-diagnostic.txt")
+          if diagnostic.exists():
+              diagnostic.unlink()
+          PY
+      - name: Validar todas as migrações
+        shell: bash
+        run: |
+          set -euo pipefail
           for file in database/postgres/migrations/*.sql; do
-            echo "=== $file ===" | tee -a reports/ci/postgres-migration-diagnostic.txt
-            if ! psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f "$file" >> reports/ci/postgres-migration-diagnostic.txt 2>&1; then
-              status=$?
-              echo "FALHA_EM=$file" | tee -a reports/ci/postgres-migration-diagnostic.txt
-              break
-            fi
+            echo "Aplicando $file"
+            psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f "$file"
           done
-          tail -n 160 reports/ci/postgres-migration-diagnostic.txt
-          exit 0
-      - name: Commit diagnostic report
+          python -m py_compile modules/shared/audit_contract.py
+      - name: Commit database fix
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add reports/ci/postgres-migration-diagnostic.txt
-          git diff --cached --quiet || git commit -m "ci: registrar diagnostico das migracoes PostgreSQL"
+          git add -A database/postgres/migrations/029_unified_immutable_audit.sql database/postgres/rollbacks/029_unified_immutable_audit.down.sql modules/shared/audit_contract.py reports/ci/postgres-migration-diagnostic.txt
+          git diff --cached --quiet || git commit -m "fix: citar coluna authorization na auditoria PostgreSQL"
           git push origin HEAD:${{ github.head_ref }}
