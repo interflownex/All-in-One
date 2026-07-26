@@ -32,11 +32,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r requirements-dev.txt
+      - run: pip install -r requirements-dev.txt >/dev/null
       - name: Aplicar migrações
         run: |
           for file in database/postgres/migrations/*.sql; do
             psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f "$file" >/dev/null
           done
-      - name: Executar teste Jobs com diagnóstico curto
-        run: python -m pytest tests/test_jobs_postgres_integration.py -q --tb=short --maxfail=1
+      - name: Capturar falha isolada do Jobs
+        shell: bash
+        run: |
+          set +e
+          python -m pytest tests/test_jobs_postgres_integration.py -q --tb=short --maxfail=1 > jobs-postgres-diagnostic.txt 2>&1
+          echo "exit_code=$?" >> jobs-postgres-diagnostic.txt
+          cat jobs-postgres-diagnostic.txt
+          exit 0
+      - name: Publicar diagnóstico
+        uses: actions/upload-artifact@v4
+        with:
+          name: jobs-postgres-diagnostic-${{ github.run_id }}
+          path: jobs-postgres-diagnostic.txt
+          if-no-files-found: error
+          retention-days: 2
