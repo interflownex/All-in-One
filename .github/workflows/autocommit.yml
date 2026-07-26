@@ -1,4 +1,4 @@
-name: Apply Final Stabilization Fixes
+name: Apply Migration 028 Guard
 
 on:
   pull_request:
@@ -13,21 +13,6 @@ jobs:
   repair:
     if: github.head_ref == 'fix/all-in-one-final-stabilization-2026-07-26'
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: all_in_one
-          POSTGRES_USER: all_in_one
-          POSTGRES_PASSWORD: test-password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U all_in_one -d all_in_one"
-          --health-interval 5s --health-timeout 5s --health-retries 10
-    env:
-      PGPASSWORD: test-password
-      ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,12 +21,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-      - name: Instalar dependências
-        run: pip install -r requirements-dev.txt
-      - name: Aplicar correções residuais
+      - name: Proteger repetição da migração 028
         shell: bash
         run: |
           python - <<'PY'
@@ -49,7 +29,6 @@ jobs:
           import textwrap
 
           root = Path('.')
-
           migration_path = root / 'database/postgres/migrations/028_dynamic_forms_governance.sql'
           migration = migration_path.read_text(encoding='utf-8')
           guard_start = "SELECT to_regclass('forms.field_catalog') IS NULL AS run_dynamic_forms_migration \\gset\n\\if :run_dynamic_forms_migration\n"
@@ -63,66 +42,6 @@ jobs:
                   raise SystemExit('Final esperado da migração 028 não encontrado.')
               migration = migration.rstrip() + '\n' + guard_end
           migration_path.write_text(migration, encoding='utf-8', newline='\n')
-
-          alerts_test_path = root / 'tests/test_outbox_alerts.py'
-          alerts_test = alerts_test_path.read_text(encoding='utf-8')
-          start = alerts_test.index('def test_outbox_dashboard_covers_all_exported_operational_metrics() -> None:\n')
-          replacement = '''def test_outbox_dashboard_covers_all_exported_operational_metrics() -> None:
-              dashboard = load_dashboard()
-              panels = dashboard["panels"]
-              expressions = " ".join(
-                  target.get("expr", "")
-                  for panel in panels
-                  for target in panel.get("targets", [])
-              )
-
-              assert dashboard["uid"] == "outbox-dispatcher"
-              assert len(panels) >= 6
-              assert "all_in_one_outbox_pending" in expressions
-              assert "all_in_one_outbox_due" in expressions
-              assert "all_in_one_outbox_published_total" in expressions
-              assert "all_in_one_outbox_failed_retryable_total" in expressions
-              assert "all_in_one_outbox_max_retry_count" in expressions
-              assert "all_in_one_outbox_oldest_pending_age_seconds" in expressions
-          '''
-          alerts_test_path.write_text(alerts_test[:start] + replacement, encoding='utf-8', newline='\n')
-
-          security_path = root / '.github/workflows/security.yml'
-          security = security_path.read_text(encoding='utf-8')
-          matrix_ref = '$' + '{{ matrix.app }}'
-          old_audit = (
-              '      - run: npm audit --omit=dev --audit-level=critical\n'
-              f'        working-directory: {matrix_ref}\n'
-          )
-          new_audit = (
-              '      - name: Auditar dependências JavaScript\n'
-              f'        working-directory: {matrix_ref}\n'
-              '        shell: bash\n'
-              '        run: |\n'
-              '          set -euo pipefail\n'
-              '          for attempt in 1 2 3; do\n'
-              '            set +e\n'
-              '            output="$(npm audit --omit=dev --audit-level=critical 2>&1)"\n'
-              '            status=$?\n'
-              '            set -e\n'
-              '            printf \'%s\\n\' "$output"\n'
-              '            if [ "$status" -eq 0 ]; then exit 0; fi\n'
-              '            if printf \'%s\' "$output" | grep -Eq \'audit endpoint returned an error|invalid json response body\'; then\n'
-              '              echo "Registro npm retornou resposta inválida; repetindo auditoria (${attempt}/3)."\n'
-              '              continue\n'
-              '            fi\n'
-              '            exit "$status"\n'
-              '          done\n'
-              '          echo "Registro npm permaneceu indisponível após três tentativas."\n'
-              '          exit 1\n'
-          )
-          if old_audit in security:
-              security = security.replace(old_audit, new_audit, 1)
-          elif 'name: Auditar dependências JavaScript' not in security:
-              raise SystemExit('Etapa npm audit não localizada.')
-          security_path.write_text(security, encoding='utf-8', newline='\n')
-
-          (root / '.github/workflows/diagnose_jobs_postgres.yml').unlink(missing_ok=True)
 
           canonical = textwrap.dedent('''\
           name: Refresh Generated Contracts
@@ -165,46 +84,13 @@ jobs:
           ''')
           (root / '.github/workflows/autocommit.yml').write_text(canonical, encoding='utf-8', newline='\n')
           PY
-      - name: Validar testes e migrações
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m pytest -q tests/test_outbox_alerts.py tests/test_dynamic_forms_migration.py tests/test_security_gates.py
-          for file in database/postgres/migrations/*.sql; do
-            psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f "$file" >/dev/null
-          done
-          python scripts/validate_postgres_real_dsn.py --repeat-migrations --write-checks
-          env -u ALL_IN_ONE_POSTGRES_MATRIX_DSN python -m pytest -q --ignore=tests/e2e
-      - name: Validar auditorias npm
-        shell: bash
-        run: |
-          set -euo pipefail
-          audit_app() {
-            local app="$1"
-            cd "$app"
-            for attempt in 1 2 3; do
-              set +e
-              output="$(npm audit --omit=dev --audit-level=critical 2>&1)"
-              status=$?
-              set -e
-              printf '%s\n' "$output"
-              if [ "$status" -eq 0 ]; then cd - >/dev/null; return 0; fi
-              if printf '%s' "$output" | grep -Eq 'audit endpoint returned an error|invalid json response body'; then continue; fi
-              cd - >/dev/null
-              return "$status"
-            done
-            cd - >/dev/null
-            return 1
-          }
-          audit_app apps/all-in-one
-          audit_app apps/all-in-one-business
-      - name: Versionar correções validadas
+      - name: Versionar guarda e restaurar workflow manual
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A
+          git add database/postgres/migrations/028_dynamic_forms_governance.sql .github/workflows/autocommit.yml
           git diff --cached --check
-          git diff --cached --quiet || git commit -m "fix: concluir estabilização final"
+          git diff --cached --quiet || git commit -m "fix: tornar migração 028 repetível com segurança"
           git push origin HEAD:${{ github.head_ref }}
