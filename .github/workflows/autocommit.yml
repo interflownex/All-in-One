@@ -1,56 +1,37 @@
-name: Apply Migration 028 Guard
+name: Refresh Generated Contracts
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - ".github/workflows/autocommit.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  repair:
-    if: github.head_ref == 'fix/all-in-one-final-stabilization-2026-07-26'
+  refresh:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Proteger repetição da migração 028
-        shell: bash
+      - name: Regenerar contratos e artefatos controlados
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path("database/postgres/migrations/028_dynamic_forms_governance.sql")
-          text = path.read_text(encoding="utf-8")
-          guard_start = "SELECT to_regclass('forms.field_catalog') IS NULL AS run_dynamic_forms_migration \\gset\n\\if :run_dynamic_forms_migration\n"
-          guard_end = "\\else\n\\echo 'Migração 028 já aplicada; repetição ignorada com segurança.'\n\\endif\n"
-
-          if guard_start not in text:
-              if not text.startswith("BEGIN;\n"):
-                  raise SystemExit("Início esperado da migração 028 não encontrado.")
-              text = guard_start + text
-
-          if guard_end not in text:
-              if not text.rstrip().endswith("COMMIT;"):
-                  raise SystemExit("Final esperado da migração 028 não encontrado.")
-              text = text.rstrip() + "\n" + guard_end
-
-          path.write_text(text, encoding="utf-8", newline="\n")
-          PY
-      - name: Versionar somente a guarda SQL
-        shell: bash
+          python scripts/scaffold_modules.py
+          python scripts/generate_domain_event_fixtures.py
+          python scripts/generate_data_audit_inventory.py
+      - name: Validar alterações geradas
         run: |
-          set -euo pipefail
+          python scripts/scaffold_modules.py --check
+          python scripts/generate_domain_event_fixtures.py --check
+          python scripts/validate_openapi.py
+          python scripts/validate_repository.py
+      - name: Versionar somente alterações geradas
+        run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add database/postgres/migrations/028_dynamic_forms_governance.sql
+          git add apps modules contracts config docs/data-audit
           git diff --cached --check
-          git diff --cached --quiet || git commit -m "fix: tornar migração 028 repetível com segurança"
-          git push origin HEAD:${{ github.head_ref }}
+          git diff --cached --quiet || git commit -m "chore: atualizar contratos e artefatos gerados"
+          git push
