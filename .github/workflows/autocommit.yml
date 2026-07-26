@@ -22,43 +22,107 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Instalar dependencias
-        run: pip install -r requirements-dev.txt
-      - name: Gerar diagnostico por comando
+      - name: Alinhar fontes de verdade
         shell: bash
         run: |
-          mkdir -p reports/ci
           python - <<'PY'
           from pathlib import Path
-          import subprocess
-          import sys
+          import json
 
-          commands = [
-              [sys.executable, "scripts/scaffold_modules.py", "--check"],
-              [sys.executable, "scripts/generate_domain_event_fixtures.py", "--check"],
-              [sys.executable, "scripts/validate_openapi.py"],
-              [sys.executable, "scripts/validate_repository.py"],
+          def write_json(path: Path, data: object) -> None:
+              path.write_text(
+                  json.dumps(data, ensure_ascii=False, indent=2) + "\n",
+                  encoding="utf-8",
+                  newline="\n",
+              )
+
+          scaffold_path = Path("scripts/scaffold_modules.py")
+          scaffold = scaffold_path.read_text(encoding="utf-8")
+          marker = '''DB_SCHEMA = {
+              "riders": "delivery",
+              "permissions": "permissions",
+              "ai_core": "ai_core",
+              "api_hub": "api_hub",
+          }
+          ENDPOINTS = ['''
+          replacement = '''DB_SCHEMA = {
+              "riders": "delivery",
+              "permissions": "permissions",
+              "ai_core": "ai_core",
+              "api_hub": "api_hub",
+          }
+          APP_DIR_OVERRIDES = {
+              "valley-business": "valley_business",
+              "valley-rider": "valley_rider",
+          }
+          ENDPOINTS = ['''
+          if marker not in scaffold:
+              raise SystemExit("Bloco DB_SCHEMA esperado nao encontrado em scaffold_modules.py")
+          scaffold = scaffold.replace(marker, replacement, 1)
+          old_app_base = '        base = ROOT / "apps" / app["slug"]'
+          new_app_base = '        base = ROOT / "apps" / APP_DIR_OVERRIDES.get(app["slug"], app["slug"])'
+          if old_app_base not in scaffold:
+              raise SystemExit("Caminho de app esperado nao encontrado em scaffold_modules.py")
+          scaffold = scaffold.replace(old_app_base, new_app_base, 1)
+          scaffold_path.write_text(scaffold, encoding="utf-8", newline="\n")
+
+          manifest_path = Path("config/stitch/screen_manifest.json")
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+          manifest["projects"] = [
+              project for project in manifest.get("projects", [])
+              if project.get("module") != "vision"
           ]
-
-          lines = ["# Diagnostico do gate de artefatos gerados", ""]
-          for command in commands:
-              result = subprocess.run(command, text=True, capture_output=True)
-              lines.extend([
-                  f"## {' '.join(command)}",
-                  f"exit_code: {result.returncode}",
-                  "```text",
-                  (result.stdout + result.stderr).strip() or "<sem saida>",
-                  "```",
-                  "",
-              ])
-          Path("reports/ci/generated-artifacts-diagnostic.md").write_text(
-              "\n".join(lines), encoding="utf-8", newline="\n"
+          manifest["project_count"] = len(manifest["projects"])
+          manifest["screen_count"] = sum(
+              int(project.get("screen_count", 0)) for project in manifest["projects"]
           )
+          write_json(manifest_path, manifest)
+
+          brand_path = Path("config/branding/brand_identity.json")
+          brand = json.loads(brand_path.read_text(encoding="utf-8"))
+          platform_brand = brand.setdefault("platform_brand", {})
+          platform_brand["light_logo_asset"] = platform_brand.get("logo_asset")
+          brand["valley_apps"] = ["valley", "valley-business", "valley-rider"]
+          write_json(brand_path, brand)
+
+          classification_path = Path("config/compliance/data_classification.json")
+          classification = json.loads(classification_path.read_text(encoding="utf-8"))
+          classification.get("modules", {}).pop("vision", None)
+          write_json(classification_path, classification)
+
+          rights_path = Path("config/compliance/data_subject_rights.json")
+          rights = json.loads(rights_path.read_text(encoding="utf-8"))
+          rights.get("module_coverage", {}).pop("vision", None)
+          write_json(rights_path, rights)
+
+          retention_path = Path("config/compliance/retention_jobs.json")
+          retention = json.loads(retention_path.read_text(encoding="utf-8"))
+          retention.get("module_rules", {}).pop("vision", None)
+          write_json(retention_path, retention)
+
+          coordinate_path = Path("config/stitch/template_project_coordinate.json")
+          coordinate = json.loads(coordinate_path.read_text(encoding="utf-8"))
+          for project in coordinate.get("projects", []):
+              project["module_scope"] = [
+                  module for module in project.get("module_scope", []) if module != "vision"
+              ]
+              if project.get("id") == "all_in_one_web_mobile_template":
+                  project["objective"] = project.get("objective", "").replace(
+                      "25 modulos oficiais", "24 modulos oficiais"
+                  )
+                  for group in project.get("screen_groups", []):
+                      if group.get("key") == "content_governance":
+                          group["title"] = group.get("title", "").replace(
+                              "legal, vision, BPM", "legal, BPM"
+                          )
+          write_json(coordinate_path, coordinate)
+
+          print("Fontes de verdade alinhadas a 24 modulos.")
           PY
-      - name: Commit diagnostic report
+      - name: Commit source-of-truth fixes
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add reports/ci/generated-artifacts-diagnostic.md
-          git diff --cached --quiet || git commit -m "ci: registrar diagnostico do gate de artefatos"
+          git add scripts/scaffold_modules.py config/stitch/screen_manifest.json config/branding/brand_identity.json config/compliance/data_classification.json config/compliance/data_subject_rights.json config/compliance/retention_jobs.json config/stitch/template_project_coordinate.json
+          git diff --cached --quiet || git commit -m "fix: alinhar fontes de verdade ao catalogo de 24 modulos"
           git push
