@@ -3,7 +3,6 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `crm.lead.created`
-
 - `crm.lead.qualified`
 - `crm.lead.disqualified`
 - `crm.opportunity.created`

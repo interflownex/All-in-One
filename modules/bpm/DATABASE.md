@@ -5,7 +5,6 @@
         ## Entidades planejadas
 
         - `bpm.processes`
-
 - `bpm.workflow_instances`
 - `bpm.tasks`
 - `bpm.sla_policies`

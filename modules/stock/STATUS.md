@@ -1,4 +1,4 @@
-# Status: Stock
+# Status: STOCK
 
 - Estado: `domain_engine_active`
 - Runtime: FastAPI com persistencia SQLite contratual, autorizacao, auditoria e outbox

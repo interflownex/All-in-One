@@ -3,7 +3,6 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `business.company.created`
-
 - `business.company.submitted`
 - `business.company.approved`
 - `business.company.rejected`

@@ -3,7 +3,6 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `marketplace.store.created`
-
 - `marketplace.product.created`
 - `marketplace.order.created`
 - `marketplace.order.paid`

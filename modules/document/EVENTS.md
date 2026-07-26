@@ -3,7 +3,6 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `document.uploaded`
-
 - `document.versioned`
 - `document.signed`
 

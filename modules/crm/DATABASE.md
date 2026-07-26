@@ -5,7 +5,6 @@
         ## Entidades planejadas
 
         - `crm.leads`
-
 - `crm.opportunities`
 - `crm.activities`
 - `crm.campaigns`

@@ -1,11 +1,10 @@
-        # Database: Stock
+        # Database: STOCK
 
         Schema relacional principal: `stock`.
 
         ## Entidades planejadas
 
         - `stock.suppliers`
-
 - `stock.catalog_products`
 - `stock.price_rules`
 - `stock.supplier_orders`

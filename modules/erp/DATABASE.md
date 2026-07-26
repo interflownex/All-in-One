@@ -5,7 +5,6 @@
         ## Entidades planejadas
 
         - `erp.accounts`
-
 - `erp.payables`
 - `erp.receivables`
 - `erp.cost_centers`

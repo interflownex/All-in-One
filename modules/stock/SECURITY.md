@@ -1,4 +1,4 @@
-# Security: Stock
+# Security: STOCK
 
 - OAuth2/JWT ou API key com escopo de modulo no API Hub.
 - MFA para aprovacoes, pagamentos e leitura de dados sensiveis.

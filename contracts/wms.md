@@ -7,7 +7,6 @@
         ## Entidades
 
         - `warehouses`
-
 - `bins`
 - `inventory`
 - `picking_waves`
@@ -16,7 +15,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -38,6 +36,7 @@
 - `POST /reject`
 - `POST /audit`
 
+
 ## Recebimento, picking e despacho
 
 - `warehouses` exige `name`, inicia em `active` e emite `wms.warehouse.created`.
@@ -48,10 +47,10 @@
 - A acao `pick` emite `wms.picking.completed`; `close` exige papel aprovador, MFA e emite `wms.picking.closed`.
 - `shipments` exige `warehouse_id`, `picking_wave_id` e `carrier_reference`; `dispatch` exige papel aprovador, MFA e emite `wms.shipment.dispatched`.
 
+
         ## Eventos
 
         - `wms.warehouse.created`
-
 - `wms.bin.created`
 - `wms.inventory.received`
 - `wms.inventory.allocated`

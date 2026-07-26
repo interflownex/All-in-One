@@ -3,7 +3,6 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `bpm.process.started`
-
 - `bpm.task.created`
 - `bpm.task.escalated`
 - `bpm.task.completed`
