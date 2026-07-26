@@ -1,12 +1,12 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 1.6
+**Versão:** 1.8
 **Data da entrega:** 26/07/2026
-**Hora da entrega:** 14:59:11
+**Hora da entrega:** 15:25:55
 **Fuso horário:** `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch de elaboração:** `feature/primicias-selecionadas-v1`
-**Commit de referência:** `a14d56780c296972ce5d29cb53189e3234296a07`
+**Commit de referência:** `ee9ae950afe4dd75fd111d9d6aae2024d3bc8865`
 **Issue de orquestração:** `#43`
 **Classificação:** `Pendências > Técnico > Equipe técnica`
 **Destino:** Codex e demais IAs desenvolvedoras autorizadas
@@ -30,6 +30,8 @@ Registrar o primeiro teste completo das diretrizes permanentes e fornecer à pr�
 - issue `#28` encerrada;
 - issue `#43` aberta para o ciclo v2.6.
 - checks locais do commit atual executados com sucesso: `python3 scripts/validate_repository.py` e `python3 scripts/validate_openapi.py`.
+- auditoria de confirmação v7 executada no commit atual com resultado geral OK (`docs/relatorios/audit_confirmation_v7_2026-07-26.md`).
+- observação técnica da auditoria v7: `modules/api_hub/openapi.json` reportado como ausente no escopo do script, sem bloquear `python3 scripts/validate_openapi.py`.
 
 ### Pendente
 
@@ -248,7 +250,8 @@ A próxima IA deve entregar:
 
 | Versão | Data e hora         | Alteração principal                                                                                                                                                                                  |
 | ------ | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.7    | 26/07/2026 15:07:30 | Conclusão autônoma Onda 2: persistência PostgreSQL completa; DelegationRepository + Service criados; 23 módulos integrados; validação 100% OK; commit 1a8aebf; roadmap Ondas 3-4 refinado.            |
+| 1.8    | 26/07/2026 15:25:55 | Execução autônoma de pré-flight multiagente, lock de atividade e checks do commit atual; auditoria v7 OK com registro de ressalva sobre `modules/api_hub/openapi.json`; `validate_repository` aprovado. |
+| 1.7    | 26/07/2026 15:07:30 | Conclusão autônoma Onda 2: persistência PostgreSQL completa; DelegationRepository + Service criados; 23 módulos integrados; validação 100% OK; commit 1a8aebf; roadmap Ondas 3-4 refinado.           |
 | 1.6    | 26/07/2026 14:59:11 | Estabilização autônoma pós-onda: correção de import dinâmico no módulo `permissions`, ajuste do teste de integração de primícias e atualização do validador web para JSONC e regras não bloqueantes. |
 | 1.5    | 26/07/2026 14:46:30 | Consolidação final: primícias Onda 1 ✅ CONCLUÍDA (138 endpoints, 23 módulos, commit 7cf7729); roadmap para Ondas 2-4 definido; passa operacional completa para próxima IA.                          |
 | 1.4    | 26/07/2026 14:46:06 | Execução autônoma dos checks mandatórios no commit atual com resultado verde para validação de repositório e OpenAPI, além da atualização de passagem operacional para a próxima IA.                 |
