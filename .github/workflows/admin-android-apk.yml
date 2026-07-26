@@ -37,16 +37,38 @@ jobs:
       - name: Configurar Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Validar e gerar APK Admin
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Instalar Android 36
+        run: sdkmanager "platforms;android-36" "build-tools;36.1.0"
+
+      - name: Validar painel público
+        run: |
+          curl --fail --silent --show-error --location \
+            --retry 4 --retry-delay 5 \
+            https://9135635066da434181.v2.appdeploy.ai/ \
+            --output /tmp/all-in-one-admin.html
+          test -s /tmp/all-in-one-admin.html
+
+      - name: Testar e gerar APK Admin
         working-directory: apps/valley-android
         run: |
           chmod +x gradlew
           ./gradlew :admin:testDebugUnitTest :admin:assembleDebug --no-daemon --stacktrace
 
+      - name: Preparar instalador e checksum
+        run: |
+          cp apps/valley-android/admin/build/outputs/apk/debug/admin-debug.apk \
+            All-in-One-Admin-1.0.0.apk
+          sha256sum All-in-One-Admin-1.0.0.apk > All-in-One-Admin-1.0.0.apk.sha256
+
       - name: Publicar APK para download
         uses: actions/upload-artifact@v4
         with:
-          name: all-in-one-admin-debug-apk
+          name: all-in-one-admin-apk
           if-no-files-found: error
           retention-days: 30
-          path: apps/valley-android/admin/build/outputs/apk/debug/admin-debug.apk
+          path: |
+            All-in-One-Admin-1.0.0.apk
+            All-in-One-Admin-1.0.0.apk.sha256
