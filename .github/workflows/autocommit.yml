@@ -29,7 +29,9 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
+          cp .github/workflows/autocommit.yml /tmp/autocommit.yml
           python scripts/apply_pr34_senior_fix.py
+          cp /tmp/autocommit.yml .github/workflows/autocommit.yml
           rm -f reports/ci/fix-pr34.patch.gz reports/ci/fix-pr34.b64.00
           rm -f reports/ci/pr34-senior-fix-diagnostic.txt reports/ci/pr34-patch-diagnostic.txt
       - name: Commit corrected sources and generated artifacts
