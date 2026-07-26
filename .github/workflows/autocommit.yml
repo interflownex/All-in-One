@@ -2,54 +2,25 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
-    paths:
-      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
-    if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Atualizar somente a versão do pypdf no gerador
-        shell: bash
+      - run: python scripts/scaffold_modules.py
+      - name: Commit generated changes
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path("scripts/scaffold_modules.py")
-          text = path.read_text(encoding="utf-8")
-          old = '            "pypdf==6.13.3\\n"\n'
-          new = '            "pypdf==6.14.2\\n"\n'
-          count = text.count(old)
-          if count != 1:
-              raise SystemExit(f"Esperada uma referência pypdf 6.13.3; encontradas {count}.")
-          path.write_text(text.replace(old, new, 1), encoding="utf-8", newline="\n")
-
-          for temporary in (
-              "reports/ci/pip-audit-diagnostic.md",
-              "reports/ci/pip-audit-diagnostic.json",
-              "reports/ci/pip-audit-exit-code.txt",
-          ):
-              candidate = Path(temporary)
-              if candidate.exists():
-                  candidate.unlink()
-          PY
-      - name: Validar gerador e commit
-        run: |
-          python scripts/scaffold_modules.py --check
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A scripts/scaffold_modules.py reports/ci
-          git diff --cached --quiet || git commit -m "security: alinhar gerador ao pypdf 6.14.2"
-          git push origin HEAD:${{ github.head_ref }}
+          git add apps modules contracts
+          git diff --cached --quiet || git commit -m "refresh generated module contracts"
+          git push
