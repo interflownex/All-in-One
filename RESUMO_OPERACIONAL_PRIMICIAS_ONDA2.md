@@ -1,9 +1,9 @@
 # Resumo Operacional: Primícias Onda 2 - Persistência PostgreSQL
 
-**Data**: 26 de julho de 2026  
-**Hora**: 15:10 BRT  
-**Branch**: `feature/primicias-selecionadas-v1`  
-**Commits de referência**: `1a8aebf` (Onda 2), `f867d58` (tarefas.md v1.7)  
+**Data**: 26 de julho de 2026
+**Hora**: 15:10 BRT
+**Branch**: `feature/primicias-selecionadas-v1`
+**Commits de referência**: `1a8aebf` (Onda 2), `f867d58` (tarefas.md v1.7)
 **Status**: ✅ 100% CONCLUÍDO
 
 ---
@@ -13,6 +13,7 @@
 ### 1. Camada de Persistência (2 Novos Arquivos)
 
 #### `modules/shared/delegation_repository.py` (327 linhas)
+
 - **Responsabilidade**: CRUD em PostgreSQL para delegações
 - **Transações**: Context manager com commit/rollback automático
 - **Segurança**: Parametrized queries (psycopg sql.SQL + Identifier)
@@ -24,6 +25,7 @@
   - `close()`
 
 #### `modules/shared/delegation_service.py` (235 linhas)
+
 - **Responsabilidade**: Lógica de negócio e validações
 - **Validações**:
   - `max_amount` ≥ 0 → 422 se negativo
@@ -38,6 +40,7 @@
 ### 2. Integração nos 23 Módulos
 
 **Cada arquivo `modules/{module}/_primicias.py`:**
+
 - Adicionou import: `from shared.delegation_service import DelegationService`
 - Inicializou service: `delegation_service = DelegationService()`
 - Substituiu 3 endpoints:
@@ -46,6 +49,7 @@
   - ✅ PATCH `/delegations/{id}` → `delegation_service.update_delegation()`
 
 **Endpoints não modificados:**
+
 - GET `/feature-status` (apenas status da flag)
 - GET `/health` (health check)
 - GET `/status` (status do módulo)
@@ -64,32 +68,32 @@
 
 ## Mapeamento de Recursos → Módulos
 
-| Módulo | Recurso | Primícia | Integração |
-|--------|---------|----------|-----------|
-| identity | 1 | Prova de Identidade Mínima | ✅ |
-| business | 2 | Consórcio Flash | ✅ |
-| permissions | 3 | Procuração Operacional Expirável | ✅ |
-| finance | 4 | Dinheiro Earmarked | ✅ |
-| marketplace | 5 | Coligação de Compra Local | ✅ |
-| ~~stock~~ | ~~6~~ | ~~demand_before_showcase~~ | ❌ EXCLUÍDO |
-| delivery | 7 | Capacidade de Rota | ✅ |
-| riders | 8 | Passaporte de Evidência | ✅ |
-| services | 9 | Contrato de Resultado | ✅ |
-| mobility | 10 | Rota Intencional Premium ⭐ | ✅ |
-| jobs | 11 | Disponibilidade Reversa | ✅ |
-| erp | 12 | Encerramento Contínuo | ✅ |
-| wms | 13 | Confiança de Inventário | ✅ |
-| tms | 14 | Câmbio Cego de Capacidade | ✅ |
-| crm | 15 | Promessas ao Cliente | ✅ |
-| bpm | 16 | Laboratório de Processos | ✅ |
-| document | 17 | Obrigações Vivas | ✅ |
-| hr | 18 | Agendamento de Afinidade Justa | ✅ |
-| health | 19 | Cápsula de Continuidade | ✅ |
-| legal | 20 | Radar de Impacto | ✅ |
-| property | 21 | Capacidade Compartilhada | ✅ |
-| bi | 22 | Perguntas Não Feitas | ✅ |
-| ai_core | 23 | Recibo de Memória | ✅ |
-| api_hub | 24 | Contrato Adaptativo | ✅ |
+| Módulo      | Recurso | Primícia                         | Integração  |
+| ----------- | ------- | -------------------------------- | ----------- |
+| identity    | 1       | Prova de Identidade Mínima       | ✅          |
+| business    | 2       | Consórcio Flash                  | ✅          |
+| permissions | 3       | Procuração Operacional Expirável | ✅          |
+| finance     | 4       | Dinheiro Earmarked               | ✅          |
+| marketplace | 5       | Coligação de Compra Local        | ✅          |
+| ~~stock~~   | ~~6~~   | ~~demand_before_showcase~~       | ❌ EXCLUÍDO |
+| delivery    | 7       | Capacidade de Rota               | ✅          |
+| riders      | 8       | Passaporte de Evidência          | ✅          |
+| services    | 9       | Contrato de Resultado            | ✅          |
+| mobility    | 10      | Rota Intencional Premium ⭐      | ✅          |
+| jobs        | 11      | Disponibilidade Reversa          | ✅          |
+| erp         | 12      | Encerramento Contínuo            | ✅          |
+| wms         | 13      | Confiança de Inventário          | ✅          |
+| tms         | 14      | Câmbio Cego de Capacidade        | ✅          |
+| crm         | 15      | Promessas ao Cliente             | ✅          |
+| bpm         | 16      | Laboratório de Processos         | ✅          |
+| document    | 17      | Obrigações Vivas                 | ✅          |
+| hr          | 18      | Agendamento de Afinidade Justa   | ✅          |
+| health      | 19      | Cápsula de Continuidade          | ✅          |
+| legal       | 20      | Radar de Impacto                 | ✅          |
+| property    | 21      | Capacidade Compartilhada         | ✅          |
+| bi          | 22      | Perguntas Não Feitas             | ✅          |
+| ai_core     | 23      | Recibo de Memória                | ✅          |
+| api_hub     | 24      | Contrato Adaptativo              | ✅          |
 
 **Total**: 23 módulos integrados, Recurso 6 excluído
 
@@ -146,17 +150,20 @@ HTTP 201 Created + JSON Response
 ## Configuração Necessária para Próxima Fase
 
 ### 1. Variáveis de Ambiente
+
 ```bash
 export DATABASE_URL=postgresql://user:password@localhost:5432/all_in_one
 ```
 
 ### 2. Execução de Migrations
+
 ```bash
 cd /home/eretazan/.codex/worktrees/1781507772-23398/all-in-one
 alembic upgrade head  # Certifique que migration 031 foi executada
 ```
 
 ### 3. Verificação de Schema
+
 ```bash
 psql postgresql://... -c "\dt permissions.*"
 # Deve listar: delegations, delegation_constraints, delegation_grants, delegation_usages, delegation_revocations
@@ -166,21 +173,22 @@ psql postgresql://... -c "\dt permissions.*"
 
 ## Validações de Negócio Implementadas
 
-| Validação | Status Code | Mensagem | Onde |
-|-----------|-------------|---------|------|
-| max_amount < 0 | 422 | "max_amount deve ser positivo ou zero" | DelegationService |
-| valid_until ≤ valid_from | 422 | "valid_until deve ser após valid_from" | DelegationService |
-| grantee_id vazio | 422 | "grantee_id é obrigatório" | DelegationService |
-| purpose vazio | 422 | "purpose é obrigatório" | DelegationService |
-| Delegação não existe | 404 | "Delegação {id} não encontrada" | DelegationService |
-| Feature flag desabilitada | 402 | Feature Not Enabled | require_flag() |
-| Erro de BD | 500 | "Erro ao [criar/atualizar/recuperar]: {detalhes}" | DelegationService |
+| Validação                 | Status Code | Mensagem                                          | Onde              |
+| ------------------------- | ----------- | ------------------------------------------------- | ----------------- |
+| max_amount < 0            | 422         | "max_amount deve ser positivo ou zero"            | DelegationService |
+| valid_until ≤ valid_from  | 422         | "valid_until deve ser após valid_from"            | DelegationService |
+| grantee_id vazio          | 422         | "grantee_id é obrigatório"                        | DelegationService |
+| purpose vazio             | 422         | "purpose é obrigatório"                           | DelegationService |
+| Delegação não existe      | 404         | "Delegação {id} não encontrada"                   | DelegationService |
+| Feature flag desabilitada | 402         | Feature Not Enabled                               | require_flag()    |
+| Erro de BD                | 500         | "Erro ao [criar/atualizar/recuperar]: {detalhes}" | DelegationService |
 
 ---
 
 ## Próximas Etapas (Ondas 3-4)
 
 ### Onda 3: Segurança e Autorização (Tempo: 3-4 horas)
+
 ```
 🔓 Checklist:
 [ ] JWT middleware nos 23 main.py
@@ -194,6 +202,7 @@ psql postgresql://... -c "\dt permissions.*"
 **Entrada esperada**: Commit 1a8aebf (Onda 2 ✅)
 
 ### Onda 4: Integração Cross-Module (Tempo: 4-6 horas)
+
 ```
 🔗 Checklist:
 [ ] Module-to-module API validation calls
@@ -210,6 +219,7 @@ psql postgresql://... -c "\dt permissions.*"
 ## Verbatim: Comandos para Continuar
 
 ### Verificar Sintaxe
+
 ```bash
 cd /home/eretazan/.codex/worktrees/1781507772-23398/all-in-one
 python3 -m py_compile modules/shared/delegation_repository.py
@@ -221,17 +231,20 @@ echo "✅ Todos os arquivos com sintaxe válida"
 ```
 
 ### Importar Service
+
 ```bash
 python3 -c "from modules.shared.delegation_service import DelegationService; print('✅ Service importável')"
 ```
 
 ### Validar Repositório
+
 ```bash
 python3 scripts/validate_repository.py
 python3 scripts/validate_openapi.py
 ```
 
 ### Executar Testes (quando BD estiver disponível)
+
 ```bash
 DATABASE_URL=postgresql://user:pass@localhost:5432/all_in_one \
 python3 -m pytest tests/test_primicias_integration.py -v
@@ -270,14 +283,14 @@ python3 -m pytest tests/test_primicias_integration.py -v
 
 ## Artefatos Criados / Modificados
 
-| Tipo | Arquivo | Linhas | Status |
-|------|---------|--------|--------|
-| Novo | modules/shared/delegation_repository.py | 327 | ✅ |
-| Novo | modules/shared/delegation_service.py | 235 | ✅ |
-| Novo | scripts/update_primicias_with_service.py | 194 | ✅ |
-| Novo | RELATORIO_ONDA2_PERSISTENCIA.md | 350+ | ✅ |
-| Atualizado | tarefas.md (v1.7) | - | ✅ |
-| Atualizado | modules/*/\_primicias.py (23 files) | ~130 cada | ✅ |
+| Tipo       | Arquivo                                  | Linhas    | Status |
+| ---------- | ---------------------------------------- | --------- | ------ |
+| Novo       | modules/shared/delegation_repository.py  | 327       | ✅     |
+| Novo       | modules/shared/delegation_service.py     | 235       | ✅     |
+| Novo       | scripts/update_primicias_with_service.py | 194       | ✅     |
+| Novo       | RELATORIO_ONDA2_PERSISTENCIA.md          | 350+      | ✅     |
+| Atualizado | tarefas.md (v1.7)                        | -         | ✅     |
+| Atualizado | modules/\*/\_primicias.py (23 files)     | ~130 cada | ✅     |
 
 **Total Mudanças**: +1,843 inserções, -784 deletions (30 arquivos)
 
@@ -319,9 +332,8 @@ python3 -m pytest tests/test_primicias_integration.py -v
 
 ---
 
-**Versão**: 1.0  
-**Data**: 2026-07-26  
-**Hora**: 15:10 BRT  
-**Autor**: Codex (IA Desenvolvedora)  
+**Versão**: 1.0
+**Data**: 2026-07-26
+**Hora**: 15:10 BRT
+**Autor**: Codex (IA Desenvolvedora)
 **Status**: ✅ PRONTO PARA PRÓXIMA FASE
-

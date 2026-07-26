@@ -1,7 +1,7 @@
 # Onda 2: Persistência em PostgreSQL - Relatório de Implementação
 
-**Data**: 26 de julho de 2026  
-**Branch**: `feature/primicias-selecionadas-v1`  
+**Data**: 26 de julho de 2026
+**Branch**: `feature/primicias-selecionadas-v1`
 **Status**: ✅ COMPLETO
 
 ---
@@ -11,6 +11,7 @@
 Onda 2 implementa a **camada de persistência PostgreSQL** para substituir as respostas mock dos endpoints de delegação em todos os 23 módulos. Este documento registra o que foi entregue, decisões técnicas e próximos passos.
 
 ### Objetivos da Onda 2
+
 - ✅ Criar repositório genérico de delegações (PostgreSQL + Psycopg3)
 - ✅ Implementar service de negócio com validações
 - ✅ Integrar repository + service em todos os 23 endpoints
@@ -18,6 +19,7 @@ Onda 2 implementa a **camada de persistência PostgreSQL** para substituir as re
 - ✅ Validar sintaxe e compilação
 
 ### Resultado
+
 - ✅ 2 novos arquivos (`delegation_repository.py`, `delegation_service.py`)
 - ✅ 23 módulos atualizados com integração ao serviço
 - ✅ 100% dos arquivos com sintaxe Python válida
@@ -32,11 +34,13 @@ Onda 2 implementa a **camada de persistência PostgreSQL** para substituir as re
 **Responsabilidade**: CRUD em PostgreSQL para delegações
 
 **Recursos**:
+
 - Transações com context manager (commit/rollback automático)
 - Parametrized queries (psycopg sql.SQL + sql.Identifier)
 - Connection pooling (row_factory=dict_row)
 
 **Métodos**:
+
 - `create_delegation(grantor_id, grantee_id, purpose, constraints?, idempotency_key?)` → Insere delegação + constraints
 - `get_delegation(delegation_id)` → Retorna delegação com constraints
 - `update_delegation_status(delegation_id, new_status, updated_by?)` → Atualiza status + revocation tracking
@@ -44,6 +48,7 @@ Onda 2 implementa a **camada de persistência PostgreSQL** para substituir as re
 - `close()` → Fecha conexão
 
 **Tabelas Utilizadas** (pré-existentes em migration 031):
+
 - `permissions.delegations` (id, grantor_id, grantee_id, purpose, status, created_at, activated_at, revoked_at, idempotency_key, metadata)
 - `permissions.delegation_constraints` (id, delegation_id, valid_from, valid_until, max_amount, allowed_actions, single_use, ...)
 - `permissions.delegation_usages` (id, delegation_id, actor_id, module, action, amount, correlation_id, used_at, result)
@@ -56,6 +61,7 @@ Onda 2 implementa a **camada de persistência PostgreSQL** para substituir as re
 **Responsabilidade**: Lógica de negócio e validações
 
 **Recursos**:
+
 - Validações de constraints (max_amount ≥ 0, valid_until > valid_from)
 - Campos obrigatórios (grantee_id, purpose)
 - Tradução de erros para HTTPException com status corretos (422, 404, 500)
@@ -63,6 +69,7 @@ Onda 2 implementa a **camada de persistência PostgreSQL** para substituir as re
 - Destrutor (`__del__`) para cleanup de conexão
 
 **Métodos Principais**:
+
 - `create_delegation()` com validações e persistência
 - `get_delegation()` com tratamento 404
 - `update_delegation()` com validação de status
@@ -76,6 +83,7 @@ Onda 2 implementa a **camada de persistência PostgreSQL** para substituir as re
 Cada arquivo `modules/{module}/_primicias.py` foi atualizado:
 
 ### Antes (Mock)
+
 ```python
 @router.post("/delegations", ...)
 async def create_delegation(request: DelegationRequest) -> DelegationResponse:
@@ -88,6 +96,7 @@ async def create_delegation(request: DelegationRequest) -> DelegationResponse:
 ```
 
 ### Depois (Persistência)
+
 ```python
 from shared.delegation_service import DelegationService
 
@@ -106,6 +115,7 @@ async def create_delegation(request: DelegationRequest) -> DelegationResponse:
 ```
 
 ### Impacto nos 6 Endpoints/Módulo
+
 1. ✅ GET `/feature-status` → Sem alteração (status apenas)
 2. ✅ GET `/health` → Sem alteração (health check apenas)
 3. ✅ GET `/status` → Sem alteração (status apenas)
@@ -118,18 +128,21 @@ async def create_delegation(request: DelegationRequest) -> DelegationResponse:
 ## 4. Status de Validação
 
 ### Sintaxe Python
+
 - ✅ `modules/shared/delegation_repository.py` - Válida
 - ✅ `modules/shared/delegation_service.py` - Válida
 - ✅ Todos 23 × `modules/{module}/_primicias.py` - Válidas
 
 ### Compilação
+
 ```bash
 $ for mod in ai_core api_hub ... wms; do python3 -m py_compile modules/$mod/_primicias.py; done
 Result: 0 errors
 ```
 
 ### Feature Flags
-- ✅ Flags registradas (23 × FF_PRIMICIA_*)
+
+- ✅ Flags registradas (23 × FF*PRIMICIA*\*)
 - ✅ require_flag() mantido em todos os endpoints
 - ✅ Validação 402 (Feature Not Enabled) funcional
 
@@ -155,7 +168,7 @@ HTTP Request (POST /delegations)
         └─ Transaction commit/rollback
             ↓
     PostgreSQL Database
-    
+
 HTTP Response (DelegationResponse with real data)
 ```
 
@@ -164,6 +177,7 @@ HTTP Response (DelegationResponse with real data)
 ## 6. Configuração Necessária
 
 ### Variáveis de Ambiente
+
 ```bash
 # Required for DelegationService
 DATABASE_URL=postgresql://user:pass@host:5432/all_in_one
@@ -173,6 +187,7 @@ POSTGRES_DSN=postgresql://user:pass@host:5432/all_in_one
 ```
 
 ### Inicialização do Banco
+
 ```bash
 # Execute migrations
 cd /home/eretazan/.codex/worktrees/1781507772-23398/all-in-one
@@ -188,22 +203,27 @@ psql postgresql://... -c "\dt permissions.*"
 ## 7. Tratamento de Erros
 
 ### 422 Unprocessable Entity
+
 **Quando**: Dados inválidos
 **Causas**:
+
 - `max_amount` negativo: "max_amount deve ser positivo ou zero"
 - `valid_until` ≤ `valid_from`: "valid_until deve ser após valid_from"
 - `grantee_id` vazio: "grantee_id é obrigatório"
 - `purpose` vazio: "purpose é obrigatório"
 
 ### 402 Payment Required (Feature Flag)
+
 **Quando**: Flag desabilitada (padrão: desabilitado por segurança)
 **Ativação**: Habilitar `FF_PRIMICIA_{MODULE}_*` por ambiente/tenant
 
 ### 404 Not Found
+
 **Quando**: Delegação não existe
 **Exemplo**: GET `/delegations/invalid-uuid`
 
 ### 500 Internal Server Error
+
 **Quando**: Erro de banco de dados
 **Ação**: Log automático (será melhorado em Onda 3)
 
@@ -212,6 +232,7 @@ psql postgresql://... -c "\dt permissions.*"
 ## 8. Testes Recomendados
 
 ### Teste de Criação (POST)
+
 ```bash
 curl -X POST http://localhost:8000/permissions/delegations \
   -H "Content-Type: application/json" \
@@ -227,11 +248,13 @@ curl -X POST http://localhost:8000/permissions/delegations \
 ```
 
 ### Teste de Recuperação (GET)
+
 ```bash
 curl http://localhost:8000/permissions/delegations/{delegation_id}
 ```
 
 ### Teste de Atualização (PATCH)
+
 ```bash
 curl -X PATCH http://localhost:8000/permissions/delegations/{delegation_id} \
   -H "Content-Type: application/json" \
@@ -239,6 +262,7 @@ curl -X PATCH http://localhost:8000/permissions/delegations/{delegation_id} \
 ```
 
 ### Teste de Validação (422)
+
 ```bash
 # Deve retornar 422
 curl -X POST http://localhost:8000/permissions/delegations \
@@ -255,6 +279,7 @@ curl -X POST http://localhost:8000/permissions/delegations \
 ## 9. Próximos Passos (Ondas 3-4)
 
 ### Onda 3: Segurança e Autorização (Planejado para próxima fase)
+
 - [ ] JWT middleware em todos os 23 main.py
 - [ ] Extração de `X-Actor-User-Id` dos headers
 - [ ] Role-based authorization checks
@@ -264,6 +289,7 @@ curl -X POST http://localhost:8000/permissions/delegations \
 **Tempo estimado**: 3-4 horas
 
 ### Onda 4: Integração Cross-Module (Longo prazo)
+
 - [ ] Module-to-module API validation calls
 - [ ] Event bus (RabbitMQ) para async validation
 - [ ] Distributed transaction management
@@ -275,14 +301,14 @@ curl -X POST http://localhost:8000/permissions/delegations \
 
 ## 10. Artefatos Criados
 
-| Arquivo | Linhas | Status |
-|---------|--------|--------|
-| `modules/shared/delegation_repository.py` | 327 | ✅ Criado |
-| `modules/shared/delegation_service.py` | 235 | ✅ Criado |
-| `scripts/update_primicias_with_service.py` | 194 | ✅ Criado |
-| `modules/ai_core/_primicias.py` | ~130 | ✅ Atualizado |
-| `modules/api_hub/_primicias.py` | ~130 | ✅ Atualizado |
-| ... (21 outros módulos) | ... | ✅ Atualizado |
+| Arquivo                                    | Linhas | Status        |
+| ------------------------------------------ | ------ | ------------- |
+| `modules/shared/delegation_repository.py`  | 327    | ✅ Criado     |
+| `modules/shared/delegation_service.py`     | 235    | ✅ Criado     |
+| `scripts/update_primicias_with_service.py` | 194    | ✅ Criado     |
+| `modules/ai_core/_primicias.py`            | ~130   | ✅ Atualizado |
+| `modules/api_hub/_primicias.py`            | ~130   | ✅ Atualizado |
+| ... (21 outros módulos)                    | ...    | ✅ Atualizado |
 
 **Total**: 25 arquivos modificados/criados, 0 erros de sintaxe
 
@@ -291,19 +317,23 @@ curl -X POST http://localhost:8000/permissions/delegations \
 ## 11. Resumo de Mudanças por Categoria
 
 ### Arquivos Novos: 3
+
 - `delegation_repository.py` - CRUD database
 - `delegation_service.py` - Business logic
 - `update_primicias_with_service.py` - Automation script
 
 ### Arquivos Modificados: 23
+
 - `modules/{module}/_primicias.py` - All modules
 
 ### Linhas de Código Adicionadas: ~700
+
 - Repository: 327 linhas
 - Service: 235 linhas
 - Endpoints updates: ~140 linhas (distribuidas em 23 files)
 
 ### Compatibilidade
+
 - ✅ Python 3.11+
 - ✅ FastAPI (latest)
 - ✅ Psycopg 3.x
@@ -325,6 +355,7 @@ curl -X POST http://localhost:8000/permissions/delegations \
 ## 13. Comandos para Próxima Fase
 
 ### Verificar Status
+
 ```bash
 # Todos os arquivos estão com sintaxe válida?
 for mod in ai_core ... wms; do python3 -m py_compile modules/$mod/_primicias.py; done && echo "✅ OK"
@@ -334,6 +365,7 @@ python3 -c "from modules.shared.delegation_service import DelegationService; pri
 ```
 
 ### Executar Testes
+
 ```bash
 # Testes de integração (quando DB estiver disponível)
 DATABASE_URL=postgresql://... python3 -m pytest tests/test_primicias_integration.py -v
@@ -344,6 +376,7 @@ python3 scripts/validate_openapi.py
 ```
 
 ### Git Commit
+
 ```bash
 git add modules/shared/delegation_*.py scripts/update_primicias_with_service.py modules/*/_primicias.py
 git commit -m "Onda 2: Persistência de delegações em PostgreSQL - 23 módulos integrados"
@@ -351,9 +384,8 @@ git commit -m "Onda 2: Persistência de delegações em PostgreSQL - 23 módulos
 
 ---
 
-**Versão**: 1.0  
-**Data**: 2026-07-26  
-**Hora**: 14:45:23 BRT  
-**Autor**: Codex (AI Developer)  
+**Versão**: 1.0
+**Data**: 2026-07-26
+**Hora**: 14:45:23 BRT
+**Autor**: Codex (AI Developer)
 **Status**: ✅ CONCLUÍDO
-

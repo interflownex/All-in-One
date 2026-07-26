@@ -6,7 +6,6 @@ Data: 26/07/2026
 Branch: feature/primicias-selecionadas-v1
 """
 
-import os
 from pathlib import Path
 
 # Mapping de módulos
@@ -48,11 +47,11 @@ delegation_service = DelegationService()
 CREATE_DELEGATION_TEMPLATE = '''@router.post("/delegations", response_model=DelegationResponse, status_code=201)
 async def create_delegation(request: DelegationRequest) -> DelegationResponse:
     """Cria uma delegação/procuração.
-    
+
     A feature flag deve estar habilitada para este endpoint estar disponível.
     """
     require_flag(FLAG)
-    
+
     # Delegar validações e persistência ao service
     result = delegation_service.create_delegation(
         grantor_id="system",  # Em produção, usar X-Actor-User-Id
@@ -60,7 +59,7 @@ async def create_delegation(request: DelegationRequest) -> DelegationResponse:
         purpose=request.purpose,
         constraints=request.constraints.dict() if request.constraints else None,
     )
-    
+
     return DelegationResponse(**result)
 '''
 
@@ -68,7 +67,7 @@ GET_DELEGATION_TEMPLATE = '''@router.get("/delegations/{delegation_id}", respons
 async def get_delegation(delegation_id: str) -> DelegationResponse:
     """Retorna detalhes de uma delegação específica."""
     require_flag(FLAG)
-    
+
     # Buscar do banco de dados
     result = delegation_service.get_delegation(delegation_id)
     return DelegationResponse(**result)
@@ -81,7 +80,7 @@ async def update_delegation(
 ) -> DelegationResponse:
     """Atualiza uma delegação existente."""
     require_flag(FLAG)
-    
+
     # Atualizar status no banco de dados
     result = delegation_service.update_delegation(
         delegation_id=delegation_id,
@@ -94,14 +93,14 @@ async def update_delegation(
 def update_module_primicias(module_name: str):
     """Atualizar arquivo _primicias.py de um módulo."""
     file_path = MODULES_DIR / module_name / "_primicias.py"
-    
+
     if not file_path.exists():
-        return False, f"arquivo não encontrado"
-    
+        return False, "arquivo não encontrado"
+
     try:
-        with open(file_path, "r") as f:
+        with open(file_path) as f:
             content = f.read()
-        
+
         # Adicionar import do service se não existir
         if "from shared.delegation_service import DelegationService" not in content:
             # Encontrar última importação de shared
@@ -110,7 +109,7 @@ def update_module_primicias(module_name: str):
                     "from shared.feature_flags import is_flag_enabled, require_flag",
                     "from shared.feature_flags import is_flag_enabled, require_flag\nfrom shared.delegation_service import DelegationService"
                 )
-        
+
         # Inicializar service após router
         if "delegation_service = DelegationService()" not in content:
             if "FLAG = \"primicia." in content:
@@ -122,10 +121,10 @@ def update_module_primicias(module_name: str):
                     if line.startswith("FLAG = \"primicia."):
                         new_lines.append("delegation_service = DelegationService()")
                 content = "\n".join(new_lines)
-        
+
         # Atualizar endpoints para usar o service
         # Substituir mock responses por calls ao service
-        
+
         # POST /delegations
         if 'return DelegationResponse(' in content and 'delegation_service.create_delegation' not in content:
             # Encontrar e substituir a primeira ocorrência em POST
@@ -134,16 +133,16 @@ def update_module_primicias(module_name: str):
                 post_end = content.find('@router.get("/delegations/{delegation_id}"', post_start)
                 if post_end != -1:
                     post_section = content[post_start:post_end]
-                    
+
                     # Substituir o corpo da função
                     new_post_section = '''@router.post("/delegations", response_model=DelegationResponse, status_code=201)
 async def create_delegation(request: DelegationRequest) -> DelegationResponse:
     """Cria uma delegação/procuração.
-    
+
     A feature flag deve estar habilitada para este endpoint estar disponível.
     """
     require_flag(FLAG)
-    
+
     # Delegar validações e persistência ao service
     result = delegation_service.create_delegation(
         grantor_id="system",  # Em produção, usar X-Actor-User-Id
@@ -151,13 +150,13 @@ async def create_delegation(request: DelegationRequest) -> DelegationResponse:
         purpose=request.purpose,
         constraints=request.constraints.dict() if request.constraints else None,
     )
-    
+
     return DelegationResponse(**result)
 
 
 '''
                     content = content[:post_start] + new_post_section + content[post_end:]
-        
+
         # GET /delegations/{id}
         if '@router.get("/delegations/{delegation_id}"' in content and 'delegation_service.get_delegation' not in content:
             get_start = content.find('@router.get("/delegations/{delegation_id}"')
@@ -168,7 +167,7 @@ async def create_delegation(request: DelegationRequest) -> DelegationResponse:
 async def get_delegation(delegation_id: str) -> DelegationResponse:
     """Retorna detalhes de uma delegação específica."""
     require_flag(FLAG)
-    
+
     # Buscar do banco de dados
     result = delegation_service.get_delegation(delegation_id)
     return DelegationResponse(**result)
@@ -176,7 +175,7 @@ async def get_delegation(delegation_id: str) -> DelegationResponse:
 
 '''
                     content = content[:get_start] + new_get_section + content[get_end:]
-        
+
         # PATCH /delegations/{id}
         if '@router.patch("/delegations/{delegation_id}"' in content and 'delegation_service.update_delegation' not in content:
             patch_start = content.find('@router.patch("/delegations/{delegation_id}"')
@@ -185,7 +184,7 @@ async def get_delegation(delegation_id: str) -> DelegationResponse:
                 patch_end = content.find('@router.', patch_start + 1)
                 if patch_end == -1:
                     patch_end = len(content)
-                
+
                 new_patch_section = '''@router.patch("/delegations/{delegation_id}", response_model=DelegationResponse)
 async def update_delegation(
     delegation_id: str,
@@ -193,7 +192,7 @@ async def update_delegation(
 ) -> DelegationResponse:
     """Atualiza uma delegação existente."""
     require_flag(FLAG)
-    
+
     # Atualizar status no banco de dados
     result = delegation_service.update_delegation(
         delegation_id=delegation_id,
@@ -203,10 +202,10 @@ async def update_delegation(
     return DelegationResponse(**result)
 '''
                 content = content[:patch_start] + new_patch_section
-        
+
         with open(file_path, "w") as f:
             f.write(content)
-        
+
         return True, "atualizado com sucesso"
     except Exception as e:
         return False, str(e)
@@ -217,10 +216,10 @@ def main():
     print("=" * 70)
     print("Onda 2: Atualizar endpoints para usar DelegationService")
     print("=" * 70)
-    
+
     success_count = 0
     failed_count = 0
-    
+
     for module_name in MODULES:
         success, message = update_module_primicias(module_name)
         if success:
@@ -229,7 +228,7 @@ def main():
         else:
             print(f"❌ {module_name:20} {message}")
             failed_count += 1
-    
+
     print("\n" + "=" * 70)
     print(f"Resumo: {success_count}/{len(MODULES)} módulos processados, {failed_count} falharam")
     print("=" * 70)
