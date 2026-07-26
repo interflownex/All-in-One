@@ -73,43 +73,43 @@ def remove_path(relative: str) -> None:
 
 
 def prune_vision(value: Any) -> Any:
-    drop = object()
+    marker = object()
 
     def visit(node: Any) -> Any:
         if isinstance(node, dict):
-            identity_values = {
+            identities = {
                 str(node.get(key, "")).strip().lower()
                 for key in ("slug", "module", "domain", "service", "name", "id")
             }
-            if REMOVED_MODULE in identity_values:
-                return drop
+            if REMOVED_MODULE in identities:
+                return marker
             result: dict[str, Any] = {}
             for key, item in node.items():
                 key_lower = str(key).lower()
                 if key_lower == REMOVED_MODULE or key_lower.startswith("vision."):
                     continue
                 cleaned = visit(item)
-                if cleaned is not drop:
+                if cleaned is not marker:
                     result[key] = cleaned
             for count_key in ("module_count", "modules_count", "total_modules"):
-                if count_key in result and isinstance(result[count_key], int):
+                if isinstance(result.get(count_key), int):
                     result[count_key] = 24
             return result
         if isinstance(node, list):
             result = []
             for item in node:
                 cleaned = visit(item)
-                if cleaned is not drop:
+                if cleaned is not marker:
                     result.append(cleaned)
             return result
         if isinstance(node, str):
             normalized = node.strip().lower()
             if normalized == REMOVED_MODULE or normalized.startswith("vision.") or normalized.startswith("/vision"):
-                return drop
+                return marker
         return node
 
     cleaned = visit(value)
-    return None if cleaned is drop else cleaned
+    return None if cleaned is marker else cleaned
 
 
 def update_catalog() -> None:
@@ -135,7 +135,7 @@ def update_catalog() -> None:
     catalog["version"] = "0.2.0"
     catalog["module_count"] = len(modules)
     catalog["modules"] = modules
-    path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_text(path, json.dumps(catalog, ensure_ascii=False, indent=2) + "\n")
 
 
 def update_json(path: Path) -> None:
@@ -144,7 +144,7 @@ def update_json(path: Path) -> None:
     except (json.JSONDecodeError, UnicodeDecodeError):
         return
     cleaned = prune_vision(data)
-    path.write_text(json.dumps(cleaned, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_text(path, json.dumps(cleaned, ensure_ascii=False, indent=2) + "\n")
 
 
 def remove_lazy_vision_declarations(text: str) -> str:
@@ -173,20 +173,24 @@ def remove_vision_route_blocks(text: str) -> str:
     output: list[str] = []
     index = 0
     while index < len(lines):
-        if "<Route" in lines[index]:
-            block: list[str] = []
+        if "<Route" not in lines[index]:
+            output.append(lines[index])
+            index += 1
+            continue
+
+        block: list[str] = [lines[index]]
+        index += 1
+        if not block[0].strip().endswith("/>"):
             while index < len(lines):
                 block.append(lines[index])
+                closing = lines[index].strip()
                 index += 1
-                if "/>" in block[-1]:
+                if closing == "/>" or closing.endswith("} />"):
                     break
-            joined = "".join(block)
-            if re.search(r'path=["\']/vision(?:/|["\'])', joined) or re.search(r"\bVision\w*", joined):
-                continue
-            output.extend(block)
+        joined = "".join(block)
+        if re.search(r'path=["\']/vision(?:/|["\'])', joined) or re.search(r"\bVision\w*", joined):
             continue
-        output.append(lines[index])
-        index += 1
+        output.extend(block)
     return "".join(output)
 
 
@@ -197,7 +201,7 @@ def update_app_router(relative: str) -> None:
     text = path.read_text(encoding="utf-8")
     text = remove_lazy_vision_declarations(text)
     text = remove_vision_route_blocks(text)
-    path.write_text(text, encoding="utf-8")
+    write_text(path, text)
 
 
 def update_home() -> None:
@@ -213,14 +217,13 @@ def update_home() -> None:
     text = text.replace("<strong>25</strong>", "<strong>24</strong>")
     text = text.replace("<strong>181</strong>", "<strong>171</strong>")
     text = text.replace("25 capacidades que trabalham como uma so.", "24 capacidades que trabalham como uma só.")
-    path.write_text(text, encoding="utf-8")
+    write_text(path, text)
 
 
 def remove_single_line_active_references(path: Path) -> None:
     if not path.exists():
         return
-    text = path.read_text(encoding="utf-8")
-    lines = text.splitlines(keepends=True)
+    lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
     cleaned: list[str] = []
     for line in lines:
         lower = line.lower()
@@ -230,19 +233,12 @@ def remove_single_line_active_references(path: Path) -> None:
         stripped = line.strip()
         removable = any(
             marker in stripped
-            for marker in (
-                '"vision"',
-                "'vision'",
-                "vision.yaml",
-                "modules/vision",
-                "/vision/",
-                "vision.",
-            )
+            for marker in ('"vision"', "'vision'", "vision.yaml", "modules/vision", "/vision/", "vision.")
         )
         if removable and not stripped.startswith(("#", "//", "/*", "*")):
             continue
         cleaned.append(line)
-    path.write_text("".join(cleaned), encoding="utf-8")
+    write_text(path, "".join(cleaned))
 
 
 def remove_yaml_service_block(path: Path, key: str) -> None:
@@ -267,7 +263,7 @@ def remove_yaml_service_block(path: Path, key: str) -> None:
             if stripped and current_indent <= indent and not stripped.startswith("#"):
                 break
             index += 1
-    path.write_text("".join(output), encoding="utf-8")
+    write_text(path, "".join(output))
 
 
 def remove_markdown_vision_section(text: str) -> str:
@@ -286,7 +282,7 @@ def remove_markdown_vision_section(text: str) -> str:
                 index += 1
             continue
         line_lower = lines[index].lower()
-        if ("| vision |" in line_lower or re.match(r"^\s*[-*]\s+vision\b", lines[index], re.IGNORECASE)):
+        if "| vision |" in line_lower or re.match(r"^\s*[-*]\s+vision\b", lines[index], re.IGNORECASE):
             index += 1
             continue
         output.append(lines[index])
@@ -297,13 +293,12 @@ def remove_markdown_vision_section(text: str) -> str:
 def update_current_document(path: Path) -> None:
     if not path.exists():
         return
-    text = path.read_text(encoding="utf-8")
-    text = remove_markdown_vision_section(text)
+    text = remove_markdown_vision_section(path.read_text(encoding="utf-8"))
     for old, new in COUNT_REPLACEMENTS.items():
         text = text.replace(old, new)
     for old, new in STOCK_NAME_REPLACEMENTS.items():
         text = text.replace(old, new)
-    path.write_text(text, encoding="utf-8")
+    write_text(path, text)
 
 
 def rename_25_module_documents() -> None:
@@ -312,83 +307,103 @@ def rename_25_module_documents() -> None:
         if ".git" in path.parts or not path.is_file():
             continue
         target = path.with_name(path.name.replace("25_Modulos", "24_Modulos"))
-        if target.exists():
-            continue
-        path.rename(target)
+        if not target.exists():
+            path.rename(target)
 
 
 def create_database_removal_migration() -> None:
     migrations = ROOT / "database/postgres/migrations"
     if not migrations.exists():
         return
-    numbers = []
+    numbers: list[int] = []
     for path in migrations.glob("[0-9][0-9][0-9]_*.sql"):
         try:
             numbers.append(int(path.name.split("_", 1)[0]))
         except ValueError:
-            pass
-    number = max(numbers, default=0) + 1
-    target = migrations / f"{number:03d}_remove_vision_module.sql"
+            continue
+    target = migrations / f"{max(numbers, default=0) + 1:03d}_remove_vision_module.sql"
     if target.exists():
         return
-    write_text(
-        target,
-        """-- Remoção definitiva do módulo Vision do escopo ativo do All-in-One.\n"
-        "-- Antes de aplicar em produção, confirme que qualquer dado que deva ser preservado foi exportado.\n"
-        "BEGIN;\n"
-        "DROP SCHEMA IF EXISTS vision CASCADE;\n"
-        "COMMIT;\n",
+    sql = "\n".join(
+        [
+            "-- Remoção definitiva do módulo Vision do escopo ativo do All-in-One.",
+            "-- Antes de aplicar em produção, confirme que qualquer dado necessário foi exportado.",
+            "BEGIN;",
+            "DROP SCHEMA IF EXISTS vision CASCADE;",
+            "COMMIT;",
+            "",
+        ]
     )
+    write_text(target, sql)
 
 
 def create_authoritative_document() -> None:
     path = ROOT / "docs/DECISAO_24_MODULOS_STOCK_PRIMEIRA_ETAPA_2026-07-25.md"
-    write_text(
-        path,
-        """# Decisão oficial: 24 módulos e STOCK na primeira etapa\n\n"
-        "**Projeto:** All-in-One + Valley  \n"
-        "**Data:** 25/07/2026  \n"
-        "**Classificação:** Conceito, comercial e técnico  \n"
-        "**Público:** gestão, investidores, comercial, desenvolvimento e equipe técnica\n\n"
-        "## 1. Remoção do Vision\n\n"
-        "O módulo **Vision — Câmeras, Monitoramento e Ocorrências** foi removido do escopo ativo. "
-        "A plataforma passa de **25 para 24 módulos**. O site passa de **181 para 171 telas previstas** e de **335 para 325 rotas auditáveis estimadas**, considerando a retirada das dez superfícies do Vision.\n\n"
-        "Referências em auditorias históricas permanecem apenas como evidência do estado anterior. Elas não representam oferta, roadmap, orçamento ou funcionalidade vigente.\n\n"
-        "## 2. Posição oficial do STOCK\n\n"
-        "O nome oficial é exclusivamente **STOCK**. O módulo entra na **Onda 1**, junto com Marketplace e Finance. "
-        "A operação inicial será controlada, sem estoque físico próprio, com catálogo curado, pedido sob demanda e acompanhamento humano.\n\n"
-        "### Fontes iniciais\n\n"
-        "1. AliExpress;\n2. CJ Dropshipping.\n\n"
-        "### Dependências mínimas\n\n"
-        "1. Identity;\n2. Business;\n3. API Hub;\n4. Marketplace;\n5. Finance.\n\n"
-        "### Reservas de planejamento\n\n"
-        "- custo único: R$ 28 mil a R$ 125 mil;\n"
-        "- custo mensal: R$ 22 mil a R$ 80 mil;\n"
-        "- capital de giro: R$ 20 mil a R$ 100 mil.\n\n"
-        "Os valores são reservas internas de planejamento, não promessa de lucro nem proposta comercial.\n\n"
-        "## 3. Nova distribuição das ondas\n\n"
-        "- **Onda 1:** Identity, Business, API Hub, Marketplace, Finance, STOCK, Jobs, Permissions e AI Core.\n"
-        "- **Onda 2:** Delivery, Services, Riders, Mobility e CRM.\n"
-        "- **Onda 3:** BI, ERP, Document e BPM.\n"
-        "- **Onda 4:** Health, HR, TMS, WMS, Property e Legal.\n\n"
-        "Não existe mais Onda 5 vinculada ao Vision.\n",
+    content = "\n".join(
+        [
+            "# Decisão oficial: 24 módulos e STOCK na primeira etapa",
+            "",
+            "**Projeto:** All-in-One + Valley  ",
+            "**Data:** 25/07/2026  ",
+            "**Classificação:** Conceito, comercial e técnico  ",
+            "**Público:** gestão, investidores, comercial, desenvolvimento e equipe técnica",
+            "",
+            "## 1. Remoção do Vision",
+            "",
+            "O módulo **Vision — Câmeras, Monitoramento e Ocorrências** foi removido do escopo ativo.",
+            "A plataforma passa de **25 para 24 módulos**. O site passa de **181 para 171 telas previstas** e de **335 para 325 rotas auditáveis estimadas**, considerando a retirada das dez superfícies do Vision.",
+            "",
+            "Referências em auditorias históricas permanecem somente como evidência do estado anterior. Elas não representam oferta, roadmap, orçamento ou funcionalidade vigente.",
+            "",
+            "## 2. Posição oficial do STOCK",
+            "",
+            "O nome oficial é exclusivamente **STOCK**. O módulo entra na **Onda 1**, junto com Marketplace e Finance.",
+            "A operação inicial será controlada, sem estoque físico próprio, com catálogo curado, pedido sob demanda e acompanhamento humano.",
+            "",
+            "### Fontes iniciais",
+            "",
+            "1. AliExpress;",
+            "2. CJ Dropshipping.",
+            "",
+            "### Dependências mínimas",
+            "",
+            "1. Identity;",
+            "2. Business;",
+            "3. API Hub;",
+            "4. Marketplace;",
+            "5. Finance.",
+            "",
+            "### Reservas de planejamento",
+            "",
+            "- custo único: R$ 28 mil a R$ 125 mil;",
+            "- custo mensal: R$ 22 mil a R$ 80 mil;",
+            "- capital de giro: R$ 20 mil a R$ 100 mil.",
+            "",
+            "Os valores são reservas internas de planejamento, não promessa de lucro nem proposta comercial.",
+            "",
+            "## 3. Nova distribuição das ondas",
+            "",
+            "- **Onda 1:** Identity, Business, API Hub, Marketplace, Finance, STOCK, Jobs, Permissions e AI Core.",
+            "- **Onda 2:** Delivery, Services, Riders, Mobility e CRM.",
+            "- **Onda 3:** BI, ERP, Document e BPM.",
+            "- **Onda 4:** Health, HR, TMS, WMS, Property e Legal.",
+            "",
+            "Não existe mais Onda 5 vinculada ao Vision.",
+            "",
+        ]
     )
+    write_text(path, content)
 
 
 def create_execution_report() -> None:
     active_refs: list[str] = []
-    allowed_parts = {
-        ".git",
-        "docs/data-audit",
-        "docs/relatorios",
-    }
+    ignored_prefixes = ("docs/data-audit/", "docs/relatorios/")
+    suffixes = {".py", ".ts", ".tsx", ".js", ".json", ".yaml", ".yml", ".md"}
     for path in ROOT.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in {".py", ".ts", ".tsx", ".js", ".json", ".yaml", ".yml", ".md"}:
+        if not path.is_file() or path.suffix.lower() not in suffixes:
             continue
         relative = path.relative_to(ROOT).as_posix()
-        if relative == "scripts/remove_vision_update_stock.py":
-            continue
-        if any(relative.startswith(prefix) for prefix in allowed_parts):
+        if relative == "scripts/remove_vision_update_stock.py" or relative.startswith(ignored_prefixes):
             continue
         try:
             text = path.read_text(encoding="utf-8")
@@ -396,6 +411,7 @@ def create_execution_report() -> None:
             continue
         if re.search(r"\bvision\b", text, re.IGNORECASE):
             active_refs.append(relative)
+
     report = ROOT / "docs/relatorios/remocao-vision/RELATORIO_REMOCAO_VISION_STOCK_2026-07-25.md"
     status = "sem referências ativas encontradas" if not active_refs else "referências residuais exigem revisão"
     lines = [
