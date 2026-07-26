@@ -46,31 +46,31 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
+          import textwrap
 
           root = Path('.')
 
           migration_path = root / 'database/postgres/migrations/028_dynamic_forms_governance.sql'
           migration = migration_path.read_text(encoding='utf-8')
-          migration = migration.replace('CREATE TABLE forms.', 'CREATE TABLE IF NOT EXISTS forms.')
-          migration = migration.replace('CREATE INDEX ', 'CREATE INDEX IF NOT EXISTS ')
-          migration = migration.replace(
-              'ALTER TABLE forms.form_definitions\n    ADD CONSTRAINT form_definitions_current_version_fk',
-              'ALTER TABLE forms.form_definitions DROP CONSTRAINT IF EXISTS form_definitions_current_version_fk;\n'
-              'ALTER TABLE forms.form_definitions\n    ADD CONSTRAINT form_definitions_current_version_fk',
-              1,
-          )
-          migration = migration.replace(
-              'ALTER TABLE forms.form_blocks ADD CONSTRAINT form_blocks_visibility_fk',
-              'ALTER TABLE forms.form_blocks DROP CONSTRAINT IF EXISTS form_blocks_visibility_fk;\n'
-              'ALTER TABLE forms.form_blocks ADD CONSTRAINT form_blocks_visibility_fk',
-              1,
-          )
-          migration = migration.replace(
-              'ALTER TABLE forms.form_fields ADD CONSTRAINT form_fields_visibility_fk',
-              'ALTER TABLE forms.form_fields DROP CONSTRAINT IF EXISTS form_fields_visibility_fk;\n'
-              'ALTER TABLE forms.form_fields ADD CONSTRAINT form_fields_visibility_fk',
-              1,
-          )
+          migration = re.sub(r'CREATE TABLE (?!IF NOT EXISTS )forms\.', 'CREATE TABLE IF NOT EXISTS forms.', migration)
+          migration = re.sub(r'CREATE INDEX (?!IF NOT EXISTS )', 'CREATE INDEX IF NOT EXISTS ', migration)
+          constraints = {
+              'form_definitions_current_version_fk': 'forms.form_definitions',
+              'form_blocks_visibility_fk': 'forms.form_blocks',
+              'form_fields_visibility_fk': 'forms.form_fields',
+          }
+          for constraint, table in constraints.items():
+              drop = f'ALTER TABLE {table} DROP CONSTRAINT IF EXISTS {constraint};\n'
+              marker = f'ALTER TABLE {table}\n    ADD CONSTRAINT {constraint}'
+              inline_marker = f'ALTER TABLE {table} ADD CONSTRAINT {constraint}'
+              if drop not in migration:
+                  if marker in migration:
+                      migration = migration.replace(marker, drop + marker, 1)
+                  elif inline_marker in migration:
+                      migration = migration.replace(inline_marker, drop + inline_marker, 1)
+                  else:
+                      raise SystemExit(f'Constraint não encontrada: {constraint}')
           triggers = {
               'immutable_published_form_version': 'forms.form_versions',
               'immutable_published_blocks': 'forms.form_blocks',
@@ -83,6 +83,8 @@ jobs:
               marker = f'CREATE TRIGGER {trigger}'
               drop = f'DROP TRIGGER IF EXISTS {trigger} ON {table};\n'
               if drop not in migration:
+                  if marker not in migration:
+                      raise SystemExit(f'Trigger não encontrado: {trigger}')
                   migration = migration.replace(marker, drop + marker, 1)
           migration_path.write_text(migration, encoding='utf-8', newline='\n')
 
@@ -91,28 +93,13 @@ jobs:
           dynamic_test = dynamic_test.replace(
               'assert f"CREATE TABLE forms.{table}" in source',
               'assert f"CREATE TABLE IF NOT EXISTS forms.{table}" in source',
-              1,
           )
           dynamic_test_path.write_text(dynamic_test, encoding='utf-8', newline='\n')
 
           alerts_test_path = root / 'tests/test_outbox_alerts.py'
           alerts_test = alerts_test_path.read_text(encoding='utf-8')
-          old = '''def test_outbox_dashboard_covers_all_exported_operational_metrics() -> None:
-              dashboard = load_dashboard()
-              panels = dashboard["dashboard"]["panels"]
-              expressions = " ".join(panel["expr"] for panel in panels)
-
-              assert dashboard["scope"] == "outbox-dispatcher"
-              assert dashboard["dashboard"]["uid"] == "all-in-one-outbox-dispatcher"
-              assert len(panels) >= 6
-              assert "all_in_one_outbox_pending" in expressions
-              assert "all_in_one_outbox_due" in expressions
-              assert "all_in_one_outbox_published_total" in expressions
-              assert "all_in_one_outbox_failed_retryable_total" in expressions
-              assert "all_in_one_outbox_max_retry_count" in expressions
-              assert "all_in_one_outbox_oldest_pending_age_seconds" in expressions
-          '''
-          new = '''def test_outbox_dashboard_covers_all_exported_operational_metrics() -> None:
+          start = alerts_test.index('def test_outbox_dashboard_covers_all_exported_operational_metrics() -> None:\n')
+          replacement = '''def test_outbox_dashboard_covers_all_exported_operational_metrics() -> None:
               dashboard = load_dashboard()
               panels = dashboard["panels"]
               expressions = " ".join(
@@ -130,46 +117,47 @@ jobs:
               assert "all_in_one_outbox_max_retry_count" in expressions
               assert "all_in_one_outbox_oldest_pending_age_seconds" in expressions
           '''
-          if old not in alerts_test:
-              raise SystemExit('Bloco antigo do teste Outbox não encontrado.')
-          alerts_test_path.write_text(alerts_test.replace(old, new, 1), encoding='utf-8', newline='\n')
+          alerts_test_path.write_text(alerts_test[:start] + replacement, encoding='utf-8', newline='\n')
 
           security_path = root / '.github/workflows/security.yml'
           security = security_path.read_text(encoding='utf-8')
-          old_audit = '''      - run: npm audit --omit=dev --audit-level=critical
-                working-directory: ${{ matrix.app }}
-          '''
-          new_audit = '''      - name: Auditar dependências JavaScript
-                working-directory: ${{ matrix.app }}
-                shell: bash
-                run: |
-                  set -euo pipefail
-                  for attempt in 1 2 3; do
-                    set +e
-                    output="$(npm audit --omit=dev --audit-level=critical 2>&1)"
-                    status=$?
-                    set -e
-                    printf '%s\n' "$output"
-                    if [ "$status" -eq 0 ]; then
-                      exit 0
-                    fi
-                    if printf '%s' "$output" | grep -Eq 'audit endpoint returned an error|invalid json response body'; then
-                      echo "Registro npm retornou resposta inválida; repetindo auditoria (${attempt}/3)."
-                      continue
-                    fi
-                    exit "$status"
-                  done
-                  echo "Registro npm permaneceu indisponível após três tentativas."
-                  exit 1
-          '''
-          if old_audit not in security:
-              raise SystemExit('Etapa npm audit antiga não encontrada.')
-          security_path.write_text(security.replace(old_audit, new_audit, 1), encoding='utf-8', newline='\n')
+          matrix_ref = '$' + '{{ matrix.app }}'
+          old_audit = (
+              '      - run: npm audit --omit=dev --audit-level=critical\n'
+              f'        working-directory: {matrix_ref}\n'
+          )
+          new_audit = (
+              '      - name: Auditar dependências JavaScript\n'
+              f'        working-directory: {matrix_ref}\n'
+              '        shell: bash\n'
+              '        run: |\n'
+              '          set -euo pipefail\n'
+              '          for attempt in 1 2 3; do\n'
+              '            set +e\n'
+              '            output="$(npm audit --omit=dev --audit-level=critical 2>&1)"\n'
+              '            status=$?\n'
+              '            set -e\n'
+              '            printf \'%s\\n\' "$output"\n'
+              '            if [ "$status" -eq 0 ]; then exit 0; fi\n'
+              '            if printf \'%s\' "$output" | grep -Eq \'audit endpoint returned an error|invalid json response body\'; then\n'
+              '              echo "Registro npm retornou resposta inválida; repetindo auditoria (${attempt}/3)."\n'
+              '              continue\n'
+              '            fi\n'
+              '            exit "$status"\n'
+              '          done\n'
+              '          echo "Registro npm permaneceu indisponível após três tentativas."\n'
+              '          exit 1\n'
+          )
+          if old_audit in security:
+              security = security.replace(old_audit, new_audit, 1)
+          elif 'name: Auditar dependências JavaScript' not in security:
+              raise SystemExit('Etapa npm audit não localizada estruturalmente.')
+          security_path.write_text(security, encoding='utf-8', newline='\n')
 
-          diagnostic = root / '.github/workflows/diagnose_jobs_postgres.yml'
-          diagnostic.unlink(missing_ok=True)
+          (root / '.github/workflows/diagnose_jobs_postgres.yml').unlink(missing_ok=True)
 
-          canonical = '''name: Refresh Generated Contracts
+          canonical = textwrap.dedent('''\
+          name: Refresh Generated Contracts
 
           on:
             workflow_dispatch:
@@ -183,7 +171,6 @@ jobs:
               steps:
                 - uses: actions/checkout@v4
                   with:
-                    ref: ${{ github.ref_name }}
                     fetch-depth: 0
                 - uses: actions/setup-python@v5
                   with:
@@ -207,7 +194,7 @@ jobs:
                     git diff --cached --check
                     git diff --cached --quiet || git commit -m "chore: atualizar contratos e artefatos gerados"
                     git push
-          '''
+          ''')
           (root / '.github/workflows/autocommit.yml').write_text(canonical, encoding='utf-8', newline='\n')
           PY
       - name: Validar testes e migrações
@@ -233,13 +220,8 @@ jobs:
               status=$?
               set -e
               printf '%s\n' "$output"
-              if [ "$status" -eq 0 ]; then
-                cd - >/dev/null
-                return 0
-              fi
-              if printf '%s' "$output" | grep -Eq 'audit endpoint returned an error|invalid json response body'; then
-                continue
-              fi
+              if [ "$status" -eq 0 ]; then cd - >/dev/null; return 0; fi
+              if printf '%s' "$output" | grep -Eq 'audit endpoint returned an error|invalid json response body'; then continue; fi
               cd - >/dev/null
               return "$status"
             done
