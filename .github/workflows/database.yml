@@ -166,7 +166,7 @@ jobs:
         run: python -m pytest -q tests/test_postgres_priority_stores_integration.py::test_ai_core_memory_create_update_and_soft_delete
       - name: Exercise HR PostgreSQL store
         env:
-          ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in-one
+          ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
         run: python -m pytest -q tests/test_postgres_priority_stores_integration.py::test_hr_employee_create_update_and_soft_delete
       - name: Exercise Permissions PostgreSQL store
         env:
@@ -190,6 +190,6 @@ jobs:
         run: python -m pytest -q tests/test_jobs_postgres_integration.py
       - name: Dispatch PostgreSQL outbox to RabbitMQ with immutable delivery evidence
         env:
-          ALL_IN_ONE_OUTBOX_POSTGRES_TEST_DSN: amqp://all_in_one:test-password@localhost:5672/%2F
+          ALL_IN_ONE_OUTBOX_POSTGRES_TEST_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
           ALL_IN_ONE_RABBITMQ_TEST_URL: amqp://all_in_one:test-password@localhost:5672/%2F
         run: python -m pytest -q tests/test_outbox_rabbitmq_integration.py
