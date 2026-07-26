@@ -1172,50 +1172,6 @@ RULE_OVERRIDES: dict[tuple[str, str], ResourceRule] = {
     ("health", "beds"): ResourceRule(
         ("unit",), sensitive=True, transitions=lifecycle_flow("health.bed")
     ),
-        ("device_fingerprint",),
-        sensitive=True,
-    ),
-        ("device_id", "stream_url_hash", "protocol", "started_at"),
-        initial_status="active",
-        sensitive=True,
-        transitions={
-            "pause": Transition(
-                frozenset({"active"}),
-                "paused",
-                APPROVER_ROLES,
-                True,
-            ),
-            "resume": Transition(
-                frozenset({"paused"}),
-                "active",
-                APPROVER_ROLES,
-                True,
-            ),
-        },
-    ),
-        ("stream_id", "storage_key", "file_sha256", "started_at"),
-        initial_status="recorded",
-        sensitive=True,
-        immutable=True,
-    ),
-        ("device_id", "stream_id", "detected_at", "confidence_score"),
-        initial_status="detected",
-        sensitive=True,
-        transitions={
-            "triage": Transition(
-                frozenset({"detected"}),
-                "under_review",
-                APPROVER_ROLES,
-                True,
-            ),
-            "resolve": Transition(
-                frozenset({"detected", "under_review"}),
-                "resolved",
-                APPROVER_ROLES,
-                True,
-            ),
-        },
-    ),
     ("legal", "cases"): ResourceRule(
         ("case_number", "case_type", "opened_at"),
         sensitive=True,
