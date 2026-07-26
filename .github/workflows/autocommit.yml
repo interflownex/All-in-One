@@ -2,141 +2,25 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
-    paths:
-      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
-    if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Instalar Bandit
-        run: pip install bandit
-      - name: Aplicar correções de segurança
-        shell: bash
+      - run: python scripts/scaffold_modules.py
+      - name: Commit generated changes
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          def replace_once(path: Path, old: str, new: str, label: str) -> None:
-              text = path.read_text(encoding="utf-8")
-              count = text.count(old)
-              if count != 1:
-                  raise SystemExit(f"{label}: esperado 1 bloco, encontrado {count}.")
-              path.write_text(text.replace(old, new, 1), encoding="utf-8", newline="\n")
-
-          dynamic = Path("modules/shared/dynamic_forms_postgres_store.py")
-          replace_once(dynamic, "from psycopg import Connection\n", "from psycopg import Connection, sql\n", "import SQL")
-          replace_once(
-              dynamic,
-              '''        lock_sql = " FOR UPDATE" if lock else ""
-                  version = executor.execute(
-                      """SELECT v.*, d.tenant_id, d.company_id, d.module_id, d.business_context, d.name AS form_name
-                         FROM forms.form_versions v
-                         JOIN forms.form_definitions d ON d.id = v.form_definition_id
-                         WHERE v.id = %s AND d.tenant_id = %s AND d.deleted_at IS NULL"""
-                      + lock_sql,
-                      (version_id, tenant_id),
-                  ).fetchone()
-          ''',
-              '''        version_query = sql.SQL(
-                      """SELECT v.*, d.tenant_id, d.company_id, d.module_id, d.business_context, d.name AS form_name
-                         FROM forms.form_versions v
-                         JOIN forms.form_definitions d ON d.id = v.form_definition_id
-                         WHERE v.id = %s AND d.tenant_id = %s AND d.deleted_at IS NULL"""
-                  )
-                  if lock:
-                      version_query += sql.SQL(" FOR UPDATE")
-                  version = executor.execute(version_query, (version_id, tenant_id)).fetchone()
-          ''',
-              "consulta de versão",
-          )
-          replace_once(
-              dynamic,
-              '''                for row in executor.execute(
-                              f"SELECT * FROM forms.{table} WHERE form_version_id = %s ORDER BY {order}",
-                              (version_id,),
-                          ).fetchall()
-          ''',
-              '''                for row in executor.execute(
-                              sql.SQL("SELECT * FROM forms.{} WHERE form_version_id = %s ORDER BY {}").format(
-                                  sql.Identifier(table), sql.SQL(order)
-                              ),
-                              (version_id,),
-                          ).fetchall()
-          ''',
-              "consulta de coleção",
-          )
-          replace_once(
-              dynamic,
-              '''            connection.execute(
-                          f"DELETE FROM forms.{table} WHERE form_version_id = %s", (version_id,)
-                      )
-          ''',
-              '''            connection.execute(
-                          sql.SQL("DELETE FROM forms.{} WHERE form_version_id = %s").format(sql.Identifier(table)),
-                          (version_id,),
-                      )
-          ''',
-              "exclusão de blueprint",
-          )
-
-          firebase_check = Path("scripts/check_firebase_auth_remote.py")
-          replace_once(firebase_check, "import urllib.error\nimport urllib.request\n", "import urllib.error\nimport urllib.parse\nimport urllib.request\n", "import Firebase")
-          replace_once(
-              firebase_check,
-              "def get_json(url: str, token: str, project_id: str) -> dict:\n    request = urllib.request.Request(\n",
-              "def get_json(url: str, token: str, project_id: str) -> dict:\n    parsed = urllib.parse.urlparse(url)\n    if parsed.scheme != 'https' or parsed.hostname != 'firebase.googleapis.com':\n        raise ValueError('Endpoint Firebase não autorizado.')\n    request = urllib.request.Request(\n",
-              "validação Firebase",
-          )
-          replace_once(firebase_check, "        with urllib.request.urlopen(request, timeout=45) as response:\n", "        with urllib.request.urlopen(request, timeout=45) as response:  # nosec B310 -- HTTPS e host validados\n", "urlopen Firebase")
-
-          firebase_harden = Path("scripts/harden_firebase_android_api_key.py")
-          replace_once(
-              firebase_harden,
-              "    data = json.dumps(body).encode(\"utf-8\") if body is not None else None\n",
-              "    parsed = urllib.parse.urlparse(url)\n    if parsed.scheme != 'https' or parsed.hostname != 'apikeys.googleapis.com':\n        raise ValueError('Endpoint API Keys não autorizado.')\n    data = json.dumps(body).encode(\"utf-8\") if body is not None else None\n",
-              "validação API Keys",
-          )
-          replace_once(firebase_harden, "    with urllib.request.urlopen(request, timeout=60) as response:\n", "    with urllib.request.urlopen(request, timeout=60) as response:  # nosec B310 -- HTTPS e host validados\n", "urlopen API Keys")
-
-          apk_sender = Path("scripts/send_apk_artifact.py")
-          replace_once(apk_sender, "        with request.urlopen(req, timeout=60) as response:\n", "        with request.urlopen(req, timeout=60) as response:  # nosec B310 -- endpoint HTTPS fixo do Telegram\n", "urlopen APK")
-
-          ready_sender = Path("scripts/send_ready_artifact_to_telegram.py")
-          replace_once(ready_sender, "        with request.urlopen(req, timeout=60) as response:\n", "        with request.urlopen(req, timeout=60) as response:  # nosec B310 -- endpoint HTTPS fixo do Telegram\n", "urlopen Telegram")
-          replace_once(
-              ready_sender,
-              "def verify_web_identity(url: str, expected_marker: str) -> None:\n    try:\n",
-              "def verify_web_identity(url: str, expected_marker: str) -> None:\n    parsed = parse.urlparse(url)\n    if parsed.scheme not in {'http', 'https'} or not parsed.netloc:\n        raise ValueError('URL pública precisa usar HTTP ou HTTPS com host válido.')\n    try:\n",
-              "validação URL web",
-          )
-          replace_once(ready_sender, "        with request.urlopen(req, timeout=30) as response:\n", "        with request.urlopen(req, timeout=30) as response:  # nosec B310 -- esquema e host validados\n", "urlopen web")
-
-          inventory = Path("scripts/generate_data_audit_inventory.py")
-          replace_once(inventory, "            root = ET.parse(report).getroot()\n", "            root = ET.parse(report).getroot()  # nosec B314 -- JUnit XML interno gerado pela CI\n", "parser JUnit")
-
-          report = Path("reports/ci/bandit-diagnostic.md")
-          if report.exists():
-              report.unlink()
-          PY
-      - name: Validar Bandit e commit
-        run: |
-          bandit -r modules/shared scripts workers -q -ll
-          python -m py_compile modules/shared/dynamic_forms_postgres_store.py scripts/check_firebase_auth_remote.py scripts/harden_firebase_android_api_key.py scripts/send_apk_artifact.py scripts/send_ready_artifact_to_telegram.py scripts/generate_data_audit_inventory.py
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A modules/shared/dynamic_forms_postgres_store.py scripts/check_firebase_auth_remote.py scripts/harden_firebase_android_api_key.py scripts/send_apk_artifact.py scripts/send_ready_artifact_to_telegram.py scripts/generate_data_audit_inventory.py reports/ci/bandit-diagnostic.md
-          git diff --cached --quiet || git commit -m "security: corrigir achados médios do Bandit"
-          git push origin HEAD:${{ github.head_ref }}
+          git add apps modules contracts
+          git diff --cached --quiet || git commit -m "refresh generated module contracts"
+          git push
