@@ -182,6 +182,7 @@ A próxima IA deve entregar:
 ## 11. Status de implementação: Primícias (Recursos 1-24)
 
 ### Onda 1: Implementação de infraestrutura RESTful
+
 - **Status:** ✅ CONCLUÍDO
 - **Data de conclusão:** 26/07/2026 14:46:06
 - **Artefatos:**
@@ -196,6 +197,7 @@ A próxima IA deve entregar:
 - **Recursos mapeados:** 1-5, 7-24 (Recurso 6 excluído por decisão arquitetônica)
 
 ### Onda 2: Persistência e integração com PostgreSQL
+
 - **Status:** 🟨 PLANEJADO
 - **Dependências:** Commit 7cf7729 validado
 - **Próximos passos:**
@@ -206,6 +208,7 @@ A próxima IA deve entregar:
   5. Deploy em dev/staging
 
 ### Onda 3: Segurança e autorização
+
 - **Status:** 🟨 PLANEJADO
 - **Escopo:**
   1. Validação JWT em middleware
@@ -214,6 +217,7 @@ A próxima IA deve entregar:
   4. Audit logging com append-only event log
 
 ### Onda 4: Cross-module integration
+
 - **Status:** 🟨 PLANEJADO
 - **Escopo:**
   1. Validação de delegação em cadeia
@@ -223,11 +227,11 @@ A próxima IA deve entregar:
 
 ## 12. Histórico de versões
 
-| Versão | Data e hora         | Alteração principal                                                                                                                                                                         |
-| ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Versão | Data e hora         | Alteração principal                                                                                                                                                                                  |
+| ------ | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1.6    | 26/07/2026 14:59:11 | Estabilização autônoma pós-onda: correção de import dinâmico no módulo `permissions`, ajuste do teste de integração de primícias e atualização do validador web para JSONC e regras não bloqueantes. |
-| 1.5    | 26/07/2026 14:46:30 | Consolidação final: primícias Onda 1 ✅ CONCLUÍDA (138 endpoints, 23 módulos, commit 7cf7729); roadmap para Ondas 2-4 definido; passa operacional completa para próxima IA. |
-| 1.4    | 26/07/2026 14:46:06 | Execução autônoma dos checks mandatórios no commit atual com resultado verde para validação de repositório e OpenAPI, além da atualização de passagem operacional para a próxima IA.     |
-| 1.3    | 26/07/2026 14:41:16 | Consolidação autônoma da onda de implementação das primícias com validação técnica mínima: `py_compile` em arquivos alterados e `16 passed` em testes de `feature_flags` e `permissions`.   |
-| 1.2    | 26/07/2026 14:32:04 | Registro da aprovação formal da primeira rodada de inovação do APK Valley Consumidor (24 ideias), com mapeamento técnico e plano de implementação por ondas em `docs/relatorios/inovacao/`. |
-| 1.1    | 26/07/2026 14:01:53 | Primeiro teste completo, consolidação v2.6, issue #43 e tarefas para checks, PRs, skills, ambiente público, Telegram, APK Admin e PDV Desktop.                                              |
+| 1.5    | 26/07/2026 14:46:30 | Consolidação final: primícias Onda 1 ✅ CONCLUÍDA (138 endpoints, 23 módulos, commit 7cf7729); roadmap para Ondas 2-4 definido; passa operacional completa para próxima IA.                          |
+| 1.4    | 26/07/2026 14:46:06 | Execução autônoma dos checks mandatórios no commit atual com resultado verde para validação de repositório e OpenAPI, além da atualização de passagem operacional para a próxima IA.                 |
+| 1.3    | 26/07/2026 14:41:16 | Consolidação autônoma da onda de implementação das primícias com validação técnica mínima: `py_compile` em arquivos alterados e `16 passed` em testes de `feature_flags` e `permissions`.            |
+| 1.2    | 26/07/2026 14:32:04 | Registro da aprovação formal da primeira rodada de inovação do APK Valley Consumidor (24 ideias), com mapeamento técnico e plano de implementação por ondas em `docs/relatorios/inovacao/`.          |
+| 1.1    | 26/07/2026 14:01:53 | Primeiro teste completo, consolidação v2.6, issue #43 e tarefas para checks, PRs, skills, ambiente público, Telegram, APK Admin e PDV Desktop.                                                       |
