@@ -16,7 +16,7 @@ from business.module_settings import router as module_settings_router
 from shared.feature_flags import is_flag_enabled, require_flag
 from shared.runtime import create_module_app
 from shared.security import Actor, actor_from_headers
-from _primicias import router as primacia_router
+from ._primicias import router as primacia_router
 
 app = create_module_app("business")
 app.include_router(module_settings_router)

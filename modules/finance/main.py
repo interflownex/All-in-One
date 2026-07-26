@@ -159,7 +159,7 @@ from datetime import datetime as _datetime
 from uuid import uuid4 as _uuid4
 
 from shared.feature_flags import is_flag_enabled, require_flag
-from _primicias import router as primacia_router
+from ._primicias import router as primacia_router
 
 _FINANCE_FLAG = "primicia.finance.earmarked_money"
 

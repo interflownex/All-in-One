@@ -579,7 +579,7 @@ async def register_user_with_hash(
 import hashlib as _hashlib
 
 from shared.feature_flags import is_flag_enabled, require_flag
-from _primicias import router as primacia_router
+from ._primicias import router as primacia_router
 
 _PROOF_FLAG = "primicia.identity.minimum_proofs"
 

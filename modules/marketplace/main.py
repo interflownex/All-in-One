@@ -141,7 +141,7 @@ from datetime import datetime as _mdatetime
 from uuid import uuid4 as _muuid4
 
 from shared.feature_flags import is_flag_enabled, require_flag
-from _primicias import router as primacia_router
+from ._primicias import router as primacia_router
 
 _MKT_FLAG = "primicia.marketplace.local_buying_coalition"
 

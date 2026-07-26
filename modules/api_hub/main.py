@@ -1450,7 +1450,7 @@ from uuid import uuid4 as _auuid4
 
 from fastapi import Body as _ABody
 from shared.feature_flags import is_flag_enabled, require_flag
-from _primicias import router as primacia_router
+from ._primicias import router as primacia_router
 
 _API_FLAG = "primicia.api.adaptive_contract"
 

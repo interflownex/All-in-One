@@ -22,8 +22,8 @@ def main() -> int:
 
     projects = sync.get("projects", {})
     screen_count = sum(len(project.get("screens", {})) for project in projects.values())
-    assert len(projects) == manifest["project_count"] == 25, (
-        "Cobertura Stitch deve conter 25 projetos."
+    assert len(projects) == manifest["project_count"] == 24, (
+        "Cobertura Stitch deve conter 24 projetos."
     )
     assert manifest["screen_count"] >= 181, (
         "Manifesto Stitch deve conter ao menos 181 telas."
@@ -63,7 +63,7 @@ def main() -> int:
     home_modules = re.findall(
         r"\['([a-z_]+)', '[^']+', '[^']+', '[^']+'\]", home_source
     )
-    assert len(home_modules) == 25, (
+    assert len(home_modules) == 24, (
         f"Home deve listar 24 modulos; encontrados {len(home_modules)}."
     )
     missing_dashboards = [
@@ -108,7 +108,7 @@ def main() -> int:
     scenario_groups = re.findall(
         r"^\s{2}([a-z_]+): \[(.*?)\],$", scenario_block, re.MULTILINE
     )
-    assert len(scenario_groups) == 25, (
+    assert len(scenario_groups) == 24, (
         f"Dados demo devem cobrir 24 modulos; encontrados {len(scenario_groups)}."
     )
     invalid_counts = {

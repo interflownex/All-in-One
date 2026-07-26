@@ -18,7 +18,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from shared.feature_flags import is_flag_enabled, require_flag
 from shared.runtime import create_module_app
 from shared.security import Actor, actor_from_headers
-from _primicias import router as primacia_router
+
+from ._primicias import router as primacia_router
 
 app = create_module_app("permissions")
 
@@ -333,5 +334,6 @@ async def get_delegation(
     ):
         raise HTTPException(status_code=403, detail="Acesso negado a esta delegação.")
     return delegation
+
 
 app.include_router(primacia_router)

@@ -184,7 +184,7 @@ from uuid import uuid4 as _euuid4
 
 from fastapi import Body as _Body
 from shared.feature_flags import is_flag_enabled, require_flag
-from _primicias import router as primacia_router
+from ._primicias import router as primacia_router
 
 _ERP_FLAG = "primicia.erp.continuous_close"
 
