@@ -2,25 +2,61 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
+    if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.head_ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python scripts/scaffold_modules.py
-      - name: Commit generated changes
+      - name: Instalar Bandit
+        run: pip install bandit
+      - name: Capturar achados médios e altos
+        shell: bash
+        run: |
+          mkdir -p reports/ci
+          set +e
+          bandit -r modules/shared scripts workers -f json -o reports/ci/bandit-diagnostic.json -ll
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          source = Path("reports/ci/bandit-diagnostic.json")
+          payload = json.loads(source.read_text(encoding="utf-8")) if source.exists() else {}
+          results = payload.get("results", [])
+          lines = ["# Diagnóstico Bandit", ""]
+          for item in results:
+              lines.extend([
+                  f"## {item.get('filename')}:{item.get('line_number')}",
+                  f"- teste: {item.get('test_id')} {item.get('test_name')}",
+                  f"- severidade: {item.get('issue_severity')}",
+                  f"- confiança: {item.get('issue_confidence')}",
+                  f"- motivo: {item.get('issue_text')}",
+                  "",
+              ])
+          lines.append(f"Total de achados: {len(results)}")
+          Path("reports/ci/bandit-diagnostic.md").write_text(
+              "\n".join(lines) + "\n", encoding="utf-8", newline="\n"
+          )
+          PY
+          cat reports/ci/bandit-diagnostic.md
+          exit 0
+      - name: Commit diagnostic report
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add apps modules contracts
-          git diff --cached --quiet || git commit -m "refresh generated module contracts"
-          git push
+          git add reports/ci/bandit-diagnostic.md
+          git diff --cached --quiet || git commit -m "security: registrar diagnostico Bandit"
+          git push origin HEAD:${{ github.head_ref }}
