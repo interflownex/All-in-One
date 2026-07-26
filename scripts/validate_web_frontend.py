@@ -64,7 +64,7 @@ def main() -> int:
         r"\['([a-z_]+)', '[^']+', '[^']+', '[^']+'\]", home_source
     )
     assert len(home_modules) == 25, (
-        f"Home deve listar 25 modulos; encontrados {len(home_modules)}."
+        f"Home deve listar 24 modulos; encontrados {len(home_modules)}."
     )
     missing_dashboards = [
         module for module in home_modules if f"/{module}" not in route_paths
@@ -109,7 +109,7 @@ def main() -> int:
         r"^\s{2}([a-z_]+): \[(.*?)\],$", scenario_block, re.MULTILINE
     )
     assert len(scenario_groups) == 25, (
-        f"Dados demo devem cobrir 25 modulos; encontrados {len(scenario_groups)}."
+        f"Dados demo devem cobrir 24 modulos; encontrados {len(scenario_groups)}."
     )
     invalid_counts = {
         module: len(re.findall(r"'[^']*'", values))

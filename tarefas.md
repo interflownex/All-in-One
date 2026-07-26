@@ -1,12 +1,12 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 1.3
+**Versão:** 1.4
 **Data da entrega:** 26/07/2026
-**Hora da entrega:** 14:41:16
+**Hora da entrega:** 14:46:06
 **Fuso horário:** `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch de elaboração:** `feature/primicias-selecionadas-v1`
-**Commit de referência:** `86f7c3e7f2fa7b1a09e53f2b86560d1ce456c486`
+**Commit de referência:** `a14d56780c296972ce5d29cb53189e3234296a07`
 **Issue de orquestração:** `#43`
 **Classificação:** `Pendências > Técnico > Equipe técnica`
 **Destino:** Codex e demais IAs desenvolvedoras autorizadas
@@ -29,10 +29,10 @@ Registrar o primeiro teste completo das diretrizes permanentes e fornecer à pr�
 - diretrizes de Estudar, Pesquisa Avançada, data, hora e `tarefas.md` integradas;
 - issue `#28` encerrada;
 - issue `#43` aberta para o ciclo v2.6.
+- checks locais do commit atual executados com sucesso: `python3 scripts/validate_repository.py` e `python3 scripts/validate_openapi.py`.
 
 ### Pendente
 
-- executar checks no commit atual;
 - regularizar PRs `#34`, `#36`, `#37`, `#38` e `#40`;
 - resolver sobreposição entre `#34` e `#37`;
 - auditar commit `44be12a9751d336f0c8094f79c893eb69008eaf4` e o pacote `.gemini/skills`;
@@ -183,6 +183,7 @@ A próxima IA deve entregar:
 
 | Versão | Data e hora         | Alteração principal                                                                                                                                                                         |
 | ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.3    | 26/07/2026 14:41:16 | Consolidação autônoma da onda de implementação das primícias com validação técnica mínima: `py_compile` em arquivos alterados e `16 passed` em testes de `feature_flags` e `permissions`. |
+| 1.4    | 26/07/2026 14:46:06 | Execução autônoma dos checks mandatórios no commit atual com resultado verde para validação de repositório e OpenAPI, além da atualização de passagem operacional para a próxima IA.     |
+| 1.3    | 26/07/2026 14:41:16 | Consolidação autônoma da onda de implementação das primícias com validação técnica mínima: `py_compile` em arquivos alterados e `16 passed` em testes de `feature_flags` e `permissions`.   |
 | 1.2    | 26/07/2026 14:32:04 | Registro da aprovação formal da primeira rodada de inovação do APK Valley Consumidor (24 ideias), com mapeamento técnico e plano de implementação por ondas em `docs/relatorios/inovacao/`. |
 | 1.1    | 26/07/2026 14:01:53 | Primeiro teste completo, consolidação v2.6, issue #43 e tarefas para checks, PRs, skills, ambiente público, Telegram, APK Admin e PDV Desktop.                                              |

@@ -4,6 +4,7 @@
   "platform_brand": {
     "name": "All in One",
     "logo_asset": "assets/brand/all-in-one-logo-official.png",
+    "light_logo_asset": "assets/brand/all-in-one-logo-official.png",
     "transparent_background_required": true,
     "favicon_assets": {
       "v1": "assets/brand/favicon-all-in-one.svg",
@@ -44,7 +45,7 @@
     "placement": "top-left inside Riders surfaces, alongside the All in One platform mark when required",
     "safe_area_px": 16
   },
-  "valley_apps": ["valley", "valley-business"],
+  "valley_apps": ["valley", "valley-business", "valley-rider"],
   "riders_apps": ["valley-rider", "all-in-one-riders"],
   "authorized_operations": [
     "remove_external_background_without_touching_the_mark",
