@@ -1,4 +1,4 @@
-name: Diagnose Residual Failures
+name: Diagnose Android Residual Failure
 
 on:
   pull_request:
@@ -10,32 +10,6 @@ permissions:
   contents: read
 
 jobs:
-  unit-tests:
-    if: github.head_ref == 'fix/generated-artifacts-gate'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install -r requirements-dev.txt >/dev/null
-      - name: Capturar primeira falha da suíte
-        shell: bash
-        run: |
-          set +e
-          python -m pytest --ignore=tests/e2e -q --tb=short --maxfail=1 > unit-residual-diagnostic.txt 2>&1
-          echo "exit_code=$?" >> unit-residual-diagnostic.txt
-          cat unit-residual-diagnostic.txt
-          exit 0
-      - uses: actions/upload-artifact@v4
-        with:
-          name: unit-residual-diagnostic-${{ github.run_id }}
-          path: unit-residual-diagnostic.txt
-          if-no-files-found: error
-          retention-days: 2
-
   valley-android:
     if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
@@ -45,16 +19,27 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Capturar primeira falha Android
+      - name: Capturar falha Android em arquivo reduzido
         shell: bash
         run: |
           set +e
+          full_log="$RUNNER_TEMP/android-full.log"
+          python scripts/validate_valley_android_release.py > "$full_log" 2>&1
+          validate_status=$?
+          gradle_status=0
+          if [ "$validate_status" -eq 0 ]; then
+            apps/valley-android/gradlew -p apps/valley-android \
+              testStagingDebugUnitTest lintStagingDebug assembleStagingDebug \
+              --no-daemon --stacktrace >> "$full_log" 2>&1
+            gradle_status=$?
+          fi
+          tail -n 500 "$full_log" > android-residual-diagnostic.txt
           {
-            python scripts/validate_valley_android_release.py
-            apps/valley-android/gradlew -p apps/valley-android testStagingDebugUnitTest lintStagingDebug assembleStagingDebug --no-daemon --stacktrace
-          } > android-residual-diagnostic.txt 2>&1
-          echo "exit_code=$?" >> android-residual-diagnostic.txt
-          tail -n 300 android-residual-diagnostic.txt
+            echo
+            echo "validate_exit=$validate_status"
+            echo "gradle_exit=$gradle_status"
+          } >> android-residual-diagnostic.txt
+          cat android-residual-diagnostic.txt
           exit 0
       - uses: actions/upload-artifact@v4
         with:
