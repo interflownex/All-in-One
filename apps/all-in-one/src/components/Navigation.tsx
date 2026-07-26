@@ -405,7 +405,7 @@ const modulesData = [
   },
   {
     slug: "stock",
-    title: "Stock",
+    title: "STOCK",
     icon: "📦",
     screens: [
       { title: "Catalog Products", path: "/stock/catalogproducts-form" },
@@ -414,7 +414,7 @@ const modulesData = [
       { title: "Discount Quotes", path: "/stock/discountquotes" },
       { title: "Price Rules", path: "/stock/pricerules" },
       { title: "Price Rules", path: "/stock/pricerules-form" },
-      { title: "Stock", path: "/stock/stock" },
+      { title: "STOCK", path: "/stock/stock" },
       { title: "Stock Permissões", path: "/stock/stockpermissions" },
       { title: "Supplier Orders", path: "/stock/supplierorders-form" },
       { title: "Supplier Orders", path: "/stock/supplierorders" },
@@ -439,23 +439,6 @@ const modulesData = [
       { title: "Routes", path: "/tms/routes" },
       { title: "Tms", path: "/tms/tms" },
       { title: "Tms Permissões", path: "/tms/tmspermissions" },
-    ],
-  },
-  {
-    slug: "vision",
-    title: "Vision",
-    icon: "📦",
-    screens: [
-      { title: "Devices", path: "/vision/devices-form" },
-      { title: "Devices", path: "/vision/devices" },
-      { title: "Motion Alerts", path: "/vision/motionalerts-form" },
-      { title: "Motion Alerts", path: "/vision/motionalerts" },
-      { title: "Recordings", path: "/vision/recordings" },
-      { title: "Recordings", path: "/vision/recordings-form" },
-      { title: "Streams", path: "/vision/streams-form" },
-      { title: "Streams", path: "/vision/streams" },
-      { title: "Vision", path: "/vision/vision" },
-      { title: "Vision Permissões", path: "/vision/visionpermissions" },
     ],
   },
   {

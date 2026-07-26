@@ -205,17 +205,6 @@ def render_readme(module: dict) -> str:
             f"{entities}.\n\n## Execucao",
             f"{entities}.\n\n{special}\n## Execucao",
         )
-        special = dedent(
-            """\
-            `streams` guarda somente metadados privados e hash da URL;
-            `recordings` preserva hash/storage append-only; `motion_alerts`
-            registra deteccoes e incidentes auditaveis.
-            """
-        )
-        rendered = rendered.replace(
-            f"{entities}.\n\n## Execucao",
-            f"{entities}.\n\n{special}\n## Execucao",
-        )
     if module["slug"] == "legal":
         special = dedent(
             """\
@@ -411,13 +400,6 @@ def render_contract(module: dict) -> str:
             - A acao `close` fecha folha com papel aprovador, MFA e evento `hr.payroll.closed`.
             - `courses` exige `employee_id`, `course_code`, `title` e `due_at`, inicia em `assigned` e emite `hr.training.assigned`.
             - A acao `complete` conclui treinamento e emite `hr.training.completed`.
-            """
-        )
-        special += dedent(
-            """
-
-            ## Stream, gravacao e alerta operacional
-
             """
         )
     if module["slug"] == "legal":
