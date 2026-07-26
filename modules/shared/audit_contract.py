@@ -9,7 +9,7 @@ from ipaddress import ip_address
 from typing import Any, Literal
 from uuid import uuid4
 
-from psycopg import Connection
+from psycopg import Connection, sql
 from psycopg.types.json import Jsonb
 
 from .correlation import get_correlation_id
@@ -245,17 +245,7 @@ def insert_postgres_audit(
         context=context,
         previous_hash=previous["row_hash"] if previous else None,
     )
-    evidence = connection.execute(
-        """INSERT INTO audit.logs
-           (id, schema_version, event, log_type, user_id, actor_user_id, actor_entity_id, tenant_id,
-            company_id, actor_role, session_id, device_id, ip_address, user_agent, action, module,
-            resource_type, resource_id, before_data, after_data, changed_fields, reason, origin, channel,
-            correlation_id, causation_id, occurred_at, result, error_detail, "authorization", approval_id,
-            approved_by, exported, printed, shared, previous_hash, row_hash, retention_until, metadata, created_by)
-           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                   %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                   %s, %s, %s, %s) RETURNING *""",
-        (
+    parameters = (
             record["id"],
             record["schema_version"],
             record["event"],
@@ -296,6 +286,15 @@ def insert_postgres_audit(
             record["retention_until"],
             Jsonb(record["metadata"]),
             actor_user_id,
-        ),
-    ).fetchone()
+        )
+    query = sql.SQL(
+        """INSERT INTO audit.logs
+           (id, schema_version, event, log_type, user_id, actor_user_id, actor_entity_id, tenant_id,
+            company_id, actor_role, session_id, device_id, ip_address, user_agent, action, module,
+            resource_type, resource_id, before_data, after_data, changed_fields, reason, origin, channel,
+            correlation_id, causation_id, occurred_at, result, error_detail, "authorization", approval_id,
+            approved_by, exported, printed, shared, previous_hash, row_hash, retention_until, metadata, created_by)
+           VALUES ({}) RETURNING *"""
+    ).format(sql.SQL(", ").join(sql.Placeholder() for _ in parameters))
+    evidence = connection.execute(query, parameters).fetchone()
     return dict(evidence)
