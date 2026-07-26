@@ -2,25 +2,67 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
+    if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.head_ref }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python scripts/scaffold_modules.py
-      - name: Commit generated changes
+      - name: Instalar ambiente e auditor
+        run: |
+          python -m pip install --upgrade pip==26.1.2
+          pip install -r requirements-dev.txt pip-audit
+      - name: Capturar auditoria sanitizada
+        shell: bash
+        run: |
+          mkdir -p reports/ci
+          set +e
+          pip-audit --local --format json --output reports/ci/pip-audit-diagnostic.json
+          status=$?
+          echo "$status" > reports/ci/pip-audit-exit-code.txt
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          source = Path("reports/ci/pip-audit-diagnostic.json")
+          payload = json.loads(source.read_text(encoding="utf-8")) if source.exists() else {}
+          dependencies = payload.get("dependencies", payload if isinstance(payload, list) else [])
+          lines = ["# Diagnóstico pip-audit", ""]
+          findings = 0
+          for dependency in dependencies:
+              vulns = dependency.get("vulns", []) if isinstance(dependency, dict) else []
+              if not vulns:
+                  continue
+              findings += len(vulns)
+              lines.append(f"## {dependency.get('name')} {dependency.get('version')}")
+              for vuln in vulns:
+                  fixes = ", ".join(vuln.get("fix_versions") or []) or "sem versão corrigida informada"
+                  lines.append(f"- {vuln.get('id')}: corrigir para {fixes}")
+              lines.append("")
+          lines.append(f"Total de vulnerabilidades: {findings}")
+          Path("reports/ci/pip-audit-diagnostic.md").write_text(
+              "\n".join(lines) + "\n", encoding="utf-8", newline="\n"
+          )
+          PY
+          cat reports/ci/pip-audit-diagnostic.md
+          exit 0
+      - name: Commit diagnostic report
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add apps modules contracts
-          git diff --cached --quiet || git commit -m "refresh generated module contracts"
-          git push
+          git add reports/ci/pip-audit-diagnostic.md
+          git diff --cached --quiet || git commit -m "security: registrar diagnostico pip-audit"
+          git push origin HEAD:${{ github.head_ref }}
