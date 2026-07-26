@@ -6,7 +6,7 @@ from typing import Any
 from uuid import uuid4
 
 import psycopg
-from psycopg import Connection
+from psycopg import Connection, sql
 from psycopg.errors import UniqueViolation
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
@@ -144,15 +144,15 @@ class DynamicFormsPostgresStore:
         lock: bool = False,
     ) -> dict[str, Any]:
         executor = connection or self.connection
-        lock_sql = " FOR UPDATE" if lock else ""
-        version = executor.execute(
+        version_query = sql.SQL(
             """SELECT v.*, d.tenant_id, d.company_id, d.module_id, d.business_context, d.name AS form_name
                FROM forms.form_versions v
                JOIN forms.form_definitions d ON d.id = v.form_definition_id
                WHERE v.id = %s AND d.tenant_id = %s AND d.deleted_at IS NULL"""
-            + lock_sql,
-            (version_id, tenant_id),
-        ).fetchone()
+        )
+        if lock:
+            version_query += sql.SQL(" FOR UPDATE")
+        version = executor.execute(version_query, (version_id, tenant_id)).fetchone()
         if version is None:
             raise KeyError("Versao de formulario nao localizada no tenant.")
         collections = {
@@ -172,7 +172,9 @@ class DynamicFormsPostgresStore:
             blueprint[key] = [
                 dict(row)
                 for row in executor.execute(
-                    f"SELECT * FROM forms.{table} WHERE form_version_id = %s ORDER BY {order}",
+                    sql.SQL("SELECT * FROM forms.{} WHERE form_version_id = %s ORDER BY {}").format(
+                        sql.Identifier(table), sql.SQL(order)
+                    ),
                     (version_id,),
                 ).fetchall()
             ]
@@ -596,7 +598,8 @@ class DynamicFormsPostgresStore:
             "form_visibility_rules",
         ):
             connection.execute(
-                f"DELETE FROM forms.{table} WHERE form_version_id = %s", (version_id,)
+                sql.SQL("DELETE FROM forms.{} WHERE form_version_id = %s").format(sql.Identifier(table)),
+                (version_id,),
             )
 
     @staticmethod

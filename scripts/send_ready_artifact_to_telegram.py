@@ -26,7 +26,7 @@ def telegram_request(method: str, token: str, data: bytes, content_type: str) ->
         method="POST",
     )
     try:
-        with request.urlopen(req, timeout=60) as response:
+        with request.urlopen(req, timeout=60) as response:  # nosec B310 -- endpoint HTTPS fixo do Telegram
             payload = json.loads(response.read().decode("utf-8"))
             if response.status not in range(200, 300) or payload.get("ok") is not True:
                 raise RuntimeError("Telegram recusou a entrega.")
@@ -43,11 +43,14 @@ def send_web(token: str, chat_id: str, url: str, version: str) -> None:
 
 
 def verify_web_identity(url: str, expected_marker: str) -> None:
+    parsed = parse.urlparse(url)
+    if parsed.scheme not in {'http', 'https'} or not parsed.netloc:
+        raise ValueError('URL pública precisa usar HTTP ou HTTPS com host válido.')
     try:
         req = request.Request(
             url, headers={"User-Agent": "all-in-one-release-verifier/1"}
         )
-        with request.urlopen(req, timeout=30) as response:
+        with request.urlopen(req, timeout=30) as response:  # nosec B310 -- esquema e host validados
             body = response.read().decode("utf-8", errors="replace")
             if response.status not in range(200, 300):
                 raise RuntimeError(f"Ambiente web retornou HTTP {response.status}.")

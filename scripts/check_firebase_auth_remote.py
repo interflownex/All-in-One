@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import subprocess
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -26,6 +27,9 @@ def access_token() -> str:
 
 
 def get_json(url: str, token: str, project_id: str) -> dict:
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme != 'https' or parsed.hostname != 'firebase.googleapis.com':
+        raise ValueError('Endpoint Firebase não autorizado.')
     request = urllib.request.Request(
         url,
         headers={
@@ -34,7 +38,7 @@ def get_json(url: str, token: str, project_id: str) -> dict:
         },
     )
     try:
-        with urllib.request.urlopen(request, timeout=45) as response:
+        with urllib.request.urlopen(request, timeout=45) as response:  # nosec B310 -- HTTPS e host validados
             return json.load(response)
     except urllib.error.HTTPError as error:
         detail = error.read().decode("utf-8", errors="replace")

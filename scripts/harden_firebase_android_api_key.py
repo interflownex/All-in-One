@@ -33,6 +33,9 @@ def request_json(
     method: str = "GET",
     body: dict | None = None,
 ) -> dict:
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme != 'https' or parsed.hostname != 'apikeys.googleapis.com':
+        raise ValueError('Endpoint API Keys não autorizado.')
     data = json.dumps(body).encode("utf-8") if body is not None else None
     request = urllib.request.Request(
         url,
@@ -44,7 +47,7 @@ def request_json(
             "Content-Type": "application/json",
         },
     )
-    with urllib.request.urlopen(request, timeout=60) as response:
+    with urllib.request.urlopen(request, timeout=60) as response:  # nosec B310 -- HTTPS e host validados
         return json.load(response)
 
 

@@ -1381,7 +1381,7 @@ def discover_test_execution() -> dict[str, dict[str, object]]:
         if not report.is_file():
             continue
         try:
-            root = ET.parse(report).getroot()
+            root = ET.parse(report).getroot()  # nosec B314 -- JUnit XML interno gerado pela CI
         except (ET.ParseError, OSError):
             continue
         for case in root.iter("testcase"):

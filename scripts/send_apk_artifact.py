@@ -65,7 +65,7 @@ def send_to_telegram(
     req.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
 
     try:
-        with request.urlopen(req, timeout=60) as response:
+        with request.urlopen(req, timeout=60) as response:  # nosec B310 -- endpoint HTTPS fixo do Telegram
             if response.status < 200 or response.status >= 300:
                 raise RuntimeError(f"Telegram retornou HTTP {response.status}")
     except error.HTTPError as exc:
