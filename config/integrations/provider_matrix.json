@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "updated_at": "2026-05-31",
+  "schema_version": 2,
+  "updated_at": "2026-07-26",
   "strategy": "sandbox_first_with_provider_ports",
   "cost_policy": {
     "default": "usar camada sandbox, planos gratuitos e simuladores locais ate haver receita ou homologacao obrigatoria",
@@ -142,20 +142,50 @@
     },
     {
       "key": "stock_supplier_catalog",
-      "modules": ["stock", "marketplace", "wms"],
-      "capability": "catalogo fornecedor, preco, disponibilidade, pedido fornecedor e tracking",
-      "stage": "planned",
-      "sandbox_adapter": "local_supplier_catalog_fixture",
-      "primary_candidates": [
-        "fornecedores homologados por vertical",
-        "ERP/Hub de estoque do parceiro"
-      ],
+      "modules": ["stock", "marketplace", "wms", "api_hub", "finance"],
+      "capability": "configuracao de fornecedor, OAuth, catalogo, variantes, preco, estoque, pedido, frete, tracking, webhooks e sincronizacao auditada",
+      "stage": "connector_ready_credentials_pending",
+      "sandbox_adapter": "stock_supplier_admin_connector",
+      "primary_candidates": ["CJ Dropshipping", "AliExpress Open Platform"],
       "fallback_candidates": ["importacao CSV auditada", "catalogo manual Business"],
-      "required_env": ["SUPPLIER_PROVIDER", "SUPPLIER_API_BASE_URL", "SUPPLIER_API_KEY"],
-      "events": ["stock.product.imported", "stock.order.created", "marketplace.order.delivered"],
-      "sensitive_data": ["preco_fornecedor", "margem", "endereco_entrega"],
-      "zero_cost_entry": "CSV/manual e fixture local ate fornecedor liberar sandbox",
-      "go_live_gate": "SLA de estoque, politica de devolucao, margem minima e conciliacao de pedido"
+      "required_env": [
+        "STOCK_INTEGRATIONS_CONFIG_PATH",
+        "STOCK_INTEGRATIONS_SECRETS_PATH",
+        "STOCK_INTEGRATIONS_MASTER_KEY",
+        "CJ_DROPSHIPPING_API_KEY",
+        "CJ_DROPSHIPPING_ACCESS_TOKEN",
+        "CJ_DROPSHIPPING_REFRESH_TOKEN",
+        "CJ_DROPSHIPPING_WEBHOOK_SECRET",
+        "ALIEXPRESS_APP_KEY",
+        "ALIEXPRESS_APP_SECRET",
+        "ALIEXPRESS_ACCESS_TOKEN",
+        "ALIEXPRESS_REFRESH_TOKEN",
+        "ALIEXPRESS_WEBHOOK_SECRET"
+      ],
+      "events": [
+        "stock.integration.configuration.updated",
+        "stock.integration.secrets.updated",
+        "stock.integration.connection_tested",
+        "stock.integration.sync.requested",
+        "stock.integration.oauth.completed",
+        "stock.integration.webhook.received",
+        "stock.product.imported",
+        "stock.inventory.updated",
+        "stock.order.created",
+        "stock.tracking.updated"
+      ],
+      "sensitive_data": [
+        "api_key",
+        "app_secret",
+        "access_token",
+        "refresh_token",
+        "webhook_secret",
+        "preco_fornecedor",
+        "margem",
+        "endereco_entrega"
+      ],
+      "zero_cost_entry": "configuracao persistente, dry-run, cofre criptografado e importacao controlada antes de liberar automacao integral",
+      "go_live_gate": "credenciais em Secret Manager, chave Fernet externa, OAuth e permissoes AliExpress aprovados, pedido sandbox CJ aprovado, webhooks assinados, rate limits, politica de devolucao, margem minima e conciliacao de pedidos"
     },
     {
       "key": "ai_agent_superdesign",
