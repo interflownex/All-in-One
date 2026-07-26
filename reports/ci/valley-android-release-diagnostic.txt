@@ -1,4 +1,0 @@
-Contrato de release Valley reprovado:
-- frontend Valley sem requisito de catálogo/performance: import.meta.env.DEV && import.meta.env.VITE_VALLEY_ALLOW_DEMO === 'true'
-- frontend Valley sem requisito de catálogo/performance: params.append('offset'
-- frontend Valley sem requisito de catálogo/performance: window.crypto.subtle.verify('Ed25519'
