@@ -2,63 +2,25 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
-    paths:
-      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
-    if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Remover bloco residual do Vision
-        shell: bash
+      - run: python scripts/scaffold_modules.py
+      - name: Commit generated changes
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path("modules/shared/domain_rules.py")
-          lines = path.read_text(encoding="utf-8").splitlines()
-          health_index = next(
-              (index for index, line in enumerate(lines) if '("health", "beds"): ResourceRule(' in line),
-              -1,
-          )
-          if health_index < 0:
-              raise SystemExit("Regra health.beds nao encontrada.")
-          health_end = next(
-              (index for index in range(health_index + 1, len(lines)) if lines[index] == "    ),"),
-              -1,
-          )
-          legal_index = next(
-              (
-                  index
-                  for index in range(health_index + 1, len(lines))
-                  if '("legal", "cases"): ResourceRule(' in lines[index]
-              ),
-              -1,
-          )
-          if health_end < 0 or legal_index < 0 or legal_index <= health_end:
-              raise SystemExit(
-                  f"Limites invalidos: health_end={health_end}, legal_index={legal_index}."
-              )
-          cleaned = lines[: health_end + 1] + lines[legal_index:]
-          path.write_text("\n".join(cleaned) + "\n", encoding="utf-8", newline="\n")
-          PY
-      - name: Validar sintaxe e commit
-        run: |
-          python -m py_compile modules/shared/domain_rules.py
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add modules/shared/domain_rules.py
-          git diff --cached --quiet || git commit -m "fix: remover regras orfas do Vision"
-          git push origin HEAD:${{ github.head_ref }}
+          git add apps modules contracts
+          git diff --cached --quiet || git commit -m "refresh generated module contracts"
+          git push
