@@ -1,0 +1,64 @@
+name: Diagnose Residual Failures
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/diagnose_residual.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    if: github.head_ref == 'fix/generated-artifacts-gate'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-dev.txt >/dev/null
+      - name: Capturar primeira falha da suíte
+        shell: bash
+        run: |
+          set +e
+          python -m pytest --ignore=tests/e2e -q --tb=short --maxfail=1 > unit-residual-diagnostic.txt 2>&1
+          echo "exit_code=$?" >> unit-residual-diagnostic.txt
+          cat unit-residual-diagnostic.txt
+          exit 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unit-residual-diagnostic-${{ github.run_id }}
+          path: unit-residual-diagnostic.txt
+          if-no-files-found: error
+          retention-days: 2
+
+  valley-android:
+    if: github.head_ref == 'fix/generated-artifacts-gate'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Capturar primeira falha Android
+        shell: bash
+        run: |
+          set +e
+          {
+            python scripts/validate_valley_android_release.py
+            apps/valley-android/gradlew -p apps/valley-android testStagingDebugUnitTest lintStagingDebug assembleStagingDebug --no-daemon --stacktrace
+          } > android-residual-diagnostic.txt 2>&1
+          echo "exit_code=$?" >> android-residual-diagnostic.txt
+          tail -n 300 android-residual-diagnostic.txt
+          exit 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-residual-diagnostic-${{ github.run_id }}
+          path: android-residual-diagnostic.txt
+          if-no-files-found: error
+          retention-days: 2
