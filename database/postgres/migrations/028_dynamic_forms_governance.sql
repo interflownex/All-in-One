@@ -1,3 +1,5 @@
+SELECT to_regclass('forms.field_catalog') IS NULL AS run_dynamic_forms_migration \gset
+\if :run_dynamic_forms_migration
 BEGIN;
 
 CREATE SCHEMA IF NOT EXISTS forms;
@@ -386,3 +388,6 @@ CREATE TRIGGER immutable_published_validations BEFORE INSERT OR UPDATE OR DELETE
 CREATE TRIGGER immutable_published_visibility BEFORE INSERT OR UPDATE OR DELETE ON forms.form_visibility_rules FOR EACH ROW EXECUTE FUNCTION forms.reject_published_child_mutation();
 
 COMMIT;
+\else
+\echo 'Migração 028 já aplicada; repetição ignorada com segurança.'
+\endif
