@@ -1,7 +1,7 @@
 {
   "version": 1,
   "counts": {
-    "migrations": 29,
+    "migrations": 30,
     "schemas": 32,
     "tables": 164,
     "fields": 2302,
@@ -14,33 +14,33 @@
     "browser_storage_key_patterns": 12,
     "relationships": 568,
     "indexes": 123,
-    "endpoints": 112,
+    "endpoints": 114,
     "endpoints_with_response_model": 8,
-    "api_model_fields": 150,
-    "ui_candidates": 786,
-    "ui_bindings_probable": 751,
-    "ui_bindings_unproven": 35,
-    "ui_surfaces": 272,
-    "ui_forms": 128,
-    "ui_actions": 979,
+    "api_model_fields": 157,
+    "ui_candidates": 775,
+    "ui_bindings_probable": 741,
+    "ui_bindings_unproven": 34,
+    "ui_surfaces": 264,
+    "ui_forms": 125,
+    "ui_actions": 948,
     "ui_actions_incompatible": 0,
-    "ui_actions_without_frontend_permission_gate": 576,
-    "permission_operations": 794,
+    "ui_actions_without_frontend_permission_gate": 556,
+    "permission_operations": 767,
     "permission_horizontal_read_gaps": 0,
-    "permission_operations_with_test_candidates": 129,
-    "test_functions": 537,
-    "tests_with_assertions": 496,
-    "tests_with_http_calls": 204,
-    "test_functions_in_execution_reports": 512,
-    "test_functions_passed": 479,
+    "permission_operations_with_test_candidates": 123,
+    "test_functions": 573,
+    "tests_with_assertions": 527,
+    "tests_with_http_calls": 212,
+    "test_functions_in_execution_reports": 502,
+    "test_functions_passed": 470,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
-    "logical_entities": 120,
+    "logical_entities": 116,
     "logical_without_physical_table": 0,
-    "logical_without_ui_surface": 1,
-    "event_transitions": 194,
-    "unique_events": 187,
+    "logical_without_ui_surface": 0,
+    "event_transitions": 187,
+    "unique_events": 180,
     "sensitive_candidates": 520,
     "dynamic_form_entities_proposed": 15,
     "measurement_entities_proposed": 6,
@@ -23168,7 +23168,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:4"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:24"
     },
     {
       "database": "postgresql",
@@ -23188,7 +23188,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:5"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:25"
     },
     {
       "database": "postgresql",
@@ -23208,7 +23208,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:6"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:26"
     },
     {
       "database": "postgresql",
@@ -23228,7 +23228,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:7"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:27"
     },
     {
       "database": "postgresql",
@@ -23248,7 +23248,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:8"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:28"
     },
     {
       "database": "postgresql",
@@ -23268,7 +23268,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:9"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:29"
     },
     {
       "database": "postgresql",
@@ -23288,7 +23288,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:10"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:30"
     },
     {
       "database": "postgresql",
@@ -23308,7 +23308,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:11"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:31"
     },
     {
       "database": "postgresql",
@@ -23328,7 +23328,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:12"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:32"
     },
     {
       "database": "postgresql",
@@ -23348,7 +23348,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:13"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:33"
     },
     {
       "database": "postgresql",
@@ -23368,7 +23368,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:14"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:34"
     },
     {
       "database": "postgresql",
@@ -23388,7 +23388,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:15"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:35"
     },
     {
       "database": "postgresql",
@@ -23408,7 +23408,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:16"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:36"
     },
     {
       "database": "postgresql",
@@ -23428,7 +23428,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:17"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:37"
     },
     {
       "database": "postgresql",
@@ -23448,7 +23448,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/021_valley_reviews.sql:18"
+      "evidence": "database/postgres/migrations/021_valley_reviews.sql:38"
     },
     {
       "database": "postgresql",
@@ -23468,7 +23468,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:4"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:24"
     },
     {
       "database": "postgresql",
@@ -23488,7 +23488,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:5"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:25"
     },
     {
       "database": "postgresql",
@@ -23508,7 +23508,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:6"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:26"
     },
     {
       "database": "postgresql",
@@ -23528,7 +23528,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:7"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:27"
     },
     {
       "database": "postgresql",
@@ -23548,7 +23548,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:8"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:28"
     },
     {
       "database": "postgresql",
@@ -23568,7 +23568,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:9"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:29"
     },
     {
       "database": "postgresql",
@@ -23588,7 +23588,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:10"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:30"
     },
     {
       "database": "postgresql",
@@ -23608,7 +23608,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:11"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:31"
     },
     {
       "database": "postgresql",
@@ -23628,7 +23628,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:12"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:32"
     },
     {
       "database": "postgresql",
@@ -23648,7 +23648,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:13"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:33"
     },
     {
       "database": "postgresql",
@@ -23668,7 +23668,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:14"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:34"
     },
     {
       "database": "postgresql",
@@ -23688,7 +23688,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:15"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:35"
     },
     {
       "database": "postgresql",
@@ -23708,7 +23708,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:16"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:36"
     },
     {
       "database": "postgresql",
@@ -23728,7 +23728,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:17"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:37"
     },
     {
       "database": "postgresql",
@@ -23748,7 +23748,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:18"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:38"
     },
     {
       "database": "postgresql",
@@ -23768,7 +23768,7 @@
       "masking": "não expor identificadores internos sem necessidade",
       "retention": "acompanha entidade e trilha de auditoria com política de anonimização",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:19"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:39"
     },
     {
       "database": "postgresql",
@@ -23788,7 +23788,7 @@
       "masking": "avaliar pelo proprietário do domínio",
       "retention": "não definida; registrar lacuna",
       "status": "existente",
-      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:20"
+      "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:40"
     },
     {
       "database": "postgresql",

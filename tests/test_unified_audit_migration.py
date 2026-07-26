@@ -32,7 +32,10 @@ def test_audit_migration_materializes_context_read_integrity_and_retention() -> 
         "shared",
         "retention_until",
     ):
-        assert f"{column} " in source
+        if column == "authorization":
+            assert '"authorization" TEXT' in source
+        else:
+            assert f"{column} " in source
     assert "WHERE action = 'sensitive_read'" in source
     assert "idx_audit_logs_tenant_occurred" in source
     assert "SHA-256" in source

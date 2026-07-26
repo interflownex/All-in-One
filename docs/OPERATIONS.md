@@ -46,6 +46,34 @@ Regras obrigatorias:
 - O exercicio DR trimestral deve comparar RPO/RTO observado com o contratado e
   registrar acao corretiva quando houver desvio.
 
+### Execução verificável de backup e restore
+
+Os valores `rpo_minutes` e `rto_minutes` são definidos por ambiente no plano
+`config/operations/backup_restore_plan.json`. Cada drill de restore deve registrar
+horário inicial, horário final, checksum, commit, ambiente isolado e resultado dos
+healthchecks, sem anexar dados brutos.
+
+PostgreSQL:
+
+```bash
+pg_dump --format=custom --no-owner --file=postgres.dump "$DATABASE_URL"
+sha256sum postgres.dump > postgres.dump.sha256
+pg_restore --clean --if-exists --no-owner --dbname="$RESTORE_DATABASE_URL" postgres.dump
+```
+
+MongoDB:
+
+```bash
+mongodump --uri="$MONGODB_URI" --archive=mongodb.archive --gzip
+sha256sum mongodb.archive > mongodb.archive.sha256
+mongorestore --uri="$RESTORE_MONGODB_URI" --archive=mongodb.archive --gzip --drop
+```
+
+O drill de restore ocorre em rede isolada e valida `/health` do API Hub, Identity,
+Finance, Jobs e demais serviços prioritários. O ambiente restaurado permanece sem
+escrita externa até aprovação humana. O exercício de disaster recovery deve medir
+o RPO/RTO observado e registrar ação corretiva quando exceder o contrato.
+
 ## Validacao PostgreSQL Real
 
 Quando o host local nao conseguir subir `postgres:16` efemero para o smoke
@@ -83,7 +111,7 @@ ALL_IN_ONE_POSTGRES_MATRIX_DSN="postgresql://..." \
     --apply-migrations --repeat-migrations --write-checks
 ```
 
-Depois de um banco real validado, execute a suite viva dos 25 stores tipados:
+Depois de um banco real validado, execute a suite viva dos 24 stores tipados:
 
 ```bash
 ALL_IN_ONE_POSTGRES_MATRIX_DSN="postgresql://..." \

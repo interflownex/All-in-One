@@ -1,7 +1,7 @@
 {
   "version": 1,
   "counts": {
-    "migrations": 29,
+    "migrations": 30,
     "schemas": 32,
     "tables": 164,
     "fields": 2302,
@@ -14,33 +14,33 @@
     "browser_storage_key_patterns": 12,
     "relationships": 568,
     "indexes": 123,
-    "endpoints": 112,
+    "endpoints": 114,
     "endpoints_with_response_model": 8,
-    "api_model_fields": 150,
-    "ui_candidates": 786,
-    "ui_bindings_probable": 751,
-    "ui_bindings_unproven": 35,
-    "ui_surfaces": 272,
-    "ui_forms": 128,
-    "ui_actions": 979,
+    "api_model_fields": 157,
+    "ui_candidates": 775,
+    "ui_bindings_probable": 741,
+    "ui_bindings_unproven": 34,
+    "ui_surfaces": 264,
+    "ui_forms": 125,
+    "ui_actions": 948,
     "ui_actions_incompatible": 0,
-    "ui_actions_without_frontend_permission_gate": 576,
-    "permission_operations": 794,
+    "ui_actions_without_frontend_permission_gate": 556,
+    "permission_operations": 767,
     "permission_horizontal_read_gaps": 0,
-    "permission_operations_with_test_candidates": 129,
-    "test_functions": 537,
-    "tests_with_assertions": 496,
-    "tests_with_http_calls": 204,
-    "test_functions_in_execution_reports": 512,
-    "test_functions_passed": 479,
+    "permission_operations_with_test_candidates": 123,
+    "test_functions": 573,
+    "tests_with_assertions": 527,
+    "tests_with_http_calls": 212,
+    "test_functions_in_execution_reports": 502,
+    "test_functions_passed": 470,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
-    "logical_entities": 120,
+    "logical_entities": 116,
     "logical_without_physical_table": 0,
-    "logical_without_ui_surface": 1,
-    "event_transitions": 194,
-    "unique_events": 187,
+    "logical_without_ui_surface": 0,
+    "event_transitions": 187,
+    "unique_events": 180,
     "sensitive_candidates": 520,
     "dynamic_form_entities_proposed": 15,
     "measurement_entities_proposed": 6,
@@ -57,7 +57,7 @@
       "function": "response_signing_key",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:63"
+      "evidence": "modules/api_hub/main.py:74"
     },
     {
       "method": "POST",
@@ -72,7 +72,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:500"
+      "evidence": "modules/api_hub/main.py:623"
     },
     {
       "method": "POST",
@@ -81,7 +81,7 @@
       "function": "registrations_proxy",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:504"
+      "evidence": "modules/api_hub/main.py:628"
     },
     {
       "method": "GET",
@@ -161,7 +161,27 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:508"
+      "evidence": "modules/api_hub/main.py:633"
+    },
+    {
+      "method": "POST",
+      "path": "/gateway/oauth2/token",
+      "module": "api_hub",
+      "function": "issue_gateway_oauth2_token",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "OAuthClientCredentialsRequest",
+          "model_fields": [
+            "grant_type",
+            "client_id",
+            "api_key",
+            "scope"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:730"
     },
     {
       "method": "GET",
@@ -176,7 +196,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:591"
+      "evidence": "modules/api_hub/main.py:774"
     },
     {
       "method": "POST",
@@ -192,7 +212,13 @@
         {
           "name": "body",
           "annotation": "SupportCaseRequest",
-          "model_fields": ["kind", "subject", "message", "desired_resolution", "idempotency_key"]
+          "model_fields": [
+            "kind",
+            "subject",
+            "message",
+            "desired_resolution",
+            "idempotency_key"
+          ]
         },
         {
           "name": "token_payload",
@@ -201,7 +227,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:661"
+      "evidence": "modules/api_hub/main.py:846"
     },
     {
       "method": "POST",
@@ -217,7 +243,11 @@
         {
           "name": "body",
           "annotation": "ConsumerReviewRequest",
-          "model_fields": ["rating", "comment", "idempotency_key"]
+          "model_fields": [
+            "rating",
+            "comment",
+            "idempotency_key"
+          ]
         },
         {
           "name": "token_payload",
@@ -226,7 +256,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:715"
+      "evidence": "modules/api_hub/main.py:913"
     },
     {
       "method": "GET",
@@ -235,7 +265,7 @@
       "function": "commercial_insights",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:772"
+      "evidence": "modules/api_hub/main.py:977"
     },
     {
       "method": "POST",
@@ -263,7 +293,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:825"
+      "evidence": "modules/api_hub/main.py:1034"
     },
     {
       "method": "POST",
@@ -274,7 +304,11 @@
         {
           "name": "body",
           "annotation": "CatalogPaymentRequest",
-          "model_fields": ["order_id", "idempotency_key", "method"]
+          "model_fields": [
+            "order_id",
+            "idempotency_key",
+            "method"
+          ]
         },
         {
           "name": "token_payload",
@@ -283,7 +317,31 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:946"
+      "evidence": "modules/api_hub/main.py:1181"
+    },
+    {
+      "method": "POST",
+      "path": "/gateway/payments/sandbox/refund",
+      "module": "api_hub",
+      "function": "refund_catalog_payment",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "CatalogRefundRequest",
+          "model_fields": [
+            "order_id",
+            "idempotency_key",
+            "reason"
+          ]
+        },
+        {
+          "name": "token_payload",
+          "annotation": "dict[str, Any]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:1280"
     },
     {
       "method": "GET",
@@ -298,7 +356,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:1032"
+      "evidence": "modules/api_hub/main.py:1359"
     },
     {
       "method": "GET",
@@ -307,7 +365,7 @@
       "function": "gateway_status",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:1069"
+      "evidence": "modules/api_hub/main.py:1396"
     },
     {
       "method": "GET",
@@ -322,7 +380,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:1080"
+      "evidence": "modules/api_hub/main.py:1407"
     },
     {
       "method": "POST",
@@ -331,7 +389,7 @@
       "function": "gateway_webhook_verify",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:1089"
+      "evidence": "modules/api_hub/main.py:1416"
     },
     {
       "method": "POST",
@@ -357,7 +415,7 @@
         }
       ],
       "response_model": "list[ModuleRecommendation]",
-      "evidence": "modules/business/module_settings.py:304"
+      "evidence": "modules/business/module_settings.py:342"
     },
     {
       "method": "POST",
@@ -388,7 +446,7 @@
         }
       ],
       "response_model": "BusinessClassificationRecord",
-      "evidence": "modules/business/module_settings.py:309"
+      "evidence": "modules/business/module_settings.py:349"
     },
     {
       "method": "POST",
@@ -404,11 +462,14 @@
         {
           "name": "body",
           "annotation": "ApplyRecommendationsPayload",
-          "model_fields": ["classification", "actor_id"]
+          "model_fields": [
+            "classification",
+            "actor_id"
+          ]
         }
       ],
       "response_model": "ModuleSettingsResponse",
-      "evidence": "modules/business/module_settings.py:317"
+      "evidence": "modules/business/module_settings.py:364"
     },
     {
       "method": "GET",
@@ -423,7 +484,7 @@
         }
       ],
       "response_model": "ModuleSettingsResponse",
-      "evidence": "modules/business/module_settings.py:344"
+      "evidence": "modules/business/module_settings.py:405"
     },
     {
       "method": "PATCH",
@@ -444,11 +505,14 @@
         {
           "name": "body",
           "annotation": "ModulePatch",
-          "model_fields": ["state", "reason"]
+          "model_fields": [
+            "state",
+            "reason"
+          ]
         }
       ],
       "response_model": "CompanyModuleSetting",
-      "evidence": "modules/business/module_settings.py:354"
+      "evidence": "modules/business/module_settings.py:415"
     },
     {
       "method": "GET",
@@ -473,7 +537,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/business/module_settings.py:391"
+      "evidence": "modules/business/module_settings.py:467"
     },
     {
       "method": "GET",
@@ -482,7 +546,7 @@
       "function": "health",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:110"
+      "evidence": "modules/dynamic_forms/main.py:139"
     },
     {
       "method": "GET",
@@ -507,7 +571,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:115"
+      "evidence": "modules/dynamic_forms/main.py:144"
     },
     {
       "method": "GET",
@@ -532,7 +596,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:126"
+      "evidence": "modules/dynamic_forms/main.py:155"
     },
     {
       "method": "POST",
@@ -569,7 +633,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:137"
+      "evidence": "modules/dynamic_forms/main.py:166"
     },
     {
       "method": "GET",
@@ -594,7 +658,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:161"
+      "evidence": "modules/dynamic_forms/main.py:198"
     },
     {
       "method": "GET",
@@ -619,7 +683,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:172"
+      "evidence": "modules/dynamic_forms/main.py:211"
     },
     {
       "method": "PUT",
@@ -635,7 +699,13 @@
         {
           "name": "body",
           "annotation": "BlueprintReplace",
-          "model_fields": ["blocks", "fields", "calculations", "validations", "visibility_rules"]
+          "model_fields": [
+            "blocks",
+            "fields",
+            "calculations",
+            "validations",
+            "visibility_rules"
+          ]
         },
         {
           "name": "context",
@@ -649,7 +719,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:183"
+      "evidence": "modules/dynamic_forms/main.py:222"
     },
     {
       "method": "POST",
@@ -665,7 +735,9 @@
         {
           "name": "body",
           "annotation": "HomologationRequest",
-          "model_fields": ["checklist"]
+          "model_fields": [
+            "checklist"
+          ]
         },
         {
           "name": "context",
@@ -684,7 +756,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:195"
+      "evidence": "modules/dynamic_forms/main.py:236"
     },
     {
       "method": "POST",
@@ -700,7 +772,13 @@
         {
           "name": "body",
           "annotation": "HomologationReview",
-          "model_fields": ["result", "notes", "problems", "corrections", "evidence"]
+          "model_fields": [
+            "result",
+            "notes",
+            "problems",
+            "corrections",
+            "evidence"
+          ]
         },
         {
           "name": "context",
@@ -719,7 +797,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:208"
+      "evidence": "modules/dynamic_forms/main.py:251"
     },
     {
       "method": "POST",
@@ -735,7 +813,12 @@
         {
           "name": "body",
           "annotation": "PublicationRequest",
-          "model_fields": ["environment", "rollout_policy", "tenant_scope", "channels"]
+          "model_fields": [
+            "environment",
+            "rollout_policy",
+            "tenant_scope",
+            "channels"
+          ]
         },
         {
           "name": "context",
@@ -754,7 +837,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:232"
+      "evidence": "modules/dynamic_forms/main.py:275"
     },
     {
       "method": "POST",
@@ -770,7 +853,11 @@
         {
           "name": "body",
           "annotation": "FormSubmissionRequest",
-          "model_fields": ["values", "context", "source"]
+          "model_fields": [
+            "values",
+            "context",
+            "source"
+          ]
         },
         {
           "name": "context_actor",
@@ -789,7 +876,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/dynamic_forms/main.py:255"
+      "evidence": "modules/dynamic_forms/main.py:298"
     },
     {
       "method": "POST",
@@ -804,7 +891,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/erp/main.py:54"
+      "evidence": "modules/erp/main.py:64"
     },
     {
       "method": "GET",
@@ -824,7 +911,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/erp/main.py:75"
+      "evidence": "modules/erp/main.py:86"
     },
     {
       "method": "POST",
@@ -844,7 +931,7 @@
         },
         {
           "name": "x_idempotency_key",
-          "annotation": "Optional[str]",
+          "annotation": "str | None",
           "model_fields": []
         },
         {
@@ -854,7 +941,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/erp/main.py:86"
+      "evidence": "modules/erp/main.py:97"
     },
     {
       "method": "POST",
@@ -879,7 +966,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/erp/main.py:121"
+      "evidence": "modules/erp/main.py:136"
     },
     {
       "method": "POST",
@@ -894,7 +981,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/erp/main.py:148"
+      "evidence": "modules/erp/main.py:162"
     },
     {
       "method": "POST",
@@ -914,7 +1001,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/finance/main.py:14"
+      "evidence": "modules/finance/main.py:15"
     },
     {
       "method": "POST",
@@ -934,7 +1021,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/finance/main.py:40"
+      "evidence": "modules/finance/main.py:48"
     },
     {
       "method": "POST",
@@ -954,7 +1041,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/finance/main.py:45"
+      "evidence": "modules/finance/main.py:54"
     },
     {
       "method": "POST",
@@ -974,7 +1061,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/finance/main.py:61"
+      "evidence": "modules/finance/main.py:71"
     },
     {
       "method": "GET",
@@ -994,7 +1081,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/finance/main.py:69"
+      "evidence": "modules/finance/main.py:80"
     },
     {
       "method": "GET",
@@ -1009,7 +1096,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/finance/main.py:76"
+      "evidence": "modules/finance/main.py:88"
     },
     {
       "method": "POST",
@@ -1024,7 +1111,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/finance/main.py:95"
+      "evidence": "modules/finance/main.py:111"
     },
     {
       "method": "POST",
@@ -1044,7 +1131,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/finance/main.py:114"
+      "evidence": "modules/finance/main.py:131"
     },
     {
       "method": "POST",
@@ -1059,7 +1146,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/identity/main.py:157"
+      "evidence": "modules/identity/main.py:169"
     },
     {
       "method": "GET",
@@ -1074,7 +1161,7 @@
         }
       ],
       "response_model": "KYCStatus",
-      "evidence": "modules/identity/main.py:199"
+      "evidence": "modules/identity/main.py:209"
     },
     {
       "method": "POST",
@@ -1094,7 +1181,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/identity/main.py:217"
+      "evidence": "modules/identity/main.py:231"
     },
     {
       "method": "POST",
@@ -1114,7 +1201,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/identity/main.py:254"
+      "evidence": "modules/identity/main.py:283"
     },
     {
       "method": "POST",
@@ -1129,7 +1216,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/identity/main.py:309"
+      "evidence": "modules/identity/main.py:381"
     },
     {
       "method": "POST",
@@ -1149,7 +1236,7 @@
         }
       ],
       "response_model": "TokenResponse",
-      "evidence": "modules/identity/main.py:332"
+      "evidence": "modules/identity/main.py:404"
     },
     {
       "method": "POST",
@@ -1169,7 +1256,7 @@
         }
       ],
       "response_model": "TokenResponse",
-      "evidence": "modules/identity/main.py:366"
+      "evidence": "modules/identity/main.py:445"
     },
     {
       "method": "POST",
@@ -1189,7 +1276,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/identity/main.py:400"
+      "evidence": "modules/identity/main.py:501"
     },
     {
       "method": "POST",
@@ -1209,7 +1296,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/identity/main.py:420"
+      "evidence": "modules/identity/main.py:528"
     },
     {
       "method": "POST",
@@ -1225,7 +1312,13 @@
         {
           "name": "body",
           "annotation": "SupportCaseRequest",
-          "model_fields": ["kind", "subject", "message", "desired_resolution", "idempotency_key"]
+          "model_fields": [
+            "kind",
+            "subject",
+            "message",
+            "desired_resolution",
+            "idempotency_key"
+          ]
         },
         {
           "name": "actor",
@@ -1234,7 +1327,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/marketplace/main.py:26"
+      "evidence": "modules/marketplace/main.py:25"
     },
     {
       "method": "GET",
@@ -1249,7 +1342,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/marketplace/main.py:71"
+      "evidence": "modules/marketplace/main.py:84"
     },
     {
       "method": "GET",
@@ -1269,7 +1362,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/services/main.py:12"
+      "evidence": "modules/services/main.py:13"
     },
     {
       "method": "POST",
@@ -1298,7 +1391,7 @@
       "function": "health",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:458"
+      "evidence": "modules/shared/runtime.py:577"
     },
     {
       "method": "GET",
@@ -1307,7 +1400,7 @@
       "function": "get_version",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:462"
+      "evidence": "modules/shared/runtime.py:581"
     },
     {
       "method": "GET",
@@ -1322,7 +1415,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:466"
+      "evidence": "modules/shared/runtime.py:585"
     },
     {
       "method": "GET",
@@ -1331,7 +1424,7 @@
       "function": "metrics",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:478"
+      "evidence": "modules/shared/runtime.py:597"
     },
     {
       "method": "GET",
@@ -1340,7 +1433,7 @@
       "function": "catalog",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:488"
+      "evidence": "modules/shared/runtime.py:607"
     },
     {
       "method": "POST",
@@ -1356,7 +1449,11 @@
         {
           "name": "body",
           "annotation": "ResourceCreate",
-          "model_fields": ["user_id", "entity_id", "payload"]
+          "model_fields": [
+            "user_id",
+            "entity_id",
+            "payload"
+          ]
         },
         {
           "name": "actor",
@@ -1375,7 +1472,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:520"
+      "evidence": "modules/shared/runtime.py:648"
     },
     {
       "method": "GET",
@@ -1400,7 +1497,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:530"
+      "evidence": "modules/shared/runtime.py:660"
     },
     {
       "method": "GET",
@@ -1445,7 +1542,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:543"
+      "evidence": "modules/shared/runtime.py:681"
     },
     {
       "method": "PATCH",
@@ -1466,7 +1563,9 @@
         {
           "name": "body",
           "annotation": "ResourcePatch",
-          "model_fields": ["payload"]
+          "model_fields": [
+            "payload"
+          ]
         },
         {
           "name": "actor",
@@ -1480,7 +1579,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:565"
+      "evidence": "modules/shared/runtime.py:714"
     },
     {
       "method": "DELETE",
@@ -1510,7 +1609,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:586"
+      "evidence": "modules/shared/runtime.py:744"
     },
     {
       "method": "POST",
@@ -1536,7 +1635,10 @@
         {
           "name": "body",
           "annotation": "ActionPayload",
-          "model_fields": ["reason", "payload"]
+          "model_fields": [
+            "reason",
+            "payload"
+          ]
         },
         {
           "name": "actor",
@@ -1550,7 +1652,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:603"
+      "evidence": "modules/shared/runtime.py:764"
     },
     {
       "method": "GET",
@@ -1565,7 +1667,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:640"
+      "evidence": "modules/shared/runtime.py:824"
     },
     {
       "method": "GET",
@@ -1580,7 +1682,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:646"
+      "evidence": "modules/shared/runtime.py:832"
     },
     {
       "method": "POST",
@@ -1610,7 +1712,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1048"
+      "evidence": "modules/shared/runtime.py:1330"
     },
     {
       "method": "GET",
@@ -1630,7 +1732,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1070"
+      "evidence": "modules/shared/runtime.py:1352"
     },
     {
       "method": "POST",
@@ -1641,7 +1743,10 @@
         {
           "name": "body",
           "annotation": "DecisionPayload",
-          "model_fields": ["id", "reason"]
+          "model_fields": [
+            "id",
+            "reason"
+          ]
         },
         {
           "name": "actor",
@@ -1655,7 +1760,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1076"
+      "evidence": "modules/shared/runtime.py:1360"
     },
     {
       "method": "POST",
@@ -1666,7 +1771,10 @@
         {
           "name": "body",
           "annotation": "DecisionPayload",
-          "model_fields": ["id", "reason"]
+          "model_fields": [
+            "id",
+            "reason"
+          ]
         },
         {
           "name": "actor",
@@ -1680,7 +1788,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1088"
+      "evidence": "modules/shared/runtime.py:1374"
     },
     {
       "method": "POST",
@@ -1691,7 +1799,12 @@
         {
           "name": "body",
           "annotation": "AuditPayload",
-          "model_fields": ["action", "resource_type", "resource_id", "payload"]
+          "model_fields": [
+            "action",
+            "resource_type",
+            "resource_id",
+            "payload"
+          ]
         },
         {
           "name": "actor",
@@ -1705,7 +1818,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1100"
+      "evidence": "modules/shared/runtime.py:1388"
     },
     {
       "method": "GET",
@@ -1725,7 +1838,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1110"
+      "evidence": "modules/shared/runtime.py:1404"
     },
     {
       "method": "PATCH",
@@ -1755,7 +1868,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1117"
+      "evidence": "modules/shared/runtime.py:1413"
     },
     {
       "method": "DELETE",
@@ -1780,7 +1893,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1136"
+      "evidence": "modules/shared/runtime.py:1432"
     },
     {
       "method": "POST",
@@ -1808,7 +1921,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:493"
+      "evidence": "modules/shared/runtime.py:617"
     },
     {
       "method": "POST",
@@ -1819,7 +1932,12 @@
         {
           "name": "body",
           "annotation": "SandboxKycPersonPayload",
-          "model_fields": ["user_id", "document", "full_name", "selfie_hash"]
+          "model_fields": [
+            "user_id",
+            "document",
+            "full_name",
+            "selfie_hash"
+          ]
         },
         {
           "name": "actor",
@@ -1828,7 +1946,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:653"
+      "evidence": "modules/shared/runtime.py:840"
     },
     {
       "method": "POST",
@@ -1839,7 +1957,11 @@
         {
           "name": "body",
           "annotation": "SandboxKybBusinessPayload",
-          "model_fields": ["company_id", "cnpj", "legal_name"]
+          "model_fields": [
+            "company_id",
+            "cnpj",
+            "legal_name"
+          ]
         },
         {
           "name": "actor",
@@ -1848,7 +1970,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:669"
+      "evidence": "modules/shared/runtime.py:857"
     },
     {
       "method": "POST",
@@ -1859,7 +1981,12 @@
         {
           "name": "body",
           "annotation": "SandboxPixPayload",
-          "model_fields": ["payment_id", "payer_id", "amount_brl", "idempotency_key"]
+          "model_fields": [
+            "payment_id",
+            "payer_id",
+            "amount_brl",
+            "idempotency_key"
+          ]
         },
         {
           "name": "actor",
@@ -1868,7 +1995,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:684"
+      "evidence": "modules/shared/runtime.py:873"
     },
     {
       "method": "POST",
@@ -1879,7 +2006,12 @@
         {
           "name": "body",
           "annotation": "SandboxEscrowPayload",
-          "model_fields": ["escrow_id", "payer_id", "beneficiary_id", "amount_brl"]
+          "model_fields": [
+            "escrow_id",
+            "payer_id",
+            "beneficiary_id",
+            "amount_brl"
+          ]
         },
         {
           "name": "actor",
@@ -1888,7 +2020,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:699"
+      "evidence": "modules/shared/runtime.py:888"
     },
     {
       "method": "POST",
@@ -1899,7 +2031,10 @@
         {
           "name": "body",
           "annotation": "SandboxEscrowReleasePayload",
-          "model_fields": ["escrow_id", "amount_brl"]
+          "model_fields": [
+            "escrow_id",
+            "amount_brl"
+          ]
         },
         {
           "name": "actor",
@@ -1908,7 +2043,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:714"
+      "evidence": "modules/shared/runtime.py:903"
     },
     {
       "method": "POST",
@@ -1919,7 +2054,12 @@
         {
           "name": "body",
           "annotation": "SandboxFiscalInvoicePayload",
-          "model_fields": ["invoice_id", "document_type", "amount_brl", "issuer_document"]
+          "model_fields": [
+            "invoice_id",
+            "document_type",
+            "amount_brl",
+            "issuer_document"
+          ]
         },
         {
           "name": "actor",
@@ -1928,7 +2068,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:723"
+      "evidence": "modules/shared/runtime.py:915"
     },
     {
       "method": "POST",
@@ -1939,7 +2079,10 @@
         {
           "name": "body",
           "annotation": "SandboxCtpsPayload",
-          "model_fields": ["resume_id", "pdf_text"]
+          "model_fields": [
+            "resume_id",
+            "pdf_text"
+          ]
         },
         {
           "name": "actor",
@@ -1948,7 +2091,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:739"
+      "evidence": "modules/shared/runtime.py:932"
     },
     {
       "method": "POST",
@@ -1959,7 +2102,12 @@
         {
           "name": "body",
           "annotation": "SandboxRoutePayload",
-          "model_fields": ["route_id", "origin", "destination", "vehicle_type"]
+          "model_fields": [
+            "route_id",
+            "origin",
+            "destination",
+            "vehicle_type"
+          ]
         },
         {
           "name": "actor",
@@ -1968,7 +2116,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:748"
+      "evidence": "modules/shared/runtime.py:946"
     },
     {
       "method": "POST",
@@ -1979,7 +2127,12 @@
         {
           "name": "body",
           "annotation": "SandboxClinicalConsentPayload",
-          "model_fields": ["patient_id", "professional_id", "purpose", "ttl_days"]
+          "model_fields": [
+            "patient_id",
+            "professional_id",
+            "purpose",
+            "ttl_days"
+          ]
         },
         {
           "name": "actor",
@@ -1988,7 +2141,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:764"
+      "evidence": "modules/shared/runtime.py:963"
     },
     {
       "method": "POST",
@@ -1999,7 +2152,11 @@
         {
           "name": "body",
           "annotation": "SandboxWebhookSignPayload",
-          "model_fields": ["webhook_id", "payload", "secret"]
+          "model_fields": [
+            "webhook_id",
+            "payload",
+            "secret"
+          ]
         },
         {
           "name": "actor",
@@ -2008,7 +2165,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:780"
+      "evidence": "modules/shared/runtime.py:980"
     },
     {
       "method": "POST",
@@ -2019,7 +2176,10 @@
         {
           "name": "body",
           "annotation": "SandboxApiKeyVerifyPayload",
-          "model_fields": ["api_key", "allowed_hashes"]
+          "model_fields": [
+            "api_key",
+            "allowed_hashes"
+          ]
         },
         {
           "name": "actor",
@@ -2028,7 +2188,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:788"
+      "evidence": "modules/shared/runtime.py:990"
     },
     {
       "method": "POST",
@@ -2039,7 +2199,12 @@
         {
           "name": "body",
           "annotation": "SandboxSupplierProductPayload",
-          "model_fields": ["supplier_id", "external_sku", "cost_brl", "available_quantity"]
+          "model_fields": [
+            "supplier_id",
+            "external_sku",
+            "cost_brl",
+            "available_quantity"
+          ]
         },
         {
           "name": "actor",
@@ -2048,7 +2213,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:797"
+      "evidence": "modules/shared/runtime.py:1002"
     },
     {
       "method": "POST",
@@ -2068,7 +2233,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:813"
+      "evidence": "modules/shared/runtime.py:1019"
     },
     {
       "method": "POST",
@@ -2088,7 +2253,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:818"
+      "evidence": "modules/shared/runtime.py:1027"
     },
     {
       "method": "POST",
@@ -2108,7 +2273,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:823"
+      "evidence": "modules/shared/runtime.py:1035"
     },
     {
       "method": "POST",
@@ -2138,7 +2303,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:878"
+      "evidence": "modules/shared/runtime.py:1110"
     },
     {
       "method": "GET",
@@ -2168,7 +2333,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:938"
+      "evidence": "modules/shared/runtime.py:1181"
     },
     {
       "method": "GET",
@@ -2188,7 +2353,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:973"
+      "evidence": "modules/shared/runtime.py:1227"
     },
     {
       "method": "GET",
@@ -2203,7 +2368,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:980"
+      "evidence": "modules/shared/runtime.py:1239"
     },
     {
       "method": "GET",
@@ -2228,7 +2393,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:992"
+      "evidence": "modules/shared/runtime.py:1258"
     },
     {
       "method": "GET",
@@ -2258,7 +2423,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/runtime.py:1020"
+      "evidence": "modules/shared/runtime.py:1292"
     },
     {
       "method": "GET",
@@ -2267,7 +2432,7 @@
       "function": "valley_catalog_modules",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:109"
+      "evidence": "modules/shared/valley.py:170"
     },
     {
       "method": "GET",
@@ -2276,7 +2441,7 @@
       "function": "valley_catalog_categories",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:113"
+      "evidence": "modules/shared/valley.py:174"
     },
     {
       "method": "GET",
@@ -2285,7 +2450,7 @@
       "function": "valley_catalog_business_activities",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:117"
+      "evidence": "modules/shared/valley.py:178"
     },
     {
       "method": "GET",
@@ -2294,7 +2459,7 @@
       "function": "valley_catalog_facets",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:121"
+      "evidence": "modules/shared/valley.py:182"
     },
     {
       "method": "GET",
@@ -2364,7 +2529,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:125"
+      "evidence": "modules/shared/valley.py:186"
     },
     {
       "method": "GET",
@@ -2373,7 +2538,7 @@
       "function": "valley_catalog_offers",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:156"
+      "evidence": "modules/shared/valley.py:217"
     },
     {
       "method": "GET",
@@ -2388,7 +2553,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:160"
+      "evidence": "modules/shared/valley.py:221"
     },
     {
       "method": "GET",
@@ -2458,7 +2623,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:167"
+      "evidence": "modules/shared/valley.py:230"
     },
     {
       "method": "POST",
@@ -2474,7 +2639,12 @@
         {
           "name": "body",
           "annotation": "ValleyPepitaGrant",
-          "model_fields": ["pepitas", "customer_user_id", "merchant_gold_ledger_id", "note"]
+          "model_fields": [
+            "pepitas",
+            "customer_user_id",
+            "merchant_gold_ledger_id",
+            "note"
+          ]
         },
         {
           "name": "actor",
@@ -2488,7 +2658,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:200"
+      "evidence": "modules/shared/valley.py:263"
     },
     {
       "method": "POST",
@@ -2499,11 +2669,15 @@
         {
           "name": "body",
           "annotation": "ValleyStockDiscountRequest",
-          "model_fields": ["catalog_product_id", "price_brl", "user_pepitas_balance"]
+          "model_fields": [
+            "catalog_product_id",
+            "price_brl",
+            "user_pepitas_balance"
+          ]
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:241"
+      "evidence": "modules/shared/valley.py:323"
     },
     {
       "method": "POST",
@@ -2528,7 +2702,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/shared/valley.py:263"
+      "evidence": "modules/shared/valley.py:355"
     },
     {
       "method": "POST",
@@ -2560,7 +2734,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/stock/main.py:31"
+      "evidence": "modules/stock/main.py:29"
     }
   ]
 }

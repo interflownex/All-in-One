@@ -314,10 +314,18 @@ def test_dispatcher_publishes_real_runtime_events_with_safe_payload(monkeypatch)
         assert message["properties"].headers["schema_version"] == 1
         assert json.loads(message["body"].decode("utf-8")) == expected
 
+        stored_payload = row["payload"]
+        source_payload = (
+            stored_payload.get("payload") or {}
+            if isinstance(stored_payload, dict)
+            and "event_id" in stored_payload
+            and "payload" in stored_payload
+            else stored_payload
+        )
         expected_payload = {
-            key: row["payload"][key]
+            key: source_payload[key]
             for key in SAFE_PAYLOAD_FIELDS.get(row["aggregate_type"], frozenset())
-            if key in row["payload"]
+            if key in source_payload
         }
         assert expected["payload"] == expected_payload
 

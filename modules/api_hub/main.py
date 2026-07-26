@@ -3,10 +3,11 @@ import hashlib
 import hmac
 import os
 import sys
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal
 from urllib.parse import quote
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import httpx
 from fastapi import (
@@ -197,6 +198,19 @@ class CatalogPaymentRequest(BaseModel):
     order_id: UUID
     idempotency_key: str = Field(min_length=8, max_length=120)
     method: Literal["pix_sandbox"] = "pix_sandbox"
+
+
+class CatalogRefundRequest(BaseModel):
+    order_id: UUID
+    idempotency_key: str = Field(min_length=8, max_length=120)
+    reason: str = Field(min_length=3, max_length=300)
+
+
+class OAuthClientCredentialsRequest(BaseModel):
+    grant_type: Literal["client_credentials"]
+    client_id: str = Field(min_length=3, max_length=120)
+    api_key: str = Field(min_length=8, max_length=500)
+    scope: str = Field(default="gateway:read", min_length=1, max_length=500)
 
 
 class SupportCaseRequest(BaseModel):
@@ -713,6 +727,50 @@ async def aggregate_catalog_offers(
     )
 
 
+@app.post("/gateway/oauth2/token", dependencies=[Depends(rate_limiter)])
+async def issue_gateway_oauth2_token(body: OAuthClientCredentialsRequest) -> dict[str, Any]:
+    """Emite token curto para clientes de integração autorizados."""
+    if jwt is None:
+        raise HTTPException(status_code=503, detail="Emissor JWT indisponivel.")
+
+    key_info = _configured_api_keys().get(body.api_key)
+    if key_info is None or not hmac.compare_digest(
+        str(key_info.get("client_id") or ""), body.client_id
+    ):
+        raise HTTPException(status_code=401, detail="Credenciais de cliente invalidas.")
+
+    requested_scopes = {
+        scope for scope in body.scope.replace(",", " ").split() if scope.strip()
+    }
+    allowed_scopes = set(key_info.get("scopes") or set())
+    if not requested_scopes:
+        raise HTTPException(status_code=422, detail="Informe ao menos um escopo.")
+    if "*" not in allowed_scopes and not requested_scopes.issubset(allowed_scopes):
+        raise HTTPException(status_code=403, detail="Cliente sem permissao para o escopo solicitado.")
+
+    issued_at = datetime.now(UTC)
+    expires_in = 900
+    normalized_scope = " ".join(sorted(requested_scopes))
+    claims = {
+        "sub": body.client_id,
+        "client_id": body.client_id,
+        "grant_type": body.grant_type,
+        "scope": normalized_scope,
+        "roles": ["integration_client"],
+        "iat": int(issued_at.timestamp()),
+        "exp": int((issued_at + timedelta(seconds=expires_in)).timestamp()),
+        "jti": str(uuid4()),
+    }
+    access_token = jwt.encode(claims, JWT_SECRET, algorithm="HS256")
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "expires_in": expires_in,
+        "client_id": body.client_id,
+        "scope": normalized_scope,
+    }
+
+
 @app.get("/gateway/consumer/orders", dependencies=[Depends(rate_limiter)])
 async def get_consumer_orders(
     token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
@@ -1215,6 +1273,85 @@ async def authorize_catalog_payment(
             "order_id": str(body.order_id),
             "provider_environment": "sandbox",
             "message": "Pagamento sandbox autorizado e protegido ate a conclusao do pedido.",
+        }
+    )
+
+
+@app.post("/gateway/payments/sandbox/refund", dependencies=[Depends(rate_limiter)])
+async def refund_catalog_payment(
+    body: CatalogRefundRequest,
+    token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
+) -> JSONResponse:
+    """Processa estorno sandbox usando somente dados financeiros do pedido."""
+    user_id = str(token_payload.get("sub") or "")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Sessao invalida.")
+
+    actor_headers = {"X-Actor-User-Id": user_id}
+    order = await _service_json(
+        "GET",
+        f"{SERVICES['marketplace']}/resources/orders/{body.order_id}",
+        headers=actor_headers,
+    )
+    if not isinstance(order, dict) or str(order.get("user_id") or "") != user_id:
+        raise HTTPException(status_code=403, detail="Pedido nao pertence ao consumidor autenticado.")
+    if order.get("status") == "refunded":
+        return signed_json_response(
+            {
+                "status": "refunded",
+                "order_id": str(body.order_id),
+                "provider_environment": "sandbox",
+                "message": "Estorno ja processado anteriormente.",
+            }
+        )
+    if order.get("status") not in {"paid", "completed"}:
+        raise HTTPException(status_code=409, detail="Este pedido ainda nao aceita estorno.")
+
+    payload = order.get("payload") if isinstance(order.get("payload"), dict) else {}
+    amount = str(payload.get("total_brl") or "")
+    if not amount:
+        raise HTTPException(status_code=409, detail="Pedido sem valor financeiro para estorno.")
+
+    internal_headers = {
+        "X-Actor-User-Id": user_id,
+        "X-Actor-Roles": "compliance_officer",
+        "X-MFA-Verified": "true",
+    }
+    reason_hash = hashlib.sha256(body.reason.encode("utf-8")).hexdigest()
+    refund = await _service_json(
+        "POST",
+        f"{SERVICES['finance']}/integrations/sandbox/psp/refunds",
+        headers=internal_headers,
+        payload={
+            "payment_id": f"order:{body.order_id}",
+            "amount_brl": amount,
+            "idempotency_key": body.idempotency_key,
+            "reason_hash": reason_hash,
+        },
+    )
+    if not isinstance(refund, dict) or refund.get("status") != "refunded":
+        raise HTTPException(status_code=409, detail="O PSP sandbox nao confirmou o estorno.")
+
+    await _service_json(
+        "POST",
+        f"{SERVICES['marketplace']}/resources/orders/{body.order_id}/actions/refund",
+        headers=internal_headers,
+        payload={
+            "reason": "Estorno confirmado pelo PSP sandbox.",
+            "payload": {
+                "provider_environment": "sandbox",
+                "refund_reference": refund.get("reference_id"),
+                "reason_hash": reason_hash,
+            },
+        },
+    )
+    return signed_json_response(
+        {
+            "status": "refunded",
+            "order_id": str(body.order_id),
+            "provider_environment": "sandbox",
+            "refund_reference": refund.get("reference_id"),
+            "message": "Estorno sandbox processado com sucesso.",
         }
     )
 

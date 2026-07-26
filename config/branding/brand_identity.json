@@ -47,8 +47,7 @@
   },
   "valley_apps": [
     "valley",
-    "valley-business",
-    "valley-rider"
+    "valley-business"
   ],
   "riders_apps": [
     "valley-rider",

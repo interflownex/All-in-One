@@ -60,7 +60,7 @@ def test_anonymization_worker_redacts_sensitive_fields_and_keeps_business_contex
 
 def test_deletion_worker_emits_tombstone_and_receipt_hash() -> None:
     decision = decide_retention(
-        candidate(module="vision", record_id="recording-1"),
+        candidate(module="crm", record_id="lead-1"),
         "deletion_worker_daily",
         observed_at=NOW,
     )

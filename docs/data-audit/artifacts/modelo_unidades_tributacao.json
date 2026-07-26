@@ -197,7 +197,13 @@
     "snapshot_factor_on_stock_movement": true,
     "backend_recalculation_required": true
   },
-  "rounding_modes": ["half_up", "half_even", "floor", "ceiling", "truncate_forbidden_by_default"],
+  "rounding_modes": [
+    "half_up",
+    "half_even",
+    "floor",
+    "ceiling",
+    "truncate_forbidden_by_default"
+  ],
   "fiscal_entities": {
     "fiscal_profiles": [
       "id",

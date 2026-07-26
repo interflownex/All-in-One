@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 from modules.shared.domain_rules import MODULE_ENTITIES
@@ -53,7 +54,7 @@ def test_smart_crud_is_contract_driven_and_sends_only_bound_fields():
     source = SMART_CRUD_PATH.read_text(encoding="utf-8")
 
     assert "entityFieldBindings.generated.json" in source
-    assert "Object.fromEntries(boundFields.map" in source
+    assert re.search(r"Object\.fromEntries\(\s*boundFields\.map", source)
     assert "data-storage-binding" in source
     assert "status: 'Ativo'" not in source
     assert "image: `/assets/demo/modules/" not in source

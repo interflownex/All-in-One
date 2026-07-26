@@ -18,8 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_manifest_creates_one_project_per_microservice_and_jobs_surfaces() -> None:
     manifest = build_manifest(load_catalog())
-    assert manifest["project_count"] == 25
-    assert len({project["module"] for project in manifest["projects"]}) == 25
+    expected_count = len(load_catalog()["modules"])
+    assert manifest["project_count"] == expected_count
+    assert len({project["module"] for project in manifest["projects"]}) == expected_count
     jobs = next(
         project for project in manifest["projects"] if project["module"] == "jobs"
     )
@@ -71,7 +72,7 @@ def test_versioned_manifest_matches_catalog_generation() -> None:
 def test_sync_summary_reports_remote_gaps_without_credentials() -> None:
     manifest = build_manifest(load_catalog())
     summary = sync_summary(manifest, {"schema_version": 1, "projects": {}})
-    assert summary["expected_projects"] == 25
+    assert summary["expected_projects"] == len(load_catalog()["modules"])
     assert summary["synced_projects"] == 0
     assert summary["expected_screens"] == manifest["screen_count"]
     assert summary["synced_screens"] == 0
@@ -113,7 +114,7 @@ def test_stitch_auto_sync_dry_run_is_safe_and_does_not_require_remote_secret() -
         stderr=subprocess.PIPE,
     )
     summary = json.loads(result.stdout)
-    assert summary["expected_projects"] == 25
+    assert summary["expected_projects"] == len(load_catalog()["modules"])
     assert summary["expected_screens"] > 0
 
 

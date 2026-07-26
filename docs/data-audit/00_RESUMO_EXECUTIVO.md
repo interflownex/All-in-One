@@ -2,7 +2,7 @@
 
 **Status:** em execução; conclusão de 100% não declarada.
 
-A varredura física reproduzível encontrou 29 migrations PostgreSQL, 32 schemas, 164 tabelas, 2302 campos, 568 referências, 123 índices e 112 endpoints candidatos. Também foram catalogados estaticamente 4 coleções MongoDB, 4 tabelas SQLite, 1 padrão Redis, 4 stores de objetos e 12 chaves/famílias de browser storage. A validação operacional desses mecanismos permanece pendente.
+A varredura física reproduzível encontrou 30 migrations PostgreSQL, 32 schemas, 164 tabelas, 2302 campos, 568 referências, 123 índices e 114 endpoints candidatos. Também foram catalogados estaticamente 4 coleções MongoDB, 4 tabelas SQLite, 1 padrão Redis, 4 stores de objetos e 12 chaves/famílias de browser storage. A validação operacional desses mecanismos permanece pendente.
 
 ## Limitações
 

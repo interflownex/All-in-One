@@ -45,7 +45,9 @@ def test_wsl_bootstrap_loads_environment_and_prepares_venv() -> None:
     )
 
     assert "grep -qi microsoft /proc/version" in script
-    assert 'source "$file"' in script
+    assert 'while IFS= read -r line' in script
+    assert 'export "$key=$raw_value"' in script
+    assert 'source "$file"' not in script
     assert 'python3 "$ROOT/scripts/configure_docker_dx.py"' in script
     assert 'load_env_file "$ROOT/.env.docker-dx"' in script
     assert (

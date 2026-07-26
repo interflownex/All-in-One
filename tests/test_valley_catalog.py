@@ -1,6 +1,10 @@
+import json
+from pathlib import Path
 from uuid import uuid4
 
 from platform_test_support import fresh_client_for
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def actor_headers(
@@ -25,7 +29,8 @@ def test_valley_catalog_lists_all_modules_with_simple_categories() -> None:
     modules = marketplace.get("/valley/catalog/modules")
     assert modules.status_code == 200
     payload = modules.json()
-    assert len(payload) == 25
+    expected_modules = len(json.loads((ROOT / "config/module_catalog.json").read_text(encoding="utf-8"))["modules"])
+    assert len(payload) == expected_modules
     assert {item["source_module"] for item in payload} >= {
         "health",
         "services",
@@ -42,7 +47,7 @@ def test_valley_catalog_lists_all_modules_with_simple_categories() -> None:
     offers = marketplace.get("/valley/catalog/offers")
     assert offers.status_code == 200
     source_modules = {item["source_module"] for item in offers.json()}
-    assert len(source_modules) == 25
+    assert len(source_modules) == expected_modules
     assert all(
         item["offer_type"] in {"food", "product", "service"} for item in offers.json()
     )

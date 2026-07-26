@@ -504,12 +504,10 @@ def main() -> int:
         ]:
             if not relative or not (ROOT / relative).is_file():
                 fail(f"Ativo oficial de marca ausente: {relative}", errors)
-        if set(brand.get("valley_apps", [])) != {
-            "valley",
-            "valley-business",
-            "valley-rider",
-        }:
+        if set(brand.get("valley_apps", [])) != {"valley", "valley-business"}:
             fail("Branding deve declarar exatamente os apps Valley oficiais.", errors)
+        if set(brand.get("riders_apps", [])) != {"valley-rider", "all-in-one-riders"}:
+            fail("Branding deve declarar exatamente os apps Valley Riders oficiais.", errors)
     if not STITCH_MCP_POLICY.is_file():
         fail("Politica obrigatoria do MCP Stitch ausente.", errors)
     else:
@@ -1362,7 +1360,7 @@ def main() -> int:
         return 1
 
     print(
-        "\nRepositorio validado com sucesso! Todos os 25 modulos e infraestrutura estao em conformidade."
+        "\nRepositorio validado com sucesso! Todos os modulos ativos e a infraestrutura estao em conformidade."
     )
     return 0
 

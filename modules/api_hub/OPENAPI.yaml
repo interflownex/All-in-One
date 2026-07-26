@@ -161,6 +161,22 @@ paths:
       responses:
         "200":
           description: Catalogo Valley agregado e filtrado
+  /gateway/oauth2/token:
+    post:
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthClientCredentialsRequest'
+      responses:
+        '200':
+          description: Token OAuth2 de curta duração emitido
+        '401':
+          description: Credenciais de cliente inválidas
+        '403':
+          description: Escopo não autorizado
   /gateway/consumer/orders:
     get:
       responses:
@@ -352,6 +368,25 @@ components:
           type: string
           minLength: 8
           maxLength: 120
+    OAuthClientCredentialsRequest:
+      type: object
+      required: [grant_type, client_id, api_key, scope]
+      properties:
+        grant_type:
+          type: string
+          enum: [client_credentials]
+        client_id:
+          type: string
+          minLength: 3
+          maxLength: 120
+        api_key:
+          type: string
+          minLength: 8
+          maxLength: 500
+        scope:
+          type: string
+          minLength: 1
+          maxLength: 500
     CatalogRefundRequest:
       type: object
       required: [order_id, idempotency_key, reason]

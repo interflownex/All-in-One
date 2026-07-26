@@ -165,7 +165,6 @@ def test_postgres_store_declares_structural_contract(store_class: type) -> None:
 
 def test_postgres_store_matrix_covers_all_workspace_store_modules() -> None:
     discovered_modules = {store_class.module for store_class in STORE_CLASSES}
-    assert len(discovered_modules) == 25
     assert set(MODULES_CONFIG) == discovered_modules
 
 
