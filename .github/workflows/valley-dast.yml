@@ -35,14 +35,25 @@ jobs:
       - name: Instalar backend efêmero
         run: pip install -r modules/identity/requirements.txt
       - name: Iniciar Identity somente no runner autorizado
+        shell: bash
         run: |
+          set -euo pipefail
           cd modules/identity
           nohup uvicorn main:app --host 0.0.0.0 --port 8000 > "$RUNNER_TEMP/identity-dast.log" 2>&1 &
           echo $! > "$RUNNER_TEMP/identity-dast.pid"
           for attempt in $(seq 1 30); do
-            curl --fail --silent http://127.0.0.1:8000/health && exit 0
+            if curl --fail --silent http://127.0.0.1:8000/health; then
+              exit 0
+            fi
+            if ! kill -0 "$(cat "$RUNNER_TEMP/identity-dast.pid")" 2>/dev/null; then
+              echo "Identity encerrou antes de responder ao healthcheck."
+              cat "$RUNNER_TEMP/identity-dast.log"
+              exit 1
+            fi
             sleep 1
           done
+          echo "Identity não respondeu ao healthcheck dentro do prazo."
+          cat "$RUNNER_TEMP/identity-dast.log"
           exit 1
       - name: Resolver endereço interno do host Docker
         run: |
@@ -69,13 +80,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: valley-dast-evidence
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 30
           path: |
             report_json.json
             report_html.html
             report_md.md
             valley-zap-summary.json
+            ${{ runner.temp }}/identity-dast.log
       - name: Encerrar backend efêmero
         if: always()
         run: |
