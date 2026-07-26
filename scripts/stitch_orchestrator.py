@@ -67,7 +67,6 @@ APP_ASSIGNMENTS = {
     "document": ["all-in-one-business"],
     "hr": ["all-in-one-business"],
     "health": ["all-in-one-user", "all-in-one-health"],
-    "vision": ["all-in-one-business"],
     "legal": ["all-in-one-business"],
     "property": ["all-in-one-business"],
     "bi": ["all-in-one-business"],

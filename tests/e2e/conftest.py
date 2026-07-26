@@ -486,28 +486,6 @@ PHASE4_ROUTE_PAYLOADS = {
         "requested_at": "2026-07-15T09:00:00Z",
         "estimated_cost_brl": "350.00",
     },
-    ("vision", "devices"): {
-        "device_fingerprint": "vision-device-playwright",
-        "name": "Camera Vision Playwright",
-    },
-    ("vision", "streams"): {
-        "device_id": PHASE4_BUSINESS_ID,
-        "stream_url_hash": "4c5f3c4b2b5cf9f9a02f76f0874ad1c2ce3e2e6a9d8de3df8fc3fdb9b14c4e5c",
-        "protocol": "rtsp",
-        "started_at": "2026-07-15T08:00:00Z",
-    },
-    ("vision", "recordings"): {
-        "stream_id": PHASE4_BUSINESS_ID,
-        "storage_key": "vault/vision/phase4/recording.mp4",
-        "file_sha256": "9" * 64,
-        "started_at": "2026-07-15T08:00:00Z",
-    },
-    ("vision", "motion_alerts"): {
-        "device_id": PHASE4_BUSINESS_ID,
-        "stream_id": PHASE4_BUSINESS_ID,
-        "detected_at": "2026-07-15T08:05:00Z",
-        "confidence_score": "0.91",
-    },
     ("ai_core", "moderation_decisions"): {
         "module": "business",
         "risk_score": "0.21",

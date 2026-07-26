@@ -1,6 +1,9 @@
 {
   "version": 1,
-  "generatedFrom": ["database/postgres/migrations", "modules/shared/domain_rules.py"],
+  "generatedFrom": [
+    "database/postgres/migrations",
+    "modules/shared/domain_rules.py"
+  ],
   "contractCount": 120,
   "contracts": {
     "identity:users": {
@@ -659,7 +662,12 @@
           "evidence": "database/postgres/migrations/001_identity_and_schemas.sql:138"
         }
       ],
-      "listFields": ["verification_type", "risk_score", "reviewer_user_id", "decision_reason"],
+      "listFields": [
+        "verification_type",
+        "risk_score",
+        "reviewer_user_id",
+        "decision_reason"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:202"
     },
@@ -754,7 +762,13 @@
           "evidence": "database/postgres/migrations/001_identity_and_schemas.sql:155"
         }
       ],
-      "listFields": ["consent_type", "policy_version", "accepted_at", "revoked_at", "ip_address"],
+      "listFields": [
+        "consent_type",
+        "policy_version",
+        "accepted_at",
+        "revoked_at",
+        "ip_address"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:211"
     },
@@ -977,7 +991,14 @@
           "evidence": "database/postgres/migrations/002_business_permissions_finance.sql:18"
         }
       ],
-      "listFields": ["parent_company_id", "cnpj", "root_cnpj", "legal_name", "trade_name", "cnae"],
+      "listFields": [
+        "parent_company_id",
+        "cnpj",
+        "root_cnpj",
+        "legal_name",
+        "trade_name",
+        "cnae"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:217"
     },
@@ -1200,7 +1221,14 @@
           "evidence": "database/postgres/migrations/002_business_permissions_finance.sql:18"
         }
       ],
-      "listFields": ["parent_company_id", "cnpj", "root_cnpj", "legal_name", "trade_name", "cnae"],
+      "listFields": [
+        "parent_company_id",
+        "cnpj",
+        "root_cnpj",
+        "legal_name",
+        "trade_name",
+        "cnae"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -1279,7 +1307,12 @@
           "evidence": "database/postgres/migrations/002_business_permissions_finance.sql:35"
         }
       ],
-      "listFields": ["company_id", "document_type", "storage_key", "expires_at"],
+      "listFields": [
+        "company_id",
+        "document_type",
+        "storage_key",
+        "expires_at"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -1342,7 +1375,11 @@
           "evidence": "database/postgres/migrations/002_business_permissions_finance.sql:50"
         }
       ],
-      "listFields": ["company_id", "department", "cost_center"],
+      "listFields": [
+        "company_id",
+        "department",
+        "cost_center"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:224"
     },
@@ -1683,7 +1720,11 @@
           "evidence": "database/postgres/migrations/002_business_permissions_finance.sql:66"
         }
       ],
-      "listFields": ["company_id", "name", "is_system"],
+      "listFields": [
+        "company_id",
+        "name",
+        "is_system"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:261"
     },
@@ -1730,7 +1771,10 @@
           "evidence": "database/postgres/migrations/002_business_permissions_finance.sql:80"
         }
       ],
-      "listFields": ["module", "action"],
+      "listFields": [
+        "module",
+        "action"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -1793,7 +1837,11 @@
           "evidence": "database/postgres/migrations/002_business_permissions_finance.sql:96"
         }
       ],
-      "listFields": ["role_id", "company_id", "valid_until"],
+      "listFields": [
+        "role_id",
+        "company_id",
+        "valid_until"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -1856,7 +1904,11 @@
           "evidence": "database/postgres/migrations/002_business_permissions_finance.sql:111"
         }
       ],
-      "listFields": ["company_id", "module", "expression"],
+      "listFields": [
+        "company_id",
+        "module",
+        "expression"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -1951,7 +2003,13 @@
           "evidence": "database/postgres/migrations/002_business_permissions_finance.sql:128"
         }
       ],
-      "listFields": ["company_id", "role_id", "limit_brl", "requires_dual_approval", "scope"],
+      "listFields": [
+        "company_id",
+        "role_id",
+        "limit_brl",
+        "requires_dual_approval",
+        "scope"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:262"
     },
@@ -2046,7 +2104,13 @@
           "evidence": "database/postgres/migrations/002_business_permissions_finance.sql:146"
         }
       ],
-      "listFields": ["wallet_type", "brl_available", "brl_held", "nex_available", "nex_held"],
+      "listFields": [
+        "wallet_type",
+        "brl_available",
+        "brl_held",
+        "nex_available",
+        "nex_held"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:265"
     },
@@ -2328,7 +2392,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:6"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:294"
     },
@@ -2359,7 +2425,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:21"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:295"
     },
@@ -2523,7 +2591,11 @@
           "evidence": "database/postgres/migrations/003_marketplace_delivery_services_mobility.sql:45"
         }
       ],
-      "listFields": ["company_id", "name", "published_at"],
+      "listFields": [
+        "company_id",
+        "name",
+        "published_at"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:296"
     },
@@ -2618,7 +2690,13 @@
           "evidence": "database/postgres/migrations/003_marketplace_delivery_services_mobility.sql:62"
         }
       ],
-      "listFields": ["store_id", "sku", "name", "price_brl", "stock_quantity"],
+      "listFields": [
+        "store_id",
+        "sku",
+        "name",
+        "price_brl",
+        "stock_quantity"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:302"
     },
@@ -2649,7 +2727,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:36"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -2878,7 +2958,14 @@
           "evidence": "database/postgres/migrations/021_valley_reviews.sql:11"
         }
       ],
-      "listFields": ["order_id", "store_id", "offer_id", "rating", "comment", "moderation_status"],
+      "listFields": [
+        "order_id",
+        "store_id",
+        "offer_id",
+        "rating",
+        "comment",
+        "moderation_status"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:320"
     },
@@ -3021,7 +3108,14 @@
           "evidence": "database/postgres/migrations/022_marketplace_disputes_support.sql:13"
         }
       ],
-      "listFields": ["order_id", "store_id", "company_id", "offer_id", "case_type", "subject"],
+      "listFields": [
+        "order_id",
+        "store_id",
+        "company_id",
+        "offer_id",
+        "case_type",
+        "subject"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:342"
     },
@@ -3185,7 +3279,11 @@
           "evidence": "database/postgres/migrations/003_marketplace_delivery_services_mobility.sql:94"
         }
       ],
-      "listFields": ["company_id", "homologated_at", "api_configuration"],
+      "listFields": [
+        "company_id",
+        "homologated_at",
+        "api_configuration"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:352"
     },
@@ -3264,7 +3362,12 @@
           "evidence": "database/postgres/migrations/003_marketplace_delivery_services_mobility.sql:110"
         }
       ],
-      "listFields": ["supplier_id", "external_sku", "cost_brl", "markup_percent"],
+      "listFields": [
+        "supplier_id",
+        "external_sku",
+        "cost_brl",
+        "markup_percent"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:355"
     },
@@ -3295,7 +3398,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:21"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -3326,7 +3431,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:36"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:361"
     },
@@ -3389,7 +3496,11 @@
           "evidence": "database/postgres/migrations/014_valley_ecosystem.sql:29"
         }
       ],
-      "listFields": ["catalog_product_id", "selected_percent", "pepitas_required"],
+      "listFields": [
+        "catalog_product_id",
+        "selected_percent",
+        "pepitas_required"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:394"
     },
@@ -3618,7 +3729,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:51"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -3649,7 +3762,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:66"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -3680,7 +3795,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:81"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:412"
     },
@@ -3711,7 +3828,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:96"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -3908,7 +4027,12 @@
           "evidence": "database/postgres/migrations/024_riders_delivery_schema_alignment.sql:9"
         }
       ],
-      "listFields": ["rider_profile_id", "document_type", "storage_key", "verified_at"],
+      "listFields": [
+        "rider_profile_id",
+        "document_type",
+        "storage_key",
+        "verified_at"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -4105,7 +4229,12 @@
           "evidence": "database/postgres/migrations/024_riders_delivery_schema_alignment.sql:26"
         }
       ],
-      "listFields": ["rider_profile_id", "reviewer_user_id", "rating", "comment"],
+      "listFields": [
+        "rider_profile_id",
+        "reviewer_user_id",
+        "rating",
+        "comment"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -4152,7 +4281,10 @@
           "evidence": "database/postgres/migrations/003_marketplace_delivery_services_mobility.sql:147"
         }
       ],
-      "listFields": ["category", "approved_at"],
+      "listFields": [
+        "category",
+        "approved_at"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:428"
     },
@@ -4183,7 +4315,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:111"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -4214,7 +4348,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:126"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -4395,7 +4531,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:141"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -4544,7 +4682,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:156"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:452"
     },
@@ -4575,7 +4715,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:171"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -4654,7 +4796,12 @@
           "evidence": "database/postgres/migrations/003_marketplace_delivery_services_mobility.sql:198"
         }
       ],
-      "listFields": ["route_code", "amount_brl", "qr_token_hash", "used_at"],
+      "listFields": [
+        "route_code",
+        "amount_brl",
+        "qr_token_hash",
+        "used_at"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:458"
     },
@@ -4685,7 +4832,9 @@
           "evidence": "database/postgres/migrations/027_complete_legacy_adapter_relations.sql:186"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:466"
     },
@@ -5443,7 +5592,11 @@
           "evidence": "database/postgres/migrations/006_jobs_recruitment_ctps.sql:111"
         }
       ],
-      "listFields": ["job_posting_id", "resume_id", "cover_letter"],
+      "listFields": [
+        "job_posting_id",
+        "resume_id",
+        "cover_letter"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:498"
     },
@@ -5538,7 +5691,13 @@
           "evidence": "database/postgres/migrations/006_jobs_recruitment_ctps.sql:131"
         }
       ],
-      "listFields": ["resume_id", "business_id", "recruiter_user_id", "purpose", "accessed_at"],
+      "listFields": [
+        "resume_id",
+        "business_id",
+        "recruiter_user_id",
+        "purpose",
+        "accessed_at"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:510"
     },
@@ -5569,7 +5728,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:51"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:516"
     },
@@ -5600,7 +5761,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:66"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:526"
     },
@@ -5631,7 +5794,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:81"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:546"
     },
@@ -5662,7 +5827,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:96"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:521"
     },
@@ -5741,7 +5908,12 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:9"
         }
       ],
-      "listFields": ["company_id", "document_type", "access_key", "amount_brl"],
+      "listFields": [
+        "company_id",
+        "document_type",
+        "access_key",
+        "amount_brl"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:566"
     },
@@ -5804,7 +5976,11 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:24"
         }
       ],
-      "listFields": ["company_id", "name", "addressing_rules"],
+      "listFields": [
+        "company_id",
+        "name",
+        "addressing_rules"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:571"
     },
@@ -5835,7 +6011,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:111"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:576"
     },
@@ -5946,7 +6124,14 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:42"
         }
       ],
-      "listFields": ["warehouse_id", "sku", "bin_code", "quantity", "lot_code", "expires_at"],
+      "listFields": [
+        "warehouse_id",
+        "sku",
+        "bin_code",
+        "quantity",
+        "lot_code",
+        "expires_at"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:581"
     },
@@ -5977,7 +6162,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:126"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:597"
     },
@@ -6008,7 +6195,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:141"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:615"
     },
@@ -6039,7 +6228,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:156"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:628"
     },
@@ -6171,7 +6362,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:171"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:633"
     },
@@ -6202,7 +6395,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:186"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:670"
     },
@@ -6233,7 +6428,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:201"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:676"
     },
@@ -6264,7 +6461,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:216"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:690"
     },
@@ -6343,7 +6542,12 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:75"
         }
       ],
-      "listFields": ["company_id", "title", "expected_value_brl", "stage"],
+      "listFields": [
+        "company_id",
+        "title",
+        "expected_value_brl",
+        "stage"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:707"
     },
@@ -6374,7 +6578,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:231"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:734"
     },
@@ -6405,7 +6611,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:246"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:746"
     },
@@ -6436,7 +6644,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:261"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -6515,7 +6725,12 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:91"
         }
       ],
-      "listFields": ["company_id", "process_key", "current_task", "sla_due_at"],
+      "listFields": [
+        "company_id",
+        "process_key",
+        "current_task",
+        "sla_due_at"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:764"
     },
@@ -6546,7 +6761,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:276"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:782"
     },
@@ -6577,7 +6794,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:291"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:800"
     },
@@ -6608,7 +6827,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:306"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -6773,7 +6994,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:321"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:819"
     },
@@ -6804,7 +7027,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:336"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -6883,7 +7108,12 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:158"
         }
       ],
-      "listFields": ["company_id", "employment_type", "position_title", "admission_date"],
+      "listFields": [
+        "company_id",
+        "employment_type",
+        "position_title",
+        "admission_date"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:830"
     },
@@ -6914,7 +7144,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:351"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:835"
     },
@@ -6945,7 +7177,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:366"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -6976,7 +7210,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:381"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:850"
     },
@@ -7007,7 +7243,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:396"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:862"
     },
@@ -7054,7 +7292,10 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:172"
         }
       ],
-      "listFields": ["health_identifier", "blood_type"],
+      "listFields": [
+        "health_identifier",
+        "blood_type"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:863"
     },
@@ -7219,7 +7460,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:411"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:865"
     },
@@ -7250,7 +7493,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:426"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:866"
     },
@@ -7281,165 +7526,11 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:441"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:867"
-    },
-    "vision:devices": {
-      "module": "vision",
-      "resource": "devices",
-      "endpoint": "/vision/resources/devices",
-      "createDto": "ResourceCreate",
-      "patchDto": "ResourcePatch",
-      "physicalStorage": "vision.devices",
-      "immutable": false,
-      "sensitive": true,
-      "fields": [
-        {
-          "name": "device_fingerprint",
-          "label": "Device fingerprint",
-          "component": "text",
-          "logicalType": "string",
-          "required": true,
-          "readOnly": false,
-          "sensitive": true,
-          "maxLength": null,
-          "physicalType": "TEXT",
-          "binding": "ResourceCreate.payload.device_fingerprint",
-          "patchBinding": "ResourcePatch.payload.device_fingerprint",
-          "storage": "vision.devices.device_fingerprint",
-          "validation": "required + backend domain rule",
-          "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:202"
-        },
-        {
-          "name": "location_label",
-          "label": "Location label",
-          "component": "text",
-          "logicalType": "string",
-          "required": false,
-          "readOnly": false,
-          "sensitive": true,
-          "maxLength": 160,
-          "physicalType": "VARCHAR(160)",
-          "binding": "ResourceCreate.payload.location_label",
-          "patchBinding": "ResourcePatch.payload.location_label",
-          "storage": "vision.devices.location_label",
-          "validation": "backend domain rule",
-          "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:203"
-        },
-        {
-          "name": "retention_days",
-          "label": "Retention days",
-          "component": "number",
-          "logicalType": "number",
-          "required": false,
-          "readOnly": false,
-          "sensitive": false,
-          "maxLength": null,
-          "physicalType": "INTEGER",
-          "binding": "ResourceCreate.payload.retention_days",
-          "patchBinding": "ResourcePatch.payload.retention_days",
-          "storage": "vision.devices.retention_days",
-          "validation": "backend domain rule",
-          "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:204"
-        }
-      ],
-      "listFields": ["device_fingerprint", "location_label", "retention_days"],
-      "bindingStatus": "verified_physical_dto_contract",
-      "ruleEvidence": "modules/shared/domain_rules.py:868"
-    },
-    "vision:streams": {
-      "module": "vision",
-      "resource": "streams",
-      "endpoint": "/vision/resources/streams",
-      "createDto": "ResourceCreate",
-      "patchDto": "ResourcePatch",
-      "physicalStorage": "vision.streams",
-      "immutable": false,
-      "sensitive": true,
-      "fields": [
-        {
-          "name": "company_id",
-          "label": "Empresa id",
-          "component": "text",
-          "logicalType": "string",
-          "required": false,
-          "readOnly": false,
-          "sensitive": false,
-          "maxLength": null,
-          "physicalType": "UUID",
-          "binding": "ResourceCreate.payload.company_id",
-          "patchBinding": "ResourcePatch.payload.company_id",
-          "storage": "vision.streams.company_id",
-          "validation": "backend domain rule",
-          "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:456"
-        }
-      ],
-      "listFields": ["company_id"],
-      "bindingStatus": "verified_physical_dto_contract",
-      "ruleEvidence": "modules/shared/domain_rules.py:873"
-    },
-    "vision:recordings": {
-      "module": "vision",
-      "resource": "recordings",
-      "endpoint": "/vision/resources/recordings",
-      "createDto": "ResourceCreate",
-      "patchDto": "ResourcePatch",
-      "physicalStorage": "vision.recordings",
-      "immutable": true,
-      "sensitive": true,
-      "fields": [
-        {
-          "name": "company_id",
-          "label": "Empresa id",
-          "component": "text",
-          "logicalType": "string",
-          "required": false,
-          "readOnly": true,
-          "sensitive": false,
-          "maxLength": null,
-          "physicalType": "UUID",
-          "binding": "ResourceCreate.payload.company_id",
-          "patchBinding": "ResourcePatch.payload.company_id",
-          "storage": "vision.recordings.company_id",
-          "validation": "backend domain rule",
-          "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:471"
-        }
-      ],
-      "listFields": ["company_id"],
-      "bindingStatus": "verified_physical_dto_contract",
-      "ruleEvidence": "modules/shared/domain_rules.py:894"
-    },
-    "vision:motion_alerts": {
-      "module": "vision",
-      "resource": "motion_alerts",
-      "endpoint": "/vision/resources/motion_alerts",
-      "createDto": "ResourceCreate",
-      "patchDto": "ResourcePatch",
-      "physicalStorage": "vision.motion_alerts",
-      "immutable": false,
-      "sensitive": true,
-      "fields": [
-        {
-          "name": "company_id",
-          "label": "Empresa id",
-          "component": "text",
-          "logicalType": "string",
-          "required": false,
-          "readOnly": false,
-          "sensitive": false,
-          "maxLength": null,
-          "physicalType": "UUID",
-          "binding": "ResourceCreate.payload.company_id",
-          "patchBinding": "ResourcePatch.payload.company_id",
-          "storage": "vision.motion_alerts.company_id",
-          "validation": "backend domain rule",
-          "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:486"
-        }
-      ],
-      "listFields": ["company_id"],
-      "bindingStatus": "verified_physical_dto_contract",
-      "ruleEvidence": "modules/shared/domain_rules.py:900"
     },
     "legal:cases": {
       "module": "legal",
@@ -7516,7 +7607,12 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:220"
         }
       ],
-      "listFields": ["company_id", "case_number", "risk_brl", "next_deadline"],
+      "listFields": [
+        "company_id",
+        "case_number",
+        "risk_brl",
+        "next_deadline"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:921"
     },
@@ -7547,7 +7643,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:501"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:927"
     },
@@ -7578,7 +7676,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:516"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:946"
     },
@@ -7609,7 +7709,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:531"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -7672,7 +7774,11 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:235"
         }
       ],
-      "listFields": ["company_id", "address", "property_type"],
+      "listFields": [
+        "company_id",
+        "address",
+        "property_type"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:951"
     },
@@ -7703,7 +7809,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:546"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -7734,7 +7842,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:561"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:955"
     },
@@ -7765,7 +7875,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:576"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -7796,7 +7908,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:591"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:976"
     },
@@ -7827,7 +7941,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:606"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:995"
     },
@@ -7890,7 +8006,11 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:282"
         }
       ],
-      "listFields": ["company_id", "name", "definition"],
+      "listFields": [
+        "company_id",
+        "name",
+        "definition"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:1013"
     },
@@ -7921,7 +8041,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:621"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:74"
     },
@@ -7952,7 +8074,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:636"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:1034"
     },
@@ -7983,7 +8107,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:651"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:1046"
     },
@@ -8062,7 +8188,12 @@
           "evidence": "database/postgres/migrations/004_enterprise_verticals.sql:298"
         }
       ],
-      "listFields": ["module", "resource_id", "risk_score", "reasons"],
+      "listFields": [
+        "module",
+        "resource_id",
+        "risk_score",
+        "reasons"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:1063"
     },
@@ -8093,7 +8224,9 @@
           "evidence": "database/postgres/migrations/026_complete_typed_store_relations.sql:666"
         }
       ],
-      "listFields": ["company_id"],
+      "listFields": [
+        "company_id"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:1068"
     },
@@ -8354,7 +8487,14 @@
           "evidence": "database/postgres/migrations/010_api_hub_refinement.sql:13"
         }
       ],
-      "listFields": ["company_id", "client_id", "key_name", "key_hash", "key_hint", "scopes"],
+      "listFields": [
+        "company_id",
+        "client_id",
+        "key_name",
+        "key_hash",
+        "key_hint",
+        "scopes"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:1102"
     },
@@ -8433,7 +8573,12 @@
           "evidence": "database/postgres/migrations/005_audit_events_api_security.sql:95"
         }
       ],
-      "listFields": ["company_id", "target_url", "event_patterns", "signing_secret_reference"],
+      "listFields": [
+        "company_id",
+        "target_url",
+        "event_patterns",
+        "signing_secret_reference"
+      ],
       "bindingStatus": "verified_physical_dto_contract",
       "ruleEvidence": "modules/shared/domain_rules.py:1103"
     },

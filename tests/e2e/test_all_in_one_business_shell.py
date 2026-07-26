@@ -354,18 +354,6 @@ def test_all_in_one_business_shell_runs_governance_live_api_hub_actions(
     )
     expect(page.locator(".badge", has_text="approved")).to_be_visible()
 
-    page.goto(
-        f"{all_in_one_business_governance_live_server}/vision/devices",
-        wait_until="domcontentloaded",
-    )
-    expect(page.get_by_text("Camera Vision Playwright")).to_be_visible(
-        timeout=LIVE_API_EXPECT_TIMEOUT
-    )
-    page.get_by_role("button", name="Aprovar dispositivo Vision").click()
-    expect(
-        page.get_by_text("Dispositivo Vision aprovado no API Hub vivo.")
-    ).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
-    expect(page.locator(".badge", has_text="approved")).to_be_visible()
 
     page.goto(
         f"{all_in_one_business_governance_live_server}/ai_core/moderationdecisions",

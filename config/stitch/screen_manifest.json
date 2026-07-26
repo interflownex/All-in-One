@@ -6,7 +6,11 @@
   "project_count": 25,
   "screen_count": 181,
   "screen_generation": {
-    "standard": ["overview", "one_screen_per_entity", "audit_permissions"],
+    "standard": [
+      "overview",
+      "one_screen_per_entity",
+      "audit_permissions"
+    ],
     "special_defined_in": "scripts/stitch_orchestrator.py:SPECIAL_SCREENS"
   },
   "projects": [
@@ -39,7 +43,9 @@
       "module": "finance",
       "project_name": "All-in-One - Finance Pay Billing Fiscal",
       "screen_count": 9,
-      "special_screens": ["wallet_ledger"]
+      "special_screens": [
+        "wallet_ledger"
+      ]
     },
     {
       "module": "marketplace",
@@ -134,12 +140,6 @@
       "module": "health",
       "project_name": "All-in-One - Health",
       "screen_count": 7,
-      "special_screens": []
-    },
-    {
-      "module": "vision",
-      "project_name": "All-in-One - Vision",
-      "screen_count": 6,
       "special_screens": []
     },
     {

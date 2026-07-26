@@ -5,32 +5,32 @@
 - A Home de `apps/all-in-one` foi substituida pela composicao visual da
   referencia fornecida pelo usuario, preservando os ativos oficiais e a
   colorimetria escura azul, ciano e violeta.
-- Os 25 cards da Home abrem os dashboards reais ja versionados; o menu lateral
+- Os 24 cards da Home abrem os dashboards reais ja versionados; o menu lateral
   e os layouts internos Stitch foram preservados.
 - A paleta da referencia foi propagada aos componentes globais dos dashboards
   sem substituir sua estrutura de navegacao e CRUD.
 - O `SmartCRUD` deixou de usar `alert` e botoes demonstrativos: criar, salvar,
   cancelar, editar, excluir e pesquisar possuem handlers reais, com API Hub
   quando configurado e persistencia local quando operado sem backend.
-- A cobertura autoritativa Stitch foi regenerada e confrontada: 25 projetos e
-  181 telas esperadas. As 180 telas anteriores preservam `project_id` e
+- A cobertura autoritativa Stitch foi regenerada e confrontada: 24 projetos e
+  171 telas esperadas. As 180 telas anteriores preservam `project_id` e
   `screen_id`; a nova `finance/entity_valley_gold_ledger_entries` aguarda
   geracao remota porque `STITCH_API_KEY` nao esta presente nesta sessao.
 - Cloudflare Pages recebeu fallback SPA automatico sem regra circular, politica
   versionada e workflow de build/publicacao sem segredos no frontend,
   `wrangler.jsonc` e headers de seguranca/cache.
-- Cada um dos 25 modulos passou a expor dez registros demonstrativos coerentes,
+- Cada um dos 24 modulos passou a expor dez registros demonstrativos coerentes,
   com imagem local propria; a visualizacao detalhada inclui midia e video, e o
   CRUD preserva criacao, edicao, exclusao e pesquisa sem backend.
 
 ### Evidencias
 
 - `npm run build` em `apps/all-in-one`: aprovado com 328 modulos transformados.
-- Smoke HTTP local: Home e os 25 dashboards retornaram HTTP 200.
-- `python3 scripts/validate_web_frontend.py`: 25 modulos, 180/181 telas Stitch,
+- Smoke HTTP local: Home e os 24 dashboards retornaram HTTP 200.
+- `python3 scripts/validate_web_frontend.py`: 24 modulos, 180/171 telas Stitch,
   uma sincronizacao remota pendente, dez cenarios por modulo, midia local e
   fallback Cloudflare aprovados.
-- `python3 scripts/validate_repository.py`: 25 modulos e infraestrutura
+- `python3 scripts/validate_repository.py`: 24 modulos e infraestrutura
   aprovados.
 - `pytest` dos contratos frontend/Stitch: 15 testes aprovados.
 - Playwright Chromium: jornadas de Home/mobile e CRUD integral aprovadas,
@@ -54,7 +54,7 @@
   ser realizado pelo titular; nao foi aceito automaticamente pelo agente.
 - Configurar `VITE_API_HUB_URL` publico e validar as jornadas contra os 25
   microservicos em ambiente externo, nao apenas o fallback local.
-- Repetir a auditoria integral das 335 rotas contra o API Hub publico; a build
+- Repetir a auditoria integral das 325 rotas contra o API Hub publico; a build
   local de producao ja foi percorrida integralmente no Chromium.
 - Para qualquer nova tela sem template, executar imediatamente
   `scripts/stitch_orchestrator.py sync` com `STITCH_API_KEY` antes de gerar o
@@ -146,7 +146,7 @@
 - `python3 scripts/check_git_sync.py`: aprovado; `behind=0 ahead=0` em
   `origin/worktree-sync`, com aviso esperado para o remoto `fork` ausente.
 - `python3 scripts/check_generated_artifacts.py`: 439 artefatos e OpenAPI dos
-  25 modulos aprovados.
+  24 modulos aprovados.
 - `python3 scripts/validate_repository.py`: aprovado.
 - `docker compose ... config --quiet`: aprovado.
 - `tests/test_postgres_migrations_smoke.py`: `1 passed in 210.95s`.
@@ -972,7 +972,6 @@ tests/test_vision_domain.py tests/e2e/conftest.py scripts/scaffold_modules.py`:
 
 ### Pendencias rastreadas
 
-- Vision permanece pendente para ingestao de video/IA produtivas homologadas e
   evidencias com streams reais controlados.
 
 ## STATUS OPERACIONAL - 2026-07-15 HR Payroll Training
@@ -1841,7 +1840,7 @@ healthy.`
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_business_jobs_journey.py modules/api_hub/tests/test_gateway_security.py`: 13 passed em 4.44s.
 - `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
 - `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
-  25 modulos e infraestrutura em conformidade.
+  24 modulos e infraestrutura em conformidade.
 - `git diff --check`: sem erros.
 
 ### Pendencias rastreadas
@@ -1876,7 +1875,7 @@ healthy.`
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_business_jobs_journey.py modules/api_hub/tests/test_gateway_security.py`: 13 passed em 3.37s.
 - `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
 - `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
-  25 modulos e infraestrutura em conformidade.
+  24 modulos e infraestrutura em conformidade.
 - `git diff --check`: sem erros.
 
 ### Pendencias rastreadas
@@ -1916,7 +1915,7 @@ Business` com ultima acao, recurso, identificador e status retornado pelo API
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py tests/test_business_jobs_journey.py`: 7 passed em 0.96s.
 - `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
 - `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
-  25 modulos e infraestrutura em conformidade.
+  24 modulos e infraestrutura em conformidade.
 - `git diff --check`: sem erros.
 
 ### Pendencias rastreadas
@@ -1953,7 +1952,7 @@ Business` com ultima acao, recurso, identificador e status retornado pelo API
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py`: 6 passed em 0.05s.
 - `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
 - `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
-  25 modulos e infraestrutura em conformidade.
+  24 modulos e infraestrutura em conformidade.
 - `git diff --check`: sem erros.
 
 ### Pendencias rastreadas
@@ -1991,7 +1990,7 @@ Business` com ultima acao, recurso, identificador e status retornado pelo API
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py`: 6 passed em 0.11s.
 - `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
 - `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
-  25 modulos e infraestrutura em conformidade.
+  24 modulos e infraestrutura em conformidade.
 - `git diff --check`: sem erros.
 
 ### Pendencias rastreadas
@@ -2031,7 +2030,7 @@ Business` com ultima acao, recurso, identificador e status retornado pelo API
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py`: 6 passed em 0.12s.
 - `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
 - `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
-  25 modulos e infraestrutura em conformidade.
+  24 modulos e infraestrutura em conformidade.
 - `git diff --check`: sem erros.
 
 ### Pendencias rastreadas
@@ -2071,7 +2070,7 @@ Business` com ultima acao, recurso, identificador e status retornado pelo API
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py`: 6 passed em 0.04s.
 - `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
 - `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
-  25 modulos e infraestrutura em conformidade.
+  24 modulos e infraestrutura em conformidade.
 - `git diff --check`: sem erros.
 
 ### Pendencias rastreadas
@@ -2113,7 +2112,7 @@ Business` com ultima acao, recurso, identificador e status retornado pelo API
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 ./.venv/bin/python -m pytest -q tests/test_frontend_journeys_contract.py`: 6 passed em 0.25s.
 - `python3 -m json.tool config/apps/frontend_journeys.json >/dev/null`: aprovado.
 - `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
-  25 modulos e infraestrutura em conformidade.
+  24 modulos e infraestrutura em conformidade.
 - `git diff --check`: sem erros.
 
 ### Pendencias rastreadas
@@ -2157,7 +2156,7 @@ Business` com ultima acao, recurso, identificador e status retornado pelo API
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py::test_all_in_one_business_shell_runs_live_api_hub_actions`: 1 passed em 220.70s.
 - `./.venv/bin/python -m pytest -q tests/e2e/test_all_in_one_business_shell.py::test_all_in_one_business_shell_runs_governance_live_api_hub_actions`: 1 passed em 150.09s.
 - `python3 scripts/validate_repository.py`: repositorio validado com sucesso,
-  25 modulos e infraestrutura em conformidade.
+  24 modulos e infraestrutura em conformidade.
 - `git diff --check`: sem erros.
 - Durante a validacao, o proxy generico do API Hub recebeu timeout explicito e
   erro diagnosticavel para evitar `Erro de comunicacao` vazio em host lento; a
@@ -3522,7 +3521,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 ### Pendencias rastreadas
 
 - Executar `scripts/validate_postgres_real_dsn.py --apply-migrations --repeat-migrations --write-checks` em ambiente com DSN PostgreSQL real.
-- Executar a suite viva dos 25 modulos com `ALL_IN_ONE_POSTGRES_MATRIX_DSN`
+- Executar a suite viva dos 24 modulos com `ALL_IN_ONE_POSTGRES_MATRIX_DSN`
   apontando para banco real validado.
 - Quando houver daemon Docker estavel, executar tambem o smoke efemero
   `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`.
@@ -3556,7 +3555,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 - Executar o smoke test opt-in em host/daemon Docker que consiga iniciar
   `postgres:16` efemero sem timeout de 30s.
-- Executar a suite viva dos 25 modulos com DSN PostgreSQL real assim que o
+- Executar a suite viva dos 24 modulos com DSN PostgreSQL real assim que o
   ambiente disponibilizar banco funcional.
 - Validar migrations `001-015` em banco limpo e em banco previamente
   populado.
@@ -3573,7 +3572,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 - `tests/test_postgres_priority_stores_integration.py` foi ampliado para cobrir
   os quatro modulos restantes fora da suite anterior: `hr`, `permissions`,
-  `jobs` e `erp`, levando a cobertura pronta para 25 modulos.
+  `jobs` e `erp`, levando a cobertura pronta para 24 modulos.
 - `modules/shared/erp_postgres_store.py` foi corrigido para voltar a operar em
   conformidade com `BasePostgresStore`, incluindo criacao de faturamento com
   itens, consulta detalhada, cancelamento auditavel e busca por
@@ -3593,7 +3592,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 ### Pendencias rastreadas
 
-- Executar a suite viva agora com os 25 modulos em ambiente com DSN PostgreSQL
+- Executar a suite viva agora com os 24 modulos em ambiente com DSN PostgreSQL
   real para converter a cobertura pronta em evidencia operacional.
 - Executar o smoke test de migrations em banco limpo com
   `ALL_IN_ONE_ENABLE_POSTGRES_SMOKE=1`.
@@ -3844,7 +3843,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
   para `BasePostgresStore` quando um modulo conhecido da plataforma possui DSN
   PostgreSQL configurado, mas o store tipado obrigatorio esta ausente.
 - Criada a suite `tests/test_runtime_postgres_store_resolution.py` para validar
-  a resolucao de stores tipados nos 25 modulos conhecidos, o fallback generico
+  a resolucao de stores tipados nos 24 modulos conhecidos, o fallback generico
   apenas fora da matriz tipada e o comportamento especial de `ERP` sem DSN.
 - A garantia nova reduz risco de regressao silenciosa na Fase 2, onde um modulo
   poderia aparentar estar em PostgreSQL tipado enquanto caia para o store base.
@@ -3857,7 +3856,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 ### Pendencias rastreadas
 
 - Rodar a matriz PostgreSQL em banco vivo para transformar a cobertura de
-  resolucao/estrutura em prova CRUD real para todos os 25 modulos.
+  resolucao/estrutura em prova CRUD real para todos os 24 modulos.
 - Expandir payloads e fixtures de runtime dos adapters ainda fora da validacao
   CRUD automatizada.
 - Ampliar E2E dos apps fora da trilha Valley.
@@ -3886,7 +3885,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 ### Pendencias rastreadas
 
 - Rodar a matriz PostgreSQL contra banco vivo para transformar a cobertura
-  estrutural total em prova CRUD real para todos os 25 modulos.
+  estrutural total em prova CRUD real para todos os 24 modulos.
 - Expandir os payloads/fixtures de runtime dos adapters ainda fora da validacao
   CRUD automatizada.
 - Ampliar a profundidade funcional e Playwright dos apps fora da trilha Valley.
@@ -4001,7 +4000,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 - Criado perfil seguro `config/cloud/google_cloud_profile.json` e controlador
   para diagnosticar e reativar Compute Engine/Cloud SQL permitidos, habilitando
   APIs de Cloud Run, GKE, AlloyDB, Vertex AI, Build e Secret Manager.
-- Sincronizacao Stitch online validada e concluida: 25 de 25 projetos e 180 de
+- Sincronizacao Stitch online validada e concluida: 25 de 24 projetos e 180 de
   180 telas, incluindo `Business - Catalog Offers`, sem branding pendente.
 - A ativacao nao autoriza exclusao, alteracao de billing, contorno de IAM,
   enforcement, compliance ou suspensao administrativa.
@@ -4112,7 +4111,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 - `.venv\Scripts\python.exe -m pytest -q tests\test_api_hub_catalog_gateway.py tests\test_valley_catalog.py tests\test_outbox_dispatcher_unit.py`: 20 testes aprovados.
 - `npm run build` em `apps/valley`: sucesso.
-- `python3 scripts/validate_openapi.py`: sucesso para os 25 modulos.
+- `python3 scripts/validate_openapi.py`: sucesso para os 24 modulos.
 - `python3 scripts/validate_repository.py`: sucesso.
 
 ### Proximos passos naturais
@@ -4195,7 +4194,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 ### Estado atual da sincronia
 
-- Manifesto local: 25 projetos Stitch planejados.
+- Manifesto local: 24 projetos Stitch planejados.
 - Estado remoto local versionado: 20 projetos e 149 telas registrados em `config/stitch/sync_state.json`.
 - Branding remoto: `branding_pending` zerado para todas as telas existentes.
 - `health` foi concluido com registros medicos, prescricoes, leitos e auditoria/permissoes.
@@ -4276,7 +4275,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 ### Estado atual da sincronia
 
-- Manifesto local: 25 projetos Stitch planejados.
+- Manifesto local: 24 projetos Stitch planejados.
 - Estado remoto local versionado: 19 projetos e 139 telas registrados em `config/stitch/sync_state.json`.
 - Branding remoto: `branding_pending` zerado para todas as telas existentes; todas as 139 telas registradas carregam `branding_version` 2026-06-01.
 - Modulos remotos completos neste estado: `identity`, `business`, `permissions`, `finance`, `marketplace`, `stock`, `delivery`, `riders`, `services`, `mobility`, `jobs` e `erp`.
@@ -4487,7 +4486,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 - Implementado UI Mobile-first do app Entregadores/Riders com GPS tracker fake e lista de corridas.
 
 - `docs/COMPLIANCE.md` criado com principios LGPD, matriz de grupos de risco, gates de producao e pendencias.
-- `config/compliance/data_classification.json` criado cobrindo os 25 modulos com risco, dominios de dados, categorias sensiveis, base legal, retencao e gates de producao.
+- `config/compliance/data_classification.json` criado cobrindo os 24 modulos com risco, dominios de dados, categorias sensiveis, base legal, retencao e gates de producao.
 - `tests/test_compliance_matrix.py` criado para bloquear ausencia de modulo, campo obrigatorio vazio e gate fraco em modulos criticos.
 - `scripts/validate_repository.py` passou a exigir `docs/COMPLIANCE.md` e a matriz de dados sensiveis cobrindo exatamente o catalogo.
 - `docs/REQUIREMENTS_TRACEABILITY.md` atualizado para apontar compliance como artefato rastreavel.
@@ -4497,9 +4496,9 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 - `.venv/Scripts/python.exe -m pytest -q tests/test_compliance_matrix.py`: 3 testes aprovados.
 - `python3 -m json.tool config/compliance/data_classification.json`: aprovado.
-- `python3 scripts/validate_repository.py`: aprovado para 25 modulos, 9 apps e controles centrais.
+- `python3 scripts/validate_repository.py`: aprovado para 24 modulos, 9 apps e controles centrais.
 - `python3 scripts/scaffold_modules.py --check`: 456 artefatos verificados e 12 customizados preservados.
-- `python3 scripts/validate_openapi.py`: aprovado para 25 modulos e operacoes minimas.
+- `python3 scripts/validate_openapi.py`: aprovado para 24 modulos e operacoes minimas.
 - `python3 -m compileall -q scripts tests/test_compliance_matrix.py`: aprovado.
 - `.venv/Scripts/python.exe -m pytest -q`: 151 testes aprovados, 29 ignorados.
 
@@ -4532,8 +4531,8 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 - `.venv/Scripts/python.exe -m pytest -q tests/test_outbox_dispatcher_unit.py tests/test_outbox_rabbitmq_integration.py`: 9 testes aprovados, 2 ignorados por dependerem de DSN PostgreSQL/RabbitMQ de integracao.
 - `python3 -m compileall -q modules/shared/outbox_dispatcher.py workers/outbox_dispatcher/main.py tests/test_outbox_dispatcher_unit.py`: aprovado.
 - `python3 scripts/scaffold_modules.py --check`: 456 artefatos verificados e 12 customizados preservados.
-- `python3 scripts/validate_repository.py`: aprovado para 25 modulos, 9 apps e controles centrais.
-- `python3 scripts/validate_openapi.py`: aprovado para 25 modulos e operacoes minimas.
+- `python3 scripts/validate_repository.py`: aprovado para 24 modulos, 9 apps e controles centrais.
+- `python3 scripts/validate_openapi.py`: aprovado para 24 modulos e operacoes minimas.
 - `.venv/Scripts/python.exe -m pytest -q`: 148 testes aprovados, 29 ignorados.
 
 ### Pendencias rastreadas
@@ -4565,8 +4564,8 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 - `.venv/Scripts/python.exe -m pytest -q tests/test_outbox_dispatcher_unit.py tests/test_outbox_rabbitmq_integration.py`: 8 testes aprovados, 2 ignorados por dependerem de DSN PostgreSQL/RabbitMQ de integracao.
 - `python3 -m compileall -q modules/shared/outbox_dispatcher.py tests/test_outbox_dispatcher_unit.py`: aprovado.
 - `python3 scripts/scaffold_modules.py --check`: 456 artefatos verificados e 12 customizados preservados.
-- `python3 scripts/validate_repository.py`: aprovado para 25 modulos, 9 apps e controles centrais.
-- `python3 scripts/validate_openapi.py`: aprovado para 25 modulos e operacoes minimas.
+- `python3 scripts/validate_repository.py`: aprovado para 24 modulos, 9 apps e controles centrais.
+- `python3 scripts/validate_openapi.py`: aprovado para 24 modulos e operacoes minimas.
 - `.venv/Scripts/python.exe -m pytest -q`: 147 testes aprovados, 29 ignorados.
 
 ### Pendencias rastreadas
@@ -4599,8 +4598,8 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 - `.venv/Scripts/python.exe -m pytest -q tests/test_correlation_id.py tests/test_user_marketplace_journey.py tests/test_operational_journeys.py tests/test_outbox_dispatcher_unit.py`: 15 testes aprovados.
 - `python3 -m compileall -q modules/shared tests/test_correlation_id.py platform_test_support.py`: aprovado.
 - `python3 scripts/scaffold_modules.py --check`: 456 artefatos verificados e 12 customizados preservados.
-- `python3 scripts/validate_repository.py`: aprovado para 25 modulos, 9 apps e controles centrais.
-- `python3 scripts/validate_openapi.py`: aprovado para 25 modulos e operacoes minimas.
+- `python3 scripts/validate_repository.py`: aprovado para 24 modulos, 9 apps e controles centrais.
+- `python3 scripts/validate_openapi.py`: aprovado para 24 modulos e operacoes minimas.
 - `.venv/Scripts/python.exe -m pytest -q`: 145 testes aprovados, 29 ignorados.
 
 ### Pendencias rastreadas
@@ -4630,8 +4629,8 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 ### Validacoes executadas
 
 - `python3 scripts/scaffold_modules.py --check`: 456 artefatos verificados e 12 customizados preservados.
-- `python3 scripts/validate_repository.py`: aprovado para 25 modulos, 9 apps e controles centrais.
-- `python3 scripts/validate_openapi.py`: aprovado para 25 modulos e operacoes minimas.
+- `python3 scripts/validate_repository.py`: aprovado para 24 modulos, 9 apps e controles centrais.
+- `python3 scripts/validate_openapi.py`: aprovado para 24 modulos e operacoes minimas.
 - `python3 -m compileall -q modules scripts platform_test_support.py`: aprovado.
 - `.venv/Scripts/python.exe -m pytest -q`: 142 testes aprovados, 29 ignorados, sem `PermissionError` no cleanup.
 
@@ -4659,7 +4658,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 - Busca regional implementada com Haversine usando `lat`, `lng` do usuario, `service_radius_km` e coordenadas publicas da empresa/prestador.
 - Ofertas locais fora do raio ou sem cadastro regional completo deixam de aparecer como disponiveis na busca por localizacao.
 - Ofertas `online` e `national` continuam visiveis sem depender de raio regional.
-- Fallback `coming_soon` garante visibilidade dos 25 modulos no Super App Valley.
+- Fallback `coming_soon` garante visibilidade dos 24 modulos no Super App Valley.
 - Outbox recebeu allowlist segura para `valley.catalog.offer.synced`, sem expor custo interno, margem, markup ou endereco sensivel.
 - `docs/VALLEY_CATALOG.md` documenta contrato, taxonomia amigavel e regra regional.
 
@@ -4667,13 +4666,13 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 - `.venv/Scripts/python.exe -m pytest --import-mode=importlib -q tests/test_valley_catalog.py tests/test_valley_ecosystem.py tests/test_outbox_dispatcher_unit.py`: 13 testes aprovados.
 - `.venv/Scripts/python.exe -m pytest --import-mode=importlib -q`: 142 testes aprovados, 29 ignorados.
-- `python3 scripts/validate_repository.py`: aprovado para 25 modulos, 9 apps e controles centrais.
-- `python3 scripts/validate_openapi.py`: aprovado para 25 modulos e operacoes minimas.
+- `python3 scripts/validate_repository.py`: aprovado para 24 modulos, 9 apps e controles centrais.
+- `python3 scripts/validate_openapi.py`: aprovado para 24 modulos e operacoes minimas.
 - Observacao ambiental: pytest Windows continua emitindo `PermissionError` no cleanup de `pytest-current` apos a suite verde, sem alterar codigo de saida.
 
 ### Pendencias rastreadas
 
-- API Hub integrado e roteando todos os 25 módulos. Rota /gateway/catalog/offers centraliza ofertas do ecossistema.
+- API Hub integrado e roteando todos os 24 módulos. Rota /gateway/catalog/offers centraliza ofertas do ecossistema.
 - Persistir snapshots de catalogo e eventos `valley.catalog.offer.synced` quando houver banco dedicado do agregador Valley.
 - Implementar interface visual do app Valley usando as categorias amigaveis e filtros regionais.
 
@@ -4701,8 +4700,8 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 - `.venv/Scripts/python.exe -m pytest --import-mode=importlib -q tests/test_valley_gold_ledger.py tests/test_outbox_dispatcher_unit.py tests/test_valley_ecosystem.py`: 11 testes aprovados.
 - `.venv/Scripts/python.exe -m pytest --import-mode=importlib -q`: 138 testes aprovados, 29 ignorados.
-- `python3 scripts/validate_repository.py`: aprovado para 25 modulos, 9 apps e controles centrais.
-- `python3 scripts/validate_openapi.py`: aprovado para 25 modulos e operacoes minimas.
+- `python3 scripts/validate_repository.py`: aprovado para 24 modulos, 9 apps e controles centrais.
+- `python3 scripts/validate_openapi.py`: aprovado para 24 modulos e operacoes minimas.
 - Observacao ambiental: pytest Windows continua emitindo `PermissionError` no cleanup de `pytest-current` apos a suite verde, sem alterar codigo de saida.
 
 ### Pendencias rastreadas
@@ -4735,8 +4734,8 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 - `.venv/Scripts/python.exe -m pytest --import-mode=importlib -q tests/test_valley_ecosystem.py tests/test_outbox_dispatcher_unit.py`: 8 testes aprovados.
 - `.venv/Scripts/python.exe -m pytest --import-mode=importlib -q`: 135 testes aprovados, 29 ignorados.
-- `python3 scripts/validate_repository.py`: aprovado para 25 modulos, 9 apps e controles centrais.
-- `python3 scripts/validate_openapi.py`: aprovado para 25 modulos e operacoes minimas.
+- `python3 scripts/validate_repository.py`: aprovado para 24 modulos, 9 apps e controles centrais.
+- `python3 scripts/validate_openapi.py`: aprovado para 24 modulos e operacoes minimas.
 - Observacao ambiental: pytest Windows continua emitindo `PermissionError` no cleanup de `pytest-current` apos a suite verde, sem alterar codigo de saida.
 
 ### Pendencias rastreadas
@@ -5132,7 +5131,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 
 ### Pendencias rastreadas
 
-- Matriz de testes PostgreSQL completa, com adapters instanciados dinamicamente para os 25 módulos e sem métodos abstratos órfãos.
+- Matriz de testes PostgreSQL completa, com adapters instanciados dinamicamente para os 24 módulos e sem métodos abstratos órfãos.
 - Tipar stores de menor maturidade alem dos modulos prioritarios ja especializados.
 - Implementar provedores reais para KYC/KYB, Pix/PSP, fiscal, CTPS oficial, mapas/tracking e IA.
 - Criar gates CI para divergencia Git, artefatos nao commitados, migrations, testes, OpenAPI e seguranca.
@@ -5149,7 +5148,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 - Implementado UI base (Glassmorphism, Dark Mode) do painel B2B com navegação para Carteira Gold e Gestão de Catálogo.
 - Implementado UI Mobile-first do app Entregadores/Riders com GPS tracker fake e lista de corridas.
 
-- Adapter PostgreSQL expandido para todos os 25 microservicos da plataforma.
+- Adapter PostgreSQL expandido para todos os 24 microservicos da plataforma.
 - Implementacao de `BasePostgresStore` em `modules/shared/` para unificar a logica de transacoes, auditoria append-only, outbox RabbitMQ e idempotencia.
 - Stores especializados (`Jobs`, `Identity`, `Finance`, `ApiHub`, `Business`, `Marketplace`, `Delivery`, `Services`, `Mobility`) refatorados para usar a classe base, preservando o mapeamento tipado de colunas.
 - Scaffold automatico gerado para os 16 microservicos restantes, garantindo suporte imediato a PostgreSQL via metadados JSONB.
@@ -5163,7 +5162,7 @@ services and HTTP healthchecks` fique presa antes do loop de health HTTP.
 - `docker compose -f infra/docker/docker-compose.yml up -d`: Ambiente de infraestrutura completo subido com sucesso.
 - `python -m pytest tests/test_outbox_rabbitmq_integration.py tests/test_jobs_postgres_integration.py -v`: 3 testes de integracao crÃ­ticos aprovados em ambiente real (PostgreSQL + RabbitMQ).
 - `python scripts/scaffold_postgres_stores.py`: GeraÃ§Ã£o bem-sucedida de 16 novos adapters para cobertura total da plataforma.
-- `python scripts/stitch_orchestrator.py plan`: Plano de design materializado para 25 projetos e 177 telas.
+- `python scripts/stitch_orchestrator.py plan`: Plano de design materializado para 24 projetos e 177 telas.
 - Verificacao de logs do container de migracoes: 12 arquivos SQL aplicados sem erros.
 
 ### Validacoes Do Incremento Em Andamento

@@ -252,17 +252,6 @@ steps:
         "./modules/tms/Dockerfile",
         ".",
       ]
-  # vision
-  - name: "gcr.io/cloud-builders/docker"
-    args:
-      [
-        "build",
-        "-t",
-        "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/vision:latest",
-        "-f",
-        "./modules/vision/Dockerfile",
-        ".",
-      ]
   # wms
   - name: "gcr.io/cloud-builders/docker"
     args:
@@ -321,7 +310,6 @@ images:
   - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/services:latest"
   - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/stock:latest"
   - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/tms:latest"
-  - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/vision:latest"
   - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/wms:latest"
   - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/outbox-dispatcher:latest"
   - "us-central1-docker.pkg.dev/all-in-one-498012/all-in-one-repo/retention-worker:latest"

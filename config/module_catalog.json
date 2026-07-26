@@ -1,6 +1,6 @@
 {
   "platform": "All-in-One",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "apps": [
     {
       "slug": "all-in-one-user",
@@ -115,8 +115,17 @@
       "slug": "permissions",
       "title": "Permissions",
       "description": "RBAC, ABAC, delegacoes e alcadas financeiras por entidade.",
-      "entities": ["roles", "permissions", "user_roles", "access_policies", "approval_limits"],
-      "events": ["permissions.role.created", "permissions.role.assigned"],
+      "entities": [
+        "roles",
+        "permissions",
+        "user_roles",
+        "access_policies",
+        "approval_limits"
+      ],
+      "events": [
+        "permissions.role.created",
+        "permissions.role.assigned"
+      ],
       "monetization": "Disponivel conforme plano Business contratado.",
       "branch": "module/business"
     },
@@ -146,7 +155,15 @@
       "slug": "marketplace",
       "title": "Marketplace",
       "description": "Lojas locais aprovadas, estoque fisico local, catalogo, checkout, pedidos e concessao manual de Pepitas.",
-      "entities": ["stores", "products", "carts", "orders", "reviews", "disputes", "pepita_grants"],
+      "entities": [
+        "stores",
+        "products",
+        "carts",
+        "orders",
+        "reviews",
+        "disputes",
+        "pepita_grants"
+      ],
       "events": [
         "marketplace.store.created",
         "marketplace.product.created",
@@ -168,8 +185,8 @@
     },
     {
       "slug": "stock",
-      "title": "Stock",
-      "description": "Dropshipping Global corporativo Valley, fornecedores homologados, catalogo Stock e descontos progressivos por Pepitas.",
+      "title": "STOCK",
+      "description": "Catálogo curado de fornecedores homologados, sem estoque físico próprio, com pedido sob demanda, regras de preço, tracking e descontos por Pepitas. Entra na primeira etapa com AliExpress e CJ Dropshipping como fontes iniciais, sob operação controlada e expansão condicionada à qualidade.",
       "entities": [
         "suppliers",
         "catalog_products",
@@ -186,14 +203,26 @@
         "stock.supplier_order.cancelled",
         "valley.stock.discount.quoted"
       ],
-      "monetization": "Produtos Stock comunicam economia e valor percebido; APIs de importacao sao exclusivas da conta mestre Valley.",
-      "branch": "module/stock"
+      "monetization": "Comissão ou margem negociada, destaque, taxa de operação e planos para lojistas; a expansão depende de prazo, devoluções, suporte e margem auditada.",
+      "branch": "module/stock",
+      "roadmap_wave": 1,
+      "initial_suppliers": [
+        "AliExpress",
+        "CJ Dropshipping"
+      ],
+      "operating_model": "pedido sob demanda sem estoque físico próprio"
     },
     {
       "slug": "delivery",
       "title": "Delivery",
       "description": "Food, coletas e fretes com calculo multimodal, seguro e rastreio.",
-      "entities": ["delivery_requests", "quotes", "assignments", "proofs", "insurance_options"],
+      "entities": [
+        "delivery_requests",
+        "quotes",
+        "assignments",
+        "proofs",
+        "insurance_options"
+      ],
       "events": [
         "delivery.request.created",
         "delivery.rider.assigned",
@@ -209,8 +238,18 @@
       "slug": "riders",
       "title": "Riders",
       "description": "Candidatura vinculada ao All-in-One ID, documentos, veiculos e aprovacao.",
-      "entities": ["rider_profiles", "rider_documents", "vehicles", "rider_reviews"],
-      "events": ["rider.submitted", "rider.approved", "rider.rejected", "rider.vehicle.approved"],
+      "entities": [
+        "rider_profiles",
+        "rider_documents",
+        "vehicles",
+        "rider_reviews"
+      ],
+      "events": [
+        "rider.submitted",
+        "rider.approved",
+        "rider.rejected",
+        "rider.vehicle.approved"
+      ],
       "monetization": "Repasses e taxas definidos pelos modulos Delivery e Mobility.",
       "branch": "module/delivery"
     },
@@ -218,7 +257,13 @@
       "slug": "services",
       "title": "One Services",
       "description": "Prestadores, visitas pagas, orcamentos, contratos, evidencias e anti-burla.",
-      "entities": ["providers", "visits", "quotes", "service_contracts", "evidence"],
+      "entities": [
+        "providers",
+        "visits",
+        "quotes",
+        "service_contracts",
+        "evidence"
+      ],
       "events": [
         "services.visit.created",
         "services.visit.completed",
@@ -233,7 +278,13 @@
       "slug": "mobility",
       "title": "Mobility",
       "description": "Corridas, transporte publico, rotas, tickets, QR Code, NFC e ETA.",
-      "entities": ["rides", "routes", "stops", "tickets", "fare_rules"],
+      "entities": [
+        "rides",
+        "routes",
+        "stops",
+        "tickets",
+        "fare_rules"
+      ],
       "events": [
         "mobility.ride.requested",
         "mobility.ride.accepted",
@@ -282,7 +333,13 @@
       "slug": "erp",
       "title": "ERP",
       "description": "Financeiro empresarial, compras, vendas, fiscal, controladoria e aprovacao.",
-      "entities": ["accounts", "payables", "receivables", "cost_centers", "fiscal_documents"],
+      "entities": [
+        "accounts",
+        "payables",
+        "receivables",
+        "cost_centers",
+        "fiscal_documents"
+      ],
       "events": [
         "erp.account.created",
         "erp.cost_center.created",
@@ -304,7 +361,13 @@
       "slug": "wms",
       "title": "WMS",
       "description": "Armazens, bins, recebimento, separacao, lote, validade e inventario.",
-      "entities": ["warehouses", "bins", "inventory", "picking_waves", "shipments"],
+      "entities": [
+        "warehouses",
+        "bins",
+        "inventory",
+        "picking_waves",
+        "shipments"
+      ],
       "events": [
         "wms.warehouse.created",
         "wms.bin.created",
@@ -323,7 +386,13 @@
       "slug": "tms",
       "title": "TMS",
       "description": "Transportadoras, frota, rotas, fretes, documentos e torre de controle.",
-      "entities": ["carriers", "freights", "routes", "proofs_of_delivery", "freight_audits"],
+      "entities": [
+        "carriers",
+        "freights",
+        "routes",
+        "proofs_of_delivery",
+        "freight_audits"
+      ],
       "events": [
         "tms.carrier.created",
         "tms.carrier.submitted",
@@ -346,7 +415,12 @@
       "slug": "crm",
       "title": "CRM",
       "description": "Leads, oportunidades, propostas, campanhas e relacionamento.",
-      "entities": ["leads", "opportunities", "activities", "campaigns"],
+      "entities": [
+        "leads",
+        "opportunities",
+        "activities",
+        "campaigns"
+      ],
       "events": [
         "crm.lead.created",
         "crm.lead.qualified",
@@ -368,7 +442,12 @@
       "slug": "bpm",
       "title": "BPM",
       "description": "Processos, workflows, tarefas, SLA, escalonamento e automacao.",
-      "entities": ["processes", "workflow_instances", "tasks", "sla_policies"],
+      "entities": [
+        "processes",
+        "workflow_instances",
+        "tasks",
+        "sla_policies"
+      ],
       "events": [
         "bpm.process.started",
         "bpm.task.created",
@@ -383,8 +462,17 @@
       "slug": "document",
       "title": "GED ECM",
       "description": "Documentos, OCR, versoes, cofre privado KMS, assinatura, retencao e indexacao.",
-      "entities": ["folders", "documents", "versions", "retention_policies"],
-      "events": ["document.uploaded", "document.versioned", "document.signed"],
+      "entities": [
+        "folders",
+        "documents",
+        "versions",
+        "retention_policies"
+      ],
+      "events": [
+        "document.uploaded",
+        "document.versioned",
+        "document.signed"
+      ],
       "monetization": "Armazenamento e assinatura adicionais.",
       "branch": "module/document"
     },
@@ -392,7 +480,13 @@
       "slug": "hr",
       "title": "HR HCM ATS LMS",
       "description": "Colaboradores, folha, ponto, recrutamento, treinamento e saude ocupacional.",
-      "entities": ["employees", "payroll_runs", "candidates", "courses", "occupational_records"],
+      "entities": [
+        "employees",
+        "payroll_runs",
+        "candidates",
+        "courses",
+        "occupational_records"
+      ],
       "events": [
         "hr.employee.created",
         "hr.payroll.opened",
@@ -407,7 +501,13 @@
       "slug": "health",
       "title": "Health",
       "description": "Pacientes, prontuario, consulta, telemedicina, prescricao, leitos e convenios.",
-      "entities": ["patients", "appointments", "medical_records", "prescriptions", "beds"],
+      "entities": [
+        "patients",
+        "appointments",
+        "medical_records",
+        "prescriptions",
+        "beds"
+      ],
       "events": [
         "health.appointment.created",
         "health.telemedicine.started",
@@ -417,31 +517,15 @@
       "branch": "module/health"
     },
     {
-      "slug": "vision",
-      "title": "Vision",
-      "description": "Dispositivos de camera, streams, gravacoes, deteccao e ocorrencias.",
-      "entities": ["devices", "streams", "recordings", "motion_alerts"],
-      "events": [
-        "vision.device.registered",
-        "vision.device.submitted",
-        "vision.device.cancelled",
-        "vision.device.completed",
-        "vision.stream.started",
-        "vision.stream.paused",
-        "vision.stream.resumed",
-        "vision.recording.stored",
-        "vision.motion.detected",
-        "vision.incident.created",
-        "vision.incident.resolved"
-      ],
-      "monetization": "Plano por camera, retencao e analise IA.",
-      "branch": "module/vision"
-    },
-    {
       "slug": "legal",
       "title": "Legal",
       "description": "Processos, contratos, prazos, audiencias, provisionamento e alertas.",
-      "entities": ["cases", "deadlines", "hearings", "legal_contracts"],
+      "entities": [
+        "cases",
+        "deadlines",
+        "hearings",
+        "legal_contracts"
+      ],
       "events": [
         "legal.case.created",
         "legal.deadline.created",
@@ -456,7 +540,13 @@
       "slug": "property",
       "title": "Property",
       "description": "Imoveis, unidades, locacoes, condominio, manutencao e votacao.",
-      "entities": ["properties", "units", "leases", "assemblies", "maintenance_orders"],
+      "entities": [
+        "properties",
+        "units",
+        "leases",
+        "assemblies",
+        "maintenance_orders"
+      ],
       "events": [
         "property.lease.created",
         "property.lease.activated",
@@ -472,7 +562,12 @@
       "slug": "bi",
       "title": "BI",
       "description": "Indicadores auditaveis, dashboards e exportacoes por entidade.",
-      "entities": ["datasets", "dashboards", "indicators", "exports"],
+      "entities": [
+        "datasets",
+        "dashboards",
+        "indicators",
+        "exports"
+      ],
       "events": [
         "bi.dataset.created",
         "bi.dataset.refreshed",
@@ -494,7 +589,11 @@
       "slug": "ai_core",
       "title": "AI Core",
       "description": "Memoria autorizada, classificacao anti-burla, modelos e governanca.",
-      "entities": ["ai_memories", "moderation_decisions", "model_runs"],
+      "entities": [
+        "ai_memories",
+        "moderation_decisions",
+        "model_runs"
+      ],
       "events": [
         "ai.memory.created",
         "ai.memory.indexed",
@@ -516,7 +615,12 @@
       "slug": "api_hub",
       "title": "API Hub",
       "description": "OAuth2, API keys, webhooks, escopos, sandbox e integracoes.",
-      "entities": ["api_clients", "api_keys", "webhooks", "integration_runs"],
+      "entities": [
+        "api_clients",
+        "api_keys",
+        "webhooks",
+        "integration_runs"
+      ],
       "events": [
         "api.client.created",
         "api.client.submitted",
@@ -539,5 +643,6 @@
       "monetization": "Limites de API, conectores e SLA premium.",
       "branch": "module/business"
     }
-  ]
+  ],
+  "module_count": 24
 }
