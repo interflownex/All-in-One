@@ -2,18 +2,12 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - fix/generated-artifacts-gate
-    paths:
-      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
-    if: github.ref_name == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,27 +16,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Remover etapa Vision do workflow de banco
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path(".github/workflows/database.yml")
-          text = path.read_text(encoding="utf-8")
-          block = '''      - name: Exercise Vision PostgreSQL store
-                  env:
-                    ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
-                  run: python -m pytest -q tests/test_postgres_priority_stores_integration.py::test_vision_device_create_update_and_soft_delete
-          '''
-          if block not in text:
-              raise SystemExit("Etapa Vision esperada nao encontrada em database.yml")
-          path.write_text(text.replace(block, "", 1), encoding="utf-8", newline="\n")
-          PY
-      - name: Commit database workflow fix
+      - run: python scripts/scaffold_modules.py
+      - name: Commit generated changes
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add .github/workflows/database.yml
-          git diff --cached --quiet || git commit -m "fix: remover teste de banco do modulo Vision removido"
+          git add apps modules contracts
+          git diff --cached --quiet || git commit -m "refresh generated module contracts"
           git push
