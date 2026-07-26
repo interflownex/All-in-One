@@ -22,18 +22,38 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Capturar falhas do contrato Android
+      - name: Corrigir marcadores do validador Android
         shell: bash
         run: |
-          mkdir -p reports/ci
-          set +e
-          python scripts/validate_valley_android_release.py > reports/ci/valley-android-release-diagnostic.txt 2>&1
-          cat reports/ci/valley-android-release-diagnostic.txt
-          exit 0
-      - name: Commit diagnostic report
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("scripts/validate_valley_android_release.py")
+          text = path.read_text(encoding="utf-8")
+          replacements = [
+              (
+                  '"import.meta.env.DEV && import.meta.env.VITE_VALLEY_ALLOW_DEMO === \'true\'",',
+                  '\'import.meta.env.DEV && import.meta.env.VITE_VALLEY_ALLOW_DEMO === "true"\',',
+              ),
+              (
+                  '"params.append(\'offset\'",',
+                  '\'params.append("offset"\',',
+              ),
+              (
+                  '"window.crypto.subtle.verify(\'Ed25519\'",',
+                  '\'window.crypto.subtle.verify(\\n    "Ed25519"\',',
+              ),
+          ]
+          for old, new in replacements:
+              if old not in text:
+                  raise SystemExit(f"Marcador esperado nao encontrado: {old}")
+              text = text.replace(old, new, 1)
+          path.write_text(text, encoding="utf-8", newline="\n")
+          PY
+      - name: Commit validator fix
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add reports/ci/valley-android-release-diagnostic.txt
-          git diff --cached --quiet || git commit -m "ci: registrar diagnostico do contrato Android Valley"
+          git add scripts/validate_valley_android_release.py
+          git diff --cached --quiet || git commit -m "fix: validar sintaxe real do frontend Valley"
           git push
