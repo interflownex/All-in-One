@@ -1,0 +1,51 @@
+name: Aplicar remoção do Vision e atualização do STOCK
+
+on:
+  push:
+    branches:
+      - codex/remover-vision-atualizar-stock-2026-07-25
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ !contains(github.event.head_commit.message, '[vision-removal-applied]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+        with:
+          ref: codex/remover-vision-atualizar-stock-2026-07-25
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Aplicar migração de escopo
+        run: python scripts/remove_vision_update_stock.py
+
+      - name: Validar JSON do catálogo
+        run: python -m json.tool config/module_catalog.json >/dev/null
+
+      - name: Validar repositório
+        continue-on-error: true
+        run: python scripts/validate_repository.py
+
+      - name: Validar frontend
+        continue-on-error: true
+        run: python scripts/validate_web_frontend.py
+
+      - name: Registrar resultado na branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração adicional encontrada."
+            exit 0
+          fi
+          git commit -m "refactor: remover Vision e atualizar STOCK [vision-removal-applied]"
+          git push origin HEAD:codex/remover-vision-atualizar-stock-2026-07-25
