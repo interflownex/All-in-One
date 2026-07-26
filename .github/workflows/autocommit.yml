@@ -2,58 +2,25 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
-    paths:
-      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
-    if: github.head_ref == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Instalar dependências de teste
-        run: pip install -r requirements-dev.txt
-      - name: Remover import e teste Vision órfãos
-        shell: bash
+      - run: python scripts/scaffold_modules.py
+      - name: Commit generated changes
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path("tests/test_postgres_priority_stores_integration.py")
-          text = path.read_text(encoding="utf-8")
-          import_line = "from modules.shared.vision_postgres_store import VisionPostgresStore\n"
-          if import_line not in text:
-              raise SystemExit("Import Vision esperado não encontrado.")
-          text = text.replace(import_line, "", 1)
-
-          start_marker = "def test_vision_device_create_update_and_soft_delete() -> None:\n"
-          end_marker = "def test_legal_case_create_update_and_soft_delete() -> None:\n"
-          start = text.find(start_marker)
-          end = text.find(end_marker, start)
-          if start < 0 or end < 0:
-              raise SystemExit("Bloco de teste Vision não localizado com segurança.")
-          text = text[:start] + text[end:]
-          path.write_text(text, encoding="utf-8", newline="\n")
-
-          diagnostic = Path("reports/ci/unit-tests-diagnostic.txt")
-          if diagnostic.exists():
-              diagnostic.unlink()
-          PY
-      - name: Validar coleta e commit
-        run: |
-          python -m pytest -q --collect-only tests/test_postgres_priority_stores_integration.py
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add -A tests/test_postgres_priority_stores_integration.py reports/ci/unit-tests-diagnostic.txt
-          git diff --cached --quiet || git commit -m "fix: remover teste PostgreSQL órfão do Vision"
-          git push origin HEAD:${{ github.head_ref }}
+          git add apps modules contracts
+          git diff --cached --quiet || git commit -m "refresh generated module contracts"
+          git push
