@@ -2,12 +2,18 @@ name: Refresh Generated Contracts
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - fix/generated-artifacts-gate
+    paths:
+      - ".github/workflows/autocommit.yml"
 
 permissions:
   contents: write
 
 jobs:
   refresh:
+    if: github.ref_name == 'fix/generated-artifacts-gate'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,11 +22,28 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python scripts/scaffold_modules.py
-      - name: Commit generated changes
+      - name: Marcar readmes Valley como customizados
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("scripts/scaffold_modules.py")
+          text = path.read_text(encoding="utf-8")
+          old = '''    "apps/valley_business/STATUS.md",
+              "apps/valley_rider/STATUS.md",'''
+          new = '''    "apps/valley_business/README.md",
+              "apps/valley_business/STATUS.md",
+              "apps/valley_rider/README.md",
+              "apps/valley_rider/STATUS.md",'''
+          if old not in text:
+              raise SystemExit("Bloco dos apps Valley nao encontrado no scaffold.")
+          path.write_text(text.replace(old, new, 1), encoding="utf-8", newline="\n")
+          PY
+      - name: Commit scaffold fix
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add apps modules contracts
-          git diff --cached --quiet || git commit -m "refresh generated module contracts"
+          git add scripts/scaffold_modules.py
+          git diff --cached --quiet || git commit -m "fix: preservar readmes operacionais Valley no scaffold"
           git push
