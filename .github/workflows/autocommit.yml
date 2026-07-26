@@ -1,4 +1,4 @@
-name: Apply Residual PR34 Fixes
+name: Apply Final Stabilization Fixes
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   repair:
-    if: github.head_ref == 'fix/generated-artifacts-gate'
+    if: github.head_ref == 'fix/all-in-one-final-stabilization-2026-07-26'
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -46,55 +46,23 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
           import textwrap
 
           root = Path('.')
 
           migration_path = root / 'database/postgres/migrations/028_dynamic_forms_governance.sql'
           migration = migration_path.read_text(encoding='utf-8')
-          migration = re.sub(r'CREATE TABLE (?!IF NOT EXISTS )forms\.', 'CREATE TABLE IF NOT EXISTS forms.', migration)
-          migration = re.sub(r'CREATE INDEX (?!IF NOT EXISTS )', 'CREATE INDEX IF NOT EXISTS ', migration)
-          constraints = {
-              'form_definitions_current_version_fk': 'forms.form_definitions',
-              'form_blocks_visibility_fk': 'forms.form_blocks',
-              'form_fields_visibility_fk': 'forms.form_fields',
-          }
-          for constraint, table in constraints.items():
-              drop = f'ALTER TABLE {table} DROP CONSTRAINT IF EXISTS {constraint};\n'
-              marker = f'ALTER TABLE {table}\n    ADD CONSTRAINT {constraint}'
-              inline_marker = f'ALTER TABLE {table} ADD CONSTRAINT {constraint}'
-              if drop not in migration:
-                  if marker in migration:
-                      migration = migration.replace(marker, drop + marker, 1)
-                  elif inline_marker in migration:
-                      migration = migration.replace(inline_marker, drop + inline_marker, 1)
-                  else:
-                      raise SystemExit(f'Constraint não encontrada: {constraint}')
-          triggers = {
-              'immutable_published_form_version': 'forms.form_versions',
-              'immutable_published_blocks': 'forms.form_blocks',
-              'immutable_published_fields': 'forms.form_fields',
-              'immutable_published_calculations': 'forms.form_calculations',
-              'immutable_published_validations': 'forms.form_validations',
-              'immutable_published_visibility': 'forms.form_visibility_rules',
-          }
-          for trigger, table in triggers.items():
-              marker = f'CREATE TRIGGER {trigger}'
-              drop = f'DROP TRIGGER IF EXISTS {trigger} ON {table};\n'
-              if drop not in migration:
-                  if marker not in migration:
-                      raise SystemExit(f'Trigger não encontrado: {trigger}')
-                  migration = migration.replace(marker, drop + marker, 1)
+          guard_start = "SELECT to_regclass('forms.field_catalog') IS NULL AS run_dynamic_forms_migration \\gset\n\\if :run_dynamic_forms_migration\n"
+          guard_end = "\\else\n\\echo 'Migração 028 já aplicada; repetição ignorada com segurança.'\n\\endif\n"
+          if guard_start not in migration:
+              if not migration.startswith('BEGIN;\n'):
+                  raise SystemExit('Início esperado da migração 028 não encontrado.')
+              migration = guard_start + migration
+          if guard_end not in migration:
+              if not migration.rstrip().endswith('COMMIT;'):
+                  raise SystemExit('Final esperado da migração 028 não encontrado.')
+              migration = migration.rstrip() + '\n' + guard_end
           migration_path.write_text(migration, encoding='utf-8', newline='\n')
-
-          dynamic_test_path = root / 'tests/test_dynamic_forms_migration.py'
-          dynamic_test = dynamic_test_path.read_text(encoding='utf-8')
-          dynamic_test = dynamic_test.replace(
-              'assert f"CREATE TABLE forms.{table}" in source',
-              'assert f"CREATE TABLE IF NOT EXISTS forms.{table}" in source',
-          )
-          dynamic_test_path.write_text(dynamic_test, encoding='utf-8', newline='\n')
 
           alerts_test_path = root / 'tests/test_outbox_alerts.py'
           alerts_test = alerts_test_path.read_text(encoding='utf-8')
@@ -151,7 +119,7 @@ jobs:
           if old_audit in security:
               security = security.replace(old_audit, new_audit, 1)
           elif 'name: Auditar dependências JavaScript' not in security:
-              raise SystemExit('Etapa npm audit não localizada estruturalmente.')
+              raise SystemExit('Etapa npm audit não localizada.')
           security_path.write_text(security, encoding='utf-8', newline='\n')
 
           (root / '.github/workflows/diagnose_jobs_postgres.yml').unlink(missing_ok=True)
@@ -238,5 +206,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add -A
           git diff --cached --check
-          git diff --cached --quiet || git commit -m "fix: concluir validação residual do PR 34"
+          git diff --cached --quiet || git commit -m "fix: concluir estabilização final"
           git push origin HEAD:${{ github.head_ref }}
