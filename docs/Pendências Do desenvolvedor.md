@@ -1,11 +1,11 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 2.4  
-**Data da verificação:** 25/07/2026  
+**Versão:** 2.5  
+**Data da verificação:** 26/07/2026  
 **Repositório verificado:** `interflownex/All-in-One`  
 **Branch de referência:** `main`  
-**Commit de referência:** `b9e6871467601ed77c0bf373143eae8320f55773`  
-**Versão anterior:** 2.3  
+**Commit de referência:** `cbbe7bd61bdf13604f5d71167dc5b54f7435cffa`  
+**Versão anterior:** 2.4  
 **Pasta lógica do projeto:** `Pendências > Técnico > Equipe técnica`  
 **Público principal:** Codex, IA desenvolvedora, desenvolvimento, DevOps, segurança e gestão técnica  
 **Issue de orquestração:** `#28`  
@@ -26,8 +26,8 @@ A partir desta versão, toda atualização de pendências deve obrigatoriamente:
 
 Os relatórios oficiais desta versão são:
 
-- `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v2.4_2026-07-25.md`;
-- `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v2.4_2026-07-25.md`.
+- `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v2.5_2026-07-26.md`;
+- `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v2.5_2026-07-26.md`.
 
 ## 2. Regras de governança
 
@@ -45,51 +45,38 @@ Os relatórios oficiais desta versão são:
 
 ## 3. Resumo da atualização
 
-Desde a versão 2.3, foram identificados sete commits relacionados ao bootstrap de implantação do API Hub na Render. Foram adicionados `.python-version`, `main.py`, `requirements.txt`, dependências no `pyproject.toml` e um `render.yaml` apontando para a branch `main`.
+Desde a versão 2.4, foi executada a remoção completa do módulo Vision: 72 arquivos alterados, módulo retirado do catálogo oficial, do back-end, dos aplicativos web (All-in-One e Business), da infraestrutura Kubernetes, dos testes, dos contratos e da documentação. Uma migração PostgreSQL foi criada (`030_remove_vision_module.sql`). O STOCK foi reposicionado para a primeira etapa no catálogo. O site Valley teve título e favicon corrigidos.
 
-O avanço é relevante porque o repositório agora possui um entrypoint de execução na raiz e uma configuração de serviço web para o API Hub. Entretanto, não foram encontradas evidências de implantação concluída, URL pública oficial, logs de build aprovados, resposta registrada do endpoint `/health`, testes externos ou workflow associado ao commit atual.
+O catálogo está consolidado em 24 módulos. A remoção do Vision está concluída em princípio, mas aproximadamente 40 arquivos ainda apresentam referências residuais que precisam ser eliminadas para fechar o item com evidência completa.
 
-O PR `#27`, criado para o Blueprint inicial da Render, continua aberto e foi baseado no commit `24d20ad9cc4575534298375c6d2ccc8fe8e2f2c0`. A branch `main` recebeu alterações posteriores no mesmo conjunto de arquivos. Portanto, o PR precisa ser revisado, atualizado ou encerrado como substituído, evitando integração duplicada ou regressão do Blueprint.
+A divergência entre catálogo e configuração Business reduziu de quatro para três módulos: `legal`, `property` e `ai_core` ainda não constam em `MODULE_NAMES` no arquivo `modules/business/module_settings.py`.
 
-Foi confirmado um conflito de governança: `AGENTS.md` orientava sincronização automática com commit e push ao término de cada atividade, enquanto este documento exige branch, PR, checks e Squash and Merge. Nesta atualização, a orientação do agente passa a proibir push direto na `main` e a usar branch de trabalho.
+As pendências de implantação na Render, PR `#27`, GitHub Actions, automação Telegram, auditor v7, APK, Valley Riders e PDV continuam abertas sem alteração de estado.
 
-O repositório ainda permite simultaneamente `merge commit`, `rebase merge` e `squash merge`. Essa configuração administrativa continua pendente, mesmo após o alinhamento documental.
+O backlog oficial mantém as issues `#24` e `#28` abertas. Não foram identificadas novas issues criadas para pendências críticas ou altas além dessas duas.
 
-O commit atual não apresenta status checks nem execução de workflow associada. A implantação Render, a integridade visual e os demais gates ainda não possuem comprovação vinculada ao commit de referência.
-
-O backlog oficial avançou de uma para duas issues abertas:
-
-- `#24`: Promoção do Dia na homepage Valley Consumidor;
-- `#28`: orquestração do ciclo de pendências v2.4 pelo Codex.
-
-As divergências de módulos, automação Telegram, auditor v7, homologação externa, integração pública do API Hub, APK, Valley Riders e núcleo do PDV permanecem abertas.
-
-## 4. Mudanças confirmadas desde a versão 2.3
+## 4. Mudanças confirmadas desde a versão 2.4
 
 ### 4.1 Avanços confirmados
 
-1. Adição de `.python-version` com runtime Python 3.12.
-2. Criação de `main.py` como entrypoint do API Hub.
-3. Criação de `requirements.txt` na raiz, reutilizando as dependências do API Hub.
-4. Registro das dependências executáveis no `pyproject.toml`.
-5. Criação e ajustes sucessivos do `render.yaml`.
-6. Configuração do endpoint `/health` como verificação de saúde da Render.
-7. Geração externa dos segredos JWT e webhook prevista no Blueprint.
-8. CORS configurado para os domínios conhecidos do projeto.
-9. Criação da issue `#28` para orquestração do Codex.
-10. Definição da regra permanente de inserir relatórios versionados no GitHub.
+1. Remoção do módulo Vision do catálogo oficial (`config/module_catalog.json`).
+2. Remoção das páginas Vision dos aplicativos All-in-One e Business.
+3. Remoção do back-end, contrato, store, OPENAPI e documentação do Vision.
+4. Remoção dos testes automáticos do Vision.
+5. Remoção do manifesto Kubernetes do Vision e atualização do `kustomization.yaml`.
+6. Criação da migração PostgreSQL `030_remove_vision_module.sql`.
+7. STOCK reposicionado para a primeira etapa no catálogo.
+8. Site Valley corrigido: título e favicon atualizados.
+9. Relatório de remoção publicado em `docs/relatorios/remocao-vision/`.
+10. `STATUS.md` atualizado com a nova contagem de 24 módulos e 171 telas.
 
 ### 4.2 Pendências novas ou reclassificadas
 
-1. Executar a implantação real na Render e registrar a URL pública.
-2. Validar build, start command, dependências e endpoint `/health` no ambiente remoto.
-3. Confirmar que o serviço Render está ligado à branch e ao repositório corretos.
-4. Revisar o PR `#27`, que ficou baseado em estado anterior do Blueprint.
-5. Impedir que atualizações de deploy sejam feitas por vários commits diretos na `main`.
-6. Alinhar `AGENTS.md` e a política de sincronização ao fluxo branch, PR e squash.
-7. Executar workflows e registrar checks no commit atual.
-8. Atualizar o front-end com a URL pública do API Hub somente após homologação.
-9. Criar issues para as demais pendências críticas e altas.
+1. Limpar referências residuais ao Vision em aproximadamente 40 arquivos identificados no relatório de remoção.
+2. Atualizar `MODULE_NAMES` em `modules/business/module_settings.py` para incluir `legal`, `property` e `ai_core` (três módulos, não mais quatro).
+3. Confirmar que os testes que ainda mencionam Vision foram desativados ou adaptados corretamente.
+4. Validar que a migração `030_remove_vision_module.sql` é executável no ambiente de banco de dados real.
+5. Verificar se `apps/valley/src/lib/valleyPlatform.ts` e demais arquivos residuais críticos foram corrigidos.
 
 ## 5. Contagem consolidada
 
@@ -99,7 +86,7 @@ As divergências de módulos, automação Telegram, auditor v7, homologação ex
 | Altas | 18 |
 | Médias | 7 |
 | Secundárias | 2 |
-| Resolvidas em princípio, aguardando evidência final | 1 |
+| Resolvidas em princípio, aguardando evidência final | 2 |
 
 ## 6. Quadro de acompanhamento
 
@@ -118,7 +105,7 @@ As divergências de módulos, automação Telegram, auditor v7, homologação ex
 | PR Render #27 | Evitar duplicidade e regressão do Blueprint | Comparar com `main` e decidir atualização ou encerramento | 3 | 20% | 30min | 4 | 1 | 3 |
 | Integridade visual | Validar marcas oficiais e bloquear alterações | Executar workflow e arquivar evidência | 4 | 75% | 1h | 5 | 4 | 1 |
 | Ativo Valley Riders | Incorporar o PNG oficial aprovado | Obter e versionar o binário original | 3 | 35% | 45min | 4 | 1 | 3 |
-| Catálogo de módulos | Sincronizar os 24 módulos | Incluir quatro módulos na configuração Business | 4 | 60% | 1h30 | 5 | 3 | 2 |
+| Catálogo de módulos | Sincronizar os 24 módulos | Incluir três módulos na configuração Business | 4 | 65% | 1h | 5 | 3 | 2 |
 | Automação Telegram | Implementar eventos e relatórios periódicos | Criar executor e testes | 4 | 35% | 2h | 6 | 2 | 4 |
 | Auditoria v7 | Restaurar o auditor e integrá-lo à CI | Localizar ou recriar script e fixtures | 4 | 30% | 1h30 | 5 | 1 | 4 |
 | Backlog oficial | Transformar pendências em issues | Expandir a partir das issues `#24` e `#28` | 3 | 20% | 1h30 | 6 | 2 | 4 |
@@ -190,9 +177,8 @@ Confrontar `STATUS.md`, `ROADMAP.md`, `EXECUTION_PLAN.md`, OpenAPI, catálogo, m
 
 ### 8.7 Sincronizar catálogo de módulos e configuração Business
 
-`config/module_catalog.json` possui 24 módulos e `MODULE_NAMES` possui 21. Incluir e testar:
+`config/module_catalog.json` possui 24 módulos e `MODULE_NAMES` em `modules/business/module_settings.py` possui 21. Incluir e testar:
 
-- `vision`;
 - `legal`;
 - `property`;
 - `ai_core`.
@@ -288,7 +274,7 @@ Descrever módulos, serviços e microsserviços em linguagem comercial, incluind
 
 Concluir pt-BR, pluralização, acentuação, labels, ajuda contextual e mensagens de erro.
 
-## 11. Item resolvido em princípio, aguardando evidência final
+## 11. Itens resolvidos em princípio, aguardando evidência final
 
 ### 11.1 Ativos oficiais do All in One e Valley
 
@@ -299,45 +285,54 @@ Os PNGs oficiais estão versionados e os aliases legados apontam para os ativos 
 3. verificação das superfícies web, business, desktop e documentação;
 4. ausência de reconstruções ou versões alternativas.
 
+### 11.2 Remoção do módulo Vision
+
+O Vision foi removido do catálogo, código, infra, contratos e testes. A conclusão final depende de:
+
+1. limpeza das referências residuais identificadas em aproximadamente 40 arquivos;
+2. confirmação de que os testes adaptados passam no commit atual;
+3. execução da migração `030_remove_vision_module.sql` no ambiente de banco de dados;
+4. ausência de importações ou rotas do Vision em execução.
+
 ## 12. Plano de ação para o próximo ciclo de 8 horas
 
 Atrasos de até 4 horas são tolerância operacional normal. Após 12 horas, os relatórios e a issue `#28` devem ser atualizados com evidências, falhas e pendências restantes.
 
-### Bloco 1, 0h a 1h30
+### Bloco 1, 0h a 1h
 
-1. Validar o `render.yaml`, `main.py`, `requirements.txt` e `pyproject.toml`.
+1. Limpar referências residuais ao Vision nos arquivos identificados no relatório de remoção.
+2. Priorizar arquivos com impacto em testes e rotas: `modules/api_hub/main.py`, `modules/identity/main.py`, `modules/shared/valley_catalog.py`.
+3. Confirmar que testes de Vision desativados não afetam a cobertura obrigatória.
+
+### Bloco 2, 1h a 2h
+
+1. Incluir `legal`, `property` e `ai_core` em `MODULE_NAMES`.
+2. Definir nomes em pt-BR, revisar presets e visibilidade.
+3. Criar testes unitários e executar a auditoria atualizada.
+
+### Bloco 3, 2h a 3h
+
+1. Validar `render.yaml`, `main.py`, `requirements.txt` e `pyproject.toml`.
 2. Executar a implantação Render ou coletar o bloqueio real.
 3. Registrar logs de build, start e `/health`.
 
-### Bloco 2, 1h30 a 2h30
+### Bloco 4, 3h a 4h
 
 1. Comparar o PR `#27` com a `main` atual.
 2. Atualizar ou encerrar o PR como substituído.
 3. Evitar integração duplicada do Blueprint.
 
-### Bloco 3, 2h30 a 3h30
-
-1. Alinhar `AGENTS.md` e políticas de sincronização.
-2. Proibir push direto na `main`.
-3. Garantir branch, PR, checks e squash para o Codex.
-
-### Bloco 4, 3h30 a 4h30
+### Bloco 5, 4h a 5h30
 
 1. Executar os workflows principais no commit atual.
 2. Arquivar checks e logs.
 3. Registrar falhas como issues rastreáveis.
 
-### Bloco 5, 4h30 a 6h
+### Bloco 6, 5h30 a 7h
 
 1. Restaurar ou recriar o auditor v7.
 2. Executar catálogo, diretórios, aplicações, OpenAPI e configuração Business.
 3. Salvar relatório versionado.
-
-### Bloco 6, 6h a 7h
-
-1. Incluir `vision`, `legal`, `property` e `ai_core` em `MODULE_NAMES`.
-2. Definir presets, dependências e visibilidade.
-3. Criar testes unitários.
 
 ### Bloco 7, 7h a 8h
 
@@ -348,14 +343,14 @@ Atrasos de até 4 horas são tolerância operacional normal. Após 12 horas, os 
 
 ## 13. Ordem recomendada das próximas atividades
 
-1. Validar e homologar o bootstrap Render.
-2. Registrar URL pública, logs e resposta do `/health`.
-3. Regularizar o PR `#27`.
-4. Alinhar a sincronização dos agentes ao fluxo branch, PR e squash.
-5. Executar e comprovar os workflows do commit atual.
-6. Expandir o backlog oficial a partir da issue `#28`.
-7. Restaurar o auditor v7.
-8. Corrigir a divergência dos quatro módulos.
+1. Limpar referências residuais ao Vision nos ~40 arquivos identificados.
+2. Atualizar `MODULE_NAMES` para incluir `legal`, `property` e `ai_core`.
+3. Validar e homologar o bootstrap Render.
+4. Registrar URL pública, logs e resposta do `/health`.
+5. Regularizar o PR `#27`.
+6. Executar e comprovar os workflows do commit atual.
+7. Expandir o backlog oficial a partir da issue `#28`.
+8. Restaurar o auditor v7.
 9. Implementar a automação Telegram executável.
 10. Impor Squash and Merge e proteção administrativa da `main`.
 11. Implementar a issue `#24` sem duplicar projeto Stitch.
@@ -389,3 +384,4 @@ Uma pendência somente pode ser marcada como concluída quando houver:
 | 2.2 | 23/07/2026 | Diretrizes planejadas do PDV, venda offline, Valley, fila digital, combos, Helena e privacidade. |
 | 2.3 | 24/07/2026 | Governança das marcas, primeira issue oficial, Valley Riders e atualização do plano de 8 horas. |
 | 2.4 | 25/07/2026 | Bootstrap Render, PR #27 desatualizado, conflito de sincronização, issue #28 do Codex e regra permanente de inserir relatórios versionados no GitHub. |
+| 2.5 | 26/07/2026 | Remoção completa do Vision, STOCK reposicionado, site Valley corrigido, catálogo consolidado em 24 módulos, divergência de módulos reduzida para três. |
