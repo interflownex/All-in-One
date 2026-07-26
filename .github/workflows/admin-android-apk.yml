@@ -9,6 +9,13 @@ on:
       - "apps/valley-android/admin/**"
       - "apps/valley-android/settings.gradle.kts"
       - ".github/workflows/admin-android-apk.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "apps/valley-android/admin/**"
+      - "apps/valley-android/settings.gradle.kts"
+      - ".github/workflows/admin-android-apk.yml"
 
 permissions:
   contents: read
