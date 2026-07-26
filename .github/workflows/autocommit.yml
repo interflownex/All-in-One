@@ -29,17 +29,20 @@ jobs:
 
           path = Path("modules/shared/domain_rules.py")
           text = path.read_text(encoding="utf-8")
-          start_marker = '''        ("device_fingerprint",),
-              sensitive=True,
+          health_rule = '''    ("health", "beds"): ResourceRule(
+              ("unit",), sensitive=True, transitions=lifecycle_flow("health.bed")
           ),
           '''
-          end_marker = '''    ("legal", "cases"): ResourceRule(
+          legal_rule = '''    ("legal", "cases"): ResourceRule(
           '''
-          start = text.find(start_marker)
-          end = text.find(end_marker, start)
-          if start < 0 or end < 0:
-              raise SystemExit("Bloco residual Vision nao foi localizado com seguranca.")
-          text = text[:start] + end_marker + text[end + len(end_marker):]
+          health_start = text.find(health_rule)
+          if health_start < 0:
+              raise SystemExit("Regra health.beds nao encontrada.")
+          start = health_start + len(health_rule)
+          end = text.find(legal_rule, start)
+          if end < 0:
+              raise SystemExit("Regra legal.cases nao encontrada após health.beds.")
+          text = text[:start] + text[end:]
           path.write_text(text, encoding="utf-8", newline="\n")
           PY
       - name: Validar sintaxe e commit
