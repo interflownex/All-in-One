@@ -1,97 +1,16 @@
-name: V2.8 Regenerate Generated Artifacts
+name: V2.8 Regenerate Generated Artifacts (Archived)
 
 on:
-  push:
-    branches:
-      - fix/cicd-governanca-v2-8-2026-07-27
   workflow_dispatch:
 
 permissions:
-  contents: write
-
-concurrency:
-  group: v28-regenerate-artifacts
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  regenerate:
-    if: github.ref_name == 'fix/cicd-governanca-v2-8-2026-07-27'
+  archived:
     runs-on: ubuntu-24.04
     steps:
-      - name: Checkout execution branch
-        uses: actions/checkout@v4
-        with:
-          ref: fix/cicd-governanca-v2-8-2026-07-27
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Apply verified pypdf remediation
+      - name: Archived execution notice
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          old = 'pypdf==6.13.3'
-          new = 'pypdf==6.14.2'
-          paths = [Path('requirements-dev.txt'), Path('scripts/scaffold_modules.py')]
-
-          for path in paths:
-              text = path.read_text(encoding='utf-8')
-              if old in text:
-                  path.write_text(text.replace(old, new), encoding='utf-8')
-              elif new not in text:
-                  raise SystemExit(f'{path}: versão pypdf esperada não encontrada')
-              print(f'{path}: pypdf 6.14.2 confirmado')
-          PY
-
-      - name: Generate artifacts from canonical sources
-        run: |
-          python scripts/scaffold_modules.py
-          python scripts/generate_domain_event_fixtures.py
-
-      - name: Validate diff safety
-        shell: bash
-        run: |
-          set -euo pipefail
-          git diff --check
-
-          deleted="$(git diff --diff-filter=D --name-only)"
-          if [ -n "$deleted" ]; then
-            echo "Unexpected generated-file deletions:"
-            printf '%s\n' "$deleted"
-            exit 1
-          fi
-
-          changed="$(git diff --name-only)"
-          if [ -z "$changed" ]; then
-            echo "No generated drift remains."
-            exit 0
-          fi
-
-          invalid="$(printf '%s\n' "$changed" | grep -Ev '^(modules/|contracts/|apps/|config/events/domain_event_fixtures\.json$|requirements-dev\.txt$|scripts/scaffold_modules\.py$)' || true)"
-          if [ -n "$invalid" ]; then
-            echo "Generator changed paths outside the approved scope:"
-            printf '%s\n' "$invalid"
-            exit 1
-          fi
-
-          echo "Approved generated changes:"
-          printf '%s\n' "$changed"
-
-      - name: Commit generated artifacts when needed
-        shell: bash
-        run: |
-          set -euo pipefail
-          if git diff --quiet; then
-            echo "Nothing to commit."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add modules contracts apps config/events/domain_event_fixtures.json requirements-dev.txt scripts/scaffold_modules.py
-          git commit -m "fix(ci): sincronizar artefatos e corrigir pypdf"
-          git push origin HEAD:fix/cicd-governanca-v2-8-2026-07-27
+          echo "Workflow arquivada após a sincronização dos artefatos do ciclo v2.8."
+          echo "Não executa geração, alteração ou commit automático."
