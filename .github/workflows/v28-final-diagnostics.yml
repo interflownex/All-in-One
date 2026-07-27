@@ -1,0 +1,199 @@
+name: V2.8 Final Diagnostic Summaries
+
+on:
+  push:
+    branches:
+      - fix/cicd-governanca-v2-8-2026-07-27
+    paths-ignore:
+      - 'docs/relatorios/execucao-v2.8/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v28-final-diagnostics
+  cancel-in-progress: true
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: all_in_one
+          POSTGRES_USER: all_in_one
+          POSTGRES_PASSWORD: test-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U all_in_one -d all_in_one"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGPASSWORD: test-password
+    steps:
+      - name: Checkout execution branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/cicd-governanca-v2-8-2026-07-27
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install diagnostic dependencies
+        run: |
+          python -m pip install --upgrade pip==26.1.2
+          pip install -r requirements-dev.txt bandit
+          mkdir -p docs/relatorios/execucao-v2.8
+
+      - name: Summarize Bandit findings
+        shell: bash
+        run: |
+          set +e
+          bandit -r modules/shared scripts workers -f json -o /tmp/bandit.json
+          code=$?
+          BANDIT_EXIT_CODE="$code" python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          source = Path('/tmp/bandit.json')
+          target = Path('docs/relatorios/execucao-v2.8/bandit-summary.md')
+          data = json.loads(source.read_text(encoding='utf-8')) if source.exists() else {'results': []}
+          results = data.get('results', [])
+          lines = [
+              '# Resumo Bandit v2.8',
+              '',
+              f"**Código de saída:** `{os.environ.get('BANDIT_EXIT_CODE', 'indisponível')}`",
+              f"**Achados:** `{len(results)}`",
+              '',
+          ]
+          if results:
+              lines.extend([
+                  '| ID | Severidade | Confiança | Arquivo | Linha | Achado |',
+                  '|---|---|---|---|---:|---|',
+              ])
+              for item in results:
+                  text = str(item.get('issue_text', '')).replace('|', '\\|').replace('\n', ' ')
+                  lines.append(
+                      f"| {item.get('test_id', '')} | {item.get('issue_severity', '')} | "
+                      f"{item.get('issue_confidence', '')} | `{item.get('filename', '')}` | "
+                      f"{item.get('line_number', '')} | {text} |"
+                  )
+          else:
+              lines.append('Nenhum achado registrado.')
+          lines.append('')
+          target.write_text('\n'.join(lines), encoding='utf-8')
+          PY
+          exit 0
+
+      - name: Summarize Android Gradle failure
+        shell: bash
+        run: |
+          set +e
+          python scripts/validate_valley_android_release.py > /tmp/android-contract.log 2>&1
+          contract_code=$?
+          apps/valley-android/gradlew -p apps/valley-android \
+            testDebugUnitTest lintDebug assembleDebug --no-daemon --stacktrace \
+            > /tmp/android-gradle.log 2>&1
+          gradle_code=$?
+          CONTRACT_CODE="$contract_code" GRADLE_CODE="$gradle_code" python - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          contract = Path('/tmp/android-contract.log').read_text(encoding='utf-8', errors='replace')
+          gradle = Path('/tmp/android-gradle.log').read_text(encoding='utf-8', errors='replace')
+          patterns = re.compile(
+              r'(FAILURE:|What went wrong:|Execution failed for task|Caused by:|^e: |error:|FAILED$|BUILD FAILED)',
+              re.IGNORECASE,
+          )
+          matches = [line for line in gradle.splitlines() if patterns.search(line)]
+          tail = gradle.splitlines()[-80:]
+          lines = [
+              '# Resumo Android/Gradle v2.8',
+              '',
+              f"**Contrato Android:** `{os.environ.get('CONTRACT_CODE')}`",
+              f"**Gradle:** `{os.environ.get('GRADLE_CODE')}`",
+              '',
+              '## Saída do contrato',
+              '',
+              '```text',
+              contract.strip(),
+              '```',
+              '',
+              '## Linhas relevantes do Gradle',
+              '',
+              '```text',
+              '\n'.join(matches[:200]) or '<nenhuma linha filtrada>',
+              '```',
+              '',
+              '## Final do log Gradle',
+              '',
+              '```text',
+              '\n'.join(tail),
+              '```',
+              '',
+          ]
+          Path('docs/relatorios/execucao-v2.8/android-gradle-summary.md').write_text(
+              '\n'.join(lines), encoding='utf-8'
+          )
+          PY
+          exit 0
+
+      - name: Identify failing PostgreSQL migration
+        shell: bash
+        run: |
+          set +e
+          summary='docs/relatorios/execucao-v2.8/database-migration-summary.md'
+          {
+            echo '# Resumo de migrações PostgreSQL v2.8'
+            echo
+          } > "$summary"
+          failed=0
+          for file in database/postgres/migrations/*.sql; do
+            output="$(psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f "$file" 2>&1)"
+            code=$?
+            if [ "$code" -ne 0 ]; then
+              {
+                echo "**Arquivo com falha:** \`$file\`"
+                echo
+                echo "**Código de saída:** \`$code\`"
+                echo
+                echo '```text'
+                printf '%s\n' "$output"
+                echo '```'
+              } >> "$summary"
+              failed=1
+              break
+            fi
+          done
+          if [ "$failed" -eq 0 ]; then
+            echo 'Todas as migrações foram aplicadas com sucesso.' >> "$summary"
+          fi
+          exit 0
+
+      - name: Commit concise diagnostic summaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add docs/relatorios/execucao-v2.8/bandit-summary.md \
+                  docs/relatorios/execucao-v2.8/android-gradle-summary.md \
+                  docs/relatorios/execucao-v2.8/database-migration-summary.md
+          if git diff --cached --quiet; then
+            echo 'No diagnostic summary changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs(ci): registrar causas finais dos gates v2.8'
+          git push origin HEAD:fix/cicd-governanca-v2-8-2026-07-27
