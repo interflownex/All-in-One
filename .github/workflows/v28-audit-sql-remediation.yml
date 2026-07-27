@@ -1,0 +1,60 @@
+name: V2.8 Audit SQL Reserved Word Remediation
+
+on:
+  push:
+    branches:
+      - fix/cicd-governanca-v2-8-2026-07-27
+    paths-ignore:
+      - 'docs/relatorios/execucao-v2.8/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v28-audit-sql-remediation
+  cancel-in-progress: false
+
+jobs:
+  remediate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/cicd-governanca-v2-8-2026-07-27
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Quote authorization column in audit INSERT
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('modules/shared/audit_contract.py')
+          old = 'error_detail, authorization, approval_id,'
+          new = 'error_detail, "authorization", approval_id,'
+          text = path.read_text(encoding='utf-8')
+          if old in text:
+              text = text.replace(old, new, 1)
+              path.write_text(text, encoding='utf-8')
+          elif new not in text:
+              raise SystemExit('Trecho SQL esperado não encontrado')
+          print('Coluna authorization citada no INSERT de auditoria.')
+          PY
+          python -m py_compile modules/shared/audit_contract.py
+          git diff --check
+
+      - name: Commit remediation
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'Nothing to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add modules/shared/audit_contract.py
+          git commit -m 'fix(audit): citar coluna authorization no PostgreSQL'
+          git push origin HEAD:fix/cicd-governanca-v2-8-2026-07-27
