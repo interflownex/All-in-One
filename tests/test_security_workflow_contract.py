@@ -38,7 +38,11 @@ def test_codeql_analyzes_pull_requests_without_duplicate_sarif_upload() -> None:
     assert "github/codeql-action/init@v4" in workflow
     assert "github/codeql-action/analyze@v4" in workflow
     assert "build-mode: manual" in workflow
-    assert "testProductionDebugUnitTest lintProductionDebug assembleProductionDebug" in workflow
+    assert (
+        "clean testProductionDebugUnitTest lintProductionDebug "
+        "assembleProductionDebug" in workflow
+    )
+    assert "--no-build-cache --rerun-tasks --stacktrace" in workflow
     assert "upload: ${{ github.event_name == 'pull_request' && 'never' || 'always' }}" in workflow
     assert "output: codeql-results" in workflow
     assert "post-processed-sarif-path" not in workflow
