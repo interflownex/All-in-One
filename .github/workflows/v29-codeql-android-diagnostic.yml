@@ -41,12 +41,12 @@ jobs:
           debug-artifact-name: valley-android-codeql-debug
           debug-database-name: valley-android-java-kotlin
 
-      - name: Compilar variante rastreada
+      - name: Recompilar variante rastreada sem cache
         run: |
           python scripts/validate_valley_android_release_v29.py
           apps/valley-android/gradlew -p apps/valley-android \
-            testProductionDebugUnitTest lintProductionDebug assembleProductionDebug \
-            --no-daemon --stacktrace
+            clean testProductionDebugUnitTest lintProductionDebug assembleProductionDebug \
+            --no-daemon --no-build-cache --rerun-tasks --stacktrace
 
       - name: Finalizar CodeQL sem upload
         id: analyze
