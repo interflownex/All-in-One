@@ -105,6 +105,7 @@ jobs:
       - name: Validar, testar, analisar e empacotar Android
         run: |
           python scripts/validate_valley_android_release.py
+          chmod +x apps/valley-android/gradlew
           apps/valley-android/gradlew -p apps/valley-android \
             testDebugUnitTest lintDebug assembleDebug --no-daemon
       - name: Publicar análise SAST CodeQL
