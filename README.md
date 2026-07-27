@@ -2,101 +2,105 @@
 
 ![All-in-One](assets/brand/all-in-one-logo-official.png)
 
-SuperApp modular com identidade unica para consumidores, empresas, riders,
-prestadores, mobilidade, Jobs, saude e operacoes empresariais. Este repositorio
-implementa a plataforma arquitetural e executavel definida no documento mestre:
-microservicos FastAPI, contratos OpenAPI, persistencia PostgreSQL/MongoDB,
-eventos, controles de seguranca, infraestrutura e gates de CI.
+**Versão documental:** 2.7  
+**Atualização:** 26/07/2026 às 23:06:33  
+**Fonte operacional:** `docs/Pendências Do desenvolvedor.md`
+
+SuperApp modular com identidade única para consumidores, empresas, riders,
+prestadores, mobilidade, Jobs, saúde e operações empresariais. O repositório
+implementa microserviços FastAPI, contratos OpenAPI, persistência
+PostgreSQL/MongoDB, eventos, controles de segurança, infraestrutura e gates de
+CI.
+
+## Estado oficial atual
+
+- 9 superfícies de aplicação catalogadas.
+- 24 módulos ativos, com o módulo Vision removido do catálogo operacional.
+- `legal`, `property` e `ai_core` sincronizados entre catálogo e Business.
+- Auditoria reproduzível em `scripts/audit_confirmation_v7.py`.
+- Front-ends, APKs, PDV Desktop e integrações externas em estágios diferentes de
+  homologação, descritos no relatório de pendências vigente.
+- Nenhuma referência histórica ao Vision deve ser interpretada como módulo ativo.
+
+## Fontes de verdade
+
+1. `AGENTS.md`: regras obrigatórias para agentes.
+2. `tarefas.md`: passagem operacional para a próxima IA desenvolvedora.
+3. `docs/Pendências Do desenvolvedor.md`: pendências consolidadas.
+4. `docs/relatorios/pendencias/`: relatórios e planos versionados.
+5. `docs/DOCUMENTATION_INDEX.md`: classificação de toda a documentação.
+6. `docs/STATUS_ATUAL.md`: fotografia operacional vigente.
+7. `config/module_catalog.json`: catálogo oficial de módulos e aplicações.
+8. `config/branding/authorized_assets.json`: ativos de marca autorizados.
 
 ## Baseline implementado
 
-- Seis superficies de aplicacao em `apps/`, todas dependentes do All-in-One ID.
-- Vinte e cinco microservicos em `modules/`, cada um com runtime funcional,
-  contrato, OpenAPI, Dockerfile, documentacao de dominio e testes.
-- Runtime compartilhado com persistencia contratual SQLite, autorizacao,
-  workflows, idempotencia, auditoria imutavel e outbox de eventos.
-- PostgreSQL com 30 schemas, identidade, business/KYB, Jobs, RBAC/ABAC, wallet,
-  ledger, escrow, operacoes e verticais; ledger/auditoria sao append-only.
-- MongoDB validado para memoria IA consentida, social, metricas de influencer
-  e telemetria.
-- RabbitMQ com dispatcher transacional da outbox PostgreSQL, publisher confirms
-  e evidencias de entrega append-only; Redis para suporte a cache/rate limit.
-- CI para scaffold, contratos, testes, banco, OpenAPI, seguranca e automacao
-  controlada de branches.
+- Runtime compartilhado com autorização, workflows, idempotência, auditoria e
+  outbox.
+- PostgreSQL com migrations, stores tipados, ledger e auditoria append-only.
+- MongoDB para memória IA consentida, social e telemetria.
+- RabbitMQ com dispatcher transacional e Redis para cache e rate limit.
+- Contratos, OpenAPI, Dockerfiles e testes-base dos 24 módulos ativos.
+- Jobs com currículo, importação de CTPS em PDF, procedência e armazenamento
+  cifrado.
+- Orquestração Stitch declarativa e manifestos preservados.
+- Aplicações web, Valley Android, APK Admin e PDV Desktop em validação contínua.
 
-## Jobs E CTPS Digital
+## Jobs e CTPS Digital
 
-O usuario final pode manter curriculo, registrar experiencias informais,
-buscar vagas e candidatar-se. O modulo `jobs` importa um PDF da CTPS Digital,
-preserva o hash da evidencia, cifra o arquivo em storage privado e exibe itens extraidos como
-`validated_by_document_import`; dados digitados pelo usuario sao exibidos
-como `self_declared_unverified`. A importacao nao declara verificacao oficial
-externa sem integracao autorizada.
+O usuário pode manter currículo, registrar experiências, buscar vagas e se
+candidatar. O módulo Jobs importa PDF da CTPS Digital, preserva hash da
+evidência, cifra o arquivo e diferencia conteúdo importado de conteúdo
+autodeclarado. A importação não declara verificação oficial externa sem
+integração autorizada.
 
-Somente recrutadores vinculados a empresa ativa no All-in-One Business, com
-escopo Jobs, acessam a base visivel de curriculos. Cada consulta individual
-gera log append-only. Veja [docs/JOBS_CTSP_DIGITAL.md](docs/JOBS_CTSP_DIGITAL.md).
+Somente recrutadores vinculados a empresa ativa e com escopo Jobs acessam a base
+permitida. Cada consulta individual deve gerar log append-only. Consulte
+`docs/JOBS_CTSP_DIGITAL.md`.
 
-Jobs usa tabelas PostgreSQL tipadas e a outbox central quando
-`ALL_IN_ONE_JOBS_POSTGRES_DSN` esta configurada; sem DSN, o store SQLite
-permanece disponivel para desenvolvimento isolado. O Docker Compose configura
-essa DSN e inicia Jobs somente depois das migrations.
+## Eventos e Stitch
 
-## Eventos E Front-End Stitch
+`workers/outbox_dispatcher` publica eventos de `audit.domain_events` no exchange
+RabbitMQ `all-in-one.domain`, confirma a entrega e registra tentativas em
+`audit.event_deliveries`.
 
-`workers/outbox_dispatcher` publica eventos pendentes de `audit.domain_events`
-no exchange RabbitMQ `all-in-one.domain`, confirma a entrega e preserva cada
-tentativa em `audit.event_deliveries`. Mensagens Jobs usam payload minimizado
-e nao carregam PDF, chave de storage nem texto livre de curriculo.
+O planejamento visual usa Google Stitch por projeto isolado. `discover` e `sync`
+exigem credencial legítima fornecida fora do Git. Consulte
+`docs/STITCH_FRONTEND.md`.
 
-O planejamento visual de front-end usa o Google Stitch por projeto isolado
-para cada microservico. Execute `python scripts/stitch_orchestrator.py plan`
-para gerar o contrato local; `discover` e `sync` exigem credencial Stitch
-rotacionada fornecida via secret local. Veja
-[docs/STITCH_FRONTEND.md](docs/STITCH_FRONTEND.md).
-
-## Identidade e integridade
-
-`identity.users.id` e o vinculo central dos recursos de dominio. Wallets,
-cartoes NFC/LED, perfis Rider e escrows usam foreign keys compostas para
-impedir que uma operacao referencie a wallet de outro usuario. Recursos
-financeiros e logs de auditoria rejeitam `UPDATE` e `DELETE`.
-
-## Execucao local
+## Execução local
 
 ```bash
 python -m pip install -r requirements-dev.txt
 python scripts/scaffold_modules.py --check
+python scripts/audit_confirmation_v7.py
 python scripts/validate_repository.py
 python -m pytest --import-mode=importlib
 docker compose -f infra/docker/docker-compose.yml up --build
 ```
 
-Exemplo isolado:
+## Organização
 
-```bash
-cd modules/identity
-pip install -r requirements.txt
-uvicorn main:app --port 8000
-```
+| Caminho | Conteúdo |
+|---|---|
+| `apps/` | Experiências cliente, empresa, rider e administração |
+| `modules/` | 24 módulos ativos e seus testes |
+| `contracts/` | Contratos de domínio versionáveis |
+| `database/` | Migrations PostgreSQL e validações MongoDB |
+| `docs/` | Arquitetura, segurança, operação, roadmap e relatórios |
+| `infra/` | Docker, Kubernetes e infraestrutura |
+| `workers/` | Dispatchers e consumidores assíncronos |
+| `.github/workflows/` | Gates e automações de entrega |
 
-## Organizacao
+## Governança
 
-| Caminho              | Conteudo                                             |
-| -------------------- | ---------------------------------------------------- |
-| `apps/`              | Contratos das seis experiencias cliente              |
-| `modules/`           | Microservicos funcionais e testes                    |
-| `contracts/`         | Contratos de dominio espelhados e versionaveis       |
-| `database/`          | Migracoes PostgreSQL e validacoes MongoDB            |
-| `docs/`              | Arquitetura, seguranca, eventos, operacao e roadmap  |
-| `infra/`             | Docker, Kubernetes e Terraform inicial               |
-| `workers/`           | Dispatchers e consumidores assincronos da plataforma |
-| `.github/workflows/` | Gates e automacoes de entrega                        |
+- Trabalhar em branch própria.
+- Proibir push direto na `main`.
+- Executar testes e registrar evidências.
+- Integrar por Pull Request e Squash and Merge.
+- Manter credenciais fora do Git.
+- Não reconstruir ativos oficiais de marca.
+- Atualizar `tarefas.md` e os relatórios a cada ciclo relevante.
 
-## Estado
-
-O motor de dominio torna todos os modulos inicializaveis e testaveis. Integracoes
-reguladas ou externas (Pix/cartoes, fiscal oficial, biometria, assinatura,
-OCR, IA produtiva, hospitais, GPS de concessionarias) permanecem bloqueadas
-para producao ate credenciais, homologacao, DPIA/LGPD e testes E2E
-documentados em [docs/ROADMAP.md](docs/ROADMAP.md).
+Integrações reguladas ou externas permanecem bloqueadas para produção até
+credenciais legítimas, homologação, DPIA/LGPD e testes E2E documentados.
