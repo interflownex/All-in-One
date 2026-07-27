@@ -37,9 +37,9 @@ jobs:
           grep -q 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
           grep -q 'android:usesCleartextTraffic="false"' app/src/main/AndroidManifest.xml
       - name: Testes unitários reproduzíveis
-        run: ./gradlew testStagingDebugUnitTest --no-daemon --stacktrace
+        run: ./gradlew testProductionDebugUnitTest --no-daemon --stacktrace
       - name: Validar montagem de variante sem credenciais de produção
-        run: ./gradlew assembleStagingDebug --no-daemon --stacktrace
+        run: ./gradlew assembleProductionDebug --no-daemon --stacktrace
       - name: Gerar SBOM de dependências Gradle
         run: ./gradlew dependencies > valley-gradle-dependencies.txt
       - uses: actions/upload-artifact@v4
@@ -47,4 +47,4 @@ jobs:
           name: valley-security-evidence
           path: |
             apps/valley-android/valley-gradle-dependencies.txt
-            apps/valley-android/app/build/outputs/apk/staging/debug/*.apk
+            apps/valley-android/app/build/outputs/apk/production/debug/*.apk
