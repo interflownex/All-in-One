@@ -6,6 +6,7 @@ Estes arquivos registram as saídas reais; código de saída diferente de zero n
 
 ## Arquivos
 
+- `README.md`
 - `android-validation.txt`
 - `jobs-image-build.txt`
 - `jobs-trivy.json`

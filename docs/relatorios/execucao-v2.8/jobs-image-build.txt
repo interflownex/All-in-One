@@ -1,7 +1,7 @@
 #0 building with "default" instance using docker driver
 
 #1 [internal] load build definition from Dockerfile
-#1 transferring dockerfile: 332B done
+#1 transferring dockerfile: 332B 0.0s done
 #1 DONE 0.0s
 
 #2 [auth] library/python:pull token for registry-1.docker.io
@@ -20,24 +20,23 @@
 
 #6 [1/6] FROM docker.io/library/python:3.12-slim@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de
 #6 resolve docker.io/library/python:3.12-slim@sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de done
-#6 sha256:98db2485a0d07a8914586b02387e3813aa7e9fed79ab252898d3e96e21c717ea 1.05MB / 1.29MB 0.1s
-#6 sha256:48347b15c85fd6dde9c5b0259f378fbaee3ce231b30a42f2f2bcc4ea0285cbc9 0B / 12.11MB 0.1s
 #6 sha256:57cd7c3a7a273101a6485ba99423ee568157882804b1124b4dd04266317710de 10.37kB / 10.37kB done
 #6 sha256:cab2dbf575e971934a81e4622f5aba17aa7929719bd7e31033a3a83b97fd0464 1.75kB / 1.75kB done
 #6 sha256:25c5b8011a3425a140bf5fa73be0feabd3c0d5b323eecb19dc02437a368ae075 5.66kB / 5.66kB done
-#6 sha256:062e450697faa5f02a3a74eba9864ee4d79bc9cfbd65769fc6cdff2c05c6a053 12.58MB / 29.78MB 0.1s
+#6 sha256:062e450697faa5f02a3a74eba9864ee4d79bc9cfbd65769fc6cdff2c05c6a053 20.97MB / 29.78MB 0.1s
 #6 sha256:98db2485a0d07a8914586b02387e3813aa7e9fed79ab252898d3e96e21c717ea 1.29MB / 1.29MB 0.1s done
 #6 sha256:48347b15c85fd6dde9c5b0259f378fbaee3ce231b30a42f2f2bcc4ea0285cbc9 12.11MB / 12.11MB 0.1s done
-#6 sha256:062e450697faa5f02a3a74eba9864ee4d79bc9cfbd65769fc6cdff2c05c6a053 29.78MB / 29.78MB 0.2s
 #6 sha256:fd079632edc0ab4e9d10c77ec348d5057a976e6fc508e93855548096dec2ae1e 250B / 250B 0.1s done
-#6 extracting sha256:062e450697faa5f02a3a74eba9864ee4d79bc9cfbd65769fc6cdff2c05c6a053
-#6 sha256:062e450697faa5f02a3a74eba9864ee4d79bc9cfbd65769fc6cdff2c05c6a053 29.78MB / 29.78MB 0.2s done
+#6 sha256:062e450697faa5f02a3a74eba9864ee4d79bc9cfbd65769fc6cdff2c05c6a053 29.78MB / 29.78MB 0.1s done
+#6 extracting sha256:062e450697faa5f02a3a74eba9864ee4d79bc9cfbd65769fc6cdff2c05c6a053 0.1s
 #6 extracting sha256:062e450697faa5f02a3a74eba9864ee4d79bc9cfbd65769fc6cdff2c05c6a053 0.9s done
+#6 extracting sha256:98db2485a0d07a8914586b02387e3813aa7e9fed79ab252898d3e96e21c717ea
 #6 extracting sha256:98db2485a0d07a8914586b02387e3813aa7e9fed79ab252898d3e96e21c717ea 0.1s done
 #6 extracting sha256:48347b15c85fd6dde9c5b0259f378fbaee3ce231b30a42f2f2bcc4ea0285cbc9
 #6 extracting sha256:48347b15c85fd6dde9c5b0259f378fbaee3ce231b30a42f2f2bcc4ea0285cbc9 0.5s done
+#6 extracting sha256:fd079632edc0ab4e9d10c77ec348d5057a976e6fc508e93855548096dec2ae1e
 #6 extracting sha256:fd079632edc0ab4e9d10c77ec348d5057a976e6fc508e93855548096dec2ae1e done
-#6 DONE 2.9s
+#6 DONE 2.3s
 
 #7 [2/6] WORKDIR /app
 #7 DONE 0.0s
@@ -49,102 +48,102 @@
 #9 DONE 0.0s
 
 #10 [5/6] RUN pip install --no-cache-dir -r requirements.txt
-#10 1.682 Collecting cryptography==48.0.1 (from -r requirements.txt (line 1))
-#10 1.721   Downloading cryptography-48.0.1-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (4.3 kB)
-#10 1.784 Collecting fastapi==0.136.1 (from -r requirements.txt (line 2))
-#10 1.792   Downloading fastapi-0.136.1-py3-none-any.whl.metadata (28 kB)
-#10 1.821 Collecting pypdf==6.13.3 (from -r requirements.txt (line 3))
-#10 1.828   Downloading pypdf-6.13.3-py3-none-any.whl.metadata (7.2 kB)
-#10 1.847 Collecting psycopg==3.3.4 (from psycopg[binary]==3.3.4->-r requirements.txt (line 4))
-#10 1.854   Downloading psycopg-3.3.4-py3-none-any.whl.metadata (4.3 kB)
-#10 1.885 Collecting starlette==1.3.1 (from -r requirements.txt (line 5))
-#10 1.892   Downloading starlette-1.3.1-py3-none-any.whl.metadata (6.4 kB)
-#10 1.919 Collecting uvicorn==0.34.2 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
-#10 1.930   Downloading uvicorn-0.34.2-py3-none-any.whl.metadata (6.5 kB)
-#10 2.014 Collecting cffi>=2.0.0 (from cryptography==48.0.1->-r requirements.txt (line 1))
-#10 2.021   Downloading cffi-2.1.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
-#10 2.121 Collecting pydantic>=2.9.0 (from fastapi==0.136.1->-r requirements.txt (line 2))
-#10 2.128   Downloading pydantic-2.13.4-py3-none-any.whl.metadata (109 kB)
-#10 2.154 Collecting typing-extensions>=4.8.0 (from fastapi==0.136.1->-r requirements.txt (line 2))
-#10 2.161   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
-#10 2.172 Collecting typing-inspection>=0.4.2 (from fastapi==0.136.1->-r requirements.txt (line 2))
-#10 2.180   Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
-#10 2.190 Collecting annotated-doc>=0.0.2 (from fastapi==0.136.1->-r requirements.txt (line 2))
-#10 2.197   Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
-#10 2.221 Collecting anyio<5,>=3.6.2 (from starlette==1.3.1->-r requirements.txt (line 5))
-#10 2.230   Downloading anyio-4.14.2-py3-none-any.whl.metadata (4.6 kB)
-#10 2.253 Collecting click>=7.0 (from uvicorn==0.34.2->uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
-#10 2.260   Downloading click-8.4.2-py3-none-any.whl.metadata (2.6 kB)
-#10 2.272 Collecting h11>=0.8 (from uvicorn==0.34.2->uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
-#10 2.279   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
-#10 2.399 Collecting psycopg-binary==3.3.4 (from psycopg[binary]==3.3.4->-r requirements.txt (line 4))
-#10 2.406   Downloading psycopg_binary-3.3.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
-#10 2.435 Collecting httptools>=0.6.3 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
-#10 2.442   Downloading httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
-#10 2.458 Collecting python-dotenv>=0.13 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
-#10 2.465   Downloading python_dotenv-1.2.2-py3-none-any.whl.metadata (27 kB)
-#10 2.498 Collecting pyyaml>=5.1 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
-#10 2.505   Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
-#10 2.538 Collecting uvloop!=0.15.0,!=0.15.1,>=0.14.0 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
-#10 2.545   Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.9 kB)
-#10 2.608 Collecting watchfiles>=0.13 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
-#10 2.617   Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
-#10 2.718 Collecting websockets>=10.4 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
-#10 2.725   Downloading websockets-16.1.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.8 kB)
-#10 2.741 Collecting idna>=2.8 (from anyio<5,>=3.6.2->starlette==1.3.1->-r requirements.txt (line 5))
-#10 2.747   Downloading idna-3.18-py3-none-any.whl.metadata (6.1 kB)
-#10 2.764 Collecting pycparser (from cffi>=2.0.0->cryptography==48.0.1->-r requirements.txt (line 1))
-#10 2.771   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
-#10 2.784 Collecting annotated-types>=0.6.0 (from pydantic>=2.9.0->fastapi==0.136.1->-r requirements.txt (line 2))
-#10 2.791   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
-#10 3.343 Collecting pydantic-core==2.46.4 (from pydantic>=2.9.0->fastapi==0.136.1->-r requirements.txt (line 2))
-#10 3.350   Downloading pydantic_core-2.46.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
-#10 3.383 Downloading cryptography-48.0.1-cp311-abi3-manylinux_2_34_x86_64.whl (4.7 MB)
-#10 3.426    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 129.3 MB/s eta 0:00:00
-#10 3.433 Downloading fastapi-0.136.1-py3-none-any.whl (117 kB)
-#10 3.441 Downloading pypdf-6.13.3-py3-none-any.whl (347 kB)
-#10 3.448 Downloading psycopg-3.3.4-py3-none-any.whl (213 kB)
-#10 3.455 Downloading starlette-1.3.1-py3-none-any.whl (73 kB)
-#10 3.462 Downloading uvicorn-0.34.2-py3-none-any.whl (62 kB)
-#10 3.469 Downloading psycopg_binary-3.3.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.2 MB)
-#10 3.483    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 424.7 MB/s eta 0:00:00
-#10 3.490 Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
-#10 3.498 Downloading anyio-4.14.2-py3-none-any.whl (125 kB)
-#10 3.505 Downloading cffi-2.1.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
-#10 3.512 Downloading click-8.4.2-py3-none-any.whl (119 kB)
-#10 3.519 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
-#10 3.527 Downloading httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (523 kB)
-#10 3.535 Downloading pydantic-2.13.4-py3-none-any.whl (472 kB)
-#10 3.543 Downloading pydantic_core-2.46.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
-#10 3.548    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 748.8 MB/s eta 0:00:00
-#10 3.556 Downloading python_dotenv-1.2.2-py3-none-any.whl (22 kB)
-#10 3.563 Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
-#10 3.566    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 750.7 MB/s eta 0:00:00
-#10 3.574 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
-#10 3.581 Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
-#10 3.588 Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.4 MB)
-#10 3.598    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 536.3 MB/s eta 0:00:00
-#10 3.606 Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
-#10 3.614 Downloading websockets-16.1.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (187 kB)
-#10 3.621 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
-#10 3.628 Downloading idna-3.18-py3-none-any.whl (65 kB)
-#10 3.634 Downloading pycparser-3.0-py3-none-any.whl (48 kB)
-#10 3.712 Installing collected packages: websockets, uvloop, typing-extensions, pyyaml, python-dotenv, pypdf, pycparser, psycopg-binary, idna, httptools, h11, click, annotated-types, annotated-doc, uvicorn, typing-inspection, pydantic-core, psycopg, cffi, anyio, watchfiles, starlette, pydantic, cryptography, fastapi
-#10 5.521 Successfully installed annotated-doc-0.0.4 annotated-types-0.8.0 anyio-4.14.2 cffi-2.1.0 click-8.4.2 cryptography-48.0.1 fastapi-0.136.1 h11-0.16.0 httptools-0.8.0 idna-3.18 psycopg-3.3.4 psycopg-binary-3.3.4 pycparser-3.0 pydantic-2.13.4 pydantic-core-2.46.4 pypdf-6.13.3 python-dotenv-1.2.2 pyyaml-6.0.3 starlette-1.3.1 typing-extensions-4.16.0 typing-inspection-0.4.2 uvicorn-0.34.2 uvloop-0.22.1 watchfiles-1.2.0 websockets-16.1.1
-#10 5.521 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
-#10 5.600 
-#10 5.600 [notice] A new release of pip is available: 25.0.1 -> 26.1.2
-#10 5.600 [notice] To update, run: pip install --upgrade pip
-#10 DONE 5.8s
+#10 1.632 Collecting cryptography==48.0.1 (from -r requirements.txt (line 1))
+#10 1.652   Downloading cryptography-48.0.1-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (4.3 kB)
+#10 1.710 Collecting fastapi==0.136.1 (from -r requirements.txt (line 2))
+#10 1.714   Downloading fastapi-0.136.1-py3-none-any.whl.metadata (28 kB)
+#10 1.740 Collecting pypdf==6.13.3 (from -r requirements.txt (line 3))
+#10 1.744   Downloading pypdf-6.13.3-py3-none-any.whl.metadata (7.2 kB)
+#10 1.760 Collecting psycopg==3.3.4 (from psycopg[binary]==3.3.4->-r requirements.txt (line 4))
+#10 1.763   Downloading psycopg-3.3.4-py3-none-any.whl.metadata (4.3 kB)
+#10 1.791 Collecting starlette==1.3.1 (from -r requirements.txt (line 5))
+#10 1.794   Downloading starlette-1.3.1-py3-none-any.whl.metadata (6.4 kB)
+#10 1.817 Collecting uvicorn==0.34.2 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
+#10 1.821   Downloading uvicorn-0.34.2-py3-none-any.whl.metadata (6.5 kB)
+#10 1.903 Collecting cffi>=2.0.0 (from cryptography==48.0.1->-r requirements.txt (line 1))
+#10 1.906   Downloading cffi-2.1.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
+#10 2.007 Collecting pydantic>=2.9.0 (from fastapi==0.136.1->-r requirements.txt (line 2))
+#10 2.010   Downloading pydantic-2.13.4-py3-none-any.whl.metadata (109 kB)
+#10 2.028 Collecting typing-extensions>=4.8.0 (from fastapi==0.136.1->-r requirements.txt (line 2))
+#10 2.031   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#10 2.038 Collecting typing-inspection>=0.4.2 (from fastapi==0.136.1->-r requirements.txt (line 2))
+#10 2.041   Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+#10 2.048 Collecting annotated-doc>=0.0.2 (from fastapi==0.136.1->-r requirements.txt (line 2))
+#10 2.051   Downloading annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+#10 2.074 Collecting anyio<5,>=3.6.2 (from starlette==1.3.1->-r requirements.txt (line 5))
+#10 2.077   Downloading anyio-4.14.2-py3-none-any.whl.metadata (4.6 kB)
+#10 2.097 Collecting click>=7.0 (from uvicorn==0.34.2->uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
+#10 2.100   Downloading click-8.4.2-py3-none-any.whl.metadata (2.6 kB)
+#10 2.109 Collecting h11>=0.8 (from uvicorn==0.34.2->uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
+#10 2.112   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#10 2.236 Collecting psycopg-binary==3.3.4 (from psycopg[binary]==3.3.4->-r requirements.txt (line 4))
+#10 2.243   Downloading psycopg_binary-3.3.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+#10 2.269 Collecting httptools>=0.6.3 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
+#10 2.272   Downloading httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+#10 2.285 Collecting python-dotenv>=0.13 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
+#10 2.289   Downloading python_dotenv-1.2.2-py3-none-any.whl.metadata (27 kB)
+#10 2.317 Collecting pyyaml>=5.1 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
+#10 2.320   Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+#10 2.351 Collecting uvloop!=0.15.0,!=0.15.1,>=0.14.0 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
+#10 2.354   Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (4.9 kB)
+#10 2.416 Collecting watchfiles>=0.13 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
+#10 2.419   Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#10 2.514 Collecting websockets>=10.4 (from uvicorn[standard]==0.34.2->-r requirements.txt (line 6))
+#10 2.518   Downloading websockets-16.1.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.8 kB)
+#10 2.531 Collecting idna>=2.8 (from anyio<5,>=3.6.2->starlette==1.3.1->-r requirements.txt (line 5))
+#10 2.534   Downloading idna-3.18-py3-none-any.whl.metadata (6.1 kB)
+#10 2.548 Collecting pycparser (from cffi>=2.0.0->cryptography==48.0.1->-r requirements.txt (line 1))
+#10 2.552   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+#10 2.563 Collecting annotated-types>=0.6.0 (from pydantic>=2.9.0->fastapi==0.136.1->-r requirements.txt (line 2))
+#10 2.565   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#10 3.142 Collecting pydantic-core==2.46.4 (from pydantic>=2.9.0->fastapi==0.136.1->-r requirements.txt (line 2))
+#10 3.147   Downloading pydantic_core-2.46.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.6 kB)
+#10 3.179 Downloading cryptography-48.0.1-cp311-abi3-manylinux_2_34_x86_64.whl (4.7 MB)
+#10 3.201    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.7/4.7 MB 251.3 MB/s eta 0:00:00
+#10 3.204 Downloading fastapi-0.136.1-py3-none-any.whl (117 kB)
+#10 3.207 Downloading pypdf-6.13.3-py3-none-any.whl (347 kB)
+#10 3.214 Downloading psycopg-3.3.4-py3-none-any.whl (213 kB)
+#10 3.221 Downloading starlette-1.3.1-py3-none-any.whl (73 kB)
+#10 3.226 Downloading uvicorn-0.34.2-py3-none-any.whl (62 kB)
+#10 3.229 Downloading psycopg_binary-3.3.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.2 MB)
+#10 3.258    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 223.4 MB/s eta 0:00:00
+#10 3.261 Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+#10 3.265 Downloading anyio-4.14.2-py3-none-any.whl (125 kB)
+#10 3.268 Downloading cffi-2.1.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
+#10 3.272 Downloading click-8.4.2-py3-none-any.whl (119 kB)
+#10 3.275 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#10 3.278 Downloading httptools-0.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (523 kB)
+#10 3.281 Downloading pydantic-2.13.4-py3-none-any.whl (472 kB)
+#10 3.285 Downloading pydantic_core-2.46.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#10 3.290    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 664.1 MB/s eta 0:00:00
+#10 3.293 Downloading python_dotenv-1.2.2-py3-none-any.whl (22 kB)
+#10 3.297 Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+#10 3.300    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 762.7 MB/s eta 0:00:00
+#10 3.302 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#10 3.305 Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+#10 3.308 Downloading uvloop-0.22.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.4 MB)
+#10 3.328    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.4/4.4 MB 263.0 MB/s eta 0:00:00
+#10 3.332 Downloading watchfiles-1.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
+#10 3.335 Downloading websockets-16.1.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (187 kB)
+#10 3.339 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#10 3.342 Downloading idna-3.18-py3-none-any.whl (65 kB)
+#10 3.344 Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+#10 3.423 Installing collected packages: websockets, uvloop, typing-extensions, pyyaml, python-dotenv, pypdf, pycparser, psycopg-binary, idna, httptools, h11, click, annotated-types, annotated-doc, uvicorn, typing-inspection, pydantic-core, psycopg, cffi, anyio, watchfiles, starlette, pydantic, cryptography, fastapi
+#10 5.152 Successfully installed annotated-doc-0.0.4 annotated-types-0.8.0 anyio-4.14.2 cffi-2.1.0 click-8.4.2 cryptography-48.0.1 fastapi-0.136.1 h11-0.16.0 httptools-0.8.0 idna-3.18 psycopg-3.3.4 psycopg-binary-3.3.4 pycparser-3.0 pydantic-2.13.4 pydantic-core-2.46.4 pypdf-6.13.3 python-dotenv-1.2.2 pyyaml-6.0.3 starlette-1.3.1 typing-extensions-4.16.0 typing-inspection-0.4.2 uvicorn-0.34.2 uvloop-0.22.1 watchfiles-1.2.0 websockets-16.1.1
+#10 5.152 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#10 5.215 
+#10 5.215 [notice] A new release of pip is available: 25.0.1 -> 26.1.2
+#10 5.215 [notice] To update, run: pip install --upgrade pip
+#10 DONE 5.4s
 
 #11 [6/6] COPY modules/jobs/main.py /app/main.py
 #11 DONE 0.0s
 
 #12 exporting to image
 #12 exporting layers
-#12 exporting layers 1.0s done
-#12 writing image sha256:6ec0056ade5c3f667cb9b21adcdbcd435d43beade2589895795b674cb004d777 done
+#12 exporting layers 0.7s done
+#12 writing image sha256:85d1f7c2eff7426f1ce831caf2b0f7c7e1b53fc92dd00d906969c5edf9da78aa done
 #12 naming to docker.io/library/all-in-one-jobs:v28-diagnostic done
-#12 DONE 1.0s
+#12 DONE 0.7s
 
 exit_code=0
