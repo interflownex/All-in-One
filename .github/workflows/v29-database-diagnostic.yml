@@ -29,6 +29,7 @@ jobs:
     env:
       PGPASSWORD: test-password
       ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
+      ALL_IN_ONE_JOBS_POSTGRES_TEST_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -52,6 +53,17 @@ jobs:
           set -e
           printf '%s\n' "$rc" > diagnostics/v29/database/validator.rc
           cat diagnostics/v29/database/validator.log
+          exit "$rc"
+      - name: Run isolated Jobs and CTPS diagnostic
+        shell: bash
+        run: |
+          set +e
+          python -m pytest -q -x --tb=short tests/test_jobs_postgres_integration.py \
+            > diagnostics/v29/database/jobs-ctps.log 2>&1
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" > diagnostics/v29/database/jobs-ctps.rc
+          cat diagnostics/v29/database/jobs-ctps.log
           exit "$rc"
       - name: Upload database diagnostic
         if: always()
