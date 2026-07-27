@@ -1,0 +1,93 @@
+name: V2.9 Isolate Generated Artifacts Gate
+
+on:
+  push:
+    branches:
+      - fix/cicd-governanca-v2-8-2026-07-27
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  isolate-generated-artifacts:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Cleanup artifacts
+        run: python scripts/cleanup_artifacts.py
+
+      - name: Run checks separately
+        id: checks
+        shell: bash
+        run: |
+          set -u
+          mkdir -p diagnostics/v29
+
+          run_check() {
+            local name="$1"
+            shift
+            set +e
+            "$@" >"diagnostics/v29/${name}.log" 2>&1
+            local rc=$?
+            set -e
+            printf '%s\n' "$rc" >"diagnostics/v29/${name}.rc"
+            echo "${name}: ${rc}" | tee -a diagnostics/v29/summary.txt
+          }
+
+          set -e
+          run_check scaffold python scripts/scaffold_modules.py --check
+          run_check fixtures python scripts/generate_domain_event_fixtures.py --check
+          run_check openapi python scripts/validate_openapi.py
+          run_check repository python scripts/validate_repository.py
+
+          git status --short > diagnostics/v29/git-status.txt
+          git diff --name-status > diagnostics/v29/git-diff-name-status.txt
+          find apps -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | sort > diagnostics/v29/app-directories.txt
+
+          {
+            echo '## Isolamento do gate de artefatos v2.9'
+            echo
+            echo '| Comando | Código de saída |'
+            echo '|---|---:|'
+            for name in scaffold fixtures openapi repository; do
+              printf '| `%s` | %s |\n' "$name" "$(cat diagnostics/v29/${name}.rc)"
+            done
+            echo
+            echo '### Estado Git após os comandos'
+            echo '```text'
+            cat diagnostics/v29/git-status.txt
+            echo '```'
+            echo
+            echo '### Diretórios de aplicações detectados'
+            echo '```text'
+            cat diagnostics/v29/app-directories.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          failed=0
+          for name in scaffold fixtures openapi repository; do
+            if [ "$(cat diagnostics/v29/${name}.rc)" -ne 0 ]; then
+              failed=1
+            fi
+          done
+          exit "$failed"
+
+      - name: Upload diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v29-generated-gate-diagnostics
+          path: diagnostics/v29
+          if-no-files-found: error
+          retention-days: 14
