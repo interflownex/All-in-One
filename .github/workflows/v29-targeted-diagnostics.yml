@@ -112,7 +112,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Run Android stages separately
+      - name: Run Android productionDebug stages separately
         shell: bash
         run: |
           mkdir -p diagnostics/v29/android
@@ -130,9 +130,17 @@ jobs:
 
           chmod +x apps/valley-android/gradlew
           run_stage contract python scripts/validate_valley_android_release.py
-          run_stage unit apps/valley-android/gradlew -p apps/valley-android testDebugUnitTest --no-daemon
-          run_stage lint apps/valley-android/gradlew -p apps/valley-android lintDebug --no-daemon
-          run_stage assemble apps/valley-android/gradlew -p apps/valley-android assembleDebug --no-daemon
+          run_stage unit apps/valley-android/gradlew -p apps/valley-android \
+            testProductionDebugUnitTest --no-daemon --stacktrace
+          run_stage lint apps/valley-android/gradlew -p apps/valley-android \
+            lintProductionDebug --no-daemon --stacktrace
+          run_stage assemble apps/valley-android/gradlew -p apps/valley-android \
+            assembleProductionDebug --no-daemon --stacktrace
+
+          find apps/valley-android/app/build/test-results -type f -maxdepth 5 \
+            -print 2>/dev/null > diagnostics/v29/android/test-result-files.txt || true
+          find apps/valley-android/app/build/reports/tests -type f -maxdepth 6 \
+            -print 2>/dev/null > diagnostics/v29/android/test-report-files.txt || true
 
           cat diagnostics/v29/android/summary.txt
           failed=0
@@ -147,6 +155,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: v29-android-diagnostic
-          path: diagnostics/v29/android
-          if-no-files-found: error
+          path: |
+            diagnostics/v29/android
+            apps/valley-android/app/build/test-results
+            apps/valley-android/app/build/reports/tests
+            apps/valley-android/app/build/reports/lint-results-productionDebug.html
+            apps/valley-android/app/build/reports/lint-results-productionDebug.xml
+          if-no-files-found: warn
           retention-days: 14
