@@ -1,0 +1,117 @@
+name: V2.8 Diagnostic Evidence
+
+on:
+  push:
+    branches:
+      - fix/cicd-governanca-v2-8-2026-07-27
+    paths-ignore:
+      - 'docs/relatorios/execucao-v2.8/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/relatorios/execucao-v2.8/**'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: v28-diagnostics-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  diagnostics:
+    if: github.head_ref == 'fix/cicd-governanca-v2-8-2026-07-27' || github.ref_name == 'fix/cicd-governanca-v2-8-2026-07-27'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout execution branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/cicd-governanca-v2-8-2026-07-27
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Prepare evidence directory
+        run: mkdir -p docs/relatorios/execucao-v2.8
+
+      - name: Capture Android contract validation
+        shell: bash
+        run: |
+          set +e
+          python scripts/validate_valley_android_release.py > docs/relatorios/execucao-v2.8/android-validation.txt 2>&1
+          code=$?
+          printf '\nexit_code=%s\n' "$code" >> docs/relatorios/execucao-v2.8/android-validation.txt
+          exit 0
+
+      - name: Capture Python dependency audit
+        shell: bash
+        run: |
+          set +e
+          python -m pip install --upgrade pip==26.1.2 > docs/relatorios/execucao-v2.8/python-audit-install.txt 2>&1
+          pip install -r requirements-dev.txt pip-audit >> docs/relatorios/execucao-v2.8/python-audit-install.txt 2>&1
+          pip-audit -r requirements-dev.txt --format=json > docs/relatorios/execucao-v2.8/python-audit.json 2> docs/relatorios/execucao-v2.8/python-audit.stderr.txt
+          code=$?
+          printf 'exit_code=%s\n' "$code" >> docs/relatorios/execucao-v2.8/python-audit.stderr.txt
+          exit 0
+
+      - name: Build Jobs image
+        shell: bash
+        run: |
+          set +e
+          docker build -f modules/jobs/Dockerfile -t all-in-one-jobs:v28-diagnostic . > docs/relatorios/execucao-v2.8/jobs-image-build.txt 2>&1
+          code=$?
+          printf '\nexit_code=%s\n' "$code" >> docs/relatorios/execucao-v2.8/jobs-image-build.txt
+          echo "JOBS_BUILD_EXIT_CODE=$code" >> "$GITHUB_ENV"
+          exit 0
+
+      - name: Scan Jobs image and save report
+        if: env.JOBS_BUILD_EXIT_CODE == '0'
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: all-in-one-jobs:v28-diagnostic
+          format: json
+          output: docs/relatorios/execucao-v2.8/jobs-trivy.json
+          exit-code: '0'
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+
+      - name: Write diagnostic summary
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('docs/relatorios/execucao-v2.8')
+          files = sorted(path.name for path in root.iterdir() if path.is_file())
+          content = [
+              '# Evidências de diagnóstico v2.8',
+              '',
+              'Gerado automaticamente na branch `fix/cicd-governanca-v2-8-2026-07-27`.',
+              '',
+              'Estes arquivos registram as saídas reais; código de saída diferente de zero não é convertido em aprovação.',
+              '',
+              '## Arquivos',
+              '',
+          ]
+          content.extend(f'- `{name}`' for name in files)
+          content.append('')
+          (root / 'README.md').write_text('\n'.join(content), encoding='utf-8')
+          PY
+
+      - name: Commit diagnostic evidence
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add docs/relatorios/execucao-v2.8
+          if git diff --cached --quiet; then
+            echo 'No diagnostic changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'docs(ci): registrar diagnósticos v2.8'
+          git push origin HEAD:fix/cicd-governanca-v2-8-2026-07-27
