@@ -1,0 +1,112 @@
+name: V2.9 Apply Validator Fix
+
+on:
+  push:
+    branches:
+      - fix/cicd-governanca-v2-8-2026-07-27
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-validator:
+    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[v29-validator-fix]') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/cicd-governanca-v2-8-2026-07-27
+          fetch-depth: 0
+
+      - name: Apply exact validator corrections
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/validate_repository.py')
+          text = path.read_text(encoding='utf-8')
+
+          replacements = [
+              (
+                  'if len(slugs) != 25:\n        fail(f"Esperados 25 modulos; catalogo possui {len(slugs)}.", errors)',
+                  'if len(slugs) != 24:\n        fail(f"Esperados 24 modulos ativos; catalogo possui {len(slugs)}.", errors)',
+              ),
+              (
+                  '            "pip-audit --local",',
+                  '            "pip-audit -r requirements-dev.txt",',
+              ),
+          ]
+
+          for old, new in replacements:
+              if old not in text:
+                  raise SystemExit(f'Trecho obrigatório não encontrado para substituição: {old!r}')
+              text = text.replace(old, new, 1)
+
+          old_brand = '''        for relative in [
+              brand.get("platform_brand", {}).get("logo_asset"),
+              brand.get("platform_brand", {}).get("light_logo_asset"),
+              brand.get("valley_brand", {}).get("logo_asset"),
+          ]:
+              if not relative or not (ROOT / relative).is_file():
+                  fail(f"Ativo oficial de marca ausente: {relative}", errors)
+          if set(brand.get("valley_apps", [])) != {
+              "valley",
+              "valley-business",
+              "valley-rider",
+          }:
+              fail("Branding deve declarar exatamente os apps Valley oficiais.", errors)
+'''
+          new_brand = '''        required_brand_assets = [
+              brand.get("platform_brand", {}).get("logo_asset"),
+              brand.get("valley_brand", {}).get("logo_asset"),
+          ]
+          optional_light_logo = brand.get("platform_brand", {}).get(
+              "light_logo_asset"
+          )
+          if optional_light_logo:
+              required_brand_assets.append(optional_light_logo)
+          for relative in required_brand_assets:
+              if not relative or not (ROOT / relative).is_file():
+                  fail(f"Ativo oficial de marca ausente: {relative}", errors)
+          if set(brand.get("valley_apps", [])) != {
+              "valley",
+              "valley-business",
+          }:
+              fail("Branding deve declarar exatamente os apps Valley oficiais.", errors)
+          if set(brand.get("riders_apps", [])) != {
+              "valley-rider",
+              "all-in-one-riders",
+          }:
+              fail(
+                  "Branding deve declarar exatamente os apps Riders oficiais.", errors
+              )
+'''
+          if old_brand not in text:
+              raise SystemExit('Bloco de branding esperado não foi encontrado.')
+          text = text.replace(old_brand, new_brand, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validate patch boundaries
+        shell: bash
+        run: |
+          python -m py_compile scripts/validate_repository.py
+          git diff --check
+          changed="$(git diff --name-only)"
+          test "$changed" = "scripts/validate_repository.py"
+
+      - name: Commit validator correction
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "Nenhuma alteração necessária."
+            exit 0
+          fi
+          git config user.name "all-in-one-ci"
+          git config user.email "actions@users.noreply.github.com"
+          git add scripts/validate_repository.py
+          git commit -m "fix(validation): alinhar catálogo, segurança e branding [v29-validator-fix]"
+          git push origin HEAD:fix/cicd-governanca-v2-8-2026-07-27
