@@ -1,11 +1,10 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 1.5  
-**Data e hora:** 27/07/2026 04:29:44  
+**Versão:** 1.6  
+**Data e hora:** 27/07/2026 05:33:26  
 **Fuso horário:** `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
 **Branch:** `fix/cicd-governanca-v2-8-2026-07-27`  
-**Commit verificado:** `fb49ba0c334054817fbbb129dfbf38f2cf741761`  
 **Pull Request:** `#50`  
 **Issue operacional:** `#49`  
 **Issue de orquestração:** `#51`  
@@ -13,87 +12,120 @@
 
 ## 1. Objetivo
 
-Executar o plano v2.9 e concluir a Fase 0 antes de iniciar Marketplace.
+Concluir a revalidação da Fase 0 no head mais recente do PR `#50`. Não iniciar Marketplace antes de todos os gates obrigatórios estarem verdes.
 
-## 2. Estado atual
+## 2. Estado confirmado
 
-### Aprovado
+### Resolvido e implementado
 
-- OpenAPI;
-- Valley DAST;
-- Docker Compose Health Gate;
-- auditoria das dependências Python;
-- Trivy API Hub, Identity e Jobs;
-- auditorias JavaScript;
-- contrato Android.
+- gate de artefatos gerados liberado;
+- dois arquivos `STATUS.md` ausentes criados;
+- baseline de 24 módulos preservada;
+- adaptador de validação compatível criado sem ocultar erros desconhecidos;
+- falso negativo Git do checkout de PR corrigido;
+- chamadas externas endurecidas com validação HTTPS e allowlist;
+- testes de URL segura criados;
+- Bandit reduzido de 9 para 4 achados delimitados;
+- exceções B608/B314 restritas por arquivo, regra e validador próprio;
+- Android alinhado ao flavor `productionDebug` e ao package ID Firebase legítimo;
+- workflows Android alinhados;
+- validador PostgreSQL corrigido para não reaplicar DDL de uso único;
+- workflow Database atualizado para validar banco já migrado;
+- diagnósticos direcionados versionados.
 
-### Bloqueado
+### Em revalidação
 
-1. `Check generated artifacts`;
-2. Bandit;
-3. Android completo;
-4. PostgreSQL por DSN.
+1. suíte unitária completa;
+2. Security Python e `tests/test_security_gates.py`;
+3. testes, lint, assemble e CodeQL Android;
+4. contrato, stores e matriz PostgreSQL;
+5. regressão de Compose, OpenAPI e DAST.
 
 ## 3. Primeira ação obrigatória
 
-Executar os quatro comandos separadamente:
-
-```bash
-python scripts/scaffold_modules.py --check
-python scripts/generate_domain_event_fixtures.py --check
-python scripts/validate_openapi.py
-python scripts/validate_repository.py
-```
-
-Corrigir o primeiro que falhar. Não iniciar funcionalidade nova.
+1. Obter o head atual da branch e do PR `#50`.
+2. Consultar os workflows associados exatamente a esse head.
+3. Não usar resultados de commits anteriores.
+4. Corrigir somente a primeira falha concreta que permanecer.
 
 ## 4. Ordem de retomada
 
-1. liberar artefatos;
-2. executar testes unitários;
-3. corrigir Bandit;
-4. concluir Android;
-5. concluir banco;
-6. reexecutar todos os gates;
-7. atualizar issues, PR e documentação;
-8. somente então iniciar Marketplace na issue #51.
+### CI
+
+- confirmar `Check generated artifacts` verde;
+- confirmar contrato Android e testes de assinatura verdes;
+- capturar primeiro teste unitário falho, caso exista;
+- corrigir e adicionar regressão.
+
+### Security
+
+- executar `validate_bandit_scoped_exceptions.py`;
+- executar Bandit completo conforme workflow;
+- executar `tests/test_security_gates.py`;
+- preservar pip-audit, JavaScript e Trivy verdes.
+
+### Android
+
+```bash
+cd apps/valley-android
+./gradlew testProductionDebugUnitTest lintProductionDebug assembleProductionDebug --no-daemon
+```
+
+Confirmar também CodeQL e caminho do APK `app/build/outputs/apk/production/debug/`.
+
+### PostgreSQL
+
+- aplicar migrations em banco limpo;
+- validar triggers;
+- executar contrato por DSN sem `--repeat-migrations`;
+- executar stores prioritários e matriz;
+- executar Jobs/CTPS e outbox/RabbitMQ.
+
+### Fechamento
+
+- atualizar issues `#49` e `#51`;
+- atualizar PR `#50`;
+- atualizar pendências, relatório, plano e este arquivo;
+- remover diagnósticos temporários desnecessários;
+- manter o PR em rascunho enquanto houver gate vermelho ou em processamento;
+- usar Squash and Merge somente após revisão e checks verdes.
 
 ## 5. Regras mandatórias
 
 - sem push direto na `main`;
-- sem merge com gate vermelho;
+- sem merge com gate vermelho ou em processamento;
 - somente Squash and Merge;
 - sem segredos;
 - Vision excluído;
 - sem exclusões em massa;
 - sem supressão genérica de scanner;
 - sem alegação de conclusão sem evidência;
-- PR #50 permanece em rascunho enquanto qualquer gate obrigatório falhar.
+- preservar trabalho paralelo e buscar o head atual antes de editar;
+- Marketplace permanece bloqueado até a conclusão da Fase 0.
 
 ## 6. Fontes de verdade
 
 1. `AGENTS.md`;
-2. este `tarefas.md`;
+2. este `tarefas.md`, versão 1.6;
 3. `docs/Pendências Do desenvolvedor.md`, versão 2.9;
 4. `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v2.9_2026-07-27.md`;
 5. `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v2.9_2026-07-27.md`;
 6. issue `#49`;
 7. issue `#51`;
 8. PR `#50`;
-9. logs dos workflows do head atual.
+9. workflows associados ao head atual.
 
 ## 7. Critérios de aceite
 
-- `check_generated_artifacts.py` aprovado;
-- suíte unitária executada e aprovada;
+- suíte unitária completa aprovada;
 - Bandit e `tests/test_security_gates.py` aprovados;
 - Android aprovado em contrato, testes, lint, assemble e CodeQL;
 - Database aprovado em migrations, contrato por DSN, stores e matriz;
-- Compose, OpenAPI e DAST permanecem verdes;
+- Compose, OpenAPI e DAST verdes no mesmo head;
 - nenhuma referência operacional ao Vision;
 - nenhuma credencial exposta;
 - documentação e issues atualizadas;
-- integração por Squash and Merge.
+- PR revisada e integrada por Squash and Merge.
 
 ## 8. Histórico
 
@@ -104,4 +136,5 @@ Corrigir o primeiro que falhar. Não iniciar funcionalidade nova.
 | 1.2 | 26/07/2026 23:06:33 | Ciclo v2.7 e Telegram. |
 | 1.3 | 27/07/2026 01:55:20 | Início v2.8. |
 | 1.4 | 27/07/2026 02:17:29 | Fechamento parcial v2.8. |
-| 1.5 | 27/07/2026 04:29:44 | Plano v2.9, quatro bloqueadores atuais e continuidade da Fase 0. |
+| 1.5 | 27/07/2026 04:29:44 | Plano inicial v2.9. |
+| 1.6 | 27/07/2026 05:33:26 | Execução dos quatro bloqueadores, correções aplicadas e revalidação em andamento. |
