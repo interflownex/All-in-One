@@ -7,7 +7,6 @@
         ## Entidades
 
         - `providers`
-
 - `visits`
 - `quotes`
 - `service_contracts`
@@ -16,7 +15,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -38,10 +36,10 @@
 - `POST /reject`
 - `POST /audit`
 
+
         ## Eventos
 
         - `services.visit.created`
-
 - `services.visit.completed`
 - `services.quote.created`
 - `services.contract.created`

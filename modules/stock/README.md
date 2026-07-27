@@ -1,6 +1,6 @@
-# Stock
+# STOCK
 
-Dropshipping Global corporativo Valley, fornecedores homologados, catalogo Stock e descontos progressivos por Pepitas.
+Catálogo curado de fornecedores homologados, sem estoque físico próprio, com pedido sob demanda, regras de preço, tracking e descontos por Pepitas. Entra na primeira etapa com AliExpress e CJ Dropshipping como fontes iniciais, sob operação controlada e expansão condicionada à qualidade.
 
 ## Responsabilidade
 

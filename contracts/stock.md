@@ -1,13 +1,12 @@
-        # Contrato: Stock
+        # Contrato: STOCK
 
         ## Descricao
 
-        Dropshipping Global corporativo Valley, fornecedores homologados, catalogo Stock e descontos progressivos por Pepitas.
+        Catálogo curado de fornecedores homologados, sem estoque físico próprio, com pedido sob demanda, regras de preço, tracking e descontos por Pepitas. Entra na primeira etapa com AliExpress e CJ Dropshipping como fontes iniciais, sob operação controlada e expansão condicionada à qualidade.
 
         ## Entidades
 
         - `suppliers`
-
 - `catalog_products`
 - `price_rules`
 - `supplier_orders`
@@ -16,7 +15,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -38,10 +36,10 @@
 - `POST /reject`
 - `POST /audit`
 
+
         ## Eventos
 
         - `stock.product.imported`
-
 - `stock.supplier_order.created`
 - `stock.supplier_order.acknowledged`
 - `stock.supplier_order.shipped`
@@ -64,7 +62,7 @@
 
         ## Monetizacao
 
-        Produtos Stock comunicam economia e valor percebido; APIs de importacao sao exclusivas da conta mestre Valley.
+        Comissão ou margem negociada, destaque, taxa de operação e planos para lojistas; a expansão depende de prazo, devoluções, suporte e margem auditada.
 
         ## Integracoes e erros
 

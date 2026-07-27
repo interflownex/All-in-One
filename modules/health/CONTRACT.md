@@ -7,7 +7,6 @@
         ## Entidades
 
         - `patients`
-
 - `appointments`
 - `medical_records`
 - `prescriptions`
@@ -16,7 +15,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -38,10 +36,10 @@
 - `POST /reject`
 - `POST /audit`
 
+
         ## Eventos
 
         - `health.appointment.created`
-
 - `health.telemedicine.started`
 - `health.prescription.issued`
 

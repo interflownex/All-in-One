@@ -5,7 +5,6 @@
         ## Entidades planejadas
 
         - `document.folders`
-
 - `document.documents`
 - `document.versions`
 - `document.retention_policies`

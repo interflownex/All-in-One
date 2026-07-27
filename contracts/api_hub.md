@@ -7,7 +7,6 @@
         ## Entidades
 
         - `api_clients`
-
 - `api_keys`
 - `webhooks`
 - `integration_runs`
@@ -15,7 +14,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -37,10 +35,10 @@
 - `POST /reject`
 - `POST /audit`
 
+
         ## Eventos
 
         - `api.client.created`
-
 - `api.client.submitted`
 - `api.client.approved`
 - `api.client.rejected`
