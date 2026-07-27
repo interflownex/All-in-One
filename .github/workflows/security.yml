@@ -124,7 +124,6 @@ jobs:
           category: valley-android-java-kotlin
           upload: ${{ github.event_name == 'pull_request' && 'never' || 'always' }}
           output: codeql-results
-          post-processed-sarif-path: codeql-results/post-processed
       - name: Publicar evidência SARIF do Pull Request
         if: always() && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v5
