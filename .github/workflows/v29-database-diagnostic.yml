@@ -1,0 +1,63 @@
+name: V2.9 Database Contract Diagnostic
+
+on:
+  push:
+    branches:
+      - fix/cicd-governanca-v2-8-2026-07-27
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  postgres-contract:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: all_in_one
+          POSTGRES_USER: all_in_one
+          POSTGRES_PASSWORD: test-password
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U all_in_one -d all_in_one"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGPASSWORD: test-password
+      ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies quietly
+        run: pip install -q -r requirements-dev.txt
+      - name: Apply migrations
+        run: |
+          for file in database/postgres/migrations/*.sql; do
+            psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f "$file" >/dev/null
+          done
+      - name: Run DSN contract diagnostic
+        shell: bash
+        run: |
+          mkdir -p diagnostics/v29/database
+          set +e
+          python scripts/validate_postgres_real_dsn.py --repeat-migrations --write-checks \
+            > diagnostics/v29/database/validator.log 2>&1
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" > diagnostics/v29/database/validator.rc
+          cat diagnostics/v29/database/validator.log
+          exit "$rc"
+      - name: Upload database diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v29-database-diagnostic
+          path: diagnostics/v29/database
+          if-no-files-found: error
+          retention-days: 14
