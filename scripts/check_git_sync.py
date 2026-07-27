@@ -52,6 +52,52 @@ def current_branch(explicit_branch: str | None) -> str:
     raise RuntimeError("Nao foi possivel identificar a branch atual. Informe --branch.")
 
 
+def github_pull_request_base(branch: str) -> str | None:
+    """Resolve a base do merge temporario criado pelo checkout de Pull Request.
+
+    O actions/checkout pode disponibilizar apenas refs/pull/<n>/merge, sem criar
+    origin/<base>. Nesse caso, o primeiro pai de HEAD e a base efetivamente usada
+    pelo GitHub para montar o merge de teste. O fallback so vale quando
+    GITHUB_BASE_REF confirma a mesma branch solicitada e HEAD e um merge real.
+    """
+
+    base_ref = os.environ.get("GITHUB_BASE_REF", "").strip()
+    event_name = os.environ.get("GITHUB_EVENT_NAME", "").strip()
+    if event_name != "pull_request" or base_ref != branch:
+        return None
+
+    parent_count = git(
+        ["rev-list", "--parents", "-n", "1", "HEAD"], check=False
+    )
+    if parent_count.returncode != 0:
+        return None
+    parts = parent_count.stdout.strip().split()
+    if len(parts) < 3:
+        return None
+
+    candidate = "HEAD^1"
+    verify = git(["rev-parse", "--verify", candidate], check=False)
+    return candidate if verify.returncode == 0 else None
+
+
+def comparison_ref(remote: str, branch: str, *, no_fetch: bool) -> str | None:
+    remote_ref = f"{remote}/{branch}"
+    verify = git(["rev-parse", "--verify", remote_ref], check=False)
+    if verify.returncode == 0:
+        return remote_ref
+
+    if no_fetch:
+        fallback = github_pull_request_base(branch)
+        if fallback:
+            print(
+                "WARNING: Referencia remota ausente no checkout raso do PR; "
+                f"usando {fallback} como base verificada de {remote_ref}.",
+                file=sys.stderr,
+            )
+            return fallback
+    return None
+
+
 def validate(args: argparse.Namespace) -> int:
     for state_path in ("MERGE_HEAD", "rebase-merge", "rebase-apply"):
         if git_path_exists(state_path):
@@ -84,13 +130,13 @@ def validate(args: argparse.Namespace) -> int:
                 )
                 continue
 
-        verify = git(["rev-parse", "--verify", f"{remote}/{branch}"], check=False)
-        if verify.returncode != 0:
+        ref = comparison_ref(remote, branch, no_fetch=args.no_fetch)
+        if ref is None:
             problems.append(f"Referencia remota inexistente: {remote}/{branch}.")
             continue
 
         counts = git_output(
-            ["rev-list", "--left-right", "--count", f"{remote}/{branch}...HEAD"]
+            ["rev-list", "--left-right", "--count", f"{ref}...HEAD"]
         ).split()
         behind, ahead = int(counts[0]), int(counts[1])
         checked += 1
@@ -104,7 +150,7 @@ def validate(args: argparse.Namespace) -> int:
                 f"Branch local esta {ahead} commit(s) a frente de {remote}/{branch}."
             )
 
-        print(f"{remote}/{branch}: behind={behind} ahead={ahead}")
+        print(f"{remote}/{branch}: behind={behind} ahead={ahead} ref={ref}")
 
     if checked == 0:
         raise RuntimeError(
