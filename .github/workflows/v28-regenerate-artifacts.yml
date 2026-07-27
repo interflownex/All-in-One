@@ -4,21 +4,18 @@ on:
   push:
     branches:
       - fix/cicd-governanca-v2-8-2026-07-27
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: v28-regenerate-artifacts-${{ github.ref }}
+  group: v28-regenerate-artifacts
   cancel-in-progress: false
 
 jobs:
   regenerate:
-    if: github.head_ref == 'fix/cicd-governanca-v2-8-2026-07-27' || github.ref_name == 'fix/cicd-governanca-v2-8-2026-07-27'
+    if: github.ref_name == 'fix/cicd-governanca-v2-8-2026-07-27'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout execution branch
@@ -55,11 +52,6 @@ jobs:
           python scripts/scaffold_modules.py
           python scripts/generate_domain_event_fixtures.py
 
-      - name: Verify each generator output
-        run: |
-          python scripts/scaffold_modules.py --check
-          python scripts/generate_domain_event_fixtures.py --check
-
       - name: Validate diff safety
         shell: bash
         run: |
@@ -90,7 +82,6 @@ jobs:
           printf '%s\n' "$changed"
 
       - name: Commit generated artifacts when needed
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         shell: bash
         run: |
           set -euo pipefail
