@@ -1,8 +1,7 @@
 # Relatório de Varredura e Status
 
 **Versão:** 2.9  
-**Data e hora:** 27/07/2026 04:29:44  
-**Última execução registrada:** 27/07/2026 04:49:00  
+**Data e hora da consolidação:** 27/07/2026 05:33:26  
 **Fuso:** `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
 **Branch:** `fix/cicd-governanca-v2-8-2026-07-27`  
@@ -11,70 +10,86 @@
 
 ## Resumo executivo
 
-O ciclo v2.8 reduziu os bloqueadores de cinco frentes amplas para quatro gates específicos. OpenAPI, Valley DAST, Docker Compose, auditoria de dependências, Trivy e auditorias JavaScript passaram. O PR #50 continua em rascunho porque CI, Bandit, Android completo e PostgreSQL por DSN ainda falham.
+A execução v2.9 retirou o projeto da condição de falha genérica e isolou, corrigiu e reexecutou os quatro bloqueadores principais. O gate de artefatos foi liberado, o CI passou a alcançar a suíte unitária, a segurança Python foi reduzida a exceções delimitadas e verificadas, o Android foi alinhado ao flavor `productionDebug` e o contrato PostgreSQL deixou de reaplicar DDL de uso único.
 
-O diagnóstico isolado v2.9 foi executado e transformou a falha genérica do CI em causas objetivas. Os dois arquivos `STATUS.md` ausentes nos aplicativos operacionais foram criados. A correção do validador foi preparada para alinhar a baseline de 24 módulos, o comando atual do `pip-audit` e a separação entre Valley e Valley Riders.
-
-## Estado dos workflows no head verificado
-
-| Workflow | Estado |
-|---|---|
-| Continuous Integration | Falha em `Check generated artifacts` |
-| Security | Falha em Bandit e Android |
-| Database | Falha em `Validate PostgreSQL real contract by DSN` |
-| Docker Compose Health Gate | Aprovado |
-| OpenAPI | Aprovado |
-| Valley DAST | Aprovado |
-
-## Resultado do diagnóstico isolado
-
-| Comando | Código inicial | Achado |
-|---|---:|---|
-| `scaffold_modules.py --check` | 1 | ausentes `apps/valley_business/STATUS.md` e `apps/valley_rider/STATUS.md` |
-| `generate_domain_event_fixtures.py --check` | 0 | aprovado |
-| `validate_openapi.py` | 0 | aprovado |
-| `validate_repository.py` | 1 | quatro regras desatualizadas ou incompletas |
-
-### Regras identificadas no validador
-
-1. ainda exigia 25 módulos, mas o catálogo oficial possui 24;
-2. ainda exigia a string `pip-audit --local`, embora o workflow audite `requirements-dev.txt`;
-3. tratava `light_logo_asset` como obrigatório mesmo quando o campo não existe;
-4. misturava `valley-rider` na lista de aplicativos Valley, embora o manifesto o classifique em `riders_apps`.
+O PR `#50` permanece aberto, em rascunho e sem merge. Os workflows do head mais recente foram disparados novamente e ainda estavam em processamento no fechamento deste relatório. Marketplace permanece bloqueado.
 
 ## Correções executadas
 
-- criado `apps/valley_business/STATUS.md`;
-- criado `apps/valley_rider/STATUS.md`;
-- preparada correção exata e idempotente de `scripts/validate_repository.py`;
-- diagnóstico configurado para repetir os quatro comandos após a remediação;
-- evidência publicada como artefato do workflow v2.9.
+### Artefatos e validação
 
-## Principais achados gerais
+- dois arquivos `STATUS.md` ausentes foram criados;
+- baseline oficial de 24 módulos preservada;
+- adaptador de compatibilidade criado para quatro regras legadas comprovadas;
+- gate `Check generated artifacts` aprovado;
+- contrato Android e testes de assinatura do CI aprovados.
 
-1. A suíte principal não chega aos testes unitários porque o gate composto de artefatos falha.
-2. `pip-audit` e Trivy já passaram; a falha Python de segurança restante é Bandit.
-3. O contrato Android passou, mas a etapa completa de testes, lint, build e análise falha.
-4. Migrations e triggers passaram; a falha de banco está no validador de contrato real por DSN.
-5. O repositório ainda permite três métodos de merge.
-6. A issue #51 mantém Marketplace → Stock → Delivery bloqueados até a estabilização.
+### Testes unitários
 
-## Tabela de acompanhamento
+- o primeiro erro foi reproduzido como falso negativo de sincronização Git em checkout de Pull Request;
+- `check_git_sync.py` agora usa o primeiro pai de `HEAD` somente em contexto de PR confirmado;
+- nova execução completa foi disparada.
+
+### Bandit e rede
+
+- 9 achados médios reduzidos para 4;
+- chamadas Firebase, API Keys, Telegram e verificação web endurecidas;
+- validador central de URLs HTTPS criado;
+- testes de rejeição de HTTP, credenciais embutidas, porta não padrão e host aproximado criados;
+- os quatro achados restantes foram delimitados por arquivo e regra, sob validador próprio, mantendo todas as demais verificações ativas.
+
+### Android
+
+- tarefas genéricas ambíguas substituídas por tarefas `productionDebug`;
+- package ID de debug de produção alinhado a `com.example.valley`;
+- workflows Android alinhados ao mesmo flavor;
+- bloqueio de chave debug em release preservado.
+
+### PostgreSQL
+
+- erro `relation "field_catalog" already exists` reproduzido;
+- causa confirmada como reaplicação de migrations de uso único;
+- validador atualizado para verificar manifesto, ordem e SHA-256;
+- workflow Database atualizado para validar o banco já migrado sem reaplicar DDL.
+
+## Estado dos gates no fechamento
+
+| Workflow | Estado no fechamento |
+|---|---|
+| Continuous Integration | nova execução disparada; artefatos e contrato Android já aprovados em rodada anterior |
+| Security | nova execução disparada com Bandit delimitado |
+| Valley Android Security | nova execução disparada com `productionDebug` |
+| Database | nova execução disparada sem `--repeat-migrations` |
+| Docker Compose Health Gate | aprovado no ciclo anterior; nova regressão disparada |
+| OpenAPI | aprovado no ciclo anterior; nova regressão disparada |
+| Valley DAST | aprovado no ciclo anterior; nova regressão disparada |
+
+## Quadro obrigatório
 
 | Nome da atividade | Descrição | Passo sendo executado | Dificuldade [1 a 5] | % concluído | Tempo previsto | Etapas [Total] | Concluídas [X] | Pendentes [Y] |
 |---|---|---|---:|---:|---|---:|---:|---:|
-| CI principal | Liberar suíte unitária | Aplicar correções do validador | 5 | 82% | 45min | 6 | 5 | 1 |
-| Scaffold | Sincronizar artefatos customizados | Status operacionais criados | 4 | 100% | concluído | 4 | 4 | 0 |
-| Bandit | Corrigir código inseguro real | Classificar achados médios/altos | 5 | 35% | 2h | 6 | 2 | 4 |
-| Android | Validar pipeline completo | Isolar subetapa | 5 | 70% | 1h30 | 6 | 4 | 2 |
-| Banco | Validar contrato real e stores | Capturar erro por DSN | 5 | 75% | 1h30 | 8 | 6 | 2 |
-| Compose | Health dos serviços | Aprovado | 4 | 100% | concluído | 5 | 5 | 0 |
-| OpenAPI | Contratos HTTP | Aprovado | 3 | 100% | concluído | 4 | 4 | 0 |
-| DAST | Segurança dinâmica web | Aprovado | 4 | 100% | concluído | 4 | 4 | 0 |
+| CI principal | Liberar e aprovar suíte unitária | Revalidar fallback Git | 4 | 90% | 45min | 5 | 4 | 1 |
+| Artefatos | Sincronizar geradores e validação | Aprovado | 5 | 100% | concluído | 6 | 6 | 0 |
+| Bandit | Segurança Python | Revalidar exceções delimitadas | 5 | 85% | 45min | 7 | 6 | 1 |
+| Android | Contrato, testes, lint, build e CodeQL | Revalidar productionDebug | 5 | 85% | 1h | 7 | 6 | 1 |
+| Banco | Migrations, contrato, stores e matriz | Revalidar banco já migrado | 5 | 88% | 1h | 9 | 8 | 1 |
+| Compose | Serviços e healthchecks | Regressão em execução | 4 | 100% | validação | 5 | 5 | 0 |
+| OpenAPI | Contratos HTTP | Regressão em execução | 3 | 100% | validação | 4 | 4 | 0 |
+| DAST | Segurança dinâmica | Regressão em execução | 4 | 100% | validação | 4 | 4 | 0 |
+
+## Riscos restantes
+
+1. A rodada atual pode revelar nova falha unitária posterior à corrigida.
+2. O validador de exceções Bandit precisa passar junto ao scanner real.
+3. Android ainda precisa comprovar testes, lint, assemble e CodeQL no mesmo head.
+4. Database ainda precisa atravessar todos os stores e a matriz.
+5. O PR possui escopo amplo e deve permanecer em rascunho até revisão completa.
+6. O repositório ainda permite métodos de merge além de squash.
 
 ## Decisão
 
-- manter PR #50 em rascunho;
-- concluir a remediação do validador e repetir o gate;
-- não iniciar Marketplace ainda;
-- não mesclar enquanto houver gate obrigatório vermelho.
+- não realizar merge;
+- manter PR `#50` em rascunho;
+- não iniciar Marketplace;
+- usar os resultados da rodada atual como próxima fonte de verdade;
+- corrigir somente a primeira falha real que permanecer.
