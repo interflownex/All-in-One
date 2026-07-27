@@ -46,7 +46,28 @@ jobs:
           grep -q 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
           grep -q 'android:usesCleartextTraffic="false"' app/src/main/AndroidManifest.xml
       - name: Testes unitários da variante homologável
-        run: ./gradlew testProductionDebugUnitTest --no-daemon --stacktrace
+        shell: bash
+        run: |
+          set +e
+          mkdir -p "$RUNNER_TEMP/valley-pr-unit"
+          ./gradlew testProductionDebugUnitTest --no-daemon --stacktrace \
+            > "$RUNNER_TEMP/valley-pr-unit/gradle-unit.log" 2>&1
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" > "$RUNNER_TEMP/valley-pr-unit/gradle-unit.rc"
+          cat "$RUNNER_TEMP/valley-pr-unit/gradle-unit.log"
+          exit "$rc"
+      - name: Publicar evidência dos testes Android
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: valley-pr-unit-diagnostic
+          path: |
+            ${{ runner.temp }}/valley-pr-unit
+            apps/valley-android/app/build/test-results
+            apps/valley-android/app/build/reports/tests
+          if-no-files-found: warn
+          retention-days: 7
       - name: Montar APK homologável sem segredos de produção
         run: ./gradlew assembleProductionDebug --no-daemon --stacktrace
       - name: Gerar evidência de dependências Gradle
