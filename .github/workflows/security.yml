@@ -115,7 +115,7 @@ jobs:
           dependency-graph: ${{ github.event_name == 'pull_request' && 'generate-and-upload' || 'generate-and-submit' }}
       - name: Validar, testar, analisar e empacotar Android
         run: |
-          python scripts/validate_valley_android_release.py
+          python scripts/validate_valley_android_release_v29.py
           apps/valley-android/gradlew -p apps/valley-android \
             testProductionDebugUnitTest lintProductionDebug assembleProductionDebug --no-daemon --stacktrace
       - name: Publicar análise SAST CodeQL
