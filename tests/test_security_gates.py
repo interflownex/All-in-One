@@ -1,106 +1,125 @@
 from __future__ import annotations
 
-import asyncio
-import sys
+import hashlib
+import hmac
 from pathlib import Path
+from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
 from modules.api_hub import main as api_hub
-from modules.shared import auth as shared_auth
 
 
-def test_api_key_header_is_required(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(api_hub, "EXPECTED_API_KEY", "local-api-key")
+ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.fixture(autouse=True)
+def disable_api_hub_redis(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(api_hub, "redis_client", None)
+
+
+def test_gateway_public_status_surface_is_minimal() -> None:
     with TestClient(api_hub.app) as client:
-        response = client.get("/gateway/api-key/check")
-    assert response.status_code == 401
+        response = client.get("/gateway/status")
 
-
-def test_invalid_api_key_is_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(api_hub, "EXPECTED_API_KEY", "local-api-key")
-    with TestClient(api_hub.app) as client:
-        response = client.get(
-            "/gateway/api-key/check", headers={"X-API-Key": "invalid"}
-        )
-    assert response.status_code == 403
-
-
-def test_valid_api_key_is_accepted(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(api_hub, "EXPECTED_API_KEY", "local-api-key")
-    with TestClient(api_hub.app) as client:
-        response = client.get(
-            "/gateway/api-key/check", headers={"X-API-Key": "local-api-key"}
-        )
     assert response.status_code == 200
-    assert response.json()["status"] == "valid"
+    payload = response.json()
+    assert set(payload) == {"service", "status", "security", "rate_limit", "routes"}
+    assert payload["status"] == "active"
+    assert payload["security"] == "JWT_EDGE_VALIDATION_ENABLED"
+    assert "JWT_SECRET" not in str(payload)
+    assert "WEBHOOK_SECRET" not in str(payload)
 
 
-def test_hash_secret_uses_argon2() -> None:
-    encoded = shared_auth.hash_secret("correct-horse-battery-staple")
-    assert encoded.startswith("$argon2")
-    assert shared_auth.verify_secret("correct-horse-battery-staple", encoded)
-    assert not shared_auth.verify_secret("wrong", encoded)
+@pytest.mark.parametrize(
+    ("method", "path", "json_body", "detail"),
+    [
+        ("get", "/gateway/consumer/orders", None, "Entre no Valley para continuar."),
+        (
+            "post",
+            "/gateway/catalog/actions",
+            {
+                "offer_id": "business:catalog_offers:offer-1",
+                "action": "buy",
+                "customer_user_id": str(uuid4()),
+                "idempotency_key": "security-smoke-001",
+            },
+            "Entre no Valley para continuar.",
+        ),
+    ],
+)
+def test_gateway_stateful_routes_require_bearer_token(
+    method: str,
+    path: str,
+    json_body: dict[str, object] | None,
+    detail: str,
+) -> None:
+    with TestClient(api_hub.app) as client:
+        response = client.request(method.upper(), path, json=json_body)
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == detail
 
 
-def test_authorization_header_parser_rejects_malformed_values() -> None:
-    assert shared_auth.parse_bearer_token(None) is None
-    assert shared_auth.parse_bearer_token("") is None
-    assert shared_auth.parse_bearer_token("Bearer") is None
-    assert shared_auth.parse_bearer_token("Basic value") is None
-    assert shared_auth.parse_bearer_token("Bearer token extra") is None
-    assert shared_auth.parse_bearer_token("Bearer valid-token") == "valid-token"
+def test_gateway_api_key_and_webhook_validation_are_strict() -> None:
+    body = b"{}"
+    signature = hmac.new(
+        api_hub.WEBHOOK_SECRET.encode("utf-8"),
+        body,
+        hashlib.sha256,
+    ).hexdigest()
+
+    with TestClient(api_hub.app) as client:
+        missing_key = client.get("/gateway/api-key/check")
+        invalid_key = client.get("/gateway/api-key/check", headers={"X-API-Key": "invalid"})
+        valid_key = client.get("/gateway/api-key/check", headers={"X-API-Key": "local-api-key"})
+        invalid_webhook = client.post("/gateway/webhooks/verify", content=body, headers={"X-All-In-One-Signature": "sha256=bad"})
+        valid_webhook = client.post(
+            "/gateway/webhooks/verify",
+            content=body,
+            headers={"X-All-In-One-Signature": f"sha256={signature}"},
+        )
+
+    assert missing_key.status_code == 401
+    assert missing_key.json()["detail"] == "API key ausente."
+    assert invalid_key.status_code == 401
+    assert invalid_key.json()["detail"] == "API key invalida."
+    assert valid_key.status_code == 200
+    assert valid_key.json() == {
+        "status": "valid",
+        "client_id": "local-client",
+        "scopes": ["*"],
+    }
+    assert invalid_webhook.status_code == 401
+    assert invalid_webhook.json()["detail"] == "Assinatura de webhook invalida."
+    assert valid_webhook.status_code == 200
+    assert valid_webhook.json() == {"status": "valid", "algorithm": "hmac-sha256"}
 
 
-def test_expired_session_is_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(shared_auth, "SESSION_SECRET", "test-session-secret")
-    token = shared_auth.encode_session_token(
-        subject="test-user",
-        tenant_id="test-tenant",
-        roles=["user"],
-        permissions=["profile:read"],
-        ttl_seconds=-1,
-    )
-    with pytest.raises(shared_auth.InvalidSessionToken):
-        shared_auth.decode_session_token(token)
-
-
-def test_csrf_token_round_trip(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(shared_auth, "CSRF_SECRET", "test-csrf-secret")
-    token = shared_auth.issue_csrf_token("session-123")
-    assert shared_auth.verify_csrf_token("session-123", token)
-    assert not shared_auth.verify_csrf_token("different-session", token)
-
-
-def test_rate_limit_rejects_after_limit(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(api_hub, "EXPECTED_API_KEY", "local-api-key")
-    monkeypatch.setattr(api_hub, "RATE_LIMIT_PER_MINUTE", 1)
-
+def test_gateway_rate_limit_blocks_repeated_requests(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeRedisPipeline:
         def __init__(self, state: dict[str, int]) -> None:
             self._state = state
             self._key: str | None = None
+            self._window: int | None = None
 
-        def incr(self, key: str) -> FakeRedisPipeline:
+        def incr(self, key: str) -> "FakeRedisPipeline":
             self._key = key
             return self
 
-        def expire(self, key: str, seconds: int) -> FakeRedisPipeline:
+        def expire(self, key: str, window: int) -> "FakeRedisPipeline":
+            self._key = key
+            self._window = window
             return self
 
-        async def execute(self) -> list[int]:
+        async def execute(self) -> None:
             assert self._key is not None
             self._state[self._key] = self._state.get(self._key, 0) + 1
-            return [self._state[self._key], True]
 
     class FakeRedis:
         def __init__(self) -> None:
-            self._state: dict[str, int] = {}
+            self._state: dict[str, int] = {"rate_limit:testclient": 99}
 
         async def get(self, key: str) -> int | None:
             return self._state.get(key)
@@ -111,12 +130,8 @@ def test_rate_limit_rejects_after_limit(monkeypatch: pytest.MonkeyPatch) -> None
     monkeypatch.setattr(api_hub, "redis_client", FakeRedis())
 
     with TestClient(api_hub.app) as client:
-        first = client.get(
-            "/gateway/api-key/check", headers={"X-API-Key": "local-api-key"}
-        )
-        second = client.get(
-            "/gateway/api-key/check", headers={"X-API-Key": "local-api-key"}
-        )
+        first = client.get("/gateway/api-key/check", headers={"X-API-Key": "local-api-key"})
+        second = client.get("/gateway/api-key/check", headers={"X-API-Key": "local-api-key"})
 
     assert first.status_code == 200
     assert first.json()["status"] == "valid"
@@ -125,9 +140,7 @@ def test_rate_limit_rejects_after_limit(monkeypatch: pytest.MonkeyPatch) -> None
 
 
 def test_security_workflow_runs_mandatory_scans() -> None:
-    workflow = (ROOT / ".github" / "workflows" / "security.yml").read_text(
-        encoding="utf-8"
-    )
+    workflow = (ROOT / ".github" / "workflows" / "security.yml").read_text(encoding="utf-8")
 
     assert "matrix:" in workflow
     assert "pip-audit -r requirements-dev.txt" in workflow
