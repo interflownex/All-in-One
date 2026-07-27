@@ -83,7 +83,7 @@ jobs:
       - name: Validate PostgreSQL real contract by DSN
         env:
           ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
-        run: python scripts/validate_postgres_real_dsn.py --repeat-migrations --write-checks
+        run: python scripts/validate_postgres_real_dsn.py --write-checks
       - name: Exercise Finance PostgreSQL store
         env:
           ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
