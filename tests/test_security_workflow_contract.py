@@ -20,7 +20,8 @@ REQUIRED_JAVASCRIPT_AUDIT_TARGETS = {
 def test_security_workflow_keeps_python_and_javascript_scans_blocking() -> None:
     workflow = SECURITY_WORKFLOW.read_text(encoding="utf-8")
 
-    assert "pip-audit --local" in workflow
+    assert "pip-audit -r requirements-dev.txt" in workflow
+    assert "pip-audit --local" not in workflow
     assert "bandit -r modules/shared scripts workers -q -ll" in workflow
     assert "javascript-security:" in workflow
     assert "npm audit --omit=dev --audit-level=critical" in workflow
