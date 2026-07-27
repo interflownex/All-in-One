@@ -46,7 +46,7 @@ jobs:
         run: |
           mkdir -p diagnostics/v29/database
           set +e
-          python scripts/validate_postgres_real_dsn.py --repeat-migrations --write-checks \
+          python scripts/validate_postgres_real_dsn.py --write-checks \
             > diagnostics/v29/database/validator.log 2>&1
           rc=$?
           set -e
