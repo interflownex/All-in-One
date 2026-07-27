@@ -37,8 +37,10 @@ jobs:
           python scripts/scaffold_modules.py
           python scripts/generate_domain_event_fixtures.py
 
-      - name: Verify generated artifacts and repository contracts
-        run: python scripts/check_generated_artifacts.py
+      - name: Verify each generator output
+        run: |
+          python scripts/scaffold_modules.py --check
+          python scripts/generate_domain_event_fixtures.py --check
 
       - name: Validate diff safety
         shell: bash
