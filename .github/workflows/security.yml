@@ -21,8 +21,10 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip==26.1.2
-      - run: pip install -r requirements-dev.txt pip-audit bandit
-      - run: pip-audit --local
+      - run: pip install -r requirements-dev.txt
+      - run: pip install pip-audit bandit
+      - name: Audit declared Python dependencies
+        run: pip-audit -r requirements-dev.txt
       - run: bandit -r modules/shared scripts workers -q -ll
       - run: python -m pytest -q tests/test_security_gates.py
 
