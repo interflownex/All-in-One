@@ -1,84 +1,78 @@
-# Preferencia obrigatoria de idioma
+# Preferência obrigatória de idioma
 
-- Todas as respostas, alertas, erros, orientacoes, perguntas e opcoes devem ser escritos em portugues do Brasil.
-- Essa regra vale para este workspace (`all-in-one`) e deve prevalecer sobre respostas em ingles quando nao houver conflito tecnico ou legal.
-- Codigos, nomes de arquivos, comandos, identificadores, logs e mensagens externas devem permanecer no idioma/formato original quando isso preservar precisao tecnica.
+- Todas as respostas, alertas, erros, orientações, perguntas e opções devem ser escritos em português do Brasil.
+- Códigos, nomes de arquivos, comandos, identificadores, logs e mensagens externas permanecem no idioma ou formato original quando isso preservar precisão técnica.
 
-# Modo Estudar, Pesquisa Avancada e entrega `tarefas.md`
+# Modo Estudar, Pesquisa Avançada e entrega `tarefas.md`
 
-- Toda atividade do projeto deve aplicar permanentemente uma abordagem de estudo: verificar o conhecimento existente, explicar decisoes importantes, conectar evidencias, conferir entendimento e registrar criterios reproduziveis.
-- Toda informacao externa, atual, instavel, especializada ou com risco relevante de desatualizacao deve ser verificada por pesquisa avancada antes de orientar implementacao ou declarar conclusao.
-- Quando a interface nao expuser um seletor persistente para os plugins Estudar ou Pesquisa Avancada, o agente deve aplicar o comportamento equivalente: aprendizagem guiada, verificacao cruzada, consulta a fontes atuais e registro das fontes de verdade.
-- Toda entrega deve informar obrigatoriamente versao, data e hora no fuso `America/Sao_Paulo`, repositorio, branch e commit de referencia.
-- Ao final de toda entrega tecnica, criar ou atualizar obrigatoriamente o arquivo raiz `tarefas.md`.
-- O arquivo `tarefas.md` deve conter todas as diretrizes necessarias para a IA desenvolvedora executar a proxima etapa sem depender de explicacao adicional.
-- O `tarefas.md` deve incluir, no minimo: objetivo, contexto, escopo, fontes de verdade, pre-requisitos, sequencia de execucao, prioridades, testes, criterios de aceite, riscos, bloqueios, evidencias esperadas, pendencias restantes e procedimento de entrega.
-- Cada atualizacao do `tarefas.md` deve incrementar sua versao e preservar um historico resumido no proprio arquivo.
-- O `tarefas.md` deve ser versionado na mesma branch e pull request da atividade correspondente.
-- Nenhuma tarefa pode ser marcada como concluida apenas pela existencia de codigo ou documento. Sao obrigatorios teste reproduzivel, evidencia no ambiente correto e referencia ao commit e pull request.
+- Toda atividade deve aplicar abordagem de estudo: verificar conhecimento existente, consultar fontes de verdade, explicar decisões, dividir problemas em etapas verificáveis e registrar evidências.
+- Toda informação externa, atual, instável ou especializada deve ser verificada em fontes atuais e confiáveis antes de orientar implementação ou declarar conclusão.
+- Quando a interface não oferecer seletor persistente para Estudar ou Pesquisa Avançada, aplicar o comportamento equivalente.
+- Toda entrega deve informar versão, data, hora, fuso `America/Sao_Paulo`, repositório, branch e commit de referência.
+- Ao final de toda entrega técnica, criar ou atualizar o arquivo raiz `tarefas.md`.
+- `tarefas.md` deve conter objetivo, contexto, fontes de verdade, pré-requisitos, sequência, prioridades, testes, critérios de aceite, riscos, bloqueios, evidências, pendências e procedimento de entrega.
+- Cada atualização de `tarefas.md` incrementa a versão e preserva histórico resumido.
+- Nenhuma tarefa é concluída apenas pela existência de código ou documento. São obrigatórios teste reproduzível, evidência no ambiente correto e referência ao commit e Pull Request.
 
-# Sincronizacao Git obrigatoria e segura
+# Revisão consolidada de documentação
 
-- Ao concluir cada atividade que altere arquivos neste workspace, o Codex deve versionar o trabalho no Git.
-- Antes de editar, executar `git status --short --branch`, integrar as referencias remotas permitidas e preservar mudancas existentes.
-- Se a branch atual for `main`, criar uma branch de trabalho antes de alterar arquivos.
-- O padrao de nome recomendado e `codex/<atividade>-<data>`.
-- O comando de sincronizacao automatica somente pode ser usado em branch de trabalho:
+- Toda revisão geral deve confrontar documentação, código, catálogo, contratos, migrations, workflows, issues e Pull Requests.
+- A revisão deve atualizar no mesmo ciclo os documentos autoritativos: `README.md`, `docs/ROADMAP.md`, `docs/Pendências Do desenvolvedor.md`, `docs/STATUS_ATUAL.md`, `docs/DOCUMENTATION_INDEX.md`, relatórios versionados e `tarefas.md`.
+- `STATUS.md` e documentos extensos antigos são registros históricos. Não devem ser apagados nem tratados como estado atual sem confirmação.
+- Documentos gerados, inventários de dados e tabelas históricas devem ser classificados no índice documental. Referências históricas ao Vision não reativam o módulo.
+- Após gerar o relatório e o plano do ciclo, iniciar pelo menos uma implementação técnica priorizada quando ela puder ser executada com segurança e sem credenciais ausentes.
+- A implementação iniciada deve ficar na mesma branch do ciclo ou em branch explicitamente vinculada, com issue, testes e critérios de aceite.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -Activity "<descricao da atividade>"
-```
+# Sincronização Git obrigatória e segura
 
-- A politica persistente fica em `config/autonomy/git_auto_sync_policy.json`.
-- O push deve usar a branch de trabalho no remoto autorizado. E proibido executar push direto na `main`.
-- Ao finalizar, abrir ou atualizar pull request para `main`, registrar testes e evidencias e usar **Squash and Merge**.
-- Quando a abertura do pull request nao estiver disponivel, manter a branch publicada e registrar claramente o bloqueio; nunca substituir isso por push direto na `main`.
-- Nao criar commit vazio quando nao houver mudancas.
-- O Codex deve gerar e aplicar a mensagem de commit com base na atividade e no diff real, sem transferir essa responsabilidade ao usuario nem solicitar edicao manual de `COMMIT_EDITMSG`.
-- A mensagem deve ser concisa, rastreavel e escrita em portugues do Brasil.
-- Se houver merge ou rebase em andamento, parar e reportar o bloqueio em portugues do Brasil.
+- Ao concluir atividade que altere arquivos, versionar o trabalho no Git.
+- Antes de editar, executar `git status --short --branch`, integrar referências remotas permitidas e preservar mudanças existentes.
+- Se a branch atual for `main`, criar branch de trabalho. Padrão recomendado: `codex/<atividade>-<data>`.
+- Executar o preflight multiagente e adquirir lock antes de alterações locais.
+- O push deve usar branch de trabalho. É proibido push direto na `main`.
+- Ao finalizar, abrir ou atualizar Pull Request, registrar testes e evidências e usar Squash and Merge.
+- Quando a abertura do Pull Request não estiver disponível, manter a branch publicada e registrar o bloqueio.
+- Não criar commit vazio.
+- A mensagem de commit deve ser concisa, rastreável e escrita em português do Brasil.
+- Em merge ou rebase ativo, parar e registrar o bloqueio.
+- Nunca executar `git reset --hard`, limpeza destrutiva ou descarte de trabalho alheio sem ordem explícita.
 
-# Orquestracao obrigatoria de pendencias
+# Orquestração obrigatória de pendências
 
-- A fonte principal das pendencias e `docs/Pendencias Do desenvolvedor.md`, considerando o nome real versionado `docs/Pendências Do desenvolvedor.md`.
-- Toda atualizacao de pendencias deve incrementar a versao e registrar data, branch e commit de referencia.
-- A cada atualizacao, gerar obrigatoriamente dois arquivos em `docs/relatorios/pendencias/`:
+- A fonte principal é `docs/Pendências Do desenvolvedor.md`.
+- Toda atualização incrementa versão e registra data, hora, branch e commit.
+- Gerar obrigatoriamente em `docs/relatorios/pendencias/`:
   1. `RELATORIO_VARREDURA_STATUS_v<versao>_<AAAA-MM-DD>.md`;
   2. `PLANO_ACAO_CODEX_v<versao>_<AAAA-MM-DD>.md`.
-- O relatorio de status deve conter a tabela: Nome da atividade | Descricao | Passo sendo executado | Dificuldade [1 a 5] | % concluido | Tempo previsto | Etapas [Total] | Concluidas [X] | Pendentes [Y].
-- O plano do Codex deve ser dimensionado para 8 horas de execucao, com tolerancia operacional de ate 4 horas.
-- Apos 12 horas, atualizar os documentos com tarefas concluidas, falhas, causas, bloqueios, evidencias e proximos passos.
-- Criar ou atualizar uma issue de orquestracao vinculada a cada versao dos relatorios.
-- O Codex deve iniciar pelo plano mais recente, verificar dependencias e nao declarar conclusao sem teste reproduzivel e evidencia no ambiente correto.
-- Os relatorios devem ser inseridos no GitHub pela mesma branch e pull request da atualizacao das pendencias.
+- O relatório deve conter a tabela: Nome da atividade | Descrição | Passo sendo executado | Dificuldade [1 a 5] | % concluído | Tempo previsto | Etapas [Total] | Concluídas [X] | Pendentes [Y].
+- O plano deve ser dimensionado para 8 horas, com tolerância de até 4 horas.
+- Após 12 horas, atualizar concluído, falhas, causas, bloqueios, evidências e próximos passos.
+- Criar ou atualizar issue de orquestração vinculada a cada versão.
+- O Codex inicia pelo plano mais recente e não declara conclusão sem teste e evidência.
 
-# Alinhamento multiagente obrigatorio
+# Alinhamento multiagente
 
-- Codex CLI, Antigravity, Gemini Code Assist e Gemini CLI (Termux/Ubuntu) devem seguir a politica versionada em `config/autonomy/multi_agent_sync_policy.json`.
-- Git e a fonte de verdade compartilhada do projeto; nenhum agente deve sobrescrever commits remotos ou mudancas locais de outro agente sem integrar primeiro.
-- Antes de alterar arquivos, verificar o estado local com `git status --short --branch` e preservar mudancas existentes.
-- Antes de editar, executar `python3 scripts/multi_agent_sync_guard.py preflight --integrate` e adquirir o lock com `python3 scripts/multi_agent_sync_guard.py acquire --agent <agent_id> --activity "<descricao>"`.
-- Ao concluir a sincronizacao, liberar o lock com `python3 scripts/multi_agent_sync_guard.py release --agent <agent_id>`.
-- Antes de sincronizar, buscar `origin/main` e `fork/main` quando os remotos estiverem acessiveis.
-- Nunca executar comandos destrutivos como `git reset --hard`, `git clean` destrutivo ou checkout que descarte trabalho alheio sem ordem explicita do usuario.
-- `config/stitch/screen_manifest.json` e `config/stitch/sync_state.json` sao o estado autoritativo para sincronia Stitch e devem ser preservados entre agentes.
-- Segredos como `STITCH_API_KEY` devem permanecer apenas em variaveis de ambiente, GitHub Actions Secrets ou cofres externos; nunca versionar segredos.
+- Codex CLI, Antigravity, Gemini Code Assist e Gemini CLI seguem `config/autonomy/multi_agent_sync_policy.json`.
+- Git é a fonte de verdade compartilhada. Nenhum agente sobrescreve trabalho de outro sem integrar primeiro.
+- Executar `python3 scripts/multi_agent_sync_guard.py preflight --integrate` e adquirir lock com `python3 scripts/multi_agent_sync_guard.py acquire --agent <agent_id> --activity "<descricao>"`.
+- Liberar o lock ao concluir.
+- Buscar `origin/main` e `fork/main` quando acessíveis.
+- Preservar `config/stitch/screen_manifest.json` e `config/stitch/sync_state.json`.
+- Segredos permanecem em variáveis de ambiente, GitHub Actions Secrets ou cofres externos.
 
-# Integracoes Google ativas
+# Integrações Google ativas
 
-- Google SDK, Google AI Studio, Google Cloud, AlloyDB, Google Code CLI, Gemini CLI, Gemini Code Assist e Google Stitch estao ativos por ordem explicita do usuario.
-- A politica obrigatoria fica em `config/autonomy/google_integrations_policy.json`.
-- Discover, sync e operacoes Google podem executar quando credenciais legitimas estiverem disponiveis fora do Git.
-- Docker, VS Code, Antigravity, workflows e scripts devem manter as flags Google, AlloyDB, Gemini e Stitch ativas.
-- Nao contornar billing, IAM, compliance, enforcement ou suspensao administrativa do provedor.
+- Google SDK, Google AI Studio, Google Cloud, AlloyDB, Google Code CLI, Gemini CLI, Gemini Code Assist e Google Stitch permanecem ativos por ordem do usuário.
+- A política obrigatória fica em `config/autonomy/google_integrations_policy.json`.
+- Operações podem executar quando credenciais legítimas estiverem disponíveis fora do Git.
+- Não contornar billing, IAM, compliance ou enforcement do provedor.
 
-# Governanca inviolavel de marca
+# Governança inviolável de marca
 
-- A fonte de verdade dos ativos autorizados e `config/branding/authorized_assets.json`, complementada por `config/branding/brand_identity.json` e `assets/brand/README.md`.
-- As marcas oficiais abrangidas sao All in One, Valley e Valley Riders.
-- Sem autorizacao explicita do proprietario da marca, somente duas operacoes sao permitidas: remover exclusivamente o fundo externo sem tocar na arte e redimensionar proporcionalmente.
-- E proibido redesenhar, recolorir, recortar, girar, distorcer, trocar tipografia, alterar linhas, curvas, formas ou composicao, aplicar filtros, mascaras ou opacidade decorativa, ou criar simbolo substituto.
-- Todo ativo digital deve manter fundo externo totalmente transparente.
-- Quando o binario original de uma marca nao estiver disponivel, o agente deve bloquear qualquer substituto ou aproximacao e registrar a pendencia. Nunca deve fabricar uma versao.
-- Ao identificar uma violacao clara e objetiva dessa politica, o proprio agente deve restaurar o ativo canonico, executar `python3 scripts/check_brand_integrity.py --fix` e `python3 scripts/check_brand_integrity.py`, validar o repositorio e sincronizar a correcao em branch de trabalho com pull request. Nao e necessario solicitar nova autorizacao para restaurar conformidade.
-- A autorizacao de remediacao imediata nao permite alterar a arte oficial nem tomar decisoes criativas sobre a marca.
+- A fonte de verdade é `config/branding/authorized_assets.json`, complementada por `config/branding/brand_identity.json` e `assets/brand/README.md`.
+- As marcas oficiais são All in One, Valley e Valley Riders.
+- Sem autorização, somente remover o fundo externo sem tocar na arte e redimensionar proporcionalmente.
+- É proibido redesenhar, recolorir, recortar, girar, distorcer, trocar tipografia, alterar linhas, curvas, formas ou composição, aplicar filtros ou criar substitutos.
+- Todo ativo digital deve manter fundo externo transparente.
+- Quando o binário original não estiver disponível, bloquear substitutos e registrar pendência.
+- Violações objetivas devem ser restauradas ao ativo canônico e validadas em branch com Pull Request.
