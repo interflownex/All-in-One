@@ -43,10 +43,10 @@ jobs:
         run: |
           grep -q 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
           grep -q 'android:usesCleartextTraffic="false"' app/src/main/AndroidManifest.xml
-      - name: Testes unitários da variante de homologação
-        run: ./gradlew testStagingDebugUnitTest --no-daemon --stacktrace
-      - name: Montar APK de homologação sem segredos de produção
-        run: ./gradlew assembleStagingDebug --no-daemon --stacktrace
+      - name: Testes unitários da variante homologável
+        run: ./gradlew testProductionDebugUnitTest --no-daemon --stacktrace
+      - name: Montar APK homologável sem segredos de produção
+        run: ./gradlew assembleProductionDebug --no-daemon --stacktrace
       - name: Gerar evidência de dependências Gradle
         run: ./gradlew dependencies > valley-gradle-dependencies.txt
       - uses: actions/upload-artifact@v4
@@ -54,7 +54,7 @@ jobs:
           name: valley-pr-security-evidence
           path: |
             apps/valley-android/valley-gradle-dependencies.txt
-            apps/valley-android/app/build/outputs/apk/staging/debug/*.apk
+            apps/valley-android/app/build/outputs/apk/production/debug/*.apk
           if-no-files-found: error
           retention-days: 7
 
@@ -75,9 +75,9 @@ jobs:
         run: python ../../scripts/validate_valley_android_release.py
       - name: Testar e montar homologação na main
         run: |
-          ./gradlew testStagingDebugUnitTest --no-daemon --stacktrace
-          ./gradlew lintStagingDebug --no-daemon --stacktrace
-          ./gradlew assembleStagingDebug --no-daemon --stacktrace
+          ./gradlew testProductionDebugUnitTest --no-daemon --stacktrace
+          ./gradlew lintProductionDebug --no-daemon --stacktrace
+          ./gradlew assembleProductionDebug --no-daemon --stacktrace
       - name: Gerar evidência de dependências Gradle
         run: ./gradlew dependencies > valley-gradle-dependencies.txt
       - uses: actions/upload-artifact@v4
@@ -85,7 +85,7 @@ jobs:
           name: valley-main-security-evidence
           path: |
             apps/valley-android/valley-gradle-dependencies.txt
-            apps/valley-android/app/build/outputs/apk/staging/debug/*.apk
+            apps/valley-android/app/build/outputs/apk/production/debug/*.apk
           if-no-files-found: error
           retention-days: 14
 
