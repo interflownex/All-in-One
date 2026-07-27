@@ -1,187 +1,205 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 1.1  
-**Data da entrega:** 26/07/2026  
-**Hora da entrega:** 14:01:53  
+**Versão:** 1.3  
+**Data da entrega:** 27/07/2026  
+**Hora da entrega:** 01:55:20  
 **Fuso horário:** `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Branch de elaboração:** `docs/pendencias-v2-6-primeiro-teste-2026-07-26`  
-**Commit de referência:** `c2c8eaccc1581ed674821feaaa3336c03a5b763c`  
-**Issue de orquestração:** `#43`  
-**Classificação:** `Pendências > Técnico > Equipe técnica`  
+**Branch de execução:** `fix/cicd-governanca-v2-8-2026-07-27`  
+**Commit-base:** `77fa6fab5f1c881ba6289dc288dc64e20421614a`  
+**Issue de orquestração:** `#49`  
+**Pull request:** `#50`  
 **Destino:** Codex e demais IAs desenvolvedoras autorizadas
 
 ## 1. Objetivo desta versão
 
-Registrar o primeiro teste completo das diretrizes permanentes e fornecer à próxima IA desenvolvedora uma passagem operacional suficiente para executar o ciclo v2.6 sem depender de explicação adicional.
+Executar o plano de ação v2.8 para restaurar uma linha de integração confiável, corrigir os gates de CI/CD e segurança, reduzir PRs concorrentes e preservar uma retomada auditável.
 
-## 2. Resultado da varredura
+## 2. Estado confirmado
 
-### Confirmado
+### Concluído neste ciclo
 
-- catálogo e configuração Business sincronizados em 24 módulos;
-- `legal`, `property` e `ai_core` presentes em `MODULE_NAMES`;
-- auditor v7 versionado;
-- referências ativas ao Vision removidas no escopo verificado;
-- PR Render `#27` encerrado sem merge;
-- política Telegram atualizada;
-- watchdog Gemini restaurado;
-- diretrizes de Estudar, Pesquisa Avançada, data, hora e `tarefas.md` integradas;
-- issue `#28` encerrada;
-- issue `#43` aberta para o ciclo v2.6.
+- branch limpa criada diretamente da `main`;
+- issue `#49` criada e atribuída ao mantenedor;
+- PR em rascunho `#50` aberta;
+- PR `#34` encerrada sem merge por ter sido substituída pela `#37`;
+- confirmado que o repositório ainda permite `merge commit`, `rebase merge` e `squash merge` simultaneamente;
+- workflow Python alterado para auditar `requirements-dev.txt`, evitando auditar ferramentas internas do runner;
+- workflow temporária de regeneração protegida criada;
+- workflow de evidências diagnósticas criada;
+- nenhuma credencial adicionada;
+- nenhum push direto na `main`;
+- nenhum merge executado.
+
+### Em execução
+
+- regeneração de artefatos a partir de `scripts/scaffold_modules.py`;
+- regeneração de `config/events/domain_event_fixtures.json`;
+- coleta versionada das saídas de validação Android, `pip-audit` e Trivy Jobs;
+- nova execução dos gates Continuous Integration, Security e Docker Compose Health Gate.
 
 ### Pendente
 
-- executar checks no commit atual;
-- regularizar PRs `#34`, `#36`, `#37`, `#38` e `#40`;
-- resolver sobreposição entre `#34` e `#37`;
-- auditar commit `44be12a9751d336f0c8094f79c893eb69008eaf4` e o pacote `.gemini/skills`;
-- corrigir identidade pública `tmp-valley`;
-- homologar API Hub e `/health`;
-- criar executor Telegram real;
-- validar APK Admin;
-- validar PDV Desktop;
-- validar onda de inovação;
-- concluir issue `#24` no Stitch;
-- incorporar ativo oficial Valley Riders;
-- impor administrativamente uso exclusivo de Squash and Merge.
+- confirmar commit automático dos artefatos gerados;
+- executar `scripts/check_generated_artifacts.py` numa árvore limpa;
+- corrigir falhas restantes de `validate_openapi.py` e `validate_repository.py`;
+- avaliar o relatório Trivy da imagem Jobs;
+- corrigir o contrato ou build Android conforme evidência real;
+- corrigir Docker Compose e healthchecks HTTP;
+- remover workflows temporárias após cumprirem sua função;
+- criar matriz final de destino das PRs `#36`, `#37`, `#38`, `#40`, `#46` e `#48`;
+- impor administrativamente uso exclusivo de Squash and Merge;
+- atualizar pendências e relatório v2.8 no repositório;
+- manter PR `#50` em rascunho até todos os gates obrigatórios ficarem verdes.
 
 ## 3. Fontes de verdade
 
-Antes de editar, consultar:
+Consultar nesta ordem:
 
 1. `AGENTS.md`;
 2. este `tarefas.md`;
-3. `docs/Pendências Do desenvolvedor.md`, versão 2.6;
-4. `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v2.6_2026-07-26.md`;
-5. `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v2.6_2026-07-26.md`;
-6. issue `#43`;
-7. PRs `#34`, `#36`, `#37`, `#38` e `#40`;
-8. issues `#24`, `#39` e `#41`;
-9. `scripts/audit_confirmation_v7.py`;
-10. `config/autonomy/telegram_delivery_policy.json`;
-11. manifestos de skills em `.gemini/skills` e `.github/skills`.
+3. issue `#49`;
+4. PR `#50`;
+5. `docs/Pendências Do desenvolvedor.md`;
+6. relatórios de pendências mais recentes;
+7. `docs/relatorios/execucao-v2.8/`, quando criado pelas workflows;
+8. logs dos workflows do commit atual;
+9. PRs `#36`, `#37`, `#38`, `#40`, `#46` e `#48`.
 
-## 4. Pré-requisitos obrigatórios
+## 4. Regras mandatórias
 
-1. executar `git status --short --branch`;
-2. buscar referências remotas permitidas;
-3. executar `python3 scripts/multi_agent_sync_guard.py preflight --integrate`;
-4. adquirir lock da atividade;
-5. confirmar ausência de merge ou rebase em andamento;
-6. criar branch de trabalho se estiver na `main`;
-7. preservar mudanças de outros agentes;
-8. confirmar que nenhum segredo será versionado.
+1. Não realizar push direto na `main`.
+2. Não realizar merge com gate vermelho.
+3. Integração final somente por Squash and Merge.
+4. Não usar `merge commit` ou `rebase merge`.
+5. Não inserir secrets, tokens, senhas, chaves ou certificados.
+6. Não reativar o módulo Vision.
+7. Não alterar logomarcas oficiais.
+8. Não excluir arquivos em massa sem inventário e justificativa.
+9. Não declarar Health Watch + SafeZone funcional com base apenas em documentação.
+10. Não converter falha de scanner em sucesso por supressão genérica.
+11. Atualizar esta passagem antes de encerrar ou transferir o ciclo.
 
-## 5. Ordem de execução
+## 5. Ordem de retomada
 
-### Prioridade 1: checks e auditoria
+### Prioridade 1: artefatos gerados
 
-- executar auditor v7;
-- executar validação do repositório;
-- executar testes relacionados;
-- registrar checks ausentes ou falhos.
+- verificar o head atual da PR `#50`;
+- confirmar se existe commit `fix(ci): sincronizar artefatos gerados`;
+- executar ou consultar:
 
-### Prioridade 2: PRs desatualizados
+```bash
+python scripts/scaffold_modules.py --check
+python scripts/generate_domain_event_fixtures.py --check
+python scripts/check_generated_artifacts.py
+```
 
-- comparar os cinco PRs com a `main` atual;
-- resolver sobreposição `#34` e `#37`;
-- atualizar, dividir ou encerrar PRs substituídos;
-- não integrar PR com base antiga ou `mergeable` falso.
+- revisar qualquer alteração antes de aceitar;
+- rejeitar exclusões ou caminhos fora do escopo aprovado.
 
-### Prioridade 3: pacote de skills
+### Prioridade 2: evidências diagnósticas
 
-- auditar commit `44be12a`;
-- comparar manifestos;
-- identificar remoções, restaurações e alterações de conteúdo;
-- abrir issue se a atualização não for reproduzível.
+Ler:
 
-### Prioridade 4: ambiente público
+- `docs/relatorios/execucao-v2.8/android-validation.txt`;
+- `docs/relatorios/execucao-v2.8/python-audit.json`;
+- `docs/relatorios/execucao-v2.8/python-audit.stderr.txt`;
+- `docs/relatorios/execucao-v2.8/jobs-image-build.txt`;
+- `docs/relatorios/execucao-v2.8/jobs-trivy.json`.
 
-- corrigir identificação `tmp-valley`;
-- validar Render, URL do API Hub e `/health`;
-- registrar CORS, logs e bloqueios externos.
+Corrigir somente causas reproduzidas nesses arquivos.
 
-### Prioridade 5: Telegram
+### Prioridade 3: Docker Compose
 
-- implementar `activity_started`;
-- implementar `activity_completed`;
-- implementar quatro relatórios diários;
-- criar retry, timeout, mocks e logs seguros.
+- consultar o job `Docker Compose Health Gate` do head atual;
+- identificar se a falha ocorre em `docker compose config`, build, inicialização ou `/health`;
+- preservar logs dos serviços pendentes;
+- não aumentar timeout ou retry sem evidência de lentidão legítima.
 
-### Prioridade 6: artefatos
+### Prioridade 4: governança de PRs
 
-- validar APK Admin do PR `#36`;
-- validar PDV Desktop do PR `#38`;
-- registrar hash, versão, commit e smoke test.
+Produzir matriz obrigatória:
 
-### Prioridade 7: encerramento
+| PR | Estado | Base | Mergeável | Sobreposição | Ação recomendada | Justificativa |
+|---|---|---|---|---|---|---|
+| #36 | aberta | verificar | verificar | verificar | rebase, reconstruir ou encerrar | pendente |
+| #37 | rascunho | antiga | falso no início do ciclo | substitui #34 | dividir ou reconstruir | 474 arquivos e 117 commits |
+| #38 | aberta | verificar | verificar | verificar | rebase, reconstruir ou encerrar | pendente |
+| #40 | rascunho | antiga | verificar | Vision residual em workflow | corrigir ou reconstruir | pendente |
+| #46 | rascunho | main v2.6 | verificar | documentação e Telegram | reavaliar após gates | pendente |
+| #48 | aberta | main v2.6 | verificar | Health Watch documental | manter separada | não é implementação funcional |
 
-- atualizar issue `#43`;
-- atualizar pendências e relatórios;
-- incrementar a versão deste arquivo;
-- abrir ou atualizar PR;
-- integrar apenas com checks e Squash and Merge;
-- liberar lock.
+### Prioridade 5: encerramento
 
-## 6. Ciclo de tempo
+- remover `.github/workflows/v28-regenerate-artifacts.yml` após a sincronização;
+- remover `.github/workflows/v28-diagnostics.yml` após a coleta;
+- executar gates finais;
+- atualizar issue `#49` e PR `#50`;
+- manter PR em rascunho se qualquer gate obrigatório falhar;
+- nunca habilitar auto-merge enquanto a configuração permitir métodos alternativos.
 
-- execução principal: 8 horas;
-- tolerância normal: até 4 horas;
-- limite de coleta: 12 horas;
-- após 12 horas, não iniciar nova frente e registrar tudo que restou.
-
-## 7. Testes mínimos esperados
+## 6. Testes e gates mínimos
 
 ```bash
 python3 scripts/audit_confirmation_v7.py
 python3 scripts/validate_repository.py
+python3 scripts/check_generated_artifacts.py
+python3 -m pytest -q tests/test_security_gates.py
+python3 -m pytest -q tests/test_telegram_activity_reporter.py
+python3 scripts/validate_valley_android_release.py
 ```
 
-Executar também testes específicos de cada PR e componente alterado. Não usar resultados antigos como prova do commit atual.
+Executar também os workflows:
 
-## 8. Critérios de aceite
+- Continuous Integration;
+- Security;
+- Docker Compose Health Gate;
+- OpenAPI e Database, quando acionados pela PR.
 
-Uma tarefa só pode ser concluída quando houver:
+## 7. Critérios de aceite
 
-- implementação versionada;
-- teste reproduzível;
-- evidência do ambiente correto;
-- referência ao commit e PR;
-- checks executados;
-- ausência de regressão relevante;
-- confirmação de que nenhum segredo foi exposto;
-- atualização da issue `#43`;
-- atualização deste `tarefas.md`.
+O ciclo só pode ser concluído quando:
 
-## 9. Riscos e bloqueios
+- artefatos gerados estiverem sincronizados;
+- validação de repositório e OpenAPI passarem;
+- auditoria Python passar sobre as dependências declaradas;
+- Trivy Jobs passar ou houver correção comprovada;
+- Android passar em contrato, testes, lint e assemble;
+- Docker Compose tiver todos os serviços obrigatórios saudáveis;
+- PRs substituídas estiverem encerradas;
+- cada PR aberta tiver destino documentado;
+- nenhuma referência operacional ao Vision permanecer;
+- configuração exclusiva de Squash and Merge estiver comprovada ou registrada como bloqueio administrativo;
+- workflows temporárias forem removidas;
+- PR `#50` contiver evidências completas.
 
-- PRs antigos podem sobrescrever correções mais novas;
-- PRs `#34` e `#37` podem duplicar alterações;
-- APK e instalador podem existir sem homologação real;
-- domínio público possui identidade temporária;
-- pacote de skills teve mudança ampla sem PR localizado;
-- Telegram possui política, mas não executor completo localizado;
-- repositório ainda permite métodos de merge além de squash;
-- credenciais externas podem bloquear Render, Google, Stitch e Telegram.
+## 8. Resultado parcial do ciclo
 
-## 10. Entrega obrigatória da próxima IA
+- **SHA inicial:** `77fa6fab5f1c881ba6289dc288dc64e20421614a`
+- **Branch:** `fix/cicd-governanca-v2-8-2026-07-27`
+- **Issue:** `#49`
+- **PR:** `#50`
+- **PR encerrada:** `#34`, sem merge
+- **Correção aplicada:** auditoria Python direcionada a `requirements-dev.txt`
+- **Gates verdes:** ainda não declarados
+- **Gates em execução ou falha:** CI, Security, Docker Compose e regeneração
+- **Risco principal:** grande drift entre templates canônicos e artefatos versionados
+- **Bloqueio administrativo:** métodos alternativos de merge continuam habilitados
 
-A próxima IA deve entregar:
+## 9. Primeira ação da próxima IA
 
-1. resumo simples para o gestor;
-2. lista do que foi concluído, parcial, falhou e bloqueou;
-3. comandos e testes executados;
-4. evidências e artefatos;
-5. commits e pull requests;
-6. atualização da issue `#43`;
-7. nova versão dos relatórios, quando houver mudança;
-8. nova versão de `tarefas.md` com data e hora;
-9. integração por Squash and Merge quando os critérios forem atendidos.
+Consultar o head atual da PR `#50` e verificar se as workflows criaram:
 
-## 11. Histórico de versões
+1. o commit `fix(ci): sincronizar artefatos gerados`;
+2. o diretório `docs/relatorios/execucao-v2.8/`.
+
+A partir dessas evidências, corrigir o primeiro gate ainda vermelho sem iniciar nova funcionalidade.
+
+## 10. Histórico de versões
 
 | Versão | Data e hora | Alteração principal |
 |---|---|---|
-| 1.0 | 26/07/2026 13:49:32 | Criação da diretriz permanente de Estudar, Pesquisa Avançada, versionamento e entrega do arquivo `tarefas.md`. |
-| 1.1 | 26/07/2026 14:01:53 | Primeiro teste completo, consolidação v2.6, issue #43 e tarefas para checks, PRs, skills, ambiente público, Telegram, APK Admin e PDV Desktop. |
+| 1.0 | 26/07/2026 13:49:32 | Criação da diretriz permanente. |
+| 1.1 | 26/07/2026 14:01:53 | Primeiro ciclo v2.6 e issue #43. |
+| 1.2 | 26/07/2026 23:06:33 | Consolidação documental v2.7 e início do executor Telegram na PR #46. |
+| 1.3 | 27/07/2026 01:55:20 | Execução do plano v2.8, issue #49, PR #50, encerramento da #34, correção do pip-audit e workflows de regeneração e diagnóstico. |
