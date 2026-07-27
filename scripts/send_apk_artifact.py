@@ -13,6 +13,10 @@ from email.message import EmailMessage
 from pathlib import Path
 from urllib import error, request
 
+from scripts.secure_http import require_https_url
+
+TELEGRAM_HOSTS = {"api.telegram.org"}
+
 
 def env(name: str, default: str | None = None) -> str | None:
     value = os.environ.get(name, default)
@@ -60,12 +64,16 @@ def send_to_telegram(
     add_file("document", apk.name, apk.read_bytes(), mime_type)
     body.append(f"--{boundary}--{crlf}".encode())
 
-    url = f"https://api.telegram.org/bot{bot_token}/sendDocument"
+    url = require_https_url(
+        f"https://api.telegram.org/bot{bot_token}/sendDocument",
+        allowed_hosts=TELEGRAM_HOSTS,
+    )
     req = request.Request(url, data=b"".join(body), method="POST")
     req.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
 
     try:
-        with request.urlopen(req, timeout=60) as response:
+        # Host, HTTPS, porta e ausência de credenciais embutidas já foram validados.
+        with request.urlopen(req, timeout=60) as response:  # nosec B310
             if response.status < 200 or response.status >= 300:
                 raise RuntimeError(f"Telegram retornou HTTP {response.status}")
     except error.HTTPError as exc:
