@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - fix/cicd-governanca-v2-8-2026-07-27
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -11,7 +14,6 @@ permissions:
 
 jobs:
   patch-validator:
-    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, '[v29-validator-fix]') }}
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout branch
@@ -41,9 +43,12 @@ jobs:
           ]
 
           for old, new in replacements:
-              if old not in text:
-                  raise SystemExit(f'Trecho obrigatório não encontrado para substituição: {old!r}')
-              text = text.replace(old, new, 1)
+              if old in text:
+                  text = text.replace(old, new, 1)
+              elif new not in text:
+                  raise SystemExit(
+                      f'Validador não contém nem a forma antiga nem a corrigida: {old!r}'
+                  )
 
           old_brand = '''        for relative in [
               brand.get("platform_brand", {}).get("logo_asset"),
@@ -84,9 +89,13 @@ jobs:
                   "Branding deve declarar exatamente os apps Riders oficiais.", errors
               )
 '''
-          if old_brand not in text:
-              raise SystemExit('Bloco de branding esperado não foi encontrado.')
-          text = text.replace(old_brand, new_brand, 1)
+          if old_brand in text:
+              text = text.replace(old_brand, new_brand, 1)
+          elif new_brand not in text:
+              raise SystemExit(
+                  'Validador não contém nem o bloco antigo nem o bloco corrigido de branding.'
+              )
+
           path.write_text(text, encoding='utf-8')
           PY
 
@@ -96,13 +105,13 @@ jobs:
           python -m py_compile scripts/validate_repository.py
           git diff --check
           changed="$(git diff --name-only)"
-          test "$changed" = "scripts/validate_repository.py"
+          test -z "$changed" || test "$changed" = "scripts/validate_repository.py"
 
       - name: Commit validator correction
         shell: bash
         run: |
           if git diff --quiet; then
-            echo "Nenhuma alteração necessária."
+            echo "Validador já está corrigido."
             exit 0
           fi
           git config user.name "all-in-one-ci"
