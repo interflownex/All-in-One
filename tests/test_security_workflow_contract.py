@@ -41,6 +41,6 @@ def test_codeql_analyzes_pull_requests_without_duplicate_sarif_upload() -> None:
     assert "testProductionDebugUnitTest lintProductionDebug assembleProductionDebug" in workflow
     assert "upload: ${{ github.event_name == 'pull_request' && 'never' || 'always' }}" in workflow
     assert "output: codeql-results" in workflow
-    assert "post-processed-sarif-path: codeql-results/post-processed" in workflow
+    assert "post-processed-sarif-path" not in workflow
     assert "name: valley-android-codeql-sarif" in workflow
     assert "if-no-files-found: error" in workflow
