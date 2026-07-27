@@ -27,12 +27,14 @@ jobs:
       run:
         working-directory: apps/valley-android
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
           cache: gradle
+      - name: Garantir Gradle Wrapper executável
+        run: chmod +x ./gradlew
       - name: Bloquear chave debug em release
         run: |
           if grep -R --line-number --exclude-dir=build -E 'signingConfig.*debug|debug\.keystore' app; then
@@ -49,7 +51,7 @@ jobs:
         run: ./gradlew assembleProductionDebug --no-daemon --stacktrace
       - name: Gerar evidência de dependências Gradle
         run: ./gradlew dependencies > valley-gradle-dependencies.txt
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: valley-pr-security-evidence
           path: |
@@ -65,12 +67,14 @@ jobs:
       run:
         working-directory: apps/valley-android
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
           cache: gradle
+      - name: Garantir Gradle Wrapper executável
+        run: chmod +x ./gradlew
       - name: Validar contrato Android
         run: python ../../scripts/validate_valley_android_release.py
       - name: Testar e montar homologação na main
@@ -80,7 +84,7 @@ jobs:
           ./gradlew assembleProductionDebug --no-daemon --stacktrace
       - name: Gerar evidência de dependências Gradle
         run: ./gradlew dependencies > valley-gradle-dependencies.txt
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: valley-main-security-evidence
           path: |
@@ -105,12 +109,14 @@ jobs:
       VALLEY_KEY_ALIAS: ${{ secrets.VALLEY_KEY_ALIAS }}
       VALLEY_KEY_PASSWORD: ${{ secrets.VALLEY_KEY_PASSWORD }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
           cache: gradle
+      - name: Garantir Gradle Wrapper executável
+        run: chmod +x ./gradlew
       - name: Exigir segredos de produção
         shell: bash
         run: |
@@ -151,7 +157,7 @@ jobs:
         run: ./gradlew bundleProductionRelease assembleProductionRelease --no-daemon --stacktrace
       - name: Gerar evidência de dependências Gradle
         run: ./gradlew dependencies > valley-gradle-dependencies.txt
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: valley-production-release-evidence
           path: |
