@@ -238,7 +238,7 @@ def insert_postgres_audit(
            (id, schema_version, event, log_type, user_id, actor_user_id, actor_entity_id, tenant_id,
             company_id, actor_role, session_id, device_id, ip_address, user_agent, action, module,
             resource_type, resource_id, before_data, after_data, changed_fields, reason, origin, channel,
-            correlation_id, causation_id, occurred_at, result, error_detail, authorization, approval_id,
+            correlation_id, causation_id, occurred_at, result, error_detail, "authorization", approval_id,
             approved_by, exported, printed, shared, previous_hash, row_hash, retention_until, metadata, created_by)
            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
