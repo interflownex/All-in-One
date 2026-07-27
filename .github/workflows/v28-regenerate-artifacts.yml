@@ -32,10 +32,12 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Generate artifacts from canonical catalog
-        run: python scripts/scaffold_modules.py
+      - name: Generate artifacts from canonical sources
+        run: |
+          python scripts/scaffold_modules.py
+          python scripts/generate_domain_event_fixtures.py
 
-      - name: Verify generated artifacts
+      - name: Verify generated artifacts and repository contracts
         run: python scripts/check_generated_artifacts.py
 
       - name: Validate diff safety
@@ -57,7 +59,7 @@ jobs:
             exit 0
           fi
 
-          invalid="$(printf '%s\n' "$changed" | grep -Ev '^(modules/|contracts/|apps/)' || true)"
+          invalid="$(printf '%s\n' "$changed" | grep -Ev '^(modules/|contracts/|apps/|config/events/domain_event_fixtures\.json$)' || true)"
           if [ -n "$invalid" ]; then
             echo "Generator changed paths outside the approved scope:"
             printf '%s\n' "$invalid"
@@ -79,6 +81,6 @@ jobs:
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add modules contracts apps
+          git add modules contracts apps config/events/domain_event_fixtures.json
           git commit -m "fix(ci): sincronizar artefatos gerados"
           git push origin HEAD:fix/cicd-governanca-v2-8-2026-07-27
