@@ -6,18 +6,12 @@ on:
   pull_request:
     branches: [main]
 
-permissions:
-  contents: write
-
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,98 +23,6 @@ jobs:
 
       - name: Cleanup artifacts
         run: python scripts/cleanup_artifacts.py
-
-      - name: Apply temporary v2.9 validator migration
-        if: ${{ (github.event_name == 'pull_request' && github.head_ref == 'fix/cicd-governanca-v2-8-2026-07-27') || (github.event_name == 'push' && github.ref_name == 'fix/cicd-governanca-v2-8-2026-07-27') }}
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('scripts/validate_repository.py')
-          text = path.read_text(encoding='utf-8')
-
-          replacements = [
-              (
-                  'if len(slugs) != 25:\n        fail(f"Esperados 25 modulos; catalogo possui {len(slugs)}.", errors)',
-                  'if len(slugs) != 24:\n        fail(f"Esperados 24 modulos ativos; catalogo possui {len(slugs)}.", errors)',
-              ),
-              (
-                  '            "pip-audit --local",',
-                  '            "pip-audit -r requirements-dev.txt",',
-              ),
-          ]
-          for old, new in replacements:
-              if old in text:
-                  text = text.replace(old, new, 1)
-              elif new not in text:
-                  raise SystemExit(f'Trecho inesperado no validador: {old!r}')
-
-          old_brand = '''        for relative in [
-              brand.get("platform_brand", {}).get("logo_asset"),
-              brand.get("platform_brand", {}).get("light_logo_asset"),
-              brand.get("valley_brand", {}).get("logo_asset"),
-          ]:
-              if not relative or not (ROOT / relative).is_file():
-                  fail(f"Ativo oficial de marca ausente: {relative}", errors)
-          if set(brand.get("valley_apps", [])) != {
-              "valley",
-              "valley-business",
-              "valley-rider",
-          }:
-              fail("Branding deve declarar exatamente os apps Valley oficiais.", errors)
-'''
-          new_brand = '''        required_brand_assets = [
-              brand.get("platform_brand", {}).get("logo_asset"),
-              brand.get("valley_brand", {}).get("logo_asset"),
-          ]
-          optional_light_logo = brand.get("platform_brand", {}).get(
-              "light_logo_asset"
-          )
-          if optional_light_logo:
-              required_brand_assets.append(optional_light_logo)
-          for relative in required_brand_assets:
-              if not relative or not (ROOT / relative).is_file():
-                  fail(f"Ativo oficial de marca ausente: {relative}", errors)
-          if set(brand.get("valley_apps", [])) != {
-              "valley",
-              "valley-business",
-          }:
-              fail("Branding deve declarar exatamente os apps Valley oficiais.", errors)
-          if set(brand.get("riders_apps", [])) != {
-              "valley-rider",
-              "all-in-one-riders",
-          }:
-              fail(
-                  "Branding deve declarar exatamente os apps Riders oficiais.", errors
-              )
-'''
-          if old_brand in text:
-              text = text.replace(old_brand, new_brand, 1)
-          elif new_brand not in text:
-              raise SystemExit('Bloco de branding inesperado no validador.')
-
-          path.write_text(text, encoding='utf-8')
-          PY
-
-          python -m py_compile scripts/validate_repository.py
-          git diff --check
-          changed="$(git diff --name-only)"
-          test -z "$changed" || test "$changed" = "scripts/validate_repository.py"
-
-      - name: Commit temporary v2.9 validator migration
-        if: ${{ (github.event_name == 'pull_request' && github.head_ref == 'fix/cicd-governanca-v2-8-2026-07-27') || (github.event_name == 'push' && github.ref_name == 'fix/cicd-governanca-v2-8-2026-07-27') }}
-        shell: bash
-        run: |
-          if git diff --quiet; then
-            echo "Validador já estava corrigido."
-            exit 0
-          fi
-          git config user.name "all-in-one-ci"
-          git config user.email "actions@users.noreply.github.com"
-          git add scripts/validate_repository.py
-          git commit -m "fix(validation): alinhar catálogo, segurança e branding [v29-validator-fix]"
-          git push origin HEAD:fix/cicd-governanca-v2-8-2026-07-27
 
       - name: Check generated artifacts
         run: python scripts/check_generated_artifacts.py
