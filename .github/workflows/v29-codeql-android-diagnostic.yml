@@ -1,0 +1,88 @@
+name: V2.9 Android CodeQL Diagnostic
+
+on:
+  push:
+    branches:
+      - fix/cicd-governanca-v2-8-2026-07-27
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  codeql-android-diagnostic:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Garantir Gradle Wrapper executável
+        run: chmod +x apps/valley-android/gradlew
+
+      - name: Inicializar CodeQL com diagnóstico oficial
+        id: init
+        uses: github/codeql-action/init@v4
+        with:
+          languages: java-kotlin
+          build-mode: manual
+          db-location: ${{ runner.temp }}/valley-codeql-db
+          debug: true
+          debug-artifact-name: valley-android-codeql-debug
+          debug-database-name: valley-android-java-kotlin
+
+      - name: Compilar variante rastreada
+        run: |
+          python scripts/validate_valley_android_release_v29.py
+          apps/valley-android/gradlew -p apps/valley-android \
+            testProductionDebugUnitTest lintProductionDebug assembleProductionDebug \
+            --no-daemon --stacktrace
+
+      - name: Finalizar CodeQL sem upload
+        id: analyze
+        continue-on-error: true
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: valley-android-java-kotlin-diagnostic
+          upload: never
+          output: codeql-results
+
+      - name: Inventariar evidências locais
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p diagnostics/v29/codeql
+          printf 'analyze_outcome=%s\n' '${{ steps.analyze.outcome }}' \
+            > diagnostics/v29/codeql/outcome.txt
+          printf 'codeql_path=%s\n' '${{ steps.init.outputs.codeql-path }}' \
+            >> diagnostics/v29/codeql/outcome.txt
+          printf 'codeql_version=%s\n' '${{ steps.init.outputs.codeql-version }}' \
+            >> diagnostics/v29/codeql/outcome.txt
+          find "$RUNNER_TEMP" -maxdepth 5 -type f -printf '%p\n' \
+            | sort > diagnostics/v29/codeql/runner-temp-files.txt || true
+          find codeql-results -maxdepth 5 -type f -printf '%p\n' \
+            | sort > diagnostics/v29/codeql/result-files.txt || true
+          find "$RUNNER_TEMP/valley-codeql-db" -maxdepth 5 -type f -printf '%p\n' \
+            | sort > diagnostics/v29/codeql/database-files.txt || true
+          cat diagnostics/v29/codeql/outcome.txt
+
+      - name: Publicar inventário CodeQL
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: v29-android-codeql-diagnostic
+          path: |
+            diagnostics/v29/codeql
+            codeql-results
+          if-no-files-found: warn
+          retention-days: 14
