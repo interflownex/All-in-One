@@ -118,7 +118,18 @@ jobs:
           python scripts/validate_valley_android_release_v29.py
           apps/valley-android/gradlew -p apps/valley-android \
             testProductionDebugUnitTest lintProductionDebug assembleProductionDebug --no-daemon --stacktrace
-      - name: Publicar análise SAST CodeQL
+      - name: Finalizar análise SAST CodeQL
         uses: github/codeql-action/analyze@v4
         with:
           category: valley-android-java-kotlin
+          upload: ${{ github.event_name == 'pull_request' && 'never' || 'always' }}
+          output: codeql-results
+          post-processed-sarif-path: codeql-results/post-processed
+      - name: Publicar evidência SARIF do Pull Request
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v5
+        with:
+          name: valley-android-codeql-sarif
+          path: codeql-results
+          if-no-files-found: error
+          retention-days: 14
