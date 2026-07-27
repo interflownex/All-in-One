@@ -12,6 +12,10 @@ import uuid
 from pathlib import Path
 from urllib import error, parse, request
 
+from scripts.secure_http import require_https_url
+
+TELEGRAM_HOSTS = {"api.telegram.org"}
+
 
 def env(name: str) -> str | None:
     value = os.environ.get(name)
@@ -19,14 +23,19 @@ def env(name: str) -> str | None:
 
 
 def telegram_request(method: str, token: str, data: bytes, content_type: str) -> None:
-    req = request.Request(
+    safe_url = require_https_url(
         f"https://api.telegram.org/bot{token}/{method}",
+        allowed_hosts=TELEGRAM_HOSTS,
+    )
+    req = request.Request(
+        safe_url,
         data=data,
         headers={"Content-Type": content_type},
         method="POST",
     )
     try:
-        with request.urlopen(req, timeout=60) as response:
+        # O endpoint foi validado por HTTPS, porta padrão e allowlist de host.
+        with request.urlopen(req, timeout=60) as response:  # nosec B310
             payload = json.loads(response.read().decode("utf-8"))
             if response.status not in range(200, 300) or payload.get("ok") is not True:
                 raise RuntimeError("Telegram recusou a entrega.")
@@ -43,11 +52,13 @@ def send_web(token: str, chat_id: str, url: str, version: str) -> None:
 
 
 def verify_web_identity(url: str, expected_marker: str) -> None:
+    safe_url = require_https_url(url)
     try:
         req = request.Request(
-            url, headers={"User-Agent": "all-in-one-release-verifier/1"}
+            safe_url, headers={"User-Agent": "all-in-one-release-verifier/1"}
         )
-        with request.urlopen(req, timeout=30) as response:
+        # A URL pública foi validada como HTTPS, porta padrão e sem credenciais.
+        with request.urlopen(req, timeout=30) as response:  # nosec B310
             body = response.read().decode("utf-8", errors="replace")
             if response.status not in range(200, 300):
                 raise RuntimeError(f"Ambiente web retornou HTTP {response.status}.")
@@ -129,12 +140,12 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         try:
             verify_web_identity(args.url, args.expected_marker)
-        except RuntimeError as exc:
+        except (RuntimeError, ValueError) as exc:
             print(f"Entrega web recusada: {exc}", file=sys.stderr)
             return 2
         try:
             send_web(args.telegram_token, args.telegram_chat_id, args.url, args.version)
-        except RuntimeError as exc:
+        except (RuntimeError, ValueError) as exc:
             print(f"Entrega web falhou: {exc}", file=sys.stderr)
             return 1
     else:
@@ -147,7 +158,7 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         try:
             send_app(args.telegram_token, args.telegram_chat_id, artifact, args.version)
-        except RuntimeError as exc:
+        except (RuntimeError, ValueError) as exc:
             print(f"Entrega do aplicativo falhou: {exc}", file=sys.stderr)
             return 1
     print(f"Entrega {args.kind} confirmada pelo Telegram.")
