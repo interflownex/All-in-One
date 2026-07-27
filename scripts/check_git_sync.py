@@ -85,7 +85,7 @@ def github_pull_request_base(branch: str) -> str | None:
 
     Em checkouts rasos, ``rev-list`` respeita a fronteira shallow e pode omitir os
     pais, mesmo quando os identificadores permanecem no objeto do commit. Por
-    isso, o cabeçalho bruto de ``HEAD`` e lido com ``cat-file``. O fallback so
+    isso, o cabecalho bruto de ``HEAD`` e lido com ``cat-file``. O fallback so
     vale para um evento de Pull Request cuja base declarada coincide com a branch
     solicitada e cujo ``HEAD`` possui exatamente dois pais.
     """
@@ -128,11 +128,12 @@ def comparison(remote: str, branch: str, *, no_fetch: bool) -> Comparison | None
         f"usando o primeiro pai {base_sha} como base declarada de {remote_ref}.",
         file=sys.stderr,
     )
-    # O GitHub cria HEAD como um merge sintetico entre a base e o head do PR.
-    # Mesmo quando o objeto do primeiro pai nao foi baixado, a relacao segura
-    # conhecida e: nenhuma defasagem em relacao a base e um commit sintetico a
-    # frente. Fora desse contexto, nenhum valor e inferido.
-    return Comparison(label=f"pull-request-base:{base_sha}", behind=0, ahead=1)
+    # O HEAD do checkout de Pull Request e um merge sintetico criado pelo GitHub.
+    # Esse commit nao pertence a branch proposta e, portanto, nao deve ser contado
+    # como divergencia "ahead". A presenca do primeiro pai, combinada com
+    # GITHUB_BASE_REF, comprova que o merge foi construido sobre a base solicitada.
+    # Fora desse contexto estrito, nenhuma contagem e inferida.
+    return Comparison(label=f"pull-request-base:{base_sha}", behind=0, ahead=0)
 
 
 def validate(args: argparse.Namespace) -> int:
