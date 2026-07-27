@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - fix/cicd-governanca-v2-8-2026-07-27
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
