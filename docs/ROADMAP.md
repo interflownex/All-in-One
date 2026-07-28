@@ -39,6 +39,46 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
 - Suporte/disputa por pedido, reviews com moderacao basica auditavel e
   observabilidade comercial segura para CRM/BI em tempo de demo.
 
+## Novo incremento aprovado: Health Watch + SafeZone
+
+O Health recebe uma extensao Android/Wear OS para sinais disponiveis,
+exercicios, telemonitoramento e protecao por cercas virtuais. O recurso nao
+cria um novo modulo e Apple permanece fora da primeira etapa.
+
+### P0 — Critico
+
+1. Privacidade, consentimento, vinculo de cuidado e protecao antiabuso.
+2. Vinculo seguro de usuario, celular e smartwatch.
+3. Contratos, entidades, eventos e auditoria para wearables e SafeZone.
+4. Scaffold Android companheiro e Wear OS.
+5. Cerca circular permanente, temporaria, por data, horario e recorrencia.
+6. Alertas de saida, bateria baixa e dispositivo offline.
+7. Operacao offline, sincronizacao idempotente e testes de precisao.
+
+### P1 — Alto
+
+1. Frequencia cardiaca, atividade, treinos e `Senti Agora`.
+2. Historico, plano de cuidado e pacote pre-consulta.
+3. Responsavel principal, secundario e localizacao temporaria em incidente.
+4. Testes fisicos em Galaxy Watch, Xiaomi Watch e outro Wear OS.
+
+### P2 — Medio
+
+1. Corredor de rota, desvio e nao chegada.
+2. Circulo de cuidado e escalonamento.
+3. Modo Consulta Viva e painel profissional.
+4. Pos-alta conectado e integracoes com Services, Mobility e Documents.
+
+### P3 — Futuro
+
+1. Apple Watch e watchOS.
+2. Relogios com sistemas fechados.
+3. Sensores proprietarios e funcoes medicas reguladas.
+4. Publicacao comercial, homologacao e operacao paga.
+
+Consulte `docs/HEALTH_WATCH_SAFEZONE.md` e
+`docs/HEALTH_WATCH_SAFEZONE_PRIORITIES.md`.
+
 ## Proximos incrementos bloqueadores para beta
 
 1. Consolidar o dispatcher real e a observabilidade operacional com eventos de
@@ -53,9 +93,13 @@ Plano operacional vivo: consulte `docs/EXECUTION_PLAN.md` para a ordem mandatari
 6. Conectar notificacoes e dashboards comerciais ao ambiente vivo; a moderacao
    basica, suporte/disputa e observabilidade comercial local ja tem fluxo
    auditavel.
+7. Executar o P0 do Health Watch + SafeZone antes de qualquer piloto com
+   localizacao ou dados sensiveis de wearable.
 
 ## Bloqueadores para producao
 
 1. Homologacao regulatoria, LGPD/DPIA, politicas de retencao e consentimento.
 2. Pentest, carga, disaster recovery, backup/restore e resposta a incidente.
 3. Homologacao de parceiros financeiros, fiscais, transporte e saude.
+4. Validacao em dispositivos fisicos, revisao antiabuso e testes de falsos
+   positivos para Health Watch + SafeZone.
