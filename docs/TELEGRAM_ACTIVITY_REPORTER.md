@@ -99,3 +99,8 @@ Os testes cobrem:
 - integrar fonte real das pendências;
 - criar artefato de evidência sem dados sensíveis;
 - validar comportamento de rate limit HTTP 429.
+
+## Revalidação de integração
+
+Branch submetida a novo ciclo completo contra a `main` estabilizada em
+28/07/2026, preservando todos os gates de CI e segurança.
