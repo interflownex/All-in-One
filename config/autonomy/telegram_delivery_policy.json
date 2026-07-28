@@ -1,14 +1,28 @@
 {
-  "version": 1,
+  "version": 2,
   "enabled": true,
   "channel": "telegram",
-  "required_secrets": ["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"],
+  "required_secrets": [
+    "TELEGRAM_BOT_TOKEN",
+    "TELEGRAM_CHAT_ID"
+  ],
   "credentials_outside_git": true,
   "delivery_script": "scripts/send_ready_artifact_to_telegram.py",
+  "activity_executor": "scripts/telegram_activity_reporter.py",
+  "pending_report_executor": "scripts/telegram_activity_reporter.py",
+  "implementation_status": "initial_cli_versioned_pending_ci_and_schedule",
+  "network": {
+    "timeout_seconds": 20,
+    "max_retries": 3,
+    "backoff_seconds": [1, 2, 4]
+  },
   "activity_notifications": {
     "enabled": true,
     "channel": "telegram",
-    "events": ["activity_started", "activity_completed"],
+    "events": [
+      "activity_started",
+      "activity_completed"
+    ],
     "start_payload": {
       "required_fields": [
         "activity_name",
@@ -34,7 +48,11 @@
         "pending_items",
         "next_steps"
       ],
-      "status_values": ["success", "partial_success", "failed"]
+      "status_values": [
+        "success",
+        "partial_success",
+        "failed"
+      ]
     }
   },
   "developer_pending_reports": {
@@ -42,6 +60,7 @@
     "channel": "telegram",
     "frequency_per_day": 4,
     "schedule_timezone": "America/Sao_Paulo",
+    "schedule_status": "pending_ci_and_secret_configuration",
     "required_fields": [
       "report_index",
       "generated_at",
@@ -75,16 +94,25 @@
       "delivery": "installable_artifact_and_version"
     }
   },
+  "validation": {
+    "dry_run_required_before_real_send": true,
+    "tests": [
+      "tests/test_telegram_activity_reporter.py"
+    ],
+    "forbid_secret_logging": true,
+    "max_message_length": 3900,
+    "report_index_range": [1, 4]
+  },
   "rules": [
-    "Enviar via Telegram no inicio e no fim de cada atividade gerada pela IA.",
-    "No inicio da atividade, informar nome da atividade, descricao tecnica detalhada, dificuldade percebida e tempo estimado de conclusao.",
-    "No encerramento da atividade, informar status final, percentual concluido, falhas identificadas, causa da falha, acao de resolucao e proximos passos.",
-    "Incluir automaticamente as pendencias detectadas nas atualizacoes do desenvolvedor.",
-    "Encaminhar 4 vezes por dia relatorio de pendencias do desenvolvedor via Telegram.",
-    "Enviar via Telegram assim que o ambiente web ou o aplicativo estiver realmente pronto.",
-    "Nao declarar prontidao com build parcial, deploy incompleto ou artefato nao verificado.",
-    "O ambiente web deve enviar a URL publica e a identificacao da versao.",
-    "O aplicativo deve enviar o artefato instalavel e a identificacao da versao.",
-    "Nunca versionar token do bot, chat ID ou outras credenciais do Telegram."
+    "Enviar via Telegram no início e no fim de cada atividade gerada pela IA.",
+    "No início, informar nome, descrição técnica, dificuldade, tempo estimado e progresso inicial.",
+    "No encerramento, informar status, percentual, falhas, causa, ação, pendências e próximos passos.",
+    "Incluir automaticamente as pendências detectadas nas atualizações do desenvolvedor.",
+    "Encaminhar quatro relatórios por dia somente após CI e secrets legítimos estarem configurados.",
+    "Executar dry-run antes de envio real.",
+    "Não declarar prontidão com build parcial, deploy incompleto ou artefato não verificado.",
+    "Nunca versionar token do bot, chat ID ou outras credenciais do Telegram.",
+    "Nunca imprimir token ou chat ID em logs, erros ou relatórios.",
+    "Falhas de rede devem usar retry limitado e não criar loop infinito."
   ]
 }
