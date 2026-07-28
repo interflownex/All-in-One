@@ -1,0 +1,54 @@
+{
+  "name": "@all-in-one/pdv-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PDV All in One para Windows com operação local offline e sincronização posterior.",
+  "main": "electron/main.cjs",
+  "author": "All in One",
+  "license": "UNLICENSED",
+  "scripts": {
+    "prestart": "node scripts/prepare-windows.cjs",
+    "start": "electron .",
+    "dev": "npm run start",
+    "pretest": "node scripts/prepare-windows.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "predist:win": "node scripts/prepare-windows.cjs",
+    "dist:win": "electron-builder --win nsis --x64 --ia32 && electron-builder --win portable --x64 && electron-builder --win portable --ia32"
+  },
+  "devDependencies": {
+    "electron": "^43.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "br.com.brasildesconto.allinone.pdv",
+    "productName": "All in One PDV",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "artifactName": "All-in-One-PDV-Setup-${version}.${ext}",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "All in One PDV",
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": true
+    },
+    "portable": {
+      "artifactName": "All-in-One-PDV-Portable-${version}-${arch}.${ext}"
+    }
+  }
+}
