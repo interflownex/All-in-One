@@ -79,3 +79,8 @@ Os arquivos serão gravados na pasta `dist/`.
 ## Homologação necessária antes da produção fiscal
 
 A operação comercial local está pronta. A emissão fiscal, o TEF/SmartPOS e o envio de notificações ao aplicativo do cliente dependem das credenciais e contratos dos provedores escolhidos. A ausência dessas credenciais não bloqueia a venda offline, mas deixa os eventos aguardando sincronização.
+
+## Revalidação de integração
+
+Branch submetida em 28/07/2026 a novo ciclo completo contra a `main`
+estabilizada, preservando os testes Windows, segurança e operação offline.
