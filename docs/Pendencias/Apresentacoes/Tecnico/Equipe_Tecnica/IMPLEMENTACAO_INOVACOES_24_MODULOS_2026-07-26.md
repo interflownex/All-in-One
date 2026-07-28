@@ -115,3 +115,8 @@ python3 scripts/validate_repository.py
 ## 9. Estado oficial desta entrega
 
 A ordem de implementação está registrada no projeto, protegida por catálogo, runtime, feature flags e testes. As 24 capacidades ainda não estão integralmente prontas para produção. O incremento atual é a fundação técnica segura que permite desenvolvê-las em paralelo sem perder a fonte de verdade, reativar módulo excluído ou liberar comportamento incompleto.
+
+## 10. Revalidação de integração
+
+Branch submetida em 28/07/2026 a novo ciclo completo contra a `main`
+estabilizada, sem desativar gates, reduzir cobertura ou reintroduzir o Vision.
