@@ -1,183 +1,232 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 1.1  
-**Data da entrega:** 26/07/2026  
-**Hora da entrega:** 14:01:53  
+**Versão:** 1.2  
+**Data da entrega:** 28/07/2026  
+**Hora da entrega:** 00:38:52  
 **Fuso horário:** `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Branch de elaboração:** `docs/pendencias-v2-6-primeiro-teste-2026-07-26`  
-**Commit de referência:** `c2c8eaccc1581ed674821feaaa3336c03a5b763c`  
-**Issue de orquestração:** `#43`  
-**Classificação:** `Pendências > Técnico > Equipe técnica`  
+**Branch de elaboração:** `codex/apk-valley-rodada-004-2026-07-28`  
+**Commit-base:** `77fa6fab5f1c881ba6289dc288dc64e20421614a`  
+**Issue de orquestração:** `#55`  
+**Classificação:** `Inovação > APK Valley Consumidor > Técnico e Produto`  
 **Destino:** Codex e demais IAs desenvolvedoras autorizadas
 
 ## 1. Objetivo desta versão
 
-Registrar o primeiro teste completo das diretrizes permanentes e fornecer à próxima IA desenvolvedora uma passagem operacional suficiente para executar o ciclo v2.6 sem depender de explicação adicional.
+Registrar a aprovação da Rodada 004 do APK Valley Consumidor, preservar as decisões do aprovador e orientar a evolução da vertical FastAPI criada nesta branch até a implantação real em produção.
 
-## 2. Resultado da varredura
+A existência de contratos, rotas ou testes não autoriza declarar os 23 produtos como concluídos. Cada capacidade exige persistência, integração, segurança, homologação e evidência no ambiente correto.
 
-### Confirmado
+## 2. Decisões obrigatórias da Rodada 004
 
-- catálogo e configuração Business sincronizados em 24 módulos;
-- `legal`, `property` e `ai_core` presentes em `MODULE_NAMES`;
-- auditor v7 versionado;
-- referências ativas ao Vision removidas no escopo verificado;
-- PR Render `#27` encerrado sem merge;
-- política Telegram atualizada;
-- watchdog Gemini restaurado;
-- diretrizes de Estudar, Pesquisa Avançada, data, hora e `tarefas.md` integradas;
-- issue `#28` encerrada;
-- issue `#43` aberta para o ciclo v2.6.
+1. Identity — implantar Carteira de Contextos Isolados.
+2. Business — implantar Atendimento Adaptado sem Diagnóstico.
+3. Permissions — implantar Orçamento Pessoal de Dados.
+4. Finance — implantar Cofre de Objetivo Compartilhado por Regras.
+5. Marketplace — implantar Conserte, Alugue ou Compre como `P0`.
+6. Sobras produtivas — implantar no `Marketplace`, nunca no `STOCK` nesta rodada.
+7. Delivery — implantar Ponto Móvel de Encontro Seguro.
+8. Riders — implantar Rider Mentor em Modo Sombra.
+9. Services — implantar contrato por resultado com prazo máximo de validação, prova de falha e liberação ao profissional quando não houver comprovação suficiente do cliente dentro do prazo.
+10. Mobility — implantar por abrangência comprovada, sem alegação nacional sem API, bilhetagem e pagamento validados.
+11. Jobs — implantar Prévia Realista da Vaga somente para empresas voluntárias em programa opt-in.
+12. ERP — implantar Modo Continuidade do Pequeno Negócio.
+13. WMS — implantar Despensa Doméstica e lista contínua de compras, sugestão por saldo ou data e baixa após confirmação da compra.
+14. TMS — não implantar Cadeia de Custódia Sensorial nesta rodada.
+15. CRM — implantar CRM por Intenção Declarada.
+16. BPM — implantar Pausa Humana Obrigatória.
+17. GED/ECM — implantar Documento em Áudio Navegável e Verificável.
+18. HR — implantar Mapa Transparente de Crescimento.
+19. Health — implantar acompanhamento pós-consulta e agenda de medicação somente a partir de prescrição verificada.
+20. Legal — implantar Jornada Guiada de Direito do Consumidor.
+21. Property — implantar Manual Portátil da Casa.
+22. BI — implantar Índice de Fricção do Usuário.
+23. AI Core — implantar Orçamento de Autonomia da Helena.
+24. API Hub — implantar Malha Offline de Continuidade.
 
-### Pendente
+## 3. Entrega executável existente
 
-- executar checks no commit atual;
-- regularizar PRs `#34`, `#36`, `#37`, `#38` e `#40`;
-- resolver sobreposição entre `#34` e `#37`;
-- auditar commit `44be12a9751d336f0c8094f79c893eb69008eaf4` e o pacote `.gemini/skills`;
-- corrigir identidade pública `tmp-valley`;
-- homologar API Hub e `/health`;
-- criar executor Telegram real;
-- validar APK Admin;
-- validar PDV Desktop;
-- validar onda de inovação;
-- concluir issue `#24` no Stitch;
-- incorporar ativo oficial Valley Riders;
-- impor administrativamente uso exclusivo de Squash and Merge.
+Arquivos principais:
 
-## 3. Fontes de verdade
+- `modules/valley_consumer/main.py`;
+- `modules/valley_consumer/innovation_round_004.py`;
+- `modules/valley_consumer/README.md`;
+- `tests/test_valley_consumer_innovation_round_004.py`;
+- `docs/inovacao/APK_Valley_Consumidor_Rodada_004_Implementacao_2026-07-28.md`.
+
+A vertical atual oferece:
+
+- catálogo das 24 decisões;
+- bloqueio técnico da ideia 14;
+- registro genérico para as ideias aprovadas;
+- comparação P0 do Marketplace;
+- sobras produtivas no Marketplace com bloqueio de material perigoso ou regulado;
+- contrato de serviço por resultado e prazo;
+- cadastro de prontidão de operadores de mobilidade;
+- adesão voluntária ao piloto Jobs;
+- lista de compras e baixa por transação;
+- agenda de medicação baseada em prescrição verificada;
+- orçamento de autonomia da Helena;
+- fila offline idempotente.
+
+## 4. Fontes de verdade
 
 Antes de editar, consultar:
 
 1. `AGENTS.md`;
 2. este `tarefas.md`;
-3. `docs/Pendências Do desenvolvedor.md`, versão 2.6;
-4. `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v2.6_2026-07-26.md`;
-5. `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v2.6_2026-07-26.md`;
-6. issue `#43`;
-7. PRs `#34`, `#36`, `#37`, `#38` e `#40`;
-8. issues `#24`, `#39` e `#41`;
-9. `scripts/audit_confirmation_v7.py`;
-10. `config/autonomy/telegram_delivery_policy.json`;
-11. manifestos de skills em `.gemini/skills` e `.github/skills`.
+3. issue `#55`;
+4. `docs/inovacao/APK_Valley_Consumidor_Rodada_004_Implementacao_2026-07-28.md`;
+5. `config/module_catalog.json`;
+6. `modules/shared/domain_rules.py`;
+7. `modules/shared/runtime.py`;
+8. testes existentes de integração dos módulos;
+9. documentação oficial dos provedores externos utilizados.
 
-## 4. Pré-requisitos obrigatórios
+## 5. Pré-requisitos obrigatórios
 
 1. executar `git status --short --branch`;
 2. buscar referências remotas permitidas;
 3. executar `python3 scripts/multi_agent_sync_guard.py preflight --integrate`;
 4. adquirir lock da atividade;
 5. confirmar ausência de merge ou rebase em andamento;
-6. criar branch de trabalho se estiver na `main`;
+6. trabalhar somente em branch dedicada;
 7. preservar mudanças de outros agentes;
-8. confirmar que nenhum segredo será versionado.
+8. não versionar segredos, tokens, prescrições reais ou dados pessoais;
+9. não publicar diretamente em `main`;
+10. integrar somente por pull request e Squash and Merge.
 
-## 5. Ordem de execução
+## 6. Ordem de execução
 
-### Prioridade 1: checks e auditoria
+### P0 — Marketplace: Conserte, Alugue ou Compre
 
-- executar auditor v7;
-- executar validação do repositório;
-- executar testes relacionados;
-- registrar checks ausentes ou falhos.
+- criar entidades persistentes para modalidades e ofertas;
+- implementar cálculo de custo total;
+- integrar disponibilidade, garantia, entrega e pagamento;
+- criar ranking explicável e controle contra favorecimento;
+- implementar telas no APK Valley;
+- testar reparo, aluguel, recondicionado e compra nova ponta a ponta.
 
-### Prioridade 2: PRs desatualizados
+### P1 — Persistência e segurança da vertical
 
-- comparar os cinco PRs com a `main` atual;
-- resolver sobreposição `#34` e `#37`;
-- atualizar, dividir ou encerrar PRs substituídos;
-- não integrar PR com base antiga ou `mergeable` falso.
+- substituir dicionários em memória por stores tipados;
+- criar migrações PostgreSQL;
+- integrar `actor_from_headers`, RBAC, ABAC, consentimento e auditoria;
+- emitir eventos outbox com idempotência;
+- proteger dados sensíveis e definir retenção.
 
-### Prioridade 3: pacote de skills
+### P1 — Services
 
-- auditar commit `44be12a`;
-- comparar manifestos;
-- identificar remoções, restaurações e alterações de conteúdo;
-- abrir issue se a atualização não for reproduzível.
+- integrar escrow financeiro homologado;
+- configurar prazo por categoria de serviço;
+- definir padrões mínimos de evidência;
+- criar revisão humana e contestação;
+- impedir liberação duplicada;
+- notificar cliente e profissional antes e após o prazo.
 
-### Prioridade 4: ambiente público
+### P1 — Mobility
 
-- corrigir identificação `tmp-valley`;
-- validar Render, URL do API Hub e `/health`;
-- registrar CORS, logs e bloqueios externos.
+- criar inventário nacional por operador e município;
+- verificar GTFS, GTFS Realtime, APIs proprietárias e SLA;
+- verificar bilhetagem, NFC, QR Code, integração tarifária e conciliação;
+- registrar evidências e data da última homologação;
+- liberar comunicação pública somente nas áreas aprovadas;
+- iniciar pilotos onde houver cobertura parcial útil e juridicamente permitida.
 
-### Prioridade 5: Telegram
+### P1 — Jobs
 
-- implementar `activity_started`;
-- implementar `activity_completed`;
-- implementar quatro relatórios diários;
-- criar retry, timeout, mocks e logs seguros.
+- criar termo de adesão empresarial;
+- impedir ativação obrigatória;
+- garantir que a simulação não produza trabalho real;
+- impedir avaliação escondida sem consentimento;
+- registrar versão do termo, empresa e vagas participantes.
 
-### Prioridade 6: artefatos
+### P1 — Lista de compras e despensa
 
-- validar APK Admin do PR `#36`;
-- validar PDV Desktop do PR `#38`;
-- registrar hash, versão, commit e smoke test.
+- vincular compras confirmadas do Marketplace e varejo autorizado;
+- criar correspondência segura entre item comprado e item da lista;
+- sugerir revisão sem executar compra automaticamente;
+- respeitar orçamento, consentimento e preferências de notificação;
+- permitir desfazer baixa incorreta.
 
-### Prioridade 7: encerramento
+### P1 — Health
 
-- atualizar issue `#43`;
-- atualizar pendências e relatórios;
-- incrementar a versão deste arquivo;
-- abrir ou atualizar PR;
-- integrar apenas com checks e Squash and Merge;
-- liberar lock.
+- integrar prescrição eletrônica e consentimento;
+- validar autoria profissional;
+- gerar agenda sem alterar conteúdo clínico;
+- permitir confirmação, atraso, não tomada e observação;
+- definir alertas seguros e escalonamento clínico;
+- aplicar LGPD e interoperabilidade FHIR quando cabível.
 
-## 6. Ciclo de tempo
+### P1 — Demais ideias aprovadas
 
-- execução principal: 8 horas;
-- tolerância normal: até 4 horas;
-- limite de coleta: 12 horas;
-- após 12 horas, não iniciar nova frente e registrar tudo que restou.
+Para cada ideia de 1 a 24, exceto 14:
 
-## 7. Testes mínimos esperados
+- criar entidades e eventos específicos;
+- definir API e UX;
+- implementar persistência;
+- aplicar segurança e auditoria;
+- escrever testes unitários, integração e jornada;
+- documentar critérios de aceite;
+- vincular commits e PRs à issue `#55`.
+
+## 7. Testes mínimos
+
+Executar:
 
 ```bash
-python3 scripts/audit_confirmation_v7.py
+pytest -q tests/test_valley_consumer_innovation_round_004.py
 python3 scripts/validate_repository.py
 ```
 
-Executar também testes específicos de cada PR e componente alterado. Não usar resultados antigos como prova do commit atual.
+Resultado local registrado na entrega inicial:
+
+```text
+8 passed
+```
+
+Esse resultado comprova somente os contratos e salvaguardas testados, não a implantação completa em produção.
 
 ## 8. Critérios de aceite
 
-Uma tarefa só pode ser concluída quando houver:
+Cada ideia somente pode ser marcada como concluída quando houver:
 
-- implementação versionada;
-- teste reproduzível;
-- evidência do ambiente correto;
-- referência ao commit e PR;
-- checks executados;
+- código integrado ao módulo correto;
+- persistência e migração;
+- autenticação, autorização e consentimento;
+- testes reproduzíveis;
+- evidência no ambiente homologado;
+- observabilidade e auditoria;
+- documentação de risco e abrangência;
+- integração externa real quando aplicável;
+- referência ao commit e pull request;
 - ausência de regressão relevante;
-- confirmação de que nenhum segredo foi exposto;
-- atualização da issue `#43`;
-- atualização deste `tarefas.md`.
+- atualização da issue `#55` e deste arquivo.
 
 ## 9. Riscos e bloqueios
 
-- PRs antigos podem sobrescrever correções mais novas;
-- PRs `#34` e `#37` podem duplicar alterações;
-- APK e instalador podem existir sem homologação real;
-- domínio público possui identidade temporária;
-- pacote de skills teve mudança ampla sem PR localizado;
-- Telegram possui política, mas não executor completo localizado;
-- repositório ainda permite métodos de merge além de squash;
-- credenciais externas podem bloquear Render, Google, Stitch e Telegram.
+- a vertical inicial usa armazenamento em memória;
+- escrow real depende de PSP e análise regulatória;
+- mobilidade pública não possui cobertura técnica uniforme em todo o Brasil;
+- pagamento por aproximação e QR Code varia por operador e equipamento;
+- dados de saúde exigem proteção reforçada e validação clínica;
+- IA autônoma exige rollback, recibos e limites por finalidade;
+- eventos offline exigem assinatura real, armazenamento seguro e reconciliação distribuída;
+- 23 ideias simultâneas não devem ser comunicadas como prontas apenas por possuírem contratos de API.
 
 ## 10. Entrega obrigatória da próxima IA
 
 A próxima IA deve entregar:
 
 1. resumo simples para o gestor;
-2. lista do que foi concluído, parcial, falhou e bloqueou;
-3. comandos e testes executados;
-4. evidências e artefatos;
-5. commits e pull requests;
-6. atualização da issue `#43`;
-7. nova versão dos relatórios, quando houver mudança;
-8. nova versão de `tarefas.md` com data e hora;
-9. integração por Squash and Merge quando os critérios forem atendidos.
+2. capacidade escolhida e justificativa de prioridade;
+3. arquivos alterados;
+4. testes e comandos executados;
+5. evidências e limitações;
+6. commit e pull request;
+7. atualização da issue `#55`;
+8. incremento da versão deste arquivo;
+9. integração por Squash and Merge somente após checks aprovados.
 
 ## 11. Histórico de versões
 
@@ -185,3 +234,4 @@ A próxima IA deve entregar:
 |---|---|---|
 | 1.0 | 26/07/2026 13:49:32 | Criação da diretriz permanente de Estudar, Pesquisa Avançada, versionamento e entrega do arquivo `tarefas.md`. |
 | 1.1 | 26/07/2026 14:01:53 | Primeiro teste completo, consolidação v2.6, issue #43 e tarefas para checks, PRs, skills, ambiente público, Telegram, APK Admin e PDV Desktop. |
+| 1.2 | 28/07/2026 00:38:52 | Aprovação da Rodada 004 do APK Valley, vertical FastAPI inicial, salvaguardas, testes e issue #55 para implantação progressiva. |
