@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none';">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All in One PDV</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">A1</div>
+        <div>
+          <strong>ALL IN ONE</strong>
+          <span>PDV Desktop</span>
+        </div>
+      </div>
+      <nav id="navigation" aria-label="Navegação principal">
+        <button class="nav-item active" data-view="checkout">Caixa</button>
+        <button class="nav-item" data-view="orders">Pedidos</button>
+        <button class="nav-item" data-view="catalog">Produtos</button>
+        <button class="nav-item" data-view="promotions">Promoções</button>
+        <button class="nav-item" data-view="cash">Turno e caixa</button>
+        <button class="nav-item" data-view="reports">Relatórios</button>
+        <button class="nav-item" data-view="settings">Configurações</button>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="status-chip local">Modo local ativo</div>
+        <small>Funciona sem internet.</small>
+      </div>
+    </aside>
+
+    <section class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">OPERAÇÃO PRESENCIAL</p>
+          <h1 id="page-title">Caixa</h1>
+        </div>
+        <div class="topbar-status">
+          <span id="network-status" class="status-chip"></span>
+          <span id="shift-status" class="status-chip"></span>
+          <span id="clock"></span>
+        </div>
+      </header>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <main id="view" tabindex="-1"></main>
+    </section>
+  </div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
