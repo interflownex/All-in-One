@@ -36,7 +36,21 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 - Nao criar commit vazio quando nao houver mudancas.
 - O Codex deve gerar e aplicar a mensagem de commit com base na atividade e no diff real, sem transferir essa responsabilidade ao usuario nem solicitar edicao manual de `COMMIT_EDITMSG`.
 - A mensagem deve ser concisa, rastreavel e escrita em portugues do Brasil.
-- Se houver merge ou rebase em andamento, parar e reportar o bloqueio em portugues do Brasil.
+- Se houver merge ou rebase em andamento, parar, diagnosticar e resolver com seguranca antes de iniciar nova evolucao.
+
+# Prioridade obrigatoria de issues, PRs, commits, merges e workflows
+
+- A politica persistente e autoritativa fica em `config/autonomy/pending_work_priority_policy.json`.
+- Antes de iniciar qualquer nova evolucao, verificar obrigatoriamente issues abertas, pull requests abertas, commits nao integrados, branches de trabalho, merges pendentes ou conflitantes e workflows falhos, cancelados ou bloqueados.
+- A ordem obrigatoria de prioridade e: workflows falhos ou bloqueados; merges pendentes, parciais ou conflitantes; pull requests abertas; commits nao revisados ou nao integrados; issues abertas com escopo executavel; somente depois nova evolucao de produto.
+- Nenhuma evolucao nova pode avancar enquanto existir pendencia executavel sem classificacao, correcao, integracao, encerramento ou autorizacao previa explicita do usuario.
+- Sempre que houver capacidade tecnica e informacao suficiente, o agente deve executar em um unico ciclo: levantar, testar, classificar, decidir, planejar, implementar, validar, documentar, abrir ou atualizar pull request, resolver o estado de merge e integrar apenas com gates verdes.
+- O agente possui autonomia para escolher a solucao tecnicamente mais segura e coerente e nao deve transferir ao usuario decisoes que consegue tomar com evidencia.
+- Aprovacao ou alteracao do usuario somente pode ser solicitada quando existir bloqueio externo real, ausencia de credencial, exigencia legal, decisao comercial irreversivel, indisponibilidade de ferramenta ou incapacidade tecnica comprovada.
+- A existencia de issue aberta nao autoriza ignorar a pendencia nem iniciar outra frente paralela. A issue deve ser tratada, absorvida em uma issue mestra, classificada como bloqueada com evidencia ou encerrada corretamente.
+- Merges somente podem ocorrer com diff conhecido, head SHA validado, ausencia de conflitos, revisoes pendentes resolvidas, verificacao de segredos e gates obrigatorios verdes no mesmo SHA.
+- O metodo padrao e **Squash and Merge**. Auto-merge permanece desabilitado e qualquer mudanca no head invalida a autorizacao tecnica anterior.
+- Incidentes de seguranca, vazamento de credencial e indisponibilidade de producao podem interromper a ordem normal e devem ser tratados imediatamente.
 
 # Orquestracao obrigatoria de pendencias
 
