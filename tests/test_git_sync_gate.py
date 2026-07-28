@@ -3,7 +3,12 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from scripts.check_git_sync import parse_commit_parents
+from scripts.check_git_sync import (
+    Comparison,
+    comparison,
+    current_branch,
+    parse_commit_parents,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,34 +47,31 @@ def test_parse_commit_parents_rejects_invalid_identifiers() -> None:
     assert parse_commit_parents("parent not-a-sha\nparent ABCD\n") == ()
 
 
-def test_git_sync_python_gate_accepts_an_ahead_explicit_branch_when_allowed() -> None:
-    subprocess.run(
-        [
-            "python3",
-            "scripts/check_git_sync.py",
-            "--branch",
-            "main",
-            "--remotes",
-            "origin",
-            "--allow-dirty",
-            "--allow-ahead",
-            "--no-fetch",
-        ],
-        cwd=ROOT,
-        check=True,
+def test_git_sync_comparison_accepts_an_existing_remote_reference(monkeypatch) -> None:
+    def fake_git(args: list[str], *, check: bool = True) -> subprocess.CompletedProcess:
+        assert args == ["rev-parse", "--verify", "origin/main"]
+        return subprocess.CompletedProcess(args, 0, stdout="a" * 40)
+
+    expected = Comparison(label="origin/main", behind=0, ahead=1)
+    monkeypatch.setattr("scripts.check_git_sync.git", fake_git)
+    monkeypatch.setattr(
+        "scripts.check_git_sync.rev_list_comparison",
+        lambda ref: expected if ref == "origin/main" else None,
     )
 
+    assert comparison("origin", "main", no_fetch=True) == expected
 
-def test_git_sync_python_gate_uses_upstream_branch_by_default() -> None:
-    subprocess.run(
-        [
-            "python3",
-            "scripts/check_git_sync.py",
-            "--remotes",
-            "origin",
-            "--allow-dirty",
-            "--no-fetch",
-        ],
-        cwd=ROOT,
-        check=True,
-    )
+
+def test_git_sync_uses_upstream_branch_by_default(monkeypatch) -> None:
+    def fake_git(args: list[str], *, check: bool = True) -> subprocess.CompletedProcess:
+        assert args == [
+            "rev-parse",
+            "--abbrev-ref",
+            "--symbolic-full-name",
+            "@{u}",
+        ]
+        return subprocess.CompletedProcess(args, 0, stdout="origin/feature-rider\n")
+
+    monkeypatch.setattr("scripts.check_git_sync.git", fake_git)
+
+    assert current_branch(None) == "feature-rider"

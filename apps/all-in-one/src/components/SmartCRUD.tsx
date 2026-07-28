@@ -570,7 +570,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         }}
       >
         <img
-          src="/assets/brand/all-in-one-logo-transparent.svg"
+          src="/assets/brand/all-in-one-logo-official.png"
           alt="Branding"
           style={{ height: "24px", width: "auto" }}
         />

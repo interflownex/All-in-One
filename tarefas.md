@@ -1,239 +1,194 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 1.8  
-**Data e hora:** 28/07/2026 00:52:26  
-**Fuso horário:** `America/Sao_Paulo`  
-**Repositório:** `interflownex/All-in-One`  
-**Branch:** `codex/apk-valley-rodada-004-v2-2026-07-28`  
-**Commit-base:** `21a6ba6b0fbeb4afeaa336b7b0bbec6c51a0a9ff`  
-**Issue:** `#55`  
-**Destino:** Codex e demais IAs desenvolvedoras autorizadas
+**Versão:** 2.0
+**Data e hora:** 28/07/2026 14:51:13
+**Fuso horário:** `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/auditoria-valley-rider-2026-07-28`
+**Commit-base:** `5cf3a1ad34ae2c33cd3722d95c341bd49b0e999f`
+**Pull Request:** `#62`
+**Issue de orquestração:** `#51`
+**Aplicação:** `apps/valley_rider`
 
-## 1. Objetivo imediato
+## 1. Objetivo
 
-Evoluir a Rodada 004 do APK Valley Consumidor a partir da baseline v2.9 já integrada na `main`, preservando os 24 módulos oficiais, mantendo o Vision desativado e implementando progressivamente as 23 ideias aprovadas.
+Homologar tecnicamente o Valley Rider implementado pelo PR `#61`, mantendo o contrato Stitch `VALLEY RIDERS APK - Template Completo` (`Project ID 370812414211795487`), corrigindo falhas reproduzíveis dos gates locais e preparando as integrações externas sem controles falsos.
 
-A ideia 5, **Conserte, Alugue ou Compre**, é `P0`. A ideia 14, **Cadeia de Custódia Sensorial**, permanece bloqueada e não deve ser implementada nesta rodada.
+## 2. Contexto e estado atual
 
-## 2. Estado implementado nesta branch
+- o código funcional do PR `#61` está integrado em `main` no commit `3834bec`;
+- a auditoria encontrou 8 erros e 1 aviso no lint e um erro TypeScript no build;
+- as correções desta branch removem atualizações síncronas de estado em efeitos, evitam leitura de `ref` durante render, tornam o estado do GPS explícito, corrigem expressões sem efeito e usam `BufferSource` no helper SHA-256;
+- `npm run lint`, `npm run build` e os testes contratuais passaram após as correções;
+- a prova visual/interativa foi concluída por Playwright com Chromium local, HTTP 200, marca oficial, ausência de overlay, interação login/cadastro e capturas desktop/mobile;
+- a execução `push` do CI revelou dois testes de sincronização Git dependentes das referências ambientais do checkout; os testes foram tornados determinísticos e a suíte local completa aprovou 907 testes;
+- não há token Mapbox, credencial KYC, cofre privado, PSP de repasse, aparelho Android real nem binário oficial Valley Riders versionados.
 
-- aplicação FastAPI `modules/valley_consumer` criada;
-- catálogo executável com as 24 decisões da Rodada 004;
-- 23 ideias aprovadas e uma rejeitada;
-- ideia 5 marcada como `P0`;
-- ideia 6 redirecionada ao `Marketplace`, sem alteração funcional no `STOCK`;
-- bloqueio técnico da ideia 14;
-- contrato de comparação entre reparo, aluguel, empréstimo autorizado, recondicionado e compra nova;
-- cadastro de sobras produtivas com bloqueio de materiais perigosos ou regulados;
-- contrato de serviço por resultado com prazo máximo de validação, evidências e liberação protegida do pagamento;
-- cadastro de abrangência de mobilidade por operador, estado, cidade, API e meio de pagamento;
-- piloto Jobs exclusivamente voluntário para empresas;
-- lista contínua de compras com sugestão por saldo/data e baixa após confirmação da transação;
-- agenda de medicação derivada exclusivamente de prescrição verificada;
-- orçamento de autonomia da Helena;
-- fila de eventos offline com validade, assinatura, idempotência e deduplicação;
-- oito testes funcionais específicos adicionados;
-- documentação técnica e limites de produção registrados.
+## 3. Escopo
 
-## 3. Decisões obrigatórias da Rodada 004
+### Incluído
 
-1. Identity — implantar Carteira de Contextos Isolados.
-2. Business — implantar Atendimento Adaptado sem Diagnóstico.
-3. Permissions — implantar Orçamento Pessoal de Dados.
-4. Finance — implantar Cofre de Objetivo Compartilhado por Regras.
-5. Marketplace — implantar Conserte, Alugue ou Compre como `P0`.
-6. Sobras produtivas — implantar no `Marketplace`, nunca no `STOCK` nesta rodada.
-7. Delivery — implantar Ponto Móvel de Encontro Seguro.
-8. Riders — implantar Rider Mentor em Modo Sombra.
-9. Services — implantar contrato por resultado com prazo máximo, prova de falha e liberação ao profissional quando o cliente não apresentar comprovação suficiente dentro do prazo.
-10. Mobility — implantar por abrangência comprovada, sem alegação nacional sem API, bilhetagem e pagamento validados.
-11. Jobs — implantar Prévia Realista da Vaga somente para empresas voluntárias em programa opt-in.
-12. ERP — implantar Modo Continuidade do Pequeno Negócio.
-13. WMS — implantar Despensa Doméstica e lista contínua de compras, sugestão por saldo ou data e baixa após confirmação da compra.
-14. TMS — não implantar Cadeia de Custódia Sensorial nesta rodada.
-15. CRM — implantar CRM por Intenção Declarada.
-16. BPM — implantar Pausa Humana Obrigatória.
-17. GED/ECM — implantar Documento em Áudio Navegável e Verificável.
-18. HR — implantar Mapa Transparente de Crescimento.
-19. Health — implantar acompanhamento pós-consulta e agenda de medicação somente a partir de prescrição verificada.
-20. Legal — implantar Jornada Guiada de Direito do Consumidor.
-21. Property — implantar Manual Portátil da Casa.
-22. BI — implantar Índice de Fricção do Usuário.
-23. AI Core — implantar Orçamento de Autonomia da Helena.
-24. API Hub — implantar Malha Offline de Continuidade.
+1. preservar os oito grupos funcionais Stitch;
+2. manter Mapbox, GPS, geocodificação, rota, distância, ETA e Haversine;
+3. manter cadastro, autenticação, KYC, motorista, veículo e homologação;
+4. manter entregas, corridas, prova obrigatória e seguro;
+5. manter wallet, ledger idempotente, repasse via `finance/splits`, cancelamento e contestação;
+6. manter segurança, suporte, offline, notificações e privacidade;
+7. validar código, marca e aplicação renderizada;
+8. documentar e evidenciar bloqueios externos.
 
-## 4. Primeira ação obrigatória da próxima etapa
+### Fora do escopo sem credenciais ou contratos
 
-1. Obter o head mais recente desta branch.
-2. Confirmar que a branch não ficou atrás da `main`.
-3. Consultar somente workflows associados ao head atual.
-4. Executar os testes específicos da Rodada 004.
-5. Executar o gate de artefatos gerados da baseline v2.9.
-6. Não integrar com gate vermelho, ausente, cancelado ou em processamento.
+- emitir token público Mapbox;
+- contratar ou homologar provedor KYC/OCR;
+- criar cofre de arquivos privados;
+- processar repasses reais;
+- gerar Play Integrity legítimo;
+- fabricar logomarca Valley Riders;
+- declarar GPS/rede instável homologados sem aparelho real.
 
-## 5. Ordem de execução
+## 4. Fontes de verdade
 
-### P0 — Marketplace: Conserte, Alugue ou Compre
+1. `AGENTS.md`;
+2. diretriz técnica anexada em 28/07/2026;
+3. `config/stitch/screen_manifest.json`;
+4. `config/stitch/sync_state.json`;
+5. `config/branding/authorized_assets.json`;
+6. `config/branding/brand_identity.json`;
+7. `assets/brand/README.md`;
+8. `apps/valley_rider/README.md`;
+9. `apps/valley_rider/STATUS.md`;
+10. contratos OpenAPI dos módulos Identity, Riders, Delivery, Mobility, Finance e Marketplace;
+11. documentação oficial vigente de Mapbox, provedores KYC, Play Integrity e PSP que forem contratados.
 
-- criar entidades persistentes para modalidades, ofertas e disponibilidade;
-- implementar cálculo de custo total;
-- integrar garantia, entrega, pagamento e política de devolução;
-- criar ranking explicável e proteção contra favorecimento;
-- implementar telas no APK Valley;
-- testar reparo, aluguel, recondicionado e compra nova ponta a ponta;
-- iniciar com feature flag desligada.
+## 5. Pré-requisitos
 
-### P1 — Persistência e segurança da vertical
+- branch de trabalho atualizada com `origin/main`;
+- lock multiagente adquirido no escopo `valley-rider-auditoria`;
+- Node e npm compatíveis com o lockfile;
+- `.venv` do projeto para pytest;
+- segredos somente em variáveis de ambiente ou cofre;
+- Playwright e Chromium local disponíveis para a prova renderizada;
+- aparelho Android real autorizado para GPS e rede instável.
 
-- substituir armazenamento em memória por stores tipados;
-- criar migrations PostgreSQL reversíveis;
-- integrar autenticação, RBAC, ABAC, consentimento e auditoria;
-- emitir eventos outbox com idempotência;
-- definir retenção, anonimização e exclusão;
-- adicionar telemetria, alertas e rollback.
+## 6. Sequência de execução e prioridades
 
-### P1 — Services
+### P0 — finalizar esta correção
 
-- integrar escrow financeiro homologado;
-- configurar prazo por categoria de serviço;
-- definir padrões mínimos de evidência;
-- implementar revisão humana e contestação;
-- impedir liberação duplicada;
-- notificar cliente e profissional antes e após o prazo.
+1. repetir `npm ci`, lint e build;
+2. executar testes Stitch e de marca;
+3. executar `check_brand_integrity.py` e `validate_repository.py`;
+4. revisar o diff e procurar segredos;
+5. commitar e publicar a branch;
+6. abrir PR para `main`;
+7. aguardar todos os gates obrigatórios no mesmo SHA;
+8. atualizar a issue `#51` com SHA, PR, testes e bloqueios.
 
-### P1 — Mobility
+### P1 — prova renderizada
 
-- manter inventário por operador, município e estado;
-- verificar GTFS, GTFS Realtime, APIs proprietárias e SLA;
-- verificar bilhetagem, NFC, QR Code, integração tarifária e conciliação;
-- registrar evidências e data da última homologação;
-- liberar comunicação pública somente nas áreas aprovadas;
-- iniciar pilotos onde houver cobertura parcial útil e juridicamente permitida.
+1. disponibilizar o navegador integrado;
+2. abrir a aplicação local;
+3. validar identidade da página, conteúdo não vazio e ausência de overlay;
+4. conferir console;
+5. alternar login/cadastro;
+6. autenticar somente com conta de teste autorizada;
+7. validar estados bloqueados de Mapbox/KYC/PSP sem credenciais;
+8. capturar evidências desktop e mobile.
 
-### P1 — Jobs
+### P1 — homologações externas
 
-- criar termo de adesão empresarial;
-- impedir ativação obrigatória;
-- garantir que a simulação não produza trabalho real;
-- impedir avaliação escondida sem consentimento;
-- registrar versão do termo, empresa e vagas participantes.
+1. cadastrar token público Mapbox restrito por origem;
+2. homologar KYC/OCR e cofre privado;
+3. homologar PSP para consumir solicitações `split_type: rider_payout`;
+4. integrar Play Integrity pelo shell Android;
+5. testar GPS em campo e rede instável;
+6. ingerir apenas o binário oficial aprovado da marca Valley Riders.
 
-### P1 — Lista de compras e despensa
-
-- vincular compras confirmadas do Marketplace e varejo autorizado;
-- criar correspondência segura entre item comprado e item da lista;
-- sugerir revisão sem executar compra automaticamente;
-- respeitar orçamento, consentimento e preferências de notificação;
-- permitir desfazer baixa incorreta.
-
-### P1 — Health
-
-- integrar prescrição eletrônica e consentimento;
-- validar autoria profissional;
-- gerar agenda sem alterar conteúdo clínico;
-- permitir confirmação, atraso, não tomada e observação;
-- definir alertas seguros e escalonamento clínico;
-- aplicar LGPD e interoperabilidade FHIR quando cabível.
-
-### P1 — Demais ideias aprovadas
-
-Para cada ideia, exceto a 14:
-
-- criar entidades e eventos específicos;
-- definir API e UX;
-- implementar persistência;
-- aplicar segurança e auditoria;
-- escrever testes unitários, de integração e de jornada;
-- documentar critérios de aceite;
-- vincular commits e pull requests à issue `#55`.
-
-## 6. Testes mínimos
+## 7. Testes
 
 ```bash
-python -m pytest -q tests/test_valley_consumer_innovation_round_004.py
-python scripts/check_generated_artifacts.py
-python -m pytest -q --ignore=tests/e2e
+cd apps/valley_rider
+npm ci
+npm run lint
+npm run build
+cd ../..
+.venv/bin/pytest -q tests/test_valley_rider_stitch_contract.py
+.venv/bin/pytest -q tests/test_branding_assets.py
+python3 scripts/check_brand_integrity.py
+python3 scripts/validate_repository.py
 ```
 
-Resultado local já obtido para a suíte específica da vertical:
-
-```text
-8 passed
-```
-
-Esse resultado comprova somente os contratos e salvaguardas testados. Não comprova a implantação integral dos 23 produtos em produção.
-
-## 7. Gates obrigatórios
+Gates remotos obrigatórios:
 
 - Continuous Integration;
-- Security;
-- Database;
 - Docker Compose Health Gate;
-- OpenAPI;
-- Valley DAST;
-- Valley Android Security, quando o APK Android for alterado.
+- Security.
 
 ## 8. Critérios de aceite
 
-Cada ideia somente pode ser marcada como concluída quando houver:
+- lint e build aprovados no checkout limpo;
+- testes Stitch e de marca aprovados;
+- integridade de marca e validação do repositório aprovadas;
+- nenhuma credencial ou dado pessoal real versionado;
+- nenhuma transição incompatível com o estado do recurso;
+- entrega não conclui sem prova obrigatória;
+- repasse usa `split_type: rider_payout`;
+- nenhum lançamento negativo é criado em `ledger_entries`;
+- estados externos indisponíveis aparecem bloqueados e explicados;
+- prova renderizada concluída no navegador integrado;
+- branch publicada, PR aberto e gates verdes no mesmo commit;
+- evidência vinculada à issue de orquestração.
 
-- código integrado ao módulo correto;
-- feature flag e rollback;
-- persistência e migration reversível;
-- autenticação, autorização e consentimento;
-- testes reproduzíveis;
-- evidência no ambiente homologado;
-- observabilidade e auditoria;
-- documentação de risco e abrangência;
-- integração externa real quando aplicável;
-- referência ao commit e pull request;
-- ausência de regressão relevante;
-- atualização da issue `#55` e deste arquivo.
+## 9. Riscos e bloqueios
 
-## 9. Proibições
+| Item | Estado | Tratamento |
+|---|---|---|
+| Navegador integrado `iab` | bloqueado nesta sessão | repetir QA quando a instância estiver disponível |
+| Token Mapbox | externo | usar token público restrito, nunca versionar |
+| KYC/OCR e cofre | externo | bloquear submissão produtiva até homologação |
+| PSP de repasse | externo | manter solicitação auditável sem simular liquidação |
+| Play Integrity | externo | injetar pelo shell Android |
+| GPS/rede instável | externo | testar em aparelho real |
+| Marca Valley Riders | binário ausente | não fabricar substituto |
+| Vulnerabilidades npm de desenvolvimento | 2 altas reportadas por `npm ci` | analisar no gate Security; produção apresentou 0 vulnerabilidades |
 
-- push direto na `main`;
-- merge com gate vermelho, cancelado, ausente ou em processamento;
-- reativar Vision;
-- implantar a ideia 14 nesta rodada;
-- cadastrar a ideia 6 no módulo `STOCK`;
-- anunciar cobertura nacional de mobilidade sem evidência;
-- incluir empresa no piloto Jobs sem adesão voluntária;
-- gerar agenda de medicação sem prescrição verificada;
-- executar compra automaticamente com base apenas na lista;
-- liberar ou reter pagamento de serviço sem regra auditável;
-- versionar segredos ou dados pessoais reais;
-- sobrescrever trabalho paralelo;
-- declarar produção concluída apenas pela existência de contratos de API.
+## 10. Evidências esperadas
 
-## 10. Fontes de verdade
+- saída dos comandos de teste;
+- SHA do commit;
+- URL e número do PR;
+- checks do GitHub vinculados ao SHA;
+- screenshots desktop/mobile;
+- DOM e console sem erros relevantes;
+- identificação do aparelho Android, atividade executada e captura de tela;
+- configuração de restrição do token Mapbox sem expor o token;
+- comprovantes de homologação KYC/cofre/PSP sem segredos.
 
-1. `AGENTS.md`;
-2. `docs/governance/MANDATORY_INTEGRATION_POLICY.md`;
-3. este `tarefas.md`, versão 1.8;
-4. `docs/inovacao/APK_Valley_Consumidor_Rodada_004_Implementacao_2026-07-28.md`;
-5. `config/module_catalog.json`;
-6. issue `#55`;
-7. `modules/valley_consumer/innovation_round_004.py`;
-8. `tests/test_valley_consumer_innovation_round_004.py`;
-9. documentação oficial dos provedores externos utilizados.
+## 11. Pendências restantes
 
-## 11. Riscos e bloqueios
+1. publicar o commit final com a correção determinística do gate Git;
+2. executar gates remotos no novo SHA;
+3. homologar todas as dependências externas;
+4. integrar somente por Squash and Merge após aprovação.
 
-- a vertical inicial ainda usa armazenamento em memória;
-- escrow real depende de PSP e análise regulatória;
-- mobilidade pública não possui cobertura técnica uniforme em todo o Brasil;
-- pagamento por aproximação e QR Code varia por operador e equipamento;
-- dados de saúde exigem proteção reforçada e validação clínica;
-- IA autônoma exige rollback, recibos e limites por finalidade;
-- eventos offline exigem assinatura real, armazenamento seguro e reconciliação distribuída;
-- 23 ideias simultâneas não devem ser comunicadas como prontas apenas por possuírem contratos de API.
+## 12. Procedimento de entrega
 
-## 12. Histórico
+1. confirmar branch e diff;
+2. executar todos os testes locais;
+3. atualizar documentação com SHA e PR;
+4. usar mensagem de commit concisa em português;
+5. publicar somente a branch de trabalho;
+6. abrir PR para `main`;
+7. registrar testes, limitações e evidências no PR;
+8. aguardar gates verdes;
+9. não alterar o commit já em validação;
+10. integrar exclusivamente por Squash and Merge.
+
+## 13. Histórico
 
 | Versão | Data e hora | Alteração |
 |---|---|---|
-| 1.5 | 27/07/2026 04:29:44 | Plano inicial v2.9. |
-| 1.6 | 27/07/2026 05:33:26 | Correções aplicadas e revalidação. |
-| 1.7 | 27/07/2026 07:12:49 | Fase 0 implementada, diagnósticos removidos e regressão final preparada. |
-| 1.8 | 28/07/2026 00:52:26 | Rodada 004 do APK Valley registrada sobre a baseline v2.9, com vertical executável, salvaguardas, testes e implantação progressiva pela issue #55. |
+| 1.7 | 27/07/2026 07:12:49 | Fase 0 implementada e regressão final preparada. |
+| 1.8 | 28/07/2026 00:52:26 | Rodada 004 do APK Valley registrada. |
+| 1.9 | 28/07/2026 08:39:01 | Auditoria do Valley Rider, correção dos gates locais e plano de homologação externa. |
+| 2.0 | 28/07/2026 14:51:13 | PR #62 aberto, QA desktop/mobile concluída e testes do gate Git tornados determinísticos. |
