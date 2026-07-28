@@ -22,13 +22,13 @@ function App() {
           }}
         >
           <img
-            src="/assets/brand/valley-logo-transparent.svg"
+            src="/assets/brand/valley-logo-official.png"
             alt="All-in-One"
             style={{ width: "100%", maxWidth: "120px", height: "auto" }}
           />
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <img
-              src="/assets/brand/valley-logo-transparent.svg"
+              src="/assets/brand/valley-logo-official.png"
               alt="Valley"
               style={{ height: "20px", width: "auto" }}
             />

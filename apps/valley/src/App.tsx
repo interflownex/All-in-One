@@ -182,14 +182,14 @@ function App() {
       >
         <div className="brand-group" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <img
-            src="/assets/brand/valley-logo-transparent.svg"
+            src="/assets/brand/valley-logo-official.png"
             alt="All-in-One"
             decoding="async"
             style={{ height: "32px", width: "auto" }}
           />
           <div style={{ width: "2px", height: "24px", background: "rgba(255,255,255,0.2)" }}></div>
           <img
-            src="/assets/brand/valley-logo-transparent.svg"
+            src="/assets/brand/valley-logo-official.png"
             alt="Valley"
             decoding="async"
             style={{ height: "28px", width: "auto" }}

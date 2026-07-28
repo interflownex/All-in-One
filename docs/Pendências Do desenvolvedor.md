@@ -1,15 +1,15 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 3.0  
-**Data e hora da atualização:** 27/07/2026 07:12:49  
-**Fuso horário:** `America/Sao_Paulo`  
-**Repositório:** `interflownex/All-in-One`  
-**Branch de execução:** `fix/cicd-governanca-v2-8-2026-07-27`  
-**Pull Request central:** `#50`  
-**Issue operacional:** `#49`  
-**Issue de orquestração funcional:** `#51`  
-**Versão anterior consolidada:** 2.9  
-**Classificação:** `Pendências > Técnico > Equipe técnica`  
+**Versão:** 3.1
+**Data e hora da atualização:** 28/07/2026 08:39:01
+**Fuso horário:** `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch de execução:** `codex/auditoria-valley-rider-2026-07-28`
+**Pull Request central:** `#50`
+**Issue operacional:** `#49`
+**Issue de orquestração funcional:** `#51`
+**Versão anterior consolidada:** 2.9
+**Classificação:** `Pendências > Técnico > Equipe técnica`
 **Públicos impactados:** Pessoa Física, Pessoa Jurídica, equipe técnica, gestão e investidores
 
 ## 1. Situação executiva
@@ -102,6 +102,19 @@ Os gates permanentes foram preservados.
 
 ## 4. Pendência crítica restante
 
+### Valley Rider — gates locais corrigidos
+
+A auditoria do commit integrado `3834bec6383edd6da08e9fdcf3d74a0de1589df2` confirmou os cinco testes do contrato Stitch, mas reproduziu 8 erros e 1 aviso no lint e, após o lint, um erro TypeScript no build. A branch v3.1 corrige:
+
+- efeitos React que atualizavam estado sincronicamente;
+- leitura de `gpsWatch.current` durante renderização;
+- ausência de estado renderizável explícito para o GPS;
+- expressões sem efeito e bloco `catch` vazio;
+- tipagem SHA-256 incompatível com `Uint8Array`;
+- dependência do efeito de sincronização automática de rota.
+
+Após a correção, lint, build, testes Stitch e testes de marca passaram. A prova visual continua bloqueada porque o navegador integrado `iab` não estava disponível nesta sessão.
+
 ### Regressão final do head limpo
 
 O último head funcional comprovado foi `73f04292e44c9ee6a887e76148300bba72734f50`. Como a limpeza e esta documentação criam novo commit, é obrigatório confirmar novamente, no head final:
@@ -170,3 +183,4 @@ Cada frente deverá começar com feature flag desligada e incluir contrato, banc
 | 2.8 | 27/07/2026 02:17:29 | Estabilização parcial e evidências iniciais. |
 | 2.9 | 27/07/2026 05:33:26 | Correções dos quatro bloqueadores e revalidação. |
 | 3.0 | 27/07/2026 07:12:49 | Fase 0 implementada, gates verdes no head funcional, diagnósticos removidos e regressão final exigida. |
+| 3.1 | 28/07/2026 08:39:01 | Auditoria do Valley Rider, correção de lint/build e registro do bloqueio da prova renderizada. |
