@@ -42,3 +42,8 @@ Documentacao:
 Os novos diretorios Android/Wear OS so devem ser registrados em `apps/` quando
 existir scaffold compilavel e atualizacao coordenada do catalogo e dos
 artefatos gerados.
+
+## Revalidacao de integracao
+
+Branch sincronizada logicamente com a `main` estabilizada em 28/07/2026 para
+novo ciclo completo de CI, sem desativacao ou flexibilizacao de gates.
