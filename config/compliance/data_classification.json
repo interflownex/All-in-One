@@ -215,20 +215,6 @@
         "logs_imutaveis"
       ]
     },
-    "vision": {
-      "risk_level": "critical",
-      "data_domains": ["cameras", "streams", "gravacoes", "alertas_movimento"],
-      "sensitive_categories": ["imagem", "biometria_potencial", "localizacao"],
-      "legal_basis": ["legitimo_interesse", "consentimento", "seguranca"],
-      "retention_policy": "gravacoes exigem sinalizacao, finalidade, retencao curta e descarte automatico",
-      "production_gate": [
-        "DPIA_video",
-        "sinalizacao",
-        "retencao_curta",
-        "controle_acesso",
-        "anonimizacao_quando_possivel"
-      ]
-    },
     "legal": {
       "risk_level": "high",
       "data_domains": ["casos", "prazos", "audiencias", "contratos"],

@@ -7,9 +7,17 @@ import argparse
 import os
 import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+@dataclass(frozen=True)
+class Comparison:
+    label: str
+    behind: int
+    ahead: int
 
 
 def git(args: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -32,6 +40,10 @@ def git_path_exists(path: str) -> bool:
     return Path(resolved).exists()
 
 
+def is_pull_request_event() -> bool:
+    return os.environ.get("GITHUB_EVENT_NAME", "").strip() == "pull_request"
+
+
 def current_branch(explicit_branch: str | None) -> str:
     if explicit_branch:
         return explicit_branch
@@ -46,10 +58,82 @@ def current_branch(explicit_branch: str | None) -> str:
     branch = git_output(["branch", "--show-current"])
     if branch:
         return branch
+    if is_pull_request_event():
+        base_ref = os.environ.get("GITHUB_BASE_REF", "").strip()
+        if base_ref:
+            return base_ref
     branch = os.environ.get("GITHUB_REF_NAME", "").strip()
     if branch:
         return branch
     raise RuntimeError("Nao foi possivel identificar a branch atual. Informe --branch.")
+
+
+def parse_commit_parents(commit_text: str) -> tuple[str, ...]:
+    parents: list[str] = []
+    for line in commit_text.splitlines():
+        if not line.startswith("parent "):
+            continue
+        _, sha = line.split(maxsplit=1)
+        sha = sha.strip()
+        if len(sha) == 40 and all(character in "0123456789abcdef" for character in sha):
+            parents.append(sha)
+    return tuple(parents)
+
+
+def github_pull_request_base(branch: str) -> str | None:
+    """Resolve a base do merge temporario criado pelo checkout de Pull Request.
+
+    Em checkouts rasos, ``rev-list`` respeita a fronteira shallow e pode omitir os
+    pais, mesmo quando os identificadores permanecem no objeto do commit. Por
+    isso, o cabecalho bruto de ``HEAD`` e lido com ``cat-file``. O fallback so
+    vale para um evento de Pull Request cuja base declarada coincide com a branch
+    solicitada e cujo ``HEAD`` possui exatamente dois pais.
+    """
+
+    base_ref = os.environ.get("GITHUB_BASE_REF", "").strip()
+    if not is_pull_request_event() or base_ref != branch:
+        return None
+
+    commit = git(["cat-file", "-p", "HEAD"], check=False)
+    if commit.returncode != 0:
+        return None
+    parents = parse_commit_parents(commit.stdout)
+    if len(parents) != 2:
+        return None
+    return parents[0]
+
+
+def rev_list_comparison(ref: str) -> Comparison:
+    counts = git_output(
+        ["rev-list", "--left-right", "--count", f"{ref}...HEAD"]
+    ).split()
+    return Comparison(label=ref, behind=int(counts[0]), ahead=int(counts[1]))
+
+
+def comparison(remote: str, branch: str, *, no_fetch: bool) -> Comparison | None:
+    remote_ref = f"{remote}/{branch}"
+    verify = git(["rev-parse", "--verify", remote_ref], check=False)
+    if verify.returncode == 0:
+        return rev_list_comparison(remote_ref)
+
+    if not no_fetch:
+        return None
+
+    base_sha = github_pull_request_base(branch)
+    if not base_sha:
+        return None
+
+    print(
+        "WARNING: Referencia remota ausente no checkout raso do PR; "
+        f"usando o primeiro pai {base_sha} como base declarada de {remote_ref}.",
+        file=sys.stderr,
+    )
+    # O HEAD do checkout de Pull Request e um merge sintetico criado pelo GitHub.
+    # Esse commit nao pertence a branch proposta e, portanto, nao deve ser contado
+    # como divergencia "ahead". A presenca do primeiro pai, combinada com
+    # GITHUB_BASE_REF, comprova que o merge foi construido sobre a base solicitada.
+    # Fora desse contexto estrito, nenhuma contagem e inferida.
+    return Comparison(label=f"pull-request-base:{base_sha}", behind=0, ahead=0)
 
 
 def validate(args: argparse.Namespace) -> int:
@@ -84,27 +168,25 @@ def validate(args: argparse.Namespace) -> int:
                 )
                 continue
 
-        verify = git(["rev-parse", "--verify", f"{remote}/{branch}"], check=False)
-        if verify.returncode != 0:
+        result = comparison(remote, branch, no_fetch=args.no_fetch)
+        if result is None:
             problems.append(f"Referencia remota inexistente: {remote}/{branch}.")
             continue
 
-        counts = git_output(
-            ["rev-list", "--left-right", "--count", f"{remote}/{branch}...HEAD"]
-        ).split()
-        behind, ahead = int(counts[0]), int(counts[1])
         checked += 1
-
-        if behind > 0:
+        if result.behind > 0:
             problems.append(
-                f"Branch local esta {behind} commit(s) atras de {remote}/{branch}."
+                f"Branch local esta {result.behind} commit(s) atras de {remote}/{branch}."
             )
-        if ahead > 0 and not args.allow_ahead:
+        if result.ahead > 0 and not args.allow_ahead:
             problems.append(
-                f"Branch local esta {ahead} commit(s) a frente de {remote}/{branch}."
+                f"Branch local esta {result.ahead} commit(s) a frente de {remote}/{branch}."
             )
 
-        print(f"{remote}/{branch}: behind={behind} ahead={ahead}")
+        print(
+            f"{remote}/{branch}: behind={result.behind} "
+            f"ahead={result.ahead} ref={result.label}"
+        )
 
     if checked == 0:
         raise RuntimeError(

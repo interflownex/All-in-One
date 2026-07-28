@@ -3,7 +3,7 @@ from __future__ import annotations
 import stat
 
 from scripts.configure_valley_android_signing import strong_password, write_private
-from scripts.validate_valley_android_release import validate
+from scripts.validate_valley_android_release_v29 import validate
 
 
 def test_strong_password_has_expected_length_and_classes() -> None:

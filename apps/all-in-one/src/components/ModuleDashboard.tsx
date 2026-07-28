@@ -152,12 +152,6 @@ const MODULE_OPERATIONS: Record<string, Array<[string, string]>> = {
     ["Prescricoes", "prescriptions"],
     ["Leitos", "beds"],
   ],
-  vision: [
-    ["Dispositivos", "devices"],
-    ["Streams", "streams"],
-    ["Gravacoes", "recordings"],
-    ["Alertas", "motionalerts"],
-  ],
   legal: [
     ["Processos", "cases"],
     ["Prazos", "deadlines"],

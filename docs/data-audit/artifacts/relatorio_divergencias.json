@@ -44,8 +44,14 @@
       "impact": "Retenção, recuperação, ownership e divergências entre configuração e ambiente não são comprovados.",
       "risk": "Perda, exposição ou inconsistência de dados fora do PostgreSQL.",
       "proposal": "Catalogar chaves, objetos, buckets e políticas; adicionar sondagens não destrutivas e testes por tecnologia.",
-      "dependencies": ["credenciais dos ambientes", "serviços acessíveis"],
-      "affected_files": ["infra/docker/docker-compose.yml", "docs/data-audit/databases"],
+      "dependencies": [
+        "credenciais dos ambientes",
+        "serviços acessíveis"
+      ],
+      "affected_files": [
+        "infra/docker/docker-compose.yml",
+        "docs/data-audit/databases"
+      ],
       "migration": "avaliar por tecnologia",
       "backend": "inventariar clientes e contratos",
       "frontend": "inventariar chaves de storage",
@@ -54,7 +60,11 @@
       "acceptance": "MongoDB, SQLite, Redis, object storage e storage de navegador possuem catálogo, retenção, ownership, restore e testes aprovados.",
       "status": "parcial",
       "owner_suggestion": "plataforma e dados",
-      "dimensions": ["bancos", "tabelas_colecoes", "campos"]
+      "dimensions": [
+        "bancos",
+        "tabelas_colecoes",
+        "campos"
+      ]
     },
     {
       "id": "AUD-P0-001",
@@ -69,8 +79,13 @@
       "impact": "Mascaramento, retenção e acesso podem não refletir finalidade e base legal reais.",
       "risk": "Tratamento indevido de dados pessoais e sensíveis.",
       "proposal": "Executar revisão campo a campo com DPO e responsáveis dos domínios, registrando decisão e vigência.",
-      "dependencies": ["DPO", "proprietários de domínio"],
-      "affected_files": ["config/data_audit/field_classification_policy.json"],
+      "dependencies": [
+        "DPO",
+        "proprietários de domínio"
+      ],
+      "affected_files": [
+        "config/data_audit/field_classification_policy.json"
+      ],
       "migration": "não aplicável até decisão",
       "backend": "aplicar classificação aprovada",
       "frontend": "aplicar mascaramento aprovado",
@@ -79,14 +94,16 @@
       "acceptance": "Todos os campos possuem classificação, retenção, criptografia e mascaramento aprovados pelo proprietário do domínio.",
       "status": "pendente_aprovacao",
       "owner_suggestion": "DPO e compliance",
-      "dimensions": ["campos_sensiveis"]
+      "dimensions": [
+        "campos_sensiveis"
+      ]
     },
     {
       "id": "AUD-P1-002",
       "priority": "P1",
       "module": "frontend e APIs",
       "title": "Bindings frontend-backend não estão integralmente comprovados",
-      "description": "As 120 entidades persistentes possuem contrato UI versionado gerado das migrations e regras de domínio; o SmartCRUD renderiza e envia somente campos vinculados. Há 35 superfícies/campos legados sem entidade física/DTO correspondente, além da execução E2E autenticada ainda pendente.",
+      "description": "As 120 entidades persistentes possuem contrato UI versionado gerado das migrations e regras de domínio; o SmartCRUD renderiza e envia somente campos vinculados. Há 123 superfícies/campos legados sem entidade física/DTO correspondente, além da execução E2E autenticada ainda pendente.",
       "evidence": [
         "apps/all-in-one/src/config/entityFieldBindings.generated.json",
         "apps/all-in-one/src/components/SmartCRUD.tsx",
@@ -95,8 +112,15 @@
       "impact": "Bindings persistentes estão comprovados, mas superfícies legadas ficam bloqueadas com segurança e integrações específicas ainda podem falhar em runtime.",
       "risk": "Funcionalidade indisponível nas superfícies sem contrato ou divergência operacional não detectada sem E2E.",
       "proposal": "Decidir entidade/DTO das superfícies legadas e executar matriz E2E autenticada em homologação.",
-      "dependencies": ["decisão de domínio", "ambiente homologado", "credenciais de teste"],
-      "affected_files": ["apps/all-in-one/src", "modules"],
+      "dependencies": [
+        "decisão de domínio",
+        "ambiente homologado",
+        "credenciais de teste"
+      ],
+      "affected_files": [
+        "apps/all-in-one/src",
+        "modules"
+      ],
       "migration": "avaliar para superfícies legadas",
       "backend": "DTO genérico versionado com payload validado por regra de domínio",
       "frontend": "contratos específicos renderizados dinamicamente; superfícies sem contrato bloqueadas",
@@ -105,7 +129,10 @@
       "acceptance": "Cada campo UI aponta para DTO, endpoint, validação, coluna e E2E aprovado.",
       "status": "implementacao_parcial",
       "owner_suggestion": "frontend e backend",
-      "dimensions": ["bindings_frontend", "formularios"]
+      "dimensions": [
+        "bindings_frontend",
+        "formularios"
+      ]
     },
     {
       "id": "AUD-P1-003",
@@ -122,7 +149,10 @@
       "impact": "Sem consumidores declarados por evento, mudanças ainda podem quebrar integrações downstream.",
       "risk": "Entrega assíncrona sem ownership integral do consumidor.",
       "proposal": "Registrar e testar consumidores reais por evento, mantendo o envelope compartilhado como gate de produtor.",
-      "dependencies": ["consumidores downstream", "mensageria homologada"],
+      "dependencies": [
+        "consumidores downstream",
+        "mensageria homologada"
+      ],
       "affected_files": [
         "modules/shared/event_contract.py",
         "modules/shared/outbox_dispatcher.py",
@@ -136,7 +166,10 @@
       "acceptance": "Cada evento possui produtor, consumidor, schema, dados proibidos, idempotência, correlação, retenção e compatibilidade testados.",
       "status": "implementacao_parcial",
       "owner_suggestion": "arquitetura de integração",
-      "dimensions": ["campos", "relacionamentos"]
+      "dimensions": [
+        "campos",
+        "relacionamentos"
+      ]
     },
     {
       "id": "AUD-P1-004",
@@ -156,7 +189,9 @@
       "impact": "Sem validação em PostgreSQL vivo, o produto ainda não pode ser homologado ponta a ponta.",
       "risk": "Comportamento SQL ainda não comprovado em ambiente real.",
       "proposal": "Executar a migration e os fluxos completos em PostgreSQL homologado.",
-      "dependencies": ["PostgreSQL de homologação"],
+      "dependencies": [
+        "PostgreSQL de homologação"
+      ],
       "affected_files": [
         "apps/all-in-one/src",
         "modules/dynamic_forms",
@@ -199,8 +234,15 @@
       "impact": "Sem os gates externos restantes, compra, estoque, venda, custo e tributação ainda podem divergir em operação.",
       "risk": "Cálculo financeiro ou fiscal não homologado em ambiente operacional.",
       "proposal": "Executar integração PostgreSQL viva e homologar cenários com especialista fiscal.",
-      "dependencies": ["especialista fiscal", "ambiente PostgreSQL"],
-      "affected_files": ["database/postgres", "modules/stock", "modules/erp"],
+      "dependencies": [
+        "especialista fiscal",
+        "ambiente PostgreSQL"
+      ],
+      "affected_files": [
+        "database/postgres",
+        "modules/stock",
+        "modules/erp"
+      ],
       "migration": "implementada com rollback; backfill explícito sem inferência",
       "backend": "Decimal, vigência, aprovação, precisão, arredondamento e contratos HTTP implementados",
       "frontend": "console responsivo de unidades e cálculo fiscal implementado",
@@ -235,7 +277,10 @@
       "risk": "Controlado por teste de completude e rollback.",
       "proposal": "Manter o gate em toda inclusão de entidade ou store.",
       "dependencies": [],
-      "affected_files": ["modules/shared/*_postgres_store.py", "database/postgres/migrations"],
+      "affected_files": [
+        "modules/shared/*_postgres_store.py",
+        "database/postgres/migrations"
+      ],
       "migration": "57 relações implementadas em duas migrations reversíveis",
       "backend": "120 de 120 entidades com destino físico tipado",
       "frontend": "120 de 120 entidades com superfície canônica",
@@ -244,7 +289,12 @@
       "acceptance": "Cada entidade possui decisão explícita de persistência, ownership e coordenada UI, ou justificativa versionada de ausência.",
       "status": "resolvido",
       "owner_suggestion": "arquitetura e responsáveis de domínio",
-      "dimensions": ["tabelas_colecoes", "campos", "relacionamentos", "formularios"]
+      "dimensions": [
+        "tabelas_colecoes",
+        "campos",
+        "relacionamentos",
+        "formularios"
+      ]
     },
     {
       "id": "AUD-P1-007",
@@ -284,7 +334,11 @@
       "acceptance": "Os 35 requisitos de auditoria têm implementação ou decisão justificada por operação, com integridade, retenção e testes aprovados.",
       "status": "implementacao_parcial",
       "owner_suggestion": "segurança, plataforma e compliance",
-      "dimensions": ["auditoria", "campos_sensiveis", "permissoes_backend"]
+      "dimensions": [
+        "auditoria",
+        "campos_sensiveis",
+        "permissoes_backend"
+      ]
     }
   ]
 }

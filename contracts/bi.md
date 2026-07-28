@@ -7,7 +7,6 @@
         ## Entidades
 
         - `datasets`
-
 - `dashboards`
 - `indicators`
 - `exports`
@@ -15,7 +14,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -37,6 +35,7 @@
 - `POST /reject`
 - `POST /audit`
 
+
 ## Dataset, dashboard e exportacao
 
 - `datasets` exige `name`, `source_module`, `source_resource_type` e `refresh_mode`, iniciando em `draft` e emitindo `bi.dataset.created`.
@@ -45,10 +44,10 @@
 - A acao `publish` publica dashboard com papel aprovador, MFA e evento `bi.dashboard.published`; `archive` encerra a exposicao com MFA.
 - `exports` exige `dashboard_id`, `export_format` e `requested_at`, inicia em `requested`, emite `bi.export.requested` e conclui com `bi.export.completed`.
 
+
         ## Eventos
 
         - `bi.dataset.created`
-
 - `bi.dataset.refreshed`
 - `bi.dataset.published`
 - `bi.dashboard.created`

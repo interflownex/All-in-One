@@ -4,6 +4,19 @@
 - Essa regra vale para este workspace (`all-in-one`) e deve prevalecer sobre respostas em ingles quando nao houver conflito tecnico ou legal.
 - Codigos, nomes de arquivos, comandos, identificadores, logs e mensagens externas devem permanecer no idioma/formato original quando isso preservar precisao tecnica.
 
+# Modo Estudar, Pesquisa Avancada e entrega `tarefas.md`
+
+- Toda atividade do projeto deve aplicar permanentemente uma abordagem de estudo: verificar o conhecimento existente, explicar decisoes importantes, conectar evidencias, conferir entendimento e registrar criterios reproduziveis.
+- Toda informacao externa, atual, instavel, especializada ou com risco relevante de desatualizacao deve ser verificada por pesquisa avancada antes de orientar implementacao ou declarar conclusao.
+- Quando a interface nao expuser um seletor persistente para os plugins Estudar ou Pesquisa Avancada, o agente deve aplicar o comportamento equivalente: aprendizagem guiada, verificacao cruzada, consulta a fontes atuais e registro das fontes de verdade.
+- Toda entrega deve informar obrigatoriamente versao, data e hora no fuso `America/Sao_Paulo`, repositorio, branch e commit de referencia.
+- Ao final de toda entrega tecnica, criar ou atualizar obrigatoriamente o arquivo raiz `tarefas.md`.
+- O arquivo `tarefas.md` deve conter todas as diretrizes necessarias para a IA desenvolvedora executar a proxima etapa sem depender de explicacao adicional.
+- O `tarefas.md` deve incluir, no minimo: objetivo, contexto, escopo, fontes de verdade, pre-requisitos, sequencia de execucao, prioridades, testes, criterios de aceite, riscos, bloqueios, evidencias esperadas, pendencias restantes e procedimento de entrega.
+- Cada atualizacao do `tarefas.md` deve incrementar sua versao e preservar um historico resumido no proprio arquivo.
+- O `tarefas.md` deve ser versionado na mesma branch e pull request da atividade correspondente.
+- Nenhuma tarefa pode ser marcada como concluida apenas pela existencia de codigo ou documento. Sao obrigatorios teste reproduzivel, evidencia no ambiente correto e referencia ao commit e pull request.
+
 # Sincronizacao Git obrigatoria e segura
 
 - Ao concluir cada atividade que altere arquivos neste workspace, o Codex deve versionar o trabalho no Git.

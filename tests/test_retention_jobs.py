@@ -21,7 +21,6 @@ CRITICAL_MODULES = {
     "document",
     "hr",
     "health",
-    "vision",
     "ai_core",
     "api_hub",
 }

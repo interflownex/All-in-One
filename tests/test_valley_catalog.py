@@ -25,7 +25,7 @@ def test_valley_catalog_lists_all_modules_with_simple_categories() -> None:
     modules = marketplace.get("/valley/catalog/modules")
     assert modules.status_code == 200
     payload = modules.json()
-    assert len(payload) == 25
+    assert len(payload) == 24
     assert {item["source_module"] for item in payload} >= {
         "health",
         "services",
@@ -42,7 +42,7 @@ def test_valley_catalog_lists_all_modules_with_simple_categories() -> None:
     offers = marketplace.get("/valley/catalog/offers")
     assert offers.status_code == 200
     source_modules = {item["source_module"] for item in offers.json()}
-    assert len(source_modules) == 25
+    assert len(source_modules) == 24
     assert all(
         item["offer_type"] in {"food", "product", "service"} for item in offers.json()
     )

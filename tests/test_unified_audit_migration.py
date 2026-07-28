@@ -22,7 +22,7 @@ def test_audit_migration_materializes_context_read_integrity_and_retention() -> 
         "occurred_at",
         "result",
         "error_detail",
-        "authorization",
+        '"authorization"',
         "approval_id",
         "approved_by",
         "previous_hash",

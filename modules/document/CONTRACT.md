@@ -7,7 +7,6 @@
         ## Entidades
 
         - `folders`
-
 - `documents`
 - `versions`
 - `retention_policies`
@@ -15,7 +14,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -37,6 +35,7 @@
 - `POST /reject`
 - `POST /audit`
 
+
 ## Cofre privado e versionamento
 
 - `documents` exige `storage_provider`, `storage_bucket`, `storage_key`, `file_sha256`, `kms_key_version`, `filename` e `content_type`.
@@ -44,10 +43,10 @@
 - `storage_key` e `storage_bucket` devem apontar para cofre privado, sem URL publica.
 - Criacao de documento emite `document.uploaded`; nova versao emite `document.versioned`.
 
+
         ## Eventos
 
         - `document.uploaded`
-
 - `document.versioned`
 - `document.signed`
 

@@ -3,7 +3,6 @@
         Exchange: `all-in-one.domain`; routing keys:
 
         - `api.client.created`
-
 - `api.client.submitted`
 - `api.client.approved`
 - `api.client.rejected`

@@ -29,7 +29,6 @@ from modules.shared.riders_postgres_store import RidersPostgresStore
 from modules.shared.services_postgres_store import ServicesPostgresStore
 from modules.shared.stock_postgres_store import StockPostgresStore
 from modules.shared.tms_postgres_store import TmsPostgresStore
-from modules.shared.vision_postgres_store import VisionPostgresStore
 from modules.shared.wms_postgres_store import WmsPostgresStore
 
 POSTGRES_DSN = os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN") or os.getenv(
@@ -631,49 +630,6 @@ def test_riders_profile_create_update_and_soft_delete() -> None:
     with psycopg.connect(POSTGRES_DSN) as connection:
         assert count_audit(connection, "riders") >= before_audit + 3
         assert count_events(connection, "riders") >= before_events + 2
-
-
-def test_vision_device_create_update_and_soft_delete() -> None:
-    user_id = uuid4()
-    actor_id = uuid4()
-    nonce = uuid4().hex[:12]
-
-    with psycopg.connect(POSTGRES_DSN) as connection:
-        seed_user(connection, user_id, nonce)
-        seed_user(connection, actor_id, uuid4().hex[:12])
-        before_audit = count_audit(connection, "vision")
-        before_events = count_events(connection, "vision")
-
-    store = VisionPostgresStore(POSTGRES_DSN)
-    created = store.create(
-        resource_type="devices",
-        user_id=str(user_id),
-        entity_id=None,
-        status="active",
-        payload={"device_fingerprint": f"dev-{nonce}"},
-        actor=str(actor_id),
-        unique_fields=(),
-        event="vision.device.created",
-        idempotency_key=str(uuid4()),
-    )
-    updated = store.update(
-        created,
-        payload={"device_fingerprint": f"dev-{nonce}", "location_label": "Portaria"},
-        status="reviewed",
-        actor=str(actor_id),
-        action="review",
-        event="vision.device.reviewed",
-    )
-    assert updated["status"] == "reviewed"
-    assert updated["payload"]["location_label"] == "Portaria"
-
-    store.soft_delete(updated, str(actor_id))
-    deleted = store.get("devices", created["id"])
-    assert deleted is None
-
-    with psycopg.connect(POSTGRES_DSN) as connection:
-        assert count_audit(connection, "vision") >= before_audit + 3
-        assert count_events(connection, "vision") >= before_events + 2
 
 
 def test_legal_case_create_update_and_soft_delete() -> None:

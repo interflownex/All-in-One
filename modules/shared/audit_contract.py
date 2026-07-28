@@ -5,6 +5,7 @@ from contextvars import ContextVar
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime, timedelta
 from hashlib import sha256
+from ipaddress import ip_address
 from typing import Any, Literal
 from uuid import uuid4
 
@@ -54,6 +55,19 @@ def set_audit_context(context: AuditContext) -> AuditContext:
 
 def get_audit_context() -> AuditContext:
     return _audit_context.get() or AuditContext()
+
+
+def normalize_audit_ip_address(value: str | None) -> str | None:
+    """Retorna somente IPv4/IPv6 válido para colunas PostgreSQL do tipo inet."""
+    if value is None:
+        return None
+    candidate = value.strip()
+    if not candidate:
+        return None
+    try:
+        return str(ip_address(candidate))
+    except ValueError:
+        return None
 
 
 def sanitize_audit_value(value: Any) -> Any:
@@ -113,6 +127,9 @@ def build_audit_record(
     ).isoformat()
     safe_before = sanitize_audit_value(before)
     safe_after = sanitize_audit_value(after)
+    normalized_ip_address = normalize_audit_ip_address(ctx.ip_address)
+    metadata_context = asdict(ctx)
+    metadata_context["ip_address"] = normalized_ip_address
     record: dict[str, Any] = {
         "id": str(uuid4()),
         "schema_version": AUDIT_SCHEMA_VERSION,
@@ -126,7 +143,7 @@ def build_audit_record(
         "actor_role": ctx.actor_role,
         "session_id": ctx.session_id,
         "device_id": ctx.device_id,
-        "ip_address": ctx.ip_address,
+        "ip_address": normalized_ip_address,
         "user_agent": ctx.user_agent,
         "origin": ctx.origin,
         "channel": ctx.channel,
@@ -156,7 +173,7 @@ def build_audit_record(
         else False,
         "retention_until": retention_until,
         "previous_hash": previous_hash,
-        "metadata": {"context": asdict(ctx), "sensitive_values": "minimized"},
+        "metadata": {"context": metadata_context, "sensitive_values": "minimized"},
     }
     record["row_hash"] = _integrity_hash(record, previous_hash)
     return record
@@ -238,7 +255,7 @@ def insert_postgres_audit(
            (id, schema_version, event, log_type, user_id, actor_user_id, actor_entity_id, tenant_id,
             company_id, actor_role, session_id, device_id, ip_address, user_agent, action, module,
             resource_type, resource_id, before_data, after_data, changed_fields, reason, origin, channel,
-            correlation_id, causation_id, occurred_at, result, error_detail, authorization, approval_id,
+            correlation_id, causation_id, occurred_at, result, error_detail, "authorization", approval_id,
             approved_by, exported, printed, shared, previous_hash, row_hash, retention_until, metadata, created_by)
            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,

@@ -100,10 +100,15 @@ def test_outbox_alerting_manifest_is_included_in_base_kustomization() -> None:
 def test_outbox_dashboard_covers_all_exported_operational_metrics() -> None:
     dashboard = load_dashboard()
     panels = dashboard["dashboard"]["panels"]
-    expressions = " ".join(panel["expr"] for panel in panels)
+    expressions = " ".join(
+        target["expr"]
+        for panel in panels
+        for target in panel.get("targets", [])
+        if isinstance(target, dict) and target.get("expr")
+    )
 
     assert dashboard["scope"] == "outbox-dispatcher"
-    assert dashboard["dashboard"]["uid"] == "all-in-one-outbox-dispatcher"
+    assert dashboard["dashboard"]["uid"] == "outbox-dispatcher"
     assert len(panels) >= 6
     assert "all_in_one_outbox_pending" in expressions
     assert "all_in_one_outbox_due" in expressions

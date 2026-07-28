@@ -13,22 +13,33 @@ on:
 jobs:
   python-security:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip==26.1.2
-      - run: pip install -r requirements-dev.txt pip-audit bandit
-      - run: pip-audit --local
-      - run: bandit -r modules/shared scripts workers -q -ll
+      - run: pip install -r requirements-dev.txt
+      - run: pip install pip-audit bandit
+      - name: Audit declared Python dependencies
+        run: pip-audit -r requirements-dev.txt
+      - name: Validate scoped Bandit exceptions
+        run: python scripts/validate_bandit_scoped_exceptions.py
+      - name: Scan Python except reviewed scoped files
+        run: >-
+          bandit -r modules/shared scripts workers -q -ll
+          -x modules/shared/dynamic_forms_postgres_store.py,scripts/generate_data_audit_inventory.py
+      - name: Scan dynamic forms while skipping only reviewed B608 identifiers
+        run: >-
+          bandit modules/shared/dynamic_forms_postgres_store.py -q -ll --skip B608
+      - name: Scan local JUnit inventory while skipping only reviewed B314 parser
+        run: >-
+          bandit scripts/generate_data_audit_inventory.py -q -ll --skip B314
+      - name: Run security gate tests
+        run: python -m pytest -q tests/test_security_gates.py
 
   javascript-security:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     strategy:
       fail-fast: false
       matrix:
@@ -44,14 +55,39 @@ jobs:
           - apps/valley_rider
           - desktop/valley-erp
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: "24"
           cache: npm
           cache-dependency-path: ${{ matrix.app }}/package-lock.json
       - run: npm audit --omit=dev --audit-level=critical
         working-directory: ${{ matrix.app }}
+
+  container-security:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: modules/api_hub/Dockerfile
+            image: all-in-one-api-hub:security
+          - dockerfile: modules/identity/Dockerfile
+            image: all-in-one-identity:security
+          - dockerfile: modules/jobs/Dockerfile
+            image: all-in-one-jobs:security
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build container image
+        run: docker build -f ${{ matrix.dockerfile }} -t ${{ matrix.image }} .
+      - name: Scan container for vulnerabilities
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          image-ref: ${{ matrix.image }}
+          format: table
+          exit-code: "1"
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
 
   valley-android-security:
     runs-on: ubuntu-latest
@@ -64,6 +100,9 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+          cache: gradle
+      - name: Garantir Gradle Wrapper executável
+        run: chmod +x apps/valley-android/gradlew
       - name: Inicializar CodeQL para Java e Kotlin
         uses: github/codeql-action/init@v4
         with:
@@ -74,12 +113,23 @@ jobs:
         with:
           build-root-directory: apps/valley-android
           dependency-graph: ${{ github.event_name == 'pull_request' && 'generate-and-upload' || 'generate-and-submit' }}
-      - name: Validar, testar, analisar e empacotar Android
+      - name: Validar, recompilar, testar, analisar e empacotar Android
         run: |
-          python scripts/validate_valley_android_release.py
+          python scripts/validate_valley_android_release_v29.py
           apps/valley-android/gradlew -p apps/valley-android \
-            testDebugUnitTest lintDebug assembleDebug --no-daemon
-      - name: Publicar análise SAST CodeQL
+            clean testProductionDebugUnitTest lintProductionDebug assembleProductionDebug \
+            --no-daemon --no-build-cache --rerun-tasks --stacktrace
+      - name: Finalizar análise SAST CodeQL
         uses: github/codeql-action/analyze@v4
         with:
           category: valley-android-java-kotlin
+          upload: ${{ github.event_name == 'pull_request' && 'never' || 'always' }}
+          output: codeql-results
+      - name: Publicar evidência SARIF do Pull Request
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v5
+        with:
+          name: valley-android-codeql-sarif
+          path: codeql-results
+          if-no-files-found: error
+          retention-days: 14
