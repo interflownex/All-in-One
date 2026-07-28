@@ -28,3 +28,8 @@ APK gerado em:
 ## Publicação
 
 O APK debug é assinado automaticamente pelo Android SDK e serve para instalação e homologação interna. Uma versão destinada à Google Play exige chave de upload e Play App Signing próprios do aplicativo Admin.
+
+## Revalidação de integração
+
+Branch submetida em 28/07/2026 a novo ciclo completo contra a `main`
+estabilizada, preservando os gates Android, CodeQL, segurança e empacotamento.
