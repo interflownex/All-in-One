@@ -1,12 +1,12 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 1.9
-**Data e hora:** 28/07/2026 08:39:01
+**Versão:** 2.0
+**Data e hora:** 28/07/2026 14:51:13
 **Fuso horário:** `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch:** `codex/auditoria-valley-rider-2026-07-28`
-**Commit-base:** `3834bec6383edd6da08e9fdcf3d74a0de1589df2`
-**Pull Request:** a criar após o commit desta entrega
+**Commit-base:** `5cf3a1ad34ae2c33cd3722d95c341bd49b0e999f`
+**Pull Request:** `#62`
 **Issue de orquestração:** `#51`
 **Aplicação:** `apps/valley_rider`
 
@@ -20,7 +20,8 @@ Homologar tecnicamente o Valley Rider implementado pelo PR `#61`, mantendo o con
 - a auditoria encontrou 8 erros e 1 aviso no lint e um erro TypeScript no build;
 - as correções desta branch removem atualizações síncronas de estado em efeitos, evitam leitura de `ref` durante render, tornam o estado do GPS explícito, corrigem expressões sem efeito e usam `BufferSource` no helper SHA-256;
 - `npm run lint`, `npm run build` e os testes contratuais passaram após as correções;
-- o navegador integrado `iab` não estava disponível, portanto a prova visual/interativa continua pendente;
+- a prova visual/interativa foi concluída por Playwright com Chromium local, HTTP 200, marca oficial, ausência de overlay, interação login/cadastro e capturas desktop/mobile;
+- a execução `push` do CI revelou dois testes de sincronização Git dependentes das referências ambientais do checkout; os testes foram tornados determinísticos e a suíte local completa aprovou 907 testes;
 - não há token Mapbox, credencial KYC, cofre privado, PSP de repasse, aparelho Android real nem binário oficial Valley Riders versionados.
 
 ## 3. Escopo
@@ -67,7 +68,7 @@ Homologar tecnicamente o Valley Rider implementado pelo PR `#61`, mantendo o con
 - Node e npm compatíveis com o lockfile;
 - `.venv` do projeto para pytest;
 - segredos somente em variáveis de ambiente ou cofre;
-- navegador integrado disponível para a prova renderizada;
+- Playwright e Chromium local disponíveis para a prova renderizada;
 - aparelho Android real autorizado para GPS e rede instável.
 
 ## 6. Sequência de execução e prioridades
@@ -165,11 +166,10 @@ Gates remotos obrigatórios:
 
 ## 11. Pendências restantes
 
-1. concluir QA renderizada;
+1. publicar o commit final com a correção determinística do gate Git;
 2. executar gates remotos no novo SHA;
 3. homologar todas as dependências externas;
-4. atualizar a issue de orquestração;
-5. integrar somente por Squash and Merge após aprovação.
+4. integrar somente por Squash and Merge após aprovação.
 
 ## 12. Procedimento de entrega
 
@@ -191,3 +191,4 @@ Gates remotos obrigatórios:
 | 1.7 | 27/07/2026 07:12:49 | Fase 0 implementada e regressão final preparada. |
 | 1.8 | 28/07/2026 00:52:26 | Rodada 004 do APK Valley registrada. |
 | 1.9 | 28/07/2026 08:39:01 | Auditoria do Valley Rider, correção dos gates locais e plano de homologação externa. |
+| 2.0 | 28/07/2026 14:51:13 | PR #62 aberto, QA desktop/mobile concluída e testes do gate Git tornados determinísticos. |

@@ -1,14 +1,14 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 3.1
-**Data e hora da atualização:** 28/07/2026 08:39:01
+**Versão:** 3.2
+**Data e hora da atualização:** 28/07/2026 14:51:13
 **Fuso horário:** `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch de execução:** `codex/auditoria-valley-rider-2026-07-28`
-**Pull Request central:** `#50`
+**Pull Request central desta atividade:** `#62`
 **Issue operacional:** `#49`
 **Issue de orquestração funcional:** `#51`
-**Versão anterior consolidada:** 2.9
+**Versão anterior consolidada:** 3.1
 **Classificação:** `Pendências > Técnico > Equipe técnica`
 **Públicos impactados:** Pessoa Física, Pessoa Jurídica, equipe técnica, gestão e investidores
 
@@ -113,7 +113,20 @@ A auditoria do commit integrado `3834bec6383edd6da08e9fdcf3d74a0de1589df2` confi
 - tipagem SHA-256 incompatível com `Uint8Array`;
 - dependência do efeito de sincronização automática de rota.
 
-Após a correção, lint, build, testes Stitch e testes de marca passaram. A prova visual continua bloqueada porque o navegador integrado `iab` não estava disponível nesta sessão.
+Após a correção, lint, build, testes Stitch e testes de marca passaram. O navegador integrado `iab` não estava disponível, mas a prova visual foi posteriormente concluída pelo fallback Playwright descrito abaixo.
+
+### Valley Rider — QA e CI do PR #62
+
+A prova renderizada foi concluída por Playwright com o Chromium já disponível no ambiente:
+
+- HTTP 200 e título `Valley Rider`;
+- logomarca canônica `/assets/brand/valley-logo-official.png`;
+- ausência de overlay de framework;
+- interação `Criar conta` para `Novo cadastro`;
+- seis campos obrigatórios renderizados;
+- capturas desktop 1440 × 1000 e mobile 390 × 844 sem corte ou sobreposição.
+
+O evento `pull_request` aprovou CI, Compose Health e Security no commit `5cf3a1a`. O evento `push` encontrou dois testes do gate Git dependentes das referências ambientais do checkout. A correção substitui essas execuções ambientais por testes unitários determinísticos das funções `comparison` e `current_branch`. A suíte local equivalente ao CI aprovou `907 passed, 79 skipped`.
 
 ### Regressão final do head limpo
 
@@ -184,3 +197,4 @@ Cada frente deverá começar com feature flag desligada e incluir contrato, banc
 | 2.9 | 27/07/2026 05:33:26 | Correções dos quatro bloqueadores e revalidação. |
 | 3.0 | 27/07/2026 07:12:49 | Fase 0 implementada, gates verdes no head funcional, diagnósticos removidos e regressão final exigida. |
 | 3.1 | 28/07/2026 08:39:01 | Auditoria do Valley Rider, correção de lint/build e registro do bloqueio da prova renderizada. |
+| 3.2 | 28/07/2026 14:51:13 | PR #62 aberto, QA renderizada concluída e regressão do checkout raso corrigida. |
