@@ -31,3 +31,4 @@ plugins {
 
 rootProject.name = "Valley"
 include(":app")
+include(":admin")
