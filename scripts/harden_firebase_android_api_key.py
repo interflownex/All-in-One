@@ -10,9 +10,12 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
+from scripts.secure_http import require_https_url
+
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "config/autonomy/firebase_auth_policy.json"
 GCLOUD = Path.home() / "google-cloud-sdk/bin/gcloud"
+ALLOWED_API_HOSTS = {"apikeys.googleapis.com"}
 
 
 def access_token() -> str:
@@ -33,9 +36,10 @@ def request_json(
     method: str = "GET",
     body: dict | None = None,
 ) -> dict:
+    safe_url = require_https_url(url, allowed_hosts=ALLOWED_API_HOSTS)
     data = json.dumps(body).encode("utf-8") if body is not None else None
-    request = urllib.request.Request(
-        url,
+    http_request = urllib.request.Request(
+        safe_url,
         data=data,
         method=method,
         headers={
@@ -44,7 +48,8 @@ def request_json(
             "Content-Type": "application/json",
         },
     )
-    with urllib.request.urlopen(request, timeout=60) as response:
+    # A URL foi validada por HTTPS, porta padrão e allowlist exata de host.
+    with urllib.request.urlopen(http_request, timeout=60) as response:  # nosec B310
         return json.load(response)
 
 

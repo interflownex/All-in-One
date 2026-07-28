@@ -7,7 +7,6 @@
         ## Entidades
 
         - `cases`
-
 - `deadlines`
 - `hearings`
 - `legal_contracts`
@@ -15,7 +14,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -37,6 +35,7 @@
 - `POST /reject`
 - `POST /audit`
 
+
 ## Caso, prazo e alerta juridico
 
 - `cases` exige `case_number`, `case_type` e `opened_at`, preserva `risk_brl` como valor monetario auditavel e emite `legal.case.created`.
@@ -45,10 +44,10 @@
 - A acao `complete` move prazos pendentes ou alertados para `completed` e emite `legal.deadline.completed`.
 - `hearings` exige `case_id` e `scheduled_at`, iniciando em `scheduled` e emitindo `legal.hearing.scheduled`.
 
+
         ## Eventos
 
         - `legal.case.created`
-
 - `legal.deadline.created`
 - `legal.deadline.alerted`
 - `legal.deadline.completed`

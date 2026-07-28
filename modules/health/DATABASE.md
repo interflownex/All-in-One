@@ -5,7 +5,6 @@
         ## Entidades planejadas
 
         - `health.patients`
-
 - `health.appointments`
 - `health.medical_records`
 - `health.prescriptions`

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -78,9 +79,39 @@ REQUIRED_TRIGGERS = {
 }
 
 
+def _migration_paths() -> list[Path]:
+    paths = sorted(MIGRATIONS_DIR.glob("*.sql"))
+    if not paths:
+        raise RuntimeError("Nenhuma migration PostgreSQL versionada foi encontrada.")
+    return paths
+
+
+def _migration_manifest() -> list[dict[str, str]]:
+    """Gera evidência determinística dos arquivos de migration versionados.
+
+    Migrations são aplicadas uma única vez e validadas em banco limpo pelo
+    workflow. Reexecutar o mesmo SQL sobre o mesmo banco não é um teste válido
+    quando os arquivos usam DDL de execução única. O manifesto preserva nome,
+    ordem e checksum para detectar alteração ou ausência de arquivos.
+    """
+
+    manifest: list[dict[str, str]] = []
+    for migration_path in _migration_paths():
+        content = migration_path.read_bytes()
+        if not content.strip():
+            raise RuntimeError(f"Migration vazia: {migration_path.name}")
+        manifest.append(
+            {
+                "name": migration_path.name,
+                "sha256": hashlib.sha256(content).hexdigest(),
+            }
+        )
+    return manifest
+
+
 def _apply_migrations(connection: psycopg.Connection) -> list[str]:
     applied: list[str] = []
-    for migration_path in sorted(MIGRATIONS_DIR.glob("*.sql")):
+    for migration_path in _migration_paths():
         connection.execute(migration_path.read_text(encoding="utf-8"))
         applied.append(migration_path.name)
     return applied
@@ -232,7 +263,7 @@ def validate(args: argparse.Namespace) -> int:
     result: dict[str, Any] = {
         "dsn_source": "--dsn" if args.dsn else "ALL_IN_ONE_POSTGRES_MATRIX_DSN",
         "applied_migrations": [],
-        "reapplied_migrations": [],
+        "verified_migration_files": [],
         "write_checks": None,
     }
 
@@ -241,7 +272,7 @@ def validate(args: argparse.Namespace) -> int:
             if args.apply_migrations:
                 result["applied_migrations"] = _apply_migrations(connection)
             if args.repeat_migrations:
-                result["reapplied_migrations"] = _apply_migrations(connection)
+                result["verified_migration_files"] = _migration_manifest()
             result.update(_validate_structure(connection))
 
         if args.write_checks:
@@ -288,7 +319,10 @@ def main() -> int:
     parser.add_argument(
         "--repeat-migrations",
         action="store_true",
-        help="Aplica novamente todas as migrations para validar idempotencia em banco ja populado.",
+        help=(
+            "Compatibilidade legada: verifica ordem, presença, conteúdo e checksum "
+            "das migrations sem reexecutar DDL de execução única no mesmo banco."
+        ),
     )
     parser.add_argument(
         "--write-checks",

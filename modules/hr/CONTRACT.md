@@ -7,7 +7,6 @@
         ## Entidades
 
         - `employees`
-
 - `payroll_runs`
 - `candidates`
 - `courses`
@@ -16,7 +15,6 @@
         ## APIs
 
         - `GET /health`
-
 - `GET /version`
 - `GET /status`
 - `GET /metrics`
@@ -38,6 +36,7 @@
 - `POST /reject`
 - `POST /audit`
 
+
 ## Colaborador, folha e treinamento
 
 - `employees` exige `company_id`, `employment_type` e `admission_date`.
@@ -46,10 +45,10 @@
 - `courses` exige `employee_id`, `course_code`, `title` e `due_at`, inicia em `assigned` e emite `hr.training.assigned`.
 - A acao `complete` conclui treinamento e emite `hr.training.completed`.
 
+
         ## Eventos
 
         - `hr.employee.created`
-
 - `hr.payroll.opened`
 - `hr.payroll.closed`
 - `hr.training.assigned`

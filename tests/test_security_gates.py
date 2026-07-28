@@ -143,7 +143,8 @@ def test_security_workflow_runs_mandatory_scans() -> None:
     workflow = (ROOT / ".github" / "workflows" / "security.yml").read_text(encoding="utf-8")
 
     assert "matrix:" in workflow
-    assert "pip-audit --local" in workflow
+    assert "pip-audit -r requirements-dev.txt" in workflow
+    assert "pip-audit --local" not in workflow
     assert "bandit -r modules/shared scripts workers -q -ll" in workflow
     assert "python -m pytest -q tests/test_security_gates.py" in workflow
     assert "modules/api_hub/Dockerfile" in workflow

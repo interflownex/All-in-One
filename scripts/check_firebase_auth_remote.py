@@ -9,9 +9,16 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+from scripts.secure_http import require_https_url
+
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "config/autonomy/firebase_auth_policy.json"
 GCLOUD = Path.home() / "google-cloud-sdk/bin/gcloud"
+ALLOWED_GOOGLE_API_HOSTS = {
+    "firebase.googleapis.com",
+    "identitytoolkit.googleapis.com",
+    "apikeys.googleapis.com",
+}
 
 
 def access_token() -> str:
@@ -26,15 +33,17 @@ def access_token() -> str:
 
 
 def get_json(url: str, token: str, project_id: str) -> dict:
-    request = urllib.request.Request(
-        url,
+    safe_url = require_https_url(url, allowed_hosts=ALLOWED_GOOGLE_API_HOSTS)
+    http_request = urllib.request.Request(
+        safe_url,
         headers={
             "Authorization": f"Bearer {token}",
             "x-goog-user-project": project_id,
         },
     )
     try:
-        with urllib.request.urlopen(request, timeout=45) as response:
+        # A URL foi validada por HTTPS, porta padrão e allowlist exata de hosts.
+        with urllib.request.urlopen(http_request, timeout=45) as response:  # nosec B310
             return json.load(response)
     except urllib.error.HTTPError as error:
         detail = error.read().decode("utf-8", errors="replace")
@@ -121,7 +130,7 @@ def check_remote() -> list[str]:
 def main() -> int:
     try:
         errors = check_remote()
-    except (RuntimeError, subprocess.SubprocessError, OSError) as error:
+    except (RuntimeError, subprocess.SubprocessError, OSError, ValueError) as error:
         print(f"Falha ao validar Firebase remoto: {error}")
         return 2
     if errors:
