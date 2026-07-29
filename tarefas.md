@@ -1,20 +1,20 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.5
-**Data e hora:** 29/07/2026 03:56:22
+**Versão:** 2.6
+**Data e hora:** 29/07/2026 03:58:17
 **Fuso horário:** `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
 **Branch:** `codex/auditoria-valley-rider-2026-07-28`  
-**Commit local antes da integração:** `c11559c7990072f53dbb1dffecfe36455dcb425a`
+**Commit de referência antes da correção:** `e11601119932da31828aa54ec54b34b19b157719`
 **Commit integrado de `origin/main`:** `77dd7791ea8bc649a01a3f1d534b609fdd479a34`
 **Pull Requests relacionadas:** `#62`, `#64`, `#65`, `#71`, `#72`
 **Issue de orquestração:** `#51`
 
 ## 1. Objetivo
 
-Concluir a integração segura da correção do timeout persistente do Gradle Server
-no VS Code, preservar as configurações locais da branch e deixar a validação
-Android independente do transporte JSON-RPC instável.
+Validar os diagnósticos do editor nos workflows de segurança e release Android,
+corrigir falhas contratuais reais sem rebaixar Actions válidas nem remover a
+proteção do environment de produção, e registrar os bloqueios externos.
 
 ## 2. Contexto
 
@@ -28,6 +28,18 @@ Android independente do transporte JSON-RPC instável.
 - as opções locais de análise Python e busca Java foram preservadas junto com
   todas as proteções do Gradle;
 - o teste contratual direcionado foi aprovado no ambiente Python do projeto.
+- as majors `actions/checkout@v6`, `actions/setup-python@v6` e
+  `actions/setup-node@v6` existem nos repositórios oficiais;
+- o `gh auth status` confirmou que não há sessão GitHub disponível neste
+  ambiente, impedindo a extensão do editor de resolver metadados e listar
+  environments privados;
+- `google-play-production` é exigido por
+  `scripts/validate_valley_android_release.py` e não pode ser removido sem
+  enfraquecer a proteção da publicação;
+- o validador v2.9 detectou uma falha real: tarefas Android genéricas no
+  workflow de segurança, corrigidas para a variante `ProductionDebug`.
+- o validador legado foi alinhado ao contrato v2.9 para eliminar a exigência
+  conflitante da variante genérica.
 
 ## 3. Escopo
 
@@ -39,6 +51,8 @@ Android independente do transporte JSON-RPC instável.
 4. validar JSON e `tests/test_gradle_vscode_contract.py`;
 5. validar o wrapper Gradle sem depender do servidor JSON-RPC;
 6. publicar somente a branch de trabalho e atualizar o pull request aplicável.
+7. preservar as majors atuais das Actions e o environment protegido;
+8. executar os validadores de release e os testes contratuais de workflow.
 
 ### Fora do escopo
 
@@ -47,6 +61,8 @@ Android independente do transporte JSON-RPC instável.
 - fazer push direto em `main`;
 - encerrar à força processos Gradle pertencentes a outro agente;
 - declarar integrações externas homologadas sem evidência no ambiente correto.
+- silenciar diagnósticos válidos ou remover gates apenas para limpar o painel do
+  editor.
 
 ## 4. Fontes de verdade
 
@@ -85,6 +101,8 @@ Android independente do transporte JSON-RPC instável.
 9. atualizar o pull request ou registrar o bloqueio se a operação não estiver
    disponível;
 10. liberar o lock multiagente.
+11. autenticar o GitHub no cliente e recarregar a janela do editor para renovar
+    o cache do resolvedor.
 
 ### P1 — validar entregas integradas
 
@@ -102,6 +120,11 @@ git diff --check
 git fsck --connectivity-only --no-dangling
 python3 scripts/check_brand_integrity.py
 python3 scripts/validate_repository.py
+python3 scripts/validate_valley_android_release.py
+python3 scripts/validate_valley_android_release_v29.py
+.venv/bin/pytest -q tests/test_security_workflow_contract.py \
+  tests/test_valley_android_workflow_contract.py \
+  tests/test_valley_android_signing.py
 .venv/bin/pytest -q tests/test_valley_rider_stitch_contract.py
 .venv/bin/pytest -q tests/test_marketplace_discovery.py
 .venv/bin/pytest -q tests/test_valley_consumer_innovation_round_005.py
@@ -141,6 +164,11 @@ cd ../valley-android
 - branch publicada sem force-push e sem push direto em `main`;
 - pull request atualizado com testes e evidências;
 - gates remotos verdes no mesmo commit antes do Squash and Merge.
+- workflow de segurança usa apenas tarefas Android `ProductionDebug`
+  explícitas;
+- majors oficiais e `google-play-production` permanecem preservados;
+- diagnósticos do editor só são considerados encerrados após autenticação,
+  recarga e nova coleta sem os cinco erros.
 
 ## 9. Riscos
 
@@ -157,6 +185,8 @@ cd ../valley-android
 
 - o reload efetivo da janela do VS Code depende da ação no cliente gráfico;
 - abertura/atualização de pull request depende de acesso autenticado ao GitHub;
+- a limpeza do cache e a resolução de environments pela extensão oficial
+  dependem de autenticação GitHub no cliente VS Code;
 - homologações Mapbox, KYC, PSP, Play Integrity e dispositivo real continuam
   externas ao escopo desta sincronização.
 
@@ -177,6 +207,8 @@ cd ../valley-android
 3. confirmar que não surge novo processo `gradle-server` automático;
 4. publicar a branch e atualizar o pull request;
 5. acompanhar os gates remotos e as homologações externas pendentes.
+6. autenticar o GitHub no VS Code, executar `Developer: Reload Window` e
+   confirmar que a coleção `extHost2` foi recalculada.
 
 ## 13. Procedimento de entrega
 
@@ -202,3 +234,4 @@ cd ../valley-android
 | 2.3 | 28/07/2026 | A1 Admin Web/Mobile, Android seguro e pacote Figma. |
 | 2.4 | 28/07/2026 23:23:37 | Conflito de sincronização resolvido e históricos consolidados. |
 | 2.5 | 29/07/2026 03:56:22 | Correção do timeout do Gradle Server integrada do PR #72 e contrato direcionado validado. |
+| 2.6 | 29/07/2026 03:58:17 | Diagnósticos de Actions classificados, tarefa Android ProductionDebug corrigida e bloqueio de autenticação registrado. |
