@@ -9,6 +9,7 @@ from scripts.audit_valley_flutter_apks import (
     _resolve_archive_reference,
     find_apksigner,
 )
+from scripts.configure_valley_flutter_android import _materialize_manifest
 from scripts.prepare_valley_flutter_build import FLUTTER_APP
 
 
@@ -50,8 +51,23 @@ def test_android_configuration_requires_network_and_official_icon() -> None:
     assert "android.permission.ACCESS_NETWORK_STATE" in configure
     assert "@drawable/valley_logo" in configure
     assert "ICON.read_bytes() != OFFICIAL_LOGO.read_bytes()" in configure
-    assert 'application.set(_android("usesCleartextTraffic"), "false")' in configure
-    assert 'application.set(_android("allowBackup"), "false")' in configure
+    assert '"usesCleartextTraffic": "false"' in configure
+    assert '"allowBackup": "false"' in configure
+    assert "xml.etree" not in configure
+
+
+def test_android_manifest_materialization_is_idempotent() -> None:
+    source = '<manifest xmlns:android="http://schemas.android.com/apk/res/android"><application android:label="${applicationName}"></application></manifest>'
+    configured = _materialize_manifest(source)
+    repeated = _materialize_manifest(configured)
+    assert configured == repeated
+    assert configured.count("android.permission.INTERNET") == 1
+    assert configured.count("android.permission.ACCESS_NETWORK_STATE") == 1
+    assert 'android:label="Valley"' in configured
+    assert 'android:icon="@drawable/valley_logo"' in configured
+    assert 'android:roundIcon="@drawable/valley_logo"' in configured
+    assert 'android:usesCleartextTraffic="false"' in configured
+    assert 'android:allowBackup="false"' in configured
 
 
 def test_pubspec_has_generated_asset_block() -> None:
