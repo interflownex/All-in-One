@@ -264,14 +264,14 @@ def validate() -> list[str]:
             )
 
     for marker in (
-        "VALLEY_RELEASE_KEYSTORE_BASE64",
-        "VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER",
-        "VALLEY_PLAY_APP_SIGNING_CERT_SHA256",
-        "testReleaseUnitTest assembleRelease bundleRelease",
-        "--require-release-signature",
-        "anchore/sbom-action@v0",
+        "subosito/flutter-action@v2",
+        'flutter-version: "3.44.8"',
+        "config/stitch/template_project_state.json",
+        "flutter build apk --release",
+        "flutter build apk --release --split-per-abi",
+        "scripts/audit_valley_flutter_apks.py",
         "actions/attest-build-provenance@v2",
-        "google-play-production",
+        "actions/upload-artifact@v4",
     ):
         require(release_workflow, marker, RELEASE_WORKFLOW, errors)
     for marker in (
