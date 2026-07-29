@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   web-template:
@@ -25,16 +25,40 @@ jobs:
         working-directory: apps/all-in-one-admin
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
-      - name: Instalar dependências e gerar lockfile
-        run: npm install --no-fund --no-audit
+      - name: Instalar dependências de forma determinística
+        shell: bash
+        run: |
+          if [[ -f package-lock.json ]]; then
+            npm ci --no-fund --no-audit
+          else
+            npm install --package-lock-only --ignore-scripts --no-fund --no-audit
+            npm ci --no-fund --no-audit
+          fi
       - name: Validar design, lint e build
         run: npm run check
       - name: Auditar dependências de produção
         run: npm audit --omit=dev --audit-level=critical
-      - name: Publicar lockfile gerado
+      - name: Versionar lockfile gerado na branch da PR
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        working-directory: ${{ github.workspace }}
+        shell: bash
+        run: |
+          git add apps/all-in-one-admin/package-lock.json
+          if git diff --cached --quiet; then
+            echo "Lockfile já está sincronizado."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(admin): versionar lockfile gerado"
+          git push origin "HEAD:${GITHUB_HEAD_REF}"
+      - name: Publicar lockfile como evidência
         uses: actions/upload-artifact@v5
         with:
           name: a1-admin-package-lock
