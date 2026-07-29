@@ -9,7 +9,9 @@
   "google.datacloud.composer.region": "southamerica-east1",
   "google.datacloud.expandMenus": true,
   "google.datacloud.recentProjectsEnabled": true,
-  "google.datacloud.starredProjects": ["all-in-one-498012"],
+  "google.datacloud.starredProjects": [
+    "all-in-one-498012"
+  ],
   "google.datacloud.agent.skills.autoUpdate": true,
   "google.datacloud.agent.skills.installLocation": "workspace",
   "google.datacloud.executeCellToolForNotebookMCP": false,
@@ -44,7 +46,9 @@
   "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
   "vs-kubernetes.kubectlVersioning": "user-provided",
   "vs-kubernetes.kubeconfig": "/home/eretazan/.kube/config",
-  "vs-kubernetes.knownKubeconfigs": ["/home/eretazan/.kube/config"],
+  "vs-kubernetes.knownKubeconfigs": [
+    "/home/eretazan/.kube/config"
+  ],
   "vs-kubernetes.namespace": "default",
   "vs-kubernetes.outputFormat": "yaml",
   "imageBuildTool": "Docker",
@@ -68,7 +72,9 @@
   "python.testing.pytestArgs": [],
   "python.analysis.typeCheckingMode": "strict",
   "python.analysis.autoImportCompletions": true,
-  "python.analysis.fixAll": ["source.unusedImports"],
+  "python.analysis.fixAll": [
+    "source.unusedImports"
+  ],
   "ruff.importStrategy": "fromEnvironment",
   "files.eol": "\n",
   "files.insertFinalNewline": true,
@@ -116,7 +122,12 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
   "yaml.validate": true,
   "docker.extension.enableComposeLanguageServer": true,
   "docker.lsp.telemetry": "off",
@@ -157,5 +168,18 @@
   "geminicodeassist.telemetry.enable": false,
   "google.datacloud.enableTelemetry": false,
   "editor.codeActions.triggerOnFocusChange": true,
-  "python.analysis.excludeLibraryDiagnostics": true
+  "python.analysis.excludeLibraryDiagnostics": true,
+  "gradle.autoDetect": "off",
+  "gradle.nestedProjects": [
+    "apps/valley-android"
+  ],
+  "gradle.debug": false,
+  "java.import.gradle.enabled": true,
+  "java.import.gradle.wrapper.enabled": true,
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.gradle.buildServer.enabled": "off",
+  "files.watcherExclude": {
+    "**/.gradle/**": true,
+    "**/build/**": true
+  }
 }

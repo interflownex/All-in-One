@@ -1,21 +1,23 @@
 {
   "folders": [
     {
-      "path": ".",
-    },
+      "path": "."
+    }
   ],
   "settings": {
-    "powershell.powerShellAdditionalExePaths": ["/mnt/c/Users/ereta/.local/bin/pwsh"],
+    "powershell.powerShellAdditionalExePaths": [
+      "/mnt/c/Users/ereta/.local/bin/pwsh"
+    ],
     "google.cloud.project": "all-in-one-498012",
     "cloudcode.autoDependencies": "on",
     "cloudcode.dependencyPaths": {
-      "kubectl": "/usr/local/bin/kubectl",
+      "kubectl": "/usr/local/bin/kubectl"
     },
     "cloudcode.kubeconfigs": [
       {
         "name": "all-in-one-local",
-        "configPath": "/home/eretazan/.kube/config",
-      },
+        "configPath": "/home/eretazan/.kube/config"
+      }
     ],
     "cloudcode.active-kubeconfig": "all-in-one-local",
     "cloudcode.kubectlRequestTimeout": "20s",
@@ -31,7 +33,9 @@
     "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
     "vs-kubernetes.kubectlVersioning": "user-provided",
     "vs-kubernetes.kubeconfig": "/home/eretazan/.kube/config",
-    "vs-kubernetes.knownKubeconfigs": ["/home/eretazan/.kube/config"],
+    "vs-kubernetes.knownKubeconfigs": [
+      "/home/eretazan/.kube/config"
+    ],
     "vs-kubernetes.namespace": "default",
     "vs-kubernetes.outputFormat": "yaml",
     "imageBuildTool": "Docker",
@@ -56,7 +60,7 @@
       "GOOGLE_CODE_CLI_ENABLED": "true",
       "ALLOYDB_ENABLED": "true",
       "GEMINI_CODE_ASSIST_ENABLED": "true",
-      "STITCH_REMOTE_SYNC_ENABLED": "true",
+      "STITCH_REMOTE_SYNC_ENABLED": "true"
     },
     "terminal.integrated.env.linux": {
       "GOOGLE_INTEGRATIONS_ENABLED": "true",
@@ -65,22 +69,22 @@
       "GOOGLE_CODE_CLI_ENABLED": "true",
       "ALLOYDB_ENABLED": "true",
       "GEMINI_CODE_ASSIST_ENABLED": "true",
-      "STITCH_REMOTE_SYNC_ENABLED": "true",
+      "STITCH_REMOTE_SYNC_ENABLED": "true"
     },
     "terminal.integrated.profiles.windows": {
       "PowerShell": {
-        "source": "PowerShell",
+        "source": "PowerShell"
       },
       "Git Bash": {
-        "path": "C:\\Program Files\\Git\\bin\\bash.exe",
-      },
+        "path": "C:\\Program Files\\Git\\bin\\bash.exe"
+      }
     },
     "geminicodeassist.outlines.automaticOutlineGeneration": true,
     "geminicodeassist.agentYoloMode": false,
     "geminicodeassist.enable": true,
     "workbench.editor.preferHistoryBasedLanguageDetection": true,
     "google.datacloud.enableTelemetry": false,
-    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.configuration.updateBuildConfiguration": "interactive",
     "cloudcode.cloudshell.project": "all-in-one-498012",
     "chatgpt.runCodexInWindowsSubsystemForLinux": true,
     "chatgpt.openOnStartup": true,
@@ -90,15 +94,26 @@
     "workbench.browser.enableRemoteProxy": true,
     "remote.portsAttributes": {
       "443": {
-        "protocol": "https",
+        "protocol": "https"
       },
       "8443": {
-        "protocol": "https",
-      },
+        "protocol": "https"
+      }
     },
     "workbench.browser.openLocalhostLinks": false,
     "editor.codeActions.triggerOnFocusChange": true,
     "python.analysis.excludeLibraryDiagnostics": true,
     "java.search.scope": "all",
-  },
+    "gradle.autoDetect": "off",
+    "gradle.nestedProjects": [
+      "apps/valley-android"
+    ],
+    "gradle.debug": false,
+    "java.import.gradle.wrapper.enabled": true,
+    "java.gradle.buildServer.enabled": "off",
+    "files.watcherExclude": {
+      "**/.gradle/**": true,
+      "**/build/**": true
+    }
+  }
 }
