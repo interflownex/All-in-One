@@ -183,7 +183,7 @@ export default function B2BDashboard() {
             </span>
           </div>
 
-          <PepitaWidget onSelect={(_amount) => {}} />
+          <PepitaWidget onSelect={() => {}} />
         </div>
       )}
 

@@ -278,7 +278,7 @@ def validate() -> list[str]:
         "github/codeql-action/init@v4",
         "languages: java-kotlin",
         "gradle/actions/dependency-submission@v6",
-        "testDebugUnitTest lintDebug assembleDebug",
+        "testProductionDebugUnitTest lintProductionDebug assembleProductionDebug",
         "github/codeql-action/analyze@v4",
     ):
         require(security_workflow, marker, SECURITY_WORKFLOW, errors)
