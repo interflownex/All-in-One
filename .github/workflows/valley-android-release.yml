@@ -12,6 +12,7 @@ on:
       - "scripts/audit_valley_flutter_apks.py"
       - "scripts/prepare_valley_flutter_build.py"
       - "scripts/validate_valley_android_release.py"
+      - "scripts/validate_valley_android_release_v29.py"
       - "tests/test_valley_flutter_contract.py"
   push:
     tags:
@@ -42,6 +43,9 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+
+      - name: Validar contrato Valley v2.9
+        run: python scripts/validate_valley_android_release_v29.py
 
       - name: Instalar Flutter estável
         uses: subosito/flutter-action@v2
