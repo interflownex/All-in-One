@@ -1,13 +1,14 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.6
-**Data e hora:** 29/07/2026 04:27:17
+**Versão:** 2.7
+**Data e hora:** 29/07/2026 04:30:18
 **Fuso horário:** `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch:** `codex/corrigir-gate-android-2026-07-29`
 **Commit-base:** `f1681dd2cbff145a661254cb1ce49f059121d7f2`
 **Referência de governança v2.9:** `21a6ba6b0fbeb4afeaa336b7b0bbec6c51a0a9ff`
-**Pull request anterior bloqueado por escopo:** `#75`
+**Pull request anterior bloqueado por escopo:** `#75` — fechado sem merge
+**Pull request da correção isolada:** `#77`
 
 ## 1. Objetivo
 
@@ -204,3 +205,4 @@ git ls-remote --exit-code https://github.com/actions/setup-node.git refs/tags/v6
 | 2.4 | 29/07/2026 04:16:09 | Correção CI isolada da branch acumulada e referência v2.9 registrada. |
 | 2.5 | 29/07/2026 04:18:52 | Scanner corrigido e violações objetivas de marca restauradas com ativos canônicos. |
 | 2.6 | 29/07/2026 04:27:17 | Gate de lint Valley corrigido sem alterar o comportamento do widget. |
+| 2.7 | 29/07/2026 04:30:18 | PR #77 aberto e PR #75 encerrado sem merge após auditoria de escopo. |
