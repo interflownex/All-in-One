@@ -52,7 +52,7 @@ jobs:
         env:
           VALLEY_RELEASE_KEY_ALIAS: ${{ secrets.VALLEY_RELEASE_KEY_ALIAS }}
         run: |
-          python scripts/validate_valley_android_release.py
+          python scripts/validate_valley_android_release_v29.py
           python scripts/configure_valley_android_signing.py \
             --check \
             --keystore "$RUNNER_TEMP/valley-upload.jks" \

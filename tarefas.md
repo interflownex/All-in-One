@@ -1,15 +1,12 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.3  
-**Data:** 28/07/2026  
-**Fuso:** `America/Sao_Paulo`  
+**Versão:** 2.4  
+**Data e hora:** 29/07/2026 04:11, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Branch:** `codex/a1-admin-web-mobile-figma-2026-07-28`  
-**Commit-base:** `f9fa3dcb81e56f6164e4de8c39c25bc1247bd565`  
-**Commit da implementação:** `41efb617c177941dbae598c1eaceefbb70a4dd25`  
-**Commit do lockfile:** `2297047a4271005a755997685d9bee630d84c028`  
-**Issue:** `#68`  
-**Classificação:** `Pendências > Técnico e Conceitual > Equipe Técnica`
+**Branch:** `fix/android-validator-productiondebug-2026-07-29`  
+**Commit-base:** `f1681dd2cbff145a661254cb1ce49f059121d7f2`  
+**Issue de orquestração:** `#51`  
+**Classificação:** `Pendências > Técnico > Equipe Técnica`
 
 ## 1. Regra mandatória de prioridade
 
@@ -24,115 +21,117 @@ Antes de qualquer nova evolução, tratar nesta ordem:
 
 A política autoritativa permanece em `config/autonomy/pending_work_priority_policy.json` e `AGENTS.md`.
 
-## 2. Objetivo atual
+## 2. Estado confirmado neste ciclo
 
-Entregar um template unificado do **A1 Admin** para web e mobile, com fonte visual única, integração segura com o APK Admin e pacote rastreável para criação de um novo projeto no Figma.
+- PR #74 validada e integrada por Squash and Merge;
+- commit de integração da PR #74: `f1681dd2cbff145a661254cb1ce49f059121d7f2`;
+- PR #75 encerrada sem merge por conter 304 arquivos e 32.228 exclusões fora do escopo declarado;
+- o ajuste legítimo da PR #75 foi isolado em branch limpa;
+- o workflow permanente de Security já usa `testProductionDebugUnitTest`, `lintProductionDebug` e `assembleProductionDebug`;
+- o adaptador `scripts/validate_valley_android_release_v29.py` preserva as verificações legadas e valida as tarefas explícitas;
+- o workflow de release passou a chamar o adaptador v2.9;
+- foi criado teste de regressão para impedir retorno ao contrato Android genérico;
+- Vision permanece excluído;
+- nenhuma credencial ou segredo foi versionado.
 
-## 3. Estado implementado
+## 3. Objetivo imediato
 
-- shell React/Vite em `apps/all-in-one-admin`;
-- sidebar desktop e navegação inferior mobile;
-- dashboard, aprovações, empresas, módulos, operações, segurança, relatórios e configurações;
-- command palette e interações demonstrativas;
-- estados de loading, vazio, erro e sucesso;
-- responsividade para desktop, tablet e celular;
-- dados identificados como protótipo;
-- uso exclusivo da marca canônica `assets/brand/all-in-one-logo-official.png`;
-- tokens Figma, manifesto de telas, brief e checklist;
-- APK Admin com URL configurável por Gradle ou variável de ambiente;
-- política de HTTPS e mesma origem coberta por testes unitários;
-- navegação preditiva Android por `OnBackPressedDispatcher`;
-- tema compatível com Android 24 e recursos específicos em `values-v27`;
-- `package-lock.json` versionado;
-- workflow dedicado usando `npm ci` e permissão somente de leitura.
+Concluir a correção mínima do gate Android sem incorporar alterações alheias:
 
-## 4. Fontes de verdade
+1. validar o adaptador v2.9;
+2. validar o workflow de release;
+3. executar testes de regressão;
+4. executar CI, Security e Docker Compose no mesmo head;
+5. revisar diff, threads, segredos e mergeabilidade;
+6. integrar exclusivamente por Squash and Merge.
 
-1. `AGENTS.md`;
-2. `config/autonomy/pending_work_priority_policy.json`;
-3. `config/branding/authorized_assets.json`;
-4. este `tarefas.md`;
-5. issue `#68`;
-6. `apps/all-in-one-admin/README.md`;
-7. `apps/all-in-one-admin/design/FIGMA_PROJECT_BRIEF.md`;
-8. `apps/all-in-one-admin/design/figma.tokens.json`;
-9. `apps/all-in-one-admin/design/figma-screen-manifest.json`;
-10. `apps/valley-android/admin/README.md`;
-11. `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v3.5_2026-07-28.md`;
-12. `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v3.5_2026-07-28.md`.
+## 4. Arquivos autorizados neste incremento
 
-## 5. Validação obrigatória
+- `.github/workflows/valley-android-release.yml`;
+- `tests/test_valley_android_release_adapter.py`;
+- `tarefas.md`;
+- relatório e plano versionados deste ciclo.
+
+Qualquer arquivo adicional exige justificativa técnica explícita e nova revisão de escopo.
+
+## 5. Testes obrigatórios
 
 ```bash
-cd apps/all-in-one-admin
-npm ci
-npm run check
-npm audit --omit=dev --audit-level=critical
-
-cd ../../apps/valley-android
-./gradlew :admin:testDebugUnitTest :admin:lintDebug :admin:assembleDebug
+python scripts/validate_valley_android_release_v29.py
+python -m pytest -q tests/test_valley_android_release_adapter.py
+python -m pytest -q tests/test_valley_android_workflow_contract.py
+python scripts/validate_repository.py
 ```
 
-Gates esperados:
+Gates remotos obrigatórios no mesmo SHA:
 
-- A1 Admin Template / web-template;
-- A1 Admin Template / android-admin;
-- All in One Admin Android APK;
 - Continuous Integration;
 - Security;
 - Docker Compose Health Gate;
-- Valley Android Security.
+- demais workflows acionados pelo diff.
 
-## 6. Sequência imediata
+## 6. Critérios de aceite
 
-### P0 — fechar esta entrega
+- workflow de release chama `validate_valley_android_release_v29.py`;
+- contrato legado continua sendo executado por meio do adaptador;
+- tarefas Android genéricas são rejeitadas;
+- tarefas `ProductionDebug` são obrigatórias;
+- `${{ runner.temp }}` permanece utilizado para arquivos efêmeros de assinatura;
+- nenhuma alteração de interface, branding, skills ou produto entra no diff;
+- nenhum segredo é versionado;
+- gates verdes no mesmo head;
+- ausência de threads não resolvidas;
+- integração por Squash and Merge com `expected_head_sha`.
 
-1. executar os gates no SHA final;
-2. corrigir toda falha reproduzível na branch;
-3. revisar diff, marca, segredos e mergeabilidade;
-4. verificar threads e mudanças do head;
-5. integrar por Squash and Merge;
-6. atualizar e encerrar a issue #68 somente após evidências;
-7. revisar novamente PRs, merges, commits, workflows e issues.
+## 7. Próxima sequência funcional após o fechamento
 
-### P1 — publicação do shell
+### Marketplace
 
-1. publicar `apps/all-in-one-admin` em domínio administrativo homologado;
-2. configurar `A1_ADMIN_URL` no build Android;
-3. validar autenticação, sessão, deep links e logout;
-4. executar QA visual web/mobile com dados não produtivos;
-5. gerar APK homologado apontando para a nova URL.
+O PR #65 já integrou:
 
-### P1 — novo projeto Figma
+- catálogo público;
+- busca, filtros e paginação;
+- geolocalização e ordenação por distância;
+- feed vertical;
+- promoção do dia;
+- favoritos;
+- carrinho isolado por usuário.
 
-1. criar o arquivo `A1 Admin — Web & Mobile — 2026` em conta Figma autorizada;
-2. importar tokens e manifesto;
-3. inserir a marca oficial sem modificação;
-4. construir pages, componentes, variantes e frames descritos;
-5. publicar biblioteca e anexar links ao README.
+Próximo incremento permitido:
 
-A criação externa do arquivo Figma depende de uma integração ou sessão Figma autorizada. O repositório já contém todas as entradas técnicas necessárias e não deve receber links fictícios.
+1. mapear contrato de reserva no Stock;
+2. desenhar checkout idempotente;
+3. validar preço e disponibilidade no momento do checkout;
+4. integrar Wallet e Orders sem lançar valores fora do ledger;
+5. publicar eventos de reserva, pedido e pagamento;
+6. manter feature flag desligada até homologação;
+7. não iniciar Delivery antes da conclusão formal de Marketplace e Stock.
 
-## 7. Critérios de aceite
+### Stock
 
-- lint, validação de design e build web verdes;
-- auditoria de dependências sem vulnerabilidade crítica;
-- testes, lint e APK Android verdes;
-- marca oficial preservada;
-- URL Android somente HTTPS e mesma origem;
-- layouts web/mobile responsivos;
-- tokens e manifesto válidos;
-- lockfile versionado e `npm ci` comprovado;
-- nenhum dado produtivo ou segredo versionado;
-- PR mesclável e integrada por Squash and Merge;
-- issue #68 atualizada com commit final e evidências.
+Permanece como segunda fase e deve fornecer:
 
-## 8. Riscos e bloqueios
+- fonte única de saldo;
+- reservas com expiração;
+- concorrência segura;
+- idempotência;
+- auditoria;
+- prevenção de estoque negativo.
 
-- o shell é um template e ainda não consome APIs produtivas;
-- o domínio definitivo do novo painel ainda precisa ser publicado;
-- a criação do arquivo externo no Figma exige acesso autorizado à conta;
-- nenhuma dessas limitações autoriza declarar produção ou projeto Figma externo como concluídos.
+### Delivery
+
+Permanece como terceira fase. O Valley Rider já integrado não equivale à homologação completa do Delivery.
+
+## 8. Proibições
+
+- não executar push direto na `main`;
+- não integrar PR com escopo divergente;
+- não usar resultados de head anterior;
+- não ativar auto-merge enquanto outros métodos de merge estiverem habilitados;
+- não versionar segredos;
+- não reativar Vision;
+- não iniciar Delivery;
+- não declarar checkout concluído sem reserva transacional e ledger.
 
 ## 9. Histórico
 
@@ -141,4 +140,5 @@ A criação externa do arquivo Figma depende de uma integração ou sessão Figm
 | 2.0 | 28/07/2026 | PR #62, QA Rider e testes Git determinísticos. |
 | 2.1 | 28/07/2026 | Rodada 005 com contratos e feature flags. |
 | 2.2 | 28/07/2026 | Marketplace Fase 1 e governança de pendências. |
-| 2.3 | 28/07/2026 | A1 Admin Web + Mobile, Android seguro e pacote pronto para Figma. |
+| 2.3 | 28/07/2026 | A1 Admin Web + Mobile, Android seguro e pacote Figma. |
+| 2.4 | 29/07/2026 | PR #74 integrada, PR #75 rejeitada por escopo divergente e correção Android v2.9 isolada. |
