@@ -1,10 +1,21 @@
-name: Valley Android Release
+name: Valley Flutter APK Gratuito
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/valley-android-release.yml"
+      - "apps/valley-flutter/**"
+      - "apps/valley/**"
+      - "assets/brand/**"
+      - "config/stitch/**"
+      - "scripts/audit_valley_flutter_apks.py"
+      - "scripts/prepare_valley_flutter_build.py"
+      - "scripts/validate_valley_android_release.py"
+      - "tests/test_valley_flutter_contract.py"
   push:
     tags:
-      - "valley-android-v*"
+      - "valley-flutter-v*"
 
 permissions:
   contents: read
@@ -12,84 +23,81 @@ permissions:
   attestations: write
 
 jobs:
-  signed-release:
+  flutter-apk:
     runs-on: ubuntu-latest
-    environment: google-play-production
+    timeout-minutes: 30
     env:
-      VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER: ${{ secrets.VALLEY_PLAY_INTEGRITY_CLOUD_PROJECT_NUMBER }}
-      VALLEY_PLAY_APP_SIGNING_CERT_SHA256: ${{ secrets.VALLEY_PLAY_APP_SIGNING_CERT_SHA256 }}
-      VALLEY_RELEASE_SIGNING_PROPERTIES: ${{ runner.temp }}/valley-release.properties
+      VITE_API_HUB_URL: ${{ vars.VITE_API_HUB_URL }}
+      VITE_VALLEY_ALLOW_DEMO: "true"
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/valley/package-lock.json
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: gradle/actions/setup-gradle@v4
 
-      - name: Materializar chave de upload fora do workspace
-        env:
-          KEYSTORE_BASE64: ${{ secrets.VALLEY_RELEASE_KEYSTORE_BASE64 }}
-          STORE_PASSWORD: ${{ secrets.VALLEY_RELEASE_STORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.VALLEY_RELEASE_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.VALLEY_RELEASE_KEY_PASSWORD }}
-        run: |
-          set -euo pipefail
-          test -n "$KEYSTORE_BASE64"
-          test -n "$STORE_PASSWORD"
-          test -n "$KEY_ALIAS"
-          test -n "$KEY_PASSWORD"
-          umask 077
-          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/valley-upload.jks"
-          {
-            printf 'storeFile=%s\n' "$RUNNER_TEMP/valley-upload.jks"
-            printf 'storePassword=%s\n' "$STORE_PASSWORD"
-            printf 'keyAlias=%s\n' "$KEY_ALIAS"
-            printf 'keyPassword=%s\n' "$KEY_PASSWORD"
-          } > "$VALLEY_RELEASE_SIGNING_PROPERTIES"
-
-      - name: Validar contrato e assinatura de upload
-        env:
-          VALLEY_RELEASE_KEY_ALIAS: ${{ secrets.VALLEY_RELEASE_KEY_ALIAS }}
-        run: |
-          python scripts/validate_valley_android_release_v29.py
-          python scripts/configure_valley_android_signing.py \
-            --check \
-            --keystore "$RUNNER_TEMP/valley-upload.jks" \
-            --properties "$VALLEY_RELEASE_SIGNING_PROPERTIES" \
-            --alias "$VALLEY_RELEASE_KEY_ALIAS"
-
-      - name: Testar e gerar APK e AAB release
-        working-directory: apps/valley-android
-        run: ./gradlew testReleaseUnitTest assembleRelease bundleRelease --no-daemon
-
-      - name: Auditar conteúdo e certificado do APK
-        run: >-
-          python scripts/audit_valley_apk.py
-          apps/valley-android/app/build/outputs/apk/release/app-release.apk
-          --android-sdk "$ANDROID_HOME"
-          --require-release-signature
-
-      - name: Gerar SBOM CycloneDX do artefato
-        uses: anchore/sbom-action@v0
+      - name: Instalar Flutter estável
+        uses: subosito/flutter-action@v2
         with:
-          path: apps/valley-android/app/build/outputs/apk/release/app-release.apk
-          format: cyclonedx-json
-          output-file: valley-android-release.cdx.json
+          flutter-version: "3.44.8"
+          channel: stable
+          cache: true
 
-      - name: Atestar proveniência do APK
+      - name: Materializar plataforma Android Flutter
+        run: |
+          flutter_project="$(mktemp -d)"
+          flutter create \
+            --platforms=android \
+            --org br.com.interflownex \
+            --project-name valley_consumer \
+            "$flutter_project"
+          cp -R "$flutter_project/android" apps/valley-flutter/android
+
+      - name: Compilar e preparar a interface Valley
+        run: |
+          test -f config/stitch/template_project_state.json
+          npm --prefix apps/valley ci --ignore-scripts
+          npm --prefix apps/valley run build
+          python3 scripts/prepare_valley_flutter_build.py
+          python3 scripts/prepare_valley_flutter_build.py --check
+
+      - name: Validar Flutter e contratos do repositório
+        working-directory: apps/valley-flutter
+        run: |
+          flutter pub get
+          dart format --output=none --set-exit-if-changed lib test
+          flutter analyze
+          flutter test
+
+      - name: Gerar APK universal e APKs por arquitetura
+        working-directory: apps/valley-flutter
+        run: |
+          flutter build apk --release
+          flutter build apk --release --split-per-abi
+
+      - name: Auditar conteúdo e assinatura dos APKs
+        run: >-
+          python3 scripts/audit_valley_flutter_apks.py
+          apps/valley-flutter/build/app/outputs/flutter-apk
+
+      - name: Atestar proveniência dos APKs
         uses: actions/attest-build-provenance@v2
         with:
-          subject-path: apps/valley-android/app/build/outputs/apk/release/app-release.apk
+          subject-path: apps/valley-flutter/build/app/outputs/flutter-apk/*.apk
 
-      - name: Publicar artefatos para aprovação Play App Signing
+      - name: Publicar APKs gratuitos
         uses: actions/upload-artifact@v4
         with:
-          name: valley-android-signed-release
+          name: valley-flutter-apks-${{ github.sha }}
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
           path: |
-            apps/valley-android/app/build/outputs/apk/release/app-release.apk
-            apps/valley-android/app/build/outputs/bundle/release/app-release.aab
-            apps/valley-android/app/build/outputs/mapping/release/mapping.txt
-            valley-android-release.cdx.json
+            apps/valley-flutter/build/app/outputs/flutter-apk/app-release.apk
+            apps/valley-flutter/build/app/outputs/flutter-apk/app-*-release.apk
