@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import 'api_bridge.dart';
+
 const _valleyPurple = Color(0xFF5D2CE6);
 const _valleyBackground = Color(0xFFF6F2FF);
 const _localEntryPoint = 'assets/valley/index.html';
@@ -42,20 +44,26 @@ class ValleyShell extends StatefulWidget {
 
 class _ValleyShellState extends State<ValleyShell> {
   late final WebViewController _controller;
+  late final ValleyApiBridge _apiBridge;
   bool _contentReady = false;
   String? _loadError;
 
   @override
   void initState() {
     super.initState();
-    _controller = WebViewController()
+    _controller = WebViewController();
+    _apiBridge = ValleyApiBridge(_controller);
+    _controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(_valleyBackground)
+      ..addJavaScriptChannel(
+        'ValleyNative',
+        onMessageReceived: (message) =>
+            unawaited(_apiBridge.handle(message.message)),
+      )
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageFinished: (_) {
-            unawaited(_verifyRenderedContent());
-          },
+          onPageFinished: (_) => unawaited(_verifyRenderedContent()),
           onWebResourceError: (error) {
             if (error.isForMainFrame == true && mounted) {
               setState(() {
@@ -74,19 +82,10 @@ class _ValleyShellState extends State<ValleyShell> {
     for (var attempt = 0; attempt < 20; attempt += 1) {
       if (!mounted) return;
       try {
-        final result = await _controller.runJavaScriptReturningResult('''
-          (() => {
-            const root = document.getElementById('root');
-            return Boolean(
-              root &&
-              root.childElementCount > 0 &&
-              root.innerText.trim().length > 20
-            );
-          })();
-        ''');
-        final ready =
-            result == true || result.toString().toLowerCase() == 'true';
-        if (ready) {
+        final result = await _controller.runJavaScriptReturningResult(
+          """(() => { const root = document.getElementById('root'); return Boolean(root && root.childElementCount > 0 && root.innerText.trim().length > 20); })();""",
+        );
+        if (result == true || result.toString().toLowerCase() == 'true') {
           if (mounted) {
             setState(() {
               _contentReady = true;
@@ -95,17 +94,14 @@ class _ValleyShellState extends State<ValleyShell> {
           }
           return;
         }
-      } catch (_) {
-        // A página ainda pode estar inicializando; a próxima tentativa confirma.
-      }
+      } catch (_) {}
       await Future<void>.delayed(const Duration(milliseconds: 500));
     }
-
     if (mounted) {
       setState(() {
         _contentReady = false;
         _loadError =
-            'A interface não foi carregada por completo. Reinstale a versão corrigida do aplicativo.';
+            'A interface não foi carregada por completo. Reinstale a versão corrigida.';
       });
     }
   }
@@ -114,17 +110,16 @@ class _ValleyShellState extends State<ValleyShell> {
     NavigationRequest request,
   ) async {
     final uri = Uri.tryParse(request.url);
-    if (uri == null) {
-      return NavigationDecision.prevent;
-    }
-
+    if (uri == null) return NavigationDecision.prevent;
     if (uri.scheme == 'file' ||
         uri.scheme == 'about' ||
-        uri.scheme == 'data' ||
-        uri.scheme == 'https') {
+        uri.scheme == 'data') {
       return NavigationDecision.navigate;
     }
-
+    if (uri.scheme == 'https' &&
+        uri.host == 'all-in-one-api-hub.web.app') {
+      return NavigationDecision.navigate;
+    }
     if (uri.scheme == 'mailto' || uri.scheme == 'tel') {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
@@ -150,8 +145,7 @@ class _ValleyShellState extends State<ValleyShell> {
               key: const Key('valley-webview'),
               controller: _controller,
             ),
-            if (!_contentReady && _loadError == null)
-              const _LoadingSurface(progressColor: _valleyPurple),
+            if (!_contentReady && _loadError == null) const _LoadingSurface(),
             if (_contentReady)
               Semantics(
                 label: 'Valley interface carregada',
@@ -167,32 +161,31 @@ class _ValleyShellState extends State<ValleyShell> {
 }
 
 class _LoadingSurface extends StatelessWidget {
-  const _LoadingSurface({required this.progressColor});
-
-  final Color progressColor;
+  const _LoadingSurface();
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
+    return const ColoredBox(
       color: _valleyBackground,
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(32),
+          padding: EdgeInsets.all(32),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset(
-                'assets/brand/valley-logo-official.png',
+              Image(
+                image: AssetImage(
+                  'assets/brand/valley-logo-official.png',
+                ),
                 width: 160,
-                fit: BoxFit.contain,
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24),
               SizedBox(
                 width: 180,
-                child: LinearProgressIndicator(color: progressColor),
+                child: LinearProgressIndicator(color: _valleyPurple),
               ),
-              const SizedBox(height: 12),
-              const Text('Carregando o Valley...'),
+              SizedBox(height: 12),
+              Text('Carregando o Valley...'),
             ],
           ),
         ),
@@ -217,10 +210,11 @@ class _LoadFailure extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset(
-                'assets/brand/valley-logo-official.png',
+              const Image(
+                image: AssetImage(
+                  'assets/brand/valley-logo-official.png',
+                ),
                 width: 160,
-                fit: BoxFit.contain,
               ),
               const SizedBox(height: 24),
               const Text(

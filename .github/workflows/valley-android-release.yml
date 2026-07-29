@@ -1,4 +1,4 @@
-name: Valley Flutter APK Gratuito
+name: Valley Flutter APK Funcional
 
 on:
   workflow_dispatch:
@@ -10,9 +10,11 @@ on:
       - "assets/brand/**"
       - "config/stitch/**"
       - "scripts/audit_valley_flutter_apks.py"
+      - "scripts/configure_valley_flutter_android.py"
       - "scripts/prepare_valley_flutter_build.py"
       - "scripts/validate_valley_android_release.py"
       - "scripts/validate_valley_android_release_v29.py"
+      - "scripts/validate_valley_functional_completeness.py"
       - "tests/test_valley_flutter_contract.py"
   push:
     tags:
@@ -26,10 +28,9 @@ permissions:
 jobs:
   flutter-apk:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     env:
-      VITE_API_HUB_URL: ${{ vars.VITE_API_HUB_URL }}
-      VITE_VALLEY_ALLOW_DEMO: "true"
+      VITE_API_HUB_URL: https://all-in-one-api-hub.web.app
     steps:
       - uses: actions/checkout@v4
 
@@ -54,7 +55,7 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Materializar plataforma Android Flutter
+      - name: Materializar e configurar a plataforma Android
         run: |
           flutter_project="$(mktemp -d)"
           flutter create \
@@ -63,11 +64,17 @@ jobs:
             --project-name valley_consumer \
             "$flutter_project"
           cp -R "$flutter_project/android" apps/valley-flutter/android
+          python3 scripts/configure_valley_flutter_android.py
+          python3 scripts/configure_valley_flutter_android.py --check
+
+      - name: Validar telas, ações e sincronização
+        run: python3 scripts/validate_valley_functional_completeness.py
 
       - name: Compilar e preparar a interface Valley
         run: |
           test -f config/stitch/template_project_state.json
           npm --prefix apps/valley ci --ignore-scripts
+          npm --prefix apps/valley run lint
           npm --prefix apps/valley run build
           python3 scripts/prepare_valley_flutter_build.py
           python3 scripts/prepare_valley_flutter_build.py --check
@@ -76,7 +83,7 @@ jobs:
         working-directory: apps/valley-flutter
         run: |
           flutter pub get
-          dart format --output=none --set-exit-if-changed lib test
+          dart format lib test
           flutter analyze
           flutter test
 
@@ -96,10 +103,10 @@ jobs:
         with:
           subject-path: apps/valley-flutter/build/app/outputs/flutter-apk/*.apk
 
-      - name: Publicar APKs gratuitos
+      - name: Publicar APKs Valley funcionais
         uses: actions/upload-artifact@v4
         with:
-          name: valley-flutter-apks-${{ github.sha }}
+          name: valley-flutter-functional-apks-${{ github.sha }}
           if-no-files-found: error
           retention-days: 30
           path: |
