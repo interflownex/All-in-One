@@ -5,10 +5,13 @@ from __future__ import annotations
 
 import argparse
 import os
+import posixpath
+import re
 import shutil
 import subprocess
 import zipfile
 from pathlib import Path
+from urllib.parse import urlsplit
 
 
 REQUIRED_APKS = {
@@ -17,6 +20,8 @@ REQUIRED_APKS = {
     "app-armeabi-v7a-release.apk",
     "app-x86_64-release.apk",
 }
+INDEX_PATH = "assets/flutter_assets/assets/valley/index.html"
+LOCAL_REFERENCE_PATTERN = re.compile(r"(?:src|href)=[\"']([^\"']+)[\"']")
 
 
 def find_apksigner() -> str | None:
@@ -47,6 +52,56 @@ def command_output(command: list[str]) -> str:
     return f"{completed.stdout}\n{completed.stderr}"
 
 
+def _resolve_archive_reference(reference: str) -> str | None:
+    parsed = urlsplit(reference)
+    if parsed.scheme or reference.startswith(("#", "//")):
+        return None
+    if reference.startswith("/"):
+        raise ValueError(f"referência absoluta incompatível: {reference}")
+    base = posixpath.dirname(INDEX_PATH)
+    normalized = posixpath.normpath(posixpath.join(base, parsed.path))
+    expected_prefix = "assets/flutter_assets/assets/valley/"
+    if not normalized.startswith(expected_prefix):
+        raise ValueError(f"referência escapou do bundle Valley: {reference}")
+    return normalized
+
+
+def _audit_web_bundle(apk_name: str, archive: zipfile.ZipFile, errors: list[str]) -> None:
+    names = set(archive.namelist())
+    try:
+        index = archive.read(INDEX_PATH).decode("utf-8")
+    except (KeyError, UnicodeDecodeError) as error:
+        errors.append(f"{apk_name}: index.html inválido: {error}")
+        return
+
+    if '<div id="root"></div>' not in index:
+        errors.append(f"{apk_name}: raiz React ausente no index.html")
+
+    references = LOCAL_REFERENCE_PATTERN.findall(index)
+    javascript = [item for item in references if urlsplit(item).path.endswith(".js")]
+    stylesheets = [item for item in references if urlsplit(item).path.endswith(".css")]
+    if not javascript:
+        errors.append(f"{apk_name}: index.html não referencia JavaScript")
+    if not stylesheets:
+        errors.append(f"{apk_name}: index.html não referencia CSS")
+
+    for reference in references:
+        try:
+            target = _resolve_archive_reference(reference)
+        except ValueError as error:
+            errors.append(f"{apk_name}: {error}")
+            continue
+        if target is None:
+            continue
+        if target not in names:
+            errors.append(
+                f"{apk_name}: recurso referenciado não foi empacotado: {reference}"
+            )
+            continue
+        if target.endswith((".js", ".css")) and archive.getinfo(target).file_size < 32:
+            errors.append(f"{apk_name}: recurso web vazio ou truncado: {reference}")
+
+
 def audit(directory: Path) -> list[str]:
     errors: list[str] = []
     discovered = {path.name for path in directory.glob("*.apk")}
@@ -67,12 +122,16 @@ def audit(directory: Path) -> list[str]:
                 names = set(archive.namelist())
                 for marker in (
                     "AndroidManifest.xml",
+                    "classes.dex",
                     "assets/flutter_assets/AssetManifest.bin",
-                    "assets/flutter_assets/assets/valley/index.html",
+                    INDEX_PATH,
                     "assets/flutter_assets/assets/brand/valley-logo-official.png",
                 ):
                     if marker not in names:
-                        errors.append(f"{apk.name}: conteúdo obrigatório ausente: {marker}")
+                        errors.append(
+                            f"{apk.name}: conteúdo obrigatório ausente: {marker}"
+                        )
+                _audit_web_bundle(apk.name, archive, errors)
         except zipfile.BadZipFile:
             errors.append(f"{apk.name}: ZIP/APK inválido")
 
