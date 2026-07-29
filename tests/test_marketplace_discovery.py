@@ -63,7 +63,7 @@ def create_published_product(
             "entity_id": store_id,
             "payload": {
                 "store_id": store_id,
-                "sku": sku or f"SKU-{uuid4().hex[:10]}",
+                "sku": sku or "SKU-MKT-DEFAULT",
                 "name": name,
                 "description": "Produto local com retirada e entrega.",
                 "category": category,
@@ -106,6 +106,7 @@ def test_marketplace_catalog_feed_and_promotion_are_contextual() -> None:
         marketplace,
         merchant_id=merchant_id,
         name="Cafeteira Compacta",
+        sku="SKU-MKT-CAFE-A",
         price_brl="199.90",
     )
 
@@ -147,6 +148,7 @@ def test_marketplace_favorites_and_cart_are_isolated_by_actor() -> None:
     _, product = create_published_product(
         marketplace,
         merchant_id=merchant_id,
+        sku="SKU-MKT-CAFE-B",
         price_brl="19.90",
         sponsored=False,
     )
