@@ -7,6 +7,7 @@
 **Branch:** `codex/a1-admin-web-mobile-figma-2026-07-28`  
 **Commit-base:** `f9fa3dcb81e56f6164e4de8c39c25bc1247bd565`  
 **Commit da implementação:** `41efb617c177941dbae598c1eaceefbb70a4dd25`  
+**Commit do lockfile:** `2297047a4271005a755997685d9bee630d84c028`  
 **Issue:** `#68`  
 **Classificação:** `Pendências > Técnico e Conceitual > Equipe Técnica`
 
@@ -29,7 +30,7 @@ Entregar um template unificado do **A1 Admin** para web e mobile, com fonte visu
 
 ## 3. Estado implementado
 
-- novo shell React/Vite em `apps/all-in-one-admin`;
+- shell React/Vite em `apps/all-in-one-admin`;
 - sidebar desktop e navegação inferior mobile;
 - dashboard, aprovações, empresas, módulos, operações, segurança, relatórios e configurações;
 - command palette e interações demonstrativas;
@@ -40,7 +41,10 @@ Entregar um template unificado do **A1 Admin** para web e mobile, com fonte visu
 - tokens Figma, manifesto de telas, brief e checklist;
 - APK Admin com URL configurável por Gradle ou variável de ambiente;
 - política de HTTPS e mesma origem coberta por testes unitários;
-- workflow dedicado `.github/workflows/a1-admin-template.yml`.
+- navegação preditiva Android por `OnBackPressedDispatcher`;
+- tema compatível com Android 24 e recursos específicos em `values-v27`;
+- `package-lock.json` versionado;
+- workflow dedicado usando `npm ci` e permissão somente de leitura.
 
 ## 4. Fontes de verdade
 
@@ -61,7 +65,7 @@ Entregar um template unificado do **A1 Admin** para web e mobile, com fonte visu
 
 ```bash
 cd apps/all-in-one-admin
-npm install
+npm ci
 npm run check
 npm audit --omit=dev --audit-level=critical
 
@@ -73,24 +77,23 @@ Gates esperados:
 
 - A1 Admin Template / web-template;
 - A1 Admin Template / android-admin;
+- All in One Admin Android APK;
 - Continuous Integration;
 - Security;
 - Docker Compose Health Gate;
-- verificações adicionais acionadas pelo diff.
+- Valley Android Security.
 
 ## 6. Sequência imediata
 
 ### P0 — fechar esta entrega
 
-1. criar PR para `main`;
-2. validar diff, marca, segredos e mergeabilidade;
-3. executar os gates no mesmo SHA;
-4. corrigir toda falha reproduzível na branch;
-5. obter `package-lock.json` gerado pelo workflow e versioná-lo;
-6. repetir os gates no SHA final;
-7. revisar threads e mudanças do head;
-8. integrar por Squash and Merge;
-9. atualizar e encerrar a issue #68 somente após evidências.
+1. executar os gates no SHA final;
+2. corrigir toda falha reproduzível na branch;
+3. revisar diff, marca, segredos e mergeabilidade;
+4. verificar threads e mudanças do head;
+5. integrar por Squash and Merge;
+6. atualizar e encerrar a issue #68 somente após evidências;
+7. revisar novamente PRs, merges, commits, workflows e issues.
 
 ### P1 — publicação do shell
 
@@ -119,6 +122,7 @@ A criação externa do arquivo Figma depende de uma integração ou sessão Figm
 - URL Android somente HTTPS e mesma origem;
 - layouts web/mobile responsivos;
 - tokens e manifesto válidos;
+- lockfile versionado e `npm ci` comprovado;
 - nenhum dado produtivo ou segredo versionado;
 - PR mesclável e integrada por Squash and Merge;
 - issue #68 atualizada com commit final e evidências.
@@ -128,7 +132,6 @@ A criação externa do arquivo Figma depende de uma integração ou sessão Figm
 - o shell é um template e ainda não consome APIs produtivas;
 - o domínio definitivo do novo painel ainda precisa ser publicado;
 - a criação do arquivo externo no Figma exige acesso autorizado à conta;
-- o lockfile será materializado pelo workflow remoto porque o ambiente local não conseguiu acessar o registry npm;
 - nenhuma dessas limitações autoriza declarar produção ou projeto Figma externo como concluídos.
 
 ## 9. Histórico
@@ -138,4 +141,4 @@ A criação externa do arquivo Figma depende de uma integração ou sessão Figm
 | 2.0 | 28/07/2026 | PR #62, QA Rider e testes Git determinísticos. |
 | 2.1 | 28/07/2026 | Rodada 005 com contratos e feature flags. |
 | 2.2 | 28/07/2026 | Marketplace Fase 1 e governança de pendências. |
-| 2.3 | 28/07/2026 | A1 Admin Web + Mobile e pacote pronto para Figma. |
+| 2.3 | 28/07/2026 | A1 Admin Web + Mobile, Android seguro e pacote pronto para Figma. |

@@ -30,10 +30,12 @@ Nenhuma versão alternativa ou reconstruída é permitida.
 
 ```bash
 cd apps/all-in-one-admin
-npm install
+npm ci
 npm run check
 npm run dev
 ```
+
+O `package-lock.json` é versionado e o workflow usa `npm ci` para instalação determinística.
 
 ## Projeto Figma
 
@@ -46,4 +48,4 @@ O Figma deve criar um projeto novo chamado `A1 Admin — Web & Mobile — 2026`,
 
 ## Integração Android
 
-O módulo `apps/valley-android/admin` continua sendo o instalador Android. A URL do painel passa a ser configurável por propriedade Gradle ou variável de ambiente, permitindo apontar o APK para o novo shell quando ele for publicado.
+O módulo `apps/valley-android/admin` continua sendo o instalador Android. A URL do painel é configurável por propriedade Gradle ou variável de ambiente, permitindo apontar o APK para o novo shell quando ele for publicado.
