@@ -39,8 +39,6 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: "22"
-          cache: npm
-          cache-dependency-path: apps/valley-universal-mcp/package-lock.json
 
       - name: Instalar dependências
         run: npm install --no-audit --no-fund
@@ -54,8 +52,9 @@ jobs:
           SERVER_PID=$!
           trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
           for attempt in {1..20}; do
-            if curl --fail --silent --show-error http://127.0.0.1:3000/mcp \
-              -o /tmp/valley-mcp-response.txt; then
+            STATUS=$(curl --silent --output /tmp/valley-mcp-response.txt \
+              --write-out '%{http_code}' http://127.0.0.1:3000/mcp || true)
+            if [ "$STATUS" != "000" ]; then
               exit 0
             fi
             sleep 1
