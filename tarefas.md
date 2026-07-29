@@ -1,177 +1,232 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.6
-**Data e hora:** 29/07/2026 04:43:24
-**Fuso horário:** `America/Sao_Paulo`
-**Repositório:** `interflownex/All-in-One`
-**Branch:** `codex/branding-scanner-issue-79`
-**Commit-base:** `6f76c6359eca268aaafc301a51c0f754be8998c8`
-**Issue:** `#79`
-**Pull request:** `#80`
-**Referência de governança v2.9:** `21a6ba6b0fbeb4afeaa336b7b0bbec6c51a0a9ff`
-**PRs preservados:** `#75` e `#77`, fechados sem merge
+**Versão:** 2.7  
+**Data e hora:** 29/07/2026 04:54, `America/Sao_Paulo`  
+**Repositório:** `interflownex/All-in-One`  
+**Branch:** `docs/marketplace-checkout-contract-v1-2026-07-29`  
+**Commit-base:** `438d64f46ef341f6a3559dbcb6642cd950ba7291`  
+**Issues:** `#51` e `#78`  
+**Classificação:** `Pendências > Técnico > Equipe Técnica`  
+**Públicos:** Pessoa Física, Pessoa Jurídica, Equipe Técnica e gestão
 
-## 1. Objetivo
+## 1. Regra mandatória de prioridade
 
-Reaplicar sobre a `main` atual as remediações de marca, scanner e lint
-preservadas na issue #79, sem repetir a correção Android já integrada pelo PR
-#76 e sem incorporar os 304 arquivos acumulados no PR #75.
+Antes de qualquer nova evolução, tratar nesta ordem:
 
-## 2. Contexto
+1. workflows falhos ou bloqueados;
+2. merges pendentes ou conflitantes;
+3. pull requests abertas;
+4. commits e branches não integrados;
+5. issues executáveis;
+6. somente depois, nova evolução autorizada.
 
-- o PR #76 integrou em `6f76c63` o adaptador Android v2.9 e tornou redundante a
-  parcela Android do PR #77;
-- o PR #77 ficou totalmente verde, mas foi fechado sem merge após a `main`
-  avançar e tornar seu escopo misto;
-- a issue #79 preserva os arquivos de branding, scanner e lint para reaplicação
-  controlada;
-- o scanner da `main` confundia crases Markdown, bundles gerados e regras CSS
-  vizinhas com violações de marca;
-- após eliminar falsos positivos, foram confirmados dois símbolos substitutos
-  (`A1` e `AIO`) e um favicon Valley não autorizado;
-- os ativos canônicos existem e a política permite sua restauração sem alterar
-  a arte;
-- o lint Valley reprovava um parâmetro morto no callback `PepitaWidget`.
+A política autoritativa permanece em `config/autonomy/pending_work_priority_policy.json` e `AGENTS.md`.
 
-## 3. Escopo
+## 2. Estado consolidado
 
-### Incluído
+- PR #65 integrou catálogo, busca, filtros, paginação, geolocalização, feed vertical, promoção, favoritos e carrinho;
+- PR #74 integrou exclusões persistentes do VS Code;
+- PR #75 foi encerrada sem merge por escopo divergente;
+- PR #76 integrou o contrato Android v2.9 no release;
+- PR #77 foi encerrada sem merge por sobreposição e base ultrapassada;
+- PR #80 integrou ativos oficiais, scanner de branding, lint Valley e preparo do logo no PDV;
+- PR #81 teve gates verdes, mas foi encerrada sem merge porque a `main` avançou com o PR #80;
+- o contrato de checkout foi reconstruído sobre `438d64f46ef341f6a3559dbcb6642cd950ba7291`;
+- Vision permanece excluído;
+- nenhuma credencial ou segredo foi versionado.
 
-1. corrigir o parsing do scanner e adicionar três testes de regressão;
-2. substituir símbolos alternativos pelo PNG oficial All in One;
-3. copiar o PNG canônico no preparo do pacote PDV Windows;
-4. apontar o favicon Valley para o SVG autorizado;
-5. remover o parâmetro morto do callback Valley sem mudar comportamento;
-6. manter o marcador legado do validador coerente com `ProductionDebug`;
-7. validar, publicar e integrar por Squash and Merge.
+## 3. Estado real do Marketplace
 
-### Fora do escopo
+O Marketplace já possui:
 
-- redesenhar, recolorir, recortar ou modificar ativos oficiais;
-- reabrir ou mesclar os PRs #75 e #77;
-- repetir o adaptador Android já integrado no PR #76;
-- corrigir catálogo geral, Dependabot ou novas evoluções Marketplace;
-- encerrar diagnósticos visuais do VS Code sem sessão GitHub autenticada.
+- catálogo público;
+- busca e filtros;
+- paginação;
+- geolocalização e distância;
+- feed vertical;
+- promoção do dia;
+- favoritos;
+- carrinho isolado por usuário.
 
-## 4. Fontes de verdade
+O carrinho calcula o total usando `price_brl` e considera disponibilidade usando `stock_quantity` dentro do produto.
 
-1. `AGENTS.md`;
-2. issue #79;
-3. `config/branding/authorized_assets.json`;
-4. `config/branding/brand_identity.json`;
-5. `scripts/check_brand_integrity.py`;
-6. `.github/workflows/security.yml`;
-7. `scripts/validate_valley_android_release.py`;
-8. `scripts/validate_valley_android_release_v29.py`;
-9. commit `6f76c6359eca268aaafc301a51c0f754be8998c8`;
-10. commit `21a6ba6b0fbeb4afeaa336b7b0bbec6c51a0a9ff`;
-11. este `tarefas.md`.
+Esse campo não é uma fonte transacional de estoque.
 
-## 5. Pré-requisitos
+## 4. Bloqueio estrutural comprovado
 
-- branch criada diretamente de `origin/main`;
-- lock multiagente do escopo `workspace`;
-- ausência de merge/rebase conflitante;
-- `.venv`, Node e dependências locais disponíveis;
-- head do PR inalterado entre validação e merge;
-- nenhuma credencial ou segredo no diff.
+O Stock atual ainda não possui entidades tipadas de inventário ou reserva.
 
-## 6. Sequência de execução
+Entidades existentes:
 
-1. concluir o cherry-pick técnico e resolver somente `tarefas.md`;
-2. executar integridade de marca e testes do scanner;
-3. executar validadores e testes Valley;
-4. executar lint/build User e Valley;
-5. executar testes PDV e remover artefatos transitórios gerados localmente;
-6. revisar diff, segredos, conflitos e arquivos sensíveis;
-7. publicar a branch e abrir PR vinculado à issue #79;
-8. aguardar todos os checks no mesmo SHA;
-9. revisar head, mergeabilidade e comentários;
-10. integrar exclusivamente por Squash and Merge;
-11. atualizar `origin/main`, registrar evidências e liberar o lock.
+- suppliers;
+- catalog_products;
+- price_rules;
+- supplier_orders;
+- discount_quotes.
 
-## 7. Testes
+Antes do checkout funcional, devem existir:
+
+- `inventory_items`;
+- `stock_reservations`;
+- migrations reversíveis;
+- store PostgreSQL transacional;
+- bloqueio de concorrência;
+- expiração;
+- confirmação;
+- liberação;
+- auditoria;
+- outbox.
+
+Não criar reserva dentro do Marketplace.
+
+## 5. Entregas deste ciclo
+
+1. versionar `modules/marketplace/CHECKOUT_CONTRACT.md` em 0.1.0;
+2. registrar feature flag desligada;
+3. definir request, response e máquina de estados;
+4. definir snapshot imutável;
+5. definir idempotência;
+6. definir contrato obrigatório do Stock;
+7. definir ledger, compensações e eventos;
+8. definir telemetria, alertas e rollback;
+9. atualizar relatório v3.8;
+10. atualizar plano v3.8;
+11. abrir PR em rascunho sobre a `main` atual;
+12. reexecutar todos os gates no novo head.
+
+## 6. Próxima implementação autorizada
+
+### Incremento A, Stock transacional
+
+1. adicionar `inventory_items` à matriz tipada;
+2. adicionar `stock_reservations` à matriz tipada;
+3. criar migration reversível;
+4. criar constraints e índices;
+5. reservar saldo de forma atômica;
+6. impedir estoque negativo;
+7. tratar repetição da mesma chave;
+8. rejeitar mesma chave com corpo diferente;
+9. criar expiração;
+10. confirmar e liberar reserva;
+11. publicar eventos por outbox;
+12. registrar auditoria imutável.
+
+### Incremento B, checkout idempotente
+
+Somente depois do Incremento A:
+
+1. proteger endpoint por `MARKETPLACE_CHECKOUT_V1_ENABLED`;
+2. revalidar carrinho e preços;
+3. criar snapshot imutável;
+4. solicitar reserva ao Stock;
+5. criar pedido idempotente;
+6. iniciar pagamento como pendente;
+7. usar ledger como única fonte financeira;
+8. compensar reserva em falha;
+9. impedir dupla cobrança;
+10. não retornar `paid` sem evidência homologada.
+
+## 7. Ordem funcional
+
+1. Marketplace;
+2. Stock;
+3. Delivery.
+
+O Stock participa agora somente como fundação necessária ao checkout do Marketplace. A Fase Stock completa continua posterior. Delivery permanece bloqueado.
+
+## 8. Testes obrigatórios
+
+### Contrato atual
 
 ```bash
-python3 scripts/check_brand_integrity.py --fix
-python3 scripts/check_brand_integrity.py
-.venv/bin/python -m pytest -q \
-  tests/test_brand_integrity_scanner.py \
-  tests/test_security_workflow_contract.py \
-  tests/test_valley_android_workflow_contract.py \
-  tests/test_valley_android_signing.py
-python3 scripts/validate_valley_android_release.py
-python3 scripts/validate_valley_android_release_v29.py
-npm --prefix apps/all-in-one-user run lint
-npm --prefix apps/all-in-one-user run build
-npm --prefix apps/all-in-one-pdv-desktop test
-npm --prefix apps/valley run lint
-npm --prefix apps/valley run build
-git diff --check
-git fsck --connectivity-only --no-dangling
+python scripts/validate_repository.py
+python -m pytest -q tests/test_marketplace_discovery.py
+python -m pytest -q modules/marketplace/tests
+python -m pytest -q modules/stock/tests
+python -m pytest -q modules/finance/tests
 ```
 
-## 8. Critérios de aceite
+### Futuro Stock transacional
 
-- integridade de marca aprovada após nova varredura;
-- três testes do scanner e oito testes contratuais aprovados;
-- símbolos substitutos removidos e ativos canônicos usados proporcionalmente;
-- favicon Valley aponta para `favicon-valley.svg`;
-- lint/build User e Valley aprovados;
-- quatro testes PDV aprovados;
-- validadores Valley v1 e v2.9 aprovados;
-- diff sem segredos, conflitos ou artefatos gerados;
-- PR contém somente os 11 arquivos autorizados;
-- gates verdes no mesmo SHA;
-- integração por Squash and Merge.
+- banco PostgreSQL limpo;
+- migrations ordenadas e reversíveis;
+- saldo suficiente e insuficiente;
+- duas reservas concorrentes;
+- idempotência;
+- conflito de chave;
+- expiração;
+- liberação;
+- confirmação;
+- prevenção de saldo negativo;
+- evento único;
+- isolamento por empresa;
+- rollback.
 
-## 9. Riscos
+### Gates remotos
 
-| Risco | Tratamento |
-|---|---|
-| falso positivo do scanner | testes por fragmento sintático e Markdown |
-| pacote PDV sem logo | copiar o ativo canônico no script de preparo |
-| artefato gerado no Git | remover cópia local e alteração transitória do store |
-| nova mudança da `main` | integrar antes do commit e revalidar |
-| duplicar PR #76 | reaplicar apenas o residual da issue #79 |
+- Continuous Integration;
+- Security;
+- Database;
+- OpenAPI;
+- Docker Compose Health Gate;
+- demais workflows acionados pelo diff.
 
-## 10. Bloqueios
+Todos devem estar verdes no mesmo SHA.
 
-- os cinco diagnósticos `extHost2` dependem de autenticação e reload do VS Code;
-- os 83 alertas Dependabot da `main` pertencem a frente separada;
-- nenhum bloqueio permite enfraquecer gate ou fabricar ativo.
+## 9. Critérios de aceite do checkout completo
 
-## 11. Evidências esperadas
+- Stock é a fonte única de saldo;
+- reserva transacional com expiração;
+- preço revalidado no servidor;
+- snapshot imutável;
+- pedido idempotente;
+- ledger como única fonte financeira;
+- nenhuma dupla cobrança;
+- outbox e consumidores idempotentes;
+- auditoria imutável;
+- feature flag desligada até homologação;
+- rollback comprovado;
+- integração por Squash and Merge com `expected_head_sha`.
 
-- SHA do commit e PR da issue #79;
-- lista dos 11 arquivos;
-- saídas dos testes, builds e validadores;
-- integridade de marca aprovada;
-- checks remotos verdes no mesmo head;
-- SHA do Squash and Merge;
-- lock multiagente liberado.
+## 10. Proibições
 
-## 12. Pendências restantes
+- não fazer push direto na `main`;
+- não usar `stock_quantity` do produto como saldo autoritativo;
+- não criar estoque paralelo dentro do Marketplace;
+- não criar pedido sem reserva válida;
+- não lançar valor fora do ledger;
+- não armazenar dados brutos de cartão;
+- não simular pagamento como liquidado;
+- não iniciar Delivery;
+- não reativar Vision;
+- não modificar ativos oficiais sem autorização;
+- não excluir ativos de marca às cegas;
+- não integrar PR com gate vermelho, ausente ou em processamento;
+- não reutilizar gates de head anterior.
 
-1. concluir o cherry-pick;
-2. revalidar no novo baseline;
-3. publicar a branch e abrir PR;
-4. acompanhar gates;
-5. integrar com Squash and Merge;
-6. autenticar/recarregar o VS Code para confirmar os diagnósticos visuais.
+## 11. Governança de merge pendente
 
-## 13. Procedimento de entrega
+O repositório ainda deve ser configurado administrativamente para:
 
-1. revisar o diff final e resultados;
-2. criar commit rastreável em português;
-3. publicar somente a branch de trabalho;
-4. vincular o PR à issue #79;
-5. mesclar apenas com gates verdes e head validado;
-6. atualizar a `main` local e confirmar o merge;
-7. liberar o lock;
-8. informar versão, data/hora, repositório, branch, commits, issue e PR.
+- `allow_squash_merge = true`;
+- `allow_merge_commit = false`;
+- `allow_rebase_merge = false`.
 
-## 14. Histórico
+Enquanto isso não for confirmado, auto-merge permanece bloqueado.
+
+## 12. Evidências obrigatórias
+
+- SHA da branch e do PR;
+- lista de arquivos alterados;
+- testes executados;
+- gates do mesmo head;
+- ausência de reviews ou threads pendentes;
+- diff sem segredos;
+- merge por squash;
+- commit final na `main`;
+- atualização das issues #51 e #78.
+
+## 13. Histórico
 
 | Versão | Data e hora | Alteração |
 |---|---|---|
@@ -180,5 +235,6 @@ git fsck --connectivity-only --no-dangling
 | 2.2 | 28/07/2026 | Marketplace Fase 1 e governança de pendências. |
 | 2.3 | 28/07/2026 | A1 Admin Web/Mobile, Android seguro e pacote Figma. |
 | 2.4 | 29/07/2026 | PRs #74/#76 integrados; #75 rejeitado por escopo. |
-| 2.5 | 29/07/2026 04:40:39 | Issue #79 reaplicada sobre a `main` após fechamento seguro do PR #77. |
-| 2.6 | 29/07/2026 04:43:24 | PR #80 aberto para a remediação isolada e validada da issue #79. |
+| 2.5 | 29/07/2026 04:40 | Issue #79 reaplicada após fechamento seguro do PR #77. |
+| 2.6 | 29/07/2026 04:43 | PR #80 integrou branding oficial e scanner corrigido. |
+| 2.7 | 29/07/2026 04:54 | Contrato de checkout reconstruído sobre a main atual e Stock transacional definido como próximo incremento. |
