@@ -1,194 +1,197 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.0
-**Data e hora:** 28/07/2026 14:51:13
-**Fuso horário:** `America/Sao_Paulo`
-**Repositório:** `interflownex/All-in-One`
-**Branch:** `codex/auditoria-valley-rider-2026-07-28`
-**Commit-base:** `5cf3a1ad34ae2c33cd3722d95c341bd49b0e999f`
-**Pull Request:** `#62`
+**Versão:** 2.4  
+**Data e hora:** 28/07/2026 23:23:37  
+**Fuso horário:** `America/Sao_Paulo`  
+**Repositório:** `interflownex/All-in-One`  
+**Branch:** `codex/auditoria-valley-rider-2026-07-28`  
+**Commit local antes da integração:** `4e7b6d9d09d18110c19fd4b75105cfde191ec469`  
+**Commit integrado de `origin/main`:** `869371979c7f622a75e7aa022cf8ab44a42f6d62`  
+**Pull Requests relacionadas:** `#62`, `#64`, `#65`, `#71`  
 **Issue de orquestração:** `#51`
-**Aplicação:** `apps/valley_rider`
 
 ## 1. Objetivo
 
-Homologar tecnicamente o Valley Rider implementado pelo PR `#61`, mantendo o contrato Stitch `VALLEY RIDERS APK - Template Completo` (`Project ID 370812414211795487`), corrigindo falhas reproduzíveis dos gates locais e preparando as integrações externas sem controles falsos.
+Concluir a sincronização segura da branch de auditoria do Valley Rider com
+`origin/main`, eliminar o conflito recém-detectado em `tarefas.md`, preservar
+as entregas posteriores já integradas e manter rastreabilidade para a próxima
+etapa.
 
-## 2. Contexto e estado atual
+## 2. Contexto
 
-- o código funcional do PR `#61` está integrado em `main` no commit `3834bec`;
-- a auditoria encontrou 8 erros e 1 aviso no lint e um erro TypeScript no build;
-- as correções desta branch removem atualizações síncronas de estado em efeitos, evitam leitura de `ref` durante render, tornam o estado do GPS explícito, corrigem expressões sem efeito e usam `BufferSource` no helper SHA-256;
-- `npm run lint`, `npm run build` e os testes contratuais passaram após as correções;
-- a prova visual/interativa foi concluída por Playwright com Chromium local, HTTP 200, marca oficial, ausência de overlay, interação login/cadastro e capturas desktop/mobile;
-- a execução `push` do CI revelou dois testes de sincronização Git dependentes das referências ambientais do checkout; os testes foram tornados determinísticos e a suíte local completa aprovou 907 testes;
-- não há token Mapbox, credencial KYC, cofre privado, PSP de repasse, aparelho Android real nem binário oficial Valley Riders versionados.
+- a branch local continha as correções de auditoria e estabilização de testes do
+  Valley Rider;
+- `origin/main` avançou com Rodada 005 do Valley Consumidor, Marketplace Fase 1
+  e A1 Admin Web/Mobile;
+- o histórico divergiu em 2 commits locais e 4 commits remotos;
+- a integração automática conciliou todos os arquivos, exceto `tarefas.md`;
+- o conflito documental foi resolvido consolidando as entregas locais e remotas;
+- duas alterações locais preexistentes em `.github/skills/` pertencem a outro
+  trabalho e devem permanecer fora do commit desta sincronização.
 
 ## 3. Escopo
 
 ### Incluído
 
-1. preservar os oito grupos funcionais Stitch;
-2. manter Mapbox, GPS, geocodificação, rota, distância, ETA e Haversine;
-3. manter cadastro, autenticação, KYC, motorista, veículo e homologação;
-4. manter entregas, corridas, prova obrigatória e seguro;
-5. manter wallet, ledger idempotente, repasse via `finance/splits`, cancelamento e contestação;
-6. manter segurança, suporte, offline, notificações e privacidade;
-7. validar código, marca e aplicação renderizada;
-8. documentar e evidenciar bloqueios externos.
+1. integrar `origin/main` sem reset, limpeza destrutiva ou force-push;
+2. preservar as correções de auditoria do Valley Rider;
+3. preservar Rodada 005, Marketplace Fase 1 e A1 Admin;
+4. resolver marcadores de conflito em `tarefas.md`;
+5. validar integridade Git, repositório e marca;
+6. publicar somente a branch de trabalho e atualizar o pull request aplicável.
 
-### Fora do escopo sem credenciais ou contratos
+### Fora do escopo
 
-- emitir token público Mapbox;
-- contratar ou homologar provedor KYC/OCR;
-- criar cofre de arquivos privados;
-- processar repasses reais;
-- gerar Play Integrity legítimo;
-- fabricar logomarca Valley Riders;
-- declarar GPS/rede instável homologados sem aparelho real.
+- alterar ou remover módulos por associação a trabalhos antigos;
+- modificar as duas alterações locais preexistentes em `.github/skills/`;
+- fazer push direto em `main`;
+- declarar integrações externas homologadas sem evidência no ambiente correto.
 
 ## 4. Fontes de verdade
 
 1. `AGENTS.md`;
-2. diretriz técnica anexada em 28/07/2026;
-3. `config/stitch/screen_manifest.json`;
-4. `config/stitch/sync_state.json`;
-5. `config/branding/authorized_assets.json`;
-6. `config/branding/brand_identity.json`;
-7. `assets/brand/README.md`;
-8. `apps/valley_rider/README.md`;
-9. `apps/valley_rider/STATUS.md`;
-10. contratos OpenAPI dos módulos Identity, Riders, Delivery, Mobility, Finance e Marketplace;
-11. documentação oficial vigente de Mapbox, provedores KYC, Play Integrity e PSP que forem contratados.
+2. `config/autonomy/multi_agent_sync_policy.json`;
+3. `config/autonomy/pending_work_priority_policy.json`;
+4. `config/branding/authorized_assets.json`;
+5. `config/stitch/screen_manifest.json`;
+6. `config/stitch/sync_state.json`;
+7. `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v3.5_2026-07-28.md`;
+8. `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v3.5_2026-07-28.md`;
+9. este `tarefas.md`;
+10. histórico Git local e `origin/main`.
 
 ## 5. Pré-requisitos
 
-- branch de trabalho atualizada com `origin/main`;
-- lock multiagente adquirido no escopo `valley-rider-auditoria`;
-- Node e npm compatíveis com o lockfile;
-- `.venv` do projeto para pytest;
-- segredos somente em variáveis de ambiente ou cofre;
-- Playwright e Chromium local disponíveis para a prova renderizada;
-- aparelho Android real autorizado para GPS e rede instável.
+- executar no worktree correto;
+- confirmar ausência de merge ou rebase concorrente;
+- buscar referências remotas acessíveis;
+- adquirir o lock multiagente após a reconciliação do histórico;
+- manter segredos somente em variáveis de ambiente ou cofres externos;
+- usar Node, npm, Python e Gradle compatíveis com os lockfiles.
 
 ## 6. Sequência de execução e prioridades
 
-### P0 — finalizar esta correção
+### P0 — concluir a sincronização
 
-1. repetir `npm ci`, lint e build;
-2. executar testes Stitch e de marca;
-3. executar `check_brand_integrity.py` e `validate_repository.py`;
-4. revisar o diff e procurar segredos;
-5. commitar e publicar a branch;
-6. abrir PR para `main`;
-7. aguardar todos os gates obrigatórios no mesmo SHA;
-8. atualizar a issue `#51` com SHA, PR, testes e bloqueios.
+1. confirmar que não existem marcadores de conflito;
+2. adicionar somente os arquivos da integração e `tarefas.md`;
+3. preservar fora do stage as alterações preexistentes em `.github/skills/`;
+4. concluir o merge com mensagem rastreável em português;
+5. executar o preflight e adquirir o lock multiagente;
+6. executar as validações obrigatórias;
+7. verificar o diff final, os pais do merge e a conectividade Git;
+8. publicar a branch de trabalho;
+9. atualizar o pull request ou registrar o bloqueio se a operação não estiver
+   disponível;
+10. liberar o lock multiagente.
 
-### P1 — prova renderizada
+### P1 — validar entregas integradas
 
-1. disponibilizar o navegador integrado;
-2. abrir a aplicação local;
-3. validar identidade da página, conteúdo não vazio e ausência de overlay;
-4. conferir console;
-5. alternar login/cadastro;
-6. autenticar somente com conta de teste autorizada;
-7. validar estados bloqueados de Mapbox/KYC/PSP sem credenciais;
-8. capturar evidências desktop e mobile.
-
-### P1 — homologações externas
-
-1. cadastrar token público Mapbox restrito por origem;
-2. homologar KYC/OCR e cofre privado;
-3. homologar PSP para consumir solicitações `split_type: rider_payout`;
-4. integrar Play Integrity pelo shell Android;
-5. testar GPS em campo e rede instável;
-6. ingerir apenas o binário oficial aprovado da marca Valley Riders.
+1. repetir os gates do Valley Rider no SHA final;
+2. executar os checks do A1 Admin Web/Mobile;
+3. executar os testes do Marketplace e Valley Consumidor;
+4. aguardar os gates remotos obrigatórios no mesmo SHA;
+5. integrar em `main` exclusivamente por Squash and Merge após aprovação.
 
 ## 7. Testes
+
+```bash
+rg -n '^(<<<<<<<|=======|>>>>>>>)' --glob '!package-lock.json' .
+git diff --check
+git fsck --connectivity-only --no-dangling
+python3 scripts/check_brand_integrity.py
+python3 scripts/validate_repository.py
+.venv/bin/pytest -q tests/test_valley_rider_stitch_contract.py
+.venv/bin/pytest -q tests/test_marketplace_discovery.py
+.venv/bin/pytest -q tests/test_valley_consumer_innovation_round_005.py
+```
+
+Quando os ambientes estiverem disponíveis:
 
 ```bash
 cd apps/valley_rider
 npm ci
 npm run lint
 npm run build
-cd ../..
-.venv/bin/pytest -q tests/test_valley_rider_stitch_contract.py
-.venv/bin/pytest -q tests/test_branding_assets.py
-python3 scripts/check_brand_integrity.py
-python3 scripts/validate_repository.py
+
+cd ../all-in-one-admin
+npm ci
+npm run check
+npm audit --omit=dev --audit-level=critical
+
+cd ../valley-android
+./gradlew :admin:testDebugUnitTest :admin:lintDebug :admin:assembleDebug
 ```
-
-Gates remotos obrigatórios:
-
-- Continuous Integration;
-- Docker Compose Health Gate;
-- Security.
 
 ## 8. Critérios de aceite
 
-- lint e build aprovados no checkout limpo;
-- testes Stitch e de marca aprovados;
+- nenhum arquivo permanece em estado não mesclado;
+- nenhum marcador de conflito permanece no conteúdo versionado;
+- o merge contém os dois históricos esperados;
+- as mudanças preexistentes de outro trabalho permanecem intactas e fora do
+  commit;
+- `git diff --check` e conectividade Git aprovados;
 - integridade de marca e validação do repositório aprovadas;
-- nenhuma credencial ou dado pessoal real versionado;
-- nenhuma transição incompatível com o estado do recurso;
-- entrega não conclui sem prova obrigatória;
-- repasse usa `split_type: rider_payout`;
-- nenhum lançamento negativo é criado em `ledger_entries`;
-- estados externos indisponíveis aparecem bloqueados e explicados;
-- prova renderizada concluída no navegador integrado;
-- branch publicada, PR aberto e gates verdes no mesmo commit;
-- evidência vinculada à issue de orquestração.
+- testes direcionados aprovados;
+- branch publicada sem force-push e sem push direto em `main`;
+- pull request atualizado com testes e evidências;
+- gates remotos verdes no mesmo commit antes do Squash and Merge.
 
-## 9. Riscos e bloqueios
+## 9. Riscos
 
-| Item | Estado | Tratamento |
-|---|---|---|
-| Navegador integrado `iab` | bloqueado nesta sessão | repetir QA quando a instância estiver disponível |
-| Token Mapbox | externo | usar token público restrito, nunca versionar |
-| KYC/OCR e cofre | externo | bloquear submissão produtiva até homologação |
-| PSP de repasse | externo | manter solicitação auditável sem simular liquidação |
-| Play Integrity | externo | injetar pelo shell Android |
-| GPS/rede instável | externo | testar em aparelho real |
-| Marca Valley Riders | binário ausente | não fabricar substituto |
-| Vulnerabilidades npm de desenvolvimento | 2 altas reportadas por `npm ci` | analisar no gate Security; produção apresentou 0 vulnerabilidades |
+| Risco | Tratamento |
+|---|---|
+| alterações locais concorrentes | preservar fora do stage e registrar explicitamente |
+| novos avanços em `origin/main` | repetir preflight antes do push |
+| testes Android demorados ou indisponíveis | reportar como não verificados, nunca como aprovados |
+| dependências externas sem credenciais | manter bloqueadas e não simular homologação |
+| conflito recorrente em documento central | sempre incrementar versão e consolidar o histórico |
 
-## 10. Evidências esperadas
+## 10. Bloqueios
 
-- saída dos comandos de teste;
-- SHA do commit;
-- URL e número do PR;
-- checks do GitHub vinculados ao SHA;
-- screenshots desktop/mobile;
-- DOM e console sem erros relevantes;
-- identificação do aparelho Android, atividade executada e captura de tela;
-- configuração de restrição do token Mapbox sem expor o token;
-- comprovantes de homologação KYC/cofre/PSP sem segredos.
+- nenhum bloqueio confirmado para concluir a resolução local;
+- abertura/atualização de pull request depende de acesso autenticado ao GitHub;
+- homologações Mapbox, KYC, PSP, Play Integrity e dispositivo real continuam
+  externas ao escopo desta sincronização.
 
-## 11. Pendências restantes
+## 11. Evidências esperadas
 
-1. publicar o commit final com a correção determinística do gate Git;
-2. executar gates remotos no novo SHA;
-3. homologar todas as dependências externas;
-4. integrar somente por Squash and Merge após aprovação.
+- saída do preflight e estado do lock;
+- `git status --short --branch` sem entradas `UU`;
+- busca sem marcadores de conflito;
+- saída dos testes e validadores;
+- SHA e pais do commit de merge;
+- URL/número do pull request e checks vinculados ao SHA;
+- confirmação da liberação do lock.
 
-## 12. Procedimento de entrega
+## 12. Pendências restantes
 
-1. confirmar branch e diff;
-2. executar todos os testes locais;
-3. atualizar documentação com SHA e PR;
-4. usar mensagem de commit concisa em português;
-5. publicar somente a branch de trabalho;
-6. abrir PR para `main`;
-7. registrar testes, limitações e evidências no PR;
-8. aguardar gates verdes;
-9. não alterar o commit já em validação;
-10. integrar exclusivamente por Squash and Merge.
+1. concluir e validar o commit de merge;
+2. publicar a branch e atualizar o pull request;
+3. acompanhar os gates remotos;
+4. executar as homologações externas pendentes nos ambientes corretos;
+5. revisar a fila de PRs, workflows, branches e issues após esta sincronização.
 
-## 13. Histórico
+## 13. Procedimento de entrega
+
+1. revisar o stage e excluir alterações alheias;
+2. concluir o merge com mensagem concisa em português;
+3. executar testes e registrar resultados reais;
+4. publicar somente a branch de trabalho;
+5. atualizar o pull request com SHA, testes, riscos e bloqueios;
+6. aguardar gates obrigatórios;
+7. integrar exclusivamente por Squash and Merge;
+8. liberar o lock e registrar o estado final.
+
+## 14. Histórico resumido
 
 | Versão | Data e hora | Alteração |
 |---|---|---|
 | 1.7 | 27/07/2026 07:12:49 | Fase 0 implementada e regressão final preparada. |
 | 1.8 | 28/07/2026 00:52:26 | Rodada 004 do APK Valley registrada. |
-| 1.9 | 28/07/2026 08:39:01 | Auditoria do Valley Rider, correção dos gates locais e plano de homologação externa. |
-| 2.0 | 28/07/2026 14:51:13 | PR #62 aberto, QA desktop/mobile concluída e testes do gate Git tornados determinísticos. |
+| 1.9 | 28/07/2026 08:39:01 | Auditoria do Valley Rider e correção dos gates locais. |
+| 2.0 | 28/07/2026 14:51:13 | PR #62, QA Rider e testes Git determinísticos. |
+| 2.1 | 28/07/2026 | Rodada 005 com contratos e feature flags. |
+| 2.2 | 28/07/2026 | Marketplace Fase 1 e governança de pendências. |
+| 2.3 | 28/07/2026 | A1 Admin Web/Mobile, Android seguro e pacote Figma. |
+| 2.4 | 28/07/2026 23:23:37 | Conflito de sincronização resolvido e históricos consolidados. |

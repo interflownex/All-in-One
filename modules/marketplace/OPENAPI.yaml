@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: All-in-One Marketplace API
-  version: 0.2.0
+  version: 0.3.0
 servers:
   - url: /api/v1/marketplace
 security:
@@ -149,6 +149,145 @@ paths:
       responses:
         "200":
           description: Transactional outbox domain events
+  /valley/marketplace/catalog:
+    get:
+      security: []
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+            maxLength: 120
+        - name: category
+          in: query
+          schema:
+            type: string
+            maxLength: 80
+        - name: store_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: min_price_brl
+          in: query
+          schema:
+            type: number
+            minimum: 0
+        - name: max_price_brl
+          in: query
+          schema:
+            type: number
+            minimum: 0
+        - name: latitude
+          in: query
+          schema:
+            type: number
+            minimum: -90
+            maximum: 90
+        - name: longitude
+          in: query
+          schema:
+            type: number
+            minimum: -180
+            maximum: 180
+        - name: radius_km
+          in: query
+          schema:
+            type: number
+            exclusiveMinimum: 0
+            maximum: 200
+        - name: in_stock_only
+          in: query
+          schema:
+            type: boolean
+            default: true
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [relevance, price_asc, price_desc, distance, rating]
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        "200":
+          description: Public catalog containing only approved stores and published products
+        "422":
+          description: Invalid filter combination
+  /valley/feed:
+    get:
+      security: []
+      responses:
+        "200":
+          description: Vertical product cards with sponsorship disclosure
+  /valley/promotions/today:
+    get:
+      security: []
+      responses:
+        "200":
+          description: Eligible promotion or an explicit empty state
+  /valley/favorites:
+    get:
+      parameters:
+        - $ref: "#/components/parameters/ActorUserId"
+      responses:
+        "200":
+          description: Authenticated customer favorites
+  /valley/favorites/{product_id}:
+    put:
+      parameters:
+        - $ref: "#/components/parameters/ProductId"
+        - $ref: "#/components/parameters/ActorUserId"
+      responses:
+        "200":
+          description: Product added idempotently to favorites
+        "409":
+          description: Product unavailable
+    delete:
+      parameters:
+        - $ref: "#/components/parameters/ProductId"
+        - $ref: "#/components/parameters/ActorUserId"
+      responses:
+        "200":
+          description: Product removed idempotently from favorites
+  /valley/cart:
+    get:
+      parameters:
+        - $ref: "#/components/parameters/ActorUserId"
+      responses:
+        "200":
+          description: Cart summary with availability and BRL totals
+  /valley/cart/items/{product_id}:
+    put:
+      parameters:
+        - $ref: "#/components/parameters/ProductId"
+        - $ref: "#/components/parameters/ActorUserId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartItemRequest"
+      responses:
+        "200":
+          description: Cart item created or quantity replaced
+        "409":
+          description: Product unavailable
+    delete:
+      parameters:
+        - $ref: "#/components/parameters/ProductId"
+        - $ref: "#/components/parameters/ActorUserId"
+      responses:
+        "200":
+          description: Cart item removed idempotently
   /valley/orders/{order_id}/support:
     post:
       parameters:
@@ -185,6 +324,13 @@ components:
   parameters:
     ResourceId:
       name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ProductId:
+      name: product_id
       in: path
       required: true
       schema:
@@ -237,6 +383,14 @@ components:
         payload:
           type: object
           additionalProperties: true
+    CartItemRequest:
+      type: object
+      required: [quantity]
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+          maximum: 99
     SupportCaseRequest:
       type: object
       required: [kind, message, idempotency_key]
