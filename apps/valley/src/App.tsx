@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import allInOneLogo from "../../../assets/brand/all-in-one-logo-official.png";
+import valleyLogo from "../../../assets/brand/valley-logo-official.png";
 import B2BDashboard from "./components/B2BDashboard";
 import BookingModal from "./components/BookingModal";
 import CheckoutModal from "./components/CheckoutModal";
@@ -182,14 +184,14 @@ function App() {
       >
         <div className="brand-group" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <img
-            src="/assets/brand/valley-logo-official.png"
+            src={allInOneLogo}
             alt="All-in-One"
             decoding="async"
             style={{ height: "32px", width: "auto" }}
           />
           <div style={{ width: "2px", height: "24px", background: "rgba(255,255,255,0.2)" }}></div>
           <img
-            src="/assets/brand/valley-logo-official.png"
+            src={valleyLogo}
             alt="Valley"
             decoding="async"
             style={{ height: "28px", width: "auto" }}

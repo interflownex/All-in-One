@@ -58,15 +58,9 @@ button {
 }
 
 .brand-mark {
-  display: grid;
-  place-items: center;
   width: 52px;
   height: 52px;
-  color: #08110d;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  background: linear-gradient(135deg, #f8fffd 0%, #8ef0b6 100%);
-  border-radius: 18px;
+  object-fit: contain;
 }
 
 .brand-name {

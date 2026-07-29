@@ -117,7 +117,7 @@ jobs:
         run: |
           python scripts/validate_valley_android_release_v29.py
           apps/valley-android/gradlew -p apps/valley-android \
-            clean testProductionDebugUnitTest lintProductionDebug assembleProductionDebug \
+            clean testDebugUnitTest lintDebug assembleDebug \
             --no-daemon --no-build-cache --rerun-tasks --stacktrace
       - name: Finalizar análise SAST CodeQL
         uses: github/codeql-action/analyze@v4

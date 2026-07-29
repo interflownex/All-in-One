@@ -21,7 +21,7 @@ button { color: inherit; }
 .app-shell { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
 .sidebar { display: flex; flex-direction: column; height: 100vh; border-right: 1px solid var(--border); background: rgba(5,8,23,.92); backdrop-filter: blur(20px); padding: 22px 18px; }
 .brand { display: flex; align-items: center; gap: 13px; padding: 0 6px 22px; border-bottom: 1px solid var(--border); }
-.brand-mark { display: grid; place-items: center; width: 50px; height: 50px; border-radius: 18px; background: linear-gradient(135deg, var(--emerald), var(--sky)); color: #04111b; font-weight: 900; box-shadow: 0 14px 40px rgba(56,189,248,.18); }
+.brand-mark { width: 50px; height: 50px; object-fit: contain; }
 .brand strong { display: block; font-size: 16px; letter-spacing: .08em; }
 .brand span { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
 #navigation { display: grid; gap: 7px; margin-top: 22px; }

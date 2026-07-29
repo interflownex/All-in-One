@@ -1,5 +1,6 @@
 {
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.defaultInterpreterPath": "/home/eretazan/.codex/worktrees/1781507772-23398/all-in-one/.venv/bin/python",
+  "python.venvPath": "/home/eretazan/.codex/worktrees/1781507772-23398/all-in-one/.venv",
   "google.cloud.project": "all-in-one-498012",
   "google.cloud.billingQuotaProject": "all-in-one-498012",
   "google.cloud.region": "southamerica-east1",
@@ -155,5 +156,6 @@
   "geminicodeassist.codeLens.enable": false,
   "geminicodeassist.telemetry.enable": false,
   "google.datacloud.enableTelemetry": false,
-  "editor.codeActions.triggerOnFocusChange": true
+  "editor.codeActions.triggerOnFocusChange": true,
+  "python.analysis.excludeLibraryDiagnostics": true
 }

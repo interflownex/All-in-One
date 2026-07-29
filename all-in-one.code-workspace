@@ -98,5 +98,7 @@
     },
     "workbench.browser.openLocalhostLinks": false,
     "editor.codeActions.triggerOnFocusChange": true,
+    "python.analysis.excludeLibraryDiagnostics": true,
+    "java.search.scope": "all",
   },
 }

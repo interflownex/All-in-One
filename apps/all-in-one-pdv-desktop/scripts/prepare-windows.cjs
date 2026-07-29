@@ -2,6 +2,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const storePath = path.resolve(__dirname, '../electron/store.cjs');
+const canonicalLogo = path.resolve(__dirname, '../../../assets/brand/all-in-one-logo-official.png');
+const packagedLogo = path.resolve(
+  __dirname,
+  '../renderer/assets/brand/all-in-one-logo-official.png',
+);
 const source = fs.readFileSync(storePath, 'utf8');
 const legacy = "const fd = fs.openSync(temp, 'r');";
 const windowsSafe = "const fd = fs.openSync(temp, 'r+');";
@@ -14,3 +19,7 @@ if (source.includes(legacy)) {
 } else {
   throw new Error('Trecho de persistência esperado não foi encontrado em electron/store.cjs.');
 }
+
+fs.mkdirSync(path.dirname(packagedLogo), { recursive: true });
+fs.copyFileSync(canonicalLogo, packagedLogo);
+console.log('Logomarca oficial preparada para o pacote Windows.');
