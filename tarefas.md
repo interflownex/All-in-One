@@ -1,144 +1,182 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.4  
-**Data e hora:** 29/07/2026 04:11, `America/Sao_Paulo`  
-**Repositório:** `interflownex/All-in-One`  
-**Branch:** `fix/android-validator-productiondebug-2026-07-29`  
-**Commit-base:** `f1681dd2cbff145a661254cb1ce49f059121d7f2`  
-**Issue de orquestração:** `#51`  
-**Classificação:** `Pendências > Técnico > Equipe Técnica`
+**Versão:** 2.5
+**Data e hora:** 29/07/2026 04:40:39
+**Fuso horário:** `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/branding-scanner-issue-79`
+**Commit-base:** `6f76c6359eca268aaafc301a51c0f754be8998c8`
+**Issue:** `#79`
+**Referência de governança v2.9:** `21a6ba6b0fbeb4afeaa336b7b0bbec6c51a0a9ff`
+**PRs preservados:** `#75` e `#77`, fechados sem merge
 
-## 1. Regra mandatória de prioridade
+## 1. Objetivo
 
-Antes de qualquer nova evolução, tratar nesta ordem:
+Reaplicar sobre a `main` atual as remediações de marca, scanner e lint
+preservadas na issue #79, sem repetir a correção Android já integrada pelo PR
+#76 e sem incorporar os 304 arquivos acumulados no PR #75.
 
-1. workflows falhos ou bloqueados;
-2. merges pendentes ou conflitantes;
-3. pull requests abertas;
-4. commits e branches não integrados;
-5. issues executáveis;
-6. somente depois, nova evolução autorizada.
+## 2. Contexto
 
-A política autoritativa permanece em `config/autonomy/pending_work_priority_policy.json` e `AGENTS.md`.
+- o PR #76 integrou em `6f76c63` o adaptador Android v2.9 e tornou redundante a
+  parcela Android do PR #77;
+- o PR #77 ficou totalmente verde, mas foi fechado sem merge após a `main`
+  avançar e tornar seu escopo misto;
+- a issue #79 preserva os arquivos de branding, scanner e lint para reaplicação
+  controlada;
+- o scanner da `main` confundia crases Markdown, bundles gerados e regras CSS
+  vizinhas com violações de marca;
+- após eliminar falsos positivos, foram confirmados dois símbolos substitutos
+  (`A1` e `AIO`) e um favicon Valley não autorizado;
+- os ativos canônicos existem e a política permite sua restauração sem alterar
+  a arte;
+- o lint Valley reprovava um parâmetro morto no callback `PepitaWidget`.
 
-## 2. Estado confirmado neste ciclo
+## 3. Escopo
 
-- PR #74 validada e integrada por Squash and Merge;
-- commit de integração da PR #74: `f1681dd2cbff145a661254cb1ce49f059121d7f2`;
-- PR #75 encerrada sem merge por conter 304 arquivos e 32.228 exclusões fora do escopo declarado;
-- o ajuste legítimo da PR #75 foi isolado em branch limpa;
-- o workflow permanente de Security já usa `testProductionDebugUnitTest`, `lintProductionDebug` e `assembleProductionDebug`;
-- o adaptador `scripts/validate_valley_android_release_v29.py` preserva as verificações legadas e valida as tarefas explícitas;
-- o workflow de release passou a chamar o adaptador v2.9;
-- foi criado teste de regressão para impedir retorno ao contrato Android genérico;
-- Vision permanece excluído;
-- nenhuma credencial ou segredo foi versionado.
+### Incluído
 
-## 3. Objetivo imediato
+1. corrigir o parsing do scanner e adicionar três testes de regressão;
+2. substituir símbolos alternativos pelo PNG oficial All in One;
+3. copiar o PNG canônico no preparo do pacote PDV Windows;
+4. apontar o favicon Valley para o SVG autorizado;
+5. remover o parâmetro morto do callback Valley sem mudar comportamento;
+6. manter o marcador legado do validador coerente com `ProductionDebug`;
+7. validar, publicar e integrar por Squash and Merge.
 
-Concluir a correção mínima do gate Android sem incorporar alterações alheias:
+### Fora do escopo
 
-1. validar o adaptador v2.9;
-2. validar o workflow de release;
-3. executar testes de regressão;
-4. executar CI, Security e Docker Compose no mesmo head;
-5. revisar diff, threads, segredos e mergeabilidade;
-6. integrar exclusivamente por Squash and Merge.
+- redesenhar, recolorir, recortar ou modificar ativos oficiais;
+- reabrir ou mesclar os PRs #75 e #77;
+- repetir o adaptador Android já integrado no PR #76;
+- corrigir catálogo geral, Dependabot ou novas evoluções Marketplace;
+- encerrar diagnósticos visuais do VS Code sem sessão GitHub autenticada.
 
-## 4. Arquivos autorizados neste incremento
+## 4. Fontes de verdade
 
-- `.github/workflows/valley-android-release.yml`;
-- `tests/test_valley_android_release_adapter.py`;
-- `tarefas.md`;
-- relatório e plano versionados deste ciclo.
+1. `AGENTS.md`;
+2. issue #79;
+3. `config/branding/authorized_assets.json`;
+4. `config/branding/brand_identity.json`;
+5. `scripts/check_brand_integrity.py`;
+6. `.github/workflows/security.yml`;
+7. `scripts/validate_valley_android_release.py`;
+8. `scripts/validate_valley_android_release_v29.py`;
+9. commit `6f76c6359eca268aaafc301a51c0f754be8998c8`;
+10. commit `21a6ba6b0fbeb4afeaa336b7b0bbec6c51a0a9ff`;
+11. este `tarefas.md`.
 
-Qualquer arquivo adicional exige justificativa técnica explícita e nova revisão de escopo.
+## 5. Pré-requisitos
 
-## 5. Testes obrigatórios
+- branch criada diretamente de `origin/main`;
+- lock multiagente do escopo `workspace`;
+- ausência de merge/rebase conflitante;
+- `.venv`, Node e dependências locais disponíveis;
+- head do PR inalterado entre validação e merge;
+- nenhuma credencial ou segredo no diff.
+
+## 6. Sequência de execução
+
+1. concluir o cherry-pick técnico e resolver somente `tarefas.md`;
+2. executar integridade de marca e testes do scanner;
+3. executar validadores e testes Valley;
+4. executar lint/build User e Valley;
+5. executar testes PDV e remover artefatos transitórios gerados localmente;
+6. revisar diff, segredos, conflitos e arquivos sensíveis;
+7. publicar a branch e abrir PR vinculado à issue #79;
+8. aguardar todos os checks no mesmo SHA;
+9. revisar head, mergeabilidade e comentários;
+10. integrar exclusivamente por Squash and Merge;
+11. atualizar `origin/main`, registrar evidências e liberar o lock.
+
+## 7. Testes
 
 ```bash
-python scripts/validate_valley_android_release_v29.py
-python -m pytest -q tests/test_valley_android_release_adapter.py
-python -m pytest -q tests/test_valley_android_workflow_contract.py
-python scripts/validate_repository.py
+python3 scripts/check_brand_integrity.py --fix
+python3 scripts/check_brand_integrity.py
+.venv/bin/python -m pytest -q \
+  tests/test_brand_integrity_scanner.py \
+  tests/test_security_workflow_contract.py \
+  tests/test_valley_android_workflow_contract.py \
+  tests/test_valley_android_signing.py
+python3 scripts/validate_valley_android_release.py
+python3 scripts/validate_valley_android_release_v29.py
+npm --prefix apps/all-in-one-user run lint
+npm --prefix apps/all-in-one-user run build
+npm --prefix apps/all-in-one-pdv-desktop test
+npm --prefix apps/valley run lint
+npm --prefix apps/valley run build
+git diff --check
+git fsck --connectivity-only --no-dangling
 ```
 
-Gates remotos obrigatórios no mesmo SHA:
+## 8. Critérios de aceite
 
-- Continuous Integration;
-- Security;
-- Docker Compose Health Gate;
-- demais workflows acionados pelo diff.
+- integridade de marca aprovada após nova varredura;
+- três testes do scanner e oito testes contratuais aprovados;
+- símbolos substitutos removidos e ativos canônicos usados proporcionalmente;
+- favicon Valley aponta para `favicon-valley.svg`;
+- lint/build User e Valley aprovados;
+- quatro testes PDV aprovados;
+- validadores Valley v1 e v2.9 aprovados;
+- diff sem segredos, conflitos ou artefatos gerados;
+- PR contém somente os 11 arquivos autorizados;
+- gates verdes no mesmo SHA;
+- integração por Squash and Merge.
 
-## 6. Critérios de aceite
+## 9. Riscos
 
-- workflow de release chama `validate_valley_android_release_v29.py`;
-- contrato legado continua sendo executado por meio do adaptador;
-- tarefas Android genéricas são rejeitadas;
-- tarefas `ProductionDebug` são obrigatórias;
-- `${{ runner.temp }}` permanece utilizado para arquivos efêmeros de assinatura;
-- nenhuma alteração de interface, branding, skills ou produto entra no diff;
-- nenhum segredo é versionado;
-- gates verdes no mesmo head;
-- ausência de threads não resolvidas;
-- integração por Squash and Merge com `expected_head_sha`.
+| Risco | Tratamento |
+|---|---|
+| falso positivo do scanner | testes por fragmento sintático e Markdown |
+| pacote PDV sem logo | copiar o ativo canônico no script de preparo |
+| artefato gerado no Git | remover cópia local e alteração transitória do store |
+| nova mudança da `main` | integrar antes do commit e revalidar |
+| duplicar PR #76 | reaplicar apenas o residual da issue #79 |
 
-## 7. Próxima sequência funcional após o fechamento
+## 10. Bloqueios
 
-### Marketplace
+- os cinco diagnósticos `extHost2` dependem de autenticação e reload do VS Code;
+- os 83 alertas Dependabot da `main` pertencem a frente separada;
+- nenhum bloqueio permite enfraquecer gate ou fabricar ativo.
 
-O PR #65 já integrou:
+## 11. Evidências esperadas
 
-- catálogo público;
-- busca, filtros e paginação;
-- geolocalização e ordenação por distância;
-- feed vertical;
-- promoção do dia;
-- favoritos;
-- carrinho isolado por usuário.
+- SHA do commit e PR da issue #79;
+- lista dos 11 arquivos;
+- saídas dos testes, builds e validadores;
+- integridade de marca aprovada;
+- checks remotos verdes no mesmo head;
+- SHA do Squash and Merge;
+- lock multiagente liberado.
 
-Próximo incremento permitido:
+## 12. Pendências restantes
 
-1. mapear contrato de reserva no Stock;
-2. desenhar checkout idempotente;
-3. validar preço e disponibilidade no momento do checkout;
-4. integrar Wallet e Orders sem lançar valores fora do ledger;
-5. publicar eventos de reserva, pedido e pagamento;
-6. manter feature flag desligada até homologação;
-7. não iniciar Delivery antes da conclusão formal de Marketplace e Stock.
+1. concluir o cherry-pick;
+2. revalidar no novo baseline;
+3. publicar a branch e abrir PR;
+4. acompanhar gates;
+5. integrar com Squash and Merge;
+6. autenticar/recarregar o VS Code para confirmar os diagnósticos visuais.
 
-### Stock
+## 13. Procedimento de entrega
 
-Permanece como segunda fase e deve fornecer:
+1. revisar o diff final e resultados;
+2. criar commit rastreável em português;
+3. publicar somente a branch de trabalho;
+4. vincular o PR à issue #79;
+5. mesclar apenas com gates verdes e head validado;
+6. atualizar a `main` local e confirmar o merge;
+7. liberar o lock;
+8. informar versão, data/hora, repositório, branch, commits, issue e PR.
 
-- fonte única de saldo;
-- reservas com expiração;
-- concorrência segura;
-- idempotência;
-- auditoria;
-- prevenção de estoque negativo.
+## 14. Histórico
 
-### Delivery
-
-Permanece como terceira fase. O Valley Rider já integrado não equivale à homologação completa do Delivery.
-
-## 8. Proibições
-
-- não executar push direto na `main`;
-- não integrar PR com escopo divergente;
-- não usar resultados de head anterior;
-- não ativar auto-merge enquanto outros métodos de merge estiverem habilitados;
-- não versionar segredos;
-- não reativar Vision;
-- não iniciar Delivery;
-- não declarar checkout concluído sem reserva transacional e ledger.
-
-## 9. Histórico
-
-| Versão | Data | Alteração |
+| Versão | Data e hora | Alteração |
 |---|---|---|
 | 2.0 | 28/07/2026 | PR #62, QA Rider e testes Git determinísticos. |
 | 2.1 | 28/07/2026 | Rodada 005 com contratos e feature flags. |
 | 2.2 | 28/07/2026 | Marketplace Fase 1 e governança de pendências. |
-| 2.3 | 28/07/2026 | A1 Admin Web + Mobile, Android seguro e pacote Figma. |
-| 2.4 | 29/07/2026 | PR #74 integrada, PR #75 rejeitada por escopo divergente e correção Android v2.9 isolada. |
+| 2.3 | 28/07/2026 | A1 Admin Web/Mobile, Android seguro e pacote Figma. |
+| 2.4 | 29/07/2026 | PRs #74/#76 integrados; #75 rejeitado por escopo. |
+| 2.5 | 29/07/2026 04:40:39 | Issue #79 reaplicada sobre a `main` após fechamento seguro do PR #77. |

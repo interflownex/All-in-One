@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import allInOneLogo from '../../../assets/brand/all-in-one-logo-official.png'
 import './index.css'
 
 type TabKey = 'dashboard' | 'conta' | 'carteira' | 'mercado' | 'vagas' | 'operacao'
@@ -330,7 +331,7 @@ function App() {
     <div className="user-app-shell">
       <aside className="side-panel">
         <div className="brand-block">
-          <div className="brand-mark">AIO</div>
+          <img className="brand-mark" src={allInOneLogo} alt="All in One" />
           <div>
             <div className="brand-name">All-in-One User</div>
             <div className="brand-subtitle">Cadastro, carteira, mercado e operacao</div>

@@ -31,7 +31,7 @@ PROHIBITED_STYLE = re.compile(
 
 HTML_REFERENCE = re.compile(r"(?:src|href)\s*=\s*[\"']([^\"']+)[\"']", re.IGNORECASE)
 MARKDOWN_REFERENCE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
-BRAND_PATH = re.compile(r"assets/brand/[^\s\"')]+", re.IGNORECASE)
+BRAND_PATH = re.compile(r"assets/brand/[^\s\"'`)>,;]+", re.IGNORECASE)
 
 
 def load_json(path: Path) -> dict:
@@ -54,6 +54,7 @@ def frontend_files() -> list[Path]:
             if path.is_file()
             and path.suffix.lower() in TEXT_SUFFIXES
             and not any(part in SKIP_PARTS for part in path.parts)
+            and "src/main/assets" not in path.as_posix()
         )
     readme = ROOT / "README.md"
     if readme.exists():
@@ -99,6 +100,28 @@ def references_in(text: str) -> set[str]:
     references.update(match.group(1) for match in MARKDOWN_REFERENCE.finditer(text))
     references.update(match.group(0) for match in BRAND_PATH.finditer(text))
     return {normalized_asset(value) for value in references if "assets/brand/" in value}
+
+
+def style_fragments(path: Path, text: str) -> list[tuple[int, str]]:
+    """Retorna unidades sintáticas pequenas para evitar falsos positivos minificados."""
+    if path.suffix.lower() not in {".css", ".scss"}:
+        return list(enumerate(text.splitlines(), start=1))
+
+    fragments: list[tuple[int, str]] = []
+    offset = 0
+    for block in text.split("}"):
+        line = text.count("\n", 0, offset) + 1
+        fragments.append((line, block))
+        offset += len(block) + 1
+    return fragments
+
+
+def fragment_targets_brand_art(fragment: str) -> bool:
+    selector = fragment.split("{", 1)[0].lower()
+    return bool(
+        re.search(r"(?:logo|brand[-_]{1,2}(?:logo|mark|image|img))", selector)
+        or ("brand" in selector and re.search(r"\bimg\b", selector))
+    )
 
 
 def validate_manifest(identity: dict, manifest: dict) -> list[str]:
@@ -158,15 +181,13 @@ def scan(fix: bool) -> tuple[list[str], list[str]]:
             elif reference not in allowed:
                 violations.append(f"{relative}: ativo de marca não autorizado: {reference}")
 
-        lines = text.splitlines()
-        for index, line in enumerate(lines):
-            if "logo" not in line.lower() and "brand" not in line.lower():
+        for line_number, fragment in style_fragments(path, text):
+            if not fragment_targets_brand_art(fragment):
                 continue
-            window = "\n".join(lines[index : index + 4])
-            match = PROHIBITED_STYLE.search(window)
+            match = PROHIBITED_STYLE.search(fragment)
             if match:
                 violations.append(
-                    f"{relative}:{index + 1}: transformação visual proibida próxima à marca: {match.group(0)}"
+                    f"{relative}:{line_number}: transformação visual proibida próxima à marca: {match.group(0)}"
                 )
 
     brand_component = ROOT / "apps" / "all-in-one-business" / "src" / "components" / "BrandLogo.tsx"
