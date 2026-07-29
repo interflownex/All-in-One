@@ -36,8 +36,6 @@ const contexts = [
   },
 ] as const;
 
-type ContextId = (typeof contexts)[number]["id"];
-
 const server = new McpServer({
   name: "valley-universal",
   version: "1.0.0",
@@ -112,7 +110,7 @@ const server = new McpServer({
           .describe("Contexto que a pessoa pretende utilizar."),
       },
     },
-    async ({ context }: { context?: ContextId }) => {
+    async ({ context }) => {
       const selected = context
         ? contexts.find((item) => item.id === context)
         : undefined;
