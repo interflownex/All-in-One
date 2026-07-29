@@ -1,6 +1,5 @@
 package br.com.allinone.admin;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,7 +15,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public final class AdminActivity extends Activity {
+import androidx.activity.ComponentActivity;
+import androidx.activity.OnBackPressedCallback;
+
+public final class AdminActivity extends ComponentActivity {
     private WebView webView;
     private AdminUrlPolicy adminUrlPolicy;
 
@@ -67,6 +69,18 @@ public final class AdminActivity extends Activity {
             }
         });
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (webView != null && webView.canGoBack()) {
+                    webView.goBack();
+                    return;
+                }
+                setEnabled(false);
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
+
         setContentView(webView);
         if (savedInstanceState == null) {
             webView.loadUrl(adminUrlPolicy.baseUrl());
@@ -102,15 +116,6 @@ public final class AdminActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         webView.saveState(outState);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override
