@@ -1,13 +1,13 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.6
-**Data e hora:** 29/07/2026 03:58:17
+**Versão:** 2.7
+**Data e hora:** 29/07/2026 04:02:38
 **Fuso horário:** `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
 **Branch:** `codex/auditoria-valley-rider-2026-07-28`  
 **Commit de referência antes da correção:** `e11601119932da31828aa54ec54b34b19b157719`
 **Commit integrado de `origin/main`:** `77dd7791ea8bc649a01a3f1d534b609fdd479a34`
-**Pull Requests relacionadas:** `#62`, `#64`, `#65`, `#71`, `#72`
+**Pull Requests relacionadas:** `#62`, `#64`, `#65`, `#71`, `#72`, `#75`
 **Issue de orquestração:** `#51`
 
 ## 1. Objetivo
@@ -235,3 +235,4 @@ cd ../valley-android
 | 2.4 | 28/07/2026 23:23:37 | Conflito de sincronização resolvido e históricos consolidados. |
 | 2.5 | 29/07/2026 03:56:22 | Correção do timeout do Gradle Server integrada do PR #72 e contrato direcionado validado. |
 | 2.6 | 29/07/2026 03:58:17 | Diagnósticos de Actions classificados, tarefa Android ProductionDebug corrigida e bloqueio de autenticação registrado. |
+| 2.7 | 29/07/2026 04:02:38 | PR #75 aberto para o SHA validado e procedimento de entrega atualizado. |
