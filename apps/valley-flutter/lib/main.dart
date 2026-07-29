@@ -84,7 +84,8 @@ class _ValleyShellState extends State<ValleyShell> {
             );
           })();
         ''');
-        final ready = result == true || result.toString().toLowerCase() == 'true';
+        final ready =
+            result == true || result.toString().toLowerCase() == 'true';
         if (ready) {
           if (mounted) {
             setState(() {
