@@ -153,9 +153,9 @@ class _ValleyShellState extends State<ValleyShell> {
             if (!_contentReady && _loadError == null)
               const _LoadingSurface(progressColor: _valleyPurple),
             if (_contentReady)
-              const Semantics(
+              Semantics(
                 label: 'Valley interface carregada',
-                child: SizedBox.shrink(),
+                child: const SizedBox.shrink(),
               ),
             if (_loadError != null)
               _LoadFailure(message: _loadError!, onRetry: _reload),
