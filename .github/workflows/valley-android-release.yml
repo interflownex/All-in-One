@@ -23,8 +23,10 @@ permissions:
 jobs:
   flutter-apk:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       VITE_API_HUB_URL: ${{ vars.VITE_API_HUB_URL }}
+      VITE_VALLEY_ALLOW_DEMO: "true"
     steps:
       - uses: actions/checkout@v4
 
@@ -56,12 +58,27 @@ jobs:
             "$flutter_project"
           cp -R "$flutter_project/android" apps/valley-flutter/android
 
-      - name: Compilar templates Stitch do Valley
+      - name: Compilar e preparar a interface Valley
         run: |
           test -f config/stitch/template_project_state.json
           npm --prefix apps/valley ci --ignore-scripts
           npm --prefix apps/valley run build
           python3 scripts/prepare_valley_flutter_build.py
+          python3 scripts/prepare_valley_flutter_build.py --check
+
+      - name: Validar referências do bundle preparado
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from scripts.prepare_valley_flutter_build import VALLEY_ASSETS, validate
+
+          validate()
+          index = (VALLEY_ASSETS / "index.html").read_text(encoding="utf-8")
+          assert "./assets/" in index, "index.html sem recursos relativos"
+          assert list(VALLEY_ASSETS.rglob("*.js")), "JavaScript web ausente"
+          assert list(VALLEY_ASSETS.rglob("*.css")), "CSS web ausente"
+          print("Bundle preparado com JavaScript e CSS locais.")
+          PY
 
       - name: Validar Flutter e contratos do repositório
         working-directory: apps/valley-flutter
@@ -77,10 +94,31 @@ jobs:
           flutter build apk --release
           flutter build apk --release --split-per-abi
 
-      - name: Auditar APKs gerados
+      - name: Auditar conteúdo e assinatura dos APKs
         run: >-
           python3 scripts/audit_valley_flutter_apks.py
           apps/valley-flutter/build/app/outputs/flutter-apk
+
+      - name: Publicar inventário interno dos APKs
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+
+          directory = Path("apps/valley-flutter/build/app/outputs/flutter-apk")
+          for apk in sorted(directory.glob("*.apk")):
+              with zipfile.ZipFile(apk) as archive:
+                  web = [
+                      name
+                      for name in archive.namelist()
+                      if name.startswith("assets/flutter_assets/assets/valley/")
+                  ]
+                  js = [name for name in web if name.endswith(".js")]
+                  css = [name for name in web if name.endswith(".css")]
+                  print(f"{apk.name}: {len(web)} recursos web, {len(js)} JS, {len(css)} CSS")
+                  if not js or not css:
+                      raise SystemExit(f"{apk.name}: bundle web incompleto")
+          PY
 
       - name: Atestar proveniência dos APKs
         uses: actions/attest-build-provenance@v2
