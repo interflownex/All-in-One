@@ -149,7 +149,7 @@ paths:
       responses:
         "200":
           description: Transactional outbox domain events
-  /valley/catalog:
+  /valley/marketplace/catalog:
     get:
       security: []
       parameters:
