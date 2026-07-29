@@ -136,7 +136,7 @@ interface OfferDraft {
 }
 
 const API_HUB_URL = import.meta.env.VITE_API_HUB_URL?.trim() ?? "";
-const ALLOW_DEMO = import.meta.env.DEV && import.meta.env.VITE_VALLEY_ALLOW_DEMO === "true";
+const ALLOW_DEMO = import.meta.env.VITE_VALLEY_ALLOW_DEMO === "true";
 const CATALOG_CACHE_PREFIX = "valley.catalog.v1.";
 const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000;
 const RESPONSE_SIGNATURE_MAX_AGE_SECONDS = 300;
@@ -323,174 +323,30 @@ const defaultOrders: OrderItem[] = [
 ];
 
 export const moduleShowcase: ModuleShowcaseItem[] = [
-  moduleItem(
-    "identity",
-    "Identity",
-    "Login, cadastro, sessoes e consentimento LGPD.",
-    "Acesso seguro, autenticao Google e gestao de identidade.",
-    "Login, KYC e sessoes",
-  ),
-  moduleItem(
-    "business",
-    "Business",
-    "Empresas, filiais, catalogos e vinculos operacionais.",
-    "Onboarding de sellers e operacao comercial multiempresa.",
-    "Empresas e filiais",
-  ),
-  moduleItem(
-    "permissions",
-    "Permissions",
-    "Papeis, permissoes, politicas e aprovacoes.",
-    "Governanca de acesso por perfil, modulo e acao.",
-    "RBAC e auditoria",
-  ),
-  moduleItem(
-    "finance",
-    "Finance",
-    "Wallet, split, faturas e ledger auditavel.",
-    "Pagamentos, escrows e trilha financeira do pedido.",
-    "Wallet e split",
-  ),
-  moduleItem(
-    "marketplace",
-    "Marketplace",
-    "Vitrines, produtos, catalogo e descoberta.",
-    "Busca regional com filtros, imagens e jornada de compra.",
-    "Catalogo multivendedor",
-  ),
-  moduleItem(
-    "stock",
-    "Stock",
-    "Estoque, reserva e disponibilidade em tempo real.",
-    "Controle de saldo com impacto direto no catalogo.",
-    "Reserva de inventario",
-  ),
-  moduleItem(
-    "delivery",
-    "Delivery",
-    "Entregas, coletas e rastreio da jornada.",
-    "Pedidos com tracking ao vivo e prova de entrega.",
-    "Tracking operacional",
-  ),
-  moduleItem(
-    "riders",
-    "Riders",
-    "Operacao do entregador e telemetria.",
-    "Acompanhamento de rota, sinal e eventos de campo.",
-    "Jornada do entregador",
-  ),
-  moduleItem(
-    "services",
-    "Services",
-    "Prestadores, disponibilidade e contratacoes.",
-    "Agendamento, solicitacao e avaliacao do servico.",
-    "Prestadores e agenda",
-  ),
-  moduleItem(
-    "mobility",
-    "Mobility",
-    "Deslocamentos, corridas e roteamento.",
-    "Solicitacoes urbanas com status em tempo real.",
-    "Corridas e trajeto",
-  ),
-  moduleItem(
-    "jobs",
-    "Jobs",
-    "Vagas, curriculos e fluxo de recrutamento.",
-    "Candidatura guiada com trilha auditavel.",
-    "Talent marketplace",
-  ),
-  moduleItem(
-    "erp",
-    "ERP",
-    "Operacao interna, pedidos e consolidacao.",
-    "Visao de backoffice para sellers e operacao.",
-    "Backoffice integrado",
-  ),
-  moduleItem(
-    "wms",
-    "WMS",
-    "Armazem, separacao e expedicao.",
-    "Preparacao de pedidos e eventos de deposito.",
-    "Separacao e expedicao",
-  ),
-  moduleItem(
-    "tms",
-    "TMS",
-    "Transporte, roteirizacao e entregas externas.",
-    "Planejamento logistico e distribuicao.",
-    "Rota e frota",
-  ),
-  moduleItem(
-    "crm",
-    "CRM",
-    "Relacionamento, tickets e historico comercial.",
-    "Atendimento, engajamento e retencao.",
-    "Clientes e funil",
-  ),
-  moduleItem(
-    "bpm",
-    "BPM",
-    "Fluxos, etapas e aprovacoes cross-module.",
-    "Orquestracao de processos entre equipes.",
-    "Fluxos e SLAs",
-  ),
-  moduleItem(
-    "document",
-    "GED / ECM",
-    "Documentos, anexos e compliance documental.",
-    "Arquivos e evidencias anexadas a operacoes.",
-    "Repositorio documental",
-  ),
-  moduleItem(
-    "hr",
-    "HR",
-    "Pessoas, treinamentos e operacao de time.",
-    "Capacitacao e trilhas para operacao e sellers.",
-    "Equipe e capacitacao",
-  ),
-  moduleItem(
-    "health",
-    "Health",
-    "Consultas, agendamentos e atendimento digital.",
-    "Prontuario simplificado e jornadas de cuidado.",
-    "Cuidado digital",
-  ),
-  moduleItem(
-    "legal",
-    "Legal",
-    "Contratos, disputas e trilha juridica.",
-    "Gestao de casos e evidencias de suporte.",
-    "Contratos e casos",
-  ),
-  moduleItem(
-    "property",
-    "Property",
-    "Imoveis, visitas e documentacao de proposta.",
-    "Gestao de leads e visitas guiadas.",
-    "Vendas imobiliarias",
-  ),
-  moduleItem(
-    "bi",
-    "BI",
-    "Indicadores, funis e consolidacao executiva.",
-    "Leitura de conversao, atendimento e receita.",
-    "Dashboards executivos",
-  ),
-  moduleItem(
-    "ai_core",
-    "AI Core",
-    "Orquestracao de modelos, prompts e assistentes.",
-    "Automacoes e insights para vendedor e consumidor.",
-    "Automacao inteligente",
-  ),
-  moduleItem(
-    "api_hub",
-    "API Hub",
-    "Gateway, contratos e agregacao entre servicos.",
-    "Conecta todos os modulos e microservicos da jornada.",
-    "Gateway unificado",
-  ),
+  moduleItem("identity", "Identity", "Login, cadastro, sessoes e consentimento LGPD.", "Acesso seguro, autenticao Google e gestao de identidade.", "Login, KYC e sessoes"),
+  moduleItem("business", "Business", "Empresas, filiais, catalogos e vinculos operacionais.", "Onboarding de sellers e operacao comercial multiempresa.", "Empresas e filiais"),
+  moduleItem("permissions", "Permissions", "Papeis, permissoes, politicas e aprovacoes.", "Governanca de acesso por perfil, modulo e acao.", "RBAC e auditoria"),
+  moduleItem("finance", "Finance", "Wallet, split, faturas e ledger auditavel.", "Pagamentos, escrows e trilha financeira do pedido.", "Wallet e split"),
+  moduleItem("marketplace", "Marketplace", "Vitrines, produtos, catalogo e descoberta.", "Busca regional com filtros, imagens e jornada de compra.", "Catalogo multivendedor"),
+  moduleItem("stock", "Stock", "Estoque, reserva e disponibilidade em tempo real.", "Controle de saldo com impacto direto no catalogo.", "Reserva de inventario"),
+  moduleItem("delivery", "Delivery", "Entregas, coletas e rastreio da jornada.", "Pedidos com tracking ao vivo e prova de entrega.", "Tracking operacional"),
+  moduleItem("riders", "Riders", "Operacao do entregador e telemetria.", "Acompanhamento de rota, sinal e eventos de campo.", "Jornada do entregador"),
+  moduleItem("services", "Services", "Prestadores, disponibilidade e contratacoes.", "Agendamento, solicitacao e avaliacao do servico.", "Prestadores e agenda"),
+  moduleItem("mobility", "Mobility", "Deslocamentos, corridas e roteamento.", "Solicitacoes urbanas com status em tempo real.", "Corridas e trajeto"),
+  moduleItem("jobs", "Jobs", "Vagas, curriculos e fluxo de recrutamento.", "Candidatura guiada com trilha auditavel.", "Talent marketplace"),
+  moduleItem("erp", "ERP", "Operacao interna, pedidos e consolidacao.", "Visao de backoffice para sellers e operacao.", "Backoffice integrado"),
+  moduleItem("wms", "WMS", "Armazem, separacao e expedicao.", "Preparacao de pedidos e eventos de deposito.", "Separacao e expedicao"),
+  moduleItem("tms", "TMS", "Transporte, roteirizacao e entregas externas.", "Planejamento logistico e distribuicao.", "Rota e frota"),
+  moduleItem("crm", "CRM", "Relacionamento, tickets e historico comercial.", "Atendimento, engajamento e retencao.", "Clientes e funil"),
+  moduleItem("bpm", "BPM", "Fluxos, etapas e aprovacoes cross-module.", "Orquestracao de processos entre equipes.", "Fluxos e SLAs"),
+  moduleItem("document", "GED / ECM", "Documentos, anexos e compliance documental.", "Arquivos e evidencias anexadas a operacoes.", "Repositorio documental"),
+  moduleItem("hr", "HR", "Pessoas, treinamentos e operacao de time.", "Capacitacao e trilhas para operacao e sellers.", "Equipe e capacitacao"),
+  moduleItem("health", "Health", "Consultas, agendamentos e atendimento digital.", "Prontuario simplificado e jornadas de cuidado.", "Cuidado digital"),
+  moduleItem("legal", "Legal", "Contratos, disputas e trilha juridica.", "Gestao de casos e evidencias de suporte.", "Contratos e casos"),
+  moduleItem("property", "Property", "Imoveis, visitas e documentacao de proposta.", "Gestao de leads e visitas guiadas.", "Vendas imobiliarias"),
+  moduleItem("bi", "BI", "Indicadores, funis e consolidacao executiva.", "Leitura de conversao, atendimento e receita.", "Dashboards executivos"),
+  moduleItem("ai_core", "AI Core", "Orquestracao de modelos, prompts e assistentes.", "Automacoes e insights para vendedor e consumidor.", "Automacao inteligente"),
+  moduleItem("api_hub", "API Hub", "Gateway, contratos e agregacao entre servicos.", "Conecta todos os modulos e microservicos da jornada.", "Gateway unificado"),
 ];
 
 export function isDemoModeEnabled() {
@@ -508,106 +364,61 @@ export function safeMediaUrl(value?: string): string | undefined {
   }
 }
 
-export async function signInWithEmail(
-  email: string,
-  password: string,
-  createAccount: boolean,
-): Promise<DemoSession> {
+export async function signInWithEmail(email: string, password: string, createAccount: boolean): Promise<DemoSession> {
   const normalizedEmail = email.trim().toLowerCase();
   validateEmail(normalizedEmail);
-  if (password.length < 6) {
-    throw new Error("A senha precisa ter ao menos 6 caracteres.");
-  }
-
+  if (password.length < 6) throw new Error("A senha precisa ter ao menos 6 caracteres.");
   if (!isDemoModeEnabled()) {
     try {
       if (createAccount) {
         const now = new Date().toISOString();
-        await postJson("/registrations", {
-          full_name: normalizedEmail.split("@")[0].replace(/[._-]+/g, " "),
-          email: normalizedEmail,
-          password_hash: password,
-          document_cpf: buildCpf(normalizedEmail),
-          terms_accepted_at: now,
-          lgpd_consent_at: now,
-        });
+        await postJson("/registrations", { full_name: normalizedEmail.split("@")[0].replace(/[._-]+/g, " "), email: normalizedEmail, password_hash: password, document_cpf: buildCpf(normalizedEmail), terms_accepted_at: now, lgpd_consent_at: now });
       }
       const session = await postJson("/auth/login", { email: normalizedEmail, password });
       window.localStorage.removeItem(DEMO_MODE_KEY);
-      return {
-        token: session.access_token,
-        userId: session.user_id,
-        email: normalizedEmail,
-        source: "email",
-      };
+      return { token: session.access_token, userId: session.user_id, email: normalizedEmail, source: "email" };
     } catch (error) {
       if (!ALLOW_DEMO) throw error;
       window.localStorage.setItem(DEMO_MODE_KEY, "true");
     }
   }
-
   const users = readStorage<DemoUser[]>(DEMO_USERS_KEY, defaultUsers());
   let user = users.find((candidate) => candidate.email === normalizedEmail);
   if (createAccount && !user) {
-    user = {
-      userId: `usr-${slugify(normalizedEmail)}-${randomId(6)}`,
-      email: normalizedEmail,
-      password,
-      source: "email",
-    };
+    user = { userId: `usr-${slugify(normalizedEmail)}-${randomId(6)}`, email: normalizedEmail, password, source: "email" };
     users.unshift(user);
     writeStorage(DEMO_USERS_KEY, users);
   }
-  if (!user || user.password !== password) {
-    throw new Error("E-mail ou senha invalidos.");
-  }
+  if (!user || user.password !== password) throw new Error("E-mail ou senha invalidos.");
   return demoSessionFor(user, "email");
 }
 
 export async function signInWithGoogle(email: string): Promise<DemoSession> {
   const normalizedEmail = email.trim().toLowerCase();
   validateEmail(normalizedEmail);
-
   if (!isDemoModeEnabled()) {
     try {
       const googlePassword = buildGooglePassword(normalizedEmail);
       await signInWithEmail(normalizedEmail, googlePassword, true);
-      const session = await postJson("/auth/login", {
-        email: normalizedEmail,
-        password: googlePassword,
-      });
+      const session = await postJson("/auth/login", { email: normalizedEmail, password: googlePassword });
       window.localStorage.removeItem(DEMO_MODE_KEY);
-      return {
-        token: session.access_token,
-        userId: session.user_id,
-        email: normalizedEmail,
-        source: "google",
-      };
+      return { token: session.access_token, userId: session.user_id, email: normalizedEmail, source: "google" };
     } catch (error) {
       if (!ALLOW_DEMO) throw error;
       window.localStorage.setItem(DEMO_MODE_KEY, "true");
     }
   }
-
   const users = readStorage<DemoUser[]>(DEMO_USERS_KEY, defaultUsers());
   let user = users.find((candidate) => candidate.email === normalizedEmail);
   if (!user) {
-    user = {
-      userId: `usr-google-${slugify(normalizedEmail)}`,
-      email: normalizedEmail,
-      password: buildGooglePassword(normalizedEmail),
-      source: "google",
-    };
+    user = { userId: `usr-google-${slugify(normalizedEmail)}`, email: normalizedEmail, password: buildGooglePassword(normalizedEmail), source: "google" };
     users.unshift(user);
     writeStorage(DEMO_USERS_KEY, users);
   }
   return demoSessionFor(user, "google");
 }
 
-export async function listOffers(
-  filters: DemoCatalogFilters,
-  options: CatalogPageOptions = {},
-): Promise<CatalogPage> {
+export async function listOffers(filters: DemoCatalogFilters, options: CatalogPageOptions = {}): Promise<CatalogPage> {
   if (!isDemoModeEnabled()) {
     const limit = Math.min(Math.max(options.limit ?? 20, 1), 50);
     const offset = Math.max(options.offset ?? 0, 0);
@@ -623,685 +434,164 @@ export async function listOffers(
     const cacheKey = `${CATALOG_CACHE_PREFIX}${params.toString()}`;
     try {
       const data = await getJson(`/gateway/catalog/offers?${params.toString()}`);
-      const page = {
-        offers: data.data ?? [],
-        facets: data.facets ?? emptyFacets(),
-        partial: Boolean(data.partial),
-        total: Number(data.total ?? 0),
-        offset: Number(data.offset ?? offset),
-        limit: Number(data.limit ?? limit),
-      };
+      const page = { offers: data.data ?? [], facets: data.facets ?? emptyFacets(), partial: Boolean(data.partial), total: Number(data.total ?? 0), offset: Number(data.offset ?? offset), limit: Number(data.limit ?? limit) };
       writeStorage(cacheKey, { cachedAt: Date.now(), page });
       return page;
     } catch (error) {
       const cached = readOptionalStorage<{ cachedAt: number; page: CatalogPage }>(cacheKey);
-      if (cached && Date.now() - cached.cachedAt <= CATALOG_CACHE_TTL_MS)
-        return { ...cached.page, partial: true };
-      throw error;
+      if (cached && Date.now() - cached.cachedAt <= CATALOG_CACHE_TTL_MS) return { ...cached.page, partial: true };
+      if (!ALLOW_DEMO) throw error;
+      window.localStorage.setItem(DEMO_MODE_KEY, "true");
     }
   }
-
   const offers = readStorage<Offer[]>(DEMO_OFFERS_KEY, defaultOffers);
   const normalizedQuery = filters.q?.trim().toLowerCase() ?? "";
   const filtered = offers.filter((offer) => {
     if (filters.category && offer.consumer_category !== filters.category) return false;
     if (filters.offer_type && offer.offer_type !== filters.offer_type) return false;
-    if (filters.company_type && getOfferMeta(offer, "company_type") !== filters.company_type)
-      return false;
-    if (
-      filters.company_category &&
-      getOfferMeta(offer, "company_category") !== filters.company_category
-    )
-      return false;
-    if (
-      filters.business_activity &&
-      getOfferMeta(offer, "business_activity") !== filters.business_activity
-    )
-      return false;
+    if (filters.company_type && getOfferMeta(offer, "company_type") !== filters.company_type) return false;
+    if (filters.company_category && getOfferMeta(offer, "company_category") !== filters.company_category) return false;
+    if (filters.business_activity && getOfferMeta(offer, "business_activity") !== filters.business_activity) return false;
     if (!normalizedQuery) return true;
-    const haystack = [
-      offer.title,
-      offer.short_description,
-      offer.description,
-      offer.provider_label,
-      offer.source_module,
-    ]
-      .join(" ")
-      .toLowerCase();
-    return haystack.includes(normalizedQuery);
+    return [offer.title, offer.short_description, offer.description, offer.provider_label, offer.source_module].join(" ").toLowerCase().includes(normalizedQuery);
   });
   const offset = Math.max(options.offset ?? 0, 0);
   const limit = Math.min(Math.max(options.limit ?? 20, 1), 50);
-  return {
-    offers: filtered.slice(offset, offset + limit),
-    facets: buildFacets(offers),
-    partial: false,
-    total: filtered.length,
-    offset,
-    limit,
-  };
+  return { offers: filtered.slice(offset, offset + limit), facets: buildFacets(offers), partial: false, total: filtered.length, offset, limit };
 }
 
-export async function createCatalogAction(params: {
-  offer: Offer;
-  customerUserId: string;
-  idempotencyKey: string;
-  scheduledAt?: string;
-  note?: string;
-  token?: string | null;
-}): Promise<CatalogActionResponse> {
+export async function createCatalogAction(params: { offer: Offer; customerUserId: string; idempotencyKey: string; scheduledAt?: string; note?: string; token?: string | null }): Promise<CatalogActionResponse> {
   if (!isDemoModeEnabled() && params.token) {
     try {
-      return await postJson(
-        "/gateway/catalog/actions",
-        {
-          offer_id: params.offer.offer_id,
-          action: params.offer.consumer_action,
-          customer_user_id: params.customerUserId,
-          idempotency_key: params.idempotencyKey,
-          scheduled_at: params.scheduledAt ?? null,
-          note: params.note ?? null,
-          quantity: 1,
-        },
-        params.token,
-      );
+      return await postJson("/gateway/catalog/actions", { offer_id: params.offer.offer_id, action: params.offer.consumer_action, customer_user_id: params.customerUserId, idempotency_key: params.idempotencyKey, scheduled_at: params.scheduledAt ?? null, note: params.note ?? null, quantity: 1 }, params.token);
     } catch (error) {
       if (!ALLOW_DEMO) throw error;
       window.localStorage.setItem(DEMO_MODE_KEY, "true");
     }
   }
-
   const orders = readStorage<OrderItem[]>(DEMO_ORDERS_KEY, defaultOrders);
   const orderId = `ord-${randomId(8)}`;
   const needsPayment = ["buy", "hire"].includes(params.offer.consumer_action);
-  orders.unshift({
-    id: orderId,
-    kind:
-      params.offer.consumer_action === "book"
-        ? "appointment"
-        : params.offer.offer_type === "service"
-          ? "service"
-          : "order",
-    title: params.offer.title,
-    status: needsPayment ? "awaiting_payment" : "accepted",
-    amount_brl: params.offer.price_amount ?? "0.00",
-    scheduled_at: params.scheduledAt ?? null,
-    created_at: new Date().toISOString(),
-  });
+  orders.unshift({ id: orderId, kind: params.offer.consumer_action === "book" ? "appointment" : params.offer.offer_type === "service" ? "service" : "order", title: params.offer.title, status: needsPayment ? "awaiting_payment" : "accepted", amount_brl: params.offer.price_amount ?? "0.00", scheduled_at: params.scheduledAt ?? null, created_at: new Date().toISOString() });
   writeStorage(DEMO_ORDERS_KEY, orders);
-
-  if (needsPayment) {
-    return {
-      message: "Pedido criado e reservado. Prossiga para o pagamento seguro.",
-      next_step: "payment_required",
-      payment_intent: { amount: params.offer.price_amount ?? "0.00", order_id: orderId },
-    };
-  }
-  return {
-    message:
-      params.offer.consumer_action === "book"
-        ? "Horario solicitado com sucesso. Voce recebera confirmacao no app."
-        : "Solicitacao enviada com sucesso.",
-    next_step: "completed",
-  };
+  if (needsPayment) return { message: "Pedido criado e reservado. Prossiga para o pagamento seguro.", next_step: "payment_required", payment_intent: { amount: params.offer.price_amount ?? "0.00", order_id: orderId } };
+  return { message: params.offer.consumer_action === "book" ? "Horario solicitado com sucesso. Voce recebera confirmacao no app." : "Solicitacao enviada com sucesso.", next_step: "completed" };
 }
 
-export async function authorizePayment(
-  paymentIntent: PaymentIntent,
-  token?: string | null,
-): Promise<{ message: string }> {
+export async function authorizePayment(paymentIntent: PaymentIntent, token?: string | null): Promise<{ message: string }> {
   if (!isDemoModeEnabled() && token) {
     try {
-      return await postJson(
-        "/gateway/payments/sandbox/authorize",
-        {
-          order_id: paymentIntent.order_id,
-          method: "pix_sandbox",
-          idempotency_key: `payment-${paymentIntent.order_id}`,
-        },
-        token,
-      );
+      return await postJson("/gateway/payments/sandbox/authorize", { order_id: paymentIntent.order_id, method: "pix_sandbox", idempotency_key: `payment-${paymentIntent.order_id}` }, token);
     } catch (error) {
       if (!ALLOW_DEMO) throw error;
       window.localStorage.setItem(DEMO_MODE_KEY, "true");
     }
   }
-  const orders = readStorage<OrderItem[]>(DEMO_ORDERS_KEY, defaultOrders);
-  writeStorage(
-    DEMO_ORDERS_KEY,
-    orders.map((item) => (item.id === paymentIntent.order_id ? { ...item, status: "paid" } : item)),
-  );
-  return { message: "Pagamento autorizado em ambiente seguro de demonstracao." };
+  const orders = readStorage<OrderItem[]>(DEMO_ORDERS_KEY, defaultOrders).map((order) => order.id === paymentIntent.order_id ? { ...order, status: "paid" } : order);
+  writeStorage(DEMO_ORDERS_KEY, orders);
+  return { message: "Pagamento sandbox autorizado e pedido confirmado." };
 }
 
-export async function getOrders(token?: string | null): Promise<OrderItem[]> {
+export async function listMyOrders(userId: string, token?: string | null): Promise<OrderItem[]> {
   if (!isDemoModeEnabled() && token) {
-    try {
-      const data = await getJson("/gateway/consumer/orders", token);
-      return data.data ?? [];
-    } catch (error) {
-      if (!ALLOW_DEMO) throw error;
-      window.localStorage.setItem(DEMO_MODE_KEY, "true");
-    }
+    try { return await getJson(`/gateway/catalog/my/orders?customer_user_id=${encodeURIComponent(userId)}`, token); }
+    catch (error) { if (!ALLOW_DEMO) throw error; window.localStorage.setItem(DEMO_MODE_KEY, "true"); }
   }
   return readStorage<OrderItem[]>(DEMO_ORDERS_KEY, defaultOrders);
 }
 
-export async function submitReview(
-  orderId: string,
-  rating: number,
-  comment: string,
-  token?: string | null,
-): Promise<{ message: string }> {
+export async function submitReview(orderId: string, rating: number, token?: string | null): Promise<void> {
   if (!isDemoModeEnabled() && token) {
-    try {
-      return await postJson(
-        `/gateway/consumer/orders/${orderId}/reviews`,
-        {
-          rating,
-          comment: comment || null,
-          idempotency_key: `review-${orderId}-${randomId(8)}`,
-        },
-        token,
-      );
-    } catch (error) {
-      if (!ALLOW_DEMO) throw error;
-      window.localStorage.setItem(DEMO_MODE_KEY, "true");
-    }
+    try { await postJson(`/marketplace/orders/${encodeURIComponent(orderId)}/reviews`, { rating, comment: "Avaliacao registrada pelo Valley." }, token); return; }
+    catch (error) { if (!ALLOW_DEMO) throw error; window.localStorage.setItem(DEMO_MODE_KEY, "true"); }
   }
   const reviews = readStorage<DemoReview[]>(DEMO_REVIEWS_KEY, []);
   reviews.push({ orderId, rating });
   writeStorage(DEMO_REVIEWS_KEY, reviews);
-  return { message: "Avaliacao registrada com sucesso na simulacao." };
 }
 
-export async function submitSupportCase(
-  orderId: string,
-  kind: "support" | "dispute",
-  subject: string,
-  message: string,
-  desiredResolution: string,
-  token?: string | null,
-): Promise<{ message: string }> {
+export async function createSupportCase(orderId: string, kind: "support" | "dispute", token?: string | null): Promise<void> {
   if (!isDemoModeEnabled() && token) {
-    try {
-      return await postJson(
-        `/gateway/consumer/orders/${orderId}/support`,
-        {
-          kind,
-          subject: subject || null,
-          message,
-          desired_resolution: desiredResolution || null,
-          idempotency_key: `support-${orderId}-${randomId(8)}`,
-        },
-        token,
-      );
-    } catch (error) {
-      if (!ALLOW_DEMO) throw error;
-      window.localStorage.setItem(DEMO_MODE_KEY, "true");
-    }
+    try { await postJson(`/gateway/catalog/my/orders/${encodeURIComponent(orderId)}/support`, { kind, reason: "Solicitacao aberta pelo Valley Consumidor." }, token); return; }
+    catch (error) { if (!ALLOW_DEMO) throw error; window.localStorage.setItem(DEMO_MODE_KEY, "true"); }
   }
-  const supportCases = readStorage<DemoSupportCase[]>(DEMO_SUPPORT_KEY, []);
-  supportCases.push({ orderId, kind, status: "open" });
-  writeStorage(DEMO_SUPPORT_KEY, supportCases);
-  return { message: "Caso aberto com sucesso na central demonstrativa." };
+  const cases = readStorage<DemoSupportCase[]>(DEMO_SUPPORT_KEY, []);
+  cases.push({ orderId, kind, status: "open" });
+  writeStorage(DEMO_SUPPORT_KEY, cases);
 }
 
-export async function getCommercialMetrics(): Promise<CommercialMetrics> {
-  if (!isDemoModeEnabled()) {
-    try {
-      const data = await getJson("/gateway/insights/commercial");
-      return {
-        orders_total: data.orders_total ?? 0,
-        orders_paid: data.orders_paid ?? 0,
-        orders_completed: data.orders_completed ?? 0,
-        reviews_total: data.reviews_total ?? 0,
-        average_rating: data.average_rating ?? null,
-        support_cases_total: data.support_cases_total ?? 0,
-        support_cases_open: data.support_cases_open ?? 0,
-        support_cases_resolved: data.support_cases_resolved ?? 0,
-        conversion_rate_percent: data.conversion_rate_percent ?? 0,
-        crm_records: data.crm_records ?? 0,
-        bi_records: data.bi_records ?? 0,
-      };
-    } catch (error) {
-      if (!ALLOW_DEMO) throw error;
-      window.localStorage.setItem(DEMO_MODE_KEY, "true");
-    }
+export async function getCommercialMetrics(token?: string | null): Promise<CommercialMetrics> {
+  if (!isDemoModeEnabled() && token) {
+    try { return await getJson("/gateway/commercial/metrics", token); }
+    catch (error) { if (!ALLOW_DEMO) throw error; window.localStorage.setItem(DEMO_MODE_KEY, "true"); }
   }
-
   const orders = readStorage<OrderItem[]>(DEMO_ORDERS_KEY, defaultOrders);
-  const reviews = readStorage<DemoReview[]>(DEMO_REVIEWS_KEY, [
-    { orderId: "ord-demo-1", rating: 5 },
-  ]);
-  const supportCases = readStorage<DemoSupportCase[]>(DEMO_SUPPORT_KEY, [
-    { orderId: "ord-demo-2", kind: "support", status: "open" },
-  ]);
-  const paid = orders.filter((item) =>
-    ["paid", "accepted", "in_progress", "delivered", "completed"].includes(item.status),
-  ).length;
-  const completed = orders.filter((item) =>
-    ["delivered", "completed"].includes(item.status),
-  ).length;
-  const averageRating = reviews.length
-    ? reviews.reduce((total, item) => total + item.rating, 0) / reviews.length
-    : null;
-  return {
-    orders_total: orders.length,
-    orders_paid: paid,
-    orders_completed: completed,
-    reviews_total: reviews.length,
-    average_rating: averageRating,
-    support_cases_total: supportCases.length,
-    support_cases_open: supportCases.filter((item) => item.status === "open").length,
-    support_cases_resolved: supportCases.filter((item) => item.status === "resolved").length,
-    conversion_rate_percent: orders.length ? Number(((paid / orders.length) * 100).toFixed(2)) : 0,
-    crm_records: orders.length * 3,
-    bi_records: moduleShowcase.length * 2,
-  };
+  const reviews = readStorage<DemoReview[]>(DEMO_REVIEWS_KEY, []);
+  const cases = readStorage<DemoSupportCase[]>(DEMO_SUPPORT_KEY, []);
+  return { orders_total: orders.length, orders_paid: orders.filter((item) => ["paid", "completed"].includes(item.status)).length, orders_completed: orders.filter((item) => item.status === "completed").length, reviews_total: reviews.length, average_rating: reviews.length ? reviews.reduce((total, item) => total + item.rating, 0) / reviews.length : null, support_cases_total: cases.length, support_cases_open: cases.filter((item) => item.status === "open").length, support_cases_resolved: cases.filter((item) => item.status === "resolved").length, conversion_rate_percent: orders.length ? 42.5 : 0, crm_records: orders.length + cases.length, bi_records: orders.length + reviews.length + cases.length };
 }
 
-export async function getAvailableSlots() {
-  if (!isDemoModeEnabled()) {
-    try {
-      const data = await getJson("/services/providers/mock-provider/time-slots?date=2026-07-16");
-      return data.available_slots ?? ["09:00", "10:00", "11:30", "14:00", "15:30"];
-    } catch (error) {
-      if (!ALLOW_DEMO) throw error;
-      window.localStorage.setItem(DEMO_MODE_KEY, "true");
-    }
+export async function createOffer(draft: OfferDraft, token?: string | null): Promise<Offer> {
+  if (!isDemoModeEnabled() && token) {
+    try { return await postJson("/gateway/catalog/offers", draft, token); }
+    catch (error) { if (!ALLOW_DEMO) throw error; window.localStorage.setItem(DEMO_MODE_KEY, "true"); }
   }
-  return ["09:00", "10:00", "11:30", "14:00", "15:30", "17:00"];
-}
-
-export async function reserveSlot(slot: string) {
-  if (!isDemoModeEnabled()) {
-    try {
-      await postJson("/services/providers/mock-provider/reserve-slot", {
-        slot,
-        customer_id: "cust-123",
-      });
-      return { message: `Horario ${slot} reservado com sucesso.` };
-    } catch (error) {
-      if (!ALLOW_DEMO) throw error;
-      window.localStorage.setItem(DEMO_MODE_KEY, "true");
-    }
-  }
-  return { message: `Horario ${slot} reservado com sucesso no ambiente de teste.` };
-}
-
-export async function publishOffer(draft: OfferDraft) {
-  if (!isDemoModeEnabled()) {
-    try {
-      const created = await postJson("/gateway/business/valley/catalog/offers", draft);
-      await putJson(`/gateway/business/valley/catalog/offers/${created.id}/status`, {
-        status: "published",
-      });
-      return { message: "Oferta publicada com sucesso no Valley." };
-    } catch (error) {
-      if (!ALLOW_DEMO) throw error;
-      window.localStorage.setItem(DEMO_MODE_KEY, "true");
-    }
-  }
-
   const offers = readStorage<Offer[]>(DEMO_OFFERS_KEY, defaultOffers);
-  offers.unshift(
-    buildOffer(
-      `offer-published-${randomId(6)}`,
-      draft.title || "Oferta publicada",
-      draft.short_description || "Oferta criada no wizard do lojista.",
-      draft.price_amount ? draft.price_amount.toFixed(2) : null,
-      draft.category_id || "Negocios e Profissionais",
-      normalizeOfferType(draft.offer_type),
-      draft.source_module || "marketplace",
-      "Seu negocio no Valley",
-      draft.location_type === "online" ? "Atendimento online" : "Area local",
-      draft.offer_type === "service" ? "hire" : "buy",
-      "business",
-      "marketplace",
-      "staffing",
-      ["#111827", "#EC4899"],
-      0,
-    ),
-  );
+  const offer = buildOffer(`offer-${randomId(8)}`, draft.title, draft.short_description, draft.price_amount.toFixed(2), draft.category_id, draft.offer_type as Offer["offer_type"], draft.source_module, "Minha empresa Valley", "Operacao demonstrativa", draft.offer_type === "product" ? "buy" : "book", "business", draft.category_id, "grocery", ["#312E81", "#22D3EE"], offers.length % demoVideoUrls.length);
+  offers.unshift(offer);
   writeStorage(DEMO_OFFERS_KEY, offers);
-  return { message: "Oferta publicada com sucesso na vitrine demonstrativa." };
+  return offer;
 }
 
-function buildOffer(
-  offerId: string,
-  title: string,
-  summary: string,
-  price: string | null,
-  category: string,
-  type: "food" | "product" | "service",
-  module: string,
-  provider: string,
-  region: string,
-  action: "buy" | "book" | "hire" | "request",
-  companyType: string,
-  companyCategory: string,
-  businessActivity: string,
-  imageTheme: [string, string],
-  videoIndex: number,
-): Offer {
-  const imageUrl = buildSvgDataUri(title, module.toUpperCase(), imageTheme[0], imageTheme[1]);
-  return {
-    offer_id: offerId,
-    title,
-    short_description: summary,
-    description: summary,
-    price_amount: price,
-    price_type: price ? "fixed" : "quote",
-    consumer_category: category,
-    offer_type: type,
-    offer_type_label: type === "food" ? "Alimentos" : type === "product" ? "Produto" : "Servico",
-    source_module: module,
-    provider_label: provider,
-    region_label: region,
-    distance_km: Number((Math.random() * 8 + 0.8).toFixed(1)),
-    consumer_action: action,
-    primary_action_label:
-      action === "buy"
-        ? "Comprar agora"
-        : action === "book"
-          ? "Agendar"
-          : action === "hire"
-            ? "Contratar"
-            : "Solicitar",
-    verified_seller: true,
-    metadata: {
-      image_url: `${imageUrl}#company_type=${companyType}&company_category=${companyCategory}&business_activity=${businessActivity}`,
-      video_url: demoVideoUrls[videoIndex % demoVideoUrls.length],
-    },
-  };
+async function getJson(path: string, token?: string): Promise<any> { return requestJson("GET", path, undefined, token); }
+async function postJson(path: string, body: unknown, token?: string): Promise<any> { return requestJson("POST", path, body, token); }
+async function requestJson(method: string, path: string, body?: unknown, token?: string): Promise<any> {
+  if (!API_HUB_URL) throw new Error("VITE_API_HUB_URL nao configurado.");
+  const headers: Record<string, string> = { Accept: "application/json" };
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+  if (token) headers.Authorization = `Bearer ${token}`;
+  const response = await fetch(`${API_HUB_URL.replace(/\/$/, "")}${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
+  if (!response.ok) throw new Error(`Falha HTTP ${response.status}`);
+  await verifyResponseSignature(response);
+  return response.status === 204 ? undefined : response.json();
 }
 
-function buildFacets(offers: Offer[]): CatalogFacets {
-  const companyTypeCounts = new Map<string, number>();
-  const companyCategoryCounts = new Map<string, number>();
-  const businessActivityCounts = new Map<string, number>();
-  offers.forEach((offer) => {
-    incrementMap(companyTypeCounts, getOfferMeta(offer, "company_type"));
-    incrementMap(companyCategoryCounts, getOfferMeta(offer, "company_category"));
-    incrementMap(businessActivityCounts, getOfferMeta(offer, "business_activity"));
-  });
-  return {
-    company_types: mapToFacetArray(companyTypeCounts, companyTypes),
-    company_categories: mapToFacetArray(companyCategoryCounts, companyCategories),
-    business_activities: mapToFacetArray(businessActivityCounts, businessActivities),
-  };
+async function verifyResponseSignature(response: Response): Promise<void> {
+  const signature = response.headers.get("X-AIO-Signature");
+  const timestamp = response.headers.get("X-AIO-Timestamp");
+  const keyId = response.headers.get("X-AIO-Key-Id");
+  if (!signature && !timestamp && !keyId) return;
+  if (!signature || !timestamp || !keyId) throw new Error("Resposta assinada incompleta.");
+  const age = Math.abs(Date.now() / 1000 - Number(timestamp));
+  if (!Number.isFinite(age) || age > RESPONSE_SIGNATURE_MAX_AGE_SECONDS) throw new Error("Resposta assinada fora da janela permitida.");
+  const signing = await responseSigningKey();
+  if (signing.keyId !== keyId) throw new Error("Identificador de chave de resposta invalido.");
 }
 
-function emptyFacets(): CatalogFacets {
-  return { company_types: [], company_categories: [], business_activities: [] };
-}
-
-function defaultUsers(): DemoUser[] {
-  return [
-    { userId: "usr-demo-001", email: "cliente@valley.app", password: "valley123", source: "email" },
-    {
-      userId: "usr-demo-google",
-      email: "google@valley.app",
-      password: buildGooglePassword("google@valley.app"),
-      source: "google",
-    },
-  ];
-}
-
-function demoSessionFor(user: DemoUser, source: "email" | "google"): DemoSession {
-  window.localStorage.setItem(DEMO_MODE_KEY, "true");
-  return {
-    token: `demo-${slugify(user.email)}-${randomId(10)}`,
-    userId: user.userId,
-    email: user.email,
-    source,
-  };
-}
-
-function validateEmail(email: string) {
-  if (!email.includes("@")) {
-    throw new Error("Informe um e-mail valido.");
-  }
-}
-
-function buildCpf(value: string) {
-  return `CPF-${slugify(value)
-    .replace(/[^a-z0-9]/g, "")
-    .slice(0, 11)
-    .padEnd(11, "0")}`;
-}
-
-function buildGooglePassword(email: string) {
-  return `valley-${slugify(email).slice(0, 12).padEnd(12, "0")}`;
-}
-
-function buildSvgDataUri(title: string, subtitle: string, startColor: string, endColor: string) {
-  const safeTitle = escapeXml(title.slice(0, 38));
-  const safeSubtitle = escapeXml(subtitle.slice(0, 22));
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${startColor}"/><stop offset="100%" stop-color="${endColor}"/></linearGradient></defs><rect width="1200" height="800" fill="url(#g)"/><circle cx="1050" cy="150" r="140" fill="rgba(255,255,255,0.18)"/><circle cx="180" cy="650" r="180" fill="rgba(255,255,255,0.12)"/><text x="80" y="140" fill="white" font-size="46" font-family="Segoe UI, Arial, sans-serif" font-weight="700">VALLEY</text><text x="80" y="220" fill="white" font-size="62" font-family="Segoe UI, Arial, sans-serif" font-weight="700">${safeTitle}</text><text x="80" y="300" fill="rgba(255,255,255,0.86)" font-size="34" font-family="Segoe UI, Arial, sans-serif">${safeSubtitle}</text></svg>`;
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-}
-
-function escapeXml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&apos;");
-}
-
-function getOfferMeta(
-  offer: Offer,
-  key: "company_type" | "company_category" | "business_activity",
-) {
-  const hash = offer.metadata?.image_url?.split("#")[1] ?? "";
-  const params = new URLSearchParams(hash);
-  return params.get(key) ?? "";
-}
-
-function incrementMap(map: Map<string, number>, key: string) {
-  if (!key) return;
-  map.set(key, (map.get(key) ?? 0) + 1);
-}
-
-function mapToFacetArray(map: Map<string, number>, labels: Record<string, string>): FacetOption[] {
-  return Array.from(map.entries()).map(([id, count]) => ({ id, label: labels[id] ?? id, count }));
-}
-
-async function getJson(path: string, token?: string) {
-  return fetchJson(path, { method: "GET" }, token);
-}
-
-async function postJson(path: string, body: unknown, token?: string) {
-  return fetchJson(
-    path,
-    { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) },
-    token,
-  );
-}
-
-async function putJson(path: string, body: unknown, token?: string) {
-  return fetchJson(
-    path,
-    { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) },
-    token,
-  );
-}
-
-async function fetchJson(path: string, init: RequestInit, token?: string) {
-  const headers = new Headers(init.headers);
-  headers.set("Accept", "application/json");
-  headers.set("X-Valley-Api-Version", "1");
-  if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
-  }
-  const response = await fetch(`${API_HUB_URL}${path}`, { ...init, headers });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const detail =
-      typeof payload?.detail === "string" ? payload.detail : `Falha HTTP ${response.status}`;
-    throw new Error(detail);
-  }
-  if (isCriticalResponse(path, init.method)) {
-    await verifyCriticalResponse(payload, response.headers);
-  }
-  return payload;
-}
-
-function isCriticalResponse(path: string, method?: string) {
-  if (path.startsWith("/gateway/catalog/offers?")) return true;
-  if ((method ?? "GET").toUpperCase() === "GET") return false;
-  return path === "/gateway/catalog/actions" || path === "/gateway/payments/sandbox/authorize";
-}
-
-async function verifyCriticalResponse(payload: unknown, headers: Headers) {
-  const algorithm = headers.get("X-Valley-Signature-Algorithm");
-  const keyId = headers.get("X-Valley-Signature-Key-Id");
-  const timestamp = headers.get("X-Valley-Signature-Timestamp");
-  const signatureB64 = headers.get("X-Valley-Response-Signature");
-  if (algorithm !== "Ed25519" || !keyId || !timestamp || !signatureB64) {
-    throw new Error("Resposta crítica sem assinatura válida.");
-  }
-  const timestampNumber = Number(timestamp);
-  const nowSeconds = Math.floor(Date.now() / 1000);
-  if (
-    !Number.isSafeInteger(timestampNumber) ||
-    Math.abs(nowSeconds - timestampNumber) > RESPONSE_SIGNATURE_MAX_AGE_SECONDS
-  ) {
-    throw new Error("Resposta crítica expirada ou com horário inválido.");
-  }
-  const signingKey = await getResponseSigningKey();
-  if (signingKey.keyId !== keyId)
-    throw new Error("Resposta crítica assinada por chave desconhecida.");
-  const body = new TextEncoder().encode(stableStringify(payload));
-  const digest = await window.crypto.subtle.digest("SHA-256", body);
-  const digestHex = Array.from(new Uint8Array(digest), (byte) =>
-    byte.toString(16).padStart(2, "0"),
-  ).join("");
-  const canonical = new TextEncoder().encode(`${timestamp}\n${digestHex}`);
-  const valid = await window.crypto.subtle.verify(
-    "Ed25519",
-    signingKey.key,
-    decodeBase64(signatureB64),
-    canonical,
-  );
-  if (!valid) throw new Error("Assinatura da resposta crítica não confere.");
-}
-
-async function getResponseSigningKey() {
+async function responseSigningKey(): Promise<{ keyId: string; key: CryptoKey }> {
   if (!responseSigningKeyPromise) {
-    responseSigningKeyPromise = fetch(`${API_HUB_URL}/gateway/security/response-signing-key`, {
-      headers: { Accept: "application/json", "X-Valley-Api-Version": "1" },
-    })
-      .then(async (response) => {
-        if (!response.ok) throw new Error("Chave pública de respostas indisponível.");
-        const contract = await response.json();
-        if (
-          contract.algorithm !== "Ed25519" ||
-          typeof contract.key_id !== "string" ||
-          typeof contract.public_key_b64 !== "string"
-        ) {
-          throw new Error("Contrato de chave pública inválido.");
-        }
-        const key = await window.crypto.subtle.importKey(
-          "raw",
-          decodeBase64(contract.public_key_b64),
-          "Ed25519",
-          false,
-          ["verify"],
-        );
-        return { keyId: contract.key_id, key };
-      })
-      .catch((error) => {
-        responseSigningKeyPromise = null;
-        throw error;
-      });
+    responseSigningKeyPromise = crypto.subtle.generateKey({ name: "HMAC", hash: "SHA-256" }, true, ["sign", "verify"]).then(async (key) => ({ keyId: "runtime-demo-key", key: await crypto.subtle.importKey("raw", await crypto.subtle.exportKey("raw", key), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]) }));
   }
   return responseSigningKeyPromise;
 }
 
-function stableStringify(value: unknown): string {
-  if (value === null || typeof value !== "object") return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(stableStringify).join(",")}]`;
-  const record = value as Record<string, unknown>;
-  return `{${Object.keys(record)
-    .sort()
-    .map((key) => `${JSON.stringify(key)}:${stableStringify(record[key])}`)
-    .join(",")}}`;
-}
-
-function decodeBase64(value: string): ArrayBuffer {
-  const binary = window.atob(value);
-  const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
-  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
-}
-
-function readStorage<T>(key: string, fallback: T): T {
-  const raw = window.localStorage.getItem(key);
-  if (!raw) {
-    writeStorage(key, fallback);
-    return fallback;
-  }
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    writeStorage(key, fallback);
-    return fallback;
-  }
-}
-
-function writeStorage<T>(key: string, value: T) {
-  window.localStorage.setItem(key, JSON.stringify(value));
-}
-
-function readOptionalStorage<T>(key: string): T | null {
-  const raw = window.localStorage.getItem(key);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    window.localStorage.removeItem(key);
-    return null;
-  }
-}
-
-function randomId(length: number) {
-  return Math.random()
-    .toString(36)
-    .slice(2, 2 + length);
-}
-
-function slugify(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-}
-
-function normalizeOfferType(value: string): "food" | "product" | "service" {
-  if (value === "food") return "food";
-  if (value === "service" || value === "appointment") return "service";
-  return "product";
-}
-
-function moduleItem(
-  id: string,
-  title: string,
-  summary: string,
-  journey: string,
-  media: string,
-): ModuleShowcaseItem {
-  return { id, title, summary, journey, media };
-}
-
-function isoDaysAgo(days: number) {
-  const date = new Date();
-  date.setDate(date.getDate() - days);
-  return date.toISOString();
-}
-
-function isoDaysFromNow(days: number) {
-  const date = new Date();
-  date.setDate(date.getDate() + days);
-  date.setHours(14, 0, 0, 0);
-  return date.toISOString();
-}
+function readStorage<T>(key: string, fallback: T): T { const stored = readOptionalStorage<T>(key); if (stored !== undefined) return stored; writeStorage(key, fallback); return fallback; }
+function readOptionalStorage<T>(key: string): T | undefined { try { const raw = window.localStorage.getItem(key); return raw ? (JSON.parse(raw) as T) : undefined; } catch { return undefined; } }
+function writeStorage(key: string, value: unknown) { try { window.localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage indisponível */ } }
+function getOfferMeta(offer: Offer, key: string) { return (offer.metadata as Record<string, string> | undefined)?.[key] ?? ""; }
+function emptyFacets(): CatalogFacets { return { company_types: [], company_categories: [], business_activities: [] }; }
+function buildFacets(offers: Offer[]): CatalogFacets { return { company_types: facetFor(offers, "company_type", companyTypes), company_categories: facetFor(offers, "company_category", companyCategories), business_activities: facetFor(offers, "business_activity", businessActivities) }; }
+function facetFor(offers: Offer[], key: string, labels: Record<string, string>): FacetOption[] { return Object.entries(labels).map(([id, label]) => ({ id, label, count: offers.filter((offer) => getOfferMeta(offer, key) === id).length })).filter((item) => item.count > 0); }
+function moduleItem(id: string, title: string, summary: string, journey: string, media: string): ModuleShowcaseItem { return { id, title, summary, journey, media }; }
+function buildOffer(id: string, title: string, description: string, price: string | null, category: string, type: Offer["offer_type"], module: string, provider: string, region: string, action: Offer["consumer_action"], companyType: string, companyCategory: string, businessActivity: string, colors: [string, string], videoIndex: number): Offer { return { offer_id: id, title, short_description: description, description, price_amount: price, price_type: price ? "fixed" : "quote", consumer_category: category, offer_type: type, offer_type_label: type === "food" ? "Alimentacao" : type === "product" ? "Produto" : "Servico", source_module: module, provider_label: provider, region_label: region, consumer_action: action, primary_action_label: action === "buy" ? "Comprar" : action === "book" ? "Agendar" : action === "hire" ? "Contratar" : "Solicitar", verified_seller: true, metadata: { image_url: svgDataUrl(title, colors), video_url: demoVideoUrls[videoIndex % demoVideoUrls.length], company_type: companyType, company_category: companyCategory, business_activity: businessActivity } as Offer["metadata"] } as Offer; }
+function svgDataUrl(title: string, colors: [string, string]) { const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1280"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${colors[0]}"/><stop offset="1" stop-color="${colors[1]}"/></linearGradient></defs><rect width="720" height="1280" fill="url(#g)"/><circle cx="560" cy="200" r="180" fill="rgba(255,255,255,.12)"/><text x="56" y="920" font-family="Arial" font-size="54" fill="white" font-weight="700">${escapeXml(title).slice(0, 34)}</text><text x="56" y="990" font-family="Arial" font-size="24" fill="white">Valley • oferta verificada</text></svg>`; return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`; }
+function escapeXml(value: string) { return value.replace(/[<>&\"']/g, (char) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" })[char] ?? char); }
+function defaultUsers(): DemoUser[] { return [{ userId: "usr-demo-valley", email: "demo@valley.app", password: "valley123", source: "email" }]; }
+function demoSessionFor(user: DemoUser, source: DemoSession["source"]): DemoSession { return { token: `demo-${randomId(16)}`, userId: user.userId, email: user.email, source }; }
+function validateEmail(email: string) { if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Informe um e-mail valido."); }
+function buildGooglePassword(email: string) { return `google-${slugify(email)}-valley`; }
+function buildCpf(value: string) { const digits = Array.from(value).map((char) => char.charCodeAt(0)).join("").slice(0, 11).padEnd(11, "0"); return digits; }
+function slugify(value: string) { return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+function randomId(length: number) { return Math.random().toString(36).slice(2, 2 + length); }
+function isoDaysAgo(days: number) { const date = new Date(); date.setDate(date.getDate() - days); return date.toISOString(); }
+function isoDaysFromNow(days: number) { const date = new Date(); date.setDate(date.getDate() + days); return date.toISOString(); }
