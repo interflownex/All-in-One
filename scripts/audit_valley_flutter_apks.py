@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
 import zipfile
@@ -16,6 +17,24 @@ REQUIRED_APKS = {
     "app-armeabi-v7a-release.apk",
     "app-x86_64-release.apk",
 }
+
+
+def find_apksigner() -> str | None:
+    executable = shutil.which("apksigner")
+    if executable:
+        return executable
+
+    for variable in ("ANDROID_HOME", "ANDROID_SDK_ROOT"):
+        sdk_root = os.environ.get(variable)
+        if not sdk_root:
+            continue
+        candidates = sorted(
+            Path(sdk_root).glob("build-tools/*/apksigner"),
+            reverse=True,
+        )
+        if candidates:
+            return str(candidates[0])
+    return None
 
 
 def command_output(command: list[str]) -> str:
@@ -35,7 +54,7 @@ def audit(directory: Path) -> list[str]:
     if missing:
         errors.append(f"APKs obrigatórios ausentes: {', '.join(missing)}")
 
-    apksigner = shutil.which("apksigner")
+    apksigner = find_apksigner()
     if not apksigner:
         errors.append("apksigner não encontrado no Android SDK")
 

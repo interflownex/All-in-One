@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from scripts.audit_valley_flutter_apks import find_apksigner
 from scripts.prepare_valley_flutter_build import FLUTTER_APP
 
 
@@ -27,3 +28,16 @@ def test_free_distribution_has_no_google_play_environment() -> None:
     assert 'flutter_project="$(mktemp -d)"' in workflow
     assert 'cp -R "$flutter_project/android" apps/valley-flutter/android' in workflow
     assert "--project-name valley_consumer\n          ." not in workflow
+
+
+def test_apksigner_is_resolved_from_android_home(
+    tmp_path: Path, monkeypatch
+) -> None:
+    executable = tmp_path / "build-tools" / "36.0.0" / "apksigner"
+    executable.parent.mkdir(parents=True)
+    executable.write_text("#!/bin/sh\n", encoding="utf-8")
+    monkeypatch.setenv("PATH", "")
+    monkeypatch.setenv("ANDROID_HOME", str(tmp_path))
+    monkeypatch.delenv("ANDROID_SDK_ROOT", raising=False)
+
+    assert find_apksigner() == str(executable)

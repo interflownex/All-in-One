@@ -1,7 +1,7 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.7.1
-**Data e hora:** 29/07/2026 05:28
+**Versão:** 2.7.2
+**Data e hora:** 29/07/2026 05:35
 **Fuso horário:** `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch:** `codex/flutter-distribuicao-gratuita-2026-07-29`
@@ -194,3 +194,4 @@ git diff --check
 | 2.6 | 29/07/2026 04:43 | Remediação de marca e scanner integrada pelo PR #80. |
 | 2.7 | 29/07/2026 05:23 | Migração Flutter e distribuição gratuita de APKs baseada em Stitch. |
 | 2.7.1 | 29/07/2026 05:28 | Isolado `flutter create` para não gerar teste padrão dentro do app. |
+| 2.7.2 | 29/07/2026 05:35 | Auditor localiza `apksigner` no build-tools do Android SDK. |
