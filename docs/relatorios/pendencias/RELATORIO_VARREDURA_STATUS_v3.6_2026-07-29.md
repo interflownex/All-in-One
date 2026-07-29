@@ -32,7 +32,7 @@ A causa válida foi isolada: o workflow permanente de Security executa tarefas `
 ## 3. Tabela de acompanhamento
 
 | Nome da atividade | Descrição | Passo sendo executado | Dificuldade [1 a 5] | % concluído | Tempo previsto | Etapas [Total] | Concluídas [X] | Pendentes [Y] |
-|---|---|---|---|---:|---:|---|---:|---:|---:|
+|---|---|---|---:|---:|---|---:|---:|---:|
 | PR #74 | Isolar artefato local do VS Code | Integrada por squash | 3 | 100% | concluído | 6 | 6 | 0 |
 | PR #75 | Corrigir gate Android | Encerrada por escopo divergente | 5 | 100% | concluído sem merge | 5 | 5 | 0 |
 | Branch limpa | Reaplicar causa comprovada | Criada sobre a nova main | 3 | 100% | concluído | 3 | 3 | 0 |
