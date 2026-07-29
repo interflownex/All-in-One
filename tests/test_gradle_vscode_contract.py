@@ -5,6 +5,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VSCODE_SETTINGS = ROOT / ".vscode" / "settings.json"
 WORKSPACE_SETTINGS = ROOT / "all-in-one.code-workspace"
 VSCODE_TASKS = ROOT / ".vscode" / "tasks.json"
+GITIGNORE = ROOT / ".gitignore"
 WRAPPER_PROPERTIES = (
     ROOT
     / "apps"
@@ -23,6 +24,26 @@ REQUIRED_GRADLE_SETTINGS = {
     "java.gradle.buildServer.enabled": "off",
 }
 
+REQUIRED_PYLANCE_EXCLUSIONS = {
+    "**/node_modules/**",
+    "**/__pycache__/**",
+    "**/.git/**",
+    "**/.venv/**",
+    "**/venv/**",
+    "**/.pytest_cache/**",
+    "**/.mypy_cache/**",
+    "**/.ruff_cache/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/testcontainers-cloud-java-example/**",
+}
+
+REQUIRED_JAVA_IMPORT_EXCLUSIONS = {
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/testcontainers-cloud-java-example/**",
+}
+
 
 def _load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -35,6 +56,29 @@ def test_gradle_server_is_not_started_automatically() -> None:
     for key, expected in REQUIRED_GRADLE_SETTINGS.items():
         assert folder_settings[key] == expected
         assert workspace_settings[key] == expected
+
+
+def test_local_sample_is_excluded_from_analysis_and_import() -> None:
+    folder_settings = _load_json(VSCODE_SETTINGS)
+    workspace_settings = _load_json(WORKSPACE_SETTINGS)["settings"]
+
+    for settings in (folder_settings, workspace_settings):
+        assert REQUIRED_PYLANCE_EXCLUSIONS <= set(
+            settings["python.analysis.exclude"]
+        )
+        assert REQUIRED_JAVA_IMPORT_EXCLUSIONS <= set(
+            settings["java.import.exclusions"]
+        )
+
+
+def test_local_sample_is_not_versioned() -> None:
+    patterns = {
+        line.strip()
+        for line in GITIGNORE.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+
+    assert "/testcontainers-cloud-java-example/" in patterns
 
 
 def test_gradle_wrapper_tasks_do_not_depend_on_json_rpc_server() -> None:

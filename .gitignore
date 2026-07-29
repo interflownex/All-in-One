@@ -26,6 +26,9 @@ dist/
 .wrangler/
 tmp/
 
+# Exemplos e sandboxes locais que nao pertencem ao produto
+/testcontainers-cloud-java-example/
+
 # Assinatura Android e logs locais de ferramentas
 *.jks
 *.keystore
