@@ -327,8 +327,8 @@ def _cart_response(store: Any, workspace: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-@app.get("/valley/catalog")
-def valley_catalog(
+@app.get("/valley/marketplace/catalog")
+def marketplace_catalog(
     q: str | None = Query(default=None, min_length=1, max_length=120),
     category: str | None = Query(default=None, min_length=1, max_length=80),
     store_id: UUID | None = None,
