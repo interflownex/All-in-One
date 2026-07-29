@@ -50,7 +50,8 @@ def test_android_configuration_requires_network_and_official_icon() -> None:
     assert "android.permission.ACCESS_NETWORK_STATE" in configure
     assert "@drawable/valley_logo" in configure
     assert "ICON.read_bytes() != OFFICIAL_LOGO.read_bytes()" in configure
-    assert 'usesCleartextTraffic", "false"' in configure
+    assert 'application.set(_android("usesCleartextTraffic"), "false")' in configure
+    assert 'application.set(_android("allowBackup"), "false")' in configure
 
 
 def test_pubspec_has_generated_asset_block() -> None:
