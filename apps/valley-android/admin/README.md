@@ -1,34 +1,35 @@
-# All in One Admin para Android
+# A1 Admin Android
 
-Aplicativo Android instalável que abre o Painel Web Admin publicado em:
+Aplicativo Android instalável do painel administrativo All in One. O módulo mantém uma WebView restrita à origem configurada e abre destinos externos no navegador ou aplicativo correspondente.
 
-`https://9135635066da434181.v2.appdeploy.ai/`
+## Fonte visual
 
-## Escopo
+O shell responsivo oficial fica em:
 
-- catálogo oficial com 24 módulos;
-- módulo Vision removido;
-- cadastro empresarial;
-- ativação, ocultação e desativação de módulos;
-- operação, relatórios, exportação CSV e auditoria;
-- WebView restrita a HTTPS, sem acesso a arquivos locais e sem conteúdo misto;
-- links externos são encaminhados ao navegador do dispositivo.
+`apps/all-in-one-admin`
 
-## Build local
+Ele fornece a versão web e a versão mobile usadas como referência pelo novo projeto Figma.
+
+## URL do painel
+
+O valor padrão continua apontando para o painel homologado atual. Para compilar contra uma nova publicação do shell, use uma das opções:
 
 ```bash
-cd apps/valley-android
-./gradlew :admin:testDebugUnitTest :admin:assembleDebug --no-daemon
+A1_ADMIN_URL=https://admin.exemplo.com/ ./gradlew :admin:assembleDebug
 ```
 
-APK gerado em:
+ou:
 
-`apps/valley-android/admin/build/outputs/apk/debug/admin-debug.apk`
+```bash
+./gradlew :admin:assembleDebug -PA1_ADMIN_URL=https://admin.exemplo.com/
+```
 
-## Publicação
+A URL precisa usar HTTPS, ter host válido, não conter credenciais e permanece protegida por política de mesma origem.
 
-O APK debug é assinado automaticamente pelo Android SDK e serve para instalação e homologação interna. Uma versão destinada à Google Play exige chave de upload e Play App Signing próprios do aplicativo Admin.
+## Validação
 
-## Revalidação de integração
+```bash
+./gradlew :admin:testDebugUnitTest :admin:lintDebug :admin:assembleDebug
+```
 
-Branch reconstruída em 28/07/2026 diretamente sobre a `main` estabilizada, preservando os gates Android, CodeQL, segurança e empacotamento.
+O workflow `.github/workflows/admin-android-apk.yml` continua responsável pelo APK manual, enquanto o gate do template valida o shell web e os testes da política de URL.
