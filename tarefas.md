@@ -1,11 +1,12 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.8  
-**Data e hora:** 29/07/2026 05:15, `America/Sao_Paulo`  
+**Versão:** 2.9  
+**Data e hora:** 29/07/2026 20:20, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Branch:** `feat/stock-reservations-foundation-2026-07-29`  
-**Commit-base:** `002125a2b46d67f56a2651f797ec0392a06cb4c0`  
+**Branch de registro:** `codex/aio-admin-android-total-2026-07-29`  
+**Commit-base:** `188d842c5909dc3e5be5a09574a7809eb761a752`  
 **Issues:** `#51`, `#78` e `#83`  
+**Pull request da entrega paralela:** `#88`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Públicos:** Pessoa Física, Pessoa Jurídica, Equipe Técnica e gestão
 
@@ -19,8 +20,9 @@
 - PR #80 integrou branding oficial e scanner corrigido;
 - PR #81 foi encerrada sem merge após avanço da `main`;
 - PR #82 integrou o contrato de checkout v0.1.0, relatório v3.8, plano v3.8 e tarefas v2.7;
-- commit atual da `main`: `002125a2b46d67f56a2651f797ec0392a06cb4c0`;
-- issue #83 e branch de fundação Stock abertas;
+- commit de referência da `main` para esta atualização: `188d842c5909dc3e5be5a09574a7809eb761a752`;
+- issue #83 e branch de fundação Stock permanecem como próxima prioridade funcional;
+- PR #88 entrega o AIO Admin Android 2.0.0 em frente paralela expressamente autorizada pelo usuário;
 - Vision permanece excluído;
 - nenhuma credencial ou segredo foi versionado.
 
@@ -244,14 +246,82 @@ A fundação Stock atual é uma dependência controlada do checkout do Marketpla
 
 ## 11. Governança de merge
 
-- abrir PR em rascunho;
+- abrir PR em rascunho ou pronta para revisão conforme o estado dos testes;
 - revisar o escopo completo;
 - confirmar ausência de segredos;
 - confirmar reviews e threads;
 - integrar exclusivamente por Squash and Merge com `expected_head_sha`;
 - auto-merge permanece bloqueado enquanto outros métodos de merge estiverem habilitados.
 
-## 12. Histórico
+## 12. Entrega paralela autorizada: AIO Admin Android 2.0.0
+
+### Objetivo
+
+Entregar o AIO Admin Android com todas as telas do manifesto administrativo, ações funcionais, backend persistente, autenticação Google, sincronização em tempo real e logomarca oficial no aplicativo e no ícone.
+
+### Fontes de verdade
+
+1. `apps/all-in-one-admin/design/figma-screen-manifest.json`;
+2. `apps/all-in-one-admin/design/FIGMA_PROJECT_BRIEF.md`;
+3. `apps/all-in-one-admin`;
+4. `apps/valley-android/admin/`;
+5. `assets/brand/aio-admin-logo-official.png`;
+6. AppDeploy `9135635066da434181`;
+7. PR #88.
+
+### Estado implementado
+
+- painel web e backend publicados;
+- cinco testes AppDeploy aprovados;
+- oito áreas administrativas navegáveis;
+- CRUD persistente de empresas, aprovações, operações e segurança;
+- 24 módulos ativos no catálogo, Vision excluído;
+- métricas calculadas do banco, sem números fictícios;
+- auditoria e revisão do estado;
+- WebSocket para atualização entre sessões;
+- CSV, notificações e configurações persistentes;
+- WebView Android endurecida com popup OAuth;
+- ícones Android derivados apenas por redimensionamento proporcional da marca oficial;
+- workflow para teste, lint, APK e checksum;
+- artefato `AIO-Admin-2.0.0-debug.apk` gerado e validado por SHA-256.
+
+### Testes obrigatórios antes do merge
+
+```bash
+cd apps/valley-android
+./gradlew :admin:testDebugUnitTest :admin:lintDebug :admin:assembleDebug --no-daemon
+```
+
+Também verificar:
+
+- workflow `AIO Admin Android APK` verde no mesmo SHA;
+- endpoint público de saúde com `Success`;
+- APK abre login Google dentro da janela autorizada;
+- todas as oito áreas carregam após login;
+- criar e editar uma empresa persiste após reinício;
+- decisão de aprovação sincroniza em outra sessão;
+- módulo obrigatório não pode ser desabilitado;
+- nenhuma tela apresenta botão morto;
+- ícone instalado corresponde ao ativo oficial.
+
+### Critérios de aceite
+
+- APK gerado e disponível como artefato GitHub Actions;
+- SHA-256 publicado junto ao APK;
+- zero erro de compilação, teste ou lint;
+- zero segredo versionado;
+- nenhuma alteração artística da marca oficial;
+- pull request sem conflito e com diff conhecido;
+- integração somente por Squash and Merge com gates verdes.
+
+### Riscos e bloqueios
+
+- a versão atual é um instalador conectado ao servidor AppDeploy; indisponibilidade externa ativa a tela de recuperação;
+- distribuição Play Store exige chave de assinatura e conta de publicação, não incluídas no Git;
+- permissões administrativas adicionais devem ser incluídas por política versionada, nunca por bypass;
+- o slot de imagem web do AppDeploy deve continuar apontando ao ativo oficial, sem substituto desenhado.
+
+## 13. Histórico
 
 | Versão | Data e hora | Alteração |
 |---|---|---|
@@ -264,3 +334,4 @@ A fundação Stock atual é uma dependência controlada do checkout do Marketpla
 | 2.6 | 29/07/2026 04:43 | PR #80 integrou branding oficial. |
 | 2.7 | 29/07/2026 04:54 | PR #82 integrou contrato de checkout e bloqueio de estoque paralelo. |
 | 2.8 | 29/07/2026 05:15 | Issue #83 e branch Stock abertas com contrato de implementação, concorrência e idempotência. |
+| 2.9 | 29/07/2026 20:20 | PR #88 registrou AIO Admin Android 2.0.0 sem remover as diretrizes vigentes de Stock. |
