@@ -1,104 +1,122 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.1  
+**Versão:** 2.2  
 **Data e hora:** 28/07/2026  
 **Fuso horário:** `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Branch:** `codex/apk-valley-rodada-005-2026-07-28`  
-**Commit-base:** `36ca098461d51db4c6165172fbda6244f3d3c194`  
-**Issue de orquestração:** `#63`  
+**Branch:** `codex/marketplace-fase1-descoberta-2026-07-28`  
+**Commit-base:** `396d2539480ece1757b29bcd8b4ed18f7e9091a5`  
+**Commit de referência da atividade:** `909ce084c38aac80603c78482b873037fdebdcd8`  
+**Issue de orquestração:** `#51`  
 **Classificação:** `Pendências > Técnico > Equipe técnica`  
-**Aplicação:** `modules/valley_consumer`
+**Aplicação:** `modules/marketplace`
 
-## 1. Objetivo
+## 1. Regra mandatória de prioridade
 
-Evoluir a Rodada 005 do APK Valley Consumidor, atualmente implementada como vertical executável em sandbox, até pilotos e produção homologada por ondas controladas.
+Antes de qualquer evolução, verificar e tratar nesta ordem:
 
-## 2. Estado atual
+1. workflows falhos, cancelados ou bloqueados;
+2. merges pendentes, parciais ou conflitantes;
+3. pull requests abertas;
+4. commits e branches ainda não integrados;
+5. issues abertas com escopo executável;
+6. somente depois, nova evolução de produto.
 
-- os códigos `VLY-20260728-01` a `VLY-20260728-24` estão registrados;
-- as 24 ideias possuem regras específicas e endpoint executável;
-- as 24 feature flags começam desligadas;
-- escritas de teste exigem `X-Innovation-Sandbox: true` enquanto a flag estiver desligada;
-- a rota de contrato não permite habilitar produção diretamente;
-- a Rodada 004 permanece registrada e não foi substituída;
-- o teste local específico aprovou `12 passed`;
-- a issue `#63` centraliza a orquestração;
-- Vision permanece excluído.
+A fonte persistente desta regra é `config/autonomy/pending_work_priority_policy.json`, complementada pelo `AGENTS.md`.
 
-## 3. Escopo implementado
+## 2. Objetivo atual
 
-1. catálogo e prioridades da Rodada 005;
-2. contratos de API para as 24 ideias;
-3. validações específicas de segurança e negócio;
-4. registros lógicos em memória para prova de contrato;
-5. feature flags e bloqueio de produção;
-6. testes unitários e de regressão da presença da Rodada 004;
-7. documentação de implementação;
-8. relatório de status e plano de ação v3.3.
+Concluir e integrar a primeira vertical funcional do Marketplace, com descoberta pública e jornada autenticada de favoritos e carrinho, preservando a sequência da issue #51: Marketplace → Stock → Delivery.
+
+## 3. Estado implementado
+
+- catálogo público com busca textual;
+- filtros por categoria, loja, preço, estoque e raio;
+- cálculo de distância por latitude e longitude;
+- ordenação por relevância, preço, distância e avaliação;
+- exposição exclusiva de lojas aprovadas e produtos publicados;
+- feed vertical contratual em formato 9:16;
+- identificação explícita de conteúdo patrocinado;
+- promoção do dia com elegibilidade, prioridade e fallback;
+- favoritos isolados por All-in-One ID;
+- carrinho isolado por usuário, com quantidade, disponibilidade e total em BRL;
+- OpenAPI Marketplace `0.3.0`;
+- testes dedicados em `tests/test_marketplace_discovery.py`;
+- governança persistente de issues, PRs, commits, merges e workflows.
 
 ## 4. Fontes de verdade
 
 1. `AGENTS.md`;
-2. este `tarefas.md`;
-3. `config/module_catalog.json`;
-4. `modules/valley_consumer/innovation_round_004.py`;
-5. `modules/valley_consumer/innovation_round_005.py`;
-6. `docs/inovacao/APK_Valley_Consumidor_Rodada_005_Implementacao_2026-07-28.md`;
-7. `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v3.3_2026-07-28.md`;
-8. `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v3.3_2026-07-28.md`;
-9. issue `#63`;
-10. pull request da branch desta atividade.
+2. `config/autonomy/pending_work_priority_policy.json`;
+3. este `tarefas.md`;
+4. issue `#51`;
+5. issue `#24`;
+6. `modules/marketplace/main.py`;
+7. `modules/marketplace/OPENAPI.yaml`;
+8. `modules/marketplace/README.md`;
+9. `modules/marketplace/STATUS.md`;
+10. `tests/test_marketplace_discovery.py`;
+11. `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v3.4_2026-07-28.md`;
+12. `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v3.4_2026-07-28.md`;
+13. pull request da branch desta atividade.
 
 ## 5. Pré-requisitos
 
-- atualizar a branch com `main` sem descartar trabalho alheio;
-- adquirir lock multiagente antes de editar;
 - não versionar credenciais;
-- manter todas as flags desligadas até homologação;
-- usar PostgreSQL, migrações e outbox antes de piloto real;
-- executar revisão jurídica, financeira, clínica e de proteção de dados conforme o módulo.
+- não alterar diretamente a `main`;
+- preservar mudanças de outros agentes;
+- revisar merges e PRs antes de nova evolução;
+- usar o mesmo SHA para testes, revisão e decisão de merge;
+- manter auto-merge desabilitado;
+- usar Squash and Merge.
 
-## 6. Próxima sequência
+## 6. Sequência imediata obrigatória
 
-### P0 — regressão da entrega
+### P0 — fechar a rodada atual
 
-1. executar testes das Rodadas 004 e 005;
-2. executar `python3 scripts/validate_repository.py`;
-3. validar OpenAPI e segurança;
-4. revisar o diff e procurar segredos;
-5. aguardar gates remotos no mesmo SHA;
-6. atualizar a issue `#63` com resultados.
+1. abrir PR da branch para `main`;
+2. verificar diff e mergeabilidade;
+3. executar os workflows aplicáveis;
+4. abrir logs de qualquer job falho;
+5. corrigir falhas reproduzíveis na mesma branch;
+6. repetir os gates no novo SHA;
+7. verificar threads de revisão e alteração do head;
+8. integrar por Squash and Merge;
+9. atualizar a issue #51 com evidências;
+10. revisar novamente PRs, merges, commits, workflows e issues antes da próxima tarefa.
 
-### P0 — fundação produtiva
+### P1 — checkout Marketplace
 
-1. criar tabelas e migrações para flags, registros e estados;
-2. aplicar autenticação, RBAC/ABAC e isolamento por entidade;
-3. incluir idempotência, auditoria e outbox;
-4. adicionar rate limit, telemetria, alertas e rollback;
-5. impedir execução sandbox em ambiente produtivo.
+1. integrar reserva transacional com Stock;
+2. validar preço e disponibilidade no momento do checkout;
+3. usar idempotência para impedir pedidos duplicados;
+4. integrar Wallet e Orders;
+5. publicar eventos de pedido e reserva;
+6. tratar expiração, cancelamento e compensação.
 
-### P1 — pilotos prioritários
+### P1 — issue #24
 
-- Identity: passkeys, quórum e antifraude;
-- Finance: ledger e PSP homologado;
-- STOCK: catálogo técnico e revisão humana;
-- BPM: saída, exportação e retenção;
-- Document: sanitização visualmente revisada;
-- Health: Health Connect/FHIR e consentimento temporário;
-- Legal: finalidades e bases legais revisadas;
-- AI Core: persistência e expiração de memória.
+1. conectar o frontend Valley Consumidor ao endpoint `/valley/promotions/today`;
+2. exibir modal dispensável e acessível;
+3. não bloquear a homepage em erro ou ausência de promoção;
+4. registrar telemetria sem dados pessoais desnecessários;
+5. testar offline, expiração e destino indisponível.
 
-### P2 — demais módulos
+### P2 — Stock e Delivery
 
-Implantar cada ideia em piloto separado, sempre com flag, autorização, testes, telemetria e rollback. Não ativar as 24 ideias simultaneamente.
+1. concluir fonte única de saldo e reservas;
+2. implementar Delivery a partir de pedidos confirmados;
+3. integrar Riders, Wallet e notificações;
+4. retomar a homologação produtiva do Valley Rider.
 
 ## 7. Testes
 
 ```bash
-pytest -q tests/test_valley_consumer_innovation_round_004.py
-pytest -q tests/test_valley_consumer_innovation_round_005.py
-python3 scripts/validate_repository.py
+python -m pytest -q tests/test_marketplace_discovery.py
+python -m pytest -q tests/test_marketplace_support_metrics.py
+python -m pytest -q tests/test_marketplace_commercial_metrics.py
+python -m pytest -q --ignore=tests/e2e
+python scripts/validate_repository.py
 ```
 
 Gates remotos esperados:
@@ -108,50 +126,49 @@ Gates remotos esperados:
 - Database;
 - Docker Compose Health Gate;
 - OpenAPI;
-- gates Valley aplicáveis.
+- demais gates acionados pelo diff.
 
 ## 8. Critérios de aceite
 
 - testes reproduzíveis aprovados no SHA final;
-- persistência e migrações reversíveis;
-- autorização e auditoria reais;
-- dependências externas homologadas;
-- flags desligadas por padrão;
+- nenhuma loja não aprovada exposta;
+- nenhum produto não publicado exposto;
+- filtros e geolocalização validados;
+- favoritos e carrinho isolados por usuário;
+- conteúdo patrocinado identificado;
+- promoção sem bloquear a homepage;
+- auditoria e outbox preservados;
 - nenhuma credencial no Git;
-- Vision ausente;
-- documentação atualizada;
-- PR revisado;
-- integração somente por Squash and Merge, sem auto-merge.
+- PR revisada e mesclável;
+- integração somente por Squash and Merge;
+- issue #51 atualizada com commit final.
 
 ## 9. Riscos e bloqueios
 
-- contratos atuais usam memória e não são persistência produtiva;
-- passkeys, PSP, transporte, Health Connect e FHIR dependem de provedores;
-- regras financeiras, jurídicas e clínicas exigem especialistas;
-- interfaces Android/iOS ainda precisam consumir os contratos;
-- cobertura nacional não pode ser declarada sem evidência;
-- feature flags não devem ser ativadas antes de gates e homologação.
+- disponibilidade atual do carrinho ainda é contratual e não reserva Stock;
+- a interface visual da promoção ainda depende do Valley Consumidor;
+- a jornada de pagamento depende de Wallet e PSP homologado;
+- testes remotos devem confirmar lint, segurança e regressão do repositório;
+- nenhuma dessas limitações pode ser ocultada ou marcada como homologada.
 
 ## 10. Evidências esperadas
 
-- saída dos testes;
-- SHA do head da branch;
-- número e URL do PR;
-- status dos gates no mesmo SHA;
-- OpenAPI da Rodada 005;
-- evidências de banco, autenticação e integrações reais nas etapas futuras;
-- atualização da issue `#63`.
+- SHA final da branch;
+- número da PR;
+- lista de arquivos alterados;
+- resultados dos workflows no mesmo SHA;
+- ausência de threads não resolvidas;
+- resultado do Squash and Merge;
+- commit final na `main`;
+- comentário de encerramento da rodada na issue #51.
 
-## 11. Procedimento de entrega
+## 11. Procedimento de decisão autônoma
 
-1. confirmar diff e ausência de segredos;
-2. executar testes locais;
-3. publicar somente a branch de trabalho;
-4. abrir PR em rascunho;
-5. registrar testes, limites e bloqueios;
-6. aguardar gates;
-7. não habilitar auto-merge;
-8. integrar somente após autorização, revisão e Squash and Merge.
+- decidir com base no diff, testes, contratos e riscos;
+- corrigir automaticamente tudo que seja tecnicamente resolvível;
+- não solicitar aprovação para decisões técnicas reversíveis e seguras;
+- solicitar intervenção apenas diante de credencial ausente, exigência legal, decisão comercial irreversível, bloqueio externo ou indisponibilidade real de ferramenta;
+- não iniciar nova evolução enquanto esta entrega tiver PR, merge ou gate pendente.
 
 ## 12. Histórico
 
@@ -160,4 +177,5 @@ Gates remotos esperados:
 | 1.8 | 28/07/2026 | Rodada 004 do APK Valley registrada. |
 | 1.9 | 28/07/2026 | Auditoria do Valley Rider e plano de homologação. |
 | 2.0 | 28/07/2026 | PR #62, QA Rider e testes Git determinísticos. |
-| 2.1 | 28/07/2026 | Rodada 005 implementada como vertical executável com 24 contratos e feature flags. |
+| 2.1 | 28/07/2026 | Rodada 005 implementada com 24 contratos e feature flags. |
+| 2.2 | 28/07/2026 | Marketplace Fase 1 e prioridade mandatória de issues, PRs, commits, merges e workflows. |
