@@ -1,13 +1,14 @@
-name: All in One Admin Android APK
+name: AIO Admin Android APK
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - feat/admin-web-apk-delivery-2026-07-26
+      - "codex/aio-admin-android-total-*"
     paths:
       - "apps/valley-android/admin/**"
       - "apps/valley-android/settings.gradle.kts"
+      - "assets/brand/aio-admin-logo-official.png"
       - ".github/workflows/admin-android-apk.yml"
   pull_request:
     branches:
@@ -15,13 +16,14 @@ on:
     paths:
       - "apps/valley-android/admin/**"
       - "apps/valley-android/settings.gradle.kts"
+      - "assets/brand/aio-admin-logo-official.png"
       - ".github/workflows/admin-android-apk.yml"
 
 permissions:
   contents: read
 
 concurrency:
-  group: admin-android-apk-${{ github.workflow }}-${{ github.ref }}
+  group: aio-admin-android-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -48,32 +50,44 @@ jobs:
       - name: Instalar Android 36
         run: sdkmanager "platforms;android-36" "build-tools;36.1.0"
 
-      - name: Validar painel público
+      - name: Validar painel e backend publicados
         run: |
           curl --fail --silent --show-error --location \
             --retry 4 --retry-delay 5 \
             https://9135635066da434181.v2.appdeploy.ai/ \
-            --output /tmp/all-in-one-admin.html
-          test -s /tmp/all-in-one-admin.html
+            --output /tmp/aio-admin.html
+          test -s /tmp/aio-admin.html
+          curl --fail --silent --show-error --location \
+            --retry 4 --retry-delay 5 \
+            https://api-v2.appdeploy.ai/app/9135635066da434181/api/_healthcheck \
+            --output /tmp/aio-admin-health.json
+          grep -q 'Success' /tmp/aio-admin-health.json
 
-      - name: Testar e gerar APK Admin
+      - name: Validar ativo oficial e ícones
+        run: |
+          test -s assets/brand/aio-admin-logo-official.png
+          for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            test -s "apps/valley-android/admin/src/main/res/mipmap-${density}/ic_launcher.png"
+          done
+
+      - name: Testar, analisar e gerar APK Admin
         working-directory: apps/valley-android
         run: |
           chmod +x gradlew
-          ./gradlew :admin:testDebugUnitTest :admin:assembleDebug --no-daemon --stacktrace
+          ./gradlew :admin:testDebugUnitTest :admin:lintDebug :admin:assembleDebug --no-daemon --stacktrace
 
       - name: Preparar instalador e checksum
         run: |
           cp apps/valley-android/admin/build/outputs/apk/debug/admin-debug.apk \
-            All-in-One-Admin-1.0.0.apk
-          sha256sum All-in-One-Admin-1.0.0.apk > All-in-One-Admin-1.0.0.apk.sha256
+            AIO-Admin-2.0.0-debug.apk
+          sha256sum AIO-Admin-2.0.0-debug.apk > AIO-Admin-2.0.0-debug.apk.sha256
 
       - name: Publicar APK para download
         uses: actions/upload-artifact@v5
         with:
-          name: all-in-one-admin-apk
+          name: aio-admin-android-2.0.0-${{ github.sha }}
           if-no-files-found: error
           retention-days: 30
           path: |
-            All-in-One-Admin-1.0.0.apk
-            All-in-One-Admin-1.0.0.apk.sha256
+            AIO-Admin-2.0.0-debug.apk
+            AIO-Admin-2.0.0-debug.apk.sha256
