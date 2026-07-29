@@ -70,7 +70,6 @@ def create_published_product(
                 "price_brl": price_brl,
                 "stock_location_type": "local_physical",
                 "stock_quantity": 8,
-                "image_url": "https://example.invalid/product.webp",
                 "promotion": {
                     "active": True,
                     "starts_at": "2026-01-01",
