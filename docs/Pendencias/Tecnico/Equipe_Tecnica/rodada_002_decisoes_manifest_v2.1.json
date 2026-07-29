@@ -1,0 +1,51 @@
+{
+  "artifact": "All_in_One_Rodada_002_Decisoes_Interativas_v2.1_2026-07-28.html",
+  "version": "2.1",
+  "classification": {
+    "root": "Pendencias",
+    "subject": "Tecnico",
+    "audience": ["Equipe Tecnica", "Pessoa Fisica", "Pessoa Juridica"]
+  },
+  "repository": "interflownex/All-in-One",
+  "base_branch": "main",
+  "issue": 69,
+  "module_count": 24,
+  "forbidden_modules": ["vision"],
+  "decision_options": [
+    "approve",
+    "study",
+    "postpone",
+    "reject",
+    "reject_final"
+  ],
+  "notes_per_idea": true,
+  "single_final_action": "Salvar e gerar PDF",
+  "storage": {
+    "current": "localStorage",
+    "cross_device_sync": false,
+    "authenticated_backend_required": true
+  },
+  "pdf": {
+    "format": "A4",
+    "expected_pages": 25,
+    "rendering": "sequential",
+    "external_dependencies": []
+  },
+  "test_evidence": {
+    "idea_cards": 24,
+    "radio_inputs": 120,
+    "action_buttons": 1,
+    "pdf_pages": 25,
+    "javascript_errors": 0,
+    "test_pdf_bytes": 1403570
+  },
+  "sha256": "3f4b59cd86e233cc7afe426aef0331c588dc34cf3e01aa9add1ab1b9dcca5f59",
+  "release_policy": {
+    "direct_main_write": false,
+    "stage_first": true,
+    "human_acceptance": true,
+    "ci_and_review_required": true,
+    "rollback_required": true,
+    "auto_enable_product_ideas": false
+  }
+}
