@@ -29,13 +29,13 @@ BRAND_FILES = (
 )
 
 
-def _copy_official_brands() -> None:
-    FLUTTER_BRANDS.mkdir(parents=True, exist_ok=True)
+def _copy_official_brands(target: Path) -> None:
+    target.mkdir(parents=True, exist_ok=True)
     for filename in BRAND_FILES:
         source = CANONICAL_BRANDS / filename
         if not source.is_file():
             raise FileNotFoundError(f"marca canônica ausente: {source}")
-        shutil.copy2(source, FLUTTER_BRANDS / filename)
+        shutil.copy2(source, target / filename)
 
 
 def _rewrite_local_asset_urls() -> None:
@@ -46,6 +46,7 @@ def _rewrite_local_asset_urls() -> None:
         ("url(/assets/", "url(./assets/"),
         ('url("/assets/', 'url("./assets/'),
         ("url('/assets/", "url('./assets/"),
+        ("./assets/brand/favicon-valley.svg", "./assets/brand/valley-logo-official.png"),
     )
     for path in VALLEY_ASSETS.rglob("*"):
         if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
@@ -114,9 +115,10 @@ def prepare() -> None:
             "plataforma Android ausente; execute flutter create --platforms=android ."
         )
 
-    _copy_official_brands()
     shutil.rmtree(VALLEY_ASSETS, ignore_errors=True)
     shutil.copytree(VALLEY_DIST, VALLEY_ASSETS)
+    _copy_official_brands(FLUTTER_BRANDS)
+    _copy_official_brands(VALLEY_ASSETS / "assets" / "brand")
     _rewrite_local_asset_urls()
     _sync_pubspec_assets()
 
@@ -136,6 +138,8 @@ def validate() -> None:
     for filename in BRAND_FILES:
         if not (FLUTTER_BRANDS / filename).is_file():
             raise FileNotFoundError(f"marca Flutter ausente: {filename}")
+        if not (VALLEY_ASSETS / "assets" / "brand" / filename).is_file():
+            raise FileNotFoundError(f"marca web ausente: {filename}")
 
     references = _local_references(index)
     javascript = [item for item in references if urlsplit(item).path.endswith(".js")]
