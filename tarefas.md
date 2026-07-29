@@ -6,8 +6,8 @@
 **Repositório:** `interflownex/All-in-One`
 **Branch:** `codex/flutter-distribuicao-gratuita-2026-07-29`
 **Commit-base:** `438d64f46ef341f6a3559dbcb6642cd950ba7291`
-**Commit de entrega:** pendente de criação nesta branch
-**Pull request:** pendente de abertura
+**Commit de entrega:** `365be4c`
+**Pull request:** será aberto a partir desta branch
 
 ## 1. Objetivo
 
