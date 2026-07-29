@@ -1,12 +1,13 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.5
-**Data e hora:** 29/07/2026 04:40:39
+**Versão:** 2.6
+**Data e hora:** 29/07/2026 04:43:24
 **Fuso horário:** `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch:** `codex/branding-scanner-issue-79`
 **Commit-base:** `6f76c6359eca268aaafc301a51c0f754be8998c8`
 **Issue:** `#79`
+**Pull request:** `#80`
 **Referência de governança v2.9:** `21a6ba6b0fbeb4afeaa336b7b0bbec6c51a0a9ff`
 **PRs preservados:** `#75` e `#77`, fechados sem merge
 
@@ -180,3 +181,4 @@ git fsck --connectivity-only --no-dangling
 | 2.3 | 28/07/2026 | A1 Admin Web/Mobile, Android seguro e pacote Figma. |
 | 2.4 | 29/07/2026 | PRs #74/#76 integrados; #75 rejeitado por escopo. |
 | 2.5 | 29/07/2026 04:40:39 | Issue #79 reaplicada sobre a `main` após fechamento seguro do PR #77. |
+| 2.6 | 29/07/2026 04:43:24 | PR #80 aberto para a remediação isolada e validada da issue #79. |
