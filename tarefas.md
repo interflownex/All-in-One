@@ -1,43 +1,43 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.4  
-**Data e hora:** 28/07/2026 23:23:37  
+**Versão:** 2.5
+**Data e hora:** 29/07/2026 03:56:22
 **Fuso horário:** `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
 **Branch:** `codex/auditoria-valley-rider-2026-07-28`  
-**Commit local antes da integração:** `4e7b6d9d09d18110c19fd4b75105cfde191ec469`  
-**Commit integrado de `origin/main`:** `869371979c7f622a75e7aa022cf8ab44a42f6d62`  
-**Pull Requests relacionadas:** `#62`, `#64`, `#65`, `#71`  
+**Commit local antes da integração:** `c11559c7990072f53dbb1dffecfe36455dcb425a`
+**Commit integrado de `origin/main`:** `77dd7791ea8bc649a01a3f1d534b609fdd479a34`
+**Pull Requests relacionadas:** `#62`, `#64`, `#65`, `#71`, `#72`
 **Issue de orquestração:** `#51`
 
 ## 1. Objetivo
 
-Concluir a sincronização segura da branch de auditoria do Valley Rider com
-`origin/main`, eliminar o conflito recém-detectado em `tarefas.md`, preservar
-as entregas posteriores já integradas e manter rastreabilidade para a próxima
-etapa.
+Concluir a integração segura da correção do timeout persistente do Gradle Server
+no VS Code, preservar as configurações locais da branch e deixar a validação
+Android independente do transporte JSON-RPC instável.
 
 ## 2. Contexto
 
-- a branch local continha as correções de auditoria e estabilização de testes do
-  Valley Rider;
-- `origin/main` avançou com Rodada 005 do Valley Consumidor, Marketplace Fase 1
-  e A1 Admin Web/Mobile;
-- o histórico divergiu em 2 commits locais e 4 commits remotos;
-- a integração automática conciliou todos os arquivos, exceto `tarefas.md`;
-- o conflito documental foi resolvido consolidando as entregas locais e remotas;
-- duas alterações locais preexistentes em `.github/skills/` pertencem a outro
-  trabalho e devem permanecer fora do commit desta sincronização.
+- o erro observado registrou timeout após 30 segundos e conexão tardia do
+  Gradle Server no mesmo task pipe;
+- o PR `#72` corrigiu a causa em `origin/main` no commit `77dd779`;
+- a solução desativa o build server JSON-RPC automático, mantém a importação
+  oficial pelo wrapper e adiciona tarefas Gradle multiplataforma;
+- a integração encontrou conflitos apenas aditivos em `.vscode/settings.json`
+  e `all-in-one.code-workspace`;
+- as opções locais de análise Python e busca Java foram preservadas junto com
+  todas as proteções do Gradle;
+- o teste contratual direcionado foi aprovado no ambiente Python do projeto.
 
 ## 3. Escopo
 
 ### Incluído
 
-1. integrar `origin/main` sem reset, limpeza destrutiva ou force-push;
-2. preservar as correções de auditoria do Valley Rider;
-3. preservar Rodada 005, Marketplace Fase 1 e A1 Admin;
-4. resolver marcadores de conflito em `tarefas.md`;
-5. validar integridade Git, repositório e marca;
+1. integrar o commit `77dd779` sem reset, limpeza destrutiva ou force-push;
+2. preservar as configurações locais não conflitantes;
+3. resolver os dois arquivos não mesclados;
+4. validar JSON e `tests/test_gradle_vscode_contract.py`;
+5. validar o wrapper Gradle sem depender do servidor JSON-RPC;
 6. publicar somente a branch de trabalho e atualizar o pull request aplicável.
 
 ### Fora do escopo
@@ -45,6 +45,7 @@ etapa.
 - alterar ou remover módulos por associação a trabalhos antigos;
 - modificar as duas alterações locais preexistentes em `.github/skills/`;
 - fazer push direto em `main`;
+- encerrar à força processos Gradle pertencentes a outro agente;
 - declarar integrações externas homologadas sem evidência no ambiente correto.
 
 ## 4. Fontes de verdade
@@ -104,6 +105,8 @@ python3 scripts/validate_repository.py
 .venv/bin/pytest -q tests/test_valley_rider_stitch_contract.py
 .venv/bin/pytest -q tests/test_marketplace_discovery.py
 .venv/bin/pytest -q tests/test_valley_consumer_innovation_round_005.py
+.venv/bin/pytest -q tests/test_gradle_vscode_contract.py
+cd apps/valley-android && ./gradlew --version --no-daemon
 ```
 
 Quando os ambientes estiverem disponíveis:
@@ -133,6 +136,8 @@ cd ../valley-android
 - `git diff --check` e conectividade Git aprovados;
 - integridade de marca e validação do repositório aprovadas;
 - testes direcionados aprovados;
+- `java.gradle.buildServer.enabled` permanece `off` nas duas configurações;
+- wrapper Gradle responde sem iniciar o servidor JSON-RPC do VS Code;
 - branch publicada sem force-push e sem push direto em `main`;
 - pull request atualizado com testes e evidências;
 - gates remotos verdes no mesmo commit antes do Squash and Merge.
@@ -144,12 +149,13 @@ cd ../valley-android
 | alterações locais concorrentes | preservar fora do stage e registrar explicitamente |
 | novos avanços em `origin/main` | repetir preflight antes do push |
 | testes Android demorados ou indisponíveis | reportar como não verificados, nunca como aprovados |
+| daemon Gradle concorrente | usar `--no-daemon`; não encerrar processo alheio sem validar propriedade |
 | dependências externas sem credenciais | manter bloqueadas e não simular homologação |
 | conflito recorrente em documento central | sempre incrementar versão e consolidar o histórico |
 
 ## 10. Bloqueios
 
-- nenhum bloqueio confirmado para concluir a resolução local;
+- o reload efetivo da janela do VS Code depende da ação no cliente gráfico;
 - abertura/atualização de pull request depende de acesso autenticado ao GitHub;
 - homologações Mapbox, KYC, PSP, Play Integrity e dispositivo real continuam
   externas ao escopo desta sincronização.
@@ -167,10 +173,10 @@ cd ../valley-android
 ## 12. Pendências restantes
 
 1. concluir e validar o commit de merge;
-2. publicar a branch e atualizar o pull request;
-3. acompanhar os gates remotos;
-4. executar as homologações externas pendentes nos ambientes corretos;
-5. revisar a fila de PRs, workflows, branches e issues após esta sincronização.
+2. recarregar a janela do VS Code para aplicar a configuração efetiva;
+3. confirmar que não surge novo processo `gradle-server` automático;
+4. publicar a branch e atualizar o pull request;
+5. acompanhar os gates remotos e as homologações externas pendentes.
 
 ## 13. Procedimento de entrega
 
@@ -195,3 +201,4 @@ cd ../valley-android
 | 2.2 | 28/07/2026 | Marketplace Fase 1 e governança de pendências. |
 | 2.3 | 28/07/2026 | A1 Admin Web/Mobile, Android seguro e pacote Figma. |
 | 2.4 | 28/07/2026 23:23:37 | Conflito de sincronização resolvido e históricos consolidados. |
+| 2.5 | 29/07/2026 03:56:22 | Correção do timeout do Gradle Server integrada do PR #72 e contrato direcionado validado. |
