@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
-import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,12 +13,45 @@ MANIFEST = FLUTTER_APP / "android" / "app" / "src" / "main" / "AndroidManifest.x
 OFFICIAL_LOGO = ROOT / "assets" / "brand" / "valley-logo-official.png"
 DRAWABLE = FLUTTER_APP / "android" / "app" / "src" / "main" / "res" / "drawable-nodpi"
 ICON = DRAWABLE / "valley_logo.png"
-ANDROID_NS = "http://schemas.android.com/apk/res/android"
-ET.register_namespace("android", ANDROID_NS)
+PERMISSIONS = ("android.permission.INTERNET", "android.permission.ACCESS_NETWORK_STATE")
+APPLICATION_ATTRIBUTES = {
+    "label": "Valley",
+    "icon": "@drawable/valley_logo",
+    "roundIcon": "@drawable/valley_logo",
+    "usesCleartextTraffic": "false",
+    "allowBackup": "false",
+}
 
 
-def _android(name: str) -> str:
-    return f"{{{ANDROID_NS}}}{name}"
+def _set_android_attribute(tag: str, name: str, value: str) -> str:
+    attribute = f'android:{name}="{value}"'
+    pattern = re.compile(rf'android:{re.escape(name)}="[^"]*"')
+    if pattern.search(tag):
+        return pattern.sub(attribute, tag, count=1)
+    return tag[:-1].rstrip() + f"\n        {attribute}>"
+
+
+def _materialize_manifest(text: str) -> str:
+    if "<manifest" not in text or "<application" not in text:
+        raise RuntimeError("Manifesto Android fora do formato esperado.")
+    permission_lines = []
+    for permission in PERMISSIONS:
+        marker = f'android:name="{permission}"'
+        if marker not in text:
+            permission_lines.append(f'    <uses-permission android:name="{permission}" />')
+    if permission_lines:
+        manifest_end = text.find(">", text.find("<manifest"))
+        if manifest_end < 0:
+            raise RuntimeError("Abertura do manifesto Android inválida.")
+        insertion = "\n" + "\n".join(permission_lines)
+        text = text[: manifest_end + 1] + insertion + text[manifest_end + 1 :]
+    match = re.search(r"<application\b[^>]*>", text, flags=re.DOTALL)
+    if match is None:
+        raise RuntimeError("Elemento application não encontrado no manifesto Android.")
+    application_tag = match.group(0)
+    for name, value in APPLICATION_ATTRIBUTES.items():
+        application_tag = _set_android_attribute(application_tag, name, value)
+    return text[: match.start()] + application_tag + text[match.end() :]
 
 
 def configure() -> None:
@@ -26,44 +59,26 @@ def configure() -> None:
         raise FileNotFoundError("AndroidManifest.xml ausente; execute flutter create antes desta etapa.")
     if not OFFICIAL_LOGO.is_file():
         raise FileNotFoundError("Logomarca oficial Valley ausente.")
-    tree = ET.parse(MANIFEST)
-    root = tree.getroot()
-    existing = {node.get(_android("name")) for node in root.findall("uses-permission")}
-    for permission in ("android.permission.INTERNET", "android.permission.ACCESS_NETWORK_STATE"):
-        if permission not in existing:
-            node = ET.Element("uses-permission")
-            node.set(_android("name"), permission)
-            root.insert(0, node)
-    application = root.find("application")
-    if application is None:
-        raise RuntimeError("Elemento application não encontrado no manifesto Android.")
-    application.set(_android("label"), "Valley")
-    application.set(_android("icon"), "@drawable/valley_logo")
-    application.set(_android("roundIcon"), "@drawable/valley_logo")
-    application.set(_android("usesCleartextTraffic"), "false")
-    application.set(_android("allowBackup"), "false")
+    original = MANIFEST.read_text(encoding="utf-8")
+    MANIFEST.write_text(_materialize_manifest(original), encoding="utf-8")
     DRAWABLE.mkdir(parents=True, exist_ok=True)
     shutil.copy2(OFFICIAL_LOGO, ICON)
-    tree.write(MANIFEST, encoding="utf-8", xml_declaration=True)
 
 
 def check() -> None:
     if not MANIFEST.is_file() or not ICON.is_file():
         raise SystemExit("Configuração Android Valley não materializada.")
-    tree = ET.parse(MANIFEST)
-    root = tree.getroot()
-    permissions = {node.get(_android("name")) for node in root.findall("uses-permission")}
-    required = {"android.permission.INTERNET", "android.permission.ACCESS_NETWORK_STATE"}
-    missing = sorted(required - permissions)
+    text = MANIFEST.read_text(encoding="utf-8")
+    missing = [permission for permission in PERMISSIONS if f'android:name="{permission}"' not in text]
     if missing:
         raise SystemExit(f"Permissões Android ausentes: {', '.join(missing)}")
-    application = root.find("application")
-    if application is None:
+    match = re.search(r"<application\b[^>]*>", text, flags=re.DOTALL)
+    if match is None:
         raise SystemExit("Elemento application ausente.")
-    expected = {"label": "Valley", "icon": "@drawable/valley_logo", "roundIcon": "@drawable/valley_logo", "usesCleartextTraffic": "false", "allowBackup": "false"}
-    for key, value in expected.items():
-        if application.get(_android(key)) != value:
-            raise SystemExit(f"Manifesto Android divergente em {key}.")
+    application_tag = match.group(0)
+    for name, value in APPLICATION_ATTRIBUTES.items():
+        if f'android:{name}="{value}"' not in application_tag:
+            raise SystemExit(f"Manifesto Android divergente em {name}.")
     if ICON.read_bytes() != OFFICIAL_LOGO.read_bytes():
         raise SystemExit("Ícone Android não corresponde byte a byte à logomarca oficial Valley.")
 
