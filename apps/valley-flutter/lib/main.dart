@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -41,6 +43,7 @@ class ValleyShell extends StatefulWidget {
 class _ValleyShellState extends State<ValleyShell> {
   late final WebViewController _controller;
   int _progress = 0;
+  bool _contentReady = false;
   String? _loadError;
 
   @override
@@ -57,22 +60,60 @@ class _ValleyShellState extends State<ValleyShell> {
             }
           },
           onPageFinished: (_) {
-            if (mounted) {
-              setState(() {
-                _progress = 100;
-                _loadError = null;
-              });
-            }
+            unawaited(_verifyRenderedContent());
           },
           onWebResourceError: (error) {
             if (error.isForMainFrame == true && mounted) {
-              setState(() => _loadError = error.description);
+              setState(() {
+                _contentReady = false;
+                _loadError = error.description;
+              });
             }
           },
           onNavigationRequest: _handleNavigation,
         ),
       )
       ..loadFlutterAsset(_localEntryPoint);
+  }
+
+  Future<void> _verifyRenderedContent() async {
+    for (var attempt = 0; attempt < 20; attempt += 1) {
+      if (!mounted) return;
+      try {
+        final result = await _controller.runJavaScriptReturningResult('''
+          (() => {
+            const root = document.getElementById('root');
+            return Boolean(
+              root &&
+              root.childElementCount > 0 &&
+              root.innerText.trim().length > 20
+            );
+          })();
+        ''');
+        final ready = result == true || result.toString().toLowerCase() == 'true';
+        if (ready) {
+          if (mounted) {
+            setState(() {
+              _progress = 100;
+              _contentReady = true;
+              _loadError = null;
+            });
+          }
+          return;
+        }
+      } catch (_) {
+        // A página ainda pode estar inicializando; a próxima tentativa confirma.
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+    }
+
+    if (mounted) {
+      setState(() {
+        _contentReady = false;
+        _loadError =
+            'A interface não foi carregada por completo. Reinstale a versão corrigida do aplicativo.';
+      });
+    }
   }
 
   Future<NavigationDecision> _handleNavigation(
@@ -99,6 +140,7 @@ class _ValleyShellState extends State<ValleyShell> {
   Future<void> _reload() async {
     setState(() {
       _progress = 0;
+      _contentReady = false;
       _loadError = null;
     });
     await _controller.loadFlutterAsset(_localEntryPoint);
@@ -111,12 +153,55 @@ class _ValleyShellState extends State<ValleyShell> {
       body: SafeArea(
         child: Stack(
           children: [
-            WebViewWidget(controller: _controller),
-            if (_progress < 100 && _loadError == null)
-              const LinearProgressIndicator(color: _valleyPurple),
+            WebViewWidget(
+              key: const Key('valley-webview'),
+              controller: _controller,
+            ),
+            if (!_contentReady && _loadError == null)
+              const _LoadingSurface(progressColor: _valleyPurple),
+            if (_contentReady)
+              const Semantics(
+                label: 'Valley interface carregada',
+                child: SizedBox.shrink(),
+              ),
             if (_loadError != null)
               _LoadFailure(message: _loadError!, onRetry: _reload),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LoadingSurface extends StatelessWidget {
+  const _LoadingSurface({required this.progressColor});
+
+  final Color progressColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: _valleyBackground,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/brand/valley-logo-official.png',
+                width: 160,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: 180,
+                child: LinearProgressIndicator(color: progressColor),
+              ),
+              const SizedBox(height: 12),
+              const Text('Carregando o Valley...'),
+            ],
+          ),
         ),
       ),
     );
@@ -154,7 +239,7 @@ class _LoadFailure extends StatelessWidget {
               Text(
                 message,
                 textAlign: TextAlign.center,
-                maxLines: 3,
+                maxLines: 4,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 24),
