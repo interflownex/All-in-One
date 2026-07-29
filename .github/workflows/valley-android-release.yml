@@ -47,13 +47,14 @@ jobs:
           cache: true
 
       - name: Materializar plataforma Android Flutter
-        working-directory: apps/valley-flutter
-        run: >-
-          flutter create
-          --platforms=android
-          --org br.com.interflownex
-          --project-name valley_consumer
-          .
+        run: |
+          flutter_project="$(mktemp -d)"
+          flutter create \
+            --platforms=android \
+            --org br.com.interflownex \
+            --project-name valley_consumer \
+            "$flutter_project"
+          cp -R "$flutter_project/android" apps/valley-flutter/android
 
       - name: Compilar templates Stitch do Valley
         run: |

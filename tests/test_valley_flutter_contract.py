@@ -24,3 +24,6 @@ def test_free_distribution_has_no_google_play_environment() -> None:
     assert "VALLEY_PLAY_" not in workflow
     assert "flutter build apk --release" in workflow
     assert "actions/upload-artifact@v4" in workflow
+    assert 'flutter_project="$(mktemp -d)"' in workflow
+    assert 'cp -R "$flutter_project/android" apps/valley-flutter/android' in workflow
+    assert "--project-name valley_consumer\n          ." not in workflow
