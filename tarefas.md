@@ -1,181 +1,144 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.2  
-**Data e hora:** 28/07/2026  
-**Fuso horário:** `America/Sao_Paulo`  
+**Versão:** 2.3  
+**Data:** 28/07/2026  
+**Fuso:** `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Branch:** `codex/marketplace-fase1-descoberta-2026-07-28`  
-**Commit-base:** `396d2539480ece1757b29bcd8b4ed18f7e9091a5`  
-**Commit de referência da atividade:** `909ce084c38aac80603c78482b873037fdebdcd8`  
-**Issue de orquestração:** `#51`  
-**Classificação:** `Pendências > Técnico > Equipe técnica`  
-**Aplicação:** `modules/marketplace`
+**Branch:** `codex/a1-admin-web-mobile-figma-2026-07-28`  
+**Commit-base:** `f9fa3dcb81e56f6164e4de8c39c25bc1247bd565`  
+**Commit da implementação:** `41efb617c177941dbae598c1eaceefbb70a4dd25`  
+**Commit do lockfile:** `2297047a4271005a755997685d9bee630d84c028`  
+**Issue:** `#68`  
+**Classificação:** `Pendências > Técnico e Conceitual > Equipe Técnica`
 
 ## 1. Regra mandatória de prioridade
 
-Antes de qualquer evolução, verificar e tratar nesta ordem:
+Antes de qualquer nova evolução, tratar nesta ordem:
 
-1. workflows falhos, cancelados ou bloqueados;
-2. merges pendentes, parciais ou conflitantes;
+1. workflows falhos ou bloqueados;
+2. merges pendentes ou conflitantes;
 3. pull requests abertas;
-4. commits e branches ainda não integrados;
-5. issues abertas com escopo executável;
-6. somente depois, nova evolução de produto.
+4. commits e branches não integrados;
+5. issues executáveis;
+6. somente depois, nova evolução autorizada.
 
-A fonte persistente desta regra é `config/autonomy/pending_work_priority_policy.json`, complementada pelo `AGENTS.md`.
+A política autoritativa permanece em `config/autonomy/pending_work_priority_policy.json` e `AGENTS.md`.
 
 ## 2. Objetivo atual
 
-Concluir e integrar a primeira vertical funcional do Marketplace, com descoberta pública e jornada autenticada de favoritos e carrinho, preservando a sequência da issue #51: Marketplace → Stock → Delivery.
+Entregar um template unificado do **A1 Admin** para web e mobile, com fonte visual única, integração segura com o APK Admin e pacote rastreável para criação de um novo projeto no Figma.
 
 ## 3. Estado implementado
 
-- catálogo público com busca textual;
-- filtros por categoria, loja, preço, estoque e raio;
-- cálculo de distância por latitude e longitude;
-- ordenação por relevância, preço, distância e avaliação;
-- exposição exclusiva de lojas aprovadas e produtos publicados;
-- feed vertical contratual em formato 9:16;
-- identificação explícita de conteúdo patrocinado;
-- promoção do dia com elegibilidade, prioridade e fallback;
-- favoritos isolados por All-in-One ID;
-- carrinho isolado por usuário, com quantidade, disponibilidade e total em BRL;
-- OpenAPI Marketplace `0.3.0`;
-- testes dedicados em `tests/test_marketplace_discovery.py`;
-- governança persistente de issues, PRs, commits, merges e workflows.
+- shell React/Vite em `apps/all-in-one-admin`;
+- sidebar desktop e navegação inferior mobile;
+- dashboard, aprovações, empresas, módulos, operações, segurança, relatórios e configurações;
+- command palette e interações demonstrativas;
+- estados de loading, vazio, erro e sucesso;
+- responsividade para desktop, tablet e celular;
+- dados identificados como protótipo;
+- uso exclusivo da marca canônica `assets/brand/all-in-one-logo-official.png`;
+- tokens Figma, manifesto de telas, brief e checklist;
+- APK Admin com URL configurável por Gradle ou variável de ambiente;
+- política de HTTPS e mesma origem coberta por testes unitários;
+- navegação preditiva Android por `OnBackPressedDispatcher`;
+- tema compatível com Android 24 e recursos específicos em `values-v27`;
+- `package-lock.json` versionado;
+- workflow dedicado usando `npm ci` e permissão somente de leitura.
 
 ## 4. Fontes de verdade
 
 1. `AGENTS.md`;
 2. `config/autonomy/pending_work_priority_policy.json`;
-3. este `tarefas.md`;
-4. issue `#51`;
-5. issue `#24`;
-6. `modules/marketplace/main.py`;
-7. `modules/marketplace/OPENAPI.yaml`;
-8. `modules/marketplace/README.md`;
-9. `modules/marketplace/STATUS.md`;
-10. `tests/test_marketplace_discovery.py`;
-11. `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v3.4_2026-07-28.md`;
-12. `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v3.4_2026-07-28.md`;
-13. pull request da branch desta atividade.
+3. `config/branding/authorized_assets.json`;
+4. este `tarefas.md`;
+5. issue `#68`;
+6. `apps/all-in-one-admin/README.md`;
+7. `apps/all-in-one-admin/design/FIGMA_PROJECT_BRIEF.md`;
+8. `apps/all-in-one-admin/design/figma.tokens.json`;
+9. `apps/all-in-one-admin/design/figma-screen-manifest.json`;
+10. `apps/valley-android/admin/README.md`;
+11. `docs/relatorios/pendencias/RELATORIO_VARREDURA_STATUS_v3.5_2026-07-28.md`;
+12. `docs/relatorios/pendencias/PLANO_ACAO_CODEX_v3.5_2026-07-28.md`.
 
-## 5. Pré-requisitos
-
-- não versionar credenciais;
-- não alterar diretamente a `main`;
-- preservar mudanças de outros agentes;
-- revisar merges e PRs antes de nova evolução;
-- usar o mesmo SHA para testes, revisão e decisão de merge;
-- manter auto-merge desabilitado;
-- usar Squash and Merge.
-
-## 6. Sequência imediata obrigatória
-
-### P0 — fechar a rodada atual
-
-1. abrir PR da branch para `main`;
-2. verificar diff e mergeabilidade;
-3. executar os workflows aplicáveis;
-4. abrir logs de qualquer job falho;
-5. corrigir falhas reproduzíveis na mesma branch;
-6. repetir os gates no novo SHA;
-7. verificar threads de revisão e alteração do head;
-8. integrar por Squash and Merge;
-9. atualizar a issue #51 com evidências;
-10. revisar novamente PRs, merges, commits, workflows e issues antes da próxima tarefa.
-
-### P1 — checkout Marketplace
-
-1. integrar reserva transacional com Stock;
-2. validar preço e disponibilidade no momento do checkout;
-3. usar idempotência para impedir pedidos duplicados;
-4. integrar Wallet e Orders;
-5. publicar eventos de pedido e reserva;
-6. tratar expiração, cancelamento e compensação.
-
-### P1 — issue #24
-
-1. conectar o frontend Valley Consumidor ao endpoint `/valley/promotions/today`;
-2. exibir modal dispensável e acessível;
-3. não bloquear a homepage em erro ou ausência de promoção;
-4. registrar telemetria sem dados pessoais desnecessários;
-5. testar offline, expiração e destino indisponível.
-
-### P2 — Stock e Delivery
-
-1. concluir fonte única de saldo e reservas;
-2. implementar Delivery a partir de pedidos confirmados;
-3. integrar Riders, Wallet e notificações;
-4. retomar a homologação produtiva do Valley Rider.
-
-## 7. Testes
+## 5. Validação obrigatória
 
 ```bash
-python -m pytest -q tests/test_marketplace_discovery.py
-python -m pytest -q tests/test_marketplace_support_metrics.py
-python -m pytest -q tests/test_marketplace_commercial_metrics.py
-python -m pytest -q --ignore=tests/e2e
-python scripts/validate_repository.py
+cd apps/all-in-one-admin
+npm ci
+npm run check
+npm audit --omit=dev --audit-level=critical
+
+cd ../../apps/valley-android
+./gradlew :admin:testDebugUnitTest :admin:lintDebug :admin:assembleDebug
 ```
 
-Gates remotos esperados:
+Gates esperados:
 
+- A1 Admin Template / web-template;
+- A1 Admin Template / android-admin;
+- All in One Admin Android APK;
 - Continuous Integration;
 - Security;
-- Database;
 - Docker Compose Health Gate;
-- OpenAPI;
-- demais gates acionados pelo diff.
+- Valley Android Security.
 
-## 8. Critérios de aceite
+## 6. Sequência imediata
 
-- testes reproduzíveis aprovados no SHA final;
-- nenhuma loja não aprovada exposta;
-- nenhum produto não publicado exposto;
-- filtros e geolocalização validados;
-- favoritos e carrinho isolados por usuário;
-- conteúdo patrocinado identificado;
-- promoção sem bloquear a homepage;
-- auditoria e outbox preservados;
-- nenhuma credencial no Git;
-- PR revisada e mesclável;
-- integração somente por Squash and Merge;
-- issue #51 atualizada com commit final.
+### P0 — fechar esta entrega
 
-## 9. Riscos e bloqueios
+1. executar os gates no SHA final;
+2. corrigir toda falha reproduzível na branch;
+3. revisar diff, marca, segredos e mergeabilidade;
+4. verificar threads e mudanças do head;
+5. integrar por Squash and Merge;
+6. atualizar e encerrar a issue #68 somente após evidências;
+7. revisar novamente PRs, merges, commits, workflows e issues.
 
-- disponibilidade atual do carrinho ainda é contratual e não reserva Stock;
-- a interface visual da promoção ainda depende do Valley Consumidor;
-- a jornada de pagamento depende de Wallet e PSP homologado;
-- testes remotos devem confirmar lint, segurança e regressão do repositório;
-- nenhuma dessas limitações pode ser ocultada ou marcada como homologada.
+### P1 — publicação do shell
 
-## 10. Evidências esperadas
+1. publicar `apps/all-in-one-admin` em domínio administrativo homologado;
+2. configurar `A1_ADMIN_URL` no build Android;
+3. validar autenticação, sessão, deep links e logout;
+4. executar QA visual web/mobile com dados não produtivos;
+5. gerar APK homologado apontando para a nova URL.
 
-- SHA final da branch;
-- número da PR;
-- lista de arquivos alterados;
-- resultados dos workflows no mesmo SHA;
-- ausência de threads não resolvidas;
-- resultado do Squash and Merge;
-- commit final na `main`;
-- comentário de encerramento da rodada na issue #51.
+### P1 — novo projeto Figma
 
-## 11. Procedimento de decisão autônoma
+1. criar o arquivo `A1 Admin — Web & Mobile — 2026` em conta Figma autorizada;
+2. importar tokens e manifesto;
+3. inserir a marca oficial sem modificação;
+4. construir pages, componentes, variantes e frames descritos;
+5. publicar biblioteca e anexar links ao README.
 
-- decidir com base no diff, testes, contratos e riscos;
-- corrigir automaticamente tudo que seja tecnicamente resolvível;
-- não solicitar aprovação para decisões técnicas reversíveis e seguras;
-- solicitar intervenção apenas diante de credencial ausente, exigência legal, decisão comercial irreversível, bloqueio externo ou indisponibilidade real de ferramenta;
-- não iniciar nova evolução enquanto esta entrega tiver PR, merge ou gate pendente.
+A criação externa do arquivo Figma depende de uma integração ou sessão Figma autorizada. O repositório já contém todas as entradas técnicas necessárias e não deve receber links fictícios.
 
-## 12. Histórico
+## 7. Critérios de aceite
+
+- lint, validação de design e build web verdes;
+- auditoria de dependências sem vulnerabilidade crítica;
+- testes, lint e APK Android verdes;
+- marca oficial preservada;
+- URL Android somente HTTPS e mesma origem;
+- layouts web/mobile responsivos;
+- tokens e manifesto válidos;
+- lockfile versionado e `npm ci` comprovado;
+- nenhum dado produtivo ou segredo versionado;
+- PR mesclável e integrada por Squash and Merge;
+- issue #68 atualizada com commit final e evidências.
+
+## 8. Riscos e bloqueios
+
+- o shell é um template e ainda não consome APIs produtivas;
+- o domínio definitivo do novo painel ainda precisa ser publicado;
+- a criação do arquivo externo no Figma exige acesso autorizado à conta;
+- nenhuma dessas limitações autoriza declarar produção ou projeto Figma externo como concluídos.
+
+## 9. Histórico
 
 | Versão | Data | Alteração |
 |---|---|---|
-| 1.8 | 28/07/2026 | Rodada 004 do APK Valley registrada. |
-| 1.9 | 28/07/2026 | Auditoria do Valley Rider e plano de homologação. |
 | 2.0 | 28/07/2026 | PR #62, QA Rider e testes Git determinísticos. |
-| 2.1 | 28/07/2026 | Rodada 005 implementada com 24 contratos e feature flags. |
-| 2.2 | 28/07/2026 | Marketplace Fase 1 e prioridade mandatória de issues, PRs, commits, merges e workflows. |
+| 2.1 | 28/07/2026 | Rodada 005 com contratos e feature flags. |
+| 2.2 | 28/07/2026 | Marketplace Fase 1 e governança de pendências. |
+| 2.3 | 28/07/2026 | A1 Admin Web + Mobile, Android seguro e pacote pronto para Figma. |

@@ -1,12 +1,12 @@
 package br.com.allinone.admin;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -15,16 +15,20 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public final class AdminActivity extends Activity {
-    private static final String ADMIN_HOST = "9135635066da434181.v2.appdeploy.ai";
+import androidx.activity.ComponentActivity;
+import androidx.activity.OnBackPressedCallback;
+
+public final class AdminActivity extends ComponentActivity {
     private WebView webView;
+    private AdminUrlPolicy adminUrlPolicy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        adminUrlPolicy = AdminUrlPolicy.from(BuildConfig.ADMIN_URL);
         webView = new WebView(this);
-        webView.setBackgroundColor(Color.rgb(7, 10, 23));
+        webView.setBackgroundColor(Color.rgb(7, 17, 31));
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
 
         WebSettings settings = webView.getSettings();
@@ -65,16 +69,28 @@ public final class AdminActivity extends Activity {
             }
         });
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (webView != null && webView.canGoBack()) {
+                    webView.goBack();
+                    return;
+                }
+                setEnabled(false);
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
+
         setContentView(webView);
         if (savedInstanceState == null) {
-            webView.loadUrl(BuildConfig.ADMIN_URL);
+            webView.loadUrl(adminUrlPolicy.baseUrl());
         } else {
             webView.restoreState(savedInstanceState);
         }
     }
 
     private boolean openExternalWhenNeeded(Uri uri) {
-        if ("https".equalsIgnoreCase(uri.getScheme()) && ADMIN_HOST.equalsIgnoreCase(uri.getHost())) {
+        if (adminUrlPolicy.isInternal(uri.toString())) {
             return false;
         }
         try {
@@ -86,28 +102,20 @@ public final class AdminActivity extends Activity {
     }
 
     private void showConnectionError() {
+        String safeAdminUrl = TextUtils.htmlEncode(adminUrlPolicy.baseUrl());
         String html = "<!doctype html><html lang='pt-BR'><head><meta name='viewport' content='width=device-width,initial-scale=1'>"
-            + "<style>body{margin:0;background:#070a17;color:#e2e8f0;font-family:sans-serif;display:grid;place-items:center;min-height:100vh;padding:24px;box-sizing:border-box}"
-            + ".box{max-width:520px;border:1px solid #25304d;border-radius:24px;padding:28px;background:#0b1024;text-align:center}"
-            + "button{border:0;border-radius:14px;padding:13px 20px;background:#2563eb;color:white;font-weight:700}</style></head>"
+            + "<style>body{margin:0;background:#07111f;color:#f7fbff;font-family:sans-serif;display:grid;place-items:center;min-height:100vh;padding:24px;box-sizing:border-box}"
+            + ".box{max-width:520px;border:1px solid #21364e;border-radius:22px;padding:28px;background:#0c1929;text-align:center}"
+            + "a{display:inline-block;text-decoration:none;border-radius:12px;padding:13px 20px;background:#39d98a;color:#03140d;font-weight:700}</style></head>"
             + "<body><div class='box'><h1>Painel temporariamente indisponível</h1><p>Verifique a conexão com a internet e tente novamente.</p>"
-            + "<button onclick=\"location.href='" + BuildConfig.ADMIN_URL + "'\">Tentar novamente</button></div></body></html>";
-        webView.loadDataWithBaseURL(BuildConfig.ADMIN_URL, html, "text/html", "utf-8", null);
+            + "<a href='" + safeAdminUrl + "'>Tentar novamente</a></div></body></html>";
+        webView.loadDataWithBaseURL(adminUrlPolicy.baseUrl(), html, "text/html", "utf-8", null);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         webView.saveState(outState);
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override
