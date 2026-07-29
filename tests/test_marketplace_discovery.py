@@ -7,11 +7,13 @@ def actor_headers(user_id: str) -> dict[str, str]:
     return {"X-Actor-User-Id": user_id}
 
 
-def admin_headers(user_id: str) -> dict[str, str]:
+def admin_headers(user_id: str, business_id: str) -> dict[str, str]:
     return {
         "X-Actor-User-Id": user_id,
         "X-Actor-Roles": "administrator",
         "X-MFA-Verified": "true",
+        "X-Business-Id": business_id,
+        "X-Business-Status": "active",
     }
 
 
@@ -27,14 +29,16 @@ def create_published_product(
     longitude: float = -44.10,
     sponsored: bool = True,
 ) -> tuple[dict, dict]:
-    headers = admin_headers(merchant_id)
+    business_id = str(uuid4())
+    headers = admin_headers(merchant_id, business_id)
     store = marketplace.post(
         "/resources/stores",
         headers={**headers, "X-Idempotency-Key": f"store-{uuid4().hex}"},
         json={
             "user_id": merchant_id,
+            "entity_id": business_id,
             "payload": {
-                "company_id": str(uuid4()),
+                "company_id": business_id,
                 "company_status": "approved",
                 "name": "Loja Central",
                 "latitude": latitude,
@@ -64,7 +68,7 @@ def create_published_product(
                 "description": "Produto local com retirada e entrega.",
                 "category": category,
                 "price_brl": price_brl,
-                "stock_location_type": "physical_store",
+                "stock_location_type": "local_physical",
                 "stock_quantity": 8,
                 "image_url": "https://example.invalid/product.webp",
                 "promotion": {
@@ -107,7 +111,7 @@ def test_marketplace_catalog_feed_and_promotion_are_contextual() -> None:
     )
 
     catalog = marketplace.get(
-        "/valley/catalog",
+        "/valley/marketplace/catalog",
         params={
             "q": "cafeteira",
             "category": "Casa",
@@ -197,5 +201,8 @@ def test_marketplace_favorites_and_cart_are_isolated_by_actor() -> None:
 
 def test_marketplace_catalog_rejects_incomplete_geolocation() -> None:
     marketplace = fresh_client_for("marketplace")
-    response = marketplace.get("/valley/catalog", params={"latitude": -19.92})
+    response = marketplace.get(
+        "/valley/marketplace/catalog",
+        params={"latitude": -19.92},
+    )
     assert response.status_code == 422
