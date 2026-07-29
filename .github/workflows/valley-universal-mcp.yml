@@ -1,0 +1,64 @@
+name: Valley Universal MCP
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "feat/valley-universal-web-mobile-*"
+    paths:
+      - "apps/valley-universal-mcp/**"
+      - ".github/workflows/valley-universal-mcp.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "apps/valley-universal-mcp/**"
+      - ".github/workflows/valley-universal-mcp.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: valley-universal-mcp-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    defaults:
+      run:
+        working-directory: apps/valley-universal-mcp
+
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v5
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/valley-universal-mcp/package-lock.json
+
+      - name: Instalar dependências
+        run: npm install --no-audit --no-fund
+
+      - name: Verificar tipagem
+        run: npm run typecheck
+
+      - name: Validar inicialização do servidor
+        run: |
+          npm run start > /tmp/valley-mcp.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID 2>/dev/null || true' EXIT
+          for attempt in {1..20}; do
+            if curl --fail --silent --show-error http://127.0.0.1:3000/mcp \
+              -o /tmp/valley-mcp-response.txt; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/valley-mcp.log
+          exit 1
