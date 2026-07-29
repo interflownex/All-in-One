@@ -18,14 +18,19 @@
       "label": "bootstrap: ambiente dev linux",
       "type": "shell",
       "command": "bash",
-      "args": ["-lc", "./scripts/bootstrap_wsl_dev_environment.sh"],
+      "args": [
+        "-lc",
+        "./scripts/bootstrap_wsl_dev_environment.sh"
+      ],
       "problemMatcher": []
     },
     {
       "label": "cleanup: artifacts",
       "type": "shell",
       "command": "${config:python.defaultInterpreterPath}",
-      "args": ["scripts/cleanup_artifacts.py"],
+      "args": [
+        "scripts/cleanup_artifacts.py"
+      ],
       "post_command": "powershell -Command \"$ws = New-Object -ComObject WScript.Shell; $ws.Popup('A limpeza de artefatos do All-in-One foi concluída com sucesso!', 0, 'Cleanup Success', 64)\"",
       "presentation": {
         "reveal": "always",
@@ -36,8 +41,14 @@
       "label": "test: pytest completo",
       "type": "shell",
       "command": "${config:python.defaultInterpreterPath}",
-      "args": ["-m", "pytest", "-q"],
-      "dependsOn": ["cleanup: artifacts"],
+      "args": [
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "dependsOn": [
+        "cleanup: artifacts"
+      ],
       "group": "test",
       "problemMatcher": []
     },
@@ -45,14 +56,18 @@
       "label": "validate: repository",
       "type": "shell",
       "command": "python3",
-      "args": ["scripts/validate_repository.py"],
+      "args": [
+        "scripts/validate_repository.py"
+      ],
       "problemMatcher": []
     },
     {
       "label": "validate: openapi",
       "type": "shell",
       "command": "python3",
-      "args": ["scripts/validate_openapi.py"],
+      "args": [
+        "scripts/validate_openapi.py"
+      ],
       "problemMatcher": []
     },
     {
@@ -76,6 +91,93 @@
         "-File",
         "scripts/validate_compose_health.ps1"
       ],
+      "problemMatcher": []
+    },
+    {
+      "label": "gradle: verificar wrapper Valley Android",
+      "type": "shell",
+      "command": "./gradlew",
+      "windows": {
+        "command": "gradlew.bat"
+      },
+      "linux": {
+        "command": "./gradlew"
+      },
+      "osx": {
+        "command": "./gradlew"
+      },
+      "args": [
+        "--version",
+        "--no-daemon"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/apps/valley-android"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "gradle: parar daemons Valley Android",
+      "type": "shell",
+      "command": "./gradlew",
+      "windows": {
+        "command": "gradlew.bat"
+      },
+      "linux": {
+        "command": "./gradlew"
+      },
+      "osx": {
+        "command": "./gradlew"
+      },
+      "args": [
+        "--stop"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/apps/valley-android"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "gradle: validar Valley Android sem servidor",
+      "type": "shell",
+      "command": "./gradlew",
+      "windows": {
+        "command": "gradlew.bat"
+      },
+      "linux": {
+        "command": "./gradlew"
+      },
+      "osx": {
+        "command": "./gradlew"
+      },
+      "args": [
+        "testProductionDebugUnitTest",
+        "lintProductionDebug",
+        "assembleProductionDebug",
+        "--no-daemon",
+        "--stacktrace"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/apps/valley-android"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      },
       "problemMatcher": []
     },
     {
