@@ -1,11 +1,11 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 2.4  
-**Data e hora:** 29/07/2026 04:11, `America/Sao_Paulo`  
+**Versão:** 2.5  
+**Data e hora:** 29/07/2026 04:40, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Branch:** `fix/android-validator-productiondebug-2026-07-29`  
-**Commit-base:** `f1681dd2cbff145a661254cb1ce49f059121d7f2`  
-**Issue de orquestração:** `#51`  
+**Branch:** `feat/marketplace-checkout-idempotente-2026-07-29`  
+**Commit-base:** `6f76c6359eca268aaafc301a51c0f754be8998c8`  
+**Issues:** `#51`, `#78` e `#79`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`
 
 ## 1. Regra mandatória de prioridade
@@ -19,73 +19,18 @@ Antes de qualquer nova evolução, tratar nesta ordem:
 5. issues executáveis;
 6. somente depois, nova evolução autorizada.
 
-A política autoritativa permanece em `config/autonomy/pending_work_priority_policy.json` e `AGENTS.md`.
+## 2. Fechamentos confirmados
 
-## 2. Estado confirmado neste ciclo
-
-- PR #74 validada e integrada por Squash and Merge;
-- commit de integração da PR #74: `f1681dd2cbff145a661254cb1ce49f059121d7f2`;
-- PR #75 encerrada sem merge por conter 304 arquivos e 32.228 exclusões fora do escopo declarado;
-- o ajuste legítimo da PR #75 foi isolado em branch limpa;
-- o workflow permanente de Security já usa `testProductionDebugUnitTest`, `lintProductionDebug` e `assembleProductionDebug`;
-- o adaptador `scripts/validate_valley_android_release_v29.py` preserva as verificações legadas e valida as tarefas explícitas;
-- o workflow de release passou a chamar o adaptador v2.9;
-- foi criado teste de regressão para impedir retorno ao contrato Android genérico;
+- PR #74 integrada por Squash and Merge no commit `f1681dd2cbff145a661254cb1ce49f059121d7f2`;
+- PR #75 encerrada sem merge por escopo divergente;
+- PR #76 integrada por Squash and Merge no commit `6f76c6359eca268aaafc301a51c0f754be8998c8`;
+- PR #77 encerrada sem merge por estar baseada antes do PR #76 e misturar branding, CI e documentação divergente;
+- issue #79 preserva os nove ajustes de branding para reaplicação controlada;
+- Continuous Integration, Security, Docker Compose Health Gate e A1 Admin Template passaram no head final do PR #76;
 - Vision permanece excluído;
-- nenhuma credencial ou segredo foi versionado.
+- nenhuma credencial foi versionada.
 
-## 3. Objetivo imediato
-
-Concluir a correção mínima do gate Android sem incorporar alterações alheias:
-
-1. validar o adaptador v2.9;
-2. validar o workflow de release;
-3. executar testes de regressão;
-4. executar CI, Security e Docker Compose no mesmo head;
-5. revisar diff, threads, segredos e mergeabilidade;
-6. integrar exclusivamente por Squash and Merge.
-
-## 4. Arquivos autorizados neste incremento
-
-- `.github/workflows/valley-android-release.yml`;
-- `tests/test_valley_android_release_adapter.py`;
-- `tarefas.md`;
-- relatório e plano versionados deste ciclo.
-
-Qualquer arquivo adicional exige justificativa técnica explícita e nova revisão de escopo.
-
-## 5. Testes obrigatórios
-
-```bash
-python scripts/validate_valley_android_release_v29.py
-python -m pytest -q tests/test_valley_android_release_adapter.py
-python -m pytest -q tests/test_valley_android_workflow_contract.py
-python scripts/validate_repository.py
-```
-
-Gates remotos obrigatórios no mesmo SHA:
-
-- Continuous Integration;
-- Security;
-- Docker Compose Health Gate;
-- demais workflows acionados pelo diff.
-
-## 6. Critérios de aceite
-
-- workflow de release chama `validate_valley_android_release_v29.py`;
-- contrato legado continua sendo executado por meio do adaptador;
-- tarefas Android genéricas são rejeitadas;
-- tarefas `ProductionDebug` são obrigatórias;
-- `${{ runner.temp }}` permanece utilizado para arquivos efêmeros de assinatura;
-- nenhuma alteração de interface, branding, skills ou produto entra no diff;
-- nenhum segredo é versionado;
-- gates verdes no mesmo head;
-- ausência de threads não resolvidas;
-- integração por Squash and Merge com `expected_head_sha`.
-
-## 7. Próxima sequência funcional após o fechamento
-
-### Marketplace
+## 3. Estado real do Marketplace
 
 O PR #65 já integrou:
 
@@ -97,43 +42,111 @@ O PR #65 já integrou:
 - favoritos;
 - carrinho isolado por usuário.
 
-Próximo incremento permitido:
+O carrinho atual calcula preço e disponibilidade a partir de `products.payload`, incluindo `price_brl` e `stock_quantity`.
 
-1. mapear contrato de reserva no Stock;
-2. desenhar checkout idempotente;
-3. validar preço e disponibilidade no momento do checkout;
-4. integrar Wallet e Orders sem lançar valores fora do ledger;
-5. publicar eventos de reserva, pedido e pagamento;
-6. manter feature flag desligada até homologação;
-7. não iniciar Delivery antes da conclusão formal de Marketplace e Stock.
+## 4. Bloqueio estrutural comprovado
 
-### Stock
+O módulo Stock atual ainda não possui entidade de inventário ou reserva transacional. As entidades tipadas registradas são:
 
-Permanece como segunda fase e deve fornecer:
+- suppliers;
+- catalog_products;
+- price_rules;
+- supplier_orders;
+- discount_quotes.
 
-- fonte única de saldo;
-- reservas com expiração;
-- concorrência segura;
-- idempotência;
-- auditoria;
-- prevenção de estoque negativo.
+O `modules/stock/main.py` expõe apenas cálculo de conversão de unidades além das rotas genéricas compartilhadas.
 
-### Delivery
+Portanto, não é permitido declarar checkout concluído nem criar uma reserva fictícia dentro do Marketplace. A fonte única de saldo precisa ser criada no Stock antes da confirmação financeira.
 
-Permanece como terceira fase. O Valley Rider já integrado não equivale à homologação completa do Delivery.
+## 5. Objetivo imediato da issue #78
 
-## 8. Proibições
+Implementar o checkout por incrementos seguros:
+
+### Incremento A, contrato e fundação
+
+1. versionar o contrato de checkout;
+2. definir a máquina de estados;
+3. definir a chave de idempotência;
+4. definir snapshot imutável dos itens;
+5. definir eventos e compensações;
+6. manter feature flag desligada;
+7. mapear migrations e stores necessários.
+
+### Incremento B, Stock transacional
+
+1. adicionar inventory_items;
+2. adicionar stock_reservations;
+3. criar reserva com expiração;
+4. impedir estoque negativo;
+5. tratar concorrência;
+6. liberar ou confirmar reserva;
+7. publicar eventos por outbox.
+
+### Incremento C, pedido e pagamento
+
+1. criar pedido idempotente;
+2. validar preço e disponibilidade novamente;
+3. lançar valores somente no ledger;
+4. tratar pagamento pendente, aprovado, rejeitado e compensado;
+5. impedir dupla cobrança;
+6. confirmar a baixa somente após autorização válida.
+
+## 6. Estado desta execução
+
+- issue #78 criada;
+- branch `feat/marketplace-checkout-idempotente-2026-07-29` criada sobre a main atual;
+- contrato de checkout será versionado nesta branch;
+- nenhuma reserva, pedido ou pagamento fictício será criado;
+- Delivery permanece bloqueado.
+
+## 7. Validação obrigatória
+
+Antes de qualquer implementação transacional:
+
+```bash
+python scripts/validate_repository.py
+python -m pytest -q tests/test_marketplace_discovery.py
+python -m pytest -q modules/marketplace/tests
+python -m pytest -q modules/stock/tests
+python -m pytest -q modules/finance/tests
+```
+
+Quando houver migration ou store:
+
+- banco PostgreSQL limpo;
+- migrations ordenadas;
+- testes de concorrência;
+- testes de idempotência;
+- testes de expiração e compensação;
+- Database, CI, Security, OpenAPI e Compose verdes no mesmo SHA.
+
+## 8. Critérios de aceite do checkout completo
+
+- fonte única de saldo no Stock;
+- reserva transacional com expiração;
+- preço revalidado no servidor;
+- snapshot imutável;
+- pedido idempotente;
+- ledger como única fonte financeira;
+- nenhuma dupla cobrança;
+- outbox e consumidores idempotentes;
+- auditoria imutável;
+- feature flag desligada até homologação;
+- rollback comprovado;
+- integração por Squash and Merge.
+
+## 9. Proibições
 
 - não executar push direto na `main`;
-- não integrar PR com escopo divergente;
-- não usar resultados de head anterior;
-- não ativar auto-merge enquanto outros métodos de merge estiverem habilitados;
-- não versionar segredos;
-- não reativar Vision;
+- não criar saldo de estoque dentro do Marketplace;
+- não armazenar dados brutos de cartão;
+- não simular pagamento como liquidado;
 - não iniciar Delivery;
-- não declarar checkout concluído sem reserva transacional e ledger.
+- não reativar Vision;
+- não excluir ativos de marca sem confirmar substituição;
+- não integrar PR com gate vermelho ou escopo divergente.
 
-## 9. Histórico
+## 10. Histórico
 
 | Versão | Data | Alteração |
 |---|---|---|
@@ -141,4 +154,5 @@ Permanece como terceira fase. O Valley Rider já integrado não equivale à homo
 | 2.1 | 28/07/2026 | Rodada 005 com contratos e feature flags. |
 | 2.2 | 28/07/2026 | Marketplace Fase 1 e governança de pendências. |
 | 2.3 | 28/07/2026 | A1 Admin Web + Mobile, Android seguro e pacote Figma. |
-| 2.4 | 29/07/2026 | PR #74 integrada, PR #75 rejeitada por escopo divergente e correção Android v2.9 isolada. |
+| 2.4 | 29/07/2026 | PR #74 integrada, PR #75 rejeitada e correção Android v2.9 isolada. |
+| 2.5 | 29/07/2026 | PR #76 integrada, PR #77 preservada sem merge e checkout bloqueado até existir reserva transacional no Stock. |
