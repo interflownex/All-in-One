@@ -1,10 +1,10 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 4.0
-**Data e hora:** 30/07/2026 14:38, `America/Sao_Paulo`
+**Versão:** 4.1
+**Data e hora:** 30/07/2026 14:46, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
-**Branch:** `codex/corrigir-referencias-marca-20260730`
-**Commit-base:** `b04af1dd235fee24e504e0dc79a296ed4832d7e0`
+**Branch:** `codex/corrigir-gate-marca-pytest-20260730`
+**Commit-base:** `e91e454a1be97bf9b942f762fb542b24f32e0fc2`
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
@@ -272,6 +272,9 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
 - duas referências não canônicas de marca detectadas pelo workflow pós-merge
   foram restauradas para os ativos oficiais autorizados, sem alterar os
   binários nem a composição das marcas;
+- o gate de marca pós-restauração aprovou a integridade e falhou somente porque
+  chamava `pytest` sem instalá-lo; o workflow passou a instalar uma versão
+  explícita do executor antes de preservar todos os testes existentes;
 
 ### Sequência, prioridades e critérios de aceite
 
@@ -325,3 +328,4 @@ mesmo SHA.
 | 3.8 | 30/07/2026 | Lockfile do Admin regenerado após o gate remoto detectar dependências inconsistentes. |
 | 3.9 | 30/07/2026 | PR #100 integrada; bloqueio externo de billing GKE isolado e resolvedor Foojay vulnerável removido. |
 | 4.0 | 30/07/2026 | Dependabot zerado e referências de marca restauradas para os caminhos canônicos autorizados. |
+| 4.1 | 30/07/2026 | Gate de marca corrigido para instalar o executor pytest sem enfraquecer validações. |
