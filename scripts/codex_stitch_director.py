@@ -147,12 +147,13 @@ def main() -> int:
         state = sync_template_projects(args.max_operations)
 
     summary = status_summary(coordinate, state)
-    annotate_director_state(
-        state,
-        actor=args.actor,
-        command=args.command,
-        summary=summary,
-    )
+    if args.command == "sync":
+        annotate_director_state(
+            state,
+            actor=args.actor,
+            command=args.command,
+            summary=summary,
+        )
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
     if args.require_complete and (
