@@ -23,13 +23,18 @@ def test_migration_027_is_latest_and_defines_authoritative_balances() -> None:
     assert "UNIQUE (user_id, company_id, idempotency_key)" in sql
     assert "WHERE status = 'reserved'" in sql
     assert "REFERENCES marketplace.products(id)" in sql
+    assert "CREATE TRIGGER stock_inventory_availability_status" in sql
+    assert "NEW.physical_quantity - NEW.reserved_quantity = 0" in sql
 
 
 def test_migration_has_explicit_manual_rollback_in_dependency_order() -> None:
     rollback = ROLLBACK.read_text(encoding="utf-8")
     reservations = rollback.index("DROP TABLE IF EXISTS stock.stock_reservations")
     inventory = rollback.index("DROP TABLE IF EXISTS stock.inventory_items")
-    assert reservations < inventory
+    function = rollback.index(
+        "DROP FUNCTION IF EXISTS stock.derive_inventory_availability_status()"
+    )
+    assert reservations < inventory < function
     assert "Executar somente em banco efêmero" in rollback
 
 
@@ -70,12 +75,14 @@ def test_request_hash_is_stable_for_equivalent_decimal_bodies() -> None:
     assert len(first) == 64
 
 
-def test_api_requires_authentication_idempotency_and_correlation() -> None:
+def test_api_requires_authentication_idempotency_correlation_and_tenant_scope() -> None:
     main = MAIN.read_text(encoding="utf-8")
     assert 'app = create_module_app("stock", version="0.3.0")' in main
     assert 'Header(..., alias="X-Idempotency-Key")' in main
     assert main.count('Header(..., alias="X-Correlation-Id")') >= 5
     assert "actor: Actor = Depends(actor_from_headers)" in main
+    assert "actor.business_id == company_id" in main
+    assert '"stock:reservations:expire" not in actor.scopes' in main
     assert "MARKETPLACE_CHECKOUT_V1_ENABLED" not in main
 
 
