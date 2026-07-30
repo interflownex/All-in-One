@@ -104,7 +104,9 @@
         {"key": "safety_support", "title": "Emergencia, suporte, chat, incidentes, privacidade e central de seguranca"},
         {"key": "history_ratings", "title": "Historico, indicadores, avaliacoes, notificacoes e configuracoes"}
       ]
-    },
+    }
+  ],
+  "authorized_pending_projects": [
     {
       "id": "aio_admin_web_mobile_template",
       "project_name": "AIO ADMIN - Template Web e Mobile Completo",
