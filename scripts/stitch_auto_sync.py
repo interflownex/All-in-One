@@ -19,7 +19,7 @@ from scripts.validate_stitch_mcp_config import validate_stitch_mcp_config
 LEGACY_NOTICE = (
     "A sincronizacao remota legada por modulo foi desativada. "
     "Use scripts/codex_stitch_director.py para coordenar diretamente "
-    "os tres projetos agregadores oficiais."
+    "os quatro projetos agregadores oficiais."
 )
 
 
