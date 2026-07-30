@@ -35,11 +35,12 @@ def test_mapear_ecossistema_e_fontes_de_verdade() -> None:
     contract = load_json("config/data_audit/delivery_contract.json")
 
     assert coordinate["authoritative_sources"]
-    assert len(coordinate["projects"]) == 3
+    assert len(coordinate["projects"]) == 4
     assert {project["id"] for project in coordinate["projects"]} == {
         "valley_apk_template",
         "all_in_one_web_mobile_template",
         "valley_riders_apk_template",
+        "aio_admin_web_mobile_template",
     }
     assert contract["required_database_paths"]
     assert set(contract["coverage_dimensions"]) >= {
@@ -134,4 +135,4 @@ def test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite() -> No
     )
     assert all(item["endpoint"] and item["permissions"] for item in coordinates)
     text = " ".join(directive["universal_directives"]).casefold()
-    assert "wcag aa" in text and "endpoint/contrato" in text and "teste" in text
+    assert "wcag aa" in text and "endpoint ou contrato" in text and "teste" in text
