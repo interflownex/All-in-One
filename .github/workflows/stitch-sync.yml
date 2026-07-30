@@ -126,7 +126,7 @@ jobs:
           env_http_headers = { "X-Goog-Api-Key" = "STITCH_API_KEY" }
           EOF
 
-      - name: Executar fallback remoto pelo diretor Codex
+      - name: Executar lote remoto pelo diretor Codex
         run: |
           python scripts/validate_stitch_mcp_config.py --require-secret
           CREATE_FLAG=""
@@ -135,14 +135,16 @@ jobs:
           fi
           python scripts/codex_stitch_director.py sync \
             --max-operations 8 \
-            --require-complete \
             $CREATE_FLAG \
             --actor github-actions-fallback
 
-      - name: Versionar somente o checkpoint oficial
+      - name: Versionar checkpoint oficial, inclusive quando parcial
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
           git add config/stitch/template_project_state.json
           git diff --cached --quiet || git commit -m "chore(stitch): atualizar checkpoint coordenado pelo Codex"
           git push
+
+      - name: Confirmar conclusao integral do checkpoint
+        run: python scripts/codex_stitch_director.py status --require-complete --actor github-actions-fallback
