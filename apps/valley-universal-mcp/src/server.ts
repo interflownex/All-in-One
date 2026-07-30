@@ -36,16 +36,29 @@ const contexts = [
   },
 ] as const;
 
-const server = new McpServer({
-  name: "valley-universal",
-  version: "1.0.0",
-})
+const readOnlyAnnotations = {
+  readOnlyHint: true,
+  destructiveHint: false,
+  openWorldHint: false,
+} as const;
+
+const server = new McpServer(
+  {
+    name: "valley-universal",
+    version: "1.0.0",
+  },
+  { capabilities: {} },
+)
   .registerTool(
     {
       name: "valley_list_contexts",
       description:
         "Lista os contextos públicos do Valley Universal e explica a finalidade de cada um. Não concede acesso.",
       inputSchema: {},
+      annotations: {
+        title: "Listar contextos do Valley",
+        ...readOnlyAnnotations,
+      },
     },
     async () => ({
       content: [
@@ -59,6 +72,7 @@ const server = new McpServer({
         authorizationNotice:
           "Selecionar ou mencionar um contexto não concede permissão. O Valley valida perfil, vínculo e situação cadastral após o login.",
       },
+      isError: false,
     }),
   )
   .registerTool(
@@ -67,6 +81,10 @@ const server = new McpServer({
       description:
         "Consulta o estado público das entregas web/PWA, Android e MCP do Valley Universal.",
       inputSchema: {},
+      annotations: {
+        title: "Consultar entrega do Valley Universal",
+        ...readOnlyAnnotations,
+      },
     },
     async () => ({
       content: [
@@ -96,6 +114,7 @@ const server = new McpServer({
           accessMode: "read-only",
         },
       },
+      isError: false,
     }),
   )
   .registerTool(
@@ -108,6 +127,10 @@ const server = new McpServer({
           .enum(["PERSONAL", "RIDER", "BUSINESS", "ONE_SERVICE", "PDV"])
           .optional()
           .describe("Contexto que a pessoa pretende utilizar."),
+      },
+      annotations: {
+        title: "Abrir o Valley Universal",
+        ...readOnlyAnnotations,
       },
     },
     async ({ context }) => {
@@ -129,10 +152,11 @@ const server = new McpServer({
           authorizationNotice:
             "Esta ferramenta não autentica, não concede papéis e não contorna homologações.",
         },
+        isError: false,
       };
     },
   );
 
-export type AppType = typeof server;
+export default await server.run();
 
-await server.run();
+export type AppType = typeof server;
