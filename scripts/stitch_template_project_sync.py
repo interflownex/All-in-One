@@ -30,7 +30,11 @@ STATE_PATH = ROOT / "config" / "stitch" / "template_project_state.json"
 
 
 def load_coordinate() -> dict[str, Any]:
-    return json.loads(COORDINATE_PATH.read_text(encoding="utf-8"))
+    coordinate = json.loads(COORDINATE_PATH.read_text(encoding="utf-8"))
+    registered = coordinate.get("projects", [])
+    authorized_pending = coordinate.get("authorized_pending_projects", [])
+    coordinate["projects"] = [*registered, *authorized_pending]
+    return coordinate
 
 
 def coordinate_digest() -> str:
