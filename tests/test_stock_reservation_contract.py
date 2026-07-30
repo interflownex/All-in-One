@@ -4,14 +4,14 @@ from pathlib import Path
 from modules.shared.stock_postgres_store import StockPostgresStore
 
 ROOT = Path(__file__).resolve().parents[1]
-MIGRATION = ROOT / "database" / "postgres" / "migrations" / "027_stock_inventory_reservations.sql"
-ROLLBACK = ROOT / "database" / "postgres" / "rollbacks" / "027_stock_inventory_reservations.sql"
+MIGRATION = ROOT / "database" / "postgres" / "migrations" / "031_stock_inventory_reservations.sql"
+ROLLBACK = ROOT / "database" / "postgres" / "rollbacks" / "031_stock_inventory_reservations.sql"
 STORE = ROOT / "modules" / "shared" / "stock_postgres_store.py"
 MAIN = ROOT / "modules" / "stock" / "main.py"
 OPENAPI = ROOT / "modules" / "stock" / "OPENAPI.yaml"
 
 
-def test_migration_027_is_latest_and_defines_authoritative_balances() -> None:
+def test_migration_031_is_latest_and_defines_authoritative_balances() -> None:
     migrations = sorted((ROOT / "database" / "postgres" / "migrations").glob("*.sql"))
     assert migrations[-1].name == MIGRATION.name
 
