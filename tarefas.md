@@ -1,10 +1,10 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 3.5  
-**Data e hora:** 30/07/2026 12:46, `America/Sao_Paulo`  
-**Repositório:** `interflownex/All-in-One`  
-**Branch:** `codex/integrar-evolucoes-locais-20260730`  
-**Commit-base:** `05564ff947709251b07a5f5f1852c92e14874393`  
+**Versão:** 3.6
+**Data e hora:** 30/07/2026 13:17, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/auditoria-relacional-20260730`
+**Commit-base:** `8832ea85a17099bdc33cf666248e91c2ad0d7cd6`
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
@@ -204,7 +204,81 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
 9. integrar somente por Squash and Merge protegido por SHA;
 10. atualizar este documento após cada issue concluída.
 
-## 9. Histórico resumido
+## 9. Auditoria de PRs, commits, merges e coerência relacional
+
+### Objetivo, contexto e escopo
+
+- reconciliar a `main`, branches, PRs, merges, workflows e trabalhos locais;
+- preservar qualquer alteração não versionada antes de classificá-la;
+- corrigir o gerador relacional para refletir o código atual e regenerar sua
+  documentação derivada;
+- não incorporar branches antigas, arquivos gerados ou código de segurança
+  superado sem comparação semântica e teste reproduzível.
+
+### Fontes de verdade e pré-requisitos
+
+- Git local, `origin/main`, API do GitHub e histórico de checks;
+- `scripts/generate_data_audit_inventory.py`;
+- `scripts/validate_data_audit_delivery.py`;
+- `docs/data-audit/` e seus artefatos derivados;
+- lock de sincronização multiagente obrigatório antes de editar;
+- credenciais GCP válidas fora do Git para liberar o deploy GKE.
+
+### Resultado e evidências
+
+- nenhuma PR aberta foi localizada no início da atividade;
+- `main` local e `origin/main` estavam iguais em `8832ea8`;
+- CI, Security, Compose e Git Sync estavam verdes nesse SHA;
+- Deploy to GKE permanecia vermelho porque `GCP_WIP` e `GCP_SA_EMAIL` não
+  estavam disponíveis no ambiente GitHub, sem correção segura no código;
+- trabalhos locais Android/Telegram e logging foram preservados em branches
+  `recovery/*`, sem promoção de implementações antigas;
+- a auditoria de dados passou a carregar `domain_rules.py` sem acionar o
+  `shared.__init__` nem exigir FastAPI para geração estática;
+- rotas vazias de `APIRouter` passaram a herdar o prefixo real;
+- o inventário de browser storage foi alinhado às chaves produtivas atuais;
+- o alias relacional `jobs:jobpostings -> job_postings` foi mantido;
+- gerador reproduzido: 32 migrations, 167 tabelas, 2.367 campos, 586 relações,
+  166 endpoints, 263 superfícies e 946 ações;
+- validador nativo aprovado, compilação Python aprovada, `git diff --check`
+  aprovado e 22 testes do contrato executados diretamente e aprovados;
+- a tentativa de instalar `pytest` via `uv` foi interrompida após repetidas
+  falhas de rede; não foi usada como evidência de aprovação.
+
+### Sequência, prioridades e critérios de aceite
+
+1. publicar esta branch e abrir PR para `main`;
+2. verificar diff, segredos e head SHA;
+3. exigir todos os gates verdes no mesmo SHA;
+4. executar Squash and Merge somente sem conflito ou revisão pendente;
+5. confirmar `origin/main` no commit de merge;
+6. manter como pendência externa o provisionamento dos secrets GCP;
+7. revisar `origin/worktree-sync` por conteúdo, sem merge automático.
+
+Aceite: artefatos regeneráveis, rotas e relações com evidência real, nenhuma
+mudança local perdida, PR sem conflito, ausência de segredo e checks verdes no
+mesmo SHA.
+
+### Riscos, bloqueios e pendências restantes
+
+- GKE bloqueado externamente por identidade federada/conta de serviço ausente;
+- `origin/worktree-sync` contém 11 commits divergentes e não deve ser integrado
+  em lote, pois mistura políticas, relatórios, permissões e arquivos gerados;
+- branches `recovery/*` são salvaguardas locais, não entregas candidatas a merge;
+- a persistência da sessão web em `localStorage` permanece um risco de XSS
+  explicitamente inventariado e deve ser tratada em atividade de segurança;
+- a indisponibilidade de rede impediu executar o binário `pytest`, embora todas
+  as funções do contrato sem fixtures tenham sido executadas diretamente.
+
+### Procedimento de entrega
+
+- commit em português baseado no diff real;
+- push apenas da branch de trabalho;
+- PR para `main` com testes, riscos e bloqueios;
+- Squash and Merge com proteção por head SHA;
+- atualização final deste documento após o commit integrado.
+
+## 10. Histórico resumido
 
 | Versão | Data | Alteração |
 |---|---|---|
@@ -215,3 +289,4 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
 | 3.3 | 30/07/2026 | PR #94 aberta para executar a issue #78. |
 | 3.4 | 30/07/2026 | PR #94 e issue #78 concluídas; issue #95 aberta como próxima dependência financeira. |
 | 3.5 | 30/07/2026 | Trabalho local reconciliado com `origin/main`; código válido reaplicado e regressões arquivadas apenas localmente. |
+| 3.6 | 30/07/2026 | PRs, commits, merges, workflows e trabalhos locais auditados; gerador e artefatos relacionais sincronizados ao código atual. |
