@@ -75,21 +75,38 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 - Ao concluir a sincronizacao, liberar o lock com `python3 scripts/multi_agent_sync_guard.py release --agent <agent_id>`.
 - Antes de sincronizar, buscar `origin/main` e `fork/main` quando os remotos estiverem acessiveis.
 - Nunca executar comandos destrutivos como `git reset --hard`, `git clean` destrutivo ou checkout que descarte trabalho alheio sem ordem explicita do usuario.
-- `config/stitch/screen_manifest.json` e `config/stitch/sync_state.json` sao o estado autoritativo para sincronia Stitch e devem ser preservados entre agentes.
+- `config/stitch/template_project_coordinate.json` e `config/stitch/template_project_state.json` sao as fontes autoritativas da trilha oficial Stitch e devem ser preservadas entre agentes.
+- `config/stitch/screen_manifest.json` e `config/stitch/sync_state.json` permanecem somente como referencia historica da estrategia legada por modulo e nao autorizam escrita remota.
 - Segredos como `STITCH_API_KEY` devem permanecer apenas em variaveis de ambiente, GitHub Actions Secrets ou cofres externos; nunca versionar segredos.
 
 # Integracoes Google ativas
 
-- Google SDK, Google AI Studio, Google Cloud, AlloyDB, Google Code CLI, Gemini CLI, Gemini Code Assist e Google Stitch estao ativos por ordem explicita do usuario.
+- Google SDK, Google AI Studio, Google Cloud, AlloyDB, Google Code CLI, Gemini CLI, Gemini Code Assist e Google Stitch estao ativos por ordem explicita do usuario, conforme os limites de credencial, billing, IAM e compliance.
 - A politica obrigatoria fica em `config/autonomy/google_integrations_policy.json`.
 - Discover, sync e operacoes Google podem executar quando credenciais legitimas estiverem disponiveis fora do Git.
-- Docker, VS Code, Antigravity, workflows e scripts devem manter as flags Google, AlloyDB, Gemini e Stitch ativas.
+- Docker, VS Code, Antigravity, workflows e scripts devem manter as flags Google, AlloyDB, Gemini e Stitch coerentes com a politica versionada.
 - Nao contornar billing, IAM, compliance, enforcement ou suspensao administrativa do provedor.
+
+# Coordenacao direta Codex para Google Stitch
+
+- O Codex e o coordenador autoritativo do Google Stitch neste workspace.
+- A politica detalhada fica em `config/autonomy/codex_stitch_director_policy.json`.
+- O Codex deve ler `config/stitch/template_project_coordinate.json`, conferir os `project_id` e `screen_id` em `config/stitch/template_project_state.json` e chamar diretamente o Stitch MCP.
+- O ponto unico de escrita remota e `python3 scripts/codex_stitch_director.py sync`.
+- Antes da escrita, executar `python3 scripts/codex_stitch_director.py plan` e `python3 scripts/codex_stitch_director.py status`. O uso de `--require-complete` e obrigatorio somente para confirmar uma sincronizacao remota integral, nao para o gate local de uma pull request.
+- A sincronizacao direta exige `STITCH_API_KEY` ou `STITCH_ACCESS_TOKEN` no ambiente, nunca em arquivo versionado.
+- O Codex deve reutilizar exclusivamente os quatro projetos agregadores oficiais: Valley APK, All in One Web/Mobile, Valley Riders APK e AIO Admin Web/Mobile.
+- O AIO Admin deve permanecer em projeto separado. A primeira criacao remota exige autorizacao explicita e checkpoint imediato do `project_id`.
+- O modulo Vision esta inativo e nao pode ser incluido ou reativado sem ordem explicita do usuario.
+- E proibido criar projetos Stitch por modulo, microservico, aplicativo, rodada ou agente quando existir projeto agregador correspondente.
+- `scripts/stitch_orchestrator.py` e `scripts/stitch_auto_sync.py` nao podem executar escrita remota; permanecem somente para compatibilidade e leitura historica.
+- GitHub Actions valida politica, coordenadas, testes e checkpoints. Sincronizacao remota por workflow somente pode ocorrer como fallback manual explicitamente acionado e deve usar o mesmo `scripts/codex_stitch_director.py`.
+- Cada operacao remota deve registrar `last_director`, digest da coordenada, data, agente, resumo e checkpoint no estado oficial.
 
 # Governanca inviolavel de marca
 
 - A fonte de verdade dos ativos autorizados e `config/branding/authorized_assets.json`, complementada por `config/branding/brand_identity.json` e `assets/brand/README.md`.
-- As marcas oficiais abrangidas sao All in One, Valley e Valley Riders.
+- As marcas oficiais abrangidas sao All in One, Valley, Valley Riders e AIO Admin.
 - Sem autorizacao explicita do proprietario da marca, somente duas operacoes sao permitidas: remover exclusivamente o fundo externo sem tocar na arte e redimensionar proporcionalmente.
 - E proibido redesenhar, recolorir, recortar, girar, distorcer, trocar tipografia, alterar linhas, curvas, formas ou composicao, aplicar filtros, mascaras ou opacidade decorativa, ou criar simbolo substituto.
 - Todo ativo digital deve manter fundo externo totalmente transparente.

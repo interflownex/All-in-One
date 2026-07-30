@@ -9,11 +9,58 @@ ROOT = Path(__file__).resolve().parents[1]
 LEGACY_VALIDATOR = ROOT / "scripts" / "validate_repository.py"
 CATALOG_PATH = ROOT / "config" / "module_catalog.json"
 SECURITY_WORKFLOW = ROOT / ".github" / "workflows" / "security.yml"
+STITCH_WORKFLOW = ROOT / ".github" / "workflows" / "stitch-sync.yml"
 BRAND_IDENTITY = ROOT / "config" / "branding" / "brand_identity.json"
+GOOGLE_POLICY = ROOT / "config" / "autonomy" / "google_integrations_policy.json"
+CODEX_STITCH_POLICY = (
+    ROOT / "config" / "autonomy" / "codex_stitch_director_policy.json"
+)
+LEGACY_STITCH_SCRIPT = ROOT / "scripts" / "stitch_auto_sync.py"
+
+
+def _codex_direct_mode_is_consistent() -> bool:
+    google = json.loads(GOOGLE_POLICY.read_text(encoding="utf-8"))
+    codex = json.loads(CODEX_STITCH_POLICY.read_text(encoding="utf-8"))
+    workflow = STITCH_WORKFLOW.read_text(encoding="utf-8")
+    legacy_script = LEGACY_STITCH_SCRIPT.read_text(encoding="utf-8")
+    runtime = google.get("runtime_environment", {})
+    official_projects = codex.get("official_projects", [])
+
+    expected_runtime = {
+        "GOOGLE_INTEGRATIONS_ENABLED": "true",
+        "GOOGLE_CLOUD_ENABLED": "false",
+        "GOOGLE_AI_STUDIO_ENABLED": "false",
+        "GOOGLE_CODE_CLI_ENABLED": "true",
+        "ALLOYDB_ENABLED": "false",
+        "GEMINI_CODE_ASSIST_ENABLED": "true",
+        "STITCH_REMOTE_SYNC_ENABLED": "true",
+        "STITCH_COORDINATOR": "codex",
+        "STITCH_LEGACY_MODULE_SYNC_ENABLED": "false",
+        "DATA_AGENT_KIT_ENABLED": "true",
+    }
+    project_keys = {item.get("key") for item in official_projects}
+
+    return (
+        google.get("enabled") is True
+        and google.get("reactivated_at") == "2026-07-30T05:00:00-03:00"
+        and all(runtime.get(key) == value for key, value in expected_runtime.items())
+        and codex.get("coordinator") == "codex"
+        and codex.get("mode") == "direct_mcp"
+        and len(official_projects) == 4
+        and "aio_admin_web_mobile_template" in project_keys
+        and "python scripts/codex_stitch_director.py plan" in workflow
+        and "python scripts/codex_stitch_director.py status" in workflow
+        and "python scripts/codex_stitch_director.py sync" in workflow
+        and "secrets.STITCH_API_KEY" in workflow
+        and "contents: read" in workflow
+        and "contents: write" in workflow
+        and "A sincronizacao remota legada por modulo foi desativada" in legacy_script
+        and "return 2" in legacy_script
+    )
 
 
 def compatibility_exceptions() -> dict[str, bool]:
-    """Retorna somente exceções transitórias comprovadas pela baseline v2.9."""
+    """Retorna somente excecoes transitórias comprovadas pela baseline v2.9."""
 
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     slugs = {module["slug"] for module in catalog.get("modules", [])}
@@ -31,6 +78,7 @@ def compatibility_exceptions() -> dict[str, bool]:
     optional_light_logo_valid = not optional_light_logo or (
         ROOT / optional_light_logo
     ).is_file()
+    codex_direct_mode = _codex_direct_mode_is_consistent()
 
     return {
         "Esperados 25 modulos; catalogo possui 24.": (
@@ -47,6 +95,13 @@ def compatibility_exceptions() -> dict[str, bool]:
             and set(brand.get("riders_apps", []))
             == {"valley-rider", "all-in-one-riders"}
         ),
+        "Politica Google deve refletir o modo local-first com enabled=false.": codex_direct_mode,
+        "Politica Google deve registrar a reativacao de 2026-06-06.": codex_direct_mode,
+        "Politica Google deve manter GOOGLE_INTEGRATIONS_ENABLED=false no modo local-first.": codex_direct_mode,
+        "Politica Google deve manter GOOGLE_CODE_CLI_ENABLED=false no modo local-first.": codex_direct_mode,
+        "Politica Google deve manter STITCH_REMOTE_SYNC_ENABLED=false no modo local-first.": codex_direct_mode,
+        "Workflow de sincronizacao remota Stitch incompleto: config/stitch/sync_state.json": codex_direct_mode,
+        "Workflow Stitch deve manter sincronizacao remota ativa: python scripts/stitch_auto_sync.py --require-remote": codex_direct_mode,
     }
 
 
@@ -114,14 +169,12 @@ def main() -> int:
 
     if not errors:
         print(
-            "O validador legado falhou sem emitir mensagens reconhecíveis.",
+            "O validador legado falhou sem emitir mensagens reconheciveis.",
             file=sys.stderr,
         )
         return result.returncode or 1
 
-    print(
-        "Validação compatível v2.9 aprovada: nenhuma falha real permaneceu."
-    )
+    print("Validacao compativel v2.9 aprovada: nenhuma falha real permaneceu.")
     return 0
 
 

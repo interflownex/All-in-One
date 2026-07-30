@@ -41,6 +41,9 @@ def test_mapear_ecossistema_e_fontes_de_verdade() -> None:
         "all_in_one_web_mobile_template",
         "valley_riders_apk_template",
     }
+    assert {project["id"] for project in coordinate["authorized_pending_projects"]} == {
+        "aio_admin_web_mobile_template"
+    }
     assert contract["required_database_paths"]
     assert set(contract["coverage_dimensions"]) >= {
         "bancos",
@@ -134,4 +137,4 @@ def test_orientar_stitch_acessibilidade_integracao_e_criterios_de_aceite() -> No
     )
     assert all(item["endpoint"] and item["permissions"] for item in coordinates)
     text = " ".join(directive["universal_directives"]).casefold()
-    assert "wcag aa" in text and "endpoint/contrato" in text and "teste" in text
+    assert "wcag aa" in text and "endpoint ou contrato" in text and "teste" in text

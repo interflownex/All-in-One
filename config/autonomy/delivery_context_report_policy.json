@@ -1,0 +1,52 @@
+{
+  "version": "1.1.0",
+  "updated_at": "2026-07-30T05:15:00-03:00",
+  "timezone": "America/Sao_Paulo",
+  "language": "pt-BR",
+  "project": "All in One + Valley",
+  "scope": "workspace",
+  "enabled": true,
+  "title": "Relatorio de Entrega de Contexto",
+  "audience": [
+    "Pessoa Fisica (B2C)",
+    "Pessoa Juridica (B2B)",
+    "Equipe Tecnica"
+  ],
+  "mandatory_sections": [
+    "atividade",
+    "entregue",
+    "nao_entregue",
+    "o_que_nao_foi_entregue_e_por_que",
+    "como_resolver",
+    "passo_a_passo_detalhado",
+    "links_exatos_de_acesso"
+  ],
+  "rules": [
+    "Todo encerramento de atividade deve usar as sete secoes obrigatorias na mesma ordem.",
+    "A secao atividade deve explicar de forma simples o objetivo executado.",
+    "A secao entregue deve listar somente resultados comprovados por evidencia real.",
+    "A secao nao entregue deve declarar claramente tudo que permaneceu pendente.",
+    "A secao o que nao foi entregue e por que deve informar a causa concreta de cada item, sem linguagem vaga.",
+    "A secao como resolver deve apresentar a solucao recomendada para cada pendencia ainda aberta.",
+    "A secao passo a passo detalhado deve numerar as acoes em ordem de execucao, usando linguagem simples, indicando o que clicar, preencher, validar e salvar.",
+    "A secao links exatos de acesso deve apresentar a URL completa e direta de cada site, painel, sistema, documentacao, repositorio, issue, pull request ou ferramenta necessaria.",
+    "Nunca usar apenas o nome do site quando um link direto puder ser fornecido.",
+    "Quando uma pagina interna nao possuir URL permanente conhecida, fornecer o link principal do sistema e descrever o caminho exato de menus e botoes.",
+    "Quando nao houver item pendente, declarar explicitamente que nao houve item nao entregue e que nao ha resolucao adicional necessaria.",
+    "Nao confundir codigo criado, plano ou documentacao com entrega funcional comprovada.",
+    "Bloqueios externos, falta de credencial, DNS, billing, IAM, aprovacao legal ou indisponibilidade de ferramenta devem ser identificados pelo nome.",
+    "O texto deve ser claro, direto, em portugues do Brasil e sem jargao desnecessario.",
+    "Relatorios tecnicos devem incluir repositorio, branch, commit, testes e evidencias quando disponiveis.",
+    "Links devem ser conferidos antes da entrega quando a ferramenta permitir validacao.",
+    "Credenciais, tokens e segredos nunca devem ser incluidos nos links, no texto ou nos arquivos versionados."
+  ],
+  "markdown_template": {
+    "atividade": "## Atividade\nDescrever o objetivo e o escopo executado.",
+    "entregue": "## Entregue\nListar resultados finalizados e comprovados.",
+    "nao_entregue": "## Nao entregue\nListar itens ainda pendentes ou declarar que nao existem.",
+    "motivos": "## O que nao foi entregue e por que\nExplicar a causa concreta de cada pendencia.",
+    "como_resolver": "## Como resolver\nApresentar a solucao recomendada para cada pendencia.",
+    "passo_a_passo": "## Passo a passo detalhado\nNumerar todas as acoes necessarias em ordem clara e executavel.",
+    "links": "## Links exatos de acesso\nFornecer URLs completas e diretas, acompanhadas da finalidade de cada link."
+  }
+}

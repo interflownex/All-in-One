@@ -115,9 +115,10 @@ def test_stitch_auto_sync_dry_run_is_safe_and_does_not_require_remote_secret() -
     summary = json.loads(result.stdout)
     assert summary["expected_projects"] == 24
     assert summary["expected_screens"] > 0
+    assert summary["mode"] == "legacy_read_only"
 
 
-def test_stitch_remote_sync_workflow_is_active_and_secret_driven() -> None:
+def test_stitch_remote_workflow_uses_codex_director_and_manual_fallback() -> None:
     workflow = (ROOT / ".github" / "workflows" / "stitch-sync.yml").read_text(
         encoding="utf-8"
     )
@@ -127,6 +128,10 @@ def test_stitch_remote_sync_workflow_is_active_and_secret_driven() -> None:
     assert "if: ${{ false }}" not in workflow
     assert 'STITCH_REMOTE_SYNC_ENABLED: "true"' in workflow
     assert "secrets.STITCH_API_KEY" in workflow
-    assert "python scripts/stitch_auto_sync.py --require-remote" in workflow
-    assert "--require-complete" not in workflow
-    assert "config/stitch/sync_state.json" in workflow
+    assert "python scripts/codex_stitch_director.py plan" in workflow
+    assert "python scripts/codex_stitch_director.py status" in workflow
+    assert "python scripts/codex_stitch_director.py sync" in workflow
+    assert "python scripts/stitch_auto_sync.py --require-remote" not in workflow
+    assert "contents: read" in workflow
+    assert "contents: write" in workflow
+    assert "allow_create_missing_official_projects" in workflow

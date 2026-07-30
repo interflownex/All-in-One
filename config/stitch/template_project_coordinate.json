@@ -1,8 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "status": "coordenada_executavel",
   "language": "pt-BR",
-  "strategy": "tres_projetos_agregadores_sem_fragmentar_produto",
+  "strategy": "quatro_projetos_agregadores_sem_fragmentar_produto",
   "authoritative_sources": [
     "docs/MEMORANDO_MESTRE_GEMINI_VARREDURA_DADOS_FORMULARIOS_ALL_IN_ONE.md",
     "docs/EXECUTION_PLAN.md",
@@ -27,23 +27,25 @@
       "secret STITCH_API_KEY valido",
       "quota Stitch disponivel"
     ],
-    "prohibited_claim": "nao declarar continuidade automatica quando workflow, credencial ou quota nao estiverem comprovados"
+    "prohibited_claim": "nao_declarar_continuidade_automatica_quando_workflow_credencial_ou_quota_nao_estiverem_comprovados"
   },
   "universal_directives": [
     "Herdar integralmente todas as orientacoes versionadas nas fontes autoritativas e todas as atualizacoes posteriores.",
     "Criar um unico projeto Stitch por produto desta coordenada e manter todas as telas, ferramentas e recursos desse produto dentro dele.",
     "Usar portugues do Brasil em rotulos, ajuda, validacoes, mensagens e conteudo funcional.",
-    "Aplicar somente as logos oficiais com proporcao preservada, sem redesenho, corte, distorcao, rotacao ou recoloracao.",
+    "Aplicar somente as logos oficiais com proporcao preservada, fundo externo transparente e sem redesenho, corte, distorcao, rotacao ou recoloracao.",
+    "Usar a logo oficial como icone dos aplicativos e os favicons oficiais nas superficies web.",
     "Preservar a colorimetria oficial atual e gerar layouts web/mobile responsivos quando o projeto exigir ambas as superficies.",
     "Cobrir dashboards, relatorios, grades, filtros, detalhe, CRUD completo, importacao, exportacao, anexos e fluxos de aprovacao aplicaveis.",
-    "Nenhum botao pode ser decorativo: toda acao exige permissao, endpoint/contrato, confirmacao quando necessaria, loading, sucesso, erro, log e teste.",
+    "Nenhum botao pode ser decorativo: toda acao exige permissao, endpoint ou contrato, confirmacao quando necessaria, loading, sucesso, erro, log e teste.",
     "Toda tela deve prever loading, vazio, erro, sucesso, sem permissao, conflito, offline e dados desatualizados.",
     "Aplicar WCAG AA, navegacao por teclado, foco visivel, leitores de tela, contraste, toque minimo e responsividade.",
     "Nao inventar endpoint, campo, permissao ou regra como existente; marcar proposta e lacuna quando o binding nao estiver comprovado.",
     "Nao expor tokens, chaves, biometria, documentos brutos, prontuario, dados financeiros ou outros dados sensiveis nos mockups.",
-    "Usar fonte unica de verdade, multitenancy, RBAC/ABAC, auditoria, idempotencia, correlacao e segregacao de funcoes conforme os contratos.",
+    "Usar fonte unica de verdade, multitenancy, RBAC, ABAC, auditoria, idempotencia, correlacao e segregacao de funcoes conforme os contratos.",
     "Manter checkpoint depois de cada operacao remota e retomar exatamente do primeiro item pendente na rodada seguinte.",
-    "Ao receber nova diretriz diaria, aplicar a alteracao a todas as telas afetadas e registrar versao, impacto e itens revalidados."
+    "Ao receber nova diretriz diaria, aplicar a alteracao a todas as telas afetadas e registrar versao, impacto e itens revalidados.",
+    "O modulo Vision esta inativo e nao pode ser incluido em telas, navegacao, catalogos ou relatorios enquanto nao houver reativacao explicita."
   ],
   "projects": [
     {
@@ -53,50 +55,16 @@
       "surfaces": ["android", "mobile_web_embedded"],
       "brands": ["All-in-One", "Valley"],
       "objective": "Desenvolver em um unico projeto o template integral do superapp Valley para consumidor, reunindo todas as ferramentas e recursos autorizados do ecossistema.",
-      "module_scope": [
-        "identity",
-        "finance",
-        "marketplace",
-        "stock",
-        "delivery",
-        "services",
-        "mobility",
-        "jobs",
-        "health",
-        "document",
-        "notifications",
-        "support"
-      ],
+      "module_scope": ["identity", "finance", "marketplace", "stock", "delivery", "services", "mobility", "jobs", "health", "document", "notifications", "support"],
       "screen_groups": [
-        {
-          "key": "shell_onboarding_identity",
-          "title": "Shell, onboarding, login, MFA, consentimento e perfil"
-        },
-        {
-          "key": "home_discovery_catalog",
-          "title": "Home, busca, categorias, ofertas, detalhes e favoritos"
-        },
-        {
-          "key": "commerce_checkout_wallet",
-          "title": "Carrinho, pedido, pagamento, wallet, escrow, comprovantes e disputas"
-        },
-        {
-          "key": "services_schedule",
-          "title": "Servicos, profissionais, agenda, cotacao, contrato e avaliacao"
-        },
-        {
-          "key": "delivery_tracking",
-          "title": "Entrega, cotacao, rastreio, prova, seguro e suporte"
-        },
-        { "key": "mobility", "title": "Mobilidade, rotas, paradas, bilhetes e acompanhamento" },
-        {
-          "key": "jobs_health_documents",
-          "title": "Vagas, curriculo, CTPS, saude, documentos e consentimentos"
-        },
-        {
-          "key": "notifications_support_settings",
-          "title": "Notificacoes, atendimento, privacidade, seguranca e configuracoes"
-        }
+        {"key": "shell_onboarding_identity", "title": "Shell, onboarding, login, MFA, consentimento e perfil"},
+        {"key": "home_discovery_catalog", "title": "Home, busca, categorias, ofertas, detalhes e favoritos"},
+        {"key": "commerce_checkout_wallet", "title": "Carrinho, pedido, pagamento, wallet, escrow, comprovantes e disputas"},
+        {"key": "services_schedule", "title": "Servicos, profissionais, agenda, cotacao, contrato e avaliacao"},
+        {"key": "delivery_tracking", "title": "Entrega, cotacao, rastreio, prova, seguro e suporte"},
+        {"key": "mobility", "title": "Mobilidade, rotas, paradas, bilhetes e acompanhamento"},
+        {"key": "jobs_health_documents", "title": "Vagas, curriculo, CTPS, saude, documentos e consentimentos"},
+        {"key": "notifications_support_settings", "title": "Notificacoes, atendimento, privacidade, seguranca e configuracoes"}
       ]
     },
     {
@@ -105,67 +73,17 @@
       "product": "All-in-One",
       "surfaces": ["responsive_web", "mobile_web", "mobile_app"],
       "brands": ["All-in-One"],
-      "objective": "Desenvolver em um unico projeto o template web e mobile integral da plataforma All-in-One, cobrindo os 25 modulos oficiais sem fragmentar a experiencia administrativa e operacional.",
-      "module_scope": [
-        "identity",
-        "business",
-        "permissions",
-        "finance",
-        "marketplace",
-        "stock",
-        "delivery",
-        "riders",
-        "services",
-        "mobility",
-        "jobs",
-        "erp",
-        "wms",
-        "tms",
-        "crm",
-        "bpm",
-        "document",
-        "hr",
-        "health",
-        "vision",
-        "legal",
-        "property",
-        "bi",
-        "ai_core",
-        "api_hub"
-      ],
+      "objective": "Desenvolver em um unico projeto o template web e mobile integral da plataforma All-in-One, cobrindo os 24 modulos ativos sem fragmentar a experiencia administrativa e operacional.",
+      "module_scope": ["identity", "business", "permissions", "finance", "marketplace", "stock", "delivery", "riders", "services", "mobility", "jobs", "erp", "wms", "tms", "crm", "bpm", "document", "hr", "health", "legal", "property", "bi", "ai_core", "api_hub"],
       "screen_groups": [
-        {
-          "key": "platform_shell",
-          "title": "Shell global, seletor de tenant/empresa, navegacao, busca e notificacoes"
-        },
-        {
-          "key": "identity_business_permissions",
-          "title": "Identidade, empresas, estabelecimentos, membros, RBAC, ABAC e aprovacoes"
-        },
-        {
-          "key": "commerce_finance_operations",
-          "title": "Marketplace, estoque, pedidos, financeiro, ERP, WMS e TMS"
-        },
-        {
-          "key": "people_services",
-          "title": "CRM, RH, Jobs, servicos, riders, delivery, mobility e saude"
-        },
-        {
-          "key": "content_governance",
-          "title": "Documentos, propriedade, legal, vision, BPM, compliance e auditoria"
-        },
-        {
-          "key": "analytics_ai_integrations",
-          "title": "BI, relatorios, analytics, IA, API Hub, webhooks e integracoes"
-        },
-        {
-          "key": "dynamic_forms",
-          "title": "Construtor governado de formularios, preview, homologacao, publicacao, versao e cobranca"
-        },
-        {
-          "key": "complete_data_surfaces",
-          "title": "CRUDs, grades, filtros, dashboards, relatorios, importacoes, exportacoes e estados completos"
-        }
+        {"key": "platform_shell", "title": "Shell global, seletor de tenant ou empresa, navegacao, busca e notificacoes"},
+        {"key": "identity_business_permissions", "title": "Identidade, empresas, estabelecimentos, membros, RBAC, ABAC e aprovacoes"},
+        {"key": "commerce_finance_operations", "title": "Marketplace, estoque, pedidos, financeiro, ERP, WMS e TMS"},
+        {"key": "people_services", "title": "CRM, RH, Jobs, servicos, riders, delivery, mobility e saude"},
+        {"key": "content_governance", "title": "Documentos, propriedade, legal, BPM, compliance e auditoria"},
+        {"key": "analytics_ai_integrations", "title": "BI, relatorios, analytics, IA, API Hub, webhooks e integracoes"},
+        {"key": "dynamic_forms", "title": "Construtor governado de formularios, preview, homologacao, publicacao, versao e cobranca"},
+        {"key": "complete_data_surfaces", "title": "CRUDs, grades, filtros, dashboards, relatorios, importacoes, exportacoes e estados completos"}
       ]
     },
     {
@@ -173,51 +91,39 @@
       "project_name": "VALLEY RIDERS APK - Template Completo",
       "product": "APK Valley Riders",
       "surfaces": ["android", "mobile_web_embedded"],
-      "brands": ["All-in-One", "Valley"],
+      "brands": ["All-in-One", "Valley", "Valley Riders"],
       "objective": "Desenvolver em um unico projeto o template integral do APK Valley Riders para entregadores e motoristas, com operacao segura, rastreavel e orientada a campo.",
-      "module_scope": [
-        "identity",
-        "riders",
-        "delivery",
-        "mobility",
-        "finance",
-        "document",
-        "notifications",
-        "support"
-      ],
+      "module_scope": ["identity", "riders", "delivery", "mobility", "finance", "document", "notifications", "support"],
       "screen_groups": [
-        {
-          "key": "onboarding_compliance",
-          "title": "Onboarding, identidade, documentos, veiculo, KYC, consentimento e homologacao"
-        },
-        {
-          "key": "availability_map",
-          "title": "Disponibilidade, mapa, zonas, demanda, conectividade e localizacao"
-        },
-        {
-          "key": "delivery_offers",
-          "title": "Ofertas, aceite, coleta, rota, entrega, prova, ocorrencia e seguro"
-        },
-        {
-          "key": "mobility_rides",
-          "title": "Corridas, passageiro, rota, paradas, seguranca e conclusao"
-        },
-        {
-          "key": "earnings_wallet",
-          "title": "Ganhos, wallet, repasses, taxas, extrato, comprovantes e contestacao"
-        },
-        {
-          "key": "documents_vehicle",
-          "title": "Perfil, documentos, veiculos, validade, manutencao e bloqueios"
-        },
-        {
-          "key": "safety_support",
-          "title": "Emergencia, suporte, chat, incidentes, privacidade e central de seguranca"
-        },
-        {
-          "key": "history_ratings",
-          "title": "Historico, indicadores, avaliacoes, notificacoes e configuracoes"
-        }
+        {"key": "onboarding_compliance", "title": "Onboarding, identidade, documentos, veiculo, KYC, consentimento e homologacao"},
+        {"key": "availability_map", "title": "Disponibilidade, mapa, zonas, demanda, conectividade e localizacao"},
+        {"key": "delivery_offers", "title": "Ofertas, aceite, coleta, rota, entrega, prova, ocorrencia e seguro"},
+        {"key": "mobility_rides", "title": "Corridas, passageiro, rota, paradas, seguranca e conclusao"},
+        {"key": "earnings_wallet", "title": "Ganhos, wallet, repasses, taxas, extrato, comprovantes e contestacao"},
+        {"key": "documents_vehicle", "title": "Perfil, documentos, veiculos, validade, manutencao e bloqueios"},
+        {"key": "safety_support", "title": "Emergencia, suporte, chat, incidentes, privacidade e central de seguranca"},
+        {"key": "history_ratings", "title": "Historico, indicadores, avaliacoes, notificacoes e configuracoes"}
+      ]
+    }
+  ],
+  "authorized_pending_projects": [
+    {
+      "id": "aio_admin_web_mobile_template",
+      "project_name": "AIO ADMIN - Template Web e Mobile Completo",
+      "product": "AIO Admin",
+      "surfaces": ["responsive_web", "mobile_web", "android"],
+      "brands": ["All-in-One", "AIO Admin"],
+      "objective": "Desenvolver em um projeto Stitch separado o ambiente administrativo central do ecossistema, com visao executiva, operacao multitenant, governanca, seguranca, auditoria e configuracao dos modulos ativos.",
+      "module_scope": ["identity", "business", "permissions", "finance", "marketplace", "stock", "delivery", "services", "mobility", "jobs", "erp", "wms", "tms", "crm", "bpm", "document", "hr", "health", "legal", "property", "audit", "compliance", "notifications", "api_hub", "bi", "ai_core"],
+      "screen_groups": [
+        {"key": "shell_login_mfa", "title": "Shell administrativo, login, MFA, recuperacao, tenant e contexto operacional"},
+        {"key": "executive_dashboard", "title": "Dashboard executivo, saude da plataforma, alertas, metas, indicadores e drill-down"},
+        {"key": "users_roles_permissions", "title": "Usuarios, perfis, funcoes, RBAC, ABAC, delegacoes, sessoes e aprovacoes"},
+        {"key": "companies_tenants_units", "title": "Empresas, tenants, filiais, estabelecimentos, documentos, planos e homologacao"},
+        {"key": "modules_catalog_configuration", "title": "Catalogo dos modulos ativos, recursos, parametros, dependencias, disponibilidade e versionamento"},
+        {"key": "operations_workflows_approvals", "title": "Operacoes, filas, workflows, ocorrencias, aprovacoes, suporte e continuidade"},
+        {"key": "finance_security_compliance", "title": "Faturamento, cobranca, conciliacao, seguranca, compliance, auditoria e trilhas de evidencia"},
+        {"key": "analytics_reports_settings_integrations", "title": "Analytics, relatorios, exportacoes, configuracoes, integracoes, webhooks, API Hub e observabilidade"}
       ]
     }
   ]

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sincroniza os três projetos agregadores de template no Stitch com checkpoint."""
+"""Sincroniza os quatro projetos agregadores oficiais no Stitch com checkpoint."""
 
 from __future__ import annotations
 
@@ -30,7 +30,11 @@ STATE_PATH = ROOT / "config" / "stitch" / "template_project_state.json"
 
 
 def load_coordinate() -> dict[str, Any]:
-    return json.loads(COORDINATE_PATH.read_text(encoding="utf-8"))
+    coordinate = json.loads(COORDINATE_PATH.read_text(encoding="utf-8"))
+    registered = coordinate.get("projects", [])
+    authorized_pending = coordinate.get("authorized_pending_projects", [])
+    coordinate["projects"] = [*registered, *authorized_pending]
+    return coordinate
 
 
 def coordinate_digest() -> str:
@@ -87,9 +91,9 @@ def ensure_tool_success(result: dict[str, Any], operation: str) -> None:
 def compact_prompt(project: dict[str, Any], group: dict[str, str]) -> str:
     return (
         f"No projeto existente {project['project_name']}, crie ou atualize a tela {group['key']}: {group['title']}. "
-        "Use português do Brasil, dados fictícios, identidade visual oficial, layout mobile responsivo, WCAG AA, "
-        "ações funcionais e estados loading, vazio, erro, sucesso, sem permissão e offline. "
-        "Não exponha dados sensíveis e não crie outro projeto."
+        "Use portugues do Brasil, dados ficticios, identidade visual oficial, layout mobile responsivo, WCAG AA, "
+        "acoes funcionais e estados loading, vazio, erro, sucesso, sem permissao e offline. "
+        "Nao exponha dados sensiveis e nao crie outro projeto."
     )
 
 
@@ -169,13 +173,13 @@ def sync(max_operations: int) -> dict[str, Any]:
                     create_project["name"],
                     input_arguments(create_project, {"name": project["project_name"]}),
                 )
-                ensure_tool_success(result, f"criação de {project['id']}")
+                ensure_tool_success(result, f"criacao de {project['id']}")
                 identifier = extract_identifier(
                     result, ("projectId", "project_id", "name", "id")
                 )
                 if not identifier:
                     raise RuntimeError(
-                        f"Stitch não retornou project_id para {project['id']}."
+                        f"Stitch nao retornou project_id para {project['id']}."
                     )
                 project_state["project_id"] = normalize_project_id(identifier)
                 project_state["project_name"] = project["project_name"]
@@ -201,7 +205,7 @@ def sync(max_operations: int) -> dict[str, Any]:
                         client, edit_screen, edit_arguments, project, group
                     )
                     ensure_tool_success(
-                        result, f"atualização de {project['id']}/{group['key']}"
+                        result, f"atualizacao de {project['id']}/{group['key']}"
                     )
                 else:
                     generate_arguments = input_arguments(
@@ -212,7 +216,7 @@ def sync(max_operations: int) -> dict[str, Any]:
                         client, generate_screen, generate_arguments, project, group
                     )
                     ensure_tool_success(
-                        result, f"geração de {project['id']}/{group['key']}"
+                        result, f"geracao de {project['id']}/{group['key']}"
                     )
                     screen_id = extract_identifier(
                         result,
@@ -227,7 +231,7 @@ def sync(max_operations: int) -> dict[str, Any]:
                     )
                     if not screen_id:
                         raise RuntimeError(
-                            f"Stitch não retornou screen_id para {project['id']}/{group['key']}."
+                            f"Stitch nao retornou screen_id para {project['id']}/{group['key']}."
                         )
                     screen_state = {"screen_id": screen_id}
                     project_state["screens"][group["key"]] = screen_state
@@ -250,7 +254,7 @@ def sync(max_operations: int) -> dict[str, Any]:
         state["last_deferred"] = {
             "reason": "resource_exhausted",
             "recorded_at": datetime.now(UTC).isoformat(),
-            "resume": "próxima execução agendada",
+            "resume": "proxima execucao agendada",
             "message_redacted": type(error).__name__,
         }
         save_state(state)
@@ -261,7 +265,7 @@ def sync(max_operations: int) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Sincroniza três projetos agregadores de template no Stitch."
+        description="Sincroniza quatro projetos agregadores oficiais no Stitch."
     )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--require-remote", action="store_true")
@@ -274,7 +278,7 @@ def main() -> int:
         os.getenv("STITCH_API_KEY") or os.getenv("STITCH_ACCESS_TOKEN")
     ):
         raise RuntimeError(
-            "STITCH_API_KEY ou STITCH_ACCESS_TOKEN é obrigatório para sincronização remota."
+            "STITCH_API_KEY ou STITCH_ACCESS_TOKEN e obrigatorio para sincronizacao remota."
         )
     coordinate = load_coordinate()
     state = load_state() if args.dry_run else sync(args.max_operations)
