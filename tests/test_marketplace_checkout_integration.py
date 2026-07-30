@@ -365,7 +365,7 @@ def test_checkout_idempotency_wallet_confirmation_and_immutable_snapshot() -> No
                 """SELECT routing_key, COUNT(*)
                    FROM audit.domain_events
                    WHERE aggregate_id IN (%s, %s)
-                      OR causation_id = %s
+                      OR payload ->> 'causation_id' = %s
                       OR payload -> 'payload' ->> 'checkout_id' = %s
                    GROUP BY routing_key""",
                 (
