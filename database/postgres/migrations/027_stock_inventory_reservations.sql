@@ -34,6 +34,26 @@ CREATE TABLE IF NOT EXISTS stock.inventory_items (
         UNIQUE NULLS NOT DISTINCT (company_id, warehouse_id, sku)
 );
 
+CREATE OR REPLACE FUNCTION stock.derive_inventory_availability_status()
+RETURNS trigger AS $$
+BEGIN
+    IF NEW.status IN ('active', 'depleted') THEN
+        NEW.status := CASE
+            WHEN NEW.physical_quantity - NEW.reserved_quantity = 0 THEN 'depleted'
+            ELSE 'active'
+        END;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS stock_inventory_availability_status ON stock.inventory_items;
+CREATE TRIGGER stock_inventory_availability_status
+BEFORE INSERT OR UPDATE OF physical_quantity, reserved_quantity, status
+ON stock.inventory_items
+FOR EACH ROW
+EXECUTE FUNCTION stock.derive_inventory_availability_status();
+
 CREATE INDEX IF NOT EXISTS idx_stock_inventory_product_company
     ON stock.inventory_items (product_id, company_id, status);
 
