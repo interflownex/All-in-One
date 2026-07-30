@@ -1,10 +1,10 @@
 {
-  "version": "2026-06-05",
+  "version": "2026-07-30",
   "language": "pt-BR",
-  "enabled": false,
-  "reactivated_at": "2026-06-06",
+  "enabled": true,
+  "reactivated_at": "2026-07-30T05:00:00-03:00",
   "scope": "workspace",
-  "reason": "Workspace volta ao modo local-first sem custo obrigatorio neste momento, preservando contratos e arquivos necessarios para uma futura reativacao controlada da plataforma Google com manutencao minima.",
+  "reason": "O Google Stitch volta a operar de forma controlada, com o Codex como coordenador autoritativo. O Codex lê as coordenadas versionadas, chama diretamente o Stitch MCP quando possui credencial legítima fora do Git e registra checkpoints reproduzíveis no repositório. GitHub Actions permanece como validador e fallback manual, sem competir pela coordenação automática.",
   "affected_integrations": [
     "google_sdk",
     "google_ai_studio",
@@ -16,30 +16,39 @@
     "google_stitch_mcp",
     "google_cloud_data_agent_kit"
   ],
-  "explicit_exceptions": ["google_cloud_data_agent_kit"],
+  "explicit_exceptions": [
+    "google_cloud_data_agent_kit"
+  ],
   "rules": [
-    "Manter arquivos, contratos, documentacao e estado versionado para retomada futura.",
-    "Nao depender de Google Cloud SDK, Google AI Studio, AlloyDB, Stitch remoto ou Google Code CLI para operacao local obrigatoria.",
-    "Preservar nomes de variaveis, manifests e contratos para que a retomada futura da plataforma Google exija apenas reativacao controlada de flags, credenciais e DSNs.",
-    "Autenticacao deve ocorrer por login legitimo ou variaveis de ambiente, GitHub Actions Secrets e cofres externos.",
-    "Nao expor STITCH_API_KEY, GOOGLE_APPLICATION_CREDENTIALS, GOOGLE_API_KEY, GEMINI_API_KEY ou credenciais equivalentes em arquivos versionados.",
-    "Workflows, Docker Compose, Antigravity, VS Code e validadores devem refletir o estado local-first ativo.",
-    "Nao contornar suspensao administrativa, bloqueio de billing, enforcement, IAM ou compliance do provedor."
+    "O Codex é o coordenador autoritativo do Google Stitch neste workspace.",
+    "A fonte de coordenadas é config/stitch/template_project_coordinate.json e o checkpoint remoto é config/stitch/template_project_state.json.",
+    "Toda alteração visual deve reutilizar os três projetos agregadores oficiais e seus project_id e screen_id já registrados.",
+    "É proibido criar novo projeto Stitch por módulo, microserviço, aplicativo ou rodada quando existir projeto agregador correspondente.",
+    "O Codex deve chamar diretamente o Stitch MCP pelo script scripts/codex_stitch_director.py quando STITCH_API_KEY ou STITCH_ACCESS_TOKEN estiver disponível fora do Git.",
+    "GitHub Actions deve validar estado e políticas; sincronização remota por workflow somente pode ocorrer como fallback manual explicitamente acionado.",
+    "Autenticação deve ocorrer por login legítimo, variáveis de ambiente, GitHub Actions Secrets ou cofres externos.",
+    "Não expor STITCH_API_KEY, GOOGLE_APPLICATION_CREDENTIALS, GOOGLE_API_KEY, GEMINI_API_KEY ou credenciais equivalentes em arquivos versionados.",
+    "Não contornar billing, IAM, compliance, enforcement, quota ou suspensão administrativa do provedor.",
+    "Cada operação remota deve atualizar checkpoint, digest da coordenada, data, agente coordenador e resultado da validação.",
+    "O modo legado de um projeto por microserviço permanece somente para leitura histórica e não pode executar sincronização remota."
   ],
   "runtime_environment": {
-    "GOOGLE_INTEGRATIONS_ENABLED": "false",
+    "GOOGLE_INTEGRATIONS_ENABLED": "true",
     "GOOGLE_CLOUD_ENABLED": "false",
     "GOOGLE_AI_STUDIO_ENABLED": "false",
-    "GOOGLE_CODE_CLI_ENABLED": "false",
+    "GOOGLE_CODE_CLI_ENABLED": "true",
     "ALLOYDB_ENABLED": "false",
     "GEMINI_CODE_ASSIST_ENABLED": "true",
-    "STITCH_REMOTE_SYNC_ENABLED": "false",
+    "STITCH_REMOTE_SYNC_ENABLED": "true",
+    "STITCH_COORDINATOR": "codex",
+    "STITCH_LEGACY_MODULE_SYNC_ENABLED": "false",
     "DATA_AGENT_KIT_ENABLED": "true"
   },
   "activation_requirements": [
-    "credenciais validas fora do Git",
-    "billing e IAM regulares para operacoes Google Cloud",
+    "credenciais válidas fora do Git",
+    "billing e IAM regulares quando exigidos pelo provedor",
+    "project_id e screen_id oficiais já registrados ou criação expressamente autorizada",
     "validadores e testes focados aprovados antes do push",
-    "operacoes destrutivas continuam proibidas sem ordem explicita"
+    "operações destrutivas continuam proibidas sem ordem explícita"
   ]
 }
