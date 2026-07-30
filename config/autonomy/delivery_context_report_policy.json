@@ -1,0 +1,39 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-07-30T05:15:00-03:00",
+  "timezone": "America/Sao_Paulo",
+  "language": "pt-BR",
+  "project": "All in One + Valley",
+  "scope": "workspace",
+  "enabled": true,
+  "title": "Relatorio de Entrega de Contexto",
+  "audience": [
+    "Pessoa Fisica (B2C)",
+    "Pessoa Juridica (B2B)",
+    "Equipe Tecnica"
+  ],
+  "mandatory_sections": [
+    "atividade",
+    "entregue",
+    "nao_entregue",
+    "o_que_nao_foi_entregue_e_por_que"
+  ],
+  "rules": [
+    "Todo encerramento de atividade deve usar as quatro secoes obrigatorias na mesma ordem.",
+    "A secao atividade deve explicar de forma simples o objetivo executado.",
+    "A secao entregue deve listar somente resultados comprovados por evidencia real.",
+    "A secao nao_entregue deve declarar claramente tudo que permaneceu pendente.",
+    "A secao o_que_nao_foi_entregue_e_por_que deve informar a causa concreta de cada item, sem linguagem vaga.",
+    "Quando nao houver item pendente, declarar explicitamente que nao houve item nao entregue.",
+    "Nao confundir codigo criado, plano ou documentacao com entrega funcional comprovada.",
+    "Bloqueios externos, falta de credencial, DNS, billing, IAM, aprovacao legal ou indisponibilidade de ferramenta devem ser identificados pelo nome.",
+    "O texto deve ser claro, direto, em portugues do Brasil e sem jargao desnecessario.",
+    "Relatorios tecnicos devem incluir repositorio, branch, commit, testes e evidencias quando disponiveis."
+  ],
+  "markdown_template": {
+    "atividade": "## Atividade\nDescrever o objetivo e o escopo executado.",
+    "entregue": "## Entregue\nListar resultados finalizados e comprovados.",
+    "nao_entregue": "## Nao entregue\nListar itens ainda pendentes ou declarar que nao existem.",
+    "motivos": "## O que nao foi entregue e por que\nExplicar a causa concreta de cada pendencia."
+  }
+}
