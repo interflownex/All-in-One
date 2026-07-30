@@ -16,7 +16,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CONCL-010 | criterios_de_conclusao | 100% das unidades tiverem regra | 20 | 19 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-011 | criterios_de_conclusao | 100% das regras fiscais tiverem vigência e contexto | 13 | 13 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-012 | criterios_de_conclusao | 100% dos formulários tiverem coordenada de frontend | 20 | 14 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CONCL-013 | criterios_de_conclusao | 100% dos botões tiverem ação | 6 | 5 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CONCL-013 | criterios_de_conclusao | 100% dos botões tiverem ação | 7 | 5 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-014 | criterios_de_conclusao | 100% das permissões tiverem enforcement backend | 20 | 18 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-015 | criterios_de_conclusao | 100% das lacunas tiverem backlog | 10 | 8 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CONCL-016 | criterios_de_conclusao | os testes críticos estiverem passando | 20 | 17 | não comprovado; candidatos aprovados exigem revisão de escopo |
@@ -27,7 +27,7 @@ A matriz cobre os 69 requisitos explícitos das seções de conclusão e checkli
 | CHECK-003 | idealizar | Mapear personas | 7 | 5 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-004 | idealizar | Mapear eventos | 20 | 16 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-005 | idealizar | Mapear fontes de verdade | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
-| CHECK-006 | idealizar | Mapear riscos | 20 | 14 | não comprovado; candidatos aprovados exigem revisão de escopo |
+| CHECK-006 | idealizar | Mapear riscos | 20 | 13 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-007 | planejar | Definir ordem de leitura | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-008 | planejar | Definir matriz de comparação | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |
 | CHECK-009 | planejar | Definir prioridades | 1 | 1 | não comprovado; candidatos aprovados exigem revisão de escopo |

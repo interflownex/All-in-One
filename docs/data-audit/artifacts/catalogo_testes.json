@@ -12,7 +12,7 @@
     "sqlite_fields": 53,
     "redis_key_patterns": 1,
     "object_storage_stores": 4,
-    "browser_storage_key_patterns": 12,
+    "browser_storage_key_patterns": 11,
     "relationships": 586,
     "indexes": 132,
     "endpoints": 166,
@@ -29,8 +29,8 @@
     "permission_operations": 767,
     "permission_horizontal_read_gaps": 0,
     "permission_operations_with_test_candidates": 125,
-    "test_functions": 685,
-    "tests_with_assertions": 635,
+    "test_functions": 692,
+    "tests_with_assertions": 642,
     "tests_with_http_calls": 237,
     "test_functions_in_execution_reports": 498,
     "test_functions_passed": 466,
@@ -4849,6 +4849,96 @@
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
       "evidence": "tests/test_data_subject_rights.py:93"
+    },
+    {
+      "test_id": "tests/test_dependency_security_floors.py::test_admin_vite_uses_patched_release",
+      "file": "tests/test_dependency_security_floors.py",
+      "function": "test_admin_vite_uses_patched_release",
+      "line": 43,
+      "async": false,
+      "assertions": 1,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "não consta nos relatórios de execução",
+      "execution_cases": 0,
+      "passed_cases": 0,
+      "execution_evidence": "",
+      "evidence": "tests/test_dependency_security_floors.py:43"
+    },
+    {
+      "test_id": "tests/test_dependency_security_floors.py::test_android_build_graph_declares_hardened_transitive_versions",
+      "file": "tests/test_dependency_security_floors.py",
+      "function": "test_android_build_graph_declares_hardened_transitive_versions",
+      "line": 48,
+      "async": false,
+      "assertions": 1,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "não consta nos relatórios de execução",
+      "execution_cases": 0,
+      "passed_cases": 0,
+      "execution_evidence": "",
+      "evidence": "tests/test_dependency_security_floors.py:48"
+    },
+    {
+      "test_id": "tests/test_dependency_security_floors.py::test_npm_lockfiles_respect_security_floors",
+      "file": "tests/test_dependency_security_floors.py",
+      "function": "test_npm_lockfiles_respect_security_floors",
+      "line": 20,
+      "async": false,
+      "assertions": 1,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "não consta nos relatórios de execução",
+      "execution_cases": 0,
+      "passed_cases": 0,
+      "execution_evidence": "",
+      "evidence": "tests/test_dependency_security_floors.py:20"
+    },
+    {
+      "test_id": "tests/test_dependency_security_floors.py::test_react_router_spas_use_patched_v7_release",
+      "file": "tests/test_dependency_security_floors.py",
+      "function": "test_react_router_spas_use_patched_v7_release",
+      "line": 36,
+      "async": false,
+      "assertions": 2,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "não consta nos relatórios de execução",
+      "execution_cases": 0,
+      "passed_cases": 0,
+      "execution_evidence": "",
+      "evidence": "tests/test_dependency_security_floors.py:36"
+    },
+    {
+      "test_id": "tests/test_dependency_security_floors.py::test_valley_session_remains_in_memory_and_clears_legacy_storage",
+      "file": "tests/test_dependency_security_floors.py",
+      "function": "test_valley_session_remains_in_memory_and_clears_legacy_storage",
+      "line": 67,
+      "async": false,
+      "assertions": 5,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "não consta nos relatórios de execução",
+      "execution_cases": 0,
+      "passed_cases": 0,
+      "execution_evidence": "",
+      "evidence": "tests/test_dependency_security_floors.py:67"
     },
     {
       "test_id": "tests/test_docker_context_hygiene.py::test_compose_builds_from_repo_root_where_dockerignore_applies",
@@ -11433,7 +11523,7 @@
       "test_id": "tests/test_validate_data_audit_delivery.py::test_api_catalog_exposes_models_and_untyped_payloads",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_api_catalog_exposes_models_and_untyped_payloads",
-      "line": 200,
+      "line": 233,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
@@ -11445,13 +11535,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:200"
+      "evidence": "tests/test_validate_data_audit_delivery.py:233"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_audit_coverage_reports_every_structural_requirement",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_audit_coverage_reports_every_structural_requirement",
-      "line": 391,
+      "line": 424,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -11463,13 +11553,31 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:391"
+      "evidence": "tests/test_validate_data_audit_delivery.py:424"
+    },
+    {
+      "test_id": "tests/test_validate_data_audit_delivery.py::test_browser_storage_catalog_tracks_current_production_keys",
+      "file": "tests/test_validate_data_audit_delivery.py",
+      "function": "test_browser_storage_catalog_tracks_current_production_keys",
+      "line": 139,
+      "async": false,
+      "assertions": 4,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "não consta nos relatórios de execução",
+      "execution_cases": 0,
+      "passed_cases": 0,
+      "execution_evidence": "",
+      "evidence": "tests/test_validate_data_audit_delivery.py:139"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_complementary_format",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_contract_lists_every_complementary_format",
-      "line": 29,
+      "line": 43,
       "async": false,
       "assertions": 29,
       "status_code_assertions": 0,
@@ -11481,13 +11589,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:29"
+      "evidence": "tests/test_validate_data_audit_delivery.py:43"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_contract_lists_every_mandatory_markdown_document",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_contract_lists_every_mandatory_markdown_document",
-      "line": 20,
+      "line": 34,
       "async": false,
       "assertions": 3,
       "status_code_assertions": 0,
@@ -11499,13 +11607,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:20"
+      "evidence": "tests/test_validate_data_audit_delivery.py:34"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_contract_requires_all_completion_dimensions",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_contract_requires_all_completion_dimensions",
-      "line": 147,
+      "line": 180,
       "async": false,
       "assertions": 3,
       "status_code_assertions": 0,
@@ -11517,13 +11625,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:147"
+      "evidence": "tests/test_validate_data_audit_delivery.py:180"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_coverage_links_only_dimension_specific_gaps_and_evidence",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_coverage_links_only_dimension_specific_gaps_and_evidence",
-      "line": 421,
+      "line": 454,
       "async": false,
       "assertions": 7,
       "status_code_assertions": 0,
@@ -11535,13 +11643,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:421"
+      "evidence": "tests/test_validate_data_audit_delivery.py:454"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_dynamic_form_model_exposes_partial_implementation_without_false_completion",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_dynamic_form_model_exposes_partial_implementation_without_false_completion",
-      "line": 213,
+      "line": 246,
       "async": false,
       "assertions": 9,
       "status_code_assertions": 0,
@@ -11553,13 +11661,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:213"
+      "evidence": "tests/test_validate_data_audit_delivery.py:246"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_ephemeral_and_object_storage_catalogs_are_explicitly_static",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_ephemeral_and_object_storage_catalogs_are_explicitly_static",
-      "line": 107,
+      "line": 121,
       "async": false,
       "assertions": 3,
       "status_code_assertions": 0,
@@ -11571,13 +11679,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:107"
+      "evidence": "tests/test_validate_data_audit_delivery.py:121"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_event_catalog_preserves_backend_transition_contract",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_event_catalog_preserves_backend_transition_contract",
-      "line": 190,
+      "line": 223,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
@@ -11589,13 +11697,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:190"
+      "evidence": "tests/test_validate_data_audit_delivery.py:223"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_every_gap_has_the_mandatory_execution_coordinate",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_every_gap_has_the_mandatory_execution_coordinate",
-      "line": 406,
+      "line": 439,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -11607,13 +11715,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:406"
+      "evidence": "tests/test_validate_data_audit_delivery.py:439"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_every_logical_entity_has_a_frontend_surface_with_canonical_resource_name",
-      "line": 371,
+      "line": 404,
       "async": false,
       "assertions": 3,
       "status_code_assertions": 0,
@@ -11625,13 +11733,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:371"
+      "evidence": "tests/test_validate_data_audit_delivery.py:404"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_every_physical_field_has_classification_basis_and_retention",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_every_physical_field_has_classification_basis_and_retention",
-      "line": 360,
+      "line": 393,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -11643,13 +11751,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:360"
+      "evidence": "tests/test_validate_data_audit_delivery.py:393"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_every_smartcrud_surface_has_a_stitch_coordinate_and_route",
-      "line": 232,
+      "line": 265,
       "async": false,
       "assertions": 5,
       "status_code_assertions": 0,
@@ -11663,13 +11771,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:232"
+      "evidence": "tests/test_validate_data_audit_delivery.py:265"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_generated_coverage_does_not_claim_false_completion",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_generated_coverage_does_not_claim_false_completion",
-      "line": 156,
+      "line": 189,
       "async": false,
       "assertions": 4,
       "status_code_assertions": 0,
@@ -11681,13 +11789,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:156"
+      "evidence": "tests/test_validate_data_audit_delivery.py:189"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_generated_non_postgres_catalogs_have_field_evidence",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_generated_non_postgres_catalogs_have_field_evidence",
-      "line": 89,
+      "line": 103,
       "async": false,
       "assertions": 6,
       "status_code_assertions": 0,
@@ -11699,13 +11807,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:89"
+      "evidence": "tests/test_validate_data_audit_delivery.py:103"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_generated_summary_is_rendered_markdown",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_generated_summary_is_rendered_markdown",
-      "line": 166,
+      "line": 199,
       "async": false,
       "assertions": 3,
       "status_code_assertions": 0,
@@ -11717,13 +11825,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:166"
+      "evidence": "tests/test_validate_data_audit_delivery.py:199"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_logical_catalog_exposes_cross_layer_gaps",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_logical_catalog_exposes_cross_layer_gaps",
-      "line": 181,
+      "line": 214,
       "async": false,
       "assertions": 3,
       "status_code_assertions": 0,
@@ -11735,13 +11843,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:181"
+      "evidence": "tests/test_validate_data_audit_delivery.py:214"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_permission_matrix_proves_horizontal_read_authorization_enforcement",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_permission_matrix_proves_horizontal_read_authorization_enforcement",
-      "line": 273,
+      "line": 306,
       "async": false,
       "assertions": 6,
       "status_code_assertions": 0,
@@ -11753,13 +11861,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:273"
+      "evidence": "tests/test_validate_data_audit_delivery.py:306"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_requirement_test_matrix_does_not_promote_candidates_to_proof",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_requirement_test_matrix_does_not_promote_candidates_to_proof",
-      "line": 300,
+      "line": 333,
       "async": false,
       "assertions": 12,
       "status_code_assertions": 0,
@@ -11771,13 +11879,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:300"
+      "evidence": "tests/test_validate_data_audit_delivery.py:333"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_stitch_coordinate_requires_exactly_three_resumable_product_projects",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_stitch_coordinate_requires_exactly_three_resumable_product_projects",
-      "line": 125,
+      "line": 158,
       "async": false,
       "assertions": 7,
       "status_code_assertions": 0,
@@ -11789,13 +11897,31 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:125"
+      "evidence": "tests/test_validate_data_audit_delivery.py:158"
+    },
+    {
+      "test_id": "tests/test_validate_data_audit_delivery.py::test_transition_discovery_does_not_require_fastapi_runtime",
+      "file": "tests/test_validate_data_audit_delivery.py",
+      "function": "test_transition_discovery_does_not_require_fastapi_runtime",
+      "line": 150,
+      "async": false,
+      "assertions": 2,
+      "status_code_assertions": 0,
+      "http_methods": [],
+      "endpoint_literals": [],
+      "parametrized": false,
+      "decorators": [],
+      "execution_status": "não consta nos relatórios de execução",
+      "execution_cases": 0,
+      "passed_cases": 0,
+      "execution_evidence": "",
+      "evidence": "tests/test_validate_data_audit_delivery.py:150"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_ui_action_matrix_proves_the_generic_save_contract_alignment",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_ui_action_matrix_proves_the_generic_save_contract_alignment",
-      "line": 250,
+      "line": 283,
       "async": false,
       "assertions": 9,
       "status_code_assertions": 0,
@@ -11807,13 +11933,13 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:250"
+      "evidence": "tests/test_validate_data_audit_delivery.py:283"
     },
     {
       "test_id": "tests/test_validate_data_audit_delivery.py::test_units_and_tax_model_covers_precision_and_fiscal_governance",
       "file": "tests/test_validate_data_audit_delivery.py",
       "function": "test_units_and_tax_model_covers_precision_and_fiscal_governance",
-      "line": 337,
+      "line": 370,
       "async": false,
       "assertions": 15,
       "status_code_assertions": 0,
@@ -11825,7 +11951,7 @@
       "execution_cases": 1,
       "passed_cases": 1,
       "execution_evidence": "docs/data-audit/artifacts/pytest_unit_results.xml",
-      "evidence": "tests/test_validate_data_audit_delivery.py:337"
+      "evidence": "tests/test_validate_data_audit_delivery.py:370"
     },
     {
       "test_id": "tests/test_validate_openrouter.py::test_update_provider_matrix_persistence",
