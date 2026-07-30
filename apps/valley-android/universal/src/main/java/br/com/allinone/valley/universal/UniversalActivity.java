@@ -124,7 +124,7 @@ public final class UniversalActivity extends ComponentActivity {
                         WebResourceRequest request
                     ) {
                         Uri uri = request.getUrl();
-                        if ("https".equalsIgnoreCase(uri.getScheme())) {
+                        if (urlPolicy.isAllowedAuthNavigation(uri.toString())) {
                             return false;
                         }
                         return openExternalWhenNeeded(uri);
@@ -175,8 +175,12 @@ public final class UniversalActivity extends ComponentActivity {
     }
 
     private boolean openExternalWhenNeeded(Uri uri) {
-        if (urlPolicy.isInternal(uri.toString())) {
+        String candidateUrl = uri == null ? null : uri.toString();
+        if (urlPolicy.isInternal(candidateUrl)) {
             return false;
+        }
+        if (!urlPolicy.isSafeExternal(candidateUrl)) {
+            return true;
         }
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
