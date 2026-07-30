@@ -17,6 +17,10 @@ REQUIRED_INDEXES = [
     "idx_stock_reservations_inventory_status",
     "idx_stock_reservations_company_order",
     "idx_stock_reservations_expiration",
+    "idx_marketplace_checkout_confirmation_idempotency",
+    "idx_marketplace_checkout_user_status",
+    "idx_marketplace_checkout_company_status",
+    "idx_marketplace_checkout_expiration",
 ]
 
 

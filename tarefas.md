@@ -1,151 +1,239 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 3.2  
-**Data e hora:** 30/07/2026 07:06, `America/Sao_Paulo`  
+**Versão:** 3.3  
+**Data e hora:** 30/07/2026 07:19, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Branch de registro:** `docs/post-stock-orchestration-20260730`  
-**Commit-base:** `692ee05b1ca8e234d6875a1dfb153212a016ddb6`  
-**Issue concluída nesta rodada:** `#83`  
-**Próxima issue executável:** `#78`  
+**Branch de trabalho:** `feat/marketplace-checkout-idempotent-20260730`  
+**Pull request:** `#94`  
+**Issue em execução:** `#78`  
 **Issue-mãe:** `#51`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Público-alvo:** Equipe Técnica
 
 ## 1. Estado consolidado
 
-- PR #91 integrada no commit `c566d5dc9f45192b05f4bb8871dbee7ca0827a93`;
 - PR #90 integrada no commit `fb47ea5f2a064fd39538cc7f89b51156dfd3f1ce`;
-- PR #92 integrada por Squash and Merge no commit `692ee05b1ca8e234d6875a1dfb153212a016ddb6`;
-- issue #83 encerrada automaticamente como concluída;
-- nenhuma pull request permaneceu aberta após a integração da PR #92;
-- o commit Stock é o commit mais recente da `main`;
-- os commits recentes identificados correspondem a integrações de pull requests, sem commit recente isolado detectado;
+- PR #91 integrada no commit `c566d5dc9f45192b05f4bb8871dbee7ca0827a93`;
+- PR #92 integrada no commit `692ee05b1ca8e234d6875a1dfb153212a016ddb6`;
+- PR #93 integrada no commit `87e3957002f3c9f5bde74e1f3ee56c3d4f79d1c8`;
+- issue #83 concluída;
+- PR #94 aberta em rascunho para executar exclusivamente a issue #78;
 - Vision permanece inativo;
-- nenhuma credencial ou segredo foi versionado;
 - `MARKETPLACE_CHECKOUT_V1_ENABLED` permanece desligada;
-- Delivery, pagamento, ledger e atribuição de Rider continuam fora do estágio concluído.
+- nenhuma credencial ou DSN de produção foi versionada;
+- Delivery, Rider, PSP externo e liquidação ao lojista continuam fora do escopo.
 
-## 2. Entrega Stock integrada
+## 2. Objetivo atual
+
+Implementar checkout idempotente do Marketplace consumindo exclusivamente a fonte autoritativa de saldo e reservas do Stock.
+
+```text
+Marketplace -> Stock -> Wallet/Escrow -> etapa futura de Delivery
+```
+
+A presente branch termina em pedido pago por Wallet interna, saldo retido em escrow e reservas Stock confirmadas. Não realiza entrega ou liquidação ao lojista.
+
+## 3. Implementação presente na PR #94
 
 ### PostgreSQL
 
-- migration `database/postgres/migrations/031_stock_inventory_reservations.sql`;
-- rollback `database/postgres/rollbacks/031_stock_inventory_reservations.sql`;
-- `stock.inventory_items` como fonte autoritativa de saldo;
-- `stock.stock_reservations` como fonte autoritativa de reservas;
-- saldo disponível gerado no banco;
-- trigger que deriva `active/depleted` pela disponibilidade;
-- constraints contra saldo negativo;
-- índices para produto, empresa, pedido, status e expiração.
+- migration `database/postgres/migrations/032_marketplace_checkout_attempts.sql`;
+- rollback `database/postgres/rollbacks/032_marketplace_checkout_attempts.sql`;
+- tabela `marketplace.checkout_attempts`;
+- snapshot imutável;
+- chave e hash idempotentes;
+- referências para carrinho, loja, empresa, pedido e escrow;
+- lista das reservas Stock;
+- correlation_id e causation_id;
+- trigger de imutabilidade e estados monotônicos;
+- índices para usuário, empresa, expiração e confirmação idempotente.
 
-### Transações e segurança
+### Orquestração transacional
 
-- reserva com `FOR UPDATE`;
-- expiração com `FOR UPDATE SKIP LOCKED`;
-- idempotência por usuário, empresa e chave;
-- conflito quando a mesma chave recebe corpo diferente;
-- confirmação, liberação e expiração idempotentes;
-- isolamento por empresa;
-- expiração global protegida pelo escopo `stock:reservations:expire`;
-- auditoria e outbox no mesmo limite transacional.
-
-### Contratos e testes
-
-- API Stock versão `0.3.0`;
-- OpenAPI especializado preservado pelo scaffold;
-- contrato `modules/stock/RESERVATION_CONTRACT.md` versão `0.2.2`;
-- testes de concorrência em PostgreSQL 16 real;
-- migration aplicada em banco limpo;
-- rollback comprovado no banco efêmero;
-- CI, Security, Database, OpenAPI, Docker Compose, Valley DAST e A1 Admin verdes no head `cb36a00d8ba0b08a62fd7fcd7a36702ba4c6f8af`;
-- diff revisado sem segredo literal.
-
-## 3. Pendências abertas confirmadas
-
-| Prioridade | Issue | Situação | Próxima decisão |
-|---|---:|---|---|
-| P0 executável | #78 | Checkout idempotente agora desbloqueado pela fundação Stock | Implementar em branch própria, mantendo a flag desligada até homologação |
-| Coordenação | #51 | Orquestra Marketplace → Stock → Delivery | Registrar Stock concluído e avançar somente para checkout |
-| Alta | #89 | Fonte produtiva AIO Admin AppDeploy ainda precisa convergir com o repositório | Auditar e versionar a fonte operacional sem apagar o pacote de design |
-| P0 sensível | #47 | Health Watch + SafeZone | Exige consentimento, antiabuso, auditoria e validação legal/técnica antes de piloto |
-| Produto | #55 | Implantação progressiva da Rodada 004 | Executar por ideias aprovadas e feature flags |
-| Programa | #39 | Onda de inovação nos 24 módulos | Continuar por ondas autorizadas; Vision excluído |
-| Bloqueada | #69 | Fonte funcional da Rodada 002 ausente | Não reconstruir silenciosamente; localizar ou obter a fonte oficial |
-| Alta | #24 | Pop-up Promoção do Dia | Revalidar escopo atual antes de nova implementação para evitar duplicidade |
-
-## 4. Próxima tarefa autorizável
-
-A próxima evolução técnica coerente é a issue #78:
+Arquivo:
 
 ```text
-Marketplace -> Stock -> Checkout idempotente -> Pagamento validado -> Delivery
+modules/shared/marketplace_checkout_postgres_store.py
 ```
 
-A implementação deve consumir exclusivamente uma reserva válida do Stock.
+Implementado:
 
-Escopo mínimo da próxima branch:
+- bloqueio do carrinho;
+- revalidação de produto, loja, preço e moeda;
+- checkout de uma única loja e empresa nesta versão;
+- bloqueio do inventário Stock com `FOR UPDATE`;
+- criação de pedido pendente;
+- criação de reservas Stock;
+- confirmação por Wallet pessoal ativa;
+- retenção de saldo em escrow;
+- lançamento `escrow_hold` no ledger;
+- confirmação do Stock somente após autorização financeira;
+- liberação das reservas em falha de Wallet;
+- cancelamento idempotente;
+- limpeza do carrinho apenas após sucesso;
+- auditoria e outbox na mesma transação.
 
-1. revalidar carrinho, loja, publicação, preço e disponibilidade no servidor;
-2. exigir chave idempotente;
-3. criar snapshot imutável de itens e valores;
-4. calcular total BRL no backend;
-5. criar pedido idempotente somente após reserva válida;
-6. impedir cobrança duplicada;
-7. manter estados de pagamento explícitos;
-8. liberar reserva em falha ou cancelamento;
-9. confirmar baixa somente após pagamento validado;
-10. registrar auditoria, correlação e outbox.
+### Rotas
 
-## 5. Proibições persistentes
+```text
+POST /valley/checkout
+GET  /valley/checkout/{checkout_id}
+POST /valley/checkout/{checkout_id}/confirm
+POST /valley/checkout/{checkout_id}/cancel
+```
+
+Regras:
+
+- criação exige `MARKETPLACE_CHECKOUT_V1_ENABLED=true`;
+- a flag desligada não bloqueia consulta, confirmação ou compensação de operações já iniciadas;
+- `X-Idempotency-Key` obrigatório em criação e confirmação;
+- `X-Correlation-Id` obrigatório em todas as rotas;
+- consumidor opera somente o próprio checkout;
+- apenas `BRL` e `wallet` são aceitos nesta versão.
+
+### Contratos
+
+- `modules/marketplace/CHECKOUT_CONTRACT.md` versão `0.2.0`;
+- `modules/marketplace/checkout/OPENAPI.yaml` versão `0.1.0`;
+- nenhum endpoint Delivery ou Rider;
+- nenhuma ativação produtiva automática;
+- Vision ausente do fluxo funcional.
+
+### Testes
+
+- `tests/test_marketplace_checkout_contract.py`;
+- `tests/test_marketplace_checkout_routes.py`;
+- `tests/test_marketplace_checkout_integration.py`;
+- migration em PostgreSQL 16 limpo;
+- rollback 032 antes do rollback Stock 031;
+- criação idempotente;
+- conflito de corpo;
+- preço divergente;
+- Wallet insuficiente com compensação;
+- escrow e ledger únicos;
+- confirmação repetida sem duplicação;
+- snapshot imutável;
+- concorrência pelo último item sem estoque negativo;
+- cancelamento idempotente;
+- eventos correlacionados.
+
+## 4. Estados permitidos
+
+Checkout:
+
+```text
+requested
+pending_stock_reservation
+pending_payment
+confirmed
+rejected
+payment_failed
+cancelled
+expired
+```
+
+Pagamento:
+
+```text
+not_started
+pending
+authorized
+failed
+cancelled
+```
+
+Reserva:
+
+```text
+reserved
+committed
+released
+expired
+```
+
+## 5. Eventos previstos
+
+- `marketplace.checkout.started`;
+- `marketplace.order.created`;
+- `stock.reservation.created`;
+- `finance.payment.authorized`;
+- `finance.payment.failed`;
+- `stock.reservation.committed`;
+- `stock.reservation.released`;
+- `stock.reservation.expired`;
+- `marketplace.checkout.confirmed`;
+- `marketplace.checkout.cancelled`.
+
+## 6. Próxima sequência obrigatória
+
+1. acompanhar todos os workflows acionados pela PR #94;
+2. abrir o log de cada falha comprovada;
+3. corrigir somente a causa real;
+4. reiniciar a validação no novo head após qualquer alteração;
+5. confirmar migration 032 em PostgreSQL 16;
+6. confirmar idempotência, concorrência, escrow, ledger e compensação;
+7. revisar o diff integral;
+8. verificar ausência de segredos, tokens e DSNs de produção;
+9. confirmar ausência de conflitos, reviews bloqueadoras e threads pendentes;
+10. marcar a PR pronta apenas com todos os gates verdes no mesmo SHA;
+11. integrar por Squash and Merge com `expected_head_sha`;
+12. confirmar o commit consolidado na `main`;
+13. confirmar o encerramento automático da issue #78;
+14. atualizar a issue-mãe #51 e este documento.
+
+## 7. Gates obrigatórios
+
+- Continuous Integration;
+- Security;
+- Database;
+- OpenAPI;
+- Docker Compose Health Gate;
+- demais workflows acionados pelo diff.
+
+Resultado de um SHA anterior não pode ser reutilizado após qualquer commit novo.
+
+## 8. Proibições persistentes
 
 - não fazer push direto na `main`;
 - não usar `marketplace.products.stock_quantity` como saldo autoritativo;
-- não criar estoque paralelo no Marketplace;
-- não criar pedido sem reserva válida;
-- não ativar `MARKETPLACE_CHECKOUT_V1_ENABLED` antes de implementação, testes e homologação;
-- não lançar valores fora do ledger;
-- não iniciar Delivery antes de checkout e pagamento comprovados;
-- não atribuir Rider nesta etapa;
+- não criar pedido sem reserva Stock válida;
+- não editar ledger destrutivamente;
+- não duplicar cobrança, escrow ou pedido;
+- não armazenar dados brutos de cartão;
+- não ligar a feature flag antes da homologação;
+- não liquidar o valor ao lojista nesta branch;
+- não iniciar Delivery;
+- não atribuir Rider;
 - não reativar Vision;
-- não versionar tokens, chaves, senhas ou DSNs de produção;
+- não versionar segredos;
 - não integrar com workflow vermelho, ausente ou em processamento;
-- não reutilizar evidência de um head SHA anterior;
-- não executar rollback destrutivo automaticamente em produção.
+- não executar rollback 032 automaticamente em produção.
 
-## 6. Procedimento obrigatório para a próxima evolução
+## 9. Critério de conclusão da issue #78
 
-1. verificar novamente PRs, issues, commits, branches e workflows;
-2. confirmar que não surgiu gate vermelho ou merge pendente;
-3. criar branch a partir da `main` atual;
-4. atualizar o contrato antes de ligar qualquer feature flag;
-5. implementar o menor incremento transacional completo;
-6. executar testes unitários, integração real e segurança;
-7. revisar o diff completo;
-8. verificar ausência de segredos;
-9. abrir PR em rascunho;
-10. corrigir todas as falhas no mesmo ciclo;
-11. validar todos os gates no mesmo head SHA;
-12. marcar pronta para revisão;
-13. executar Squash and Merge com `expected_head_sha`;
-14. confirmar o commit consolidado e atualizar esta tarefa.
+A issue somente pode ser fechada com:
 
-## 7. Critério de verdade
+- migration 032 ordenada e reversível;
+- snapshot imutável;
+- checkout, pedido e reservas idempotentes;
+- preço e saldo revalidados no servidor;
+- saldo Stock nunca negativo;
+- Wallet, escrow e ledger sem duplicação;
+- falha financeira compensada;
+- auditoria e eventos correlacionados;
+- testes reproduzíveis;
+- feature flag desligada por padrão;
+- Delivery, Rider e Vision fora do escopo;
+- todos os gates verdes no mesmo head;
+- diff sem segredos;
+- Squash and Merge protegido por SHA.
 
-Código, plano, comentário ou documento isolado não equivalem a entrega funcional. Uma tarefa somente pode ser considerada concluída com:
-
-- implementação no ambiente correto;
-- teste reproduzível;
-- evidência dos workflows;
-- diff revisado;
-- ausência de segredos;
-- commit e pull request identificados;
-- integração por Squash and Merge quando aplicável.
-
-## 8. Histórico resumido
+## 10. Histórico resumido
 
 | Versão | Data | Alteração |
 |---|---|---|
 | 2.0 a 2.9 | 28–29/07/2026 | Evoluções anteriores, contratos, branding e aplicações. |
 | 3.0 | 30/07/2026 | PRs #90/#91 integradas e fundação Stock implementada. |
-| 3.1 | 30/07/2026 | Migration Stock corrigida para 031 e falhas de revisão consolidadas. |
-| 3.2 | 30/07/2026 | PR #92 e issue #83 concluídas; pendências reclassificadas e issue #78 definida como próxima etapa. |
+| 3.1 | 30/07/2026 | Migration Stock corrigida para 031. |
+| 3.2 | 30/07/2026 | PR #92 e issue #83 concluídas; issue #78 priorizada. |
+| 3.3 | 30/07/2026 | PR #94 aberta e checkout idempotente implementado para validação. |

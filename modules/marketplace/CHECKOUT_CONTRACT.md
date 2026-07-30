@@ -1,24 +1,27 @@
 # Contrato de Checkout Marketplace
 
-**Versão:** 0.1.0  
-**Data e hora:** 29/07/2026 04:54, `America/Sao_Paulo`  
-**Status:** contrato versionado, implementação transacional bloqueada  
+**Versão:** 0.2.0  
+**Data e hora:** 30/07/2026 07:19, `America/Sao_Paulo`  
+**Status:** implementação presente na branch e aguardando validação integral  
 **Repositório:** `interflownex/All-in-One`  
-**Branch:** `docs/marketplace-checkout-contract-v1-2026-07-29`  
-**Commit-base:** `438d64f46ef341f6a3559dbcb6642cd950ba7291`  
+**Branch:** `feat/marketplace-checkout-idempotent-20260730`  
 **Issue:** `#78`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Públicos:** Pessoa Física, Pessoa Jurídica e Equipe Técnica
 
 ## 1. Objetivo
 
-Definir a fronteira transacional entre Marketplace, Stock, Orders e Finance sem criar fontes paralelas de saldo, cobrança ou pedido.
+Implementar o checkout idempotente do Marketplace sobre a fundação transacional Stock integrada pela PR #92, sem criar fontes paralelas de saldo, pedido ou cobrança.
 
-Este documento não declara o checkout implementado. Ele bloqueia implementações que ignorem reserva transacional, idempotência, ledger, auditoria ou compensação.
+A ordem funcional continua:
+
+```text
+Marketplace -> Stock -> Finance/Wallet -> Delivery
+```
+
+A presente etapa termina em pedido pago por Wallet interna e valor retido em escrow. Não inicia Delivery, não atribui Rider e não liquida o valor ao lojista.
 
 ## 2. Feature flag
-
-Nome proposto:
 
 ```text
 MARKETPLACE_CHECKOUT_V1_ENABLED
@@ -27,14 +30,46 @@ MARKETPLACE_CHECKOUT_V1_ENABLED
 Regras:
 
 - desligada por padrão;
-- nenhuma ativação em produção pela API;
-- ativação somente por configuração de ambiente homologada;
-- telemetria e rollback obrigatórios;
-- desligamento não pode apagar pedidos ou reservas existentes.
+- bloqueia somente a criação de novos checkouts;
+- consulta, confirmação e compensação de operações já iniciadas continuam disponíveis;
+- não pode ser ativada em produção por endpoint;
+- exige DSN `ALL_IN_ONE_MARKETPLACE_POSTGRES_DSN` fora do Git;
+- desligamento não apaga pedidos, reservas, auditoria, ledger ou outbox.
 
-## 3. Requisição
+## 3. Persistência
 
-Endpoint proposto:
+Migration:
+
+```text
+database/postgres/migrations/032_marketplace_checkout_attempts.sql
+```
+
+Rollback manual:
+
+```text
+database/postgres/rollbacks/032_marketplace_checkout_attempts.sql
+```
+
+Tabela especializada:
+
+```text
+marketplace.checkout_attempts
+```
+
+Responsabilidades:
+
+- preservar chave e hash idempotentes;
+- vincular carrinho, loja, empresa, pedido e escrow;
+- armazenar snapshot imutável do checkout;
+- registrar referências das reservas Stock;
+- manter correlation_id e causation_id;
+- controlar estados monotônicos;
+- preservar operação terminal;
+- permitir compensação sem apagar histórico.
+
+## 4. APIs
+
+### Criar checkout e reservar Stock
 
 ```http
 POST /valley/checkout
@@ -44,11 +79,12 @@ Cabeçalhos obrigatórios:
 
 ```http
 X-Actor-User-Id: <uuid>
-X-Idempotency-Key: <string 16..120>
-X-Correlation-Id: <uuid ou identificador rastreável>
+X-Idempotency-Key: <16..160 caracteres>
+X-Correlation-Id: <uuid>
+X-Causation-Id: <uuid opcional>
 ```
 
-Corpo mínimo:
+Corpo:
 
 ```json
 {
@@ -59,228 +95,242 @@ Corpo mínimo:
 }
 ```
 
-O cliente não envia preço unitário autoritativo, saldo de estoque, comissão final ou estado de liquidação.
+A criação:
 
-## 4. Resposta inicial
+1. exige a feature flag ligada;
+2. bloqueia o carrinho do consumidor;
+3. rejeita carrinho vazio ou de outro usuário;
+4. revalida produto, loja, preço e moeda;
+5. aceita uma única loja e empresa por checkout nesta versão;
+6. usa `stock.inventory_items` como saldo autoritativo;
+7. bloqueia cada inventário com `FOR UPDATE`;
+8. cria snapshot imutável;
+9. cria pedido pendente;
+10. cria reservas Stock com expiração;
+11. grava auditoria e outbox na mesma transação.
 
-Enquanto o pagamento não estiver homologado, a resposta máxima permitida é um pedido pendente:
+### Consultar
 
-```json
-{
-  "checkout_id": "uuid",
-  "order_id": "uuid",
-  "status": "pending_stock_reservation",
-  "currency": "BRL",
-  "total_brl": "199.90",
-  "reservation_expires_at": null,
-  "payment_status": "not_started"
-}
+```http
+GET /valley/checkout/{checkout_id}
 ```
 
-É proibido retornar `paid`, `settled` ou `completed` sem evidência do ledger e do provedor homologado.
+Somente o consumidor titular pode consultar.
 
-## 5. Máquina de estados
+### Confirmar com Wallet
 
-### Checkout
+```http
+POST /valley/checkout/{checkout_id}/confirm
+```
+
+A confirmação:
+
+1. bloqueia checkout, pedido, reservas e Wallet;
+2. exige Wallet pessoal ativa;
+3. impede autorização acima do saldo disponível;
+4. transfere saldo disponível para saldo retido;
+5. cria escrow sem liberação automática;
+6. grava lançamento `escrow_hold` no ledger;
+7. confirma as reservas Stock;
+8. marca o pedido como `paid`;
+9. marca o pagamento como `authorized`;
+10. limpa o carrinho somente após sucesso;
+11. não liquida o valor ao lojista;
+12. não inicia Delivery.
+
+Falha de Wallet:
+
+- marca o checkout `payment_failed`;
+- marca o pedido `cancelled`;
+- libera todas as reservas na mesma transação;
+- publica eventos de falha e compensação;
+- não cria escrow nem ledger.
+
+### Cancelar
+
+```http
+POST /valley/checkout/{checkout_id}/cancel
+```
+
+O cancelamento é idempotente enquanto o checkout não estiver confirmado e libera as reservas pendentes.
+
+## 5. Estados
+
+Checkout:
 
 ```text
 requested
-  -> validating_cart
-  -> pending_stock_reservation
-  -> stock_reserved
-  -> pending_payment
-  -> payment_authorized
-  -> confirmed
+pending_stock_reservation
+pending_payment
+confirmed
+rejected
+payment_failed
+cancelled
+expired
 ```
 
-Estados de falha e compensação:
+Pagamento:
 
 ```text
-rejected
-expired
-payment_failed
-compensating
+not_started
+pending
+authorized
+failed
 cancelled
 ```
 
-### Reserva de Stock
+Reserva Stock:
 
 ```text
-pending
 reserved
 committed
 released
 expired
 ```
 
-Transições devem ser monotônicas, auditadas e idempotentes.
+Estados terminais do checkout não podem retroceder.
 
 ## 6. Snapshot imutável
 
-No início do checkout, o servidor deve criar um snapshot contendo:
+O snapshot contém:
 
-- product_id;
-- store_id ou company_id;
-- SKU;
-- nome do produto;
-- quantidade;
-- preço unitário validado;
-- subtotal;
+- cart_id;
+- store_id;
+- company_id;
 - moeda;
-- promoção aplicada e sua versão;
-- versão ou timestamp do catálogo;
-- referência da reserva de Stock.
+- total em BRL;
+- product_id;
+- inventory_item_id;
+- SKU;
+- nome;
+- quantidade;
+- preço unitário;
+- subtotal;
+- promoção vigente;
+- timestamp do catálogo.
 
-O snapshot não pode ser reescrito depois da criação. Alterações de preço posteriores exigem novo checkout.
+O banco impede alteração posterior do snapshot, total, referências, idempotência, correlação e expiração.
 
-## 7. Regras de validação
+## 7. Idempotência
 
-O servidor deve rejeitar:
+### Criação
 
-- carrinho vazio;
-- carrinho de outro usuário;
-- produto inexistente, privado, inativo ou pausado;
-- loja inativa ou não aprovada;
-- moeda diferente de BRL neste primeiro contrato;
-- preço atual divergente de `expected_total_brl`;
-- quantidade maior que o saldo reservável;
-- produtos de empresas incompatíveis com a política do pedido;
-- chave de idempotência vazia ou reutilizada com corpo diferente.
+Escopo:
 
-## 8. Idempotência
+```text
+(user_id, X-Idempotency-Key)
+```
 
-A chave deve ser única por ator e operação.
+Mesmo corpo:
 
-Repetição com o mesmo corpo:
-
-- retorna o mesmo checkout e pedido;
-- não cria nova reserva;
-- não cria novo lançamento financeiro;
+- retorna o mesmo checkout;
+- não cria novo pedido;
+- não cria novas reservas;
 - não publica eventos duplicados.
 
-Repetição com corpo diferente:
+Corpo diferente:
 
 - retorna conflito;
 - registra auditoria;
-- não modifica a operação original.
+- não altera a operação original.
 
-## 9. Contrato obrigatório do Stock
+### Confirmação
 
-Antes da ativação do checkout, o Stock deve fornecer:
+Escopo:
 
-- `inventory_items` como fonte única de saldo;
-- `stock_reservations` com expiração;
-- reserva atômica;
-- prevenção de estoque negativo;
-- confirmação e liberação idempotentes;
-- controle de concorrência;
-- auditoria;
-- outbox.
+```text
+(user_id, confirmation_idempotency_key)
+```
 
-Campos mínimos da reserva:
+A repetição de checkout confirmado retorna o resultado existente sem duplicar escrow, ledger ou baixa Stock.
 
-- reservation_id;
-- user_id;
-- company_id;
-- order_id;
-- product_id ou inventory_item_id;
-- quantity;
-- status;
-- idempotency_key;
-- expires_at;
-- created_at;
-- committed_at ou released_at.
+## 8. Eventos
 
-## 10. Contrato financeiro
-
-- valores são lançados somente no ledger;
-- dados brutos de cartão não entram no repositório nem nos logs;
-- pagamento pendente não reduz saldo definitivo;
-- falha financeira libera a reserva;
-- autorização duplicada não duplica lançamento;
-- compensações são novos lançamentos, nunca edição destrutiva do histórico;
-- mocks não podem ser divulgados como liquidação real.
-
-## 11. Eventos mínimos
+Implementados:
 
 - `marketplace.checkout.started`;
-- `stock.reservation.created`;
-- `stock.reservation.rejected`;
 - `marketplace.order.created`;
-- `finance.payment.pending`;
+- `stock.reservation.created`;
 - `finance.payment.authorized`;
 - `finance.payment.failed`;
 - `stock.reservation.committed`;
 - `stock.reservation.released`;
+- `stock.reservation.expired`;
 - `marketplace.checkout.confirmed`;
 - `marketplace.checkout.cancelled`.
 
-Todos os eventos devem conter:
+Todos usam envelope com:
 
 - event_id;
 - occurred_at;
 - actor_user_id;
 - user_id;
-- company_id quando aplicável;
 - entity_id;
+- aggregate_type;
+- aggregate_id;
 - correlation_id;
 - causation_id;
 - schema_version;
 - payload minimizado.
 
-## 12. Observabilidade
+## 9. Segurança e isolamento
 
-Métricas mínimas:
+- consumidor opera somente o próprio carrinho e checkout;
+- preço e saldo enviados pelo cliente nunca são autoritativos;
+- consultas SQL são parametrizadas;
+- dados brutos de cartão não são aceitos;
+- apenas BRL e Wallet interna são permitidos nesta versão;
+- credenciais e DSNs ficam fora do repositório;
+- saldo autoritativo permanece no Stock;
+- valores financeiros permanecem no ledger;
+- Vision permanece inativo.
 
-- checkout_started_total;
-- checkout_confirmed_total;
-- checkout_rejected_total por motivo;
-- stock_reservation_latency;
-- payment_authorization_latency;
-- compensation_total;
-- idempotency_replay_total;
-- checkout_duration_p95.
+## 10. Testes obrigatórios
 
-Alertas:
-
-- reserva sem pedido;
-- pedido sem reserva;
-- pagamento autorizado sem confirmação;
-- reserva vencida ainda ativa;
-- duplicidade de idempotência com corpo diferente;
-- crescimento de compensações.
-
-## 13. Rollback
-
-O rollback da feature flag:
-
-1. bloqueia novos checkouts;
-2. preserva consultas de pedidos existentes;
-3. permite finalizar ou compensar operações iniciadas;
-4. libera reservas que não puderem ser concluídas;
-5. não apaga auditoria, ledger ou outbox.
-
-## 14. Testes de aceite
-
-- mesma chave e mesmo corpo retornam o mesmo resultado;
+- migration 032 em banco limpo;
+- rollback 032 reproduzível;
+- feature flag desligada por padrão;
+- criação bloqueada com flag desligada;
+- carrinho vazio bloqueado;
+- carrinho de outro usuário bloqueado;
+- item ou loja indisponível bloqueados;
+- preço divergente bloqueado;
+- checkout com múltiplas lojas bloqueado;
+- saldo Stock insuficiente bloqueado;
+- mesma chave e mesmo corpo retornam o mesmo checkout;
 - mesma chave e corpo diferente retornam conflito;
-- duas compras concorrentes não tornam o estoque negativo;
-- preço divergente bloqueia a confirmação;
-- item indisponível bloqueia a reserva;
-- reserva expirada libera saldo;
-- falha financeira compensa a reserva;
-- evento não é publicado duas vezes;
-- pedido, reserva e ledger compartilham correlation_id;
-- isolamento por usuário e empresa;
-- migrations reversíveis em banco limpo;
-- feature flag desligada por padrão.
+- concorrência não torna estoque negativo;
+- Wallet insuficiente libera reservas;
+- confirmação cria apenas um escrow e um ledger;
+- confirmação repetida não duplica efeitos;
+- snapshot permanece imutável;
+- pedido, reservas, ledger e eventos compartilham correlation_id;
+- cancelamento é idempotente;
+- auditoria e outbox são preservados;
+- nenhum fluxo Delivery, Rider ou Vision é iniciado.
 
-## 15. Fora do escopo
+## 11. Fora do escopo
 
-- cálculo e despacho de Delivery;
-- atribuição de Rider;
+- PSP externo;
+- dados de cartão;
+- liquidação ao lojista;
+- split produtivo;
 - parcelamento;
 - múltiplas moedas;
-- split produtivo de PSP sem homologação;
-- dados de cartão;
-- ativação automática em produção.
+- cálculo de frete;
+- Delivery;
+- atribuição de Rider;
+- ativação automática em produção;
+- reativação do Vision.
+
+## 12. Critério de conclusão
+
+A issue #78 somente poderá ser encerrada após:
+
+1. todos os testes passarem;
+2. CI, Security, Database, OpenAPI e Docker ficarem verdes no mesmo SHA;
+3. diff integral revisado;
+4. ausência de segredos comprovada;
+5. ausência de reviews ou threads bloqueadoras;
+6. Squash and Merge com `expected_head_sha`;
+7. commit consolidado confirmado na `main`.

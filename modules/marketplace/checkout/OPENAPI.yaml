@@ -1,0 +1,268 @@
+openapi: 3.1.0
+info:
+  title: All-in-One Marketplace Checkout API
+  version: 0.1.0
+  description: >-
+    Contrato especializado do checkout idempotente com reserva Stock e
+    autorização Wallet. A criação de novos checkouts permanece bloqueada
+    enquanto MARKETPLACE_CHECKOUT_V1_ENABLED estiver desligada.
+servers:
+  - url: /api/v1/marketplace
+security:
+  - bearerAuth: []
+paths:
+  /valley/checkout:
+    post:
+      summary: Criar checkout e reservar o Stock
+      description: >-
+        Revalida carrinho, preço, loja e saldo no servidor; cria snapshot
+        imutável, pedido pendente e reservas Stock. Não inicia Delivery e não
+        realiza liquidação ao lojista.
+      parameters:
+        - $ref: "#/components/parameters/ActorUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/CausationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckoutRequest"
+      responses:
+        "201":
+          description: Checkout criado com reservas e pagamento ainda não iniciado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutResponse"
+        "401":
+          description: Ator autenticado ausente
+        "409":
+          description: Carrinho, preço, loja, estoque ou idempotência incompatível
+        "503":
+          description: Feature flag desligada ou DSN PostgreSQL ausente
+  /valley/checkout/{checkout_id}:
+    get:
+      summary: Consultar checkout do consumidor autenticado
+      parameters:
+        - $ref: "#/components/parameters/CheckoutId"
+        - $ref: "#/components/parameters/ActorUserId"
+        - $ref: "#/components/parameters/CorrelationId"
+      responses:
+        "200":
+          description: Estado atual do checkout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutResponse"
+        "404":
+          description: Checkout inexistente ou pertencente a outro usuário
+  /valley/checkout/{checkout_id}/confirm:
+    post:
+      summary: Autorizar Wallet, criar escrow e confirmar as reservas
+      description: >-
+        Retém o saldo do consumidor em escrow, grava ledger idempotente e
+        confirma o Stock. O valor não é liquidado ao lojista nesta etapa.
+        Falha financeira libera as reservas na mesma transação.
+      parameters:
+        - $ref: "#/components/parameters/CheckoutId"
+        - $ref: "#/components/parameters/ActorUserId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/CausationId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckoutConfirmationRequest"
+      responses:
+        "200":
+          description: Pagamento autorizado, escrow retido e Stock confirmado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutResponse"
+        "404":
+          description: Checkout ou dependência não encontrada
+        "409":
+          description: Estado incompatível, reserva expirada ou falha financeira compensada
+  /valley/checkout/{checkout_id}/cancel:
+    post:
+      summary: Cancelar checkout pendente e liberar reservas
+      parameters:
+        - $ref: "#/components/parameters/CheckoutId"
+        - $ref: "#/components/parameters/ActorUserId"
+        - $ref: "#/components/parameters/CorrelationId"
+        - $ref: "#/components/parameters/CausationId"
+      responses:
+        "200":
+          description: Checkout cancelado idempotentemente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckoutResponse"
+        "404":
+          description: Checkout não encontrado
+        "409":
+          description: Checkout já confirmado e não cancelável por este fluxo
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    CheckoutId:
+      name: checkout_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ActorUserId:
+      name: X-Actor-User-Id
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IdempotencyKey:
+      name: X-Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 160
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+    CausationId:
+      name: X-Causation-Id
+      in: header
+      required: false
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    CheckoutRequest:
+      type: object
+      additionalProperties: false
+      required: [cart_id, currency, expected_total_brl, payment_method]
+      properties:
+        cart_id:
+          type: string
+          format: uuid
+        currency:
+          type: string
+          const: BRL
+        expected_total_brl:
+          type: number
+          exclusiveMinimum: 0
+          multipleOf: 0.01
+        payment_method:
+          type: string
+          const: wallet
+    CheckoutConfirmationRequest:
+      type: object
+      additionalProperties: false
+      required: [payment_method]
+      properties:
+        payment_method:
+          type: string
+          const: wallet
+    CheckoutResponse:
+      type: object
+      required:
+        - checkout_id
+        - order_id
+        - cart_id
+        - user_id
+        - company_id
+        - store_id
+        - status
+        - payment_status
+        - payment_method
+        - currency
+        - total_brl
+        - reservation_ids
+        - reservation_expires_at
+        - correlation_id
+      properties:
+        checkout_id:
+          type: string
+          format: uuid
+        order_id:
+          type: string
+          format: uuid
+        cart_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        company_id:
+          type: string
+          format: uuid
+        store_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+            - requested
+            - pending_stock_reservation
+            - pending_payment
+            - confirmed
+            - rejected
+            - payment_failed
+            - cancelled
+            - expired
+        payment_status:
+          type: string
+          enum: [not_started, pending, authorized, failed, cancelled]
+        payment_method:
+          type: string
+          const: wallet
+        currency:
+          type: string
+          const: BRL
+        expected_total_brl:
+          type: string
+        total_brl:
+          type: string
+        reservation_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        reservation_expires_at:
+          type: string
+          format: date-time
+        escrow_id:
+          oneOf:
+            - type: string
+              format: uuid
+            - type: "null"
+        snapshot:
+          type: object
+          additionalProperties: true
+        correlation_id:
+          type: string
+          format: uuid
+        confirmed_at:
+          oneOf:
+            - type: string
+              format: date-time
+            - type: "null"
+        cancelled_at:
+          oneOf:
+            - type: string
+              format: date-time
+            - type: "null"

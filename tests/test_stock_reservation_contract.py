@@ -11,9 +11,14 @@ MAIN = ROOT / "modules" / "stock" / "main.py"
 OPENAPI = ROOT / "modules" / "stock" / "OPENAPI.yaml"
 
 
-def test_migration_031_is_latest_and_defines_authoritative_balances() -> None:
+def test_migration_031_precedes_checkout_and_defines_authoritative_balances() -> None:
     migrations = sorted((ROOT / "database" / "postgres" / "migrations").glob("*.sql"))
-    assert migrations[-1].name == MIGRATION.name
+    names = [path.name for path in migrations]
+    assert MIGRATION.name in names
+    if "032_marketplace_checkout_attempts.sql" in names:
+        assert names.index(MIGRATION.name) < names.index(
+            "032_marketplace_checkout_attempts.sql"
+        )
 
     sql = MIGRATION.read_text(encoding="utf-8")
     assert "CREATE TABLE IF NOT EXISTS stock.inventory_items" in sql
