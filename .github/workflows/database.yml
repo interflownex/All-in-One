@@ -156,7 +156,7 @@ jobs:
         run: python -m pytest -q tests/test_postgres_priority_stores_integration.py::test_crm_lead_create_update_and_soft_delete
       - name: Exercise BPM PostgreSQL store
         env:
-          ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in-one:test-password@localhost:5432/all_in_one
+          ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
         run: python -m pytest -q tests/test_postgres_priority_stores_integration.py::test_bpm_process_create_update_and_soft_delete
       - name: Exercise Document PostgreSQL store
         env:
