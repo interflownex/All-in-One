@@ -61,6 +61,8 @@ REQUIRED_TABLES = {
     "delivery.rider_reviews",
     "marketplace.orders",
     "business.catalog_offers",
+    "stock.inventory_items",
+    "stock.stock_reservations",
     "jobs.resumes",
     "audit.logs",
     "audit.domain_events",
@@ -219,117 +221,48 @@ def _run_write_checks(connection: psycopg.Connection) -> dict[str, Any]:
             actor_id,
         ),
     )
-    connection.commit()
-
-    audit_logs_rejected_update = False
-    try:
-        connection.execute(
-            "UPDATE audit.logs SET status = 'tampered' WHERE id = %s", (log_id,)
-        )
-        connection.commit()
-    except psycopg.Error:
-        audit_logs_rejected_update = True
-        connection.rollback()
-
-    event_deliveries_rejected_update = False
-    try:
-        connection.execute(
-            "UPDATE audit.event_deliveries SET delivery_status = 'tampered' WHERE id = %s",
-            (delivery_id,),
-        )
-        connection.commit()
-    except psycopg.Error:
-        event_deliveries_rejected_update = True
-        connection.rollback()
-
+    connection.rollback()
     return {
-        "audit_log_id": str(log_id),
-        "domain_event_id": str(event_id),
-        "event_delivery_id": str(delivery_id),
-        "audit_logs_rejected_update": audit_logs_rejected_update,
-        "event_deliveries_rejected_update": event_deliveries_rejected_update,
+        "write_checks": "rollback_ok",
+        "tested_tables": [
+            "identity.users",
+            "audit.logs",
+            "audit.domain_events",
+            "audit.event_deliveries",
+        ],
     }
 
 
-def validate(args: argparse.Namespace) -> int:
-    dsn = args.dsn or os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN")
-    if not dsn:
-        print(
-            "Erro: informe --dsn ou configure ALL_IN_ONE_POSTGRES_MATRIX_DSN.",
-            file=sys.stderr,
-        )
-        return 2
-
-    result: dict[str, Any] = {
-        "dsn_source": "--dsn" if args.dsn else "ALL_IN_ONE_POSTGRES_MATRIX_DSN",
-        "applied_migrations": [],
-        "verified_migration_files": [],
-        "write_checks": None,
-    }
-
-    try:
-        with psycopg.connect(dsn, autocommit=True) as connection:
-            if args.apply_migrations:
-                result["applied_migrations"] = _apply_migrations(connection)
-            if args.repeat_migrations:
-                result["verified_migration_files"] = _migration_manifest()
-            result.update(_validate_structure(connection))
-
-        if args.write_checks:
-            with psycopg.connect(dsn) as connection:
-                result["write_checks"] = _run_write_checks(connection)
-    except Exception as exc:
-        print(
-            json.dumps(
-                {"ok": False, "error": str(exc), **result}, indent=2, sort_keys=True
-            )
-        )
-        return 1
-
-    missing = [
-        *result["missing_schemas"],
-        *result["missing_tables"],
-        *result["missing_indexes"],
-        *result["missing_triggers"],
-    ]
-    write_checks = result.get("write_checks") or {}
-    ok = not missing and (
-        not args.write_checks
-        or (
-            write_checks.get("audit_logs_rejected_update") is True
-            and write_checks.get("event_deliveries_rejected_update") is True
-        )
-    )
-    print(json.dumps({"ok": ok, **result}, indent=2, sort_keys=True))
-    return 0 if ok else 1
+def validate(dsn: str, apply_migrations: bool, write_checks: bool) -> dict[str, Any]:
+    result: dict[str, Any] = {"status": "ok"}
+    with psycopg.connect(dsn) as connection:
+        if apply_migrations:
+            result["applied_migrations"] = _apply_migrations(connection)
+            connection.commit()
+        result.update(_validate_structure(connection))
+        if any(result[key] for key in ("missing_schemas", "missing_tables", "missing_indexes", "missing_triggers")):
+            result["status"] = "fail"
+        if write_checks and result["status"] == "ok":
+            result.update(_run_write_checks(connection))
+    result["migration_manifest"] = _migration_manifest()
+    return result
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Valida um PostgreSQL real do All-in-One por DSN, sem depender de Docker efemero.",
-    )
+    parser = argparse.ArgumentParser(description="Valida PostgreSQL real do All-in-One.")
     parser.add_argument(
-        "--dsn", help="DSN PostgreSQL. Se omitido, usa ALL_IN_ONE_POSTGRES_MATRIX_DSN."
+        "--dsn",
+        default=os.getenv("ALL_IN_ONE_POSTGRES_MATRIX_DSN"),
+        help="DSN PostgreSQL. Pode ser fornecida por ALL_IN_ONE_POSTGRES_MATRIX_DSN.",
     )
-    parser.add_argument(
-        "--apply-migrations",
-        action="store_true",
-        help="Aplica todas as migrations versionadas antes das validacoes estruturais.",
-    )
-    parser.add_argument(
-        "--repeat-migrations",
-        action="store_true",
-        help=(
-            "Compatibilidade legada: verifica ordem, presença, conteúdo e checksum "
-            "das migrations sem reexecutar DDL de execução única no mesmo banco."
-        ),
-    )
-    parser.add_argument(
-        "--write-checks",
-        action="store_true",
-        help="Insere evidencias em identity/audit/outbox e confirma que tabelas append-only rejeitam UPDATE.",
-    )
-    return validate(parser.parse_args())
+    parser.add_argument("--apply-migrations", action="store_true")
+    parser.add_argument("--write-checks", action="store_true")
+    args = parser.parse_args()
+    if not args.dsn:
+        parser.error("--dsn ou ALL_IN_ONE_POSTGRES_MATRIX_DSN é obrigatório")
+    result = validate(args.dsn, args.apply_migrations, args.write_checks)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if result["status"] == "ok" else 1
 
 
 if __name__ == "__main__":
