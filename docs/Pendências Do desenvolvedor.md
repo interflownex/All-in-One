@@ -1,18 +1,38 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 3.2
-**Data e hora da atualização:** 28/07/2026 14:51:13
+**Versão:** 3.3
+**Data e hora da atualização:** 30/07/2026 17:19:59
 **Fuso horário:** `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
-**Branch de execução:** `codex/auditoria-valley-rider-2026-07-28`
-**Pull Request central desta atividade:** `#62`
-**Issue operacional:** `#49`
+**Branch de execução:** `codex/orquestrar-pendencias-reais-20260730`
+**Pull Request central desta atividade:** pendente de abertura
+**Issue operacional:** `#51`
 **Issue de orquestração funcional:** `#51`
-**Versão anterior consolidada:** 3.1
+**Versão anterior consolidada:** 3.2
 **Classificação:** `Pendências > Técnico > Equipe técnica`
 **Públicos impactados:** Pessoa Física, Pessoa Jurídica, equipe técnica, gestão e investidores
 
 ## 1. Situação executiva
+
+> Estado autoritativo da versão 3.3: as seções históricas posteriores são
+> preservadas como evidência cronológica, mas não substituem esta consolidação.
+
+- `main` local e `origin/main` estavam idênticas em
+  `d3b3ef594b1e14347fca785a800980e2f7d39c01`;
+- não havia PR aberta, merge em andamento ou alerta Dependabot aberto;
+- CI, Security, Compose, marca e Git Sync estavam verdes no SHA atual;
+- o único workflow vermelho era o deploy GKE, autenticado por WIF e bloqueado
+  externamente porque o billing do projeto `all-in-one-498012` está inativo;
+- o repositório GitHub foi corrigido para permitir somente Squash and Merge,
+  desativar Merge Commit, Rebase Merge e auto-merge, e apagar branches
+  integradas automaticamente;
+- 84 branches remotas concluídas foram removidas após comprovação por PR
+  integrada ou ancestralidade; sete branches `backup/*` e 22 branches
+  divergentes sem PR foram preservadas para auditoria de commits únicos;
+- a refspec local obsoleta de `origin/worktree-sync` foi removida; o fetch
+  autoritativo voltou a operar exclusivamente contra `origin/main`;
+- permanecem oito issues abertas: `#24`, `#39`, `#47`, `#51`, `#55`, `#69`,
+  `#89` e `#95`, classificadas no relatório v4.1.
 
 A Fase 0 de estabilização foi implementada. No head funcional `73f04292e44c9ee6a887e76148300bba72734f50`, todos os gates obrigatórios ficaram verdes no mesmo commit:
 
