@@ -2,6 +2,7 @@ import { McpServer } from "skybridge/server";
 import { z } from "zod";
 
 const VALLEY_APP_URL = "https://84e9680fcfa2a84551.v2.appdeploy.ai/";
+const VALLEY_APP_ORIGIN = "https://84e9680fcfa2a84551.v2.appdeploy.ai";
 
 const contexts = [
   {
@@ -59,6 +60,17 @@ const server = new McpServer(
         title: "Listar contextos do Valley",
         ...readOnlyAnnotations,
       },
+      _meta: {
+        "openai/toolInvocation/invoking": "Organizando os contextos do Valley…",
+        "openai/toolInvocation/invoked": "Contextos do Valley disponíveis.",
+      },
+      view: {
+        component: "valley-contexts",
+        description: "Painel visual dos contextos disponíveis no Valley Universal.",
+        csp: {
+          redirectDomains: [VALLEY_APP_ORIGIN],
+        },
+      },
     },
     async () => ({
       content: [
@@ -69,6 +81,7 @@ const server = new McpServer(
       ],
       structuredContent: {
         contexts,
+        appUrl: VALLEY_APP_URL,
         authorizationNotice:
           "Selecionar ou mencionar um contexto não concede permissão. O Valley valida perfil, vínculo e situação cadastral após o login.",
       },
