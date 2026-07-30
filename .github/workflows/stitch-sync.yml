@@ -1,14 +1,35 @@
-name: Stitch Remote Sync
+name: Stitch Coordination Guard
 
 on:
   workflow_dispatch:
+    inputs:
+      execute_remote_fallback:
+        description: "Executar sincronização remota de fallback usando o mesmo diretor Codex"
+        required: false
+        default: false
+        type: boolean
+  pull_request:
+    branches: [main]
+    paths:
+      - "AGENTS.md"
+      - "config/autonomy/**stitch**"
+      - "config/autonomy/google_integrations_policy.json"
+      - "config/stitch/**"
+      - "scripts/codex_stitch_director.py"
+      - "scripts/stitch_*.py"
+      - "tests/test_*stitch*.py"
+      - ".github/workflows/stitch-sync.yml"
   push:
     branches: [main]
     paths:
-      - "config/branding/**"
-      - "config/module_catalog.json"
+      - "AGENTS.md"
+      - "config/autonomy/**stitch**"
+      - "config/autonomy/google_integrations_policy.json"
       - "config/stitch/**"
+      - "scripts/codex_stitch_director.py"
       - "scripts/stitch_*.py"
+      - "tests/test_*stitch*.py"
+      - ".github/workflows/stitch-sync.yml"
   schedule:
     - cron: "17 7 * * 1-5"
 
@@ -16,37 +37,97 @@ permissions:
   contents: write
 
 concurrency:
-  group: stitch-remote-sync-${{ github.ref }}
+  group: stitch-coordination-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  STITCH_REMOTE_SYNC_ENABLED: "true"
+  STITCH_COORDINATOR: "codex"
+  STITCH_LEGACY_MODULE_SYNC_ENABLED: "false"
+
 jobs:
-  stitch-sync:
+  validate-coordination:
     runs-on: ubuntu-latest
-    env:
-      STITCH_REMOTE_SYNC_ENABLED: "true"
-      STITCH_API_KEY: ${{ secrets.STITCH_API_KEY }}
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - name: Baixar repositório
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - name: Configurar Python
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
-      - name: Install Stitch sync dependencies
+      - name: Instalar dependências
+        run: python -m pip install httpx pytest
+
+      - name: Materializar configuração segura do Codex MCP
+        run: |
+          mkdir -p ~/.codex
+          cat > ~/.codex/config.toml <<'EOF'
+          [mcp_servers.stitch]
+          url = "https://stitch.googleapis.com/mcp"
+          http_headers = { Accept = "application/json" }
+          env_http_headers = { "X-Goog-Api-Key" = "STITCH_API_KEY" }
+          EOF
+
+      - name: Validar política, segredo e configuração MCP
+        run: python scripts/validate_stitch_mcp_config.py
+
+      - name: Validar direção Codex e coordenadas oficiais
+        run: |
+          python scripts/codex_stitch_director.py plan
+          python scripts/codex_stitch_director.py status --require-complete --actor github-actions-validator
+
+      - name: Executar testes de governança Stitch
+        run: pytest -q tests/test_codex_stitch_director.py tests/test_stitch_orchestrator.py
+
+  remote-fallback:
+    if: github.event_name == 'workflow_dispatch' && inputs.execute_remote_fallback == true
+    needs: validate-coordination
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      STITCH_API_KEY: ${{ secrets.STITCH_API_KEY }}
+      CODEX_AGENT_ID: github-actions-fallback
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
         run: python -m pip install httpx
 
-      - name: Validate policy and synchronize Stitch projects
+      - name: Materializar configuração segura do Codex MCP
+        run: |
+          mkdir -p ~/.codex
+          cat > ~/.codex/config.toml <<'EOF'
+          [mcp_servers.stitch]
+          url = "https://stitch.googleapis.com/mcp"
+          http_headers = { Accept = "application/json" }
+          env_http_headers = { "X-Goog-Api-Key" = "STITCH_API_KEY" }
+          EOF
+
+      - name: Executar fallback remoto pelo diretor Codex
         run: |
           python scripts/validate_stitch_mcp_config.py --require-secret
-          python scripts/stitch_template_project_sync.py --require-remote --max-operations 8
-          python scripts/stitch_auto_sync.py --require-remote --max-operations 8
+          python scripts/codex_stitch_director.py sync \
+            --max-operations 8 \
+            --require-complete \
+            --actor github-actions-fallback
 
-      - name: Commit synchronized Stitch state
+      - name: Versionar somente o checkpoint oficial
         run: |
           git config user.name "all-in-one-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add config/stitch/screen_manifest.json config/stitch/sync_state.json config/stitch/template_project_state.json
-          git diff --cached --quiet || git commit -m "chore(stitch): synchronize remote design state"
+          git add config/stitch/template_project_state.json
+          git diff --cached --quiet || git commit -m "chore(stitch): atualizar checkpoint coordenado pelo Codex"
           git push
