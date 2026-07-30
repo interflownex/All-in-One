@@ -1,9 +1,10 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 3.4  
-**Data e hora:** 30/07/2026 08:20, `America/Sao_Paulo`  
+**Versão:** 3.5  
+**Data e hora:** 30/07/2026 12:46, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Commit-base:** `c6da2cb578a7edc7bdfd9c9b2182ff6aeec6c239`  
+**Branch:** `codex/integrar-evolucoes-locais-20260730`  
+**Commit-base:** `05564ff947709251b07a5f5f1852c92e14874393`  
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
@@ -27,6 +28,34 @@
 - nenhum valor foi liquidado ao lojista nesta etapa.
 
 ## 2. Etapas técnicas concluídas
+
+### Reconciliação do trabalho local
+
+- o checkout principal foi avançado por fast-forward de `7a41ee9` para
+  `05564ff`, ficando idêntico a `origin/main`;
+- o estado legado com remoções destrutivas foi preservado somente na branch
+  local `recovery/local-main-20260730`, sem publicação;
+- a migração incompleta de skills foi preservada somente na branch local
+  `recovery/flutter-gemini-20260730`, sem publicação;
+- as evoluções aproveitáveis foram reaplicadas sobre a `main` atual;
+- foram adicionadas consultas de avaliações, série comercial, perfil CRM e
+  resolução empresarial de disputas, com rotas correspondentes no API Hub;
+- o acesso CRM foi limitado ao próprio usuário autenticado;
+- o identificador empresarial foi alinhado a `Actor.business_id` e ao cabeçalho
+  `X-Business-Id`;
+- o worker de notificação simulado foi rejeitado e não integra esta entrega.
+
+### Testes e critérios de aceite da reconciliação
+
+- `ruff check` nos arquivos novos e testes: aprovado;
+- testes recuperados e endurecidos: `7 passed`;
+- contratos de API Hub, BI, Business, CRM e Marketplace: `10 passed, 1 skipped`;
+- compilação Python dos cinco módulos alterados: aprovada;
+- pendências preexistentes de branding e `validate_repository.py` permanecem
+  bloqueios de baseline e devem ser tratadas em atividade exclusiva antes de
+  qualquer declaração de conformidade integral;
+- aceitar somente PR com CI, segurança e checks obrigatórios verdes no mesmo
+  SHA; não promover os commits locais de recuperação.
 
 ```text
 Marketplace catálogo/carrinho: concluído
@@ -183,3 +212,4 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
 | 3.2 | 30/07/2026 | PR #92 e issue #83 concluídas. |
 | 3.3 | 30/07/2026 | PR #94 aberta para executar a issue #78. |
 | 3.4 | 30/07/2026 | PR #94 e issue #78 concluídas; issue #95 aberta como próxima dependência financeira. |
+| 3.5 | 30/07/2026 | Trabalho local reconciliado com `origin/main`; código válido reaplicado e regressões arquivadas apenas localmente. |

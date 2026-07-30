@@ -92,11 +92,16 @@ def _distance_km(
 
 def _text_blob(payload: dict[str, Any]) -> str:
     tags = payload.get("tags")
-    normalized_tags = " ".join(str(item) for item in tags) if isinstance(tags, list) else ""
-    return " ".join(
-        str(payload.get(field) or "")
-        for field in ("name", "description", "category", "subcategory", "brand")
-    ).casefold() + f" {normalized_tags.casefold()}"
+    normalized_tags = (
+        " ".join(str(item) for item in tags) if isinstance(tags, list) else ""
+    )
+    return (
+        " ".join(
+            str(payload.get(field) or "")
+            for field in ("name", "description", "category", "subcategory", "brand")
+        ).casefold()
+        + f" {normalized_tags.casefold()}"
+    )
 
 
 def _store_index(store: Any) -> dict[str, dict[str, Any]]:
@@ -125,7 +130,9 @@ def _public_product(
         distance = round(_distance_km(latitude, longitude, *coordinates), 3)
 
     price = _decimal(payload.get("price_brl"))
-    promotion = payload.get("promotion") if isinstance(payload.get("promotion"), dict) else {}
+    promotion = (
+        payload.get("promotion") if isinstance(payload.get("promotion"), dict) else {}
+    )
     stock_quantity = payload.get("stock_quantity")
     in_stock = payload.get("available", True)
     if isinstance(stock_quantity, int):
@@ -181,7 +188,10 @@ def _catalog_items(
             continue
         if normalized_query and normalized_query not in _text_blob(payload):
             continue
-        if normalized_category and str(payload.get("category") or "").casefold() != normalized_category:
+        if (
+            normalized_category
+            and str(payload.get("category") or "").casefold() != normalized_category
+        ):
             continue
 
         price = _decimal(payload.get("price_brl"))
@@ -211,7 +221,9 @@ def _catalog_items(
 
 def _sort_catalog(items: list[dict[str, Any]], sort: str) -> list[dict[str, Any]]:
     if sort == "price_asc":
-        return sorted(items, key=lambda item: _decimal(item["price_brl"]) or Decimal("Infinity"))
+        return sorted(
+            items, key=lambda item: _decimal(item["price_brl"]) or Decimal("Infinity")
+        )
     if sort == "price_desc":
         return sorted(
             items,
@@ -223,7 +235,9 @@ def _sort_catalog(items: list[dict[str, Any]], sort: str) -> list[dict[str, Any]
             items,
             key=lambda item: (
                 item["distance_km"] is None,
-                item["distance_km"] if item["distance_km"] is not None else float("inf"),
+                item["distance_km"]
+                if item["distance_km"] is not None
+                else float("inf"),
             ),
         )
     if sort == "rating":
@@ -245,7 +259,9 @@ def _sort_catalog(items: list[dict[str, Any]], sort: str) -> list[dict[str, Any]
     )
 
 
-def _workspace(store: Any, actor: Actor, kind: Literal["cart", "favorites"]) -> dict[str, Any]:
+def _workspace(
+    store: Any, actor: Actor, kind: Literal["cart", "favorites"]
+) -> dict[str, Any]:
     for item in store.list("carts", str(actor.user_id)):
         if item["payload"].get("cart_type") == kind:
             return item
@@ -338,7 +354,9 @@ def marketplace_catalog(
     longitude: float | None = Query(default=None, ge=-180, le=180),
     radius_km: float | None = Query(default=None, gt=0, le=200),
     in_stock_only: bool = True,
-    sort: Literal["relevance", "price_asc", "price_desc", "distance", "rating"] = "relevance",
+    sort: Literal[
+        "relevance", "price_asc", "price_desc", "distance", "rating"
+    ] = "relevance",
     offset: int = Query(default=0, ge=0),
     limit: int = Query(default=20, ge=1, le=100),
 ) -> dict[str, Any]:
@@ -352,7 +370,11 @@ def marketplace_catalog(
             status_code=422,
             detail="Filtro por raio exige latitude e longitude.",
         )
-    if min_price_brl is not None and max_price_brl is not None and min_price_brl > max_price_brl:
+    if (
+        min_price_brl is not None
+        and max_price_brl is not None
+        and min_price_brl > max_price_brl
+    ):
         raise HTTPException(
             status_code=422,
             detail="Preco minimo nao pode ser maior que o preco maximo.",
@@ -479,7 +501,9 @@ def promotion_of_the_day(
         "active": True,
         "promotion": {
             **winner,
-            "disclosure": "Conteudo promocional" if winner["sponsored"] else "Promocao do dia",
+            "disclosure": "Conteudo promocional"
+            if winner["sponsored"]
+            else "Promocao do dia",
             "dismissible": True,
             "destination_route": f"/marketplace/products/{winner['id']}",
         },
@@ -673,7 +697,9 @@ def create_order_support_case(
         },
         str(actor.user_id),
         (),
-        "support.ticket.created" if body.kind == "support" else "marketplace.dispute.created",
+        "support.ticket.created"
+        if body.kind == "support"
+        else "marketplace.dispute.created",
         body.idempotency_key,
     )
     return {
@@ -693,7 +719,7 @@ def public_reviews(
 ) -> dict[str, Any]:
     store = app.extra["store"]
     reviews = store.list("reviews")
-    
+
     filtered_reviews = []
     for review in reviews:
         payload = review.get("payload", {})
@@ -701,19 +727,22 @@ def public_reviews(
             continue
         if company_id and str(payload.get("company_id")) != company_id:
             continue
-        
-        filtered_reviews.append({
-            "id": review["id"],
-            "rating": payload.get("rating"),
-            "comment": payload.get("comment"),
-            "created_at": review["created_at"],
-            "author_initials": "Anonimo", # A deeper integration would fetch user data
-        })
-        
+
+        filtered_reviews.append(
+            {
+                "id": review["id"],
+                "rating": payload.get("rating"),
+                "comment": payload.get("comment"),
+                "created_at": review["created_at"],
+                "author_initials": "Anonimo",  # A deeper integration would fetch user data
+            }
+        )
+
     return {
         "reviews": filtered_reviews[:limit],
         "total": len(filtered_reviews),
     }
+
 
 @app.get("/valley/insights/commercial")
 def commercial_insights(actor: Actor = Depends(actor_from_headers)) -> dict[str, Any]:
@@ -725,7 +754,8 @@ def commercial_insights(actor: Actor = Depends(actor_from_headers)) -> dict[str,
     paid_orders = [
         item
         for item in orders
-        if item["status"] in {"paid", "accepted", "in_progress", "delivered", "completed"}
+        if item["status"]
+        in {"paid", "accepted", "in_progress", "delivered", "completed"}
     ]
     completed_orders = [
         item for item in orders if item["status"] in {"delivered", "completed"}
@@ -744,7 +774,9 @@ def commercial_insights(actor: Actor = Depends(actor_from_headers)) -> dict[str,
         if str(item["payload"].get("rating") or "").isdigit()
     ]
     average_rating = round(sum(ratings) / len(ratings), 2) if ratings else None
-    conversion_rate = round((len(paid_orders) / len(orders)) * 100, 2) if orders else 0.0
+    conversion_rate = (
+        round((len(paid_orders) / len(orders)) * 100, 2) if orders else 0.0
+    )
 
     return {
         "orders_total": len(orders),

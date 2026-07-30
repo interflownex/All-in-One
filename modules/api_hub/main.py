@@ -4,7 +4,7 @@ import hmac
 import os
 import sys
 from pathlib import Path
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 from urllib.parse import quote
 from uuid import UUID
 
@@ -715,7 +715,7 @@ async def aggregate_catalog_offers(
 
 @app.get("/gateway/consumer/orders", dependencies=[Depends(rate_limiter)])
 async def get_consumer_orders(
-    token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
+    token_payload: Annotated[dict[str, Any], Depends(validate_catalog_action_token)],
 ) -> dict[str, Any]:
     """Retorna historico publico normalizado sem expor payloads internos."""
     user_id = token_payload.get("sub")
@@ -793,7 +793,7 @@ async def get_consumer_orders(
 async def create_order_support_case(
     order_id: UUID,
     body: SupportCaseRequest,
-    token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
+    token_payload: Annotated[dict[str, Any], Depends(validate_catalog_action_token)],
 ) -> dict[str, Any]:
     user_id = str(token_payload.get("sub") or "")
     headers = {"X-Actor-User-Id": user_id}
@@ -860,7 +860,7 @@ async def create_order_support_case(
 async def create_consumer_review(
     order_id: UUID,
     body: ConsumerReviewRequest,
-    token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
+    token_payload: Annotated[dict[str, Any], Depends(validate_catalog_action_token)],
 ) -> dict[str, Any]:
     """Registra uma avaliacao imutavel somente apos entrega ou conclusao."""
     user_id = str(token_payload.get("sub") or "")
@@ -992,7 +992,7 @@ async def gateway_resolve_dispute(
     company_id = str(token_payload.get("company_id") or "")
     headers = {
         "X-Actor-User-Id": user_id,
-        "X-Actor-Company-Id": company_id,
+        "X-Business-Id": company_id,
     }
 
     result = await _service_json(
@@ -1059,6 +1059,11 @@ async def gateway_crm_customer_ticket_profile(
     token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
 ) -> dict[str, Any]:
     actor_id = str(token_payload.get("sub") or "")
+    if actor_id != str(user_id):
+        raise HTTPException(
+            status_code=403,
+            detail="A sessao nao pertence ao perfil solicitado.",
+        )
     headers = {"X-Actor-User-Id": actor_id}
 
     result = await _service_json(
@@ -1315,7 +1320,6 @@ async def authorize_catalog_payment(
     )
 
 
-
 class SandboxRefundRequest(BaseModel):
     order_id: UUID
     idempotency_key: str = Field(min_length=8, max_length=120)
@@ -1354,7 +1358,8 @@ async def refund_catalog_payment(
         )
     if order.get("status") not in ("completed", "paid"):
         raise HTTPException(
-            status_code=409, detail="Estorno somente disponivel para pedidos concluidos ou pagos."
+            status_code=409,
+            detail="Estorno somente disponivel para pedidos concluidos ou pagos.",
         )
 
     payload = order.get("payload") if isinstance(order.get("payload"), dict) else {}
@@ -1373,7 +1378,9 @@ async def refund_catalog_payment(
         },
     )
     if not isinstance(refund, dict) or refund.get("status") != "refunded":
-        raise HTTPException(status_code=409, detail="Estorno nao processado pelo PSP sandbox.")
+        raise HTTPException(
+            status_code=409, detail="Estorno nao processado pelo PSP sandbox."
+        )
 
     return JSONResponse(
         {
@@ -1408,7 +1415,6 @@ async def issue_oauth2_token(body: OAuth2TokenRequest) -> JSONResponse:
             "expires_in": 3600,
         }
     )
-
 
 
 async def outbox_telemetry(limit: int = 100):

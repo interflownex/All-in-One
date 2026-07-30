@@ -1,5 +1,5 @@
-from uuid import uuid4
 from platform_test_support import client_for
+
 
 def test_public_reviews():
     client = client_for("marketplace")

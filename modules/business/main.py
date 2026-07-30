@@ -1,6 +1,6 @@
-from pathlib import Path
 import sys
-from typing import Any, Literal
+from pathlib import Path
+from typing import Annotated, Any, Literal
 from uuid import UUID
 
 from fastapi import Depends, HTTPException
@@ -8,10 +8,9 @@ from pydantic import BaseModel, Field
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from shared.runtime import create_module_app
 from business.module_settings import router as module_settings_router
+from shared.runtime import create_module_app
 from shared.security import Actor, actor_from_headers
-
 
 app = create_module_app("business")
 app.include_router(module_settings_router)
@@ -26,7 +25,7 @@ class DisputeResolutionRequest(BaseModel):
 def resolve_dispute(
     dispute_id: UUID,
     body: DisputeResolutionRequest,
-    actor: Actor = Depends(actor_from_headers),
+    actor: Annotated[Actor, Depends(actor_from_headers)],
 ) -> dict[str, Any]:
     store = app.extra["store"]
     dispute = store.get("disputes", str(dispute_id))
@@ -34,7 +33,9 @@ def resolve_dispute(
         raise HTTPException(status_code=404, detail="Disputa nao encontrada.")
 
     payload = dict(dispute.get("payload", {}))
-    if str(payload.get("company_id")) != str(actor.company_id):
+    if actor.business_id is None or str(payload.get("company_id")) != str(
+        actor.business_id
+    ):
         raise HTTPException(
             status_code=403, detail="Disputa nao pertence a empresa do ator."
         )
@@ -50,7 +51,7 @@ def resolve_dispute(
         action="resolve_dispute",
         event=f"business.dispute.{status}",
     )
-    
+
     return {
         "id": case["id"],
         "status": case["status"],
