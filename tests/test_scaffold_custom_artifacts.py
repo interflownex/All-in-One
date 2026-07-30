@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from scripts.scaffold_modules import CUSTOMIZED_ARTIFACTS
+from scripts.check_scaffold_modules import CUSTOMIZED_ARTIFACTS, STOCK_OPENAPI
 
 
 def test_scaffold_preserves_live_app_shell_artifacts() -> None:
@@ -20,3 +20,8 @@ def test_scaffold_preserves_live_app_shell_artifacts() -> None:
     }
 
     assert expected <= CUSTOMIZED_ARTIFACTS
+
+
+def test_scaffold_preserves_specialized_stock_openapi() -> None:
+    assert STOCK_OPENAPI == "modules/stock/OPENAPI.yaml"
+    assert STOCK_OPENAPI in CUSTOMIZED_ARTIFACTS
