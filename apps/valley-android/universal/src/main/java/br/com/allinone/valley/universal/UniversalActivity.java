@@ -37,7 +37,7 @@ public final class UniversalActivity extends ComponentActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return openExternalWhenNeeded(request.getUrl());
+                return openExternalWhenNeeded(request.getUrl(), request.hasGesture());
             }
 
             @Override
@@ -86,6 +86,8 @@ public final class UniversalActivity extends ComponentActivity {
         settings.setDatabaseEnabled(true);
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
+        settings.setAllowFileAccessFromFileURLs(false);
+        settings.setAllowUniversalAccessFromFileURLs(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setMediaPlaybackRequiresUserGesture(true);
         settings.setSupportZoom(false);
@@ -127,7 +129,7 @@ public final class UniversalActivity extends ComponentActivity {
                         if (urlPolicy.isAllowedAuthNavigation(uri.toString())) {
                             return false;
                         }
-                        return openExternalWhenNeeded(uri);
+                        return openExternalWhenNeeded(uri, request.hasGesture());
                     }
                 });
                 popup.setWebChromeClient(new WebChromeClient() {
@@ -174,16 +176,18 @@ public final class UniversalActivity extends ComponentActivity {
         }
     }
 
-    private boolean openExternalWhenNeeded(Uri uri) {
+    private boolean openExternalWhenNeeded(Uri uri, boolean hasUserGesture) {
         String candidateUrl = uri == null ? null : uri.toString();
         if (urlPolicy.isInternal(candidateUrl)) {
             return false;
         }
-        if (!urlPolicy.isSafeExternal(candidateUrl)) {
+        if (!urlPolicy.isSafeExternal(candidateUrl) || !hasUserGesture) {
             return true;
         }
         try {
-            startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            startActivity(intent);
         } catch (ActivityNotFoundException ignored) {
             // O dispositivo não possui aplicativo compatível para o destino externo.
         }
