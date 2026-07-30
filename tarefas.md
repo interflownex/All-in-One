@@ -49,6 +49,8 @@
 
 - `ruff check` nos arquivos novos e testes: aprovado;
 - testes recuperados e endurecidos: `7 passed`;
+- gate de artefatos gerados: aprovado após isolar as rotas em
+  `commercial_routes.py` e registrar sua inclusão no scaffold;
 - contratos de API Hub, BI, Business, CRM e Marketplace: `10 passed, 1 skipped`;
 - compilação Python dos cinco módulos alterados: aprovada;
 - pendências preexistentes de branding e `validate_repository.py` permanecem
