@@ -4,18 +4,14 @@ import ast
 import json
 from pathlib import Path
 
+from scripts.generate_data_audit_inventory import discover_physical_model
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_every_declared_typed_store_target_exists_in_the_physical_catalog() -> None:
-    dictionary = json.loads(
-        (ROOT / "docs/data-audit/artifacts/dicionario_de_dados.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    physical_tables = {
-        f"{field['schema']}.{field['table']}" for field in dictionary["fields"]
-    }
+def test_every_declared_typed_store_target_exists_in_current_migrations() -> None:
+    _, physical_model, _, _ = discover_physical_model()
+    physical_tables = set(physical_model)
     missing: list[str] = []
 
     for path in sorted((ROOT / "modules/shared").glob("*_postgres_store.py")):
