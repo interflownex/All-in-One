@@ -1,0 +1,12 @@
+{
+  "extends": "skybridge/tsconfig",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", ".skybridge/**/*.d.ts"]
+}
