@@ -5,6 +5,7 @@ from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
+import psycopg
 from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
@@ -61,6 +62,39 @@ def _raise_http_checkout_error(exc: MarketplaceCheckoutError) -> None:
     raise HTTPException(status_code=500, detail="Falha transacional no checkout.") from None
 
 
+def _recover_concurrent_checkout_creation(
+    *,
+    store: MarketplaceCheckoutPostgresStore,
+    body: MarketplaceCheckoutRequest,
+    user_id: str,
+    idempotency_key: str,
+) -> dict[str, object]:
+    """Converte a disputa da restrição única em replay idempotente ou conflito."""
+
+    previous = store.connection.execute(
+        """SELECT * FROM marketplace.checkout_attempts
+           WHERE user_id = %s AND idempotency_key = %s""",
+        (user_id, idempotency_key),
+    ).fetchone()
+    if previous is None:
+        raise HTTPException(
+            status_code=409,
+            detail="Disputa idempotente detectada sem operação recuperável.",
+        )
+    expected_hash = MarketplaceCheckoutPostgresStore.checkout_request_hash(
+        cart_id=str(body.cart_id),
+        currency=body.currency,
+        expected_total_brl=body.expected_total_brl,
+        payment_method=body.payment_method,
+    )
+    if previous["request_hash"] != expected_hash:
+        raise HTTPException(
+            status_code=409,
+            detail="Chave idempotente já utilizada com outro corpo.",
+        )
+    return MarketplaceCheckoutPostgresStore._checkout_view(previous)
+
+
 def register_marketplace_checkout_routes(app: FastAPI) -> None:
     """Registra o checkout especializado uma única vez no aplicativo Marketplace."""
 
@@ -99,6 +133,13 @@ def register_marketplace_checkout_routes(app: FastAPI) -> None:
                 idempotency_key=x_idempotency_key,
                 correlation_id=str(x_correlation_id),
                 causation_id=str(x_causation_id) if x_causation_id else None,
+            )
+        except psycopg.errors.UniqueViolation:
+            return _recover_concurrent_checkout_creation(
+                store=store,
+                body=body,
+                user_id=str(actor.user_id),
+                idempotency_key=x_idempotency_key,
             )
         except MarketplaceCheckoutError as exc:
             _raise_http_checkout_error(exc)
@@ -149,6 +190,11 @@ def register_marketplace_checkout_routes(app: FastAPI) -> None:
                 correlation_id=str(x_correlation_id),
                 causation_id=str(x_causation_id) if x_causation_id else None,
             )
+        except psycopg.errors.UniqueViolation:
+            raise HTTPException(
+                status_code=409,
+                detail="Chave idempotente de confirmação já utilizada em outro checkout.",
+            ) from None
         except MarketplaceCheckoutError as exc:
             _raise_http_checkout_error(exc)
         finally:
