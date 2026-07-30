@@ -1,7 +1,7 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 3.7
-**Data e hora:** 30/07/2026 14:06, `America/Sao_Paulo`
+**Versão:** 3.8
+**Data e hora:** 30/07/2026 14:13, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch:** `codex/corrigir-pendencias-reais-20260730`
 **Commit-base:** `3dfe1c7a8aa783038f536f78c4f525ce54dfcfb0`
@@ -256,6 +256,10 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
   memória e chaves legadas são removidas;
 - 29 testes focados foram executados diretamente e aprovados; os validadores de
   release Android e de auditoria de dados também foram aprovados.
+- o primeiro gate remoto `web-template` da PR #100 identificou inconsistência
+  entre `package.json` e `package-lock.json` no Admin; o lockfile foi
+  regenerado pelo resolvedor oficial do npm e a instalação bloqueada deverá ser
+  revalidada no novo head SHA;
 
 ### Sequência, prioridades e critérios de aceite
 
@@ -306,3 +310,4 @@ mesmo SHA.
 | 3.5 | 30/07/2026 | Trabalho local reconciliado com `origin/main`; código válido reaplicado e regressões arquivadas apenas localmente. |
 | 3.6 | 30/07/2026 | PRs, commits, merges, workflows e trabalhos locais auditados; gerador e artefatos relacionais sincronizados ao código atual. |
 | 3.7 | 30/07/2026 | Identidade GKE provisionada, dependências vulneráveis elevadas, sessão Valley retirada do browser storage e branch legada preparada para encerramento. |
+| 3.8 | 30/07/2026 | Lockfile do Admin regenerado após o gate remoto detectar dependências inconsistentes. |
