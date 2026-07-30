@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from scripts.check_scaffold_modules import CUSTOMIZED_ARTIFACTS, STOCK_OPENAPI
-from scripts.scaffold_modules import render_main
+from scripts.scaffold_modules import render_dockerfile, render_main
 
 
 def test_scaffold_preserves_live_app_shell_artifacts() -> None:
@@ -32,3 +32,6 @@ def test_scaffold_includes_commercial_routers() -> None:
     assert "business.commercial_routes" in render_main("business")
     assert "bi.commercial_routes" in render_main("bi")
     assert "crm.commercial_routes" in render_main("crm")
+    assert "business.main:app" in render_dockerfile("business")
+    assert "bi.main:app" in render_dockerfile("bi")
+    assert "crm.main:app" in render_dockerfile("crm")
