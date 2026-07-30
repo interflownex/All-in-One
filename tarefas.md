@@ -1,10 +1,10 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 3.9
-**Data e hora:** 30/07/2026 14:27, `America/Sao_Paulo`
+**Versão:** 4.0
+**Data e hora:** 30/07/2026 14:38, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
-**Branch:** `codex/remover-foojay-vulneravel-20260730`
-**Commit-base:** `01991039249eb1d35937c5a2d878f2f2e26ca80b`
+**Branch:** `codex/corrigir-referencias-marca-20260730`
+**Commit-base:** `b04af1dd235fee24e504e0dc79a296ed4832d7e0`
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
@@ -268,6 +268,10 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
 - o plugin Foojay foi removido de `settings.gradle.kts`: os workflows já
   provisionam Temurin 17 explicitamente, e o plugin era a única raiz do grafo
   transitivo associado aos 48 alertas Maven restantes;
+- a varredura pós-merge confirmou zero alertas Dependabot abertos;
+- duas referências não canônicas de marca detectadas pelo workflow pós-merge
+  foram restauradas para os ativos oficiais autorizados, sem alterar os
+  binários nem a composição das marcas;
 
 ### Sequência, prioridades e critérios de aceite
 
@@ -320,3 +324,4 @@ mesmo SHA.
 | 3.7 | 30/07/2026 | Identidade GKE provisionada, dependências vulneráveis elevadas, sessão Valley retirada do browser storage e branch legada preparada para encerramento. |
 | 3.8 | 30/07/2026 | Lockfile do Admin regenerado após o gate remoto detectar dependências inconsistentes. |
 | 3.9 | 30/07/2026 | PR #100 integrada; bloqueio externo de billing GKE isolado e resolvedor Foojay vulnerável removido. |
+| 4.0 | 30/07/2026 | Dependabot zerado e referências de marca restauradas para os caminhos canônicos autorizados. |
