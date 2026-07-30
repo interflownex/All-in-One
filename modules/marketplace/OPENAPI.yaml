@@ -1,319 +1,302 @@
 openapi: 3.1.0
 info:
   title: All-in-One Marketplace API
-  version: 0.3.0
+  version: 0.4.0
 servers:
-  - url: /api/v1/marketplace
+- url: /api/v1/marketplace
 security:
-  - bearerAuth: []
+- bearerAuth: []
 paths:
   /health:
     get:
       security: []
       responses:
-        "200":
+        '200':
           description: Healthy
   /version:
     get:
       security: []
       responses:
-        "200":
+        '200':
           description: Version information
   /status:
     get:
       responses:
-        "200":
+        '200':
           description: Operational status
   /metrics:
     get:
       responses:
-        "200":
+        '200':
           description: Prometheus metrics
   /create:
     post:
-      parameters:
-        - $ref: "#/components/parameters/ActorUserId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreatePayload"
+      deprecated: true
       responses:
-        "201":
+        '201':
           description: Resource created
   /list:
     get:
+      deprecated: true
       responses:
-        "200":
+        '200':
           description: Resource collection
   /{id}:
     get:
+      deprecated: true
       parameters:
-        - $ref: "#/components/parameters/ResourceId"
+      - $ref: '#/components/parameters/ResourceId'
       responses:
-        "200":
+        '200':
           description: Resource detail
     patch:
+      deprecated: true
       parameters:
-        - $ref: "#/components/parameters/ResourceId"
-        - $ref: "#/components/parameters/ActorUserId"
+      - $ref: '#/components/parameters/ResourceId'
       responses:
-        "200":
+        '200':
           description: Resource updated
     delete:
+      deprecated: true
       parameters:
-        - $ref: "#/components/parameters/ResourceId"
-        - $ref: "#/components/parameters/ActorUserId"
+      - $ref: '#/components/parameters/ResourceId'
       responses:
-        "204":
+        '204':
           description: Resource soft-deleted
   /approve:
     post:
-      parameters:
-        - $ref: "#/components/parameters/ActorUserId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DecisionPayload"
+      deprecated: true
       responses:
-        "200":
+        '200':
           description: Resource approved
   /reject:
     post:
-      parameters:
-        - $ref: "#/components/parameters/ActorUserId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DecisionPayload"
+      deprecated: true
       responses:
-        "200":
+        '200':
           description: Resource rejected
   /audit:
     post:
-      parameters:
-        - $ref: "#/components/parameters/ActorUserId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AuditPayload"
+      deprecated: true
       responses:
-        "201":
+        '201':
           description: Audit evidence accepted
   /catalog:
     get:
       responses:
-        "200":
+        '200':
           description: Contracted domain resources
   /resources/{resource_type}:
     post:
       responses:
-        "201":
+        '201':
           description: Domain resource created
     get:
       responses:
-        "200":
+        '200':
           description: Authorized domain resource collection
   /resources/{resource_type}/{resource_id}:
     get:
       responses:
-        "200":
+        '200':
           description: Authorized domain resource
     patch:
       responses:
-        "200":
+        '200':
           description: Domain resource updated
     delete:
       responses:
-        "204":
+        '204':
           description: Domain resource soft-deleted
   /resources/{resource_type}/{resource_id}/actions/{action}:
     post:
       responses:
-        "200":
+        '200':
           description: Workflow transition recorded
   /audit/events:
     get:
       responses:
-        "200":
+        '200':
           description: Immutable audit evidence
   /events/outbox:
     get:
       responses:
-        "200":
+        '200':
           description: Transactional outbox domain events
   /valley/marketplace/catalog:
     get:
       security: []
-      parameters:
-        - name: q
-          in: query
-          schema:
-            type: string
-            maxLength: 120
-        - name: category
-          in: query
-          schema:
-            type: string
-            maxLength: 80
-        - name: store_id
-          in: query
-          schema:
-            type: string
-            format: uuid
-        - name: min_price_brl
-          in: query
-          schema:
-            type: number
-            minimum: 0
-        - name: max_price_brl
-          in: query
-          schema:
-            type: number
-            minimum: 0
-        - name: latitude
-          in: query
-          schema:
-            type: number
-            minimum: -90
-            maximum: 90
-        - name: longitude
-          in: query
-          schema:
-            type: number
-            minimum: -180
-            maximum: 180
-        - name: radius_km
-          in: query
-          schema:
-            type: number
-            exclusiveMinimum: 0
-            maximum: 200
-        - name: in_stock_only
-          in: query
-          schema:
-            type: boolean
-            default: true
-        - name: sort
-          in: query
-          schema:
-            type: string
-            enum: [relevance, price_asc, price_desc, distance, rating]
-        - name: offset
-          in: query
-          schema:
-            type: integer
-            minimum: 0
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
       responses:
-        "200":
+        '200':
           description: Public catalog containing only approved stores and published products
-        "422":
+        '422':
           description: Invalid filter combination
   /valley/feed:
     get:
       security: []
       responses:
-        "200":
+        '200':
           description: Vertical product cards with sponsorship disclosure
   /valley/promotions/today:
     get:
       security: []
       responses:
-        "200":
+        '200':
           description: Eligible promotion or an explicit empty state
   /valley/favorites:
     get:
       parameters:
-        - $ref: "#/components/parameters/ActorUserId"
+      - $ref: '#/components/parameters/ActorUserId'
       responses:
-        "200":
+        '200':
           description: Authenticated customer favorites
   /valley/favorites/{product_id}:
     put:
       parameters:
-        - $ref: "#/components/parameters/ProductId"
-        - $ref: "#/components/parameters/ActorUserId"
+      - $ref: '#/components/parameters/ProductId'
+      - $ref: '#/components/parameters/ActorUserId'
       responses:
-        "200":
+        '200':
           description: Product added idempotently to favorites
-        "409":
+        '409':
           description: Product unavailable
     delete:
       parameters:
-        - $ref: "#/components/parameters/ProductId"
-        - $ref: "#/components/parameters/ActorUserId"
+      - $ref: '#/components/parameters/ProductId'
+      - $ref: '#/components/parameters/ActorUserId'
       responses:
-        "200":
+        '200':
           description: Product removed idempotently from favorites
   /valley/cart:
     get:
       parameters:
-        - $ref: "#/components/parameters/ActorUserId"
+      - $ref: '#/components/parameters/ActorUserId'
       responses:
-        "200":
+        '200':
           description: Cart summary with availability and BRL totals
   /valley/cart/items/{product_id}:
     put:
       parameters:
-        - $ref: "#/components/parameters/ProductId"
-        - $ref: "#/components/parameters/ActorUserId"
+      - $ref: '#/components/parameters/ProductId'
+      - $ref: '#/components/parameters/ActorUserId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CartItemRequest"
+              $ref: '#/components/schemas/CartItemRequest'
       responses:
-        "200":
+        '200':
           description: Cart item created or quantity replaced
-        "409":
+        '409':
           description: Product unavailable
     delete:
       parameters:
-        - $ref: "#/components/parameters/ProductId"
-        - $ref: "#/components/parameters/ActorUserId"
+      - $ref: '#/components/parameters/ProductId'
+      - $ref: '#/components/parameters/ActorUserId'
       responses:
-        "200":
+        '200':
           description: Cart item removed idempotently
-  /valley/orders/{order_id}/support:
+  /valley/checkout:
     post:
+      summary: Confirmar checkout idempotente
+      description: Revalida carrinho, catálogo e Stock; cria snapshot imutável, pedido pendente e reservas. A feature flag permanece desligada até homologação.
       parameters:
-        - name: order_id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
+      - $ref: '#/components/parameters/ActorUserId'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      - $ref: '#/components/parameters/CausationId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SupportCaseRequest"
+              $ref: '#/components/schemas/CheckoutConfirmRequest'
       responses:
-        "201":
+        '201':
+          description: Checkout criado ou replay idempotente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkout'
+        '404':
+          description: Carrinho, carteira, produto ou inventário não encontrado
+        '409':
+          description: Preço, publicação, disponibilidade ou idempotência divergente
+        '422':
+          description: Cabeçalho ou corpo inválido
+        '503':
+          description: Feature flag desligada ou PostgreSQL não configurado
+  /valley/checkout/{checkout_id}:
+    get:
+      summary: Consultar checkout isolado por usuário ou empresa
+      parameters:
+      - $ref: '#/components/parameters/CheckoutId'
+      - $ref: '#/components/parameters/ActorUserId'
+      responses:
+        '200':
+          description: Checkout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkout'
+        '403':
+          description: Isolamento de usuário ou empresa
+        '404':
+          description: Checkout não encontrado
+  /valley/checkout/{checkout_id}/payment-result:
+    post:
+      summary: Aplicar resultado financeiro interno idempotente
+      description: Exige o escopo marketplace:checkout:payment. Aprovação grava exclusivamente no ledger e confirma reservas; falha ou cancelamento libera reservas.
+      parameters:
+      - $ref: '#/components/parameters/CheckoutId'
+      - $ref: '#/components/parameters/ActorUserId'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutPaymentResultRequest'
+      responses:
+        '200':
+          description: Resultado aplicado ou replay idempotente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkout'
+        '403':
+          description: Escopo interno ausente
+        '404':
+          description: Checkout não encontrado
+        '409':
+          description: Transição incompatível
+  /valley/checkout/expire:
+    post:
+      summary: Expirar checkouts vencidos
+      description: Rotina interna com FOR UPDATE SKIP LOCKED; libera reservas e não inicia Delivery ou Rider.
+      parameters:
+      - $ref: '#/components/parameters/ActorUserId'
+      - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Checkouts vencidos processados
+        '403':
+          description: Escopo marketplace:checkout:expire ausente
+  /valley/orders/{order_id}/support:
+    post:
+      responses:
+        '201':
           description: Support or dispute case created
-        "403":
+        '403':
           description: Order does not belong to the authenticated customer
-        "409":
+        '409':
           description: Order is not eligible for support yet
   /valley/insights/commercial:
     get:
       responses:
-        "200":
+        '200':
           description: Commercial metrics summary
 components:
   securitySchemes:
@@ -336,6 +319,13 @@ components:
       schema:
         type: string
         format: uuid
+    CheckoutId:
+      name: checkout_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
     ActorUserId:
       name: X-Actor-User-Id
       in: header
@@ -343,66 +333,182 @@ components:
       schema:
         type: string
         format: uuid
+    IdempotencyKey:
+      name: X-Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 120
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+    CausationId:
+      name: X-Causation-Id
+      in: header
+      required: false
+      schema:
+        type: string
+        format: uuid
   schemas:
-    CreatePayload:
-      type: object
-      required: [user_id]
-      properties:
-        user_id:
-          type: string
-          format: uuid
-        entity_id:
-          type: string
-          format: uuid
-        status:
-          type: string
-        payload:
-          type: object
-          additionalProperties: true
-    DecisionPayload:
-      type: object
-      required: [id, reason]
-      properties:
-        id:
-          type: string
-          format: uuid
-        reason:
-          type: string
-          minLength: 3
-    AuditPayload:
-      type: object
-      required: [action, resource_type, resource_id]
-      properties:
-        action:
-          type: string
-        resource_type:
-          type: string
-        resource_id:
-          type: string
-          format: uuid
-        payload:
-          type: object
-          additionalProperties: true
     CartItemRequest:
       type: object
-      required: [quantity]
+      required:
+      - quantity
       properties:
         quantity:
           type: integer
           minimum: 1
           maximum: 99
-    SupportCaseRequest:
+    CheckoutConfirmRequest:
       type: object
-      required: [kind, message, idempotency_key]
+      additionalProperties: false
+      required:
+      - cart_id
+      - wallet_id
+      - expected_total_brl
       properties:
-        kind:
+        cart_id:
           type: string
-          enum: [support, dispute]
-        subject:
+          format: uuid
+        wallet_id:
           type: string
-        message:
+          format: uuid
+        currency:
           type: string
-        desired_resolution:
+          const: BRL
+          default: BRL
+        expected_total_brl:
+          type: number
+          minimum: 0
+        payment_method:
           type: string
-        idempotency_key:
+          const: wallet
+          default: wallet
+        reservation_ttl_seconds:
+          type: integer
+          minimum: 60
+          maximum: 3600
+          default: 900
+    CheckoutPaymentResultRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - outcome
+      properties:
+        outcome:
           type: string
+          enum:
+          - approved
+          - rejected
+          - cancelled
+          - compensated
+        provider_reference:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+        reason:
+          type:
+          - string
+          - 'null'
+          maxLength: 500
+    CheckoutItem:
+      type: object
+      required:
+      - product_id
+      - inventory_item_id
+      - reservation_id
+      - quantity
+      - unit_price_brl
+      - subtotal_brl
+      - currency
+      properties:
+        product_id:
+          type: string
+          format: uuid
+        inventory_item_id:
+          type: string
+          format: uuid
+        reservation_id:
+          type: string
+          format: uuid
+        quantity:
+          type: string
+        unit_price_brl:
+          type: string
+        subtotal_brl:
+          type: string
+        currency:
+          type: string
+          const: BRL
+    Checkout:
+      type: object
+      required:
+      - checkout_id
+      - order_id
+      - user_id
+      - company_id
+      - status
+      - payment_status
+      - currency
+      - total_brl
+      - items
+      - snapshot
+      properties:
+        checkout_id:
+          type: string
+          format: uuid
+        order_id:
+          type: string
+          format: uuid
+        cart_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        company_id:
+          type: string
+          format: uuid
+        store_id:
+          type: string
+          format: uuid
+        wallet_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+        payment_status:
+          type: string
+        currency:
+          type: string
+          const: BRL
+        total_brl:
+          type: string
+        expected_total_brl:
+          type: string
+        reservation_expires_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        failure_reason:
+          type:
+          - string
+          - 'null'
+        correlation_id:
+          type: string
+          format: uuid
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckoutItem'
+        snapshot:
+          type: object
+          additionalProperties: true
