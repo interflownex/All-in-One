@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Coordena o Google Stitch diretamente a partir do Codex.
 
-Este é o único ponto de escrita remota autorizado para a trilha oficial de
+Este e o unico ponto de escrita remota autorizado para a trilha oficial de
 templates. As coordenadas e checkpoints permanecem versionados no Git; as
-credenciais permanecem fora do repositório.
+credenciais permanecem fora do repositorio.
 """
 
 from __future__ import annotations
@@ -41,28 +41,33 @@ def validate_policy(coordinate: dict[str, Any], state: dict[str, Any]) -> list[s
     errors: list[str] = []
 
     if policy.get("coordinator") != "codex":
-        errors.append("A política não define o Codex como coordenador.")
+        errors.append("A politica nao define o Codex como coordenador.")
     if policy.get("mode") != "direct_mcp":
-        errors.append("A política não está em modo direct_mcp.")
+        errors.append("A politica nao esta em modo direct_mcp.")
 
-    expected = {
-        item["key"]: str(item["project_id"])
-        for item in policy.get("official_projects", [])
-    }
+    official_projects = policy.get("official_projects", [])
+    expected = {item["key"]: item.get("project_id") for item in official_projects}
     coordinate_projects = {item["id"] for item in coordinate.get("projects", [])}
     if coordinate_projects != set(expected):
         errors.append(
-            "Os projetos da coordenada não correspondem aos três agregadores oficiais."
+            "Os projetos da coordenada nao correspondem aos quatro agregadores oficiais."
         )
 
+    if len(expected) != 4:
+        errors.append("A politica deve declarar exatamente quatro projetos oficiais.")
+    if "aio_admin_web_mobile_template" not in expected:
+        errors.append("O projeto oficial separado AIO Admin nao foi declarado.")
+
     for key, expected_id in expected.items():
-        actual = str(
-            state.get("projects", {}).get(key, {}).get("project_id", "")
-        )
-        if actual and actual != expected_id:
+        actual = str(state.get("projects", {}).get(key, {}).get("project_id", ""))
+        if expected_id not in (None, "") and actual and actual != str(expected_id):
             errors.append(
                 f"project_id divergente para {key}: esperado {expected_id}, obtido {actual}."
             )
+
+    coordinate_text = json.dumps(coordinate, ensure_ascii=False).casefold()
+    if '"vision"' in coordinate_text:
+        errors.append("O modulo Vision esta inativo e nao pode constar na coordenada oficial.")
 
     return errors
 
@@ -84,13 +89,13 @@ def annotate_director_state(
 def require_remote_credentials() -> None:
     if not (os.getenv("STITCH_API_KEY") or os.getenv("STITCH_ACCESS_TOKEN")):
         raise RuntimeError(
-            "Coordenação remota exige STITCH_API_KEY ou STITCH_ACCESS_TOKEN fora do Git."
+            "Coordenacao remota exige STITCH_API_KEY ou STITCH_ACCESS_TOKEN fora do Git."
         )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Diretor Codex para coordenação direta dos templates oficiais no Stitch."
+        description="Diretor Codex para coordenacao direta dos templates oficiais no Stitch."
     )
     parser.add_argument("command", choices=("plan", "status", "sync"))
     parser.add_argument("--max-operations", type=int, default=8)
@@ -141,8 +146,8 @@ def main() -> int:
         require_remote_credentials()
         if missing_projects and not args.allow_create_missing_projects:
             raise RuntimeError(
-                "Há projeto oficial sem project_id registrado. A criação remota exige "
-                "--allow-create-missing-projects e autorização explícita."
+                "Ha projeto oficial sem project_id registrado. A criacao remota exige "
+                "--allow-create-missing-projects e autorizacao explicita."
             )
         state = sync_template_projects(args.max_operations)
 
