@@ -199,3 +199,7 @@ jobs:
           ALL_IN_ONE_OUTBOX_POSTGRES_TEST_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
           ALL_IN_ONE_RABBITMQ_TEST_URL: amqp://all_in_one:test-password@localhost:5672/%2F
         run: python -m pytest -q tests/test_outbox_rabbitmq_integration.py
+      - name: Prove Stock migration rollback in the ephemeral database
+        run: |
+          psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f database/postgres/rollbacks/027_stock_inventory_reservations.sql
+          test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'stock' AND table_name IN ('inventory_items', 'stock_reservations');")" = "0"
