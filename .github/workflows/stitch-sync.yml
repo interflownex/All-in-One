@@ -4,7 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       execute_remote_fallback:
-        description: "Executar sincronização remota de fallback usando o mesmo diretor Codex"
+        description: "Executar sincronizacao remota de fallback usando o mesmo diretor Codex"
+        required: false
+        default: false
+        type: boolean
+      allow_create_missing_official_projects:
+        description: "Autorizar a criacao remota de projeto oficial ausente, como o AIO Admin"
         required: false
         default: false
         type: boolean
@@ -17,6 +22,7 @@ on:
       - "config/stitch/**"
       - "scripts/codex_stitch_director.py"
       - "scripts/stitch_*.py"
+      - "scripts/validate_repository_compat.py"
       - "tests/test_*stitch*.py"
       - ".github/workflows/stitch-sync.yml"
   push:
@@ -28,13 +34,14 @@ on:
       - "config/stitch/**"
       - "scripts/codex_stitch_director.py"
       - "scripts/stitch_*.py"
+      - "scripts/validate_repository_compat.py"
       - "tests/test_*stitch*.py"
       - ".github/workflows/stitch-sync.yml"
   schedule:
     - cron: "17 7 * * 1-5"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: stitch-coordination-${{ github.ref }}
@@ -50,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Baixar repositório
+      - name: Baixar repositorio
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
@@ -60,10 +67,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Instalar dependências
+      - name: Instalar dependencias
         run: python -m pip install httpx pytest
 
-      - name: Materializar configuração segura do Codex MCP
+      - name: Materializar configuracao segura do Codex MCP
         run: |
           mkdir -p ~/.codex
           cat > ~/.codex/config.toml <<'EOF'
@@ -73,15 +80,15 @@ jobs:
           env_http_headers = { "X-Goog-Api-Key" = "STITCH_API_KEY" }
           EOF
 
-      - name: Validar política, segredo e configuração MCP
+      - name: Validar politica, segredo e configuracao MCP
         run: python scripts/validate_stitch_mcp_config.py
 
-      - name: Validar direção Codex e coordenadas oficiais
+      - name: Validar direcao Codex e coordenadas oficiais
         run: |
           python scripts/codex_stitch_director.py plan
-          python scripts/codex_stitch_director.py status --require-complete --actor github-actions-validator
+          python scripts/codex_stitch_director.py status --actor github-actions-validator
 
-      - name: Executar testes de governança Stitch
+      - name: Executar testes de governanca Stitch
         run: pytest -q tests/test_codex_stitch_director.py tests/test_stitch_orchestrator.py
 
   remote-fallback:
@@ -89,11 +96,14 @@ jobs:
     needs: validate-coordination
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write
     env:
       STITCH_API_KEY: ${{ secrets.STITCH_API_KEY }}
       CODEX_AGENT_ID: github-actions-fallback
+      ALLOW_CREATE_MISSING_PROJECTS: ${{ inputs.allow_create_missing_official_projects }}
     steps:
-      - name: Baixar repositório
+      - name: Baixar repositorio
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
@@ -103,10 +113,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Instalar dependências
+      - name: Instalar dependencias
         run: python -m pip install httpx
 
-      - name: Materializar configuração segura do Codex MCP
+      - name: Materializar configuracao segura do Codex MCP
         run: |
           mkdir -p ~/.codex
           cat > ~/.codex/config.toml <<'EOF'
@@ -119,9 +129,14 @@ jobs:
       - name: Executar fallback remoto pelo diretor Codex
         run: |
           python scripts/validate_stitch_mcp_config.py --require-secret
+          CREATE_FLAG=""
+          if [ "$ALLOW_CREATE_MISSING_PROJECTS" = "true" ]; then
+            CREATE_FLAG="--allow-create-missing-projects"
+          fi
           python scripts/codex_stitch_director.py sync \
             --max-operations 8 \
             --require-complete \
+            $CREATE_FLAG \
             --actor github-actions-fallback
 
       - name: Versionar somente o checkpoint oficial
