@@ -1,10 +1,10 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 4.1
-**Data e hora:** 30/07/2026 14:46, `America/Sao_Paulo`
+**Versão:** 4.2
+**Data e hora:** 30/07/2026 17:19, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
-**Branch:** `codex/corrigir-gate-marca-pytest-20260730`
-**Commit-base:** `e91e454a1be97bf9b942f762fb542b24f32e0fc2`
+**Branch:** `codex/orquestrar-pendencias-reais-20260730`
+**Commit-base:** `d3b3ef594b1e14347fca785a800980e2f7d39c01`
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
@@ -275,6 +275,24 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
 - o gate de marca pós-restauração aprovou a integridade e falhou somente porque
   chamava `pytest` sem instalá-lo; o workflow passou a instalar uma versão
   explícita do executor antes de preservar todos os testes existentes;
+- a configuração administrativa passou a aceitar somente Squash and Merge,
+  sem Merge Commit, Rebase Merge ou auto-merge, e com exclusão automática da
+  branch integrada;
+- 84 branches concluídas foram removidas com evidência relacional; 29 refs com
+  commits únicos ou finalidade de backup foram preservadas para auditoria;
+- a refspec obsoleta de `origin/worktree-sync` foi removida e o fetch voltou a
+  operar sem erro sobre `origin/main`;
+- o estado das oito issues abertas foi relacionado no relatório de pendências
+  v4.1, sem declarar como concluído o que ainda carece de prova funcional;
+- `validate_repository.py` revelou dez inconsistências de baseline e retornou
+  corretamente código diferente de zero; elas foram reconciliadas com os
+  contratos autoritativos atuais, sem supressão;
+- `validate_repository.py`, sua camada fail-closed de compatibilidade, a
+  integridade de marca, a compilação e 31 testes focados foram aprovados;
+- a suíte não E2E aprovou 982 testes, ignorou 85 e emitiu um aviso;
+- a suíte integral foi interrompida após mais de dez minutos no teardown do
+  Playwright (`tests/e2e/conftest.py:72`), depois de erros/falhas no início do
+  bloco E2E; ela permanece pendência real e não foi declarada aprovada;
 
 ### Sequência, prioridades e critérios de aceite
 
@@ -283,11 +301,14 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
 3. exigir todos os gates verdes no mesmo SHA;
 4. executar Squash and Merge somente sem conflito ou revisão pendente;
 5. confirmar `origin/main` no commit de merge;
-6. comprovar o deploy GKE no commit integrado;
-7. remover `origin/worktree-sync` somente após preservar a referência local e
-   registrar que seus 11 commits foram substituídos por implementações atuais;
-8. confirmar o fechamento automático dos alertas Dependabot e encerrar apenas
-   os três alertas RSC como não utilizados, com evidência das SPAs Vite.
+6. comprovar o deploy GKE no commit integrado ou registrar o bloqueio externo
+   de billing com a execução correspondente;
+7. auditar individualmente as 29 branches preservadas e relacionar seus commits
+   únicos a issues, substituições ou tags de arquivo;
+8. executar os testes E2E em blocos com limite explícito, diagnosticar
+   `tests/e2e/conftest.py:72` e corrigir a causa sem reduzir cobertura;
+9. atualizar as oito issues abertas com a classificação e evidência desta
+   varredura.
 
 Aceite: artefatos regeneráveis, rotas e relações com evidência real, nenhuma
 mudança local perdida, PR sem conflito, ausência de segredo e checks verdes no
@@ -297,12 +318,11 @@ mesmo SHA.
 
 - a identidade federada GKE foi provisionada; o aceite final depende do
   workflow executar contra o cluster e o RBAC reais após o merge;
-- `origin/worktree-sync` continua preservada até a verificação final da PR;
 - branches `recovery/*` são salvaguardas locais, não entregas candidatas a merge;
 - a resolução Gradle local das novas versões foi bloqueada temporariamente por
   falha DNS/Maven; o gate Android remoto é obrigatório para aceite;
-- três alertas React Router sobre RSC exigem encerramento como `not_used`
-  porque as aplicações afetadas são SPAs Vite sem servidor/RSC.
+- o bloco E2E Playwright ainda não conclui em tempo operacional e deve ser
+  tratado separadamente dos 982 testes não E2E aprovados.
 
 ### Procedimento de entrega
 
@@ -329,3 +349,4 @@ mesmo SHA.
 | 3.9 | 30/07/2026 | PR #100 integrada; bloqueio externo de billing GKE isolado e resolvedor Foojay vulnerável removido. |
 | 4.0 | 30/07/2026 | Dependabot zerado e referências de marca restauradas para os caminhos canônicos autorizados. |
 | 4.1 | 30/07/2026 | Gate de marca corrigido para instalar o executor pytest sem enfraquecer validações. |
+| 4.2 | 30/07/2026 | Governança de merge corrigida, branches concluídas limpas e pendências relacionais consolidadas na varredura v4.1. |

@@ -180,8 +180,11 @@ def main() -> int:
     errors: list[str] = []
     modules = CATALOG["modules"]
     slugs = {module["slug"] for module in modules}
-    if len(slugs) != 25:
-        fail(f"Esperados 25 modulos; catalogo possui {len(slugs)}.", errors)
+    if len(slugs) != 24 or "vision" in slugs:
+        fail(
+            "Catalogo deve declarar exatamente os 24 modulos ativos e manter Vision inativo.",
+            errors,
+        )
     for module in modules:
         base = ROOT / "modules" / module["slug"]
         for relative in REQUIRED_MODULE_FILES:
@@ -273,7 +276,7 @@ def main() -> int:
     if security_workflow.is_file():
         security_text = security_workflow.read_text(encoding="utf-8")
         for command in [
-            "pip-audit --local",
+            "pip-audit -r requirements-dev.txt",
             "bandit -r modules/shared scripts workers -q -ll",
             "npm audit --omit=dev --audit-level=critical",
         ]:
@@ -499,17 +502,17 @@ def main() -> int:
         brand = json.loads(BRAND_IDENTITY.read_text(encoding="utf-8"))
         for relative in [
             brand.get("platform_brand", {}).get("logo_asset"),
-            brand.get("platform_brand", {}).get("light_logo_asset"),
             brand.get("valley_brand", {}).get("logo_asset"),
         ]:
             if not relative or not (ROOT / relative).is_file():
                 fail(f"Ativo oficial de marca ausente: {relative}", errors)
-        if set(brand.get("valley_apps", [])) != {
-            "valley",
-            "valley-business",
-            "valley-rider",
-        }:
+        if set(brand.get("valley_apps", [])) != {"valley", "valley-business"}:
             fail("Branding deve declarar exatamente os apps Valley oficiais.", errors)
+        if set(brand.get("riders_apps", [])) != {
+            "valley-rider",
+            "all-in-one-riders",
+        }:
+            fail("Branding deve declarar exatamente os apps Riders oficiais.", errors)
     if not STITCH_MCP_POLICY.is_file():
         fail("Politica obrigatoria do MCP Stitch ausente.", errors)
     else:
@@ -528,13 +531,10 @@ def main() -> int:
         google_policy = json.loads(
             GOOGLE_INTEGRATIONS_POLICY.read_text(encoding="utf-8")
         )
-        if google_policy.get("enabled") is not False:
-            fail(
-                "Politica Google deve refletir o modo local-first com enabled=false.",
-                errors,
-            )
-        if google_policy.get("reactivated_at") != "2026-06-06":
-            fail("Politica Google deve registrar a reativacao de 2026-06-06.", errors)
+        if google_policy.get("enabled") is not True:
+            fail("Politica Google deve permanecer enabled=true.", errors)
+        if google_policy.get("reactivated_at") != "2026-07-30T05:00:00-03:00":
+            fail("Politica Google deve registrar a reativacao de 2026-07-30.", errors)
         expected_integrations = {
             "google_sdk",
             "google_ai_studio",
@@ -552,34 +552,24 @@ def main() -> int:
                 errors,
             )
         runtime = google_policy.get("runtime_environment", {})
-        active_variables = [
-            "GOOGLE_INTEGRATIONS_ENABLED",
-            "GOOGLE_CLOUD_ENABLED",
-            "GOOGLE_AI_STUDIO_ENABLED",
-            "GOOGLE_CODE_CLI_ENABLED",
-            "ALLOYDB_ENABLED",
-        ]
-        for variable in active_variables:
-            if runtime.get(variable) != "false":
+        expected_runtime = {
+            "GOOGLE_INTEGRATIONS_ENABLED": "true",
+            "GOOGLE_CLOUD_ENABLED": "false",
+            "GOOGLE_AI_STUDIO_ENABLED": "false",
+            "GOOGLE_CODE_CLI_ENABLED": "true",
+            "ALLOYDB_ENABLED": "false",
+            "GEMINI_CODE_ASSIST_ENABLED": "true",
+            "STITCH_REMOTE_SYNC_ENABLED": "true",
+            "STITCH_COORDINATOR": "codex",
+            "STITCH_LEGACY_MODULE_SYNC_ENABLED": "false",
+            "DATA_AGENT_KIT_ENABLED": "true",
+        }
+        for variable, expected_value in expected_runtime.items():
+            if runtime.get(variable) != expected_value:
                 fail(
-                    f"Politica Google deve manter {variable}=false no modo local-first.",
+                    f"Politica Google deve manter {variable}={expected_value}.",
                     errors,
                 )
-        if runtime.get("GEMINI_CODE_ASSIST_ENABLED") != "true":
-            fail(
-                "Politica Google deve manter GEMINI_CODE_ASSIST_ENABLED=true no Antigravity/editor.",
-                errors,
-            )
-        if runtime.get("STITCH_REMOTE_SYNC_ENABLED") != "false":
-            fail(
-                "Politica Google deve manter STITCH_REMOTE_SYNC_ENABLED=false no modo local-first.",
-                errors,
-            )
-        if runtime.get("DATA_AGENT_KIT_ENABLED") != "true":
-            fail(
-                "Data Agent Kit deve permanecer como excecao ativa e persistente.",
-                errors,
-            )
         if "google_cloud_data_agent_kit" not in google_policy.get(
             "explicit_exceptions", []
         ):
@@ -1002,7 +992,9 @@ def main() -> int:
     for needle in [
         "workflow_dispatch:",
         "secrets.STITCH_API_KEY",
-        "config/stitch/sync_state.json",
+        "python scripts/codex_stitch_director.py plan",
+        "python scripts/codex_stitch_director.py status",
+        "python scripts/codex_stitch_director.py sync",
     ]:
         if needle not in stitch_workflow:
             fail(
@@ -1012,7 +1004,8 @@ def main() -> int:
         "  push:",
         "  schedule:",
         'STITCH_REMOTE_SYNC_ENABLED: "true"',
-        "python scripts/stitch_auto_sync.py --require-remote",
+        'STITCH_COORDINATOR: "codex"',
+        'STITCH_LEGACY_MODULE_SYNC_ENABLED: "false"',
     ]:
         if active_trigger not in stitch_workflow:
             fail(
@@ -1029,7 +1022,7 @@ def main() -> int:
         compliance = json.loads(COMPLIANCE_MATRIX.read_text(encoding="utf-8"))
         if set(compliance.get("modules", {})) != slugs:
             fail(
-                "Matriz de compliance deve cobrir exatamente os 25 modulos do catalogo.",
+                "Matriz de compliance deve cobrir exatamente os 24 modulos ativos do catalogo.",
                 errors,
             )
         if (
@@ -1062,7 +1055,7 @@ def main() -> int:
             )
         if set(subject_rights.get("module_coverage", {})) != slugs:
             fail(
-                "Fluxo de direitos do titular deve cobrir exatamente os 25 modulos do catalogo.",
+                "Fluxo de direitos do titular deve cobrir exatamente os 24 modulos ativos do catalogo.",
                 errors,
             )
         guardrails = subject_rights.get("guardrails", {})
@@ -1082,7 +1075,7 @@ def main() -> int:
             )
         if set(retention_jobs.get("module_rules", {})) != slugs:
             fail(
-                "Jobs de retencao devem cobrir exatamente os 25 modulos do catalogo.",
+                "Jobs de retencao devem cobrir exatamente os 24 modulos ativos do catalogo.",
                 errors,
             )
         safety = retention_jobs.get("safety_rules", {})
@@ -1362,7 +1355,7 @@ def main() -> int:
         return 1
 
     print(
-        "\nRepositorio validado com sucesso! Todos os 25 modulos e infraestrutura estao em conformidade."
+        "\nRepositorio validado com sucesso! Todos os 24 modulos ativos e a infraestrutura estao em conformidade."
     )
     return 0
 
