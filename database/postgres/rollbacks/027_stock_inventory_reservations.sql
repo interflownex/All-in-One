@@ -6,5 +6,6 @@ BEGIN;
 
 DROP TABLE IF EXISTS stock.stock_reservations;
 DROP TABLE IF EXISTS stock.inventory_items;
+DROP FUNCTION IF EXISTS stock.derive_inventory_availability_status();
 
 COMMIT;
