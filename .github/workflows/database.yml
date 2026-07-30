@@ -156,7 +156,7 @@ jobs:
         run: python -m pytest -q tests/test_postgres_priority_stores_integration.py::test_crm_lead_create_update_and_soft_delete
       - name: Exercise BPM PostgreSQL store
         env:
-          ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
+          ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in-one:test-password@localhost:5432/all_in_one
         run: python -m pytest -q tests/test_postgres_priority_stores_integration.py::test_bpm_process_create_update_and_soft_delete
       - name: Exercise Document PostgreSQL store
         env:
@@ -201,5 +201,5 @@ jobs:
         run: python -m pytest -q tests/test_outbox_rabbitmq_integration.py
       - name: Prove Stock migration rollback in the ephemeral database
         run: |
-          psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f database/postgres/rollbacks/027_stock_inventory_reservations.sql
+          psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f database/postgres/rollbacks/031_stock_inventory_reservations.sql
           test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'stock' AND table_name IN ('inventory_items', 'stock_reservations');")" = "0"
