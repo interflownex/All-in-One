@@ -340,7 +340,8 @@ def validate() -> list[str]:
         if path.is_file() and path.suffix in {".ts", ".tsx"}
     )
     if re.search(
-        r"localStorage\.(?:getItem|setItem)\(\s*[\'\"]valley\.session\.(?:token|user-id)",
+        r"localStorage\.(?:getItem|setItem)\(\s*[\'\"]"
+        r"(?:valley\.session\.(?:token|user-id)|valley\.production\.session\.v1)",
         web_sources,
     ):
         errors.append("sessao web sensivel persiste em localStorage")

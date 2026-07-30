@@ -443,15 +443,6 @@ def discover_browser_storage_catalog() -> list[dict[str, object]]:
     definitions = [
         (
             "localStorage",
-            "valley.production.session.v1",
-            "sessão web com tokens, identificadores e email",
-            "credencial e dado pessoal",
-            "até logout/remoção explícita",
-            "apps/valley/src/lib/api.ts",
-            "valley.production.session.v1",
-        ),
-        (
-            "localStorage",
             "valley.production.device.v1",
             "identificador local do dispositivo",
             "identificador pseudônimo",

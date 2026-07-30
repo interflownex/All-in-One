@@ -1,10 +1,10 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 3.6
-**Data e hora:** 30/07/2026 13:17, `America/Sao_Paulo`
+**Versão:** 3.8
+**Data e hora:** 30/07/2026 14:13, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
-**Branch:** `codex/auditoria-relacional-20260730`
-**Commit-base:** `8832ea85a17099bdc33cf666248e91c2ad0d7cd6`
+**Branch:** `codex/corrigir-pendencias-reais-20260730`
+**Commit-base:** `3dfe1c7a8aa783038f536f78c4f525ce54dfcfb0`
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
@@ -244,6 +244,22 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
   aprovado e 22 testes do contrato executados diretamente e aprovados;
 - a tentativa de instalar `pytest` via `uv` foi interrompida após repetidas
   falhas de rede; não foi usada como evidência de aprovação.
+- a correção 3.7 criou um pool e provider OIDC exclusivos para GitHub Actions,
+  vinculou a conta de serviço de deploy, configurou `GCP_WIP` e
+  `GCP_SA_EMAIL` nos GitHub Secrets e atualizou o workflow para GKE regional;
+- React Router foi elevado a 7.18.2 nas três SPAs, Vite Admin a 8.0.16,
+  PostCSS a no mínimo 8.5.18 e `brace-expansion` a no mínimo 5.0.7;
+- o classpath Gradle passou a impor pisos corrigidos para Netty, Bouncy Castle,
+  jose4j, JDOM, Commons Lang, HttpClient, Protobuf e Guava;
+- tokens, refresh tokens, identificadores e email da sessão Valley deixaram de
+  ser persistidos em `localStorage`; a sessão agora permanece somente em
+  memória e chaves legadas são removidas;
+- 29 testes focados foram executados diretamente e aprovados; os validadores de
+  release Android e de auditoria de dados também foram aprovados.
+- o primeiro gate remoto `web-template` da PR #100 identificou inconsistência
+  entre `package.json` e `package-lock.json` no Admin; o lockfile foi
+  regenerado pelo resolvedor oficial do npm e a instalação bloqueada deverá ser
+  revalidada no novo head SHA;
 
 ### Sequência, prioridades e critérios de aceite
 
@@ -252,8 +268,11 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
 3. exigir todos os gates verdes no mesmo SHA;
 4. executar Squash and Merge somente sem conflito ou revisão pendente;
 5. confirmar `origin/main` no commit de merge;
-6. manter como pendência externa o provisionamento dos secrets GCP;
-7. revisar `origin/worktree-sync` por conteúdo, sem merge automático.
+6. comprovar o deploy GKE no commit integrado;
+7. remover `origin/worktree-sync` somente após preservar a referência local e
+   registrar que seus 11 commits foram substituídos por implementações atuais;
+8. confirmar o fechamento automático dos alertas Dependabot e encerrar apenas
+   os três alertas RSC como não utilizados, com evidência das SPAs Vite.
 
 Aceite: artefatos regeneráveis, rotas e relações com evidência real, nenhuma
 mudança local perdida, PR sem conflito, ausência de segredo e checks verdes no
@@ -261,14 +280,14 @@ mesmo SHA.
 
 ### Riscos, bloqueios e pendências restantes
 
-- GKE bloqueado externamente por identidade federada/conta de serviço ausente;
-- `origin/worktree-sync` contém 11 commits divergentes e não deve ser integrado
-  em lote, pois mistura políticas, relatórios, permissões e arquivos gerados;
+- a identidade federada GKE foi provisionada; o aceite final depende do
+  workflow executar contra o cluster e o RBAC reais após o merge;
+- `origin/worktree-sync` continua preservada até a verificação final da PR;
 - branches `recovery/*` são salvaguardas locais, não entregas candidatas a merge;
-- a persistência da sessão web em `localStorage` permanece um risco de XSS
-  explicitamente inventariado e deve ser tratada em atividade de segurança;
-- a indisponibilidade de rede impediu executar o binário `pytest`, embora todas
-  as funções do contrato sem fixtures tenham sido executadas diretamente.
+- a resolução Gradle local das novas versões foi bloqueada temporariamente por
+  falha DNS/Maven; o gate Android remoto é obrigatório para aceite;
+- três alertas React Router sobre RSC exigem encerramento como `not_used`
+  porque as aplicações afetadas são SPAs Vite sem servidor/RSC.
 
 ### Procedimento de entrega
 
@@ -290,3 +309,5 @@ mesmo SHA.
 | 3.4 | 30/07/2026 | PR #94 e issue #78 concluídas; issue #95 aberta como próxima dependência financeira. |
 | 3.5 | 30/07/2026 | Trabalho local reconciliado com `origin/main`; código válido reaplicado e regressões arquivadas apenas localmente. |
 | 3.6 | 30/07/2026 | PRs, commits, merges, workflows e trabalhos locais auditados; gerador e artefatos relacionais sincronizados ao código atual. |
+| 3.7 | 30/07/2026 | Identidade GKE provisionada, dependências vulneráveis elevadas, sessão Valley retirada do browser storage e branch legada preparada para encerramento. |
+| 3.8 | 30/07/2026 | Lockfile do Admin regenerado após o gate remoto detectar dependências inconsistentes. |

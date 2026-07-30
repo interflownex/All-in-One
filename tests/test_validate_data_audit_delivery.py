@@ -124,7 +124,7 @@ def test_ephemeral_and_object_storage_catalogs_are_explicitly_static() -> None:
     expected = {
         "catalogo_redis.json": ("redis_key_patterns", 1),
         "catalogo_object_storage.json": ("object_storage_stores", 4),
-        "catalogo_browser_storage.json": ("browser_storage_key_patterns", 12),
+        "catalogo_browser_storage.json": ("browser_storage_key_patterns", 11),
     }
     for name, (counter, total) in expected.items():
         data = json.loads((artifacts / name).read_text(encoding="utf-8"))
@@ -141,8 +141,8 @@ def test_browser_storage_catalog_tracks_current_production_keys() -> None:
     data = __import__("json").loads(catalog.read_text(encoding="utf-8"))
     keys = {item["key_pattern"] for item in data["entries"]}
 
-    assert "valley.production.session.v1" in keys
     assert "valley.production.device.v1" in keys
+    assert "valley.production.session.v1" not in keys
     assert "valley.session.token" not in keys
     assert "valley.session.user-id" not in keys
 
