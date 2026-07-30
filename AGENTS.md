@@ -75,16 +75,31 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/git_auto_sync.ps1 -A
 - Ao concluir a sincronizacao, liberar o lock com `python3 scripts/multi_agent_sync_guard.py release --agent <agent_id>`.
 - Antes de sincronizar, buscar `origin/main` e `fork/main` quando os remotos estiverem acessiveis.
 - Nunca executar comandos destrutivos como `git reset --hard`, `git clean` destrutivo ou checkout que descarte trabalho alheio sem ordem explicita do usuario.
-- `config/stitch/screen_manifest.json` e `config/stitch/sync_state.json` sao o estado autoritativo para sincronia Stitch e devem ser preservados entre agentes.
+- `config/stitch/template_project_coordinate.json` e `config/stitch/template_project_state.json` sao as fontes autoritativas da trilha oficial Stitch e devem ser preservadas entre agentes.
+- `config/stitch/screen_manifest.json` e `config/stitch/sync_state.json` permanecem somente como referencia historica da estrategia legada por modulo e nao autorizam escrita remota.
 - Segredos como `STITCH_API_KEY` devem permanecer apenas em variaveis de ambiente, GitHub Actions Secrets ou cofres externos; nunca versionar segredos.
 
 # Integracoes Google ativas
 
-- Google SDK, Google AI Studio, Google Cloud, AlloyDB, Google Code CLI, Gemini CLI, Gemini Code Assist e Google Stitch estao ativos por ordem explicita do usuario.
+- Google SDK, Google AI Studio, Google Cloud, AlloyDB, Google Code CLI, Gemini CLI, Gemini Code Assist e Google Stitch estao ativos por ordem explicita do usuario, conforme os limites de credencial, billing, IAM e compliance.
 - A politica obrigatoria fica em `config/autonomy/google_integrations_policy.json`.
 - Discover, sync e operacoes Google podem executar quando credenciais legitimas estiverem disponiveis fora do Git.
-- Docker, VS Code, Antigravity, workflows e scripts devem manter as flags Google, AlloyDB, Gemini e Stitch ativas.
+- Docker, VS Code, Antigravity, workflows e scripts devem manter as flags Google, AlloyDB, Gemini e Stitch coerentes com a politica versionada.
 - Nao contornar billing, IAM, compliance, enforcement ou suspensao administrativa do provedor.
+
+# Coordenacao direta Codex para Google Stitch
+
+- O Codex e o coordenador autoritativo do Google Stitch neste workspace.
+- A politica detalhada fica em `config/autonomy/codex_stitch_director_policy.json`.
+- O Codex deve ler `config/stitch/template_project_coordinate.json`, conferir os `project_id` e `screen_id` em `config/stitch/template_project_state.json` e chamar diretamente o Stitch MCP.
+- O ponto unico de escrita remota e `python3 scripts/codex_stitch_director.py sync`.
+- Antes da escrita, executar `python3 scripts/codex_stitch_director.py plan` e `python3 scripts/codex_stitch_director.py status --require-complete` quando o objetivo for somente validar o estado atual.
+- A sincronizacao direta exige `STITCH_API_KEY` ou `STITCH_ACCESS_TOKEN` no ambiente, nunca em arquivo versionado.
+- O Codex deve reutilizar exclusivamente os tres projetos agregadores oficiais: Valley APK, All in One Web/Mobile e Valley Riders APK.
+- E proibido criar projetos Stitch por modulo, microservico, aplicativo, rodada ou agente quando existir projeto agregador correspondente.
+- `scripts/stitch_orchestrator.py` e `scripts/stitch_auto_sync.py` nao podem executar escrita remota; permanecem somente para compatibilidade e leitura historica.
+- GitHub Actions valida politica, coordenadas, testes e checkpoints. Sincronizacao remota por workflow somente pode ocorrer como fallback manual explicitamente acionado e deve usar o mesmo `scripts/codex_stitch_director.py`.
+- Cada operacao remota deve registrar `last_director`, digest da coordenada, data, agente, resumo e checkpoint no estado oficial.
 
 # Governanca inviolavel de marca
 
