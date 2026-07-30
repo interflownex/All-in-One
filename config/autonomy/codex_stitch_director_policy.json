@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "updated_at": "2026-07-30T05:00:00-03:00",
+  "version": "1.1.0",
+  "updated_at": "2026-07-30T05:23:00-03:00",
   "language": "pt-BR",
   "project": "All in One + Valley",
   "coordinator": "codex",
@@ -17,17 +17,26 @@
     {
       "key": "valley_apk_template",
       "project_id": "2122145924469811680",
-      "project_name": "VALLEY APK - Template Completo"
+      "project_name": "VALLEY APK - Template Completo",
+      "creation_status": "registered"
     },
     {
       "key": "all_in_one_web_mobile_template",
       "project_id": "16859913351651834459",
-      "project_name": "ALL IN ONE - Template Web e Mobile Completo"
+      "project_name": "ALL IN ONE - Template Web e Mobile Completo",
+      "creation_status": "registered"
     },
     {
       "key": "valley_riders_apk_template",
       "project_id": "370812414211795487",
-      "project_name": "VALLEY RIDERS APK - Template Completo"
+      "project_name": "VALLEY RIDERS APK - Template Completo",
+      "creation_status": "registered"
+    },
+    {
+      "key": "aio_admin_web_mobile_template",
+      "project_id": null,
+      "project_name": "AIO ADMIN - Template Web e Mobile Completo",
+      "creation_status": "authorized_pending_remote_creation"
     }
   ],
   "required_flow": [
@@ -47,7 +56,8 @@
     "secret_storage_in_git",
     "silent_screen_id_replacement",
     "branding_reinterpretation",
-    "remote_sync_without_checkpoint"
+    "remote_sync_without_checkpoint",
+    "vision_module_reactivation_without_explicit_authorization"
   ],
   "credential_sources": [
     "STITCH_API_KEY",
@@ -57,11 +67,14 @@
     "owner": "github_actions",
     "automatic": false,
     "trigger": "workflow_dispatch_with_execute_remote_fallback_true",
-    "purpose": "recuperação manual quando o ambiente Codex não possui acesso remoto",
-    "must_use_same_director": true
+    "purpose": "recuperacao manual quando o ambiente Codex nao possui acesso remoto",
+    "must_use_same_director": true,
+    "missing_project_creation_requires_explicit_input": true
   },
   "acceptance": [
-    "only_three_official_aggregator_projects_are_authoritative",
+    "only_four_official_aggregator_projects_are_authoritative",
+    "aio_admin_is_a_separate_official_project",
+    "vision_is_inactive",
     "codex_is_recorded_as_last_coordinator_after_remote_operation",
     "legacy_module_sync_cannot_write_remotely",
     "workflow_default_path_is_validation_only",
