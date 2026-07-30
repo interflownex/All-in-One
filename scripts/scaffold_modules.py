@@ -105,11 +105,29 @@ def render_main(slug: str) -> str:
             sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
             from shared.runtime import create_module_app
+            from business.commercial_routes import router as commercial_router
             from business.module_settings import router as module_settings_router
 
 
             app = create_module_app("business")
+            app.include_router(commercial_router)
             app.include_router(module_settings_router)
+            """
+        )
+    if slug in {"bi", "crm"}:
+        return dedent(
+            f"""\
+            from pathlib import Path
+            import sys
+
+            sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+            from shared.runtime import create_module_app
+            from {slug}.commercial_routes import router as commercial_router
+
+
+            app = create_module_app("{slug}")
+            app.include_router(commercial_router)
             """
         )
     return dedent(
@@ -945,7 +963,20 @@ def render_tests_md(module: dict) -> str:
     )
 
 
-def render_dockerfile() -> str:
+def render_dockerfile(slug: str) -> str:
+    if slug in {"bi", "business", "crm"}:
+        return dedent(
+            f"""\
+            FROM python:3.12-slim
+            WORKDIR /app
+            COPY modules/shared /app/shared
+            COPY modules/{slug}/requirements.txt /app/requirements.txt
+            RUN pip install --no-cache-dir -r requirements.txt
+            COPY modules/{slug} /app/{slug}
+            EXPOSE 8000
+            CMD ["uvicorn", "{slug}.main:app", "--host", "0.0.0.0", "--port", "8000"]
+            """
+        )
     return dedent(
         """\
         FROM python:3.12-slim
@@ -1101,7 +1132,7 @@ def expected_files(catalog: dict) -> dict[Path, str]:
                 base / "SECURITY.md": render_security(module),
                 base / "MONETIZATION.md": render_monetization(module),
                 base / "TESTS.md": render_tests_md(module),
-                base / "Dockerfile": render_dockerfile().replace("__MODULE__", slug),
+                base / "Dockerfile": render_dockerfile(slug).replace("__MODULE__", slug),
                 base / "tests" / "__init__.py": "",
                 base / "tests" / "test_health.py": render_test_health(slug),
                 base / "tests" / "test_contract.py": render_test_contract(slug),
