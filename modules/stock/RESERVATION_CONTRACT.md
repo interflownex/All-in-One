@@ -1,7 +1,7 @@
 # Contrato de Inventário e Reservas do Stock
 
-**Versão:** 0.2.0  
-**Data e hora:** 30/07/2026 05:59, `America/Sao_Paulo`  
+**Versão:** 0.2.1  
+**Data e hora:** 30/07/2026 06:10, `America/Sao_Paulo`  
 **Status:** implementação concluída na branch e aguardando validação integral dos workflows  
 **Repositório:** `interflownex/All-in-One`  
 **Branch:** `feat/stock-reservations-foundation-20260730`  
@@ -11,7 +11,7 @@
 
 ## 1. Objetivo
 
-Definir e implementar a fonte única de saldo e o ciclo de reservas necessário ao checkout do Marketplace.
+Definir e implementar a fonte única de saldo e o ciclo de reservas necessário ao checkout futuro do Marketplace.
 
 Este contrato não autoriza usar `marketplace.products.stock_quantity` como saldo transacional. A feature flag `MARKETPLACE_CHECKOUT_V1_ENABLED` permanece desligada até que a fundação Stock seja integrada e o checkout seja implementado em atividade separada.
 
@@ -33,16 +33,16 @@ A entrega somente será considerada concluída após todos os workflows acionado
 
 ### `stock.inventory_items`
 
-Responsabilidade:
+Responsabilidades:
 
-- armazenar o saldo físico autoritativo;
-- armazenar o saldo reservado;
+- armazenar saldo físico e reservado;
 - fornecer saldo disponível gerado pelo PostgreSQL;
 - isolar inventário por empresa e localização;
-- impedir quantidade negativa;
-- controlar concorrência por bloqueio de linha e versão.
+- impedir saldo negativo;
+- controlar concorrência por bloqueio de linha e versão;
+- derivar `active/depleted` no banco conforme a disponibilidade real.
 
-Campos:
+Campos principais:
 
 ```text
 id
@@ -86,15 +86,15 @@ Unicidade:
 
 ### `stock.stock_reservations`
 
-Responsabilidade:
+Responsabilidades:
 
 - reservar saldo para checkout ou pedido;
 - impedir consumo concorrente do mesmo saldo;
 - expirar e liberar reservas abandonadas;
 - confirmar baixa após autorização válida;
-- garantir idempotência escopada por usuário e empresa.
+- garantir idempotência por usuário e empresa.
 
-Campos:
+Campos principais:
 
 ```text
 id
@@ -133,7 +133,7 @@ Regras:
 
 - nenhuma transição retorna a estado anterior;
 - `committed`, `released`, `expired` e `rejected` são terminais;
-- repetição da mesma confirmação ou liberação retorna o estado atual sem duplicar efeito;
+- repetição da mesma confirmação ou liberação retorna o estado atual;
 - uma reserva terminal não altera novamente o inventário;
 - confirmação de reserva vencida executa a expiração e não baixa saldo físico.
 
@@ -157,11 +157,11 @@ O corpo normalizado gera `request_hash` SHA-256 estável. Valores decimais equiv
 
 ## 6. Concorrência
 
-A criação da reserva ocorre em uma única transação PostgreSQL:
+A reserva ocorre em uma única transação PostgreSQL:
 
 1. localizar idempotência anterior com bloqueio de linha;
-2. localizar o item com `FOR UPDATE`;
-3. verificar saldo disponível calculado no servidor;
+2. localizar o inventário com `FOR UPDATE`;
+3. verificar saldo disponível no servidor;
 4. atualizar `reserved_quantity` e `version`;
 5. criar a reserva;
 6. gravar auditoria;
@@ -172,7 +172,7 @@ O worker de expiração usa `FOR UPDATE SKIP LOCKED` para permitir processamento
 
 É proibido:
 
-- ler saldo e atualizar em transações separadas;
+- ler e atualizar saldo em transações separadas;
 - confiar em saldo enviado pelo cliente;
 - calcular disponibilidade somente no Marketplace;
 - compensar concorrência apenas em memória;
@@ -224,6 +224,8 @@ X-Correlation-Id: <uuid>
 X-Causation-Id: <uuid opcional>
 ```
 
+O titular pode operar a própria reserva. Operadores só podem atuar quando pertencem à mesma empresa da reserva.
+
 ### Confirmar
 
 ```http
@@ -236,13 +238,13 @@ POST /reservations/{reservation_id}/commit
 POST /reservations/{reservation_id}/release
 ```
 
-### Expirar
+### Expirar globalmente
 
 ```http
 POST /reservations/expire?limit=100
 ```
 
-Exige perfil operador ou escopo `stock:reservations:expire`.
+Exige obrigatoriamente o escopo `stock:reservations:expire`. Um papel operacional isolado não concede permissão global entre empresas.
 
 ## 8. Confirmação
 
@@ -271,7 +273,7 @@ O worker de expiração:
 
 - seleciona reservas `reserved` com `expires_at <= NOW()`;
 - bloqueia reserva e inventário;
-- devolve o saldo reservado;
+- devolve saldo reservado;
 - marca `expired`;
 - publica `stock.reservation.expired`;
 - pode ser executado repetidamente sem duplicar efeito.
@@ -302,7 +304,7 @@ Envelope obrigatório:
 
 Auditar:
 
-- criação e ajuste administrativo do inventário;
+- criação e ajuste do inventário;
 - criação e rejeição de reserva;
 - confirmação;
 - liberação;
@@ -318,7 +320,7 @@ Não registrar:
 
 ## 13. Migration e rollback
 
-Número confirmado após leitura do diretório e da migration física anterior:
+Migration:
 
 ```text
 027_stock_inventory_reservations.sql
@@ -330,7 +332,7 @@ Rollback:
 database/postgres/rollbacks/027_stock_inventory_reservations.sql
 ```
 
-O rollback remove primeiro `stock.stock_reservations` e depois `stock.inventory_items`. Ele não deve ser executado automaticamente em produção.
+O rollback remove primeiro reservas, depois inventário e por último a função derivadora. Ele não deve ser executado automaticamente em produção.
 
 ## 14. Testes de aceite
 
@@ -340,7 +342,6 @@ Implementados:
 - aplicação em PostgreSQL 16 limpo;
 - reserva válida;
 - saldo insuficiente;
-- quantidade zero ou negativa rejeitada pelo contrato;
 - concorrência sem estoque negativo;
 - idempotência com mesmo corpo;
 - conflito com corpo diferente;
@@ -351,6 +352,7 @@ Implementados:
 - evento único;
 - auditoria;
 - isolamento por empresa;
+- derivação de disponibilidade no banco;
 - rollback reproduzível;
 - ausência de checkout, Delivery e Vision no OpenAPI desta fundação.
 
@@ -362,7 +364,7 @@ Implementados:
 - ledger;
 - Delivery;
 - atribuição de Rider;
-- previsão de estoque por IA;
+- previsão por IA;
 - sincronização com fornecedor real;
 - ativação produtiva automática;
 - reativação do Vision.
