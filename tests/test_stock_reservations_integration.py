@@ -212,6 +212,7 @@ def test_reservation_idempotency_commit_release_expiration_and_events() -> None:
             order_id=order_id,
         )
 
+    set_correlation_id(str(uuid4()))
     committed = store.commit_reservation(
         reservation_id=str(reserved["reservation_id"]),
         expected_user_id=str(context["buyer_id"]),
@@ -232,6 +233,7 @@ def test_reservation_idempotency_commit_release_expiration_and_events() -> None:
         quantity=Decimal("1"),
         key=f"release-{uuid4()}",
     )
+    set_correlation_id(str(uuid4()))
     released = store.release_reservation(
         reservation_id=str(releasable["reservation_id"]),
         expected_user_id=str(context["buyer_id"]),
@@ -259,6 +261,7 @@ def test_reservation_idempotency_commit_release_expiration_and_events() -> None:
             "UPDATE stock.stock_reservations SET expires_at = NOW() - INTERVAL '1 second' WHERE id = %s",
             (expiring["reservation_id"],),
         )
+    set_correlation_id(str(uuid4()))
     expired = store.expire_due_reservations(actor=str(context["owner_id"]), limit=10)
     assert any(item["reservation_id"] == expiring["reservation_id"] for item in expired)
 
@@ -276,8 +279,8 @@ def test_reservation_idempotency_commit_release_expiration_and_events() -> None:
         audits_after = connection.execute(
             "SELECT COUNT(*) FROM audit.logs WHERE module = 'stock'"
         ).fetchone()[0]
-        assert events_after == events_before + 5
-        assert audits_after >= audits_before + 6
+        assert events_after == events_before + 6
+        assert audits_after >= audits_before + 7
     store.connection.close()
 
 
