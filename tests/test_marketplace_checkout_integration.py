@@ -7,6 +7,7 @@ from uuid import UUID, uuid4
 
 import psycopg
 import pytest
+from psycopg.types.json import Jsonb
 
 from modules.shared.audit_contract import AuditContext, set_audit_context
 from modules.shared.correlation import set_correlation_id
@@ -52,7 +53,7 @@ def _seed_user(connection: psycopg.Connection, user_id: UUID) -> None:
     )
 
 
-def _seed_company_store_product(
+def _seed_catalog(
     connection: psycopg.Connection,
     *,
     owner_id: UUID,
@@ -88,9 +89,7 @@ def _seed_company_store_product(
             owner_id,
             company_id,
             f"Loja Checkout {nonce}",
-            psycopg.types.json.Jsonb(
-                {"runtime_payload": {"name": f"Loja Checkout {nonce}"}}
-            ),
+            Jsonb({"runtime_payload": {"name": f"Loja Checkout {nonce}"}}),
             owner_id,
             owner_id,
         ),
@@ -107,7 +106,7 @@ def _seed_company_store_product(
             sku,
             f"Produto Checkout {nonce}",
             price_brl,
-            psycopg.types.json.Jsonb(
+            Jsonb(
                 {
                     "runtime_payload": {
                         "store_id": str(store_id),
@@ -124,7 +123,7 @@ def _seed_company_store_product(
     )
 
 
-def _audit_context(company_id: UUID | None = None) -> None:
+def _set_context(company_id: UUID | None = None) -> None:
     set_audit_context(
         AuditContext(
             tenant_id=str(company_id) if company_id else None,
@@ -223,7 +222,7 @@ def _context(
     with psycopg.connect(POSTGRES_DSN) as connection:
         _seed_user(connection, owner_id)
         _seed_user(connection, buyer_id)
-        _seed_company_store_product(
+        _seed_catalog(
             connection,
             owner_id=owner_id,
             company_id=company_id,
@@ -231,7 +230,7 @@ def _context(
             product_id=product_id,
             sku=sku,
         )
-    _audit_context(company_id)
+    _set_context(company_id)
     inventory_id = _create_inventory(
         owner_id=owner_id,
         company_id=company_id,
@@ -266,7 +265,7 @@ def _create_checkout(
 ) -> dict[str, object]:
     correlation_id = uuid4()
     set_correlation_id(str(correlation_id))
-    _audit_context(UUID(str(context["company_id"])))
+    _set_context(UUID(str(context["company_id"])))
     return store.create_checkout(
         user_id=str(context["buyer_id"]),
         cart_id=str(context["cart_id"]),
@@ -301,16 +300,16 @@ def test_checkout_idempotency_wallet_confirmation_and_immutable_snapshot() -> No
         )
 
     confirm_key = f"checkout-confirm-{uuid4()}"
-    correlation_id = uuid4()
-    set_correlation_id(str(correlation_id))
-    _audit_context(UUID(str(context["company_id"])))
+    confirm_correlation = uuid4()
+    set_correlation_id(str(confirm_correlation))
+    _set_context(UUID(str(context["company_id"])))
     confirmed = store.confirm_checkout(
         checkout_id=str(checkout["checkout_id"]),
         user_id=str(context["buyer_id"]),
         payment_method="wallet",
         actor=str(context["buyer_id"]),
         idempotency_key=confirm_key,
-        correlation_id=str(correlation_id),
+        correlation_id=str(confirm_correlation),
         causation_id=str(checkout["checkout_id"]),
     )
     repeated_confirmation = store.confirm_checkout(
@@ -319,7 +318,7 @@ def test_checkout_idempotency_wallet_confirmation_and_immutable_snapshot() -> No
         payment_method="wallet",
         actor=str(context["buyer_id"]),
         idempotency_key=confirm_key,
-        correlation_id=str(correlation_id),
+        correlation_id=str(confirm_correlation),
         causation_id=str(checkout["checkout_id"]),
     )
 
@@ -366,11 +365,13 @@ def test_checkout_idempotency_wallet_confirmation_and_immutable_snapshot() -> No
                 """SELECT routing_key, COUNT(*)
                    FROM audit.domain_events
                    WHERE aggregate_id IN (%s, %s)
+                      OR causation_id = %s
                       OR payload -> 'payload' ->> 'checkout_id' = %s
                    GROUP BY routing_key""",
                 (
                     checkout["checkout_id"],
                     checkout["order_id"],
+                    checkout["checkout_id"],
                     checkout["checkout_id"],
                 ),
             ).fetchall()
@@ -424,7 +425,7 @@ def test_price_divergence_and_wallet_failure_release_reservations() -> None:
     confirm_key = f"confirm-failure-{uuid4()}"
     correlation_id = uuid4()
     set_correlation_id(str(correlation_id))
-    _audit_context(UUID(str(context["company_id"])))
+    _set_context(UUID(str(context["company_id"])))
 
     with pytest.raises(MarketplaceCheckoutPaymentError):
         store.confirm_checkout(
@@ -512,7 +513,7 @@ def test_concurrent_checkouts_never_oversell_and_cancel_is_idempotent() -> None:
         _seed_user(connection, owner_id)
         for buyer_id in buyers:
             _seed_user(connection, buyer_id)
-        _seed_company_store_product(
+        _seed_catalog(
             connection,
             owner_id=owner_id,
             company_id=company_id,
@@ -520,7 +521,7 @@ def test_concurrent_checkouts_never_oversell_and_cancel_is_idempotent() -> None:
             product_id=product_id,
             sku=sku,
         )
-    _audit_context(company_id)
+    _set_context(company_id)
     inventory_id = _create_inventory(
         owner_id=owner_id,
         company_id=company_id,
@@ -548,7 +549,7 @@ def test_concurrent_checkouts_never_oversell_and_cancel_is_idempotent() -> None:
         try:
             correlation_id = uuid4()
             set_correlation_id(str(correlation_id))
-            _audit_context(company_id)
+            _set_context(company_id)
             result = worker.create_checkout(
                 user_id=str(context["buyer_id"]),
                 cart_id=str(context["cart_id"]),
@@ -572,16 +573,16 @@ def test_concurrent_checkouts_never_oversell_and_cancel_is_idempotent() -> None:
     assert sorted(status for status, _ in results) == ["rejected", "reserved"]
     winner = next(result for status, result in results if status == "reserved")
     assert winner is not None
-
-    winner_store = MarketplaceCheckoutPostgresStore(POSTGRES_DSN)
     winner_context = next(
         context
         for context in contexts
         if str(context["buyer_id"]) == str(winner["user_id"])
     )
+
+    winner_store = MarketplaceCheckoutPostgresStore(POSTGRES_DSN)
     correlation_id = uuid4()
     set_correlation_id(str(correlation_id))
-    _audit_context(company_id)
+    _set_context(company_id)
     cancelled = winner_store.cancel_checkout(
         checkout_id=str(winner["checkout_id"]),
         user_id=str(winner_context["buyer_id"]),
