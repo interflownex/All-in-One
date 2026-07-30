@@ -4,6 +4,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 final class UniversalUrlPolicy {
+    private static final String GOOGLE_AUTH_HOST = "accounts.google.com";
+
     private final URI baseUri;
 
     private UniversalUrlPolicy(URI baseUri) {
@@ -45,16 +47,44 @@ final class UniversalUrlPolicy {
     }
 
     boolean isInternal(String candidateUrl) {
+        URI candidate = parseSecureUri(candidateUrl);
+        return candidate != null
+            && baseUri.getHost().equalsIgnoreCase(candidate.getHost())
+            && effectivePort(baseUri) == effectivePort(candidate);
+    }
+
+    boolean isAllowedAuthNavigation(String candidateUrl) {
+        if (isInternal(candidateUrl)) {
+            return true;
+        }
+        URI candidate = parseSecureUri(candidateUrl);
+        return candidate != null
+            && GOOGLE_AUTH_HOST.equalsIgnoreCase(candidate.getHost())
+            && effectivePort(candidate) == 443;
+    }
+
+    boolean isSafeExternal(String candidateUrl) {
+        return parseSecureUri(candidateUrl) != null;
+    }
+
+    private static URI parseSecureUri(String candidateUrl) {
         if (candidateUrl == null || candidateUrl.isBlank()) {
-            return false;
+            return null;
         }
         try {
             URI candidate = new URI(candidateUrl);
-            return "https".equalsIgnoreCase(candidate.getScheme())
-                && baseUri.getHost().equalsIgnoreCase(candidate.getHost())
-                && effectivePort(baseUri) == effectivePort(candidate);
+            if (!"https".equalsIgnoreCase(candidate.getScheme())) {
+                return null;
+            }
+            if (candidate.getHost() == null || candidate.getHost().isBlank()) {
+                return null;
+            }
+            if (candidate.getUserInfo() != null) {
+                return null;
+            }
+            return candidate;
         } catch (URISyntaxException exception) {
-            return false;
+            return null;
         }
     }
 
