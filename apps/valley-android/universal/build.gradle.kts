@@ -10,10 +10,10 @@ val escapedValleyUrl = valleyUrlProvider.get()
     .replace("\\", "\\\\")
     .replace("\"", "\\\"")
 
-val generatedBrandRes = layout.buildDirectory.dir("generated/res/valleyBrand")
+val generatedBrandIconDir = file("src/main/res/mipmap-xxxhdpi")
 val generateValleyBrandIcon by tasks.registering(Copy::class) {
     from(rootProject.file("../../assets/brand/valley-logo-official.png"))
-    into(generatedBrandRes.map { it.dir("mipmap-xxxhdpi") })
+    into(generatedBrandIconDir)
     rename { "ic_launcher.png" }
 }
 
@@ -35,8 +35,6 @@ android {
         )
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    sourceSets.getByName("main").res.srcDir(generatedBrandRes)
 
     buildTypes {
         debug {
