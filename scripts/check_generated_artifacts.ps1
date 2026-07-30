@@ -1,6 +1,6 @@
 param(
     [string[]]$Commands = @(
-        "python scripts/scaffold_modules.py --check",
+        "python scripts/check_scaffold_modules.py --check",
         "python scripts/validate_openapi.py",
         "python scripts/validate_repository.py"
     )
