@@ -685,6 +685,36 @@ def create_order_support_case(
     }
 
 
+@app.get("/valley/reviews")
+def public_reviews(
+    store_id: str | None = None,
+    company_id: str | None = None,
+    limit: int = 50,
+) -> dict[str, Any]:
+    store = app.extra["store"]
+    reviews = store.list("reviews")
+    
+    filtered_reviews = []
+    for review in reviews:
+        payload = review.get("payload", {})
+        if store_id and str(payload.get("store_id")) != store_id:
+            continue
+        if company_id and str(payload.get("company_id")) != company_id:
+            continue
+        
+        filtered_reviews.append({
+            "id": review["id"],
+            "rating": payload.get("rating"),
+            "comment": payload.get("comment"),
+            "created_at": review["created_at"],
+            "author_initials": "Anonimo", # A deeper integration would fetch user data
+        })
+        
+    return {
+        "reviews": filtered_reviews[:limit],
+        "total": len(filtered_reviews),
+    }
+
 @app.get("/valley/insights/commercial")
 def commercial_insights(actor: Actor = Depends(actor_from_headers)) -> dict[str, Any]:
     store = app.extra["store"]

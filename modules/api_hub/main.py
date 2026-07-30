@@ -973,6 +973,102 @@ async def commercial_insights() -> dict[str, Any]:
     }
 
 
+class GatewayDisputeResolutionRequest(BaseModel):
+    resolution_notes: str = Field(min_length=5, max_length=1000)
+    action: Literal["resolve", "close"]
+
+
+@app.post(
+    "/gateway/merchant/disputes/{dispute_id}/resolve",
+    status_code=200,
+    dependencies=[Depends(rate_limiter)],
+)
+async def gateway_resolve_dispute(
+    dispute_id: UUID,
+    body: GatewayDisputeResolutionRequest,
+    token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
+) -> dict[str, Any]:
+    user_id = str(token_payload.get("sub") or "")
+    company_id = str(token_payload.get("company_id") or "")
+    headers = {
+        "X-Actor-User-Id": user_id,
+        "X-Actor-Company-Id": company_id,
+    }
+
+    result = await _service_json(
+        "POST",
+        f"{SERVICES['business']}/valley/disputes/{dispute_id}/resolve",
+        headers=headers,
+        payload={
+            "resolution_notes": body.resolution_notes,
+            "action": body.action,
+        },
+    )
+    return result
+
+
+@app.get(
+    "/gateway/bi/commercial-insights/series",
+    dependencies=[Depends(rate_limiter)],
+)
+async def gateway_bi_commercial_insights_series(
+    token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
+) -> dict[str, Any]:
+    user_id = str(token_payload.get("sub") or "")
+    headers = {"X-Actor-User-Id": user_id}
+
+    result = await _service_json(
+        "GET",
+        f"{SERVICES['bi']}/valley/bi/commercial-insights/series",
+        headers=headers,
+    )
+    return result
+
+
+@app.get(
+    "/gateway/reviews",
+    dependencies=[Depends(rate_limiter)],
+)
+async def gateway_public_reviews(
+    store_id: str | None = None,
+    company_id: str | None = None,
+    limit: int = 50,
+) -> dict[str, Any]:
+    headers = {"X-Actor-User-Id": str(UUID(int=0))}
+
+    url = f"{SERVICES['marketplace']}/valley/reviews?limit={limit}"
+    if store_id:
+        url += f"&store_id={store_id}"
+    if company_id:
+        url += f"&company_id={company_id}"
+
+    result = await _service_json(
+        "GET",
+        url,
+        headers=headers,
+    )
+    return result
+
+
+@app.get(
+    "/gateway/crm/customer-profiles/{user_id}/tickets",
+    dependencies=[Depends(rate_limiter)],
+)
+async def gateway_crm_customer_ticket_profile(
+    user_id: UUID,
+    token_payload: dict[str, Any] = Depends(validate_catalog_action_token),
+) -> dict[str, Any]:
+    actor_id = str(token_payload.get("sub") or "")
+    headers = {"X-Actor-User-Id": actor_id}
+
+    result = await _service_json(
+        "GET",
+        f"{SERVICES['crm']}/valley/crm/customer-profiles/{user_id}/tickets",
+        headers=headers,
+    )
+    return result
+
+
 @app.post(
     "/gateway/catalog/actions", status_code=201, dependencies=[Depends(rate_limiter)]
 )
