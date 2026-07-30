@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import ast
 import csv
+import importlib.util
 import json
 import re
 import sys
@@ -441,22 +442,22 @@ def discover_object_storage_catalog() -> list[dict[str, object]]:
 def discover_browser_storage_catalog() -> list[dict[str, object]]:
     definitions = [
         (
-            "sessionStorage",
-            "valley.session.token",
-            "token de autenticação da sessão web",
-            "credencial",
-            "até fechar a sessão/clear",
-            "apps/valley/src/App.tsx",
-            "valley.session.token",
+            "localStorage",
+            "valley.production.session.v1",
+            "sessão web com tokens, identificadores e email",
+            "credencial e dado pessoal",
+            "até logout/remoção explícita",
+            "apps/valley/src/lib/api.ts",
+            "valley.production.session.v1",
         ),
         (
-            "sessionStorage",
-            "valley.session.user-id",
-            "identificador do usuário autenticado",
-            "dado pessoal pseudônimo",
-            "até fechar a sessão/clear",
-            "apps/valley/src/App.tsx",
-            "valley.session.user-id",
+            "localStorage",
+            "valley.production.device.v1",
+            "identificador local do dispositivo",
+            "identificador pseudônimo",
+            "sem TTL; recriado quando ausente",
+            "apps/valley/src/lib/api.ts",
+            "valley.production.device.v1",
         ),
         (
             "sessionStorage",
@@ -580,6 +581,29 @@ def discover_endpoints() -> list[dict[str, object]]:
             tree = ast.parse(text)
         except SyntaxError:
             continue
+        router_prefixes: dict[str, str] = {}
+        for item in tree.body:
+            target = (
+                item.target
+                if isinstance(item, ast.AnnAssign)
+                else item.targets[0]
+                if isinstance(item, ast.Assign) and len(item.targets) == 1
+                else None
+            )
+            call = item.value if isinstance(item, (ast.Assign, ast.AnnAssign)) else None
+            if not (
+                isinstance(target, ast.Name)
+                and isinstance(call, ast.Call)
+                and annotation_name(call.func).endswith("APIRouter")
+            ):
+                continue
+            for keyword in call.keywords:
+                if (
+                    keyword.arg == "prefix"
+                    and isinstance(keyword.value, ast.Constant)
+                    and isinstance(keyword.value.value, str)
+                ):
+                    router_prefixes[target.id] = keyword.value.value
         models: dict[str, list[str]] = {}
         for node in tree.body:
             if not isinstance(node, ast.ClassDef) or not any(
@@ -635,10 +659,17 @@ def discover_endpoints() -> list[dict[str, object]]:
                             "model_fields": models.get(model_name, []),
                         }
                     )
+                route_path = route_node.value
+                if (
+                    not route_path
+                    and isinstance(decorator.func.value, ast.Name)
+                    and decorator.func.value.id in router_prefixes
+                ):
+                    route_path = router_prefixes[decorator.func.value.id]
                 endpoints.append(
                     {
                         "method": method.upper(),
-                        "path": route_node.value,
+                        "path": route_path,
                         "module": path.relative_to(ROOT).parts[1],
                         "function": node.name,
                         "parameters": parameters,
@@ -810,27 +841,33 @@ def discover_logical_rules(
 def discover_transitions(
     logical_rules: list[dict[str, object]],
 ) -> list[dict[str, object]]:
-    modules_root = str(ROOT / "modules")
-    if modules_root not in sys.path:
-        sys.path.insert(0, modules_root)
+    fastapi_stub = types.ModuleType("fastapi")
+
+    class HTTPException(Exception):
+        def __init__(self, *args: object, **kwargs: object) -> None:
+            super().__init__(*args)
+            self.detail = kwargs.get("detail")
+            self.status_code = kwargs.get("status_code")
+
+    fastapi_stub.HTTPException = HTTPException  # type: ignore[attr-defined]
+    previous_fastapi = sys.modules.get("fastapi")
+    sys.modules["fastapi"] = fastapi_stub
+    module_name = "_data_audit_domain_rules"
+    domain_rules_path = ROOT / "modules" / "shared" / "domain_rules.py"
+    spec = importlib.util.spec_from_file_location(module_name, domain_rules_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Não foi possível carregar {domain_rules_path}")
+    domain_rules = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = domain_rules
     try:
-        from shared.domain_rules import RULE_OVERRIDES  # type: ignore[import-not-found]
-    except ModuleNotFoundError as exc:
-        if exc.name != "fastapi":
-            raise
-        fastapi_stub = types.ModuleType("fastapi")
-
-        class HTTPException(Exception):
-            def __init__(self, *args: object, **kwargs: object) -> None:
-                super().__init__(*args)
-                self.detail = kwargs.get("detail")
-                self.status_code = kwargs.get("status_code")
-
-        fastapi_stub.HTTPException = HTTPException  # type: ignore[attr-defined]
-        sys.modules["fastapi"] = fastapi_stub
-        from shared.domain_rules import (
-            RULE_OVERRIDES,  # type: ignore[import-not-found,no-redef]
-        )
+        spec.loader.exec_module(domain_rules)
+    finally:
+        sys.modules.pop(module_name, None)
+        if previous_fastapi is None:
+            sys.modules.pop("fastapi", None)
+        else:
+            sys.modules["fastapi"] = previous_fastapi
+    RULE_OVERRIDES = domain_rules.RULE_OVERRIDES
 
     required_by_resource = {
         (str(row["module"]), str(row["entity"])): list(row["required_fields"])
@@ -1129,7 +1166,10 @@ def discover_ui_actions(ui_bindings: list[dict[str, str]]) -> list[dict[str, obj
                         "audit": "backend no salvamento",
                         "states": ["idle"],
                         "test_evidence": "contrato estático compartilhado; E2E por superfície ainda necessário",
-                        "evidence": source_evidence(source, "entity}-form`, { state: { record: item } })"),
+                        "evidence": source_evidence(
+                            source,
+                            "navigate(`/${module}/${entity}-form`, { state: { record: item } })",
+                        ),
                     },
                     {
                         **common,

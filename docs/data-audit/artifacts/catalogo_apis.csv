@@ -3,22 +3,30 @@ api_hub,GET,/gateway/security/response-signing-key,response_signing_key,,,,modul
 api_hub,POST,/auth/{path:path},auth_proxy,path:str,,,modules/api_hub/main.py:609
 api_hub,POST,/registrations,registrations_proxy,,,,modules/api_hub/main.py:614
 api_hub,GET,/gateway/catalog/offers,aggregate_catalog_offers,limit:int;offset:int;q:str | None;category:str | None;offer_type:str | None;lat:float | None;lng:float | None;company_type:str | None;company_category:str | None;business_activity:str | None;price_min:float | None;price_max:float | None;availability:str | None;verified_only:bool,,,modules/api_hub/main.py:619
-api_hub,GET,/gateway/consumer/orders,get_consumer_orders,"token_payload:dict[str, Any]",,,modules/api_hub/main.py:716
-api_hub,POST,/gateway/consumer/orders/{order_id}/support,create_order_support_case,"order_id:UUID;body:SupportCaseRequest;token_payload:dict[str, Any]",kind;subject;message;desired_resolution;idempotency_key,,modules/api_hub/main.py:788
-api_hub,POST,/gateway/consumer/orders/{order_id}/reviews,create_consumer_review,"order_id:UUID;body:ConsumerReviewRequest;token_payload:dict[str, Any]",rating;comment;idempotency_key,,modules/api_hub/main.py:855
+api_hub,GET,/gateway/consumer/orders,get_consumer_orders,"token_payload:Annotated[dict[str, Any], Depends(validate_catalog_action_token)]",,,modules/api_hub/main.py:716
+api_hub,POST,/gateway/consumer/orders/{order_id}/support,create_order_support_case,"order_id:UUID;body:SupportCaseRequest;token_payload:Annotated[dict[str, Any], Depends(validate_catalog_action_token)]",kind;subject;message;desired_resolution;idempotency_key,,modules/api_hub/main.py:788
+api_hub,POST,/gateway/consumer/orders/{order_id}/reviews,create_consumer_review,"order_id:UUID;body:ConsumerReviewRequest;token_payload:Annotated[dict[str, Any], Depends(validate_catalog_action_token)]",rating;comment;idempotency_key,,modules/api_hub/main.py:855
 api_hub,GET,/gateway/insights/commercial,commercial_insights,,,,modules/api_hub/main.py:919
-api_hub,POST,/gateway/catalog/actions,create_catalog_action,"body:CatalogActionRequest;token_payload:dict[str, Any]",offer_id;action;customer_user_id;idempotency_key;scheduled_at;note;quantity,,modules/api_hub/main.py:976
-api_hub,POST,/gateway/payments/sandbox/authorize,authorize_catalog_payment,"body:CatalogPaymentRequest;token_payload:dict[str, Any]",order_id;idempotency_key;method,,modules/api_hub/main.py:1123
-api_hub,GET,/gateway/telemetry/outbox,outbox_telemetry,limit:int,,,modules/api_hub/main.py:1222
-api_hub,GET,/gateway/status,gateway_status,,,,modules/api_hub/main.py:1259
-api_hub,GET,/gateway/api-key/check,gateway_api_key_check,key_info:dict,,,modules/api_hub/main.py:1270
-api_hub,POST,/gateway/webhooks/verify,gateway_webhook_verify,,,,modules/api_hub/main.py:1279
+api_hub,POST,/gateway/merchant/disputes/{dispute_id}/resolve,gateway_resolve_dispute,"dispute_id:UUID;body:GatewayDisputeResolutionRequest;token_payload:dict[str, Any]",resolution_notes;action,,modules/api_hub/main.py:981
+api_hub,GET,/gateway/bi/commercial-insights/series,gateway_bi_commercial_insights_series,"token_payload:dict[str, Any]",,,modules/api_hub/main.py:1010
+api_hub,GET,/gateway/reviews,gateway_public_reviews,store_id:str | None;company_id:str | None;limit:int,,,modules/api_hub/main.py:1028
+api_hub,GET,/gateway/crm/customer-profiles/{user_id}/tickets,gateway_crm_customer_ticket_profile,"user_id:UUID;token_payload:dict[str, Any]",,,modules/api_hub/main.py:1053
+api_hub,POST,/gateway/catalog/actions,create_catalog_action,"body:CatalogActionRequest;token_payload:dict[str, Any]",offer_id;action;customer_user_id;idempotency_key;scheduled_at;note;quantity,,modules/api_hub/main.py:1077
+api_hub,POST,/gateway/payments/sandbox/authorize,authorize_catalog_payment,"body:CatalogPaymentRequest;token_payload:dict[str, Any]",order_id;idempotency_key;method,,modules/api_hub/main.py:1224
+api_hub,POST,/gateway/payments/sandbox/refund,refund_catalog_payment,"body:SandboxRefundRequest;token_payload:dict[str, Any]",order_id;idempotency_key;reason,,modules/api_hub/main.py:1336
+api_hub,POST,/gateway/oauth2/token,issue_oauth2_token,body:OAuth2TokenRequest,grant_type;client_id;api_key;scope,,modules/api_hub/main.py:1395
+api_hub,GET,/gateway/status,gateway_status,,,,modules/api_hub/main.py:1456
+api_hub,GET,/gateway/api-key/check,gateway_api_key_check,key_info:dict,,,modules/api_hub/main.py:1467
+api_hub,POST,/gateway/webhooks/verify,gateway_webhook_verify,,,,modules/api_hub/main.py:1476
+bi,GET,/valley/bi/commercial-insights/series,commercial_insights_series,"actor:Annotated[Actor, Depends(actor_from_headers)]",,,modules/bi/commercial_routes.py:10
+business,POST,/valley/disputes/{dispute_id}/resolve,resolve_dispute,"dispute_id:UUID;body:DisputeResolutionRequest;actor:Annotated[Actor, Depends(actor_from_headers)]",resolution_notes;action,,modules/business/commercial_routes.py:16
 business,POST,/recommendations,preview_recommendations,body:BusinessClassificationInput,business_kind;cnae_primary;cnae_secondary;has_physical_stock;sells_online;performs_delivery;hires_people;issues_fiscal_documents;operates_fleet;has_warehouse,list[ModuleRecommendation],modules/business/module_settings.py:345
 business,POST,/companies/{company_id}/classification,classify_company,company_id:UUID;body:BusinessClassificationInput,business_kind;cnae_primary;cnae_secondary;has_physical_stock;sells_online;performs_delivery;hires_people;issues_fiscal_documents;operates_fleet;has_warehouse,BusinessClassificationRecord,modules/business/module_settings.py:352
 business,POST,/companies/{company_id}/apply-recommendations,apply_recommendations,company_id:UUID;body:ApplyRecommendationsPayload,classification;actor_id,ModuleSettingsResponse,modules/business/module_settings.py:367
 business,GET,/companies/{company_id}/modules,get_company_modules,company_id:UUID,,ModuleSettingsResponse,modules/business/module_settings.py:408
 business,PATCH,/companies/{company_id}/modules/{module_slug},patch_company_module,company_id:UUID;module_slug:str;body:ModulePatch,state;reason,CompanyModuleSetting,modules/business/module_settings.py:418
 business,GET,/companies/{company_id}/modules/{module_slug}/change-impact,get_change_impact,company_id:UUID;module_slug:str;next_state:ModuleState,,,modules/business/module_settings.py:470
+crm,GET,/valley/crm/customer-profiles/{user_id}/tickets,customer_ticket_profile,"user_id:UUID;actor:Annotated[Actor, Depends(actor_from_headers)]",,,modules/crm/commercial_routes.py:10
 dynamic_forms,GET,/health,health,,,,modules/dynamic_forms/main.py:139
 dynamic_forms,GET,/catalog,list_catalog,"context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)];domain:str | None",,,modules/dynamic_forms/main.py:144
 dynamic_forms,GET,/catalog/bindings,list_bindings,"catalog_ids:Annotated[list[UUID], Query(min_length=1, max_length=200)];context:Annotated[tuple[str, Actor], Depends(tenant_actor)];store:Annotated[DynamicFormsPostgresStore, Depends(get_store)]",,,modules/dynamic_forms/main.py:155
@@ -52,10 +60,24 @@ identity,POST,/auth/login,login,body:LoginRequest;_integrity:IntegrityDecision,,
 identity,POST,/auth/refresh,refresh_session,body:RefreshTokenRequest;_integrity:IntegrityDecision,,TokenResponse,modules/identity/main.py:445
 identity,POST,/auth/logout,logout,body:RefreshTokenRequest;_integrity:IntegrityDecision,,,modules/identity/main.py:501
 identity,POST,/registrations,register_user_with_hash,"body:dict[str, Any];_integrity:IntegrityDecision",,,modules/identity/main.py:528
-marketplace,POST,/valley/orders/{order_id}/support,create_order_support_case,order_id:UUID;body:SupportCaseRequest;actor:Actor,kind;subject;message;desired_resolution;idempotency_key,,modules/marketplace/main.py:25
-marketplace,GET,/valley/insights/commercial,commercial_insights,actor:Actor,,,modules/marketplace/main.py:84
+marketplace,GET,/valley/marketplace/catalog,marketplace_catalog,"q:str | None;category:str | None;store_id:UUID | None;min_price_brl:Decimal | None;max_price_brl:Decimal | None;latitude:float | None;longitude:float | None;radius_km:float | None;in_stock_only:bool;sort:Literal['relevance', 'price_asc', 'price_desc', 'distance', 'rating'];offset:int;limit:int",,,modules/marketplace/main.py:346
+marketplace,GET,/valley/feed,valley_feed,latitude:float | None;longitude:float | None;limit:int,,,modules/marketplace/main.py:414
+marketplace,GET,/valley/promotions/today,promotion_of_the_day,latitude:float | None;longitude:float | None,,,modules/marketplace/main.py:455
+marketplace,GET,/valley/favorites,list_favorites,actor:Actor,,,modules/marketplace/main.py:513
+marketplace,PUT,/valley/favorites/{product_id},add_favorite,product_id:UUID;actor:Actor,,,modules/marketplace/main.py:537
+marketplace,DELETE,/valley/favorites/{product_id},remove_favorite,product_id:UUID;actor:Actor,,,modules/marketplace/main.py:563
+marketplace,GET,/valley/cart,get_cart,actor:Actor,,,modules/marketplace/main.py:587
+marketplace,PUT,/valley/cart/items/{product_id},put_cart_item,product_id:UUID;body:CartItemRequest;actor:Actor,quantity,,modules/marketplace/main.py:593
+marketplace,DELETE,/valley/cart/items/{product_id},delete_cart_item,product_id:UUID;actor:Actor,,,modules/marketplace/main.py:627
+marketplace,POST,/valley/orders/{order_id}/support,create_order_support_case,order_id:UUID;body:SupportCaseRequest;actor:Actor,kind;subject;message;desired_resolution;idempotency_key,,modules/marketplace/main.py:655
+marketplace,GET,/valley/reviews,public_reviews,store_id:str | None;company_id:str | None;limit:int,,,modules/marketplace/main.py:714
+marketplace,GET,/valley/insights/commercial,commercial_insights,actor:Actor,,,modules/marketplace/main.py:747
 services,GET,/providers/{provider_id}/time-slots,get_time_slots,provider_id:str;date:str,,,modules/services/main.py:13
 services,POST,/providers/{provider_id}/reserve-slot,reserve_slot,provider_id:str;body:dict,,,modules/services/main.py:26
+shared,POST,/valley/checkout,create_marketplace_checkout,body:MarketplaceCheckoutRequest;actor:Actor;x_idempotency_key:str;x_correlation_id:UUID;x_causation_id:UUID | None,cart_id;currency;expected_total_brl;payment_method,,modules/shared/marketplace_checkout_routes.py:105
+shared,GET,/valley/checkout/{checkout_id},get_marketplace_checkout,checkout_id:UUID;actor:Actor;x_correlation_id:UUID,,,modules/shared/marketplace_checkout_routes.py:149
+shared,POST,/valley/checkout/{checkout_id}/confirm,confirm_marketplace_checkout,checkout_id:UUID;body:MarketplaceCheckoutConfirmationRequest;actor:Actor;x_idempotency_key:str;x_correlation_id:UUID;x_causation_id:UUID | None,payment_method,,modules/shared/marketplace_checkout_routes.py:167
+shared,POST,/valley/checkout/{checkout_id}/cancel,cancel_marketplace_checkout,checkout_id:UUID;actor:Actor;x_correlation_id:UUID;x_causation_id:UUID | None,,,modules/shared/marketplace_checkout_routes.py:203
 shared,GET,/health,health,,,,modules/shared/runtime.py:577
 shared,GET,/version,get_version,,,,modules/shared/runtime.py:581
 shared,GET,/status,status,actor:Actor,,,modules/shared/runtime.py:585
@@ -110,4 +132,36 @@ shared,GET,/valley/catalog/search,valley_catalog_search,q:str | None;category:st
 shared,POST,/valley/orders/{order_id}/pepitas/grants,grant_pepitas,order_id:UUID;body:ValleyPepitaGrant;actor:Actor;x_idempotency_key:str | None,pepitas;customer_user_id;merchant_gold_ledger_id;note,,modules/shared/valley.py:263
 shared,POST,/valley/checkout/discount-options,valley_stock_discount_options,body:ValleyStockDiscountRequest,catalog_product_id;price_brl;user_pepitas_balance,,modules/shared/valley.py:323
 shared,POST,/valley/checkout/discount-quotes,valley_stock_discount_quote,body:ValleyStockDiscountQuoteRequest;actor:Actor;x_idempotency_key:str | None,,,modules/shared/valley.py:355
-stock,POST,/calculations/unit-conversion,calculate_unit_conversion,body:UnitConversionRequest;x_actor_user_id:str,quantity;multiplier;divisor;precision;rounding_mode;source_dimension;target_dimension;effective_from;effective_to;approved;density,,modules/stock/main.py:29
+stock,POST,/calculations/unit-conversion,calculate_unit_conversion,body:UnitConversionRequest;x_actor_user_id:str,quantity;multiplier;divisor;precision;rounding_mode;source_dimension;target_dimension;effective_from;effective_to;approved;density,,modules/stock/main.py:120
+stock,POST,/inventory/items,create_inventory_item,body:InventoryItemCreate;actor:Actor;x_correlation_id:UUID,user_id;company_id;warehouse_id;product_id;sku;physical_quantity;metadata,,modules/stock/main.py:141
+stock,PATCH,/inventory/items/{inventory_item_id},adjust_inventory_item,inventory_item_id:UUID;body:InventoryAdjustment;actor:Actor;x_business_id:UUID;x_correlation_id:UUID,expected_version;physical_quantity;reason,,modules/stock/main.py:165
+stock,POST,/reservations,reserve_inventory,body:ReservationCreate;actor:Actor;x_idempotency_key:str;x_correlation_id:UUID;x_causation_id:UUID | None,user_id;company_id;inventory_item_id;order_id;quantity;expires_in_seconds,,modules/stock/main.py:189
+stock,POST,/reservations/{reservation_id}/commit,commit_reservation,reservation_id:UUID;actor:Actor;x_correlation_id:UUID,,,modules/stock/main.py:231
+stock,POST,/reservations/{reservation_id}/release,release_reservation,reservation_id:UUID;body:ReservationRelease;actor:Actor;x_correlation_id:UUID,reason,,modules/stock/main.py:264
+stock,POST,/reservations/expire,expire_reservations,limit:int;actor:Actor;x_correlation_id:UUID,,,modules/stock/main.py:293
+valley_consumer,GET,/innovation/round-004,list_ideas,,,,modules/valley_consumer/innovation_round_004.py:207
+valley_consumer,GET,/{idea_id},get_idea,idea_id:int,,,modules/valley_consumer/innovation_round_004.py:219
+valley_consumer,POST,/{idea_id}/records,create_capability_record,idea_id:int;body:CapabilityRecordInput,owner_id;payload,,modules/valley_consumer/innovation_round_004.py:227
+valley_consumer,POST,/marketplace/solution-options,marketplace_solution_options,body:MarketplaceSolutionRequest,user_id;need;usage_days;budget_brl;accepted_modes,,modules/valley_consumer/innovation_round_004.py:242
+valley_consumer,POST,/marketplace/productive-surpluses,create_productive_surplus,body:ProductiveSurplusCreate,seller_id;title;category;quantity;unit;condition;evidence_urls;regulated_or_hazardous,,modules/valley_consumer/innovation_round_004.py:264
+valley_consumer,POST,/services/outcome-contracts,create_service_outcome_contract,body:ServiceOutcomeContractCreate,client_id;professional_id;service_description;expected_result;amount_brl;max_validation_hours,,modules/valley_consumer/innovation_round_004.py:277
+valley_consumer,POST,/services/outcome-contracts/{contract_id}/mark-delivered,mark_service_delivered,contract_id:UUID;body:ServiceValidationInput,actor;accepted;evidence;reason;evaluated_at,,modules/valley_consumer/innovation_round_004.py:297
+valley_consumer,POST,/services/outcome-contracts/{contract_id}/validate,validate_service_outcome,contract_id:UUID;body:ServiceValidationInput,actor;accepted;evidence;reason;evaluated_at,,modules/valley_consumer/innovation_round_004.py:314
+valley_consumer,POST,/mobility/providers,register_mobility_provider,body:MobilityProviderCreate,provider_name;state_code;cities;transport_modes;realtime_api_available;ticketing_api_available;payment_methods;production_verified;evidence_urls,,modules/valley_consumer/innovation_round_004.py:351
+valley_consumer,GET,/mobility/coverage,mobility_coverage,state_code:str | None,,,modules/valley_consumer/innovation_round_004.py:368
+valley_consumer,POST,/jobs/pilot-companies,register_jobs_pilot_company,body:JobsPilotCompanyCreate,company_id;opted_in;vacancies;consent_text_version,,modules/valley_consumer/innovation_round_004.py:381
+valley_consumer,POST,/shopping-lists,create_shopping_list,body:ShoppingListCreate,user_id;items,,modules/valley_consumer/innovation_round_004.py:391
+valley_consumer,POST,/shopping-lists/{user_id}/items,add_shopping_item,user_id:UUID;body:ShoppingItemCreate,name;quantity;estimated_price_brl;desired_by,,modules/valley_consumer/innovation_round_004.py:405
+valley_consumer,POST,/shopping-lists/{user_id}/suggest,suggest_shopping_list,user_id:UUID;body:ShoppingSuggestionRequest,available_balance_brl;evaluated_at,,modules/valley_consumer/innovation_round_004.py:415
+valley_consumer,POST,/shopping-lists/{user_id}/confirm-purchase,confirm_shopping_purchase,user_id:UUID;body:ShoppingPurchaseConfirmation,purchased_item_names;transaction_id,,modules/valley_consumer/innovation_round_004.py:433
+valley_consumer,POST,/health/medication-plans,create_medication_plan,body:MedicationPrescriptionCreate,patient_id;prescription_id;medication_name;interval_hours;duration_days;first_dose_at;prescribed_by;prescription_verified,,modules/valley_consumer/innovation_round_004.py:448
+valley_consumer,POST,/health/medication-plans/{plan_id}/doses/{dose_id}/confirm,confirm_medication_dose,plan_id:UUID;dose_id:UUID;body:DoseConfirmation,taken;confirmed_at,,modules/valley_consumer/innovation_round_004.py:475
+valley_consumer,POST,/ai/autonomy-budgets,create_autonomy_budget,body:AutonomyBudgetCreate,user_id;module;action;level;max_amount_brl;valid_until,,modules/valley_consumer/innovation_round_004.py:487
+valley_consumer,POST,/offline/events,enqueue_offline_event,body:OfflineEventCreate,device_id;module;event_type;idempotency_key;payload;expires_at;signature,,modules/valley_consumer/innovation_round_004.py:496
+valley_consumer,GET,/innovation/round-005,list_ideas,,,,modules/valley_consumer/innovation_round_005.py:257
+valley_consumer,GET,/flags,list_flags,,,,modules/valley_consumer/innovation_round_005.py:269
+valley_consumer,PUT,/flags/{idea_id},update_flag,idea_id:int;body:FlagUpdate,enabled;rollout_stage,,modules/valley_consumer/innovation_round_005.py:274
+valley_consumer,GET,/{idea_id},get_idea,idea_id:int,,,modules/valley_consumer/innovation_round_005.py:283
+valley_consumer,POST,/{idea_id}/execute,execute_idea,idea_id:int;body:ActionRequest;sandbox:bool,owner_id;action;payload,,modules/valley_consumer/innovation_round_005.py:288
+valley_consumer,GET,/{idea_id}/records,list_records,idea_id:int,,,modules/valley_consumer/innovation_round_005.py:312
+valley_consumer,GET,/health,health,,,,modules/valley_consumer/main.py:15
