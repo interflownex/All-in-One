@@ -11,69 +11,67 @@ if str(ROOT) not in sys.path:
 
 from scripts.stitch_orchestrator import (
     load_state,
-    sync_projects,
     sync_summary,
     write_manifest,
 )
-from scripts.validate_stitch_mcp_config import (
-    is_stitch_enabled,
-    validate_stitch_mcp_config,
+from scripts.validate_stitch_mcp_config import validate_stitch_mcp_config
+
+LEGACY_NOTICE = (
+    "A sincronizacao remota legada por modulo foi desativada. "
+    "Use scripts/codex_stitch_director.py para coordenar diretamente "
+    "os tres projetos agregadores oficiais."
 )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Executa plano, validacao e sincronizacao remota do Stitch."
+        description="Compatibilidade somente leitura da antiga sincronizacao Stitch por modulo."
     )
     parser.add_argument(
         "--require-remote",
         action="store_true",
-        help="Falha quando STITCH_API_KEY nao estiver presente.",
+        help="Mantido somente para detectar chamadas antigas; escrita remota e bloqueada.",
     )
     parser.add_argument(
         "--require-complete",
         action="store_true",
-        help="Falha se o estado Stitch ainda nao cobrir todos os projetos e telas.",
+        help="Falha se o estado historico estiver incompleto.",
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Valida e mostra o status sem chamar o MCP remoto.",
+        help="Valida e mostra o estado historico sem chamar o MCP remoto.",
     )
     parser.add_argument(
         "--max-operations",
         type=int,
         default=None,
-        help="Limita criacoes/edicoes remotas para execucoes resumiveis.",
+        help="Argumento legado sem efeito; nenhuma operacao remota e permitida.",
     )
     args = parser.parse_args()
 
+    if args.require_remote or not args.dry_run:
+        print(LEGACY_NOTICE)
+        return 2
+
     manifest = write_manifest()
-    errors = validate_stitch_mcp_config(
-        require_secret=args.require_remote,
-        require_codex_config=not args.dry_run or args.require_remote,
-    )
+    errors = validate_stitch_mcp_config(require_codex_config=False)
     if errors:
-        print("\nFalhas de validacao do sync Stitch:")
+        print("\nFalhas de validacao do estado Stitch legado:")
         for error in errors:
             print(f"- {error}")
         return 1
 
-    if not is_stitch_enabled():
-        state = load_state()
-    elif not args.dry_run:
-        state = sync_projects(manifest, max_operations=args.max_operations)
-    else:
-        state = load_state()
-
-    summary = sync_summary(manifest, state)
+    summary = sync_summary(manifest, load_state())
+    summary["mode"] = "legacy_read_only"
+    summary["authoritative_director"] = "scripts/codex_stitch_director.py"
     print(json.dumps(summary, indent=2, ensure_ascii=True))
+
     if args.require_complete and (
         summary["synced_projects"] != summary["expected_projects"]
         or summary["synced_screens"] != summary["expected_screens"]
         or summary["branding_pending"]
     ):
-        print("\nSincronizacao Stitch remota incompleta.")
         return 1
     return 0
 
