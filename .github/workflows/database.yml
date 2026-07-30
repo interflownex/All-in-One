@@ -15,6 +15,7 @@ on:
         "tests/test_postgres_contract_static.py",
         "tests/test_postgres_priority_stores_integration.py",
         "tests/test_postgres_stores_matrix.py",
+        "tests/test_stock_reservations_integration.py",
         "scripts/validate_postgres_real_dsn.py",
         "scripts/verify_pg_indexes.py",
         "requirements-dev.txt",
@@ -32,6 +33,7 @@ on:
         "tests/test_postgres_contract_static.py",
         "tests/test_postgres_priority_stores_integration.py",
         "tests/test_postgres_stores_matrix.py",
+        "tests/test_stock_reservations_integration.py",
         "scripts/validate_postgres_real_dsn.py",
         "scripts/verify_pg_indexes.py",
         "requirements-dev.txt",
@@ -120,6 +122,10 @@ jobs:
         env:
           ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
         run: python -m pytest -q tests/test_postgres_priority_stores_integration.py::test_stock_supplier_create_update_and_soft_delete
+      - name: Exercise Stock transactional reservations
+        env:
+          ALL_IN_ONE_STOCK_POSTGRES_TEST_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
+        run: python -m pytest -q tests/test_stock_reservations_integration.py
       - name: Exercise Health PostgreSQL store
         env:
           ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
@@ -193,3 +199,7 @@ jobs:
           ALL_IN_ONE_OUTBOX_POSTGRES_TEST_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
           ALL_IN_ONE_RABBITMQ_TEST_URL: amqp://all_in_one:test-password@localhost:5672/%2F
         run: python -m pytest -q tests/test_outbox_rabbitmq_integration.py
+      - name: Prove Stock migration rollback in the ephemeral database
+        run: |
+          psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f database/postgres/rollbacks/031_stock_inventory_reservations.sql
+          test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'stock' AND table_name IN ('inventory_items', 'stock_reservations');")" = "0"

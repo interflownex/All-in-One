@@ -12,6 +12,11 @@ REQUIRED_INDEXES = [
     "idx_finance_gold_ledger_entity_lookup",
     "idx_jobs_resumes_visibility",
     "idx_business_membership_lookup",
+    "idx_stock_inventory_product_company",
+    "idx_stock_inventory_company_available",
+    "idx_stock_reservations_inventory_status",
+    "idx_stock_reservations_company_order",
+    "idx_stock_reservations_expiration",
 ]
 
 

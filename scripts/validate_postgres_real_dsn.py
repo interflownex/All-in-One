@@ -61,6 +61,8 @@ REQUIRED_TABLES = {
     "delivery.rider_reviews",
     "marketplace.orders",
     "business.catalog_offers",
+    "stock.inventory_items",
+    "stock.stock_reservations",
     "jobs.resumes",
     "audit.logs",
     "audit.domain_events",
