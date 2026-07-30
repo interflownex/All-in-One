@@ -1,10 +1,11 @@
 # Tarefas da IA Desenvolvedora
 
 **Versão:** 3.4  
-**Data e hora:** 30/07/2026 08:16, `America/Sao_Paulo`  
+**Data e hora:** 30/07/2026 08:20, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
 **Commit-base:** `c6da2cb578a7edc7bdfd9c9b2182ff6aeec6c239`  
 **Issue-mãe:** `#51`  
+**Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Público-alvo:** Equipe Técnica
 
@@ -17,6 +18,7 @@
 - PR #94 integrada no commit `c6da2cb578a7edc7bdfd9c9b2182ff6aeec6c239`;
 - issue #83 concluída: fundação transacional Stock;
 - issue #78 concluída: checkout idempotente com Stock e Wallet;
+- issue #95 aberta: homologação de PSP, webhooks, liquidação e reconciliação;
 - issue-mãe #51 atualizada com o novo marco;
 - Vision permanece inativo;
 - `MARKETPLACE_CHECKOUT_V1_ENABLED` permanece desligada;
@@ -33,7 +35,7 @@ Checkout idempotente: concluído
 Wallet interna + escrow hold: concluído tecnicamente
 Ledger de retenção: concluído
 Compensação de falha financeira: concluída
-Liquidação produtiva/PSP: pendente
+Liquidação produtiva/PSP: issue #95 aberta
 Delivery/Rider: não iniciado
 ```
 
@@ -106,27 +108,32 @@ A revisão final confirmou:
 - ausência de chaves privadas, tokens GitHub, chaves Google e chaves OpenAI;
 - Squash and Merge protegido por `expected_head_sha`.
 
-## 5. Próxima dependência da orquestração #51
+## 5. Próxima dependência: issue #95
 
-Antes de ativar o checkout ou iniciar Delivery, deve existir uma atividade própria para homologação financeira produtiva.
+Título:
 
-Escopo necessário:
+```text
+[Finance Fase 1] Homologar PSP, webhooks, liquidação e reconciliação do checkout
+```
 
-1. selecionar e homologar PSP compatível com o projeto;
-2. definir adaptador independente de fornecedor;
-3. validar assinatura de webhook;
+Escopo obrigatório:
+
+1. definir interface de PSP independente de fornecedor;
+2. selecionar o primeiro PSP homologável;
+3. validar assinatura, timestamp e replay de webhooks;
 4. garantir idempotência de autorização, captura, cancelamento, estorno e chargeback;
-5. preservar ledger como fonte financeira;
-6. definir liquidação e split sem alterar histórico;
-7. implementar reconciliação;
-8. adicionar observabilidade e alertas;
+5. preservar ledger e escrow como fontes internas de verdade;
+6. implementar liquidação por partidas rastreáveis;
+7. conciliar PSP, ledger, escrow e pedido;
+8. bloquear liquidação diante de divergência;
 9. manter credenciais em Secret Manager;
 10. manter a feature flag desligada até homologação completa.
 
-Delivery e Rider só poderão avançar após pagamento produtivo comprovado e regras de compensação aprovadas.
+Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento produtivo, compensação e reconciliação confiáveis.
 
 ## 6. Issues abertas que continuam independentes
 
+- #95: PSP, webhooks, liquidação e reconciliação;
 - #51: orquestração Marketplace → Stock → Delivery;
 - #89: convergir a fonte produtiva do AIO Admin AppDeploy com o repositório;
 - #47: Health Watch + SafeZone com controles de consentimento e antiabuso;
@@ -155,11 +162,11 @@ Delivery e Rider só poderão avançar após pagamento produtivo comprovado e re
 
 ## 8. Próxima sequência obrigatória
 
-1. formalizar a pendência de homologação PSP/liquidação como issue técnica própria ou subtarefa explícita da #51;
+1. executar a issue #95 em branch exclusiva;
 2. manter a feature flag desligada;
-3. revisar a issue #89 como próxima frente independente e executável;
-4. executar cada issue em branch exclusiva;
-5. abrir PR em rascunho;
+3. preservar PSP sandbox e produção separados;
+4. manter a issue #89 como próxima frente independente após o gate financeiro ou em branch isolada sem misturar escopos;
+5. abrir cada PR em rascunho;
 6. corrigir falhas comprovadas pelos workflows;
 7. revisar diff e segredos;
 8. validar todos os gates no mesmo SHA;
@@ -175,4 +182,4 @@ Delivery e Rider só poderão avançar após pagamento produtivo comprovado e re
 | 3.1 | 30/07/2026 | Migration Stock corrigida para 031. |
 | 3.2 | 30/07/2026 | PR #92 e issue #83 concluídas. |
 | 3.3 | 30/07/2026 | PR #94 aberta para executar a issue #78. |
-| 3.4 | 30/07/2026 | PR #94 e issue #78 concluídas; homologação PSP definida como próxima dependência da #51. |
+| 3.4 | 30/07/2026 | PR #94 e issue #78 concluídas; issue #95 aberta como próxima dependência financeira. |
