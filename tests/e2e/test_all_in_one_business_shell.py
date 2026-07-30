@@ -158,11 +158,11 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     expect(page.get_by_text("Dashboard Giro de Estoque Playwright")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
-    page.get_by_role("button", name="Aprovar relatório BI").click()
-    expect(page.get_by_text("Relatorio BI aprovado no API Hub vivo.")).to_be_visible(
+    page.get_by_role("button", name="Publicar relatório BI").click()
+    expect(page.get_by_text("Relatorio BI publicado no API Hub vivo.")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
-    expect(page.locator(".badge", has_text="approved")).to_be_visible(
+    expect(page.locator(".badge", has_text="published")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
 
@@ -173,11 +173,11 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     expect(page.get_by_text("CD Regional Playwright")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
-    page.get_by_role("button", name="Aprovar operação WMS").click()
-    expect(page.get_by_text("Operacao WMS aprovada no API Hub vivo.")).to_be_visible(
+    page.get_by_role("button", name="Concluir operação WMS").click()
+    expect(page.get_by_text("Operacao WMS concluida no API Hub vivo.")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
-    expect(page.locator(".badge", has_text="approved")).to_be_visible(
+    expect(page.locator(".badge", has_text="completed")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
 
@@ -202,11 +202,11 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     expect(page.get_by_text("Oportunidade B2B Playwright")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
-    page.get_by_role("button", name="Aprovar oportunidade CRM").click()
+    page.get_by_role("button", name="Enviar proposta CRM").click()
     expect(
-        page.get_by_text("Oportunidade CRM aprovada no API Hub vivo.")
+        page.get_by_text("Proposta CRM enviada no API Hub vivo.")
     ).to_be_visible(timeout=LIVE_API_EXPECT_TIMEOUT)
-    expect(page.locator(".badge", has_text="approved")).to_be_visible(
+    expect(page.locator(".badge", has_text="proposal_sent")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
 
@@ -277,8 +277,8 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     expect(page.get_by_text("Chave API Hub Playwright")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
-    page.get_by_role("button", name="Aprovar cliente API Hub").click()
-    expect(page.get_by_text("Cliente API Hub aprovado no API Hub vivo.")).to_be_visible(
+    page.get_by_role("button", name="Aprovar chave API Hub").click()
+    expect(page.get_by_text("Chave API Hub aprovada no API Hub vivo.")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
     expect(page.get_by_label("Auditoria operacional Business")).to_contain_text(
@@ -295,8 +295,8 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     expect(page.get_by_text("https://webhook.playwright.example/events")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
-    page.get_by_role("button", name="Aprovar cliente API Hub").click()
-    expect(page.get_by_text("Cliente API Hub aprovado no API Hub vivo.")).to_be_visible(
+    page.get_by_role("button", name="Aprovar webhook API Hub").click()
+    expect(page.get_by_text("Webhook API Hub aprovado no API Hub vivo.")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
     expect(page.get_by_label("Auditoria operacional Business")).to_contain_text(
@@ -313,8 +313,8 @@ def test_all_in_one_business_shell_runs_live_api_hub_actions(
     expect(page.get_by_text("Apigee API Hub Playwright")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
-    page.get_by_role("button", name="Aprovar cliente API Hub").click()
-    expect(page.get_by_text("Cliente API Hub aprovado no API Hub vivo.")).to_be_visible(
+    page.get_by_role("button", name="Aprovar integração API Hub").click()
+    expect(page.get_by_text("Integracao API Hub aprovada no API Hub vivo.")).to_be_visible(
         timeout=LIVE_API_EXPECT_TIMEOUT
     )
     expect(page.get_by_label("Auditoria operacional Business")).to_contain_text(
