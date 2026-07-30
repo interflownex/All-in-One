@@ -82,10 +82,20 @@ def reservation_store() -> StockPostgresStore:
     return StockPostgresStore(str(dsn))
 
 
-def _authorize_subject_or_operator(actor: Actor, user_id: UUID) -> None:
-    if actor.user_id == user_id or actor.roles.intersection(STOCK_OPERATOR_ROLES):
+def _authorize_subject_or_operator(
+    actor: Actor, user_id: UUID, company_id: UUID
+) -> None:
+    if actor.user_id == user_id:
         return
-    raise HTTPException(status_code=403, detail="Ator não autorizado para esta reserva.")
+    if (
+        actor.roles.intersection(STOCK_OPERATOR_ROLES)
+        and actor.business_id == company_id
+    ):
+        return
+    raise HTTPException(
+        status_code=403,
+        detail="Ator não autorizado para esta reserva ou empresa.",
+    )
 
 
 def _authorize_inventory_company(actor: Actor, company_id: UUID) -> None:
@@ -184,7 +194,7 @@ def reserve_inventory(
     x_correlation_id: UUID = Header(..., alias="X-Correlation-Id"),
     x_causation_id: UUID | None = Header(default=None, alias="X-Causation-Id"),
 ) -> dict[str, Any]:
-    _authorize_subject_or_operator(actor, body.user_id)
+    _authorize_subject_or_operator(actor, body.user_id, body.company_id)
     if not 8 <= len(x_idempotency_key) <= 160:
         raise HTTPException(
             status_code=422,
@@ -228,7 +238,11 @@ def commit_reservation(
     current = store.get_reservation(str(reservation_id))
     if current is None:
         raise HTTPException(status_code=404, detail="Reserva não encontrada.")
-    _authorize_subject_or_operator(actor, UUID(current["user_id"]))
+    _authorize_subject_or_operator(
+        actor,
+        UUID(current["user_id"]),
+        UUID(current["company_id"]),
+    )
     bind_correlation_id(x_correlation_id)
     try:
         result = store.commit_reservation(
@@ -258,7 +272,11 @@ def release_reservation(
     current = store.get_reservation(str(reservation_id))
     if current is None:
         raise HTTPException(status_code=404, detail="Reserva não encontrada.")
-    _authorize_subject_or_operator(actor, UUID(current["user_id"]))
+    _authorize_subject_or_operator(
+        actor,
+        UUID(current["user_id"]),
+        UUID(current["company_id"]),
+    )
     bind_correlation_id(x_correlation_id)
     try:
         return store.release_reservation(
@@ -278,13 +296,10 @@ def expire_reservations(
     actor: Actor = Depends(actor_from_headers),
     x_correlation_id: UUID = Header(..., alias="X-Correlation-Id"),
 ) -> dict[str, Any]:
-    if (
-        "stock:reservations:expire" not in actor.scopes
-        and not actor.roles.intersection(STOCK_OPERATOR_ROLES)
-    ):
+    if "stock:reservations:expire" not in actor.scopes:
         raise HTTPException(
             status_code=403,
-            detail="Escopo stock:reservations:expire ou perfil operador obrigatório.",
+            detail="Escopo stock:reservations:expire obrigatório para expiração global.",
         )
     bind_correlation_id(x_correlation_id)
     try:
