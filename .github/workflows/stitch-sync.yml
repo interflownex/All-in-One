@@ -89,7 +89,7 @@ jobs:
           python scripts/codex_stitch_director.py status --actor github-actions-validator
 
       - name: Executar testes de governanca Stitch
-        run: pytest -q tests/test_codex_stitch_director.py tests/test_stitch_orchestrator.py
+        run: python -m pytest -q tests/test_codex_stitch_director.py tests/test_stitch_orchestrator.py
 
   remote-fallback:
     if: github.event_name == 'workflow_dispatch' && inputs.execute_remote_fallback == true
