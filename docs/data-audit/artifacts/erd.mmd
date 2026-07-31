@@ -1819,6 +1819,37 @@ erDiagram
     UUID updated_by FK
     VARCHAR(160) idempotency_key
   }
+  marketplace_checkout_attempts {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    UUID store_id FK
+    UUID cart_id FK
+    UUID order_id FK
+    UUID escrow_id FK
+    VARCHAR(48) status
+    VARCHAR(32) payment_status
+    VARCHAR(32) payment_method
+    CHAR(3) currency
+    NUMERIC(18,_2) expected_total_brl
+    NUMERIC(18,_2) total_brl
+    VARCHAR(160) idempotency_key
+    CHAR(64) request_hash
+    VARCHAR(160) confirmation_idempotency_key
+    CHAR(64) confirmation_request_hash
+    JSONB snapshot
+    JSONB reservation_ids
+    UUID correlation_id
+    UUID causation_id
+    TIMESTAMPTZ expires_at
+    TIMESTAMPTZ confirmed_at
+    TIMESTAMPTZ cancelled_at
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
   marketplace_disputes {
     UUID id PK
     UUID user_id FK
@@ -2252,6 +2283,24 @@ erDiagram
     UUID updated_by FK
     VARCHAR(100) idempotency_key
   }
+  stock_inventory_items {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    UUID warehouse_id
+    UUID product_id FK
+    VARCHAR(120) sku
+    NUMERIC(18,_4) physical_quantity
+    NUMERIC(18,_4) reserved_quantity
+    NUMERIC(18,_4) available_quantity
+    BIGINT version
+    VARCHAR(40) status
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    UUID created_by FK
+    UUID updated_by FK
+  }
   stock_measurement_units {
     UUID id PK
     VARCHAR(32) code
@@ -2405,6 +2454,28 @@ erDiagram
     VARCHAR(120) idempotency_key
     TIMESTAMPTZ occurred_at
     UUID created_by FK
+  }
+  stock_stock_reservations {
+    UUID id PK
+    UUID user_id FK
+    UUID company_id FK
+    UUID order_id
+    UUID inventory_item_id FK
+    NUMERIC(18,_4) quantity
+    VARCHAR(40) status
+    VARCHAR(160) idempotency_key
+    CHAR(64) request_hash
+    UUID correlation_id
+    UUID causation_id
+    TIMESTAMPTZ expires_at
+    TIMESTAMPTZ committed_at
+    TIMESTAMPTZ released_at
+    VARCHAR(500) release_reason
+    JSONB metadata
+    TIMESTAMPTZ created_at
+    TIMESTAMPTZ updated_at
+    UUID created_by FK
+    UUID updated_by FK
   }
   stock_supplier_orders {
     UUID id PK
@@ -3197,3 +3268,21 @@ erDiagram
   forms_form_billing_events }o--|| forms_form_definitions : "form_definition_id"
   forms_form_billing_events }o--|| forms_form_versions : "form_version_id"
   forms_form_billing_events }o--|| identity_users : "actor_user_id"
+  stock_inventory_items }o--|| identity_users : "user_id"
+  stock_inventory_items }o--|| business_companies : "company_id"
+  stock_inventory_items }o--|| marketplace_products : "product_id"
+  stock_inventory_items }o--|| identity_users : "created_by"
+  stock_inventory_items }o--|| identity_users : "updated_by"
+  stock_stock_reservations }o--|| identity_users : "user_id"
+  stock_stock_reservations }o--|| business_companies : "company_id"
+  stock_stock_reservations }o--|| stock_inventory_items : "inventory_item_id"
+  stock_stock_reservations }o--|| identity_users : "created_by"
+  stock_stock_reservations }o--|| identity_users : "updated_by"
+  marketplace_checkout_attempts }o--|| identity_users : "user_id"
+  marketplace_checkout_attempts }o--|| business_companies : "company_id"
+  marketplace_checkout_attempts }o--|| marketplace_stores : "store_id"
+  marketplace_checkout_attempts }o--|| marketplace_carts : "cart_id"
+  marketplace_checkout_attempts }o--|| marketplace_orders : "order_id"
+  marketplace_checkout_attempts }o--|| finance_escrows : "escrow_id"
+  marketplace_checkout_attempts }o--|| identity_users : "created_by"
+  marketplace_checkout_attempts }o--|| identity_users : "updated_by"

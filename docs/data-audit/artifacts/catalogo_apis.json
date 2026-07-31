@@ -1,22 +1,22 @@
 {
   "version": 1,
   "counts": {
-    "migrations": 30,
+    "migrations": 32,
     "schemas": 32,
-    "tables": 164,
-    "fields": 2302,
+    "tables": 167,
+    "fields": 2367,
     "mongodb_collections": 4,
     "mongodb_fields": 29,
     "sqlite_tables": 4,
     "sqlite_fields": 53,
     "redis_key_patterns": 1,
     "object_storage_stores": 4,
-    "browser_storage_key_patterns": 12,
-    "relationships": 568,
-    "indexes": 123,
-    "endpoints": 112,
+    "browser_storage_key_patterns": 11,
+    "relationships": 586,
+    "indexes": 132,
+    "endpoints": 166,
     "endpoints_with_response_model": 8,
-    "api_model_fields": 150,
+    "api_model_fields": 266,
     "ui_candidates": 527,
     "ui_bindings_probable": 404,
     "ui_bindings_unproven": 123,
@@ -27,12 +27,12 @@
     "ui_actions_without_frontend_permission_gate": 556,
     "permission_operations": 767,
     "permission_horizontal_read_gaps": 0,
-    "permission_operations_with_test_candidates": 123,
-    "test_functions": 573,
-    "tests_with_assertions": 527,
-    "tests_with_http_calls": 212,
-    "test_functions_in_execution_reports": 502,
-    "test_functions_passed": 470,
+    "permission_operations_with_test_candidates": 125,
+    "test_functions": 692,
+    "tests_with_assertions": 642,
+    "tests_with_http_calls": 237,
+    "test_functions_in_execution_reports": 498,
+    "test_functions_passed": 466,
     "memo_requirements_traced": 69,
     "memo_requirements_without_test_candidates": 0,
     "memo_requirements_with_passed_candidates": 69,
@@ -41,7 +41,7 @@
     "logical_without_ui_surface": 1,
     "event_transitions": 187,
     "unique_events": 180,
-    "sensitive_candidates": 520,
+    "sensitive_candidates": 529,
     "dynamic_form_entities_proposed": 15,
     "measurement_entities_proposed": 6,
     "fiscal_entities_proposed": 5,
@@ -171,7 +171,7 @@
       "parameters": [
         {
           "name": "token_payload",
-          "annotation": "dict[str, Any]",
+          "annotation": "Annotated[dict[str, Any], Depends(validate_catalog_action_token)]",
           "model_fields": []
         }
       ],
@@ -202,7 +202,7 @@
         },
         {
           "name": "token_payload",
-          "annotation": "dict[str, Any]",
+          "annotation": "Annotated[dict[str, Any], Depends(validate_catalog_action_token)]",
           "model_fields": []
         }
       ],
@@ -231,7 +231,7 @@
         },
         {
           "name": "token_payload",
-          "annotation": "dict[str, Any]",
+          "annotation": "Annotated[dict[str, Any], Depends(validate_catalog_action_token)]",
           "model_fields": []
         }
       ],
@@ -246,6 +246,94 @@
       "parameters": [],
       "response_model": "",
       "evidence": "modules/api_hub/main.py:919"
+    },
+    {
+      "method": "POST",
+      "path": "/gateway/merchant/disputes/{dispute_id}/resolve",
+      "module": "api_hub",
+      "function": "gateway_resolve_dispute",
+      "parameters": [
+        {
+          "name": "dispute_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "GatewayDisputeResolutionRequest",
+          "model_fields": [
+            "resolution_notes",
+            "action"
+          ]
+        },
+        {
+          "name": "token_payload",
+          "annotation": "dict[str, Any]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:981"
+    },
+    {
+      "method": "GET",
+      "path": "/gateway/bi/commercial-insights/series",
+      "module": "api_hub",
+      "function": "gateway_bi_commercial_insights_series",
+      "parameters": [
+        {
+          "name": "token_payload",
+          "annotation": "dict[str, Any]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:1010"
+    },
+    {
+      "method": "GET",
+      "path": "/gateway/reviews",
+      "module": "api_hub",
+      "function": "gateway_public_reviews",
+      "parameters": [
+        {
+          "name": "store_id",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "company_id",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "limit",
+          "annotation": "int",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:1028"
+    },
+    {
+      "method": "GET",
+      "path": "/gateway/crm/customer-profiles/{user_id}/tickets",
+      "module": "api_hub",
+      "function": "gateway_crm_customer_ticket_profile",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "token_payload",
+          "annotation": "dict[str, Any]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:1053"
     },
     {
       "method": "POST",
@@ -273,7 +361,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:976"
+      "evidence": "modules/api_hub/main.py:1077"
     },
     {
       "method": "POST",
@@ -297,22 +385,51 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:1123"
+      "evidence": "modules/api_hub/main.py:1224"
     },
     {
-      "method": "GET",
-      "path": "/gateway/telemetry/outbox",
+      "method": "POST",
+      "path": "/gateway/payments/sandbox/refund",
       "module": "api_hub",
-      "function": "outbox_telemetry",
+      "function": "refund_catalog_payment",
       "parameters": [
         {
-          "name": "limit",
-          "annotation": "int",
+          "name": "body",
+          "annotation": "SandboxRefundRequest",
+          "model_fields": [
+            "order_id",
+            "idempotency_key",
+            "reason"
+          ]
+        },
+        {
+          "name": "token_payload",
+          "annotation": "dict[str, Any]",
           "model_fields": []
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:1222"
+      "evidence": "modules/api_hub/main.py:1336"
+    },
+    {
+      "method": "POST",
+      "path": "/gateway/oauth2/token",
+      "module": "api_hub",
+      "function": "issue_oauth2_token",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "OAuth2TokenRequest",
+          "model_fields": [
+            "grant_type",
+            "client_id",
+            "api_key",
+            "scope"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/api_hub/main.py:1395"
     },
     {
       "method": "GET",
@@ -321,7 +438,7 @@
       "function": "gateway_status",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:1259"
+      "evidence": "modules/api_hub/main.py:1456"
     },
     {
       "method": "GET",
@@ -336,7 +453,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:1270"
+      "evidence": "modules/api_hub/main.py:1467"
     },
     {
       "method": "POST",
@@ -345,7 +462,50 @@
       "function": "gateway_webhook_verify",
       "parameters": [],
       "response_model": "",
-      "evidence": "modules/api_hub/main.py:1279"
+      "evidence": "modules/api_hub/main.py:1476"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/bi/commercial-insights/series",
+      "module": "bi",
+      "function": "commercial_insights_series",
+      "parameters": [
+        {
+          "name": "actor",
+          "annotation": "Annotated[Actor, Depends(actor_from_headers)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/bi/commercial_routes.py:10"
+    },
+    {
+      "method": "POST",
+      "path": "/valley/disputes/{dispute_id}/resolve",
+      "module": "business",
+      "function": "resolve_dispute",
+      "parameters": [
+        {
+          "name": "dispute_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "DisputeResolutionRequest",
+          "model_fields": [
+            "resolution_notes",
+            "action"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Annotated[Actor, Depends(actor_from_headers)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/business/commercial_routes.py:16"
     },
     {
       "method": "POST",
@@ -494,6 +654,26 @@
       ],
       "response_model": "",
       "evidence": "modules/business/module_settings.py:470"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/crm/customer-profiles/{user_id}/tickets",
+      "module": "crm",
+      "function": "customer_ticket_profile",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Annotated[Actor, Depends(actor_from_headers)]",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/crm/commercial_routes.py:10"
     },
     {
       "method": "GET",
@@ -1255,6 +1435,238 @@
       "evidence": "modules/identity/main.py:528"
     },
     {
+      "method": "GET",
+      "path": "/valley/marketplace/catalog",
+      "module": "marketplace",
+      "function": "marketplace_catalog",
+      "parameters": [
+        {
+          "name": "q",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "category",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "store_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        },
+        {
+          "name": "min_price_brl",
+          "annotation": "Decimal | None",
+          "model_fields": []
+        },
+        {
+          "name": "max_price_brl",
+          "annotation": "Decimal | None",
+          "model_fields": []
+        },
+        {
+          "name": "latitude",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "longitude",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "radius_km",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "in_stock_only",
+          "annotation": "bool",
+          "model_fields": []
+        },
+        {
+          "name": "sort",
+          "annotation": "Literal['relevance', 'price_asc', 'price_desc', 'distance', 'rating']",
+          "model_fields": []
+        },
+        {
+          "name": "offset",
+          "annotation": "int",
+          "model_fields": []
+        },
+        {
+          "name": "limit",
+          "annotation": "int",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:346"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/feed",
+      "module": "marketplace",
+      "function": "valley_feed",
+      "parameters": [
+        {
+          "name": "latitude",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "longitude",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "limit",
+          "annotation": "int",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:414"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/promotions/today",
+      "module": "marketplace",
+      "function": "promotion_of_the_day",
+      "parameters": [
+        {
+          "name": "latitude",
+          "annotation": "float | None",
+          "model_fields": []
+        },
+        {
+          "name": "longitude",
+          "annotation": "float | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:455"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/favorites",
+      "module": "marketplace",
+      "function": "list_favorites",
+      "parameters": [
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:513"
+    },
+    {
+      "method": "PUT",
+      "path": "/valley/favorites/{product_id}",
+      "module": "marketplace",
+      "function": "add_favorite",
+      "parameters": [
+        {
+          "name": "product_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:537"
+    },
+    {
+      "method": "DELETE",
+      "path": "/valley/favorites/{product_id}",
+      "module": "marketplace",
+      "function": "remove_favorite",
+      "parameters": [
+        {
+          "name": "product_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:563"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/cart",
+      "module": "marketplace",
+      "function": "get_cart",
+      "parameters": [
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:587"
+    },
+    {
+      "method": "PUT",
+      "path": "/valley/cart/items/{product_id}",
+      "module": "marketplace",
+      "function": "put_cart_item",
+      "parameters": [
+        {
+          "name": "product_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "CartItemRequest",
+          "model_fields": [
+            "quantity"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:593"
+    },
+    {
+      "method": "DELETE",
+      "path": "/valley/cart/items/{product_id}",
+      "module": "marketplace",
+      "function": "delete_cart_item",
+      "parameters": [
+        {
+          "name": "product_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:627"
+    },
+    {
       "method": "POST",
       "path": "/valley/orders/{order_id}/support",
       "module": "marketplace",
@@ -1283,7 +1695,32 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/marketplace/main.py:25"
+      "evidence": "modules/marketplace/main.py:655"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/reviews",
+      "module": "marketplace",
+      "function": "public_reviews",
+      "parameters": [
+        {
+          "name": "store_id",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "company_id",
+          "annotation": "str | None",
+          "model_fields": []
+        },
+        {
+          "name": "limit",
+          "annotation": "int",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/marketplace/main.py:714"
     },
     {
       "method": "GET",
@@ -1298,7 +1735,7 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/marketplace/main.py:84"
+      "evidence": "modules/marketplace/main.py:747"
     },
     {
       "method": "GET",
@@ -1339,6 +1776,143 @@
       ],
       "response_model": "",
       "evidence": "modules/services/main.py:26"
+    },
+    {
+      "method": "POST",
+      "path": "/valley/checkout",
+      "module": "shared",
+      "function": "create_marketplace_checkout",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "MarketplaceCheckoutRequest",
+          "model_fields": [
+            "cart_id",
+            "currency",
+            "expected_total_brl",
+            "payment_method"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_idempotency_key",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "x_causation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/marketplace_checkout_routes.py:105"
+    },
+    {
+      "method": "GET",
+      "path": "/valley/checkout/{checkout_id}",
+      "module": "shared",
+      "function": "get_marketplace_checkout",
+      "parameters": [
+        {
+          "name": "checkout_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/marketplace_checkout_routes.py:149"
+    },
+    {
+      "method": "POST",
+      "path": "/valley/checkout/{checkout_id}/confirm",
+      "module": "shared",
+      "function": "confirm_marketplace_checkout",
+      "parameters": [
+        {
+          "name": "checkout_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "MarketplaceCheckoutConfirmationRequest",
+          "model_fields": [
+            "payment_method"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_idempotency_key",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "x_causation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/marketplace_checkout_routes.py:167"
+    },
+    {
+      "method": "POST",
+      "path": "/valley/checkout/{checkout_id}/cancel",
+      "module": "shared",
+      "function": "cancel_marketplace_checkout",
+      "parameters": [
+        {
+          "name": "checkout_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "x_causation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/shared/marketplace_checkout_routes.py:203"
     },
     {
       "method": "GET",
@@ -2690,7 +3264,724 @@
         }
       ],
       "response_model": "",
-      "evidence": "modules/stock/main.py:29"
+      "evidence": "modules/stock/main.py:120"
+    },
+    {
+      "method": "POST",
+      "path": "/inventory/items",
+      "module": "stock",
+      "function": "create_inventory_item",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "InventoryItemCreate",
+          "model_fields": [
+            "user_id",
+            "company_id",
+            "warehouse_id",
+            "product_id",
+            "sku",
+            "physical_quantity",
+            "metadata"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/stock/main.py:141"
+    },
+    {
+      "method": "PATCH",
+      "path": "/inventory/items/{inventory_item_id}",
+      "module": "stock",
+      "function": "adjust_inventory_item",
+      "parameters": [
+        {
+          "name": "inventory_item_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "InventoryAdjustment",
+          "model_fields": [
+            "expected_version",
+            "physical_quantity",
+            "reason"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_business_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/stock/main.py:165"
+    },
+    {
+      "method": "POST",
+      "path": "/reservations",
+      "module": "stock",
+      "function": "reserve_inventory",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "ReservationCreate",
+          "model_fields": [
+            "user_id",
+            "company_id",
+            "inventory_item_id",
+            "order_id",
+            "quantity",
+            "expires_in_seconds"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_idempotency_key",
+          "annotation": "str",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "x_causation_id",
+          "annotation": "UUID | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/stock/main.py:189"
+    },
+    {
+      "method": "POST",
+      "path": "/reservations/{reservation_id}/commit",
+      "module": "stock",
+      "function": "commit_reservation",
+      "parameters": [
+        {
+          "name": "reservation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/stock/main.py:231"
+    },
+    {
+      "method": "POST",
+      "path": "/reservations/{reservation_id}/release",
+      "module": "stock",
+      "function": "release_reservation",
+      "parameters": [
+        {
+          "name": "reservation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ReservationRelease",
+          "model_fields": [
+            "reason"
+          ]
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/stock/main.py:264"
+    },
+    {
+      "method": "POST",
+      "path": "/reservations/expire",
+      "module": "stock",
+      "function": "expire_reservations",
+      "parameters": [
+        {
+          "name": "limit",
+          "annotation": "int",
+          "model_fields": []
+        },
+        {
+          "name": "actor",
+          "annotation": "Actor",
+          "model_fields": []
+        },
+        {
+          "name": "x_correlation_id",
+          "annotation": "UUID",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/stock/main.py:293"
+    },
+    {
+      "method": "GET",
+      "path": "/innovation/round-004",
+      "module": "valley_consumer",
+      "function": "list_ideas",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:207"
+    },
+    {
+      "method": "GET",
+      "path": "/{idea_id}",
+      "module": "valley_consumer",
+      "function": "get_idea",
+      "parameters": [
+        {
+          "name": "idea_id",
+          "annotation": "int",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:219"
+    },
+    {
+      "method": "POST",
+      "path": "/{idea_id}/records",
+      "module": "valley_consumer",
+      "function": "create_capability_record",
+      "parameters": [
+        {
+          "name": "idea_id",
+          "annotation": "int",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "CapabilityRecordInput",
+          "model_fields": [
+            "owner_id",
+            "payload"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:227"
+    },
+    {
+      "method": "POST",
+      "path": "/marketplace/solution-options",
+      "module": "valley_consumer",
+      "function": "marketplace_solution_options",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "MarketplaceSolutionRequest",
+          "model_fields": [
+            "user_id",
+            "need",
+            "usage_days",
+            "budget_brl",
+            "accepted_modes"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:242"
+    },
+    {
+      "method": "POST",
+      "path": "/marketplace/productive-surpluses",
+      "module": "valley_consumer",
+      "function": "create_productive_surplus",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "ProductiveSurplusCreate",
+          "model_fields": [
+            "seller_id",
+            "title",
+            "category",
+            "quantity",
+            "unit",
+            "condition",
+            "evidence_urls",
+            "regulated_or_hazardous"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:264"
+    },
+    {
+      "method": "POST",
+      "path": "/services/outcome-contracts",
+      "module": "valley_consumer",
+      "function": "create_service_outcome_contract",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "ServiceOutcomeContractCreate",
+          "model_fields": [
+            "client_id",
+            "professional_id",
+            "service_description",
+            "expected_result",
+            "amount_brl",
+            "max_validation_hours"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:277"
+    },
+    {
+      "method": "POST",
+      "path": "/services/outcome-contracts/{contract_id}/mark-delivered",
+      "module": "valley_consumer",
+      "function": "mark_service_delivered",
+      "parameters": [
+        {
+          "name": "contract_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ServiceValidationInput",
+          "model_fields": [
+            "actor",
+            "accepted",
+            "evidence",
+            "reason",
+            "evaluated_at"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:297"
+    },
+    {
+      "method": "POST",
+      "path": "/services/outcome-contracts/{contract_id}/validate",
+      "module": "valley_consumer",
+      "function": "validate_service_outcome",
+      "parameters": [
+        {
+          "name": "contract_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ServiceValidationInput",
+          "model_fields": [
+            "actor",
+            "accepted",
+            "evidence",
+            "reason",
+            "evaluated_at"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:314"
+    },
+    {
+      "method": "POST",
+      "path": "/mobility/providers",
+      "module": "valley_consumer",
+      "function": "register_mobility_provider",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "MobilityProviderCreate",
+          "model_fields": [
+            "provider_name",
+            "state_code",
+            "cities",
+            "transport_modes",
+            "realtime_api_available",
+            "ticketing_api_available",
+            "payment_methods",
+            "production_verified",
+            "evidence_urls"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:351"
+    },
+    {
+      "method": "GET",
+      "path": "/mobility/coverage",
+      "module": "valley_consumer",
+      "function": "mobility_coverage",
+      "parameters": [
+        {
+          "name": "state_code",
+          "annotation": "str | None",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:368"
+    },
+    {
+      "method": "POST",
+      "path": "/jobs/pilot-companies",
+      "module": "valley_consumer",
+      "function": "register_jobs_pilot_company",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "JobsPilotCompanyCreate",
+          "model_fields": [
+            "company_id",
+            "opted_in",
+            "vacancies",
+            "consent_text_version"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:381"
+    },
+    {
+      "method": "POST",
+      "path": "/shopping-lists",
+      "module": "valley_consumer",
+      "function": "create_shopping_list",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "ShoppingListCreate",
+          "model_fields": [
+            "user_id",
+            "items"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:391"
+    },
+    {
+      "method": "POST",
+      "path": "/shopping-lists/{user_id}/items",
+      "module": "valley_consumer",
+      "function": "add_shopping_item",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ShoppingItemCreate",
+          "model_fields": [
+            "name",
+            "quantity",
+            "estimated_price_brl",
+            "desired_by"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:405"
+    },
+    {
+      "method": "POST",
+      "path": "/shopping-lists/{user_id}/suggest",
+      "module": "valley_consumer",
+      "function": "suggest_shopping_list",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ShoppingSuggestionRequest",
+          "model_fields": [
+            "available_balance_brl",
+            "evaluated_at"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:415"
+    },
+    {
+      "method": "POST",
+      "path": "/shopping-lists/{user_id}/confirm-purchase",
+      "module": "valley_consumer",
+      "function": "confirm_shopping_purchase",
+      "parameters": [
+        {
+          "name": "user_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ShoppingPurchaseConfirmation",
+          "model_fields": [
+            "purchased_item_names",
+            "transaction_id"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:433"
+    },
+    {
+      "method": "POST",
+      "path": "/health/medication-plans",
+      "module": "valley_consumer",
+      "function": "create_medication_plan",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "MedicationPrescriptionCreate",
+          "model_fields": [
+            "patient_id",
+            "prescription_id",
+            "medication_name",
+            "interval_hours",
+            "duration_days",
+            "first_dose_at",
+            "prescribed_by",
+            "prescription_verified"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:448"
+    },
+    {
+      "method": "POST",
+      "path": "/health/medication-plans/{plan_id}/doses/{dose_id}/confirm",
+      "module": "valley_consumer",
+      "function": "confirm_medication_dose",
+      "parameters": [
+        {
+          "name": "plan_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "dose_id",
+          "annotation": "UUID",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "DoseConfirmation",
+          "model_fields": [
+            "taken",
+            "confirmed_at"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:475"
+    },
+    {
+      "method": "POST",
+      "path": "/ai/autonomy-budgets",
+      "module": "valley_consumer",
+      "function": "create_autonomy_budget",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "AutonomyBudgetCreate",
+          "model_fields": [
+            "user_id",
+            "module",
+            "action",
+            "level",
+            "max_amount_brl",
+            "valid_until"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:487"
+    },
+    {
+      "method": "POST",
+      "path": "/offline/events",
+      "module": "valley_consumer",
+      "function": "enqueue_offline_event",
+      "parameters": [
+        {
+          "name": "body",
+          "annotation": "OfflineEventCreate",
+          "model_fields": [
+            "device_id",
+            "module",
+            "event_type",
+            "idempotency_key",
+            "payload",
+            "expires_at",
+            "signature"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_004.py:496"
+    },
+    {
+      "method": "GET",
+      "path": "/innovation/round-005",
+      "module": "valley_consumer",
+      "function": "list_ideas",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_005.py:257"
+    },
+    {
+      "method": "GET",
+      "path": "/flags",
+      "module": "valley_consumer",
+      "function": "list_flags",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_005.py:269"
+    },
+    {
+      "method": "PUT",
+      "path": "/flags/{idea_id}",
+      "module": "valley_consumer",
+      "function": "update_flag",
+      "parameters": [
+        {
+          "name": "idea_id",
+          "annotation": "int",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "FlagUpdate",
+          "model_fields": [
+            "enabled",
+            "rollout_stage"
+          ]
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_005.py:274"
+    },
+    {
+      "method": "GET",
+      "path": "/{idea_id}",
+      "module": "valley_consumer",
+      "function": "get_idea",
+      "parameters": [
+        {
+          "name": "idea_id",
+          "annotation": "int",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_005.py:283"
+    },
+    {
+      "method": "POST",
+      "path": "/{idea_id}/execute",
+      "module": "valley_consumer",
+      "function": "execute_idea",
+      "parameters": [
+        {
+          "name": "idea_id",
+          "annotation": "int",
+          "model_fields": []
+        },
+        {
+          "name": "body",
+          "annotation": "ActionRequest",
+          "model_fields": [
+            "owner_id",
+            "action",
+            "payload"
+          ]
+        },
+        {
+          "name": "sandbox",
+          "annotation": "bool",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_005.py:288"
+    },
+    {
+      "method": "GET",
+      "path": "/{idea_id}/records",
+      "module": "valley_consumer",
+      "function": "list_records",
+      "parameters": [
+        {
+          "name": "idea_id",
+          "annotation": "int",
+          "model_fields": []
+        }
+      ],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/innovation_round_005.py:312"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "module": "valley_consumer",
+      "function": "health",
+      "parameters": [],
+      "response_model": "",
+      "evidence": "modules/valley_consumer/main.py:15"
     }
   ]
 }

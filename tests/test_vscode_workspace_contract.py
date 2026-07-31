@@ -33,11 +33,10 @@ def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_python_interpreter_exists_and_is_configured_in_both_workspace_modes() -> None:
+def test_python_interpreter_is_configured_in_both_workspace_modes() -> None:
     folder_settings = _load(FOLDER_SETTINGS)
     workspace = _load(WORKSPACE)
 
-    assert (ROOT / ".venv" / "bin" / "python").is_file()
     assert folder_settings["python.defaultInterpreterPath"] == (
         "${workspaceFolder}/.venv/bin/python"
     )

@@ -7,20 +7,14 @@ from scripts.validate_repository_compat import (
 )
 
 
-def test_known_v29_compatibility_conditions_are_explicitly_satisfied() -> None:
+def test_validator_does_not_suppress_compatibility_conditions() -> None:
     conditions = compatibility_exceptions()
 
-    assert conditions
-    assert all(conditions.values())
-    assert "Esperados 25 modulos; catalogo possui 24." in conditions
-    assert (
-        "Workflow de seguranca deve manter scan obrigatorio: pip-audit --local"
-        in conditions
-    )
+    assert conditions == {}
 
 
 def test_filter_keeps_unknown_errors_blocking() -> None:
-    known = "Esperados 25 modulos; catalogo possui 24."
+    known = "Falha anteriormente reconhecida."
     real_error = "Erro real que nao pode ser ocultado."
 
     remaining, suppressed = filter_validation_errors(
