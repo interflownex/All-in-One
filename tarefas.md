@@ -1,78 +1,77 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 3.6
-**Data e hora:** 31/07/2026 18:30, `America/Sao_Paulo`
+**Versão:** 3.7
+**Data e hora:** 31/07/2026 18:48, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`  
 **Branch:** `codex/corrigir-vscode-persistente-20260731`
-**Commit-base:** `8832ea85a17099bdc33cf666248e91c2ad0d7cd6`
+**Commit-base:** `9ec1afab1e9f7f209d6844d82f8f23de96f15f84`
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Público-alvo:** Equipe Técnica
 
-## 0. Próxima etapa reproduzível: confirmar o VS Code após a correção persistente
+## 0. Próxima etapa reproduzível: validar a sincronização das skills de dados
 
 ### Objetivo e contexto
 
-Confirmar numa janela `WSL: Ubuntu` aberta pelo arquivo
-`all-in-one.code-workspace` que o interpretador Python, o Pylance e o inspetor
-de alterações iniciam sem os quatro avisos relatados em 31/07/2026. A correção
-versionada cobre tanto a abertura da pasta quanto a abertura do workspace.
+Confirmar em CI que a reorganização do catálogo de skills de dados mantém os
+manifestos `.gemini/skills` e `.github/skills` coerentes, sem scripts ou
+documentos com permissões executáveis indevidas. A migração remove skills
+legadas de AlloyDB, Cloud SQL, Firestore e Spanner, separa BigQuery em skills
+especializadas e preserva o módulo Vision inativo.
 
 ### Escopo e fontes de verdade
 
-- `.vscode/settings.json`: contrato para abertura como pasta;
-- `all-in-one.code-workspace`: contrato canônico para abertura como workspace;
-- `.venv/bin/python` e `.python-version`: ambiente Python do repositório;
-- `tests/test_vscode_workspace_contract.py`: prevenção automatizada de regressão;
-- documentação oficial do VS Code sobre workspaces e configurações multi-root;
-- política Git e multiagente em `config/autonomy/`.
+- `.gemini/skills/.datacloud_skills_manifest`: catálogo principal atualizado;
+- `.github/skills/.datacloud_skills_manifest`: catálogo espelhado;
+- `.gemini/skills/bigquery-*`: skills especializadas e referências canônicas;
+- `.github/skills/bigquery-*`: cópias destinadas ao GitHub;
+- `scripts/validate_innovation_wave.py`: gate local da onda de inovação;
+- políticas Git, Google e multiagente em `config/autonomy/`.
 
 ### Pré-requisitos, sequência e prioridades
 
-1. preservar todas as mudanças alheias já existentes no checkout;
-2. abrir `all-in-one.code-workspace` diretamente em uma janela `WSL: Ubuntu`;
-3. executar `Developer: Reload Window` uma única vez para descartar o estado
-   antigo da janela;
-4. confirmar em `Python: Select Interpreter` que `.venv/bin/python` está ativo;
-5. executar `Python: Run Python File in Terminal` ou a tarefa `pytest`;
-6. observar por pelo menos dois ciclos de edição/salvamento que o inspetor de
-   arquivos permanece ativo;
-7. reiniciar o VS Code e reabrir o mesmo workspace para provar persistência;
-8. somente depois retomar a issue #95, que permanece a prioridade de produto.
+1. preservar o sub-repositório `testcontainers-cloud-java-example` e outras
+   mudanças alheias fora do commit;
+2. comparar os dois manifestos e confirmar os destinos de cada skill;
+3. verificar que arquivos Markdown e `OWNERS` usam modo `0644`;
+4. executar o validador de inovação pela `.venv`;
+5. executar o validador geral e classificar separadamente falhas de baseline;
+6. revisar o diff, exclusões e varredura de segredos;
+7. validar os workflows no mesmo head SHA da pull request;
+8. somente depois retomar a issue #95, prioridade de produto ainda aberta.
 
 ### Testes e critérios de aceite
 
-- `.venv/bin/python --version` retorna o Python esperado;
-- `pytest -q tests/test_vscode_workspace_contract.py` fica verde;
-- `pytest -q tests/test_gradle_vscode_contract.py` fica verde;
-- `python3 scripts/validate_repository.py` não acusa regressão desta atividade;
-- não aparece aviso de interpretador não resolvido;
-- não aparece alerta de excesso de fontes do Pylance;
-- o inspetor de alterações não é interrompido;
-- não aparece convite para abrir o `.code-workspace`, pois ele já é a entrada
-  canônica da sessão;
+- `.venv/bin/python scripts/validate_innovation_wave.py` retorna `status: ok`;
+- `git diff --cached --check` não encontra erros;
+- nenhum documento ou arquivo `OWNERS` novo fica executável;
+- `scripts/validate_innovation_wave.py` preserva modo `0755`;
+- a varredura do diff não encontra chaves privadas nem tokens conhecidos;
+- as exclusões correspondem somente às skills legadas substituídas;
+- `python3 scripts/validate_repository.py` tem suas falhas globais comparadas
+  com o baseline e não pode ser declarado verde enquanto elas persistirem;
 - CI e segurança ficam verdes no mesmo head SHA da pull request.
 
 ### Riscos, bloqueios e evidências esperadas
 
-- Estado antigo do VS Code pode exigir um único recarregamento após receber a
-  configuração; isso não é recorrência se sessões posteriores permanecerem
-  limpas.
-- O CLI standalone instalado em WSL não oferece `--remote`; não usá-lo para
-  fabricar uma validação de GUI. A prova final deve vir da janela real.
-- Mudanças massivas preexistentes em `.gemini/` e `.github/skills/` pertencem a
-  outra atividade e não podem entrar no commit desta correção.
-- Evidências: saída dos testes, SHA, URL da PR, checks do mesmo SHA e captura ou
-  registro da janela `WSL: Ubuntu` sem notificações.
+- O validador geral ainda acusa baseline de 24/25 módulos, branding e contratos
+  locais de Google/Stitch; essas falhas não podem ser ocultadas nem declaradas
+  resolvidas por esta sincronização.
+- O volume de exclusões exige revisão do diff e dos manifestos antes do merge.
+- O sub-repositório `testcontainers-cloud-java-example` permanece sujo e fora
+  do stage desta entrega.
+- Evidências: saídas dos validadores, resumo do diff, SHA, URL da PR e checks
+  obrigatórios executados no mesmo SHA.
 
 ### Procedimento de entrega e pendências restantes
 
-Publicar somente os arquivos desta atividade na branch indicada, abrir PR para
-`main`, registrar os testes e usar Squash and Merge apenas com gates verdes.
-Se a GUI não puder ser inspecionada pela sessão automatizada, registrar essa
-limitação sem declarar a validação visual concluída. Após a integração, manter
-a issue #95 e as demais pendências já listadas abaixo sem mudança de escopo.
+Publicar somente os catálogos, skills, referências e este registro na branch
+indicada; abrir ou atualizar a PR para `main`, registrar testes e usar Squash
+and Merge apenas com gates verdes. Se `validate_repository.py` continuar
+falhando pelo baseline conhecido, registrar cada falha e tratá-la em atividade
+própria, sem enfraquecer o gate. Após a integração, manter a issue #95 e as
+demais pendências abaixo sem mudança de escopo.
 
 ## 1. Estado consolidado
 
@@ -280,3 +279,4 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
 | 3.4 | 30/07/2026 | PR #94 e issue #78 concluídas; issue #95 aberta como próxima dependência financeira. |
 | 3.5 | 30/07/2026 | Trabalho local reconciliado com `origin/main`; código válido reaplicado e regressões arquivadas apenas localmente. |
 | 3.6 | 31/07/2026 | Contrato persistente do VS Code para interpretador, Pylance, observador de arquivos e abertura canônica do workspace. |
+| 3.7 | 31/07/2026 | Migração do catálogo de skills de dados reconciliada, permissões normalizadas e validação reproduzível registrada. |
