@@ -72,6 +72,7 @@
   "python.analysis.typeCheckingMode": "strict",
   "python.analysis.autoImportCompletions": true,
   "python.analysis.exclude": [
+    "**/.*",
     "**/node_modules/**",
     "**/__pycache__/**",
     "**/.git/**",
@@ -195,7 +196,20 @@
   "java.configuration.updateBuildConfiguration": "interactive",
   "java.gradle.buildServer.enabled": "off",
   "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/.venv/**": true,
+    "**/venv/**": true,
+    "**/node_modules/**": true,
+    "**/__pycache__/**": true,
+    "**/.pytest_cache/**": true,
+    "**/.mypy_cache/**": true,
+    "**/.ruff_cache/**": true,
     "**/.gradle/**": true,
-    "**/build/**": true
+    "**/build/**": true,
+    "**/dist/**": true,
+    "**/target/**": true,
+    "**/.gemini/skills/**": true,
+    "**/.github/skills/**": true
   }
 }

@@ -1,14 +1,78 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 3.5  
-**Data e hora:** 30/07/2026 12:46, `America/Sao_Paulo`  
+**Versão:** 3.6
+**Data e hora:** 31/07/2026 18:30, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`  
-**Branch:** `codex/integrar-evolucoes-locais-20260730`  
-**Commit-base:** `05564ff947709251b07a5f5f1852c92e14874393`  
+**Branch:** `codex/corrigir-vscode-persistente-20260731`
+**Commit-base:** `8832ea85a17099bdc33cf666248e91c2ad0d7cd6`
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Público-alvo:** Equipe Técnica
+
+## 0. Próxima etapa reproduzível: confirmar o VS Code após a correção persistente
+
+### Objetivo e contexto
+
+Confirmar numa janela `WSL: Ubuntu` aberta pelo arquivo
+`all-in-one.code-workspace` que o interpretador Python, o Pylance e o inspetor
+de alterações iniciam sem os quatro avisos relatados em 31/07/2026. A correção
+versionada cobre tanto a abertura da pasta quanto a abertura do workspace.
+
+### Escopo e fontes de verdade
+
+- `.vscode/settings.json`: contrato para abertura como pasta;
+- `all-in-one.code-workspace`: contrato canônico para abertura como workspace;
+- `.venv/bin/python` e `.python-version`: ambiente Python do repositório;
+- `tests/test_vscode_workspace_contract.py`: prevenção automatizada de regressão;
+- documentação oficial do VS Code sobre workspaces e configurações multi-root;
+- política Git e multiagente em `config/autonomy/`.
+
+### Pré-requisitos, sequência e prioridades
+
+1. preservar todas as mudanças alheias já existentes no checkout;
+2. abrir `all-in-one.code-workspace` diretamente em uma janela `WSL: Ubuntu`;
+3. executar `Developer: Reload Window` uma única vez para descartar o estado
+   antigo da janela;
+4. confirmar em `Python: Select Interpreter` que `.venv/bin/python` está ativo;
+5. executar `Python: Run Python File in Terminal` ou a tarefa `pytest`;
+6. observar por pelo menos dois ciclos de edição/salvamento que o inspetor de
+   arquivos permanece ativo;
+7. reiniciar o VS Code e reabrir o mesmo workspace para provar persistência;
+8. somente depois retomar a issue #95, que permanece a prioridade de produto.
+
+### Testes e critérios de aceite
+
+- `.venv/bin/python --version` retorna o Python esperado;
+- `pytest -q tests/test_vscode_workspace_contract.py` fica verde;
+- `pytest -q tests/test_gradle_vscode_contract.py` fica verde;
+- `python3 scripts/validate_repository.py` não acusa regressão desta atividade;
+- não aparece aviso de interpretador não resolvido;
+- não aparece alerta de excesso de fontes do Pylance;
+- o inspetor de alterações não é interrompido;
+- não aparece convite para abrir o `.code-workspace`, pois ele já é a entrada
+  canônica da sessão;
+- CI e segurança ficam verdes no mesmo head SHA da pull request.
+
+### Riscos, bloqueios e evidências esperadas
+
+- Estado antigo do VS Code pode exigir um único recarregamento após receber a
+  configuração; isso não é recorrência se sessões posteriores permanecerem
+  limpas.
+- O CLI standalone instalado em WSL não oferece `--remote`; não usá-lo para
+  fabricar uma validação de GUI. A prova final deve vir da janela real.
+- Mudanças massivas preexistentes em `.gemini/` e `.github/skills/` pertencem a
+  outra atividade e não podem entrar no commit desta correção.
+- Evidências: saída dos testes, SHA, URL da PR, checks do mesmo SHA e captura ou
+  registro da janela `WSL: Ubuntu` sem notificações.
+
+### Procedimento de entrega e pendências restantes
+
+Publicar somente os arquivos desta atividade na branch indicada, abrir PR para
+`main`, registrar os testes e usar Squash and Merge apenas com gates verdes.
+Se a GUI não puder ser inspecionada pela sessão automatizada, registrar essa
+limitação sem declarar a validação visual concluída. Após a integração, manter
+a issue #95 e as demais pendências já listadas abaixo sem mudança de escopo.
 
 ## 1. Estado consolidado
 
@@ -215,3 +279,4 @@ Delivery e Rider só poderão avançar após a issue #95 demonstrar pagamento pr
 | 3.3 | 30/07/2026 | PR #94 aberta para executar a issue #78. |
 | 3.4 | 30/07/2026 | PR #94 e issue #78 concluídas; issue #95 aberta como próxima dependência financeira. |
 | 3.5 | 30/07/2026 | Trabalho local reconciliado com `origin/main`; código válido reaplicado e regressões arquivadas apenas localmente. |
+| 3.6 | 31/07/2026 | Contrato persistente do VS Code para interpretador, Pylance, observador de arquivos e abertura canônica do workspace. |

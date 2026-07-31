@@ -1,10 +1,12 @@
 {
   "folders": [
     {
+      "name": "all-in-one",
       "path": "."
     }
   ],
   "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder:all-in-one}/.venv/bin/python",
     "powershell.powerShellAdditionalExePaths": [
       "/mnt/c/Users/ereta/.local/bin/pwsh"
     ],
@@ -48,6 +50,7 @@
     "vscode-kubernetes.log-viewer.wrap": true,
     "chat.mcp.autostart": true,
     "python.analysis.exclude": [
+      "**/.*",
       "**/node_modules/**",
       "**/__pycache__/**",
       "**/.git/**",
@@ -128,8 +131,21 @@
     "java.import.gradle.wrapper.enabled": true,
     "java.gradle.buildServer.enabled": "off",
     "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/.venv/**": true,
+      "**/venv/**": true,
+      "**/node_modules/**": true,
+      "**/__pycache__/**": true,
+      "**/.pytest_cache/**": true,
+      "**/.mypy_cache/**": true,
+      "**/.ruff_cache/**": true,
       "**/.gradle/**": true,
-      "**/build/**": true
+      "**/build/**": true,
+      "**/dist/**": true,
+      "**/target/**": true,
+      "**/.gemini/skills/**": true,
+      "**/.github/skills/**": true
     }
   }
 }
