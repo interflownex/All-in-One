@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import importlib.util
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "validate_data_audit_delivery.py"
+GENERATOR = ROOT / "scripts" / "generate_data_audit_inventory.py"
 
 
 def load_validator():
@@ -13,6 +15,18 @@ def load_validator():
     )
     assert spec and spec.loader
     module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_generator():
+    spec = importlib.util.spec_from_file_location(
+        "generate_data_audit_inventory", GENERATOR
+    )
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
@@ -110,7 +124,7 @@ def test_ephemeral_and_object_storage_catalogs_are_explicitly_static() -> None:
     expected = {
         "catalogo_redis.json": ("redis_key_patterns", 1),
         "catalogo_object_storage.json": ("object_storage_stores", 4),
-        "catalogo_browser_storage.json": ("browser_storage_key_patterns", 12),
+        "catalogo_browser_storage.json": ("browser_storage_key_patterns", 11),
     }
     for name, (counter, total) in expected.items():
         data = json.loads((artifacts / name).read_text(encoding="utf-8"))
@@ -120,6 +134,25 @@ def test_ephemeral_and_object_storage_catalogs_are_explicitly_static() -> None:
             item["evidence"] and item["runtime_verified"] is False
             for item in data["entries"]
         )
+
+
+def test_browser_storage_catalog_tracks_current_production_keys() -> None:
+    catalog = ROOT / "docs" / "data-audit" / "artifacts" / "catalogo_browser_storage.json"
+    data = __import__("json").loads(catalog.read_text(encoding="utf-8"))
+    keys = {item["key_pattern"] for item in data["entries"]}
+
+    assert "valley.production.device.v1" in keys
+    assert "valley.production.session.v1" not in keys
+    assert "valley.session.token" not in keys
+    assert "valley.session.user-id" not in keys
+
+
+def test_transition_discovery_does_not_require_fastapi_runtime() -> None:
+    generator = load_generator()
+    transitions = generator.discover_transitions([])
+
+    assert transitions
+    assert all(item["event"] and item["producer"] for item in transitions)
 
 
 def test_stitch_coordinate_requires_exactly_three_resumable_product_projects() -> None:

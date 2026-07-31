@@ -9,8 +9,9 @@ export type ApiItem = { id: string; status?: string; payload?: JsonRecord; creat
 export type Order = { id: string; kind?: string; title?: string; status?: string; amount_brl?: string | null; scheduled_at?: string | null; created_at?: string };
 export type ViewProps = { session: Session; setNotice: (message: string) => void };
 
-const SESSION_KEY = 'valley.production.session.v1';
 const DEVICE_KEY = 'valley.production.device.v1';
+const LEGACY_SESSION_KEYS = ['valley.production.session.v1', 'valley.session.token', 'valley.session.user-id'];
+let activeSession: Session | null = null;
 
 export function deviceFingerprint() {
   let value = window.localStorage.getItem(DEVICE_KEY);
@@ -18,12 +19,11 @@ export function deviceFingerprint() {
   return value;
 }
 export function loadSession(): Session | null {
-  const raw = window.localStorage.getItem(SESSION_KEY);
-  if (!raw) return null;
-  try { return JSON.parse(raw) as Session; } catch { window.localStorage.removeItem(SESSION_KEY); return null; }
+  return activeSession;
 }
 export function saveSession(session: Session | null) {
-  if (session) window.localStorage.setItem(SESSION_KEY, JSON.stringify(session)); else window.localStorage.removeItem(SESSION_KEY);
+  activeSession = session;
+  for (const key of LEGACY_SESSION_KEYS) window.localStorage.removeItem(key);
 }
 export async function request<T = JsonRecord>(path: string, method = 'GET', body?: unknown, token?: string) {
   const headers: Record<string, string> = { 'X-Device-Fingerprint': deviceFingerprint() };

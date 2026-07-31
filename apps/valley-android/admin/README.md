@@ -8,7 +8,7 @@ Aplicativo Android instalável do painel administrativo All in One. O APK usa um
 - interface-base: `apps/all-in-one-admin`;
 - registro do deploy: `apps/all-in-one-admin/appdeploy`;
 - manifesto Stitch/Figma: `apps/all-in-one-admin/design/figma-screen-manifest.json`;
-- logomarca oficial: `assets/brand/aio-admin-logo-official.png`;
+- logomarca oficial: `assets/brand/all-in-one-logo-official.png`;
 - ícones Android: `src/main/res/mipmap-*/ic_launcher.png`.
 
 A marca foi apenas redimensionada proporcionalmente. Nenhum traço, cor, texto, forma ou composição foi alterado.
