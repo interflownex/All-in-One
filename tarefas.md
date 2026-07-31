@@ -1,14 +1,63 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 4.2
-**Data e hora:** 30/07/2026 17:19, `America/Sao_Paulo`
+**Versão:** 4.3
+**Data e hora:** 31/07/2026 18:50, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
-**Branch:** `codex/orquestrar-pendencias-reais-20260730`
-**Commit-base:** `d3b3ef594b1e14347fca785a800980e2f7d39c01`
+**Branch:** `codex/corrigir-vscode-persistente-20260731`
+**Commit-base:** `52b4a18c9b9a45c1a985ce22d974f9f8487dadc4`
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Público-alvo:** Equipe Técnica
+
+## 0. Próxima etapa reproduzível: confirmar a persistência do VS Code
+
+### Objetivo, contexto e escopo
+
+Confirmar, após a integração da PR #106, que o workspace abre diretamente em
+`WSL: Ubuntu` sem avisos de interpretador, Pylance, observador de arquivos ou
+convite para trocar da pasta para `all-in-one.code-workspace`. O escopo abrange
+somente `.vscode/settings.json`, `all-in-one.code-workspace`, o teste contratual
+e esta documentação; mudanças de skills pertencem a outra atividade.
+
+### Fontes de verdade e pré-requisitos
+
+- configurações versionadas de pasta e workspace;
+- `.venv/bin/python`, `.python-version` e Python do WSL;
+- `tests/test_vscode_workspace_contract.py` e
+  `tests/test_gradle_vscode_contract.py`;
+- documentação oficial do VS Code para workspaces multi-root;
+- políticas em `config/autonomy/` e checks do GitHub no mesmo head SHA.
+
+### Sequência, prioridades e testes
+
+1. abrir `all-in-one.code-workspace` a partir do WSL;
+2. confirmar o título `all-in-one (Workspace) [WSL: Ubuntu]`;
+3. executar os dois testes contratuais e a suíte não E2E do CI;
+4. verificar logs recentes sem erros equivalentes aos quatro avisos;
+5. reiniciar o VS Code e repetir a abertura para provar persistência;
+6. integrar por Squash and Merge somente com diff conhecido e gates verdes;
+7. retomar a issue #95 após concluir esta correção operacional.
+
+### Critérios de aceite, riscos e bloqueios
+
+- interpretador configurado nos modos pasta e workspace e executável localmente;
+- exclusões do Pylance e do file watcher presentes nos dois modos;
+- nenhum dos quatro avisos reaparece em duas sessões consecutivas;
+- suíte do CI aprovada sem exigir que a `.venv` local exista no runner;
+- nenhuma mudança paralela de skills entra na PR #106;
+- proxy WSL indisponível deve ser contornado somente para GitHub, sem remover
+  configuração global pertencente à infraestrutura;
+- bloqueios externos devem permanecer registrados, nunca convertidos em gate
+  ignorado ou sucesso forçado.
+
+### Evidências esperadas, pendências e entrega
+
+Registrar versão do Python, testes, título da janela WSL, head SHA, URL da PR e
+checks verdes no mesmo SHA. Publicar apenas a branch de trabalho, confirmar
+ausência de conflitos e integrar com Squash and Merge. A pendência restante de
+produto continua sendo a issue #95; a validação visual após reinício é a última
+prova operacional desta atividade.
 
 ## 1. Estado consolidado
 
@@ -350,3 +399,4 @@ mesmo SHA.
 | 4.0 | 30/07/2026 | Dependabot zerado e referências de marca restauradas para os caminhos canônicos autorizados. |
 | 4.1 | 30/07/2026 | Gate de marca corrigido para instalar o executor pytest sem enfraquecer validações. |
 | 4.2 | 30/07/2026 | Governança de merge corrigida, branches concluídas limpas e pendências relacionais consolidadas na varredura v4.1. |
+| 4.3 | 31/07/2026 | VS Code WSL estabilizado com interpretador determinístico, exclusões persistentes e contrato de regressão para CI. |
