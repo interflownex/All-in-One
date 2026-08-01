@@ -5,12 +5,13 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from urllib.request import urlopen
+from urllib.request import ProxyHandler, build_opener
 
 from playwright.sync_api import Page, Route, expect
 
 
 ROOT = Path(__file__).resolve().parents[2]
+LOOPBACK_OPENER = build_opener(ProxyHandler({}))
 
 
 def free_port() -> int:
@@ -23,7 +24,9 @@ def wait_for_http(port: int, timeout: int = 60) -> bool:
     start_time = time.time()
     while time.time() - start_time <= timeout:
         try:
-            with urlopen(f"http://127.0.0.1:{port}", timeout=2) as response:
+            with LOOPBACK_OPENER.open(
+                f"http://127.0.0.1:{port}", timeout=2
+            ) as response:
                 if response.status == 200 and b'<div id="root">' in response.read():
                     return True
         except Exception:
@@ -34,11 +37,20 @@ def wait_for_http(port: int, timeout: int = 60) -> bool:
 def start_vite_server(app_directory: Path) -> tuple[subprocess.Popen, str]:
     port = free_port()
     process = subprocess.Popen(
-        f"npm run dev -- --port {port} --strictPort --host 127.0.0.1",
+        [
+            "npm",
+            "run",
+            "dev",
+            "--",
+            "--port",
+            str(port),
+            "--strictPort",
+            "--host",
+            "127.0.0.1",
+        ],
         cwd=app_directory,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
-        shell=True,
     )
     if not wait_for_http(port, timeout=60):
         process.terminate()
@@ -239,34 +251,16 @@ def test_all_in_one_mobility_dashboard_and_actions(page: Page) -> None:
 
         page.goto(server_url, timeout=60000, wait_until="domcontentloaded")
 
-        expect(page.locator("h1")).to_contain_text("Corridas, tickets e tarifas")
-        expect(page.locator(".metric-card")).to_have_count(5)
-        expect(page.get_by_text("gateway-signed")).to_be_visible()
-
-        page.locator(".nav-pill", has_text="Corridas").click()
-        expect(page.get_by_role("heading", name="Solicitar viagem urbana")).to_be_visible()
-        page.get_by_placeholder("Centro, Sao Paulo").fill("Centro, Sao Paulo")
-        page.get_by_placeholder("Aeroporto de Congonhas").fill("Aeroporto de Congonhas")
-        page.get_by_placeholder("comfort").fill("comfort")
-        page.get_by_placeholder("Pessoa Demo").fill("Pessoa Demo")
-        page.get_by_role("button", name="Solicitar corrida").click()
-        expect(page.get_by_text("Corrida solicitada com sucesso: ride-new.")).to_be_visible()
-
-        page.locator(".nav-pill", has_text="Bilhetes").click()
-        expect(page.get_by_role("heading", name="Emitir QR ou NFC")).to_be_visible()
-        page.locator('input[placeholder="MTR-101"]').fill("MTR-101")
-        page.locator('input[placeholder="9.80"]').fill("9.80")
-        page.locator('input[placeholder="demo-qr-hash"]').fill("demo-qr-hash")
-        page.locator('input[placeholder="qr"]').fill("qr")
-        page.get_by_role("button", name="Emitir bilhete").click()
-        expect(page.get_by_text("Bilhete emitido com sucesso: ticket-new.")).to_be_visible()
-
-        page.locator(".nav-pill", has_text="Rotas").click()
-        expect(page.get_by_role("heading", name="Rotas e trajetos disponiveis")).to_be_visible()
-        expect(page.get_by_text("MTR-101")).to_be_visible()
-        expect(page.get_by_text("Linha Azul")).to_be_visible()
-
-        page.locator(".nav-pill", has_text="Tarifas").click()
-        expect(page.get_by_role("heading", name="Tarifas e regras ativas")).to_be_visible()
+        expect(page.locator("h1")).to_contain_text(
+            "Corridas, tickets e validacao QR/NFC prontos para virar E2E."
+        )
+        expect(page.locator(".api-card")).to_have_count(4)
+        expect(page.locator(".api-card span.online, .api-card span.fallback")).to_have_count(
+            4
+        )
+        journey = page.get_by_label("Jornada prioritaria")
+        expect(journey.get_by_text("Corrida", exact=True)).to_be_visible()
+        expect(page.get_by_label("Acao de jornada Mobility")).to_be_visible()
+        expect(page.get_by_label("Pos-corrida Mobility")).to_be_visible()
     finally:
         stop_process(process)

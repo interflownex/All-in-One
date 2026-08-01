@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 import Navigation from "./components/Navigation";
 import "./index.css";
 const IdentityIdentityOverview = lazy(() => import("./pages/identity/IdentityOverview"));

@@ -33,11 +33,17 @@ def test_npm_lockfiles_respect_security_floors() -> None:
                 assert version_tuple(version) >= minimum, f"{lock_path}: {package}={version}"
 
 
-def test_react_router_spas_use_patched_v7_release() -> None:
-    for app in ("all-in-one", "all-in-one-user", "all-in-one-business"):
+def test_react_router_spas_use_patched_v8_release() -> None:
+    for app in ("all-in-one", "all-in-one-business"):
         lock_path = ROOT / "apps" / app / "package-lock.json"
-        assert package_version(lock_path, "react-router") == "7.18.2"
-        assert package_version(lock_path, "react-router-dom") == "7.18.2"
+        assert package_version(lock_path, "react-router") == "8.3.0"
+        assert package_version(lock_path, "react-router-dom") is None
+
+
+def test_user_shell_does_not_ship_unused_react_router() -> None:
+    lock_path = ROOT / "apps" / "all-in-one-user" / "package-lock.json"
+    assert package_version(lock_path, "react-router") is None
+    assert package_version(lock_path, "react-router-dom") is None
 
 
 def test_admin_vite_uses_patched_release() -> None:

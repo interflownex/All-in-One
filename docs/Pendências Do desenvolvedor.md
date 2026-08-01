@@ -1,38 +1,42 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 3.3
-**Data e hora da atualização:** 30/07/2026 17:19:59
+**Versão:** 3.4
+**Data e hora da atualização:** 30/07/2026 18:54:50
 **Fuso horário:** `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
-**Branch de execução:** `codex/orquestrar-pendencias-reais-20260730`
+**Branch de execução:** `codex/corrigir-pendencias-relacionais-v42-20260730`
 **Pull Request central desta atividade:** pendente de abertura
 **Issue operacional:** `#51`
 **Issue de orquestração funcional:** `#51`
-**Versão anterior consolidada:** 3.2
+**Versão anterior consolidada:** 3.3
 **Classificação:** `Pendências > Técnico > Equipe técnica`
 **Públicos impactados:** Pessoa Física, Pessoa Jurídica, equipe técnica, gestão e investidores
 
 ## 1. Situação executiva
 
-> Estado autoritativo da versão 3.3: as seções históricas posteriores são
+> Estado autoritativo da versão 3.4: as seções históricas posteriores são
 > preservadas como evidência cronológica, mas não substituem esta consolidação.
 
-- `main` local e `origin/main` estavam idênticas em
-  `d3b3ef594b1e14347fca785a800980e2f7d39c01`;
+- `main` local e `origin/main` foram conferidas no commit
+  `52b4a18c9b9a45c1a985ce22d974f9f8487dadc4`;
 - não havia PR aberta, merge em andamento ou alerta Dependabot aberto;
-- CI, Security, Compose, marca e Git Sync estavam verdes no SHA atual;
+- os workflows internos mais recentes da `main` estavam verdes;
 - o único workflow vermelho era o deploy GKE, autenticado por WIF e bloqueado
   externamente porque o billing do projeto `all-in-one-498012` está inativo;
-- o repositório GitHub foi corrigido para permitir somente Squash and Merge,
-  desativar Merge Commit, Rebase Merge e auto-merge, e apagar branches
-  integradas automaticamente;
-- 84 branches remotas concluídas foram removidas após comprovação por PR
-  integrada ou ancestralidade; sete branches `backup/*` e 22 branches
-  divergentes sem PR foram preservadas para auditoria de commits únicos;
-- a refspec local obsoleta de `origin/worktree-sync` foi removida; o fetch
-  autoritativo voltou a operar exclusivamente contra `origin/main`;
+- a branch `backup/migracao-privada-antes-2026-07-25`, integralmente contida na
+  `main`, foi preservada pela tag anotada
+  `archive/backup-migracao-privada-2026-07-25` e removida das heads remotas;
+- as outras 28 branches divergentes contêm commits únicos e foram preservadas;
+- o inventário v4.2 corrige o SHA da branch
+  `backup/apk-valley-rodada-004-legacy-2026-07-28`;
+- o E2E deixou de herdar proxy para loopback, passou a diagnosticar a saída do
+  Vite e o API Hub passou a ignorar proxies externos em tráfego interno;
+- ações do Business foram vinculadas ao recurso e ao estado real: WMS ativo é
+  concluído, oportunidade CRM aberta recebe proposta e ações deixam de aparecer
+  quando não existe transição válida;
+- `brace-expansion` foi fixado em `5.0.8` nos 11 conjuntos npm vulneráveis;
 - permanecem oito issues abertas: `#24`, `#39`, `#47`, `#51`, `#55`, `#69`,
-  `#89` e `#95`, classificadas no relatório v4.1.
+  `#89` e `#95`, classificadas no relatório v4.2.
 
 A Fase 0 de estabilização foi implementada. No head funcional `73f04292e44c9ee6a887e76148300bba72734f50`, todos os gates obrigatórios ficaram verdes no mesmo commit:
 

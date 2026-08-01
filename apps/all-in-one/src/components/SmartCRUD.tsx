@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import fieldBindings from "../config/entityFieldBindings.generated.json";
 import { demoRecordsFor } from "../lib/demoData";
 import ModuleDashboard from "./ModuleDashboard";

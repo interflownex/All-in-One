@@ -1,10 +1,10 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 4.3
-**Data e hora:** 31/07/2026 18:50, `America/Sao_Paulo`
+**Versão:** 4.4
+**Data e hora:** 01/08/2026 02:55, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
-**Branch:** `codex/corrigir-vscode-persistente-20260731`
-**Commit-base:** `52b4a18c9b9a45c1a985ce22d974f9f8487dadc4`
+**Branch:** `codex/corrigir-pendencias-relacionais-v42-20260730`
+**Commit-base:** `c00ea701220a198b7b2e0399e37eb3def165a7d3`
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
@@ -59,8 +59,39 @@ ausência de conflitos e integrar com Squash and Merge. A pendência restante de
 produto continua sendo a issue #95; a validação visual após reinício é a última
 prova operacional desta atividade.
 
+### Reconciliação da PR #105 e bloqueios externos
+
+- o único conflito com `main` estava neste documento e foi resolvido preservando
+  os históricos relacional e do VS Code;
+- `react-router-dom` foi substituído por `react-router` `8.3.0` nos shells que
+  usam roteamento; o pacote não utilizado foi removido do shell de usuário;
+- os três `npm audit --audit-level=high` ficaram sem vulnerabilidades e os cinco
+  builds afetados foram aprovados;
+- o contrato `tests/test_dependency_security_floors.py` foi atualizado para
+  exigir `react-router` `8.3.0`, ausência de `react-router-dom` e remoção do
+  roteador não utilizado no shell de usuário;
+- a suíte não E2E foi aprovada com `987 passed` e `85 skipped`;
+- os E2E Business, Health e Mobility foram aprovados após instalar as
+  dependências reproduzíveis dos lockfiles;
+- o deploy GKE permanece externamente bloqueado: a autenticação OIDC conclui,
+  mas a API do Google retorna `403` porque o faturamento do projeto
+  `all-in-one-498012` está desativado;
+- não alterar o workflow para ocultar a falha; após habilitação legítima do
+  billing, repetir o run `30668393175` e exigir o deploy verde no mesmo SHA.
+
 ## 1. Estado consolidado
 
+- varredura v4.2 encontrou zero PR aberta, zero merge em curso e zero alerta
+  Dependabot aberto;
+- a única branch sem commit exclusivo foi arquivada por tag e removida; outras
+  28 branches com commits únicos foram preservadas;
+- E2E local não herda mais proxy externo para loopback e falhas do Vite agora
+  exibem diagnóstico;
+- o API Hub ignora proxies externos no tráfego interno;
+- ações Business agora respeitam recurso, estado inicial e transição do domínio;
+- 11 conjuntos npm fixam `brace-expansion` em `5.0.8`;
+- a entrega só pode ser concluída após PR, gates internos verdes, Squash and
+  Merge e sincronização da `main`;
 - PR #90 integrada no commit `fb47ea5f2a064fd39538cc7f89b51156dfd3f1ce`;
 - PR #91 integrada no commit `c566d5dc9f45192b05f4bb8871dbee7ca0827a93`;
 - PR #92 integrada no commit `692ee05b1ca8e234d6875a1dfb153212a016ddb6`;
@@ -399,4 +430,6 @@ mesmo SHA.
 | 4.0 | 30/07/2026 | Dependabot zerado e referências de marca restauradas para os caminhos canônicos autorizados. |
 | 4.1 | 30/07/2026 | Gate de marca corrigido para instalar o executor pytest sem enfraquecer validações. |
 | 4.2 | 30/07/2026 | Governança de merge corrigida, branches concluídas limpas e pendências relacionais consolidadas na varredura v4.1. |
+| 4.3 | 30/07/2026 | Varredura v4.2, dependências npm, tráfego interno sem proxy e transições Business coerentes com o domínio. |
 | 4.3 | 31/07/2026 | VS Code WSL estabilizado com interpretador determinístico, exclusões persistentes e contrato de regressão para CI. |
+| 4.4 | 01/08/2026 | PR #105 reconciliada com a main; conflito documental resolvido, React Router atualizado e bloqueio externo de billing GKE confirmado. |
