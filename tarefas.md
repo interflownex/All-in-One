@@ -1,94 +1,50 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 5.0  
-**Data e hora:** 01/08/2026 03:52, `America/Sao_Paulo`  
+**Versão:** 5.1  
+**Data e hora:** 01/08/2026 04:10, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Branch desta correção:** `codex/corrigir-inconsistencias-mandatorias-20260801`  
-**Commit-base da `main`:** `63ceb867c6342a3706e82a650e6072522facfbd7`  
+**Marco integrado:** PR `#108`, commit `1d05e56ca3bc1a66eb1e280743db24308d6da1b1`  
+**Branch desta atualização:** `codex/finalizar-status-pos-merge-20260801`  
 **Issue-mãe:** `#51`  
-**Dependência funcional prioritária:** `#95`  
-**Bloqueio externo de infraestrutura:** `#107`  
+**Prioridade funcional:** `#95`  
+**Bloqueio externo:** `#107`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Público-alvo:** Equipe Técnica
 
-## 1. Fonte de verdade e escopo
+## 1. Estado autoritativo
 
+- A PR #108 foi integrada por Squash and Merge após Continuous Integration, Security, Docker Compose Health Gate e A1 Admin Template ficarem verdes no mesmo head SHA.
 - O único repositório oficial é `interflownex/All-in-One`.
-- Valley é produto e conjunto de aplicativos internos deste monorepo.
+- Valley é produto e conjunto de aplicativos internos do monorepo oficial.
 - A política mandatória está em `config/autonomy/repository_scope_policy.json`.
-- O gate `scripts/validate_repository_scope.py` impede regressão de escopo.
+- O gate `scripts/validate_repository_scope.py` e seus testes impedem regressão de escopo.
 - Vision permanece inativo e fora do catálogo vigente.
-- Nenhuma alteração pode ser enviada diretamente para `main`.
-- Integração somente por **Squash and Merge**, com gates verdes no mesmo head SHA.
+- Merge Commit e Rebase Merge permanecem desativados; Squash and Merge é o único método habilitado.
+- As issues #51, #55 e #95 foram reconciliadas com o estado real integrado.
+- Nenhuma migration, lockfile, feature flag, ativo de marca ou código funcional foi alterado pela PR #108.
 
-## 2. Estado confirmado
+## 2. Próxima prioridade executável: issue #95
 
-- `main`: `63ceb867c6342a3706e82a650e6072522facfbd7`;
-- zero Pull Request aberta antes desta atividade;
-- nove issues abertas: `#24`, `#39`, `#47`, `#51`, `#55`, `#69`, `#89`, `#95` e `#107`;
-- Merge Commit desativado;
-- Rebase Merge desativado;
-- Squash and Merge habilitado;
-- auto-merge desativado;
-- 28 branches remotas divergentes preservadas porque contêm commits exclusivos;
-- nenhuma branch remota antiga pode ser mesclada diretamente na `main`;
-- PR #106 integrada: persistência do VS Code/WSL;
-- PR #105 integrada: coerência relacional, E2E e segurança npm;
-- Stock transacional integrado;
-- checkout idempotente integrado;
-- Wallet interna, escrow hold, ledger e compensação técnica integrados;
-- `MARKETPLACE_CHECKOUT_V1_ENABLED=false` permanece obrigatório;
-- nenhum valor foi liquidado ao lojista;
-- Delivery produtivo e atribuição de Rider permanecem bloqueados pela issue #95.
+Implementar a camada financeira produtiva do checkout em branch exclusiva, mantendo `MARKETPLACE_CHECKOUT_V1_ENABLED=false`.
 
-## 3. Inconsistências corrigidas nesta atividade
+Escopo obrigatório:
 
-1. removida a referência autoritativa a branch encerrada;
-2. removida a afirmação obsoleta de que a PR #50 permanecia em rascunho sem merge;
-3. atualizado o total de issues abertas de oito para nove;
-4. atualizada a `main` e o commit-base atuais;
-5. consolidado o repositório oficial único em política versionada;
-6. criado gate automatizado contra mistura de fontes de repositório;
-7. atualizada a issue #51 para refletir Marketplace, Stock e checkout já integrados;
-8. atualizada a issue #55 para referenciar a entrega integrada correta;
-9. registrada separação entre bloqueios corrigíveis por código e bloqueios externos.
+1. interface de PSP independente de fornecedor;
+2. sandbox separado de produção;
+3. webhooks com assinatura, timestamp, proteção contra replay e idempotência;
+4. autorização, captura, cancelamento, estorno e chargeback;
+5. ledger de liquidação e liberação condicionada de escrow;
+6. reconciliação PSP × pedido × escrow × ledger;
+7. bloqueio automático diante de divergência;
+8. credenciais somente em Secret Manager;
+9. dados brutos de cartão fora do sistema;
+10. testes unitários, integração, contrato, banco limpo e sandbox.
 
-## 4. Próxima prioridade executável: issue #95
+Delivery produtivo e atribuição de Rider permanecem bloqueados até pagamento comprovado e reconciliado.
 
-### Objetivo
+## 3. Bloqueio externo: issue #107
 
-Homologar a camada financeira produtiva do checkout sem acoplar o domínio a um único provedor e sem ativar produção prematuramente.
-
-### Escopo obrigatório
-
-1. definir interface de PSP independente de fornecedor;
-2. implementar adaptador de sandbox isolado de produção;
-3. validar assinatura, timestamp e replay de webhooks;
-4. garantir idempotência de autorização, captura, cancelamento, estorno e chargeback;
-5. preservar ledger e escrow como fontes internas de verdade;
-6. implementar reconciliação entre PSP, pedido, ledger e escrow;
-7. bloquear liquidação automática diante de divergência;
-8. armazenar credenciais somente em Secret Manager;
-9. manter dados brutos de cartão fora do sistema;
-10. manter a feature flag desligada até homologação formal.
-
-### Testes mínimos
-
-- autorização repetida não duplica cobrança;
-- webhook válido, inválido, expirado e repetido;
-- captura repetida não duplica ledger;
-- cancelamento antes da captura;
-- estorno total e parcial;
-- chargeback com compensação;
-- reconciliação sem divergência;
-- divergência bloqueia liquidação;
-- falha de PSP mantém pedido e Stock consistentes;
-- Delivery não inicia sem pagamento comprovado;
-- nenhum segredo aparece em diff, logs ou artefatos.
-
-## 5. Bloqueio externo: issue #107
-
-O workflow de deploy GKE autentica no Google Cloud, mas recebe HTTP 403 porque o faturamento do projeto `all-in-one-498012` está desativado.
+O deploy GKE autentica no Google Cloud, mas recebe HTTP 403 porque o faturamento do projeto `all-in-one-498012` está desativado.
 
 Regras:
 
@@ -96,13 +52,13 @@ Regras:
 - não usar `continue-on-error`;
 - não simular sucesso;
 - não contornar billing ou IAM;
-- após habilitação legítima do faturamento, repetir o deploy no SHA atual e exigir rollout comprovado.
+- após habilitação legítima do faturamento, repetir o deploy e exigir rollout verde no mesmo SHA.
 
-## 6. Auditoria obrigatória da máquina local
+## 4. Auditoria obrigatória da máquina local
 
-O ambiente desta atividade não possui acesso ao diretório WSL `/home/eretazan/all-in-one`; portanto, o índice local e eventual commit preparado não foram alterados nem presumidos.
+O diretório WSL `/home/eretazan/all-in-one` não esteve montado nesta execução. Logo, staged, unstaged, untracked, exclusões e commits locais não foram presumidos nem alterados.
 
-Antes de qualquer sincronização local, executar somente inspeção não destrutiva:
+Executar no host WSL, antes de pull, sincronização, commit ou descarte:
 
 ```bash
 cd /home/eretazan/all-in-one
@@ -122,17 +78,7 @@ git log --oneline origin/main..HEAD
 git log --oneline HEAD..origin/main
 ```
 
-Até essa auditoria terminar, é proibido:
-
-- usar “Sincronizar Alterações”;
-- executar `git pull`;
-- executar `git reset --hard`;
-- executar `git clean` destrutivo;
-- descartar arquivos;
-- commitar exclusões em massa;
-- fazer push da cópia local.
-
-Se houver conteúdo preparado, preservar antes de reorganizar:
+Se houver mudanças, preservar antes de reorganizar:
 
 ```bash
 timestamp="$(date +%Y%m%d-%H%M%S)"
@@ -141,45 +87,39 @@ git diff > "/tmp/all-in-one-worktree-$timestamp.patch"
 git diff --cached > "/tmp/all-in-one-index-$timestamp.patch"
 ```
 
-## 7. Tratamento das branches remotas antigas
+Até concluir a auditoria local, é proibido executar `git pull`, `git reset --hard`, `git clean` destrutivo, descartar arquivos, commitar exclusões em massa, fazer push ou usar “Sincronizar Alterações”.
 
-Classificar cada branch como:
+## 5. Branches remotas antigas
 
-1. **integrada ou substituída**: preservar referência e remover somente após prova;
-2. **histórica/backup**: manter sem merge;
-3. **código exclusivo aproveitável**: extrair apenas trechos válidos para branch nova baseada na `main`;
-4. **duplicada ou insegura**: registrar evidência e arquivar;
-5. **conflitante com migrations atuais**: nunca fazer merge direto.
+As branches divergentes devem ser classificadas como integrada/substituída, histórica/backup, aproveitável por extração seletiva, duplicada/insegura ou conflitante.
 
-A branch `feature/primicias-selecionadas-v1` contém uma migration 031 antiga e não pode ser integrada sobre as migrations 031/032 vigentes. Qualquer capacidade útil deve ser reconstruída com nova numeração e contratos atuais.
+- Nunca fazer merge direto de branch obsoleta.
+- Nunca trazer lockfiles antigos sem reinstalação e auditoria.
+- Nunca reutilizar migrations 031 ou 032.
+- A branch `feature/primicias-selecionadas-v1` contém migration 031 incompatível e só pode servir como fonte de requisitos ou trechos reconstruídos sobre a `main` atual.
 
-## 8. Ordem mandatória de evolução
+## 6. Ordem mandatória de evolução
 
-1. concluir esta correção de governança e documentação;
-2. validar a PR e os gates no mesmo SHA;
-3. integrar por Squash and Merge;
-4. auditar o worktree local sem ações destrutivas;
-5. executar a issue #95 em branch exclusiva;
-6. resolver externamente a issue #107 e comprovar deploy;
-7. consolidar a fonte produtiva do AIO Admin na issue #89;
-8. revisar branches antigas por reaproveitamento seletivo;
-9. somente depois avançar Delivery e Rider;
-10. manter Vision inativo e todas as flags de risco desligadas até homologação.
+1. integrar esta atualização pós-merge com gates verdes;
+2. auditar o worktree local sem ações destrutivas;
+3. executar a issue #95;
+4. resolver externamente a issue #107;
+5. consolidar a fonte produtiva do AIO Admin na issue #89;
+6. revisar branches antigas por extração seletiva;
+7. avançar Delivery e Rider somente após o gate financeiro;
+8. manter Vision inativo e flags de risco desligadas até homologação.
 
-## 9. Critérios de aceite desta correção
+## 7. Critérios permanentes
 
-- política do repositório oficial versionada;
-- teste de regressão criado;
-- documentos autoritativos sem estado obsoleto;
-- issue #51 reconciliada com o código integrado;
-- issue #55 reconciliada com a PR integrada;
-- nenhuma credencial incluída;
-- nenhuma alteração de produto ou banco;
-- diff limitado a governança, documentação e testes;
-- PR aberta para `main`;
-- nenhum merge antes dos gates verdes.
+- nenhuma alteração direta na `main`;
+- integração somente por Squash and Merge;
+- gates verdes no mesmo head SHA;
+- nenhuma credencial ou segredo no Git;
+- nenhuma exclusão em massa sem inventário e justificativa;
+- nenhuma tarefa concluída apenas pela existência de código ou documento;
+- documentação, testes, segurança, rollback e evidência no ambiente correto obrigatórios.
 
-## 10. Histórico resumido
+## 8. Histórico resumido
 
-- v4.4: reconciliação da PR #105 e orientação pós-PR #106;
-- v5.0: correção mandatória do escopo oficial, documentos obsoletos, issues e gate contra regressão.
+- v5.0: política de fonte única, gate de regressão e reconciliação das issues;
+- v5.1: confirmação da integração da PR #108 e definição da próxima etapa autoritativa.
