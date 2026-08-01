@@ -1,14 +1,79 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 4.3
-**Data e hora:** 30/07/2026 18:54, `America/Sao_Paulo`
+**Versão:** 4.4
+**Data e hora:** 01/08/2026 02:55, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch:** `codex/corrigir-pendencias-relacionais-v42-20260730`
-**Commit-base:** `52b4a18c9b9a45c1a985ce22d974f9f8487dadc4`
+**Commit-base:** `c00ea701220a198b7b2e0399e37eb3def165a7d3`
 **Issue-mãe:** `#51`  
 **Próxima dependência:** `#95`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Público-alvo:** Equipe Técnica
+
+## 0. Próxima etapa reproduzível: confirmar a persistência do VS Code
+
+### Objetivo, contexto e escopo
+
+Confirmar, após a integração da PR #106, que o workspace abre diretamente em
+`WSL: Ubuntu` sem avisos de interpretador, Pylance, observador de arquivos ou
+convite para trocar da pasta para `all-in-one.code-workspace`. O escopo abrange
+somente `.vscode/settings.json`, `all-in-one.code-workspace`, o teste contratual
+e esta documentação; mudanças de skills pertencem a outra atividade.
+
+### Fontes de verdade e pré-requisitos
+
+- configurações versionadas de pasta e workspace;
+- `.venv/bin/python`, `.python-version` e Python do WSL;
+- `tests/test_vscode_workspace_contract.py` e
+  `tests/test_gradle_vscode_contract.py`;
+- documentação oficial do VS Code para workspaces multi-root;
+- políticas em `config/autonomy/` e checks do GitHub no mesmo head SHA.
+
+### Sequência, prioridades e testes
+
+1. abrir `all-in-one.code-workspace` a partir do WSL;
+2. confirmar o título `all-in-one (Workspace) [WSL: Ubuntu]`;
+3. executar os dois testes contratuais e a suíte não E2E do CI;
+4. verificar logs recentes sem erros equivalentes aos quatro avisos;
+5. reiniciar o VS Code e repetir a abertura para provar persistência;
+6. integrar por Squash and Merge somente com diff conhecido e gates verdes;
+7. retomar a issue #95 após concluir esta correção operacional.
+
+### Critérios de aceite, riscos e bloqueios
+
+- interpretador configurado nos modos pasta e workspace e executável localmente;
+- exclusões do Pylance e do file watcher presentes nos dois modos;
+- nenhum dos quatro avisos reaparece em duas sessões consecutivas;
+- suíte do CI aprovada sem exigir que a `.venv` local exista no runner;
+- nenhuma mudança paralela de skills entra na PR #106;
+- proxy WSL indisponível deve ser contornado somente para GitHub, sem remover
+  configuração global pertencente à infraestrutura;
+- bloqueios externos devem permanecer registrados, nunca convertidos em gate
+  ignorado ou sucesso forçado.
+
+### Evidências esperadas, pendências e entrega
+
+Registrar versão do Python, testes, título da janela WSL, head SHA, URL da PR e
+checks verdes no mesmo SHA. Publicar apenas a branch de trabalho, confirmar
+ausência de conflitos e integrar com Squash and Merge. A pendência restante de
+produto continua sendo a issue #95; a validação visual após reinício é a última
+prova operacional desta atividade.
+
+### Reconciliação da PR #105 e bloqueios externos
+
+- o único conflito com `main` estava neste documento e foi resolvido preservando
+  os históricos relacional e do VS Code;
+- `react-router-dom` foi substituído por `react-router` `8.3.0` nos shells que
+  usam roteamento; o pacote não utilizado foi removido do shell de usuário;
+- os três `npm audit --audit-level=high` ficaram sem vulnerabilidades e os cinco
+  builds afetados foram aprovados;
+- os E2E Business, Health e Mobility foram aprovados após instalar as
+  dependências reproduzíveis dos lockfiles;
+- o deploy GKE permanece externamente bloqueado: a autenticação OIDC conclui,
+  mas a API do Google retorna `403` porque o faturamento do projeto
+  `all-in-one-498012` está desativado;
+- não alterar o workflow para ocultar a falha; após habilitação legítima do
+  billing, repetir o run `30668393175` e exigir o deploy verde no mesmo SHA.
 
 ## 1. Estado consolidado
 
@@ -362,3 +427,5 @@ mesmo SHA.
 | 4.1 | 30/07/2026 | Gate de marca corrigido para instalar o executor pytest sem enfraquecer validações. |
 | 4.2 | 30/07/2026 | Governança de merge corrigida, branches concluídas limpas e pendências relacionais consolidadas na varredura v4.1. |
 | 4.3 | 30/07/2026 | Varredura v4.2, dependências npm, tráfego interno sem proxy e transições Business coerentes com o domínio. |
+| 4.3 | 31/07/2026 | VS Code WSL estabilizado com interpretador determinístico, exclusões persistentes e contrato de regressão para CI. |
+| 4.4 | 01/08/2026 | PR #105 reconciliada com a main; conflito documental resolvido, React Router atualizado e bloqueio externo de billing GKE confirmado. |
