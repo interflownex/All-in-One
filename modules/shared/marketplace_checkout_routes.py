@@ -18,6 +18,12 @@ from .marketplace_checkout_postgres_store import (
     MarketplaceCheckoutPaymentError,
     MarketplaceCheckoutPostgresStore,
 )
+from .mercado_pago_checkout import (
+    MercadoPagoAPIError,
+    MercadoPagoClient,
+    MercadoPagoConfigurationError,
+    MercadoPagoSettings,
+)
 from .security import Actor, actor_from_headers
 
 
@@ -25,7 +31,7 @@ class MarketplaceCheckoutRequest(BaseModel):
     cart_id: UUID
     currency: Literal["BRL"] = "BRL"
     expected_total_brl: Decimal = Field(gt=0, max_digits=18, decimal_places=2)
-    payment_method: Literal["wallet"] = "wallet"
+    payment_method: Literal["wallet", "mercado_pago"] = "wallet"
 
 
 class MarketplaceCheckoutConfirmationRequest(BaseModel):
@@ -161,6 +167,44 @@ def register_marketplace_checkout_routes(app: FastAPI) -> None:
             if checkout is None:
                 raise HTTPException(status_code=404, detail="Checkout não encontrado.")
             return checkout
+        finally:
+            store.close()
+
+    @app.post("/valley/checkout/{checkout_id}/mercadopago/preference")
+    def create_mercado_pago_preference(
+        checkout_id: UUID,
+        actor: Actor = Depends(actor_from_headers),
+        x_correlation_id: UUID = Header(..., alias="X-Correlation-Id"),
+    ) -> dict[str, object]:
+        """Cria a preferência Checkout Pro sem expor o access token ao cliente."""
+        set_correlation_id(str(x_correlation_id))
+        try:
+            settings = MercadoPagoSettings.from_environment()
+        except MercadoPagoConfigurationError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from None
+        store = _checkout_store()
+        try:
+            checkout = store.get_checkout(checkout_id=str(checkout_id), user_id=str(actor.user_id))
+            if checkout is None:
+                raise HTTPException(status_code=404, detail="Checkout não encontrado.")
+            if checkout["payment_method"] != "mercado_pago":
+                raise HTTPException(status_code=409, detail="Checkout não configurado para Mercado Pago.")
+            snapshot = checkout.get("snapshot") if isinstance(checkout.get("snapshot"), dict) else {}
+            items = snapshot.get("items") if isinstance(snapshot.get("items"), list) else []
+            title = str(items[0].get("name") if items and isinstance(items[0], dict) else "Compra Valley")
+            preference = MercadoPagoClient(settings).create_preference(
+                checkout_id=checkout["checkout_id"], order_id=checkout["order_id"],
+                total_brl=Decimal(checkout["total_brl"]), title=title,
+            )
+            return {
+                "checkout_id": checkout["checkout_id"],
+                "provider": "mercado_pago",
+                "preference_id": preference.get("id"),
+                "init_point": preference.get("init_point"),
+                "sandbox_init_point": preference.get("sandbox_init_point"),
+            }
+        except MercadoPagoAPIError as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from None
         finally:
             store.close()
 

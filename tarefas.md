@@ -1,5 +1,57 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 5.9 — Integração limpa do Checkout Mercado Pago
+
+**Data e hora:** 02/08/2026 15:55, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/integrar-checkout-pagamentos-20260802`
+**Referência de base:** `origin/main` em `de69008282ed8c30b63c18c798730383866bd6bd`
+**Objetivo:** integrar sobre a `main` atual somente o checkout Mercado Pago e a
+configuração MCP correspondente, sem carregar o histórico divergente da branch
+antiga `codex/corrigir-vscode-persistente-20260731`.
+
+### Contexto e escopo
+
+- `payment_method` aceita `wallet` ou `mercado_pago`.
+- O backend cria preferências server-side em
+  `POST /valley/checkout/{checkout_id}/mercadopago/preference`.
+- A migration `033` e seu rollback ampliam a constraint de pagamento.
+- O MCP Mercado Pago é referenciado sem versionar credenciais.
+- `MARKETPLACE_CHECKOUT_V1_ENABLED` permanece desligada por padrão.
+
+### Fontes de verdade e pré-requisitos
+
+- `modules/marketplace/CHECKOUT_CONTRACT.md`
+- `modules/marketplace/checkout/OPENAPI.yaml`
+- `modules/shared/mercado_pago_checkout.py`
+- `database/postgres/migrations/033_marketplace_checkout_mercado_pago.sql`
+- Credenciais `MERCADO_PAGO_ACCESS_TOKEN`, `MERCADO_PAGO_WEBHOOK_SECRET` e
+  `MERCADO_PAGO_NOTIFICATION_URL` permanecem exclusivamente fora do Git.
+
+### Sequência, prioridades e testes
+
+1. Validar compilação dos módulos Python alterados.
+2. Executar os testes de Mercado Pago, contrato e rotas do checkout.
+3. Executar `git diff --check` e o validador geral do repositório.
+4. Publicar a branch, abrir PR para `main` e aguardar gates verdes no mesmo SHA.
+5. Integrar exclusivamente por **Squash and Merge**.
+
+### Critérios de aceite, riscos e bloqueios
+
+- Nenhum token é enviado ao cliente ou versionado.
+- A assinatura HMAC `id;request-id;ts` expira em 300 segundos.
+- Sem credenciais, nenhuma chamada real ao PSP é declarada como validada.
+- Produção permanece bloqueada até consumidor idempotente de webhook, consulta
+  autoritativa, escrow/ledger transacional, reconciliação, refund e chargeback
+  previstos na issue #95.
+- Evidências esperadas: testes locais reproduzíveis, diff conhecido, PR e checks
+  verdes no SHA final.
+
+### Histórico resumido
+
+- v5.9: checkout Mercado Pago extraído seletivamente da branch divergente e
+  reaplicado sobre a `main` atual para integração segura.
+
 ## Versão 5.8 — Cloudflare Pages produção em `main`
 
 **Data e hora:** 02/08/2026 02:31, `America/Sao_Paulo`

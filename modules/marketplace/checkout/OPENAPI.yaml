@@ -168,7 +168,7 @@ components:
           multipleOf: 0.01
         payment_method:
           type: string
-          const: wallet
+          enum: [wallet, mercado_pago]
     CheckoutConfirmationRequest:
       type: object
       additionalProperties: false
