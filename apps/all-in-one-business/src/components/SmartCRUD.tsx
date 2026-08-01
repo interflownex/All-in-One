@@ -109,20 +109,104 @@ const itemTitle = (item: any, fallbackTitle: string) =>
   item.payload?.description ||
   `${fallbackTitle} #${item.id}`;
 
-const approvalMessageForModule = (module: string) => {
-  if (module === "erp") return "Registro ERP aprovado no API Hub vivo.";
-  if (module === "bi") return "Relatorio BI aprovado no API Hub vivo.";
-  if (module === "wms") return "Operacao WMS aprovada no API Hub vivo.";
-  if (module === "tms") return "Operacao TMS aprovada no API Hub vivo.";
-  if (module === "crm") return "Oportunidade CRM aprovada no API Hub vivo.";
-  if (module === "bpm") return "Fluxo BPM aprovado no API Hub vivo.";
-  if (module === "document") return "Documento operacional aprovado no API Hub vivo.";
-  if (module === "hr") return "Registro HR aprovado no API Hub vivo.";
-  if (module === "legal") return "Caso Legal aprovado no API Hub vivo.";
-  if (module === "property") return "Ativo Property aprovado no API Hub vivo.";
-  if (module === "ai_core") return "Decisao AI Core aprovada no API Hub vivo.";
-  if (module === "api_hub") return "Cliente API Hub aprovado no API Hub vivo.";
-  return "Registro operacional aprovado no API Hub vivo.";
+type LiveAction = {
+  action: string;
+  label: string;
+  message: string;
+  sourceStatuses: string[];
+};
+
+const LIVE_ACTIONS: Record<string, LiveAction> = {
+  "erp:fiscal_documents": {
+    action: "approve",
+    label: "Aprovar registro ERP",
+    message: "Registro ERP aprovado no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review"],
+  },
+  "bi:dashboards": {
+    action: "publish",
+    label: "Publicar relatório BI",
+    message: "Relatorio BI publicado no API Hub vivo.",
+    sourceStatuses: ["draft"],
+  },
+  "wms:warehouses": {
+    action: "complete",
+    label: "Concluir operação WMS",
+    message: "Operacao WMS concluida no API Hub vivo.",
+    sourceStatuses: ["active", "approved", "in_progress"],
+  },
+  "tms:freights": {
+    action: "approve",
+    label: "Aprovar operação TMS",
+    message: "Operacao TMS aprovada no API Hub vivo.",
+    sourceStatuses: ["quoted"],
+  },
+  "crm:opportunities": {
+    action: "propose",
+    label: "Enviar proposta CRM",
+    message: "Proposta CRM enviada no API Hub vivo.",
+    sourceStatuses: ["open"],
+  },
+  "bpm:processes": {
+    action: "approve",
+    label: "Aprovar fluxo BPM",
+    message: "Fluxo BPM aprovado no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review"],
+  },
+  "document:documents": {
+    action: "approve",
+    label: "Aprovar documento",
+    message: "Documento operacional aprovado no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review"],
+  },
+  "hr:employees": {
+    action: "approve",
+    label: "Aprovar registro HR",
+    message: "Registro HR aprovado no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review", "pending_validation", "under_review"],
+  },
+  "legal:cases": {
+    action: "approve",
+    label: "Aprovar caso Legal",
+    message: "Caso Legal aprovado no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review"],
+  },
+  "property:properties": {
+    action: "approve",
+    label: "Aprovar ativo Property",
+    message: "Ativo Property aprovado no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review"],
+  },
+  "ai_core:moderation_decisions": {
+    action: "approve",
+    label: "Aprovar decisão AI Core",
+    message: "Decisao AI Core aprovada no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review", "pending_validation", "under_review"],
+  },
+  "api_hub:api_clients": {
+    action: "approve",
+    label: "Aprovar cliente API Hub",
+    message: "Cliente API Hub aprovado no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review", "pending_validation", "under_review"],
+  },
+  "api_hub:api_keys": {
+    action: "approve",
+    label: "Aprovar chave API Hub",
+    message: "Chave API Hub aprovada no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review", "pending_validation", "under_review"],
+  },
+  "api_hub:webhooks": {
+    action: "approve",
+    label: "Aprovar webhook API Hub",
+    message: "Webhook API Hub aprovado no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review", "pending_validation", "under_review"],
+  },
+  "api_hub:integration_runs": {
+    action: "approve",
+    label: "Aprovar integração API Hub",
+    message: "Integracao API Hub aprovada no API Hub vivo.",
+    sourceStatuses: ["draft", "pending_review", "pending_validation", "under_review"],
+  },
 };
 
 const itemCreatedAt = (item: any) => {
@@ -145,6 +229,10 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
   const liveApiEnabled = Boolean(API_HUB_URL && API_HUB_TOKEN && resourceType);
   const resourceBasePath =
     module === "api_hub" ? `/resources/${resourceType}` : `/${module}/resources/${resourceType}`;
+  const liveAction = LIVE_ACTIONS[`${module}:${resourceType}`];
+  const actionableItem = liveAction
+    ? data.find((item) => liveAction.sourceStatuses.includes(itemStatus(item)))
+    : undefined;
   const filteredData =
     statusFilter === "all" ? data : data.filter((item) => itemStatus(item) === statusFilter);
   const statusOptions = Array.from(new Set(data.map(itemStatus)));
@@ -279,31 +367,19 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         return;
       }
 
-      if (
-        [
-          "erp",
-          "bi",
-          "wms",
-          "tms",
-          "crm",
-          "bpm",
-          "document",
-          "hr",
-          "legal",
-          "property",
-          "ai_core",
-          "api_hub",
-        ].includes(module)
-      ) {
-        const item = data[0];
-        if (!item?.id) throw new Error("Nenhum registro disponivel para aprovacao operacional.");
-        const approved = await apiHubFetch(`${resourceBasePath}/${item.id}/actions/approve`, {
+      if (liveAction) {
+        const item = actionableItem;
+        if (!item?.id) throw new Error("Nenhum registro em estado valido para esta acao.");
+        const updated = await apiHubFetch(
+          `${resourceBasePath}/${item.id}/actions/${liveAction.action}`,
+          {
           method: "POST",
-          body: JSON.stringify({ reason: "Aprovacao operacional via Business shell vivo" }),
-        });
-        setData((items) => items.map((current) => (current.id === item.id ? approved : current)));
-        recordAudit("approve", approved);
-        setActionMessage(approvalMessageForModule(module));
+            body: JSON.stringify({ reason: "Acao operacional via Business shell vivo" }),
+          },
+        );
+        setData((items) => items.map((current) => (current.id === item.id ? updated : current)));
+        recordAudit(liveAction.action, updated);
+        setActionMessage(liveAction.message);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Falha ao executar acao viva no API Hub.");
@@ -319,31 +395,9 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         ? "Publicar vaga"
         : module === "jobs" && resourceType === "resume_access_logs"
           ? "Registrar acesso a currículo"
-          : module === "erp"
-            ? "Aprovar registro ERP"
-            : module === "bi"
-              ? "Aprovar relatório BI"
-              : module === "wms"
-                ? "Aprovar operação WMS"
-                : module === "tms"
-                  ? "Aprovar operação TMS"
-                  : module === "crm"
-                    ? "Aprovar oportunidade CRM"
-                    : module === "bpm"
-                      ? "Aprovar fluxo BPM"
-                      : module === "document"
-                        ? "Aprovar documento"
-                        : module === "hr"
-                          ? "Aprovar registro HR"
-                          : module === "legal"
-                            ? "Aprovar caso Legal"
-                            : module === "property"
-                              ? "Aprovar ativo Property"
-                              : module === "ai_core"
-                                  ? "Aprovar decisão AI Core"
-                                  : module === "api_hub"
-                                    ? "Aprovar cliente API Hub"
-                                    : "";
+          : actionableItem
+            ? liveAction.label
+            : "";
 
   if (type === "form") {
     return (
@@ -490,7 +544,7 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
         </div>
       ) : null}
 
-      {liveApiEnabled && actionLabel ? (
+      {liveApiEnabled && (actionLabel || actionMessage || auditState) ? (
         <div
           className="filters-section"
           style={{
@@ -505,14 +559,16 @@ const SmartCRUD: React.FC<SmartCRUDProps> = ({ module, entity, type, title }) =>
           <p style={{ margin: "8px 0 16px", color: "#536159" }}>
             Esta tela esta usando recursos reais do API Hub e registra acoes auditaveis no backend.
           </p>
-          <button
-            className="btn-primary"
-            onClick={runLiveAction}
-            disabled={actionLoading}
-            style={{ padding: "10px 20px" }}
-          >
-            {actionLoading ? "Executando..." : actionLabel}
-          </button>
+          {actionLabel ? (
+            <button
+              className="btn-primary"
+              onClick={runLiveAction}
+              disabled={actionLoading}
+              style={{ padding: "10px 20px" }}
+            >
+              {actionLoading ? "Executando..." : actionLabel}
+            </button>
+          ) : null}
           {actionMessage ? (
             <div className="notice" role="status" style={{ marginTop: "16px" }}>
               {actionMessage}

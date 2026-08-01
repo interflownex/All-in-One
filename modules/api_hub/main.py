@@ -116,7 +116,10 @@ WEBHOOK_SECRET = get_config(
 )
 PROXY_TIMEOUT_SECONDS = float(get_config("API_HUB_PROXY_TIMEOUT_SECONDS", "20"))
 
-client = httpx.AsyncClient(timeout=httpx.Timeout(PROXY_TIMEOUT_SECONDS, connect=5.0))
+client = httpx.AsyncClient(
+    timeout=httpx.Timeout(PROXY_TIMEOUT_SECONDS, connect=5.0),
+    trust_env=False,
+)
 redis_client = redis.from_url(REDIS_URL, decode_responses=True) if redis else None
 
 CATALOG_SOURCE_MODULES = tuple(PUBLIC_RESOURCE_TYPES)

@@ -6,7 +6,7 @@ import sys
 import time
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.request import ProxyHandler, Request, build_opener
 
 import jwt
 import pytest
@@ -18,11 +18,15 @@ PHASE4_USER_ID = "33333333-3333-4333-8333-333333333333"
 PHASE4_JWT_SECRET = "phase4-live-e2e-secret-with-32-bytes-minimum"
 PHASE4_HTTP_TIMEOUT_SECONDS = 60
 PLAYWRIGHT_LAUNCH_TIMEOUT_MS = 300_000
+LOOPBACK_OPENER = build_opener(ProxyHandler({}))
 
 
 @pytest.fixture(scope="session")
 def browser_type_launch_args(pytestconfig):
-    launch_options = {"timeout": PLAYWRIGHT_LAUNCH_TIMEOUT_MS}
+    launch_options = {
+        "timeout": PLAYWRIGHT_LAUNCH_TIMEOUT_MS,
+        "args": ["--no-proxy-server"],
+    }
     if pytestconfig.getoption("--headed"):
         launch_options["headless"] = False
     browser_channel = pytestconfig.getoption("--browser-channel")
@@ -49,7 +53,9 @@ def wait_for_http(
         if process is not None and process.poll() is not None:
             return False
         try:
-            with urlopen(f"http://127.0.0.1:{port}", timeout=2) as response:
+            with LOOPBACK_OPENER.open(
+                f"http://127.0.0.1:{port}", timeout=2
+            ) as response:
                 if response.status == 200 and b'<div id="root">' in response.read():
                     return True
         except Exception:
@@ -65,7 +71,7 @@ def wait_for_url(
         if process is not None and process.poll() is not None:
             return False
         try:
-            with urlopen(url, timeout=2) as response:
+            with LOOPBACK_OPENER.open(url, timeout=2) as response:
                 if response.status == 200:
                     return True
         except Exception:
@@ -85,17 +91,34 @@ def start_vite_server(
         )
     startup_timeout = int(process_env.get("VITE_START_TIMEOUT_SECONDS", "120"))
     process = subprocess.Popen(
-        f"npm run dev -- --port {port} --strictPort --host 127.0.0.1",
+        [
+            "npm",
+            "run",
+            "dev",
+            "--",
+            "--port",
+            str(port),
+            "--strictPort",
+            "--host",
+            "127.0.0.1",
+        ],
         cwd=app_directory,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
         env=process_env,
     )
     if not wait_for_http(port, timeout=startup_timeout, process=process):
         process.terminate()
+        try:
+            output, _ = process.communicate(timeout=10)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            output, _ = process.communicate(timeout=5)
+        diagnostic = output.strip()[-2000:] or "processo sem saída"
         raise RuntimeError(
-            f"Vite nao respondeu corretamente na porta {port} em {startup_timeout}s."
+            f"Vite nao respondeu corretamente na porta {port} em "
+            f"{startup_timeout}s. Diagnostico:\n{diagnostic}"
         )
     return process, server_url
 
@@ -541,7 +564,9 @@ def _post_json(
             method="POST",
         )
         try:
-            with urlopen(request, timeout=PHASE4_HTTP_TIMEOUT_SECONDS) as response:
+            with LOOPBACK_OPENER.open(
+                request, timeout=PHASE4_HTTP_TIMEOUT_SECONDS
+            ) as response:
                 if response.status not in {200, 201}:
                     raise RuntimeError(f"POST {url} retornou HTTP {response.status}.")
                 return json.loads(response.read().decode("utf-8"))

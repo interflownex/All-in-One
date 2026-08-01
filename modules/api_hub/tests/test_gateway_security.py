@@ -31,6 +31,15 @@ def _load_api_hub(monkeypatch):
     return module
 
 
+def test_internal_http_client_ignores_proxy_environment(monkeypatch):
+    monkeypatch.setenv("HTTP_PROXY", "http://proxy.invalid:8080")
+    monkeypatch.setenv("HTTPS_PROXY", "http://proxy.invalid:8080")
+
+    module = _load_api_hub(monkeypatch)
+
+    assert module.client._trust_env is False
+
+
 def test_api_key_check_accepts_configured_key(monkeypatch):
     module = _load_api_hub(monkeypatch)
 

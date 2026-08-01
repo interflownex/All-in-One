@@ -1,220 +1,115 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 3.3
-**Data e hora da atualização:** 30/07/2026 17:19:59
-**Fuso horário:** `America/Sao_Paulo`
-**Repositório:** `interflownex/All-in-One`
-**Branch de execução:** `codex/orquestrar-pendencias-reais-20260730`
-**Pull Request central desta atividade:** pendente de abertura
-**Issue operacional:** `#51`
-**Issue de orquestração funcional:** `#51`
-**Versão anterior consolidada:** 3.2
-**Classificação:** `Pendências > Técnico > Equipe técnica`
-**Públicos impactados:** Pessoa Física, Pessoa Jurídica, equipe técnica, gestão e investidores
+**Versão:** 5.2  
+**Data e hora:** 01/08/2026 04:18, `America/Sao_Paulo`  
+**Repositório:** `interflownex/All-in-One`  
+**Marcos integrados:** PR `#108` e PR `#109`  
+**Issue de orquestração:** `#51`  
+**Classificação:** `Pendências > Técnico > Equipe Técnica`  
+**Públicos impactados:** Pessoa Física, Pessoa Jurídica, Equipe Técnica, gestão e investidores
 
-## 1. Situação executiva
+## 1. Situação consolidada
 
-> Estado autoritativo da versão 3.3: as seções históricas posteriores são
-> preservadas como evidência cronológica, mas não substituem esta consolidação.
+A governança, a fonte oficial única e os documentos pós-merge foram integrados com os gates obrigatórios verdes. Valley permanece dentro do monorepo oficial e Vision continua inativo.
 
-- `main` local e `origin/main` estavam idênticas em
-  `d3b3ef594b1e14347fca785a800980e2f7d39c01`;
-- não havia PR aberta, merge em andamento ou alerta Dependabot aberto;
-- CI, Security, Compose, marca e Git Sync estavam verdes no SHA atual;
-- o único workflow vermelho era o deploy GKE, autenticado por WIF e bloqueado
-  externamente porque o billing do projeto `all-in-one-498012` está inativo;
-- o repositório GitHub foi corrigido para permitir somente Squash and Merge,
-  desativar Merge Commit, Rebase Merge e auto-merge, e apagar branches
-  integradas automaticamente;
-- 84 branches remotas concluídas foram removidas após comprovação por PR
-  integrada ou ancestralidade; sete branches `backup/*` e 22 branches
-  divergentes sem PR foram preservadas para auditoria de commits únicos;
-- a refspec local obsoleta de `origin/worktree-sync` foi removida; o fetch
-  autoritativo voltou a operar exclusivamente contra `origin/main`;
-- permanecem oito issues abertas: `#24`, `#39`, `#47`, `#51`, `#55`, `#69`,
-  `#89` e `#95`, classificadas no relatório v4.1.
+Concluído:
 
-A Fase 0 de estabilização foi implementada. No head funcional `73f04292e44c9ee6a887e76148300bba72734f50`, todos os gates obrigatórios ficaram verdes no mesmo commit:
+- política `config/autonomy/repository_scope_policy.json`;
+- gate `scripts/validate_repository_scope.py`;
+- testes de regressão;
+- reconciliação das issues #51, #55 e #95;
+- inclusão da issue #107 no mapa de bloqueios;
+- PRs #108 e #109 integradas por Squash and Merge;
+- CI, Security, Docker Compose Health Gate e A1 Admin Template verdes.
 
-- Continuous Integration;
-- Security;
-- Database;
-- Docker Compose Health Gate;
-- OpenAPI;
-- Valley DAST;
-- Valley Android Security.
+## 2. Pendência imediata: worktree local
 
-Os workflows temporários de diagnóstico e remediação foram removidos após a comprovação. O Pull Request `#50` permanece em rascunho e sem merge. O head de limpeza e documentação deverá repetir todos os gates obrigatórios antes de ser marcado como pronto para revisão.
+O caminho `/home/eretazan/all-in-one` não esteve montado nesta execução. Ainda é obrigatório verificar:
 
-## 2. Regras permanentes
+- branch e HEAD locais;
+- staged, unstaged e untracked;
+- exclusões preparadas;
+- commits locais não publicados;
+- merge, rebase ou cherry-pick em andamento;
+- diferença para `origin/main`.
 
-1. Nenhuma alteração direta na `main`.
-2. Nenhum merge com gate obrigatório vermelho, cancelado, ausente ou em processamento.
-3. Integração somente por **Squash and Merge**.
-4. Nenhuma credencial, token, senha, chave ou certificado no Git.
-5. O módulo Vision permanece excluído.
-6. Nenhuma exclusão em massa sem inventário, SHA e justificativa.
-7. Nenhuma tarefa é concluída apenas pela existência de código ou documento.
-8. São obrigatórios teste reproduzível, evidência do ambiente correto, commit e Pull Request.
-9. O arquivo `tarefas.md` deve ser atualizado em toda entrega técnica.
-10. Marketplace somente começa depois da integração segura da Fase 0.
+Nenhum pull, reset, clean, descarte, commit ou push deve ocorrer antes de preservar branch de backup e patches.
 
-## 3. Entregas técnicas concluídas
+## 3. Pendências P0
 
-### 3.1 CI e artefatos
+### #95 — PSP, webhooks, liquidação e reconciliação
 
-- gate de artefatos gerados aprovado;
-- baseline oficial preservada em 24 módulos ativos;
-- arquivos de status de Valley Business e Valley Rider adicionados;
-- contratos Android alinhados a `productionDebug`;
-- auditoria e assinatura do APK aprovadas;
-- suíte unitária completa aprovada;
-- checkout raso de Pull Request tratado sem contar o merge sintético como divergência;
-- testes de regressão adicionados para o contrato Android e sincronização Git.
+Pendente:
 
-### 3.2 Segurança
+- interface de PSP independente;
+- sandbox separado de produção;
+- webhooks autenticados, temporizados, anti-replay e idempotentes;
+- autorização, captura, cancelamento, estorno e chargeback;
+- ledger de liquidação;
+- liberação condicionada de escrow;
+- reconciliação entre PSP, pedido, escrow e ledger;
+- bloqueio diante de divergência;
+- segredos em Secret Manager;
+- testes completos e homologação.
 
-- `pip-audit -r requirements-dev.txt` aprovado;
-- comando legado `pip-audit --local` removido dos contratos executáveis;
-- Bandit aprovado com exceções delimitadas por arquivo e regra;
-- auditorias JavaScript aprovadas;
-- Trivy aprovado nas imagens API Hub, Identity e Jobs;
-- chamadas externas endurecidas com HTTPS, porta padrão e allowlist;
-- CodeQL Android aprovado após recompilação limpa e rastreada;
-- SARIF gerado e publicado como evidência do Pull Request;
-- nenhuma supressão genérica adicionada.
+Regra: `MARKETPLACE_CHECKOUT_V1_ENABLED=false`; Delivery produtivo e Rider bloqueados até pagamento comprovado e reconciliado.
 
-### 3.3 Android
+### #107 — faturamento GCP
 
-- cliente Firebase alinhado ao package ID `com.example.valley`;
-- testes `productionDebug` aprovados;
-- lint `productionDebug` aprovado;
-- montagem do APK `productionDebug` aprovada;
-- chave de depuração bloqueada em release;
-- manifesto seguro confirmado;
-- CodeQL Java/Kotlin aprovado;
-- produção release continua condicionada a secrets legítimos.
+Bloqueio externo. O deploy GKE recebe HTTP 403 porque o faturamento do projeto `all-in-one-498012` está desativado.
 
-### 3.4 PostgreSQL e auditoria
+Ação necessária:
 
-- migrations aplicadas em banco limpo;
-- triggers imutáveis confirmados;
-- contrato por DSN aprovado sem reaplicar DDL de execução única;
-- todos os stores prioritários aprovados;
-- matriz de stores aprovada;
-- Jobs e cofre CTPS aprovados;
-- outbox PostgreSQL e RabbitMQ aprovados;
-- IP de auditoria normalizado para o tipo PostgreSQL `inet`;
-- hosts simbólicos são gravados como `NULL`, sem contaminar a trilha de auditoria.
+- habilitar billing legitimamente;
+- confirmar IAM e APIs;
+- repetir o workflow;
+- exigir rollout verde sem enfraquecer o gate.
 
-### 3.5 Limpeza concluída
+## 4. Pendências P1
 
-Foram removidos individualmente, após inspeção:
+### #89 — AIO Admin
 
-- `v29-targeted-diagnostics.yml`;
-- `v29-database-diagnostic.yml`;
-- `v29-isolate-generated-gate.yml`;
-- `v29-apply-validator-fix.yml`;
-- `v29-codeql-android-diagnostic.yml`;
-- três workflows arquivados do ciclo v2.8.
+A aplicação produtiva está publicada, mas a fonte operacional ainda precisa convergir com o repositório, preservando separação entre template visual, runtime produtivo e empacotamento Android.
 
-Os gates permanentes foram preservados.
+### Branches divergentes
 
-## 4. Pendência crítica restante
+As branches antigas não são candidatas a merge direto. Trechos úteis devem ser reconstruídos sobre a `main` atual após revisão de migrations, lockfiles, segredos, branding e testes.
 
-### Valley Rider — gates locais corrigidos
+## 5. Pendências P2
 
-A auditoria do commit integrado `3834bec6383edd6da08e9fdcf3d74a0de1589df2` confirmou os cinco testes do contrato Stitch, mas reproduziu 8 erros e 1 aviso no lint e, após o lint, um erro TypeScript no build. A branch v3.1 corrige:
+- #47: Health Watch + SafeZone funcional em Android/Wear OS;
+- #55: persistência, integrações e homologação da Rodada 004;
+- #39: implementação individual das inovações dos 24 módulos;
+- #69: bloqueada até a fonte funcional da Rodada 002 ser versionada;
+- #24: comprovação integral da Promoção do Dia no Stitch, código e E2E;
+- #51: continuidade Finance → Delivery → Rider conforme dependências.
 
-- efeitos React que atualizavam estado sincronicamente;
-- leitura de `gpsWatch.current` durante renderização;
-- ausência de estado renderizável explícito para o GPS;
-- expressões sem efeito e bloco `catch` vazio;
-- tipagem SHA-256 incompatível com `Uint8Array`;
-- dependência do efeito de sincronização automática de rota.
+## 6. Regras permanentes
 
-Após a correção, lint, build, testes Stitch e testes de marca passaram. O navegador integrado `iab` não estava disponível, mas a prova visual foi posteriormente concluída pelo fallback Playwright descrito abaixo.
+1. único repositório oficial: `interflownex/All-in-One`;
+2. Valley interno ao monorepo;
+3. Vision inativo;
+4. nenhuma escrita direta na `main`;
+5. somente Squash and Merge;
+6. gates verdes no mesmo head SHA;
+7. nenhuma credencial no Git;
+8. nenhuma exclusão em massa sem inventário;
+9. nenhuma branch antiga mesclada diretamente;
+10. migrations 031 e 032 não podem ser reutilizadas;
+11. checkout produtivo desligado até homologação financeira;
+12. nenhuma tarefa concluída sem teste, evidência, documentação e rollback.
 
-### Valley Rider — QA e CI do PR #62
+## 7. Ordem operacional atual
 
-A prova renderizada foi concluída por Playwright com o Chromium já disponível no ambiente:
+1. auditar o worktree local;
+2. executar a issue #95;
+3. resolver a issue #107 externamente;
+4. executar a issue #89;
+5. revisar branches antigas por extração seletiva;
+6. avançar Delivery e Rider após o gate financeiro.
 
-- HTTP 200 e título `Valley Rider`;
-- logomarca canônica `/assets/brand/valley-logo-official.png`;
-- ausência de overlay de framework;
-- interação `Criar conta` para `Novo cadastro`;
-- seis campos obrigatórios renderizados;
-- capturas desktop 1440 × 1000 e mobile 390 × 844 sem corte ou sobreposição.
+## 8. Histórico
 
-O evento `pull_request` aprovou CI, Compose Health e Security no commit `5cf3a1a`. O evento `push` encontrou dois testes do gate Git dependentes das referências ambientais do checkout. A correção substitui essas execuções ambientais por testes unitários determinísticos das funções `comparison` e `current_branch`. A suíte local equivalente ao CI aprovou `907 passed, 79 skipped`.
-
-### Regressão final do head limpo
-
-O último head funcional comprovado foi `73f04292e44c9ee6a887e76148300bba72734f50`. Como a limpeza e esta documentação criam novo commit, é obrigatório confirmar novamente, no head final:
-
-- CI;
-- Security;
-- Database;
-- Compose Health;
-- OpenAPI;
-- Valley DAST;
-- Valley Android Security.
-
-Nenhum arquivo deverá ser alterado depois dessa regressão antes da decisão de revisão.
-
-## 5. Pendências altas posteriores à Fase 0
-
-1. Desabilitar administrativamente `merge commit` e `rebase merge`, mantendo somente squash.
-2. Revisar o escopo amplo do PR `#50` e seus 261 arquivos alterados antes da integração.
-3. Verificar e resolver threads de revisão pendentes.
-4. Regularizar PRs antigos ainda abertos ou substituídos.
-5. Homologar APK Admin com instalação, hash e smoke test.
-6. Homologar PDV Desktop com instalador, hashes e operação offline.
-7. Rebasear o executor Telegram sobre a base integrada.
-8. Homologar domínio público, Identity, API Hub e `/health`.
-9. Sincronizar Stitch com credencial legítima.
-10. Incorporar o PNG original autorizado da Valley Riders.
-
-## 6. Próxima sequência funcional
-
-Após a integração segura da Fase 0:
-
-1. Marketplace;
-2. Stock;
-3. Delivery.
-
-Cada frente deverá começar com feature flag desligada e incluir contrato, banco, autorização, auditoria, testes, telemetria, alertas e rollback.
-
-## 7. Quadro de acompanhamento
-
-| Atividade | Estado | Dificuldade | Conclusão | Evidência restante |
-|---|---|---:|---:|---|
-| CI e artefatos | Implementado | 5 | 100% | repetir no head final |
-| Segurança Python/JS/containers | Implementado | 5 | 100% | repetir no head final |
-| Android e CodeQL | Implementado | 5 | 100% | repetir no head final |
-| PostgreSQL, Jobs/CTPS e outbox | Implementado | 5 | 100% | repetir no head final |
-| Limpeza de workflows temporários | Concluída | 3 | 100% | confirmar ausência no diff final |
-| Governança exclusiva por squash | Bloqueio administrativo | 4 | 60% | configuração do repositório |
-| Revisão do PR #50 | Pendente | 5 | 20% | threads e aprovação |
-| Marketplace | Bloqueado | 5 | 0% | merge seguro da Fase 0 |
-
-## 8. Critérios para marcar o PR como pronto
-
-- todos os sete gates obrigatórios verdes no head final;
-- nenhum workflow temporário remanescente;
-- nenhuma thread de revisão pendente sem resposta;
-- escopo do PR revisado;
-- ausência de segredos;
-- Vision ausente;
-- documentos v3.0 e `tarefas.md` v1.7 presentes;
-- método de integração definido como squash.
-
-## 9. Histórico
-
-| Versão | Data e hora | Alteração principal |
-|---|---|---|
-| 2.8 | 27/07/2026 02:17:29 | Estabilização parcial e evidências iniciais. |
-| 2.9 | 27/07/2026 05:33:26 | Correções dos quatro bloqueadores e revalidação. |
-| 3.0 | 27/07/2026 07:12:49 | Fase 0 implementada, gates verdes no head funcional, diagnósticos removidos e regressão final exigida. |
-| 3.1 | 28/07/2026 08:39:01 | Auditoria do Valley Rider, correção de lint/build e registro do bloqueio da prova renderizada. |
-| 3.2 | 28/07/2026 14:51:13 | PR #62 aberto, QA renderizada concluída e regressão do checkout raso corrigida. |
+- v5.0: correção mandatória de escopo, documentos, issues e gate de regressão;
+- v5.1: registro pós-merge;
+- v5.2: remoção da autorreferência e definição da fila operacional real.
