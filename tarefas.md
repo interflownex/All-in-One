@@ -67,6 +67,10 @@ prova operacional desta atividade.
   usam roteamento; o pacote não utilizado foi removido do shell de usuário;
 - os três `npm audit --audit-level=high` ficaram sem vulnerabilidades e os cinco
   builds afetados foram aprovados;
+- o contrato `tests/test_dependency_security_floors.py` foi atualizado para
+  exigir `react-router` `8.3.0`, ausência de `react-router-dom` e remoção do
+  roteador não utilizado no shell de usuário;
+- a suíte não E2E foi aprovada com `987 passed` e `85 skipped`;
 - os E2E Business, Health e Mobility foram aprovados após instalar as
   dependências reproduzíveis dos lockfiles;
 - o deploy GKE permanece externamente bloqueado: a autenticação OIDC conclui,
