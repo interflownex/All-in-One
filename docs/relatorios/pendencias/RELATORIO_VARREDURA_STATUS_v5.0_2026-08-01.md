@@ -1,9 +1,10 @@
 # Relatório de Varredura e Status v5.0
 
-**Data e hora:** 01/08/2026 03:52, `America/Sao_Paulo`  
+**Data e hora:** 01/08/2026 04:01, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
 **Branch:** `codex/corrigir-inconsistencias-mandatorias-20260801`  
 **Base:** `63ceb867c6342a3706e82a650e6072522facfbd7`  
+**Pull Request:** `#108`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Público-alvo:** Equipe Técnica
 
@@ -18,10 +19,12 @@ Também foi confirmado que:
 - Merge Commit e Rebase Merge estavam desativados;
 - Squash and Merge era o único método habilitado;
 - existiam 28 branches divergentes com commits exclusivos;
-- a issue #51 estava materialmente desatualizada;
-- a issue #55 apontava para uma branch inicial substituída;
+- a issue #51 estava materialmente desatualizada e foi reconciliada;
+- a issue #55 apontava para uma branch inicial substituída e foi reconciliada;
+- a issue #95 foi atualizada para distinguir aplicativos existentes do fluxo produtivo ainda bloqueado;
 - a cópia local WSL não estava acessível neste ambiente;
-- o bloqueio GKE era externo e estava corretamente registrado na issue #107.
+- o bloqueio GKE era externo e estava corretamente registrado na issue #107;
+- a PR #108 foi aberta em rascunho para validação dos gates no mesmo SHA.
 
 ## Matriz da atividade
 
@@ -31,12 +34,13 @@ Também foi confirmado que:
 | Gate de regressão | Impedir mistura futura de repositórios | Script e testes criados | 3 | 100% | concluído no ciclo | 4 | 4 | 0 |
 | `tarefas.md` | Remover branch, SHA e prioridade obsoletos | Versão 5.0 gravada | 2 | 100% | concluído no ciclo | 3 | 3 | 0 |
 | Pendências | Reconciliar documento autoritativo | Versão 5.0 gravada | 3 | 100% | concluído no ciclo | 4 | 4 | 0 |
-| Issue #51 | Atualizar fases integradas e sequência | Corpo em correção | 3 | 70% | ciclo atual | 3 | 2 | 1 |
-| Issue #55 | Corrigir referência da entrega inicial | Corpo em correção | 2 | 70% | ciclo atual | 3 | 2 | 1 |
+| Issue #51 | Atualizar fases integradas e sequência | Corpo reconciliado | 3 | 100% | concluído no ciclo | 3 | 3 | 0 |
+| Issue #55 | Corrigir referência da entrega inicial | Corpo reconciliado | 2 | 100% | concluído no ciclo | 3 | 3 | 0 |
+| Issue #95 | Corrigir baseline e bloqueio do fluxo produtivo | Corpo reconciliado | 3 | 100% | concluído no ciclo | 3 | 3 | 0 |
 | Issues abertas | Classificar 9 issues | Matriz concluída | 3 | 100% | concluído no ciclo | 9 | 9 | 0 |
-| Branches remotas | Identificar risco de merge direto | 28 preservadas e classificadas | 4 | 60% | ciclos seletivos | 28 | 7 | 21 |
+| Branches remotas | Identificar risco de merge direto | 28 preservadas; amostra crítica analisada | 4 | 60% | ciclos seletivos | 28 | 7 | 21 |
 | Worktree local | Verificar staged, exclusões e commits locais | Bloqueado por ausência de montagem | 3 | 10% | depende do host WSL | 8 | 1 | 7 |
-| PR desta correção | Abrir e validar gates | Em preparação | 3 | 60% | ciclo atual | 5 | 3 | 2 |
+| PR desta correção | Abrir e validar gates | PR #108 aberta; gates em execução | 3 | 80% | ciclo atual | 5 | 4 | 1 |
 
 ## Inconsistências confirmadas
 
@@ -46,9 +50,10 @@ Também foi confirmado que:
 4. A issue #51 mantinha Merge Commit/Rebase como habilitados, embora ambos já estivessem desativados.
 5. A issue #51 mantinha Marketplace e Stock como integralmente pendentes, apesar das PRs #65, #92 e #94.
 6. A issue #55 apontava para branch substituída, sem registrar a PR #57 integrada.
-7. Não existia política própria para separar a fonte oficial de fontes abandonadas.
-8. A situação local não podia ser declarada limpa sem acesso ao índice Git do WSL.
-9. Branches antigas possuíam migrations e lockfiles incompatíveis com a `main` atual.
+7. A issue #95 dizia que Delivery e Rider não haviam sido iniciados, sem distinguir os aplicativos já entregues do fluxo produtivo originado pelo checkout.
+8. Não existia política própria para separar a fonte oficial de fontes abandonadas.
+9. A situação local não podia ser declarada limpa sem acesso ao índice Git do WSL.
+10. Branches antigas possuíam migrations e lockfiles incompatíveis com a `main` atual.
 
 ## Riscos técnicos
 
@@ -67,7 +72,22 @@ Também foi confirmado que:
 - `tarefas.md` v5.0;
 - `docs/Pendências Do desenvolvedor.md` v5.0;
 - este relatório;
-- plano de ação v5.0.
+- plano de ação v5.0;
+- issues #51, #55 e #95 reconciliadas;
+- responsáveis definidos nas issues #55, #95 e #107;
+- PR #108 aberta em rascunho.
+
+## Validações já concluídas
+
+- JSON da política: válido;
+- compilação do script e do teste: aprovada;
+- `scripts/validate_repository_scope.py`: aprovado;
+- `tests/test_repository_scope_policy.py`: `2 passed`;
+- comparação com `main`: branch baseada diretamente no SHA atual, sem commits atrás;
+- diff limitado a governança, documentação e testes;
+- nenhum arquivo funcional, migration, lockfile ou ativo de marca alterado.
+
+O clone integral foi bloqueado por falha DNS externa neste ambiente. Os workflows do GitHub Actions permanecem obrigatórios e estão sendo executados no head da PR.
 
 ## Bloqueios não corrigíveis neste ambiente
 
@@ -85,4 +105,4 @@ PSP, AppDeploy produtivo, Stitch remoto e integrações reguladas exigem credenc
 
 ## Conclusão
 
-As inconsistências documentais e de governança detectáveis remotamente foram corrigidas ou encaminhadas na mesma branch. As pendências locais e externas permanecem explicitamente bloqueadas, sem falsa declaração de conclusão.
+As inconsistências documentais e de governança detectáveis remotamente foram corrigidas na branch e nas issues correspondentes. A integração na `main` permanece corretamente condicionada aos gates verdes da PR #108. As pendências locais e externas continuam explicitamente bloqueadas, sem falsa declaração de conclusão.
