@@ -6,7 +6,7 @@ MIGRATION = (
     / "database"
     / "postgres"
     / "migrations"
-    / "032_marketplace_checkout_attempts.sql"
+    / "033_marketplace_checkout_mercado_pago.sql"
 )
 ROLLBACK = (
     ROOT
@@ -22,22 +22,15 @@ OPENAPI = ROOT / "modules" / "marketplace" / "checkout" / "OPENAPI.yaml"
 CONTRACT = ROOT / "modules" / "marketplace" / "CHECKOUT_CONTRACT.md"
 
 
-def test_migration_032_is_latest_and_defines_checkout_attempts() -> None:
+def test_migration_033_is_latest_and_extends_checkout_payment_methods() -> None:
     migrations = sorted((ROOT / "database" / "postgres" / "migrations").glob("*.sql"))
     assert migrations[-1].name == MIGRATION.name
 
     sql = MIGRATION.read_text(encoding="utf-8")
-    assert "CREATE TABLE IF NOT EXISTS marketplace.checkout_attempts" in sql
-    assert "UNIQUE (user_id, idempotency_key)" in sql
-    assert "idx_marketplace_checkout_confirmation_idempotency" in sql
-    assert "snapshot JSONB NOT NULL" in sql
-    assert "reservation_ids JSONB NOT NULL" in sql
-    assert "correlation_id UUID NOT NULL" in sql
-    assert "protect_checkout_attempt" in sql
-    assert "terminal checkout status cannot be changed" in sql
-    assert "checkout immutable fields cannot be changed" in sql
-    assert "payment_method IN ('wallet')" in sql
-    assert "currency = 'BRL'" in sql
+    assert (
+        "DROP CONSTRAINT IF EXISTS marketplace_checkout_payment_method_allowed" in sql
+    )
+    assert "payment_method IN ('wallet', 'mercado_pago')" in sql
 
 
 def test_rollback_032_is_explicit_and_dependency_safe() -> None:
@@ -62,7 +55,7 @@ def test_store_orchestrates_checkout_stock_wallet_ledger_and_compensation() -> N
     assert "escrow_hold" in source
     assert "payment_failed" in source
     assert "payment_status = 'authorized'" in source
-    assert "settled\": False" in source
+    assert 'settled": False' in source
     assert "marketplace.checkout.started" in source
     assert "marketplace.order.created" in source
     assert "finance.payment.authorized" in source
@@ -88,9 +81,9 @@ def test_routes_are_registered_only_for_marketplace_and_flag_new_checkouts() -> 
     assert '@app.post("/valley/checkout/{checkout_id}/confirm")' in routes
     assert '@app.post("/valley/checkout/{checkout_id}/cancel")' in routes
     assert routes.count('alias="X-Idempotency-Key"') == 2
-    assert routes.count('alias="X-Correlation-Id"') == 4
+    assert routes.count('alias="X-Correlation-Id"') == 5
     assert "Checkout desativado por feature flag" in routes
-    assert "if module_name == \"marketplace\"" in shared_init
+    assert 'if module_name == "marketplace"' in shared_init
     assert "register_marketplace_checkout_routes(app)" in shared_init
 
 

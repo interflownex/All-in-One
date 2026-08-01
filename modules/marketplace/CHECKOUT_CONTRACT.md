@@ -42,6 +42,7 @@ Migration:
 
 ```text
 database/postgres/migrations/032_marketplace_checkout_attempts.sql
+database/postgres/migrations/033_marketplace_checkout_mercado_pago.sql
 ```
 
 Rollback manual:
@@ -91,9 +92,20 @@ Corpo:
   "cart_id": "uuid",
   "currency": "BRL",
   "expected_total_brl": "199.90",
-  "payment_method": "wallet"
+  "payment_method": "mercado_pago"
 }
 ```
+
+Para Wallet, mantenha `payment_method: "wallet"`. Para Mercado Pago, crie a
+preferência server-side em:
+
+```http
+POST /valley/checkout/{checkout_id}/mercadopago/preference
+```
+
+O endpoint devolve `init_point`/`sandbox_init_point` sem expor o access token.
+O ambiente exige `MERCADO_PAGO_ACCESS_TOKEN`,
+`MERCADO_PAGO_WEBHOOK_SECRET` e `MERCADO_PAGO_NOTIFICATION_URL` HTTPS.
 
 A criação:
 

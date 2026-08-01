@@ -1,6 +1,32 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 5.2  
+## Versão 5.3 — Checkout Mercado Pago
+
+**Data e hora:** 01/08/2026 08:58, `America/Sao_Paulo`
+**Branch:** `codex/corrigir-vscode-persistente-20260731`
+**Referência local:** merge sobre `origin/main` em `4b4f83f3b3cefe9850f796e4dd393b741b1c89cb`
+**Objetivo:** preparar a criação server-side de preferências Checkout Pro do Mercado Pago para o checkout Marketplace.
+
+Escopo entregue: `payment_method` aceita `wallet` ou `mercado_pago`; o backend
+cria a preferência em `POST /valley/checkout/{checkout_id}/mercadopago/preference`;
+o access token nunca é enviado ao cliente; a migration `033` e seu rollback
+ampliam a constraint de pagamento. A feature flag
+`MARKETPLACE_CHECKOUT_V1_ENABLED` continua desligada por padrão.
+
+Pré-requisitos: `MERCADO_PAGO_ACCESS_TOKEN`, `MERCADO_PAGO_WEBHOOK_SECRET` e
+`MERCADO_PAGO_NOTIFICATION_URL` com HTTPS, sempre fora do Git. A assinatura
+HMAC `id;request-id;ts` é validada e expira em 300 segundos.
+
+Validação reproduzível: `python3 -m py_compile` nos módulos alterados e
+`.venv/bin/python -m pytest --capture=no -q tests/test_mercado_pago_checkout.py tests/test_marketplace_checkout_contract.py tests/test_marketplace_checkout_routes.py`.
+O ambiente local exigiu `--capture=no` por falha do diretório temporário do
+pytest. Sem credenciais não foi feita chamada real ao PSP.
+
+Pendência: implementar consumidor idempotente do webhook, consulta autoritativa
+do pagamento, atualização transacional de escrow/ledger e refund/chargeback na
+issue #95 antes de habilitar produção.
+
+**Versão:** 5.3
 **Data e hora:** 01/08/2026 04:18, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
 **Marcos integrados:** PR `#108` (`1d05e56ca3bc1a66eb1e280743db24308d6da1b1`) e PR `#109` (`90d518cf65b90ec54c8dc6995f47c061cbba2e23`)  

@@ -333,9 +333,9 @@ class MarketplaceCheckoutPostgresStore:
                     raise MarketplaceCheckoutConflictError(
                         "Somente BRL é permitido neste incremento."
                     )
-                if normalized_method != "wallet":
+                if normalized_method not in {"wallet", "mercado_pago"}:
                     raise MarketplaceCheckoutConflictError(
-                        "Somente Wallet interna é permitida neste incremento."
+                        "Método de pagamento não suportado neste checkout."
                     )
 
                 cart = connection.execute(
@@ -496,7 +496,7 @@ class MarketplaceCheckoutPostgresStore:
                     "company_id": selected_company_id,
                     "currency": "BRL",
                     "total_brl": str(total),
-                    "payment_method": "wallet",
+                    "payment_method": normalized_method,
                     "payment_status": "not_started",
                     "reservation_ids": reservation_ids,
                     "snapshot_hash": self._stable_hash(snapshot),
@@ -528,7 +528,7 @@ class MarketplaceCheckoutPostgresStore:
                         snapshot, reservation_ids, correlation_id, causation_id,
                         expires_at, metadata, created_by, updated_by)
                        VALUES (%s, %s, %s, %s, %s, %s,
-                               'pending_payment', 'not_started', 'wallet', 'BRL',
+                               'pending_payment', 'not_started', %s, 'BRL',
                                %s, %s, %s, %s, %s, %s, %s, %s, %s,
                                '{}'::jsonb, %s, %s)
                        RETURNING *""",
@@ -539,6 +539,7 @@ class MarketplaceCheckoutPostgresStore:
                         selected_store_id,
                         cart_id,
                         order_id,
+                        normalized_method,
                         expected,
                         total,
                         idempotency_key,
