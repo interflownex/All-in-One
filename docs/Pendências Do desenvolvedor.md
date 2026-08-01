@@ -1,30 +1,41 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 5.1  
-**Data e hora:** 01/08/2026 04:10, `America/Sao_Paulo`  
+**Versão:** 5.2  
+**Data e hora:** 01/08/2026 04:18, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
-**Marco integrado:** PR `#108`, commit `1d05e56ca3bc1a66eb1e280743db24308d6da1b1`  
-**Branch desta atualização:** `codex/finalizar-status-pos-merge-20260801`  
+**Marcos integrados:** PR `#108` e PR `#109`  
 **Issue de orquestração:** `#51`  
 **Classificação:** `Pendências > Técnico > Equipe Técnica`  
 **Públicos impactados:** Pessoa Física, Pessoa Jurídica, Equipe Técnica, gestão e investidores
 
 ## 1. Situação consolidada
 
-A correção de governança foi integrada com todos os gates verdes. O projeto possui fonte única versionada, Valley permanece dentro do monorepo oficial e Vision continua inativo.
+A governança, a fonte oficial única e os documentos pós-merge foram integrados com os gates obrigatórios verdes. Valley permanece dentro do monorepo oficial e Vision continua inativo.
 
 Concluído:
 
 - política `config/autonomy/repository_scope_policy.json`;
 - gate `scripts/validate_repository_scope.py`;
 - testes de regressão;
-- reconciliação dos documentos autoritativos;
-- atualização das issues #51, #55 e #95;
+- reconciliação das issues #51, #55 e #95;
 - inclusão da issue #107 no mapa de bloqueios;
-- PR #108 integrada por Squash and Merge;
-- CI, Security, Docker Compose Health Gate e A1 Admin Template verdes no mesmo SHA.
+- PRs #108 e #109 integradas por Squash and Merge;
+- CI, Security, Docker Compose Health Gate e A1 Admin Template verdes.
 
-## 2. Pendências P0
+## 2. Pendência imediata: worktree local
+
+O caminho `/home/eretazan/all-in-one` não esteve montado nesta execução. Ainda é obrigatório verificar:
+
+- branch e HEAD locais;
+- staged, unstaged e untracked;
+- exclusões preparadas;
+- commits locais não publicados;
+- merge, rebase ou cherry-pick em andamento;
+- diferença para `origin/main`.
+
+Nenhum pull, reset, clean, descarte, commit ou push deve ocorrer antes de preservar branch de backup e patches.
+
+## 3. Pendências P0
 
 ### #95 — PSP, webhooks, liquidação e reconciliação
 
@@ -54,20 +65,7 @@ Ação necessária:
 - repetir o workflow;
 - exigir rollout verde sem enfraquecer o gate.
 
-## 3. Pendências P1
-
-### Auditoria do worktree local
-
-O caminho `/home/eretazan/all-in-one` não esteve montado nesta execução. Ainda é obrigatório verificar:
-
-- branch e HEAD locais;
-- staged, unstaged e untracked;
-- exclusões preparadas;
-- commits locais não publicados;
-- merge, rebase ou cherry-pick em andamento;
-- diferença para `origin/main`.
-
-Nenhum pull, reset, clean, descarte, commit ou push deve ocorrer antes de preservar branch de backup e patches.
+## 4. Pendências P1
 
 ### #89 — AIO Admin
 
@@ -77,7 +75,7 @@ A aplicação produtiva está publicada, mas a fonte operacional ainda precisa c
 
 As branches antigas não são candidatas a merge direto. Trechos úteis devem ser reconstruídos sobre a `main` atual após revisão de migrations, lockfiles, segredos, branding e testes.
 
-## 4. Pendências P2
+## 5. Pendências P2
 
 - #47: Health Watch + SafeZone funcional em Android/Wear OS;
 - #55: persistência, integrações e homologação da Rodada 004;
@@ -86,7 +84,7 @@ As branches antigas não são candidatas a merge direto. Trechos úteis devem se
 - #24: comprovação integral da Promoção do Dia no Stitch, código e E2E;
 - #51: continuidade Finance → Delivery → Rider conforme dependências.
 
-## 5. Regras permanentes
+## 6. Regras permanentes
 
 1. único repositório oficial: `interflownex/All-in-One`;
 2. Valley interno ao monorepo;
@@ -101,17 +99,17 @@ As branches antigas não são candidatas a merge direto. Trechos úteis devem se
 11. checkout produtivo desligado até homologação financeira;
 12. nenhuma tarefa concluída sem teste, evidência, documentação e rollback.
 
-## 6. Próxima sequência
+## 7. Ordem operacional atual
 
-1. integrar esta atualização pós-merge;
-2. auditar o worktree local;
-3. executar a issue #95;
-4. resolver a issue #107 externamente;
-5. executar a issue #89;
-6. revisar branches antigas por extração seletiva;
-7. avançar Delivery e Rider após o gate financeiro.
+1. auditar o worktree local;
+2. executar a issue #95;
+3. resolver a issue #107 externamente;
+4. executar a issue #89;
+5. revisar branches antigas por extração seletiva;
+6. avançar Delivery e Rider após o gate financeiro.
 
-## 7. Histórico
+## 8. Histórico
 
 - v5.0: correção mandatória de escopo, documentos, issues e gate de regressão;
-- v5.1: registro pós-merge da PR #108 e limpeza da fila autoritativa.
+- v5.1: registro pós-merge;
+- v5.2: remoção da autorreferência e definição da fila operacional real.
