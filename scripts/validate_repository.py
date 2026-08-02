@@ -38,6 +38,7 @@ GOOGLE_CLOUD_INVENTORY = ROOT / "config" / "cloud" / "google_cloud_inventory.jso
 APIGEE_API_HUB_PLAN = ROOT / "config" / "cloud" / "apigee_api_hub_plan.json"
 MONGODB_CONTRACT = ROOT / "config" / "database" / "mongodb_contract.json"
 STITCH_SYNC_WORKFLOW = ROOT / ".github" / "workflows" / "stitch-sync.yml"
+DEPLOY_GKE_WORKFLOW = ROOT / ".github" / "workflows" / "deploy.yml"
 BRAND_IDENTITY = ROOT / "config" / "branding" / "brand_identity.json"
 COMPLIANCE_MATRIX = ROOT / "config" / "compliance" / "data_classification.json"
 DATA_SUBJECT_RIGHTS = ROOT / "config" / "compliance" / "data_subject_rights.json"
@@ -665,6 +666,34 @@ def main() -> int:
                 "Data Agent Kit deve preservar credenciais fora do Git e bloquear operacoes destrutivas.",
                 errors,
             )
+    deploy_gke_workflow = (
+        DEPLOY_GKE_WORKFLOW.read_text(encoding="utf-8")
+        if DEPLOY_GKE_WORKFLOW.is_file()
+        else ""
+    )
+    if not deploy_gke_workflow:
+        fail("Workflow GKE ausente: .github/workflows/deploy.yml", errors)
+    else:
+        for forbidden in ["  push:", "branches: [main]"]:
+            if forbidden in deploy_gke_workflow:
+                fail(
+                    f"Workflow GKE nao deve disparar automaticamente no modo local-first: {forbidden}",
+                    errors,
+                )
+        for needle in [
+            "workflow_dispatch:",
+            "confirm_gcp_billing_enabled",
+            'GOOGLE_CLOUD_ENABLED: "false"',
+            'GOOGLE_CLOUD_ENABLED: "true"',
+            "inputs.confirm_gcp_billing_enabled == true",
+            "inputs.confirm_gcp_billing_enabled != true",
+            "gcloud container clusters get-credentials",
+        ]:
+            if needle not in deploy_gke_workflow:
+                fail(
+                    f"Workflow GKE deve permanecer manual e protegido por billing legitimo: {needle}",
+                    errors,
+                )
     if not FIREBASE_AUTH_POLICY.is_file():
         fail("Politica obrigatoria do Firebase Auth ausente.", errors)
     else:
