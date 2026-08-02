@@ -1,6 +1,120 @@
 # Tarefas da IA Desenvolvedora
 
-**Versão:** 5.2  
+## Versão 5.4 — Cloudflare WSL coerente e MCP sem segredo literal
+
+**Data e hora:** 02/08/2026 00:07, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/cloudflare-wsl-coerente-clean-20260802`
+**Referência local antes do commit da entrega:** `953b570cd574`
+**Objetivo:** consolidar Cloudflare no workspace WSL com Pages, Tunnel, MCP,
+DNS e documentação persistentes, sem segredos versionados ou bearer literal em
+cadastros MCP.
+
+### Contexto
+
+O Cloudflare está ativo na conta `474fc26bf9c6bcf5e1a84b7f63a516d8`. O projeto
+Pages confirmado é `all-in-one-web`, com domínios
+`all-in-one-web-7fa.pages.dev` e `brasildesconto.com.br`. O tunnel real
+confirmado por API é `all-in-one-stream`
+(`7b9ce5bc-7f6e-4416-bff3-3a278ce4b96f`), em estado `healthy`, expondo
+`stream.brasildesconto.com.br` para `http://127.0.0.1:8100`.
+
+### Escopo entregue
+
+- Criar `config/cloudflare/workspace_profile.json` como fonte local versionada.
+- Atualizar `config/autonomy/cloudflare_web_policy.json` para Cloudflare Pages,
+  MCP e tunnel real.
+- Instalar e validar `cloudflared` `2026.7.3` no WSL.
+- Instalar e validar `wrangler` `4.118.0`, autenticado na conta Cloudflare.
+- Cadastrar MCPs `cloudflare-docs` e `cloudflare-api` com API por
+  `CLOUDFLARE_API_TOKEN`.
+- Migrar o MCP `stitch` de bearer literal para `STITCH_ACCESS_TOKEN` persistente
+  no ambiente de usuário do Windows.
+- Alinhar `stream.brasildesconto.com.br` e scripts Windows para API Hub `8100`,
+  removendo a divergência com ERP `8107`.
+- Documentar operação em `docs/CLOUDFLARE_WSL.md` e atualizar
+  `docs/CLOUDFLARE_TUNNEL_STREAM.md`.
+
+### Fontes de verdade
+
+- `config/cloudflare/workspace_profile.json`
+- `config/autonomy/cloudflare_web_policy.json`
+- `config/integrations/cloudflare_stream_tunnel.json`
+- `scripts/validate_cloudflare_wsl.py`
+- `scripts/configure_cloudflare_wsl.py`
+- Documentação oficial Cloudflare Tunnel, Wrangler e MCP Cloudflare.
+
+### Pré-requisitos
+
+- `CLOUDFLARE_API_TOKEN` somente fora do Git quando for usar MCP/API token.
+- `STITCH_ACCESS_TOKEN` persistido como variável de usuário do Windows.
+- `CLOUDFLARE_TUNNEL_TOKEN` somente fora do Git se for ativar réplica systemd no
+  WSL.
+- Serviço local do API Hub respondendo em `http://127.0.0.1:8100` para tráfego
+  de aplicação.
+
+### Sequência de execução
+
+1. Validar estado Cloudflare: `python3 scripts/validate_cloudflare_wsl.py`.
+2. Aplicar MCPs locais: `python3 scripts/configure_cloudflare_wsl.py --apply`.
+3. Validar contrato: `.venv/bin/python -m pytest --capture=no -q tests/test_cloudflare_wsl_configuration.py tests/test_windows_script_contracts.py`.
+4. Validar repo: `python3 scripts/validate_repository.py`.
+5. Publicar alterações em branch de trabalho e abrir ou atualizar PR para
+   `main`.
+
+### Prioridades
+
+1. Não versionar tokens, chaves, `cert.pem` ou credenciais `*.json`.
+2. Manter `stream.brasildesconto.com.br` em `http://127.0.0.1:8100`.
+3. Não publicar SSH, PostgreSQL, MongoDB, RabbitMQ ou Redis via Cloudflare
+   Tunnel.
+4. Usar `api.brasildesconto.com.br` apenas após definir DNS e política de acesso.
+
+### Testes e evidências
+
+- `python3 -m py_compile scripts/configure_cloudflare_wsl.py scripts/validate_cloudflare_wsl.py scripts/validate_repository.py`
+- `.venv/bin/python -m pytest --capture=no -q tests/test_cloudflare_wsl_configuration.py tests/test_windows_script_contracts.py`
+- `python3 scripts/validate_repository.py`
+- `python3 scripts/validate_cloudflare_wsl.py`
+- `docker compose -f infra/docker/docker-compose.yml config --quiet`
+- `docker info --format '{{json .ServerVersion}}'`
+- `codex mcp list` sem bearer literal para `stitch`.
+
+### Critérios de aceite
+
+- Validador Cloudflare confirma `cloudflared`, `wrangler`, Pages, MCPs,
+  conectividade `region1.v2.argotunnel.com:7844`, API Cloudflare e tunnel
+  `all-in-one-stream` `healthy`.
+- Testes específicos e validador geral passam.
+- `stream.brasildesconto.com.br` resolve por DNS público.
+- `api.brasildesconto.com.br` permanece reservado, sem declarar publicação
+  inexistente.
+- Nenhum segredo Cloudflare ou Stitch é versionado.
+
+### Riscos, bloqueios e pendências restantes
+
+- A leitura de registros DNS pela API retornou `Authentication error` com o
+  OAuth atual do `wrangler`; portanto a validação DNS autoritativa fica limitada
+  à resolução pública e ao estado do Tunnel até existir token com `DNS Read`.
+- `api.brasildesconto.com.br` não resolve hoje e não deve ser tratado como ativo.
+- A réplica systemd no WSL permanece opcional e só pode ser instalada com
+  `CLOUDFLARE_TUNNEL_TOKEN` fora do Git.
+- Se o token Windows `STITCH_ACCESS_TOKEN` for rotacionado, recriar a variável de
+  usuário antes de reiniciar o Codex.
+
+### Procedimento de entrega
+
+Versionar somente os arquivos desta atividade, preservar mudanças preexistentes
+fora do escopo, executar push da branch de trabalho, abrir ou atualizar PR para
+`main` e registrar que o merge deve ser feito exclusivamente por Squash and
+Merge após gates verdes.
+
+### Histórico resumido
+
+- v5.4: Cloudflare WSL, MCPs Cloudflare, tunnel real `all-in-one-stream`, correção
+  de origem `stream -> 8100` e migração do MCP Stitch para variável de ambiente.
+
+**Versão:** 5.2
 **Data e hora:** 01/08/2026 04:18, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`  
 **Marcos integrados:** PR `#108` (`1d05e56ca3bc1a66eb1e280743db24308d6da1b1`) e PR `#109` (`90d518cf65b90ec54c8dc6995f47c061cbba2e23`)  

@@ -19,7 +19,7 @@ $scriptPath = Join-Path $PSScriptRoot "setup_cloudflare_stream_tunnel.ps1"
 & $scriptPath `
     -Hostname $Hostname `
     -TunnelName "all-in-one-stream" `
-    -OriginUrl "http://localhost:58578" `
+    -OriginUrl "http://127.0.0.1:8100" `
     -SkipOriginCheck:$SkipOriginCheck `
     -PublishAllPaths:$PublishAllPaths
 
