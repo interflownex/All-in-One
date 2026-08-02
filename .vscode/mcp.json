@@ -7,6 +7,10 @@
         "Accept": "application/json",
         "X-Goog-Api-Key": "${env:STITCH_API_KEY}"
       }
+    },
+    "mercadopago": {
+      "type": "http",
+      "url": "https://mcp.mercadopago.com/mcp"
     }
   }
 }
