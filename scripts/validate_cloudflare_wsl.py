@@ -1,19 +1,19 @@
 from __future__ import annotations
 
 import argparse
+import http.client
 import json
 import os
 import socket
 import subprocess
 import sys
-import urllib.error
-import urllib.request
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE = ROOT / "config" / "cloudflare" / "workspace_profile.json"
 DEFAULT_TUNNEL_TOKEN_ENV = "CLOUDFLARE_TUNNEL_TOKEN"
+CLOUDFLARE_API_HOST = "api.cloudflare.com"
 
 
 def run(args: list[str], timeout: int = 45) -> tuple[int, str]:
@@ -49,23 +49,33 @@ def get_cloudflare_bearer_token(errors: list[str]) -> str:
     return token
 
 
+def cloudflare_https_get(path: str, errors: list[str], headers: dict[str, str] | None = None) -> dict:
+    if not path.startswith("/client/v4/"):
+        fail(f"Caminho Cloudflare fora da API permitida: {path}", errors)
+        return {}
+    connection = http.client.HTTPSConnection(CLOUDFLARE_API_HOST, timeout=30)
+    try:
+        connection.request("GET", path, headers=headers or {})
+        response = connection.getresponse()
+        return json.loads(response.read().decode("utf-8"))
+    except json.JSONDecodeError:
+        fail(f"API Cloudflare respondeu JSON invalido para {path}.", errors)
+    except Exception as exc:
+        fail(f"API Cloudflare indisponivel para {path}: {exc}", errors)
+    finally:
+        connection.close()
+    return {}
+
+
 def cloudflare_api_get(profile: dict, path: str, errors: list[str]) -> dict:
     token = get_cloudflare_bearer_token(errors)
     if not token:
         return {}
-    request = urllib.request.Request(f"https://api.cloudflare.com/client/v4{path}")
-    request.add_header("Authorization", f"Bearer {token}")
-    try:
-        with urllib.request.urlopen(request, timeout=30) as response:
-            return json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        try:
-            return json.loads(exc.read().decode("utf-8"))
-        except Exception:
-            fail(f"API Cloudflare respondeu HTTP {exc.code} sem JSON valido.", errors)
-    except Exception as exc:
-        fail(f"API Cloudflare indisponivel para {path}: {exc}", errors)
-    return {}
+    return cloudflare_https_get(
+        f"/client/v4{path}",
+        errors,
+        {"Authorization": f"Bearer {token}"},
+    )
 
 
 def ok(message: str) -> None:
@@ -217,15 +227,11 @@ def validate_network(errors: list[str]) -> None:
             ok("porta Cloudflare Tunnel 7844 acessivel")
     except OSError as exc:
         fail(f"porta Cloudflare Tunnel 7844 indisponivel: {exc}", errors)
-    try:
-        with urllib.request.urlopen("https://api.cloudflare.com/client/v4/ips", timeout=15) as response:
-            data = json.loads(response.read().decode("utf-8"))
-        if data.get("success") is True:
-            ok("API Cloudflare acessivel")
-        else:
-            fail("API Cloudflare respondeu sem success=true.", errors)
-    except Exception as exc:
-        fail(f"API Cloudflare indisponivel: {exc}", errors)
+    data = cloudflare_https_get("/client/v4/ips", errors)
+    if data.get("success") is True:
+        ok("API Cloudflare acessivel")
+    elif data:
+        fail("API Cloudflare respondeu sem success=true.", errors)
 
 
 def validate_tunnel_activation(profile: dict, errors: list[str], strict: bool) -> None:
