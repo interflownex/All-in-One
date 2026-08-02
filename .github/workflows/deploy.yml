@@ -1,13 +1,33 @@
 name: Deploy to GKE (Cloud Build/GitOps)
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      confirm_gcp_billing_enabled:
+        description: "Confirmo que billing/IAM/APIs GCP estao legitimos para executar deploy GKE"
+        required: true
+        default: false
+        type: boolean
+
+env:
+  GOOGLE_CLOUD_ENABLED: "false"
 
 jobs:
+  local-first-guard:
+    if: ${{ inputs.confirm_gcp_billing_enabled != true }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Registrar bloqueio local-first
+        run: |
+          echo "Deploy GKE nao executado."
+          echo "O workspace esta em modo local-first sem Google Cloud pago."
+          echo "Acione manualmente com confirm_gcp_billing_enabled=true somente apos billing/IAM/APIs legitimos."
+
   deploy:
+    if: ${{ inputs.confirm_gcp_billing_enabled == true }}
     runs-on: ubuntu-latest
     env:
+      GOOGLE_CLOUD_ENABLED: "true"
       GCP_PROJECT_ID: all-in-one-498012
       GKE_CLUSTER: all-in-one-gke
       GKE_REGION: us-central1

@@ -1,5 +1,49 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 5.6 — GKE manual no modo local-first
+
+**Data e hora:** 02/08/2026 01:46, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/desativar-gke-local-first-20260802`
+**Referência local antes do commit da entrega:** `00d027e`
+**Objetivo:** remover a falha automática de GKE em `main` enquanto o workspace
+opera sem Google Cloud pago, preservando deploy manual futuro com confirmação
+explícita de billing/IAM/APIs legítimos.
+
+### Contexto
+
+O run de `main` `30732776160` falhou em `Get GKE credentials` com HTTP 403:
+billing desativado no projeto `all-in-one-498012`. Isso é um bloqueio externo
+já registrado em #107, mas o workflow automático em `push` contrariava o modo
+local-first definido para o workspace.
+
+### Escopo
+
+- Converter `.github/workflows/deploy.yml` para `workflow_dispatch`.
+- Exigir `confirm_gcp_billing_enabled=true` para executar o job real de deploy.
+- Manter `GOOGLE_CLOUD_ENABLED=false` no nível padrão do workflow.
+- Adicionar teste `tests/test_gke_workflow_local_first.py`.
+- Atualizar `scripts/validate_repository.py` para bloquear regressão.
+- Atualizar `docs/Pendências Do desenvolvedor.md` e relatórios v5.3.
+
+### Sequência de validação
+
+1. `.venv/bin/python -m pytest --capture=no -q tests/test_gke_workflow_local_first.py`
+2. `python3 scripts/validate_repository.py`
+3. Abrir PR, aguardar checks verdes e integrar por Squash and Merge.
+
+### Critérios de aceite
+
+- Nenhum deploy GKE automático em `push` para `main`.
+- GKE só executa manualmente com confirmação explícita.
+- #107 continua aberto como bloqueio externo de billing, sem simulação de
+  sucesso.
+
+### Histórico resumido
+
+- v5.6: GKE automático removido do modo local-first; workflow fica manual e
+  auditável.
+
 ## Versão 5.5 — WSL local-first, DNS persistente, Antigravity/Docker/MCP e acesso SSH
 
 **Data e hora:** 02/08/2026 01:25:09, `America/Sao_Paulo`
