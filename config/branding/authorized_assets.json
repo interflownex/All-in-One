@@ -1,5 +1,5 @@
 {
-  "version": "2026-07-24",
+  "version": "2026-08-01",
   "language": "pt-BR",
   "scope": "grupo_all_in_one",
   "policy": {
@@ -50,13 +50,21 @@
       ]
     },
     "valley_riders": {
-      "display_name": "Valley Riders",
-      "original_filename": "LOGO OFICIAL VALLEY RIDERS_2.png",
+      "display_name": "Valley Rider",
+      "technical_alias": "Valley Riders",
+      "visual_wordmark": "VALLEY RIDER",
+      "original_filename": "LOGO OFICIAL VALLEY RIDERS.png",
       "canonical_repository_asset": "assets/brand/valley-riders-logo-official.png",
+      "application_asset": "apps/valley_rider/public/brand/valley-riders-logo-official.png",
+      "sha256": "f5fba898ee9c660a35e359b8968b1b7d7256d7ded7434e34d1abd601e609db73",
+      "dimensions": "1024x1024",
+      "alpha_channel": true,
+      "drive_file_id": "1o17hEuccrJDZLUL2EbL06Pgq9MIyq6mQ",
       "official_source_reference": "https://chatgpt.com/s/m_6a5fe20ba49c8191899026b0104ca617",
-      "status": "binario_original_pendente_de_ingestao",
+      "status": "binario_externo_validado_pendente_de_ingestao_git",
+      "ingestion_script": "scripts/branding/ingest_valley_rider_logo.py",
       "substitution_allowed": false,
-      "usage_until_ingestion": "proibido_usar_logomarca_alternativa_ou_reconstruida"
+      "usage_until_ingestion": "usar_apenas_texto_fallback_valley_rider; proibido_usar_logomarca_alternativa_ou_reconstruida"
     }
   }
 }
