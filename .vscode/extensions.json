@@ -13,9 +13,7 @@
     "davidanson.vscode-markdownlint",
     "github.vscode-github-actions",
     "ms-kubernetes-tools.vscode-kubernetes-tools",
-    "googlecloudtools.cloudcode",
     "google.geminicodeassist",
-    "google.gemini-cli-vscode-ide-companion",
-    "GoogleCloudTools.datacloud"
+    "google.gemini-cli-vscode-ide-companion"
   ]
 }

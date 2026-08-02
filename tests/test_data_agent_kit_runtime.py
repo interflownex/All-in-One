@@ -19,6 +19,7 @@ def test_runtime_status_tolerates_slow_gcloud(tmp_path, monkeypatch) -> None:
 
     status = configure_data_agent_kit.runtime_status()
 
+    assert status["enabled"] is False
     assert status["application_default_credentials_available"] is True
     assert status["runtime_warning"] is None
     assert (

@@ -37,9 +37,6 @@ on:
       - "scripts/validate_repository_compat.py"
       - "tests/test_*stitch*.py"
       - ".github/workflows/stitch-sync.yml"
-  schedule:
-    - cron: "17 7 * * 1-5"
-
 permissions:
   contents: read
 
@@ -48,7 +45,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  STITCH_REMOTE_SYNC_ENABLED: "true"
+  STITCH_REMOTE_SYNC_ENABLED: "false"
   STITCH_COORDINATOR: "codex"
   STITCH_LEGACY_MODULE_SYNC_ENABLED: "false"
 
@@ -100,6 +97,7 @@ jobs:
       contents: write
     env:
       STITCH_API_KEY: ${{ secrets.STITCH_API_KEY }}
+      STITCH_REMOTE_SYNC_ENABLED: "true"
       CODEX_AGENT_ID: github-actions-fallback
       ALLOW_CREATE_MISSING_PROJECTS: ${{ inputs.allow_create_missing_official_projects }}
     steps:

@@ -42,6 +42,12 @@ refresh_generated_env_files() {
   fi
 }
 
+validate_wsl_dns_persistence() {
+  if command -v python3 >/dev/null 2>&1; then
+    python3 "$ROOT/scripts/configure_wsl_dns.py" --check >/dev/null
+  fi
+}
+
 export_workspace_defaults() {
   export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-all-in-one-dx}"
   export DOCKER_BUILDKIT="${DOCKER_BUILDKIT:-1}"
@@ -162,6 +168,7 @@ bootstrap() {
   load_env_file "$ROOT/.env.example"
   load_env_file "$ROOT/.env"
   refresh_generated_env_files
+  validate_wsl_dns_persistence
   load_env_file "$ROOT/.env.docker-dx"
   export_workspace_defaults
   install_docker_compose_local

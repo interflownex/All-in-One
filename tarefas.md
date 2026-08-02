@@ -1,5 +1,144 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 5.5 — WSL local-first, DNS persistente, Antigravity/Docker/MCP e acesso SSH
+
+**Data e hora:** 02/08/2026 01:25:09, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/wsl-dns-antigravity-local-first-20260802`
+**Referência local antes do commit da entrega:** `3533bca`
+**Objetivo:** consolidar o workspace no WSL em modo local-first sem Google Cloud
+pago, mantendo Cloudflare, Docker, MCP, Antigravity, Tailscale, DNS persistente e
+acesso SSH por chave de forma coerente e auditável.
+
+### Contexto
+
+O Cloudflare já está ativo e validado para Pages, MCP e tunnel
+`all-in-one-stream`. A execução remota Google Cloud/Data Agent Kit fica suspensa
+por padrão. Stitch permanece configurado, mas a sincronização remota automática
+fica desligada; fallback remoto somente por `workflow_dispatch` explícito com
+segredo fora do Git.
+
+### Escopo entregue
+
+- Criar política e script persistente para DNS do WSL com `systemd-resolved`,
+  `/etc/wsl.conf` sem `generateResolvConf` e preservação do MagicDNS Tailscale.
+- Aplicar o DNS real no WSL e limpar alerta Tailscale de `setLinkDomains`.
+- Normalizar MCPs do Codex: Docker usa `docker mcp gateway run --profile
+  all_in_one_local`; filesystem aponta para o workspace WSL; Cloudflare e Stitch
+  usam variáveis de ambiente sem token literal.
+- Criar política e script de confiança do Antigravity, mantendo apenas MCPs
+  essenciais: Cloudflare, Context7, Docker, filesystem do workspace e Stitch.
+- Remover recomendações automáticas de `googlecloudtools.cloudcode` e
+  `GoogleCloudTools.datacloud` do VS Code e colocar variáveis Google/Data Agent
+  em `false`.
+- Suspender Data Agent Kit por política, mantendo metadados só para reativação
+  futura controlada.
+- Remover `schedule` do workflow Stitch e deixar execução remota apenas como
+  fallback manual.
+- Ajustar scripts Cloudflare para rodarem `wrangler` em modo CI/sem métricas e
+  aceitarem validação `--check`.
+- Criar política SSH remota sem segredo, gerar chave OpenSSH fora do Git,
+  registrar a chave pública em `~/.ssh/authorized_keys` e validar SSH por
+  loopback e Tailscale.
+- Gerar manual PDF sensível fora do Git em
+  `/home/eretazan/.local/share/all-in-one/secure/manual-termius-termux-all-in-one-wsl-20260802.pdf`.
+
+### Fontes de verdade
+
+- `config/autonomy/wsl_dns_policy.json`
+- `config/autonomy/antigravity_trust_policy.json`
+- `config/autonomy/ssh_remote_access_policy.json`
+- `config/autonomy/google_integrations_policy.json`
+- `config/autonomy/data_agent_kit_policy.json`
+- `config/cloudflare/workspace_profile.json`
+- `.agents/antigravity.json`
+- `.vscode/settings.json`
+- `.vscode/extensions.json`
+- `.github/workflows/stitch-sync.yml`
+
+### Pré-requisitos
+
+- Segredos permanecem fora do Git: `CLOUDFLARE_API_TOKEN`,
+  `CLOUDFLARE_TUNNEL_TOKEN`, `STITCH_API_KEY`, `TELEGRAM_BOT_TOKEN` e
+  `TELEGRAM_CHAT_ID`.
+- A chave privada OpenSSH fica somente em
+  `/home/eretazan/.ssh/all_in_one_wsl_ed25519`.
+- O manual PDF sensível e o utilitário local de envio Telegram ficam somente em
+  `/home/eretazan/.local/share/all-in-one/secure/`.
+- O app Tailscale do cliente Termius/Termux deve estar na mesma tailnet.
+
+### Sequência de execução
+
+1. Validar DNS WSL: `python3 scripts/configure_wsl_dns.py --check`.
+2. Validar Antigravity: `python3 scripts/configure_antigravity_trust.py --check`.
+3. Validar Cloudflare: `python3 scripts/validate_cloudflare_wsl.py`.
+4. Validar Docker: `python3 scripts/configure_docker_dx.py --check --print-status`
+   e `docker compose -f infra/docker/docker-compose.yml config --quiet`.
+5. Validar SSH: `ssh -i /home/eretazan/.ssh/all_in_one_wsl_ed25519 -o
+   BatchMode=yes eretazan@100.99.245.76 true`.
+6. Validar repositório: `python3 scripts/validate_repository.py`.
+
+### Prioridades
+
+1. Não versionar chave privada, PDF sensível, tokens ou backups externos.
+2. Manter Google Cloud, Data Agent Kit, AlloyDB e Code CLI desligados por
+   padrão no workspace.
+3. Manter Gemini Code Assist e Stitch MCP disponíveis sem execução remota
+   automática.
+4. Manter SSH administrativo exclusivamente por Tailscale/loopback; Cloudflare
+   Tunnel não publica SSH nem bancos.
+5. Preservar Docker MCP no perfil `all_in_one_local`.
+
+### Testes e evidências
+
+- `python3 -m py_compile scripts/configure_data_agent_kit.py scripts/configure_wsl_dns.py scripts/configure_antigravity_trust.py scripts/configure_cloudflare_wsl.py scripts/validate_cloudflare_wsl.py scripts/validate_repository.py`
+- `.venv/bin/python -m pytest --capture=no -q tests/test_ssh_remote_access_policy.py tests/test_data_agent_kit_runtime.py tests/test_stitch_orchestrator.py tests/test_wsl_dns_policy.py tests/test_antigravity_trust_policy.py tests/test_windows_script_contracts.py tests/test_cloudflare_wsl_configuration.py`
+- `python3 scripts/configure_wsl_dns.py --check`
+- `python3 scripts/configure_antigravity_trust.py --check`
+- `python3 scripts/configure_data_agent_kit.py`
+- `python3 scripts/validate_cloudflare_wsl.py`
+- `python3 scripts/validate_repository.py`
+- `tailscale status --json | jq '{BackendState, TUN, Online: .Self.Online, DNSName: .Self.DNSName, TailscaleIPs, Health}'`
+- `resolvectl query github.com api.cloudflare.com login.tailscale.com registry-1.docker.io brasildesconto.com.br stream.brasildesconto.com.br`
+- `ssh -i /home/eretazan/.ssh/all_in_one_wsl_ed25519 -o BatchMode=yes eretazan@127.0.0.1 true`
+- `ssh -i /home/eretazan/.ssh/all_in_one_wsl_ed25519 -o BatchMode=yes eretazan@100.99.245.76 true`
+
+### Critérios de aceite
+
+- DNS do WSL continua apontando para `systemd-resolved` após reinício e resolve
+  hosts GitHub, Cloudflare, Tailscale, Docker Registry e domínios do projeto.
+- `tailscale status --json` retorna `Health: []` e MagicDNS resolve
+  `valley-wsl2-1.tailb44596.ts.net`.
+- Antigravity e Codex compartilham MCPs essenciais sem duplicidade, sem
+  `MCP_DOCKER` legado e sem segredo literal.
+- Cloudflare WSL valida Pages, MCPs, API, porta 7844 e tunnel
+  `all-in-one-stream` healthy.
+- SSH aceita somente chave pública; senha e root permanecem bloqueados.
+- PDF e chave SSH não aparecem em `git status`.
+
+### Riscos, bloqueios e pendências restantes
+
+- O envio real por Telegram não foi executado porque `TELEGRAM_BOT_TOKEN` e
+  `TELEGRAM_CHAT_ID` não estavam definidos no ambiente; o utilitário local
+  sensível ficou pronto fora do Git.
+- O PDF não imprime o conteúdo da chave privada; a importação no Termius deve
+  usar a chave OpenSSH local indicada no manual.
+- A sincronização remota Stitch segue disponível apenas como fallback manual e
+  exige segredo legítimo fora do Git.
+
+### Procedimento de entrega
+
+Versionar somente os arquivos controlados desta atividade, executar push da
+branch, abrir ou atualizar PR para `main`, aguardar gates verdes e integrar
+exclusivamente por Squash and Merge. Após o merge, sincronizar `main` local e
+liberar o lock multiagente.
+
+### Histórico resumido
+
+- v5.5: modo local-first no WSL, DNS persistente, Antigravity/Docker/MCP
+  normalizados, Cloudflare robusto, Data Agent Kit suspenso, Stitch manual,
+  Tailscale saudável e SSH/Termius documentado fora do Git.
+
 ## Versão 5.4 — Cloudflare WSL coerente e MCP sem segredo literal
 
 **Data e hora:** 02/08/2026 00:07, `America/Sao_Paulo`

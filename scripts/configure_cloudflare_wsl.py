@@ -14,7 +14,17 @@ PROFILE = ROOT / "config" / "cloudflare" / "workspace_profile.json"
 DEFAULT_SYSTEMD_SERVICE = "cloudflared-all-in-one.service"
 
 
-def run(args: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
+def cloudflare_command_environment() -> dict[str, str]:
+    environment = os.environ.copy()
+    environment.setdefault("CI", "1")
+    environment.setdefault("WRANGLER_SEND_METRICS", "false")
+    environment.setdefault("NO_UPDATE_NOTIFIER", "1")
+    return environment
+
+
+def run(
+    args: list[str], *, check: bool = True, timeout: int = 120
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         args,
         cwd=ROOT,
@@ -22,6 +32,8 @@ def run(args: list[str], *, check: bool = True) -> subprocess.CompletedProcess[s
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        timeout=timeout,
+        env=cloudflare_command_environment(),
     )
 
 
@@ -70,7 +82,7 @@ def ensure_codex_cloudflare_mcp(profile: dict) -> None:
 
 def validate_wrangler_auth() -> None:
     ensure_command("wrangler")
-    result = run(["wrangler", "whoami"], check=False)
+    result = run(["wrangler", "whoami"], check=False, timeout=120)
     if result.returncode:
         raise RuntimeError(
             "Wrangler nao esta autenticado. Execute `wrangler login` ou defina CLOUDFLARE_API_TOKEN fora do Git."
@@ -141,6 +153,7 @@ def main() -> int:
         description="Configura o perfil Cloudflare do All-in-One no WSL sem versionar segredos."
     )
     parser.add_argument("--apply", action="store_true", help="Aplica MCPs e valida CLI local.")
+    parser.add_argument("--check", action="store_true", help="Valida a CLI local sem alterar MCPs ou servico.")
     parser.add_argument(
         "--install-service",
         action="store_true",
