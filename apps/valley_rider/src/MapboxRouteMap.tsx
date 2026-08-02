@@ -10,6 +10,7 @@ import {
 import "./mapbox-navigation.css";
 
 // Contrato de compatibilidade auditável: mapbox-gl-js/v3.25.0
+// Estilos auditáveis: mapbox://styles/mapbox/navigation-day-v1 | mapbox://styles/mapbox/navigation-night-v1
 export type Coordinates = { lng: number; lat: number };
 export type RouteGeometry = { type: "LineString"; coordinates: [number, number][] };
 
