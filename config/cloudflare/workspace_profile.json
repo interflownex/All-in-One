@@ -1,6 +1,6 @@
 {
   "version": "2026-08-02",
-  "updated_at": "2026-08-01T23:45:00-03:00",
+  "updated_at": "2026-08-02T02:31:00-03:00",
   "timezone": "America/Sao_Paulo",
   "scope": "all-in-one-wsl",
   "cost_policy": "free_or_existing_plan_only",
@@ -14,6 +14,7 @@
   },
   "pages": {
     "project_name": "all-in-one-web",
+    "production_branch": "main",
     "application": "apps/all-in-one",
     "build_command": "npm ci && npm run build",
     "output_directory": "apps/all-in-one/dist",

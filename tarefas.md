@@ -1,5 +1,53 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 5.8 — Cloudflare Pages produção em `main`
+
+**Data e hora:** 02/08/2026 02:31, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/cloudflare-production-main-20260802`
+**Referência local antes do commit da entrega:** `41c0e33`
+**Objetivo:** fixar a branch de produção do Cloudflare Pages em `main`,
+remover a dependência de `worktree-sync` e validar o domínio customizado
+`brasildesconto.com.br` servindo o All-in-One correto.
+
+### Contexto
+
+Depois do deploy manual por `wrangler`, a lista do Cloudflare Pages mostrou que
+`main` ainda gerava Preview porque a branch produtiva remota estava em
+`worktree-sync`. Isso fazia o domínio customizado servir uma build antiga com
+título `tmp-valley`.
+
+### Escopo
+
+- Alterar remotamente o projeto Cloudflare Pages `all-in-one-web` para
+  `production_branch=main`.
+- Publicar novamente a build atual pelo `wrangler` OAuth local.
+- Versionar `production_branch=main` em `config/cloudflare/workspace_profile.json`
+  e `config/autonomy/cloudflare_web_policy.json`.
+- Atualizar os validadores para bloquear regressão.
+- Atualizar documentação e relatórios v5.5.
+
+### Evidências
+
+- API Cloudflare respondeu `success=true` e `production_branch=main`.
+- `wrangler pages deployment list --project-name all-in-one-web` mostrou
+  deployment Production na branch `main`, source `41c0e33`, deployment
+  `https://6286ca59.all-in-one-web-7fa.pages.dev`.
+- `https://brasildesconto.com.br` respondeu HTTP 200 com o título
+  `All-in-One - Ecossistema Digital` e headers de segurança.
+
+### Critérios de aceite
+
+- Produção Cloudflare Pages vem de `main`.
+- `worktree-sync` não é fonte produtiva.
+- Validador local falha se `production_branch` divergir de `main`.
+- Nenhum segredo é versionado.
+
+### Histórico resumido
+
+- v5.8: Cloudflare Pages production branch corrigida para `main`; domínio
+  customizado validado com o All-in-One correto.
+
 ## Versão 5.7 — Cloudflare completo e coerente no modo local-first
 
 **Data e hora:** 02/08/2026 02:09, `America/Sao_Paulo`

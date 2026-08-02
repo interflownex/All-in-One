@@ -154,6 +154,26 @@ def validate_pages_project(profile: dict, errors: list[str]) -> None:
         fail(f"Cloudflare Pages nao confirmou os itens esperados: {', '.join(missing)}", errors)
     else:
         ok(f"Cloudflare Pages confirmou {project}")
+    account_id = profile.get("account", {}).get("account_id", "")
+    expected_branch = pages.get("production_branch", "")
+    if not account_id or not project or not expected_branch:
+        fail("Perfil Cloudflare Pages deve declarar account_id, project_name e production_branch.", errors)
+        return
+    detail = cloudflare_api_get(profile, f"/accounts/{account_id}/pages/projects/{project}", errors)
+    if not detail:
+        return
+    if detail.get("success") is not True:
+        messages = ", ".join(error.get("message", "") for error in detail.get("errors", []))
+        fail(f"Cloudflare Pages nao confirmou o projeto versionado: {messages}", errors)
+        return
+    result = detail.get("result") or {}
+    if result.get("production_branch") != expected_branch:
+        fail(
+            f"Cloudflare Pages production_branch={result.get('production_branch')}, esperado {expected_branch}.",
+            errors,
+        )
+    else:
+        ok(f"Cloudflare Pages production_branch={expected_branch}")
 
 
 def validate_tunnel_remote_state(profile: dict, errors: list[str]) -> bool:

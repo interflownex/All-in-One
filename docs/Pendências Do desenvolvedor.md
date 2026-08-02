@@ -1,7 +1,7 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 5.4
-**Data e hora:** 02/08/2026 02:09, `America/Sao_Paulo`
+**Versão:** 5.5
+**Data e hora:** 02/08/2026 02:31, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Marcos integrados:** PR `#108`, PR `#109`, PR `#114`, PR `#115`
 **Issue de orquestração:** `#51`
@@ -22,6 +22,9 @@ MCPs e Tunnel `all-in-one-stream` responderam corretamente. O workflow de Pages
 passa a ser protegido por preflight de secrets: publica quando
 `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID` existirem fora do Git, e
 finaliza verde com aviso quando o token persistente ainda não estiver definido.
+Foi corrigida tambem a branch produtiva do Pages para `main`, removendo a
+dependencia operacional de `worktree-sync`; `brasildesconto.com.br` passou a
+servir o All-in-One correto.
 
 Concluído:
 
@@ -37,7 +40,9 @@ Concluído:
 - deploy GKE automático desativado no modo local-first, sem mascarar a pendência
   de billing;
 - variáveis não sensíveis do GitHub configuradas para Cloudflare Pages/Tunnel e
-  workflow de Pages alinhado ao `wrangler` `4.118.0`.
+  workflow de Pages alinhado ao `wrangler` `4.118.0`;
+- Cloudflare Pages com `production_branch=main` e deployment produtivo
+  `6286ca59` validado no domínio `brasildesconto.com.br`.
 
 ## 2. Estado do worktree local
 
