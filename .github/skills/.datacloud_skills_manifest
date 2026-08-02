@@ -1,5 +1,5 @@
 {
-  "bundleChecksum": "c8488f4a44cab5a65745b6c70a0f27d30149aeb3e4a951e0f70c4c9032d15102",
+  "bundleChecksum": "4b751acd3570c8decd94fb7003b6151c803dc8fc0bb9591987382ae8db55302f",
   "skills": {
     "accidental-data-loss-prevention": {
       "status": "installed",
@@ -59,51 +59,51 @@
     },
     "bigquery-ai-ml": {
       "status": "installed",
-      "checksum": "ce59cc9f4c23874e50a71970bfedb99ed79e8df165754464ab8fff3dc5244135"
+      "checksum": "996b9994c9708301e4154e69554341593ae78e70e958d2f17b954932631ac6ce"
     },
     "bigquery-bigframes": {
       "status": "installed",
-      "checksum": "5d59253b5b35761c611c502f8731be6297d4c3e8fc5d0141c0fd67e81343c610"
+      "checksum": "5aeac1a5fa7d92a89b0efe38860f758ebedf860152b9bc499f94fea2ca27d259"
     },
     "bigquery-data-transfer-service": {
       "status": "installed",
-      "checksum": "a560c16c715c2d240eeb2abafc1bcea079062ccd7ff99b80b84cdf29eb43d69d"
+      "checksum": "d2b0bdd977e8dc50c06c82deb80b742eacb8eadd5a0c27a34cfacd94fc1d1723"
     },
     "bigquery-graph": {
       "status": "installed",
-      "checksum": "a97c46bdf0cb71c9fca6b88e2e56a3407601825523aaec58681403fa3d99c7c1"
+      "checksum": "1b86acc26ad3e7ddec908817b89138a83175a0f89018f00e129cf7145a41bfdf"
     },
     "building-data-apps": {
       "status": "installed",
-      "checksum": "7017fc6bbcad594b1a572cc7a0ea5ce15ce460dbd0cdbf978697edad1768ee26"
+      "checksum": "84fe4db0d4100f6644d4041c293c4fbcbf9a49d2a79743626c721d3634e9f46f"
     },
     "data-autocleaning": {
       "status": "installed",
-      "checksum": "4ff7ce836870f6775477f79ece9f1b0390e31c6d7921ee94c148cd2a357a4ecc"
+      "checksum": "14a97cd0a785e9ff334c385c4dc8f83599e9a6420200547d78fd5de6f84983a5"
     },
     "gcp-dataflow": {
       "status": "installed",
-      "checksum": "ff2362809250302d2cbca19835af3f7114480e4e4a6cdea794979a97dd6ca6d4"
+      "checksum": "88603a6022611decbc0507b20892478ffd7368aeee0e9a0ae9b99de0d700dfac"
     },
     "gcp-managed-airflow-migrations": {
       "status": "installed",
-      "checksum": "f558527e1d46e9b22449a2da8e723cbda19c3afe6f5216bb5c25054bfc3b2b0a"
+      "checksum": "8e49cf40174f6a3903fa14398d0dd249d7de0aeef7f2cc9e35e7254f9e7cc1bd"
     },
     "gcp-pipeline-orchestration": {
       "status": "installed",
-      "checksum": "5fd043c5dc4c83e906375d80fd10a8b557ea2337dc9f42a26e8ffa5a702d7008"
+      "checksum": "8a9d06dfebee2b4b8a706ff63b9a136252d1906dc2c1726a0b7bf7ab2dd3a576"
     },
     "gcp-pipeline-resource-provisioning": {
       "status": "installed",
-      "checksum": "d9f68d99f5d7e291868a2968ba9483b73f520c61108fcdbdfc7e65f21c0c232c"
+      "checksum": "c7d31d4e4f5da4d7f3c79c717e8213a402085f5a9e6ecc2cebf6821cb8e02400"
     },
     "gcp-spark": {
       "status": "installed",
-      "checksum": "ff78313ac52d2c99292e513f307e63c45377bc3cfb989ac191e56bfaf70337a7"
+      "checksum": "264922f636f2010886fb8108d4d98d731c51fa1c2a5dba632d2c255beb66b58d"
     },
     "gcs-security-assessment": {
       "status": "installed",
-      "checksum": "0f5d2c7a8a6431a27ffa6b2c05aad42f12c3a61a0c248cb9f772edc636e4f543"
+      "checksum": "695f0452cb3c1477ce8399aa54e9bf19dc387c9260bf999ec3ffd4ec094f3cd0"
     }
   }
 }
