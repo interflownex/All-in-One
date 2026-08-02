@@ -47,7 +47,7 @@
 - `docs/COMPLIANCE.md`
 - `docs/analise_dominios.md`
 - `.github/workflows/database.yml`
-- `.github/workflows/apply-remove-vision-update-stock.yml`
+- `.github/workflows/regenerate-artifacts-24-modules.yml`
 - `modules/identity/main.py`
 - `modules/api_hub/main.py`
 - `modules/shared/valley_catalog.py`
