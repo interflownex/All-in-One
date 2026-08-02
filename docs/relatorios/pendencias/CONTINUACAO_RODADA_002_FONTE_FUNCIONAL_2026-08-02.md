@@ -52,7 +52,7 @@ A versão 2.2 preserva os requisitos definidos:
 Resultado do teste automatizado:
 
 ```text
-2 passed in 0.05s
+2 passed in 0.03s
 ```
 
 ### Validação em navegador Chromium
@@ -69,7 +69,7 @@ Resultado do teste automatizado:
 
 ## Decisão técnica desta continuação
 
-A fonte encontrada elimina a causa objetiva do bloqueio da Issue #69. O próximo passo seguro é versionar somente os três artefatos em branch separada, abrir uma Pull Request em rascunho e atualizar a Issue #69 com as evidências. A persistência PostgreSQL, autenticação, RBAC/ABAC, auditoria imutável, idempotência e sincronização entre aparelhos continuam como etapas posteriores e não devem ser iniciadas antes da revisão da fonte versionada.
+A causa objetiva do bloqueio da Issue #69 foi removida. A fonte estruturada, o gerador, os testes e este relatório foram versionados na branch `codex/desbloquear-rodada-002-fonte-20260802`; a Pull Request em rascunho **#119** foi aberta e está mergeável. A Issue #69 recebeu as evidências e deixou de depender de uma fonte ausente. Os workflows `Continuous Integration`, `Security` e `Docker Compose Health Gate` foram iniciados e ainda estavam em execução no fechamento deste relatório. A persistência PostgreSQL, autenticação, RBAC/ABAC, auditoria imutável, idempotência e sincronização entre aparelhos continuam como etapas posteriores.
 
 ## Especificação Técnica
 
@@ -142,4 +142,4 @@ politica_de_integracao:
 
 ## Critério de encerramento
 
-Esta etapa será considerada concluída quando a fonte funcional estiver versionada em branch própria, a Pull Request estiver aberta em rascunho, os testes estiverem anexados à entrega e a Issue #69 deixar de indicar `fonte funcional ausente`. Isso não encerra a implementação do backend nem autoriza produção.
+A etapa de recuperação da fonte está concluída: branch própria criada, PR #119 aberta em rascunho, testes anexados e Issue #69 atualizada. A PR não deve ser integrada antes dos checks verdes no mesmo SHA e da revisão humana. A conclusão desta etapa não encerra a implementação do backend nem autoriza produção.
