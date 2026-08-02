@@ -120,6 +120,16 @@ REQUIRED_ENV_VARS = {
     "ALLOYDB_ENABLED",
     "GEMINI_CODE_ASSIST_ENABLED",
     "STITCH_REMOTE_SYNC_ENABLED",
+    "CLOUDFLARE_ACCOUNT_ID",
+    "CLOUDFLARE_API_TOKEN",
+    "CLOUDFLARE_PAGES_PROJECT_NAME",
+    "CLOUDFLARE_PAGES_DOMAIN",
+    "CLOUDFLARE_TUNNEL_NAME",
+    "CLOUDFLARE_TUNNEL_TOKEN",
+    "CLOUDFLARE_TUNNEL_API_HOSTNAME",
+    "CLOUDFLARE_TUNNEL_API_ORIGIN",
+    "CLOUDFLARE_TUNNEL_STREAM_HOSTNAME",
+    "CLOUDFLARE_TUNNEL_STREAM_ORIGIN",
     "DATA_AGENT_KIT_ENABLED",
     "GOOGLE_CLOUD_PROJECT",
     "PROJECT_ID",
@@ -632,6 +642,32 @@ def main() -> int:
             )
         if cloudflare_policy.get("wrangler_config") != "apps/all-in-one/wrangler.jsonc":
             fail("Cloudflare Pages deve declarar o wrangler.jsonc versionado.", errors)
+        if cloudflare_policy.get("workspace_profile") != "config/cloudflare/workspace_profile.json":
+            fail("Cloudflare deve declarar o perfil WSL versionado.", errors)
+        cloudflare_profile_path = ROOT / "config" / "cloudflare" / "workspace_profile.json"
+        if not cloudflare_profile_path.is_file():
+            fail("Perfil Cloudflare WSL ausente.", errors)
+        else:
+            cloudflare_profile = json.loads(cloudflare_profile_path.read_text(encoding="utf-8"))
+            if cloudflare_profile.get("tunnel", {}).get("token_env_var") != "CLOUDFLARE_TUNNEL_TOKEN":
+                fail("Cloudflare Tunnel deve depender de CLOUDFLARE_TUNNEL_TOKEN fora do Git.", errors)
+            if cloudflare_profile.get("tunnel", {}).get("no_inbound_ports_required") is not True:
+                fail("Cloudflare Tunnel deve manter origem sem portas inbound publicas.", errors)
+            stream_hostnames = [
+                hostname
+                for hostname in cloudflare_profile.get("tunnel", {}).get("desired_public_hostnames", [])
+                if hostname.get("hostname") == "stream.brasildesconto.com.br"
+            ]
+            if stream_hostnames != [
+                {
+                    "hostname": "stream.brasildesconto.com.br",
+                    "origin": "http://127.0.0.1:8100",
+                    "purpose": "api_hub_stream_path",
+                }
+            ]:
+                fail("Cloudflare Tunnel stream deve apontar apenas para API Hub em 8100.", errors)
+            if cloudflare_profile.get("mcp", {}).get("api", {}).get("bearer_token_env_var") != "CLOUDFLARE_API_TOKEN":
+                fail("Cloudflare MCP API deve usar CLOUDFLARE_API_TOKEN por variavel de ambiente.", errors)
         if (
             cloudflare_policy.get("security_headers")
             != "apps/all-in-one/public/_headers"
