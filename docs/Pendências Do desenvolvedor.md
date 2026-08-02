@@ -1,9 +1,9 @@
 # Pendências do Desenvolvedor
 
-**Versão:** 5.3
-**Data e hora:** 02/08/2026 01:46, `America/Sao_Paulo`
+**Versão:** 5.4
+**Data e hora:** 02/08/2026 02:09, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
-**Marcos integrados:** PR `#108`, PR `#109`, PR `#114`
+**Marcos integrados:** PR `#108`, PR `#109`, PR `#114`, PR `#115`
 **Issue de orquestração:** `#51`
 **Classificação:** `Pendências > Técnico > Equipe Técnica`
 **Públicos impactados:** Pessoa Física, Pessoa Jurídica, Equipe Técnica, gestão e investidores
@@ -17,6 +17,12 @@ Cloud pago por padrão. O workflow GKE deixou de disparar automaticamente em
 `push` para `main`; ele permanece disponível somente por `workflow_dispatch`
 manual com confirmação explícita de billing/IAM/APIs legítimos.
 
+No mesmo ciclo, o Cloudflare foi validado no WSL: `wrangler`, Cloudflare Pages,
+MCPs e Tunnel `all-in-one-stream` responderam corretamente. O workflow de Pages
+passa a ser protegido por preflight de secrets: publica quando
+`CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID` existirem fora do Git, e
+finaliza verde com aviso quando o token persistente ainda não estiver definido.
+
 Concluído:
 
 - política `config/autonomy/repository_scope_policy.json`;
@@ -29,14 +35,16 @@ Concluído:
 - PR #114 integrada por Squash and Merge com DNS WSL persistente, Cloudflare,
   Tailscale, Docker MCP, Antigravity, SSH e modo local-first;
 - deploy GKE automático desativado no modo local-first, sem mascarar a pendência
-  de billing.
+  de billing;
+- variáveis não sensíveis do GitHub configuradas para Cloudflare Pages/Tunnel e
+  workflow de Pages alinhado ao `wrangler` `4.118.0`.
 
 ## 2. Estado do worktree local
 
 O worktree WSL ativo é
 `/home/eretazan/.codex/worktrees/1781507772-23398/all-in-one`. Em 02/08/2026,
-após o PR #114, `main` estava alinhada a `origin/main` no commit
-`00d027e33698c3bd8e2ae118124671c4307b7c5d`.
+após o PR #115, `main` estava alinhada a `origin/main` no commit
+`5e7551111787ffa476cb420a5974c8ef30c4753b`.
 
 Antes de qualquer nova alteração continua obrigatório verificar:
 
@@ -82,6 +90,17 @@ Ação necessária:
 - confirmar IAM e APIs;
 - executar manualmente o workflow GKE com `confirm_gcp_billing_enabled=true`;
 - exigir rollout verde sem enfraquecer o gate.
+
+### Cloudflare Pages — token de deploy automático
+
+Estado operacional v5.4: Cloudflare está ativo e validado localmente, com Pages,
+Tunnel e MCPs funcionais. `CLOUDFLARE_ACCOUNT_ID` foi configurado em GitHub
+Secrets e as variáveis não sensíveis foram configuradas em GitHub Variables.
+
+Pendente externo: criar ou fornecer `CLOUDFLARE_API_TOKEN` persistente,
+escopado para publicação do projeto `all-in-one-web`, e salvar em GitHub Secrets.
+Sem esse token, o workflow não deve falhar nem publicar; deve encerrar verde com
+aviso auditável.
 
 ## 4. Pendências P1
 

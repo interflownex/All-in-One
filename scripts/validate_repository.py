@@ -39,6 +39,7 @@ APIGEE_API_HUB_PLAN = ROOT / "config" / "cloud" / "apigee_api_hub_plan.json"
 MONGODB_CONTRACT = ROOT / "config" / "database" / "mongodb_contract.json"
 STITCH_SYNC_WORKFLOW = ROOT / ".github" / "workflows" / "stitch-sync.yml"
 DEPLOY_GKE_WORKFLOW = ROOT / ".github" / "workflows" / "deploy.yml"
+CLOUDFLARE_PAGES_WORKFLOW = ROOT / ".github" / "workflows" / "cloudflare-pages.yml"
 BRAND_IDENTITY = ROOT / "config" / "branding" / "brand_identity.json"
 COMPLIANCE_MATRIX = ROOT / "config" / "compliance" / "data_classification.json"
 DATA_SUBJECT_RIGHTS = ROOT / "config" / "compliance" / "data_subject_rights.json"
@@ -761,6 +762,32 @@ def main() -> int:
                 "Politica Cloudflare deve exigir token e account ID fora do Git.",
                 errors,
             )
+        cloudflare_pages_workflow = (
+            CLOUDFLARE_PAGES_WORKFLOW.read_text(encoding="utf-8")
+            if CLOUDFLARE_PAGES_WORKFLOW.is_file()
+            else ""
+        )
+        if not cloudflare_pages_workflow:
+            fail("Workflow Cloudflare Pages ausente.", errors)
+        else:
+            for forbidden in ['wranglerVersion: "4.112.0"']:
+                if forbidden in cloudflare_pages_workflow:
+                    fail(f"Workflow Cloudflare Pages usa Wrangler obsoleto: {forbidden}", errors)
+            for needle in [
+                'WRANGLER_VERSION: "4.118.0"',
+                "HAS_CLOUDFLARE_API_TOKEN",
+                "HAS_CLOUDFLARE_ACCOUNT_ID",
+                "deploy_enabled=true",
+                "deploy_enabled=false",
+                "if: steps.credentials.outputs.deploy_enabled == 'true'",
+                "wranglerVersion: ${{ env.WRANGLER_VERSION }}",
+                "HAS_TELEGRAM_DELIVERY",
+            ]:
+                if needle not in cloudflare_pages_workflow:
+                    fail(
+                        f"Workflow Cloudflare Pages deve ser idempotente e protegido por secrets: {needle}",
+                        errors,
+                    )
     if not SSH_REMOTE_ACCESS_POLICY.is_file():
         fail("Politica obrigatoria de acesso SSH remoto ausente.", errors)
     else:
