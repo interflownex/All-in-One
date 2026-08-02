@@ -47,6 +47,7 @@ def test_wsl_bootstrap_loads_environment_and_prepares_venv() -> None:
     assert "grep -qi microsoft /proc/version" in script
     assert 'done <"$file"' in script
     assert 'python3 "$ROOT/scripts/configure_docker_dx.py"' in script
+    assert 'python3 "$ROOT/scripts/configure_wsl_dns.py" --check' in script
     assert 'load_env_file "$ROOT/.env.docker-dx"' in script
     assert (
         'export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-all-in-one-dx}"' in script

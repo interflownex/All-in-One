@@ -1,7 +1,7 @@
 # Cloudflare Tunnel para `/stream`
 
 Este fluxo existe para uma excecao operacional explicitamente autorizada pelo
-usuario: publicar `http://localhost:58578/stream` por um hostname HTTPS no
+usuario: publicar `http://127.0.0.1:8100/stream` por um hostname HTTPS no
 Cloudflare e manter a exposicao de forma persistente no Windows.
 
 ## O que este setup faz
@@ -21,7 +21,7 @@ Cloudflare e manter a exposicao de forma persistente no Windows.
 - Windows com PowerShell em modo Administrador.
 - Uma zona ja delegada ao Cloudflare.
 - Permissao para autenticar o `cloudflared` na conta correta.
-- O servico local respondendo em `http://localhost:58578/stream`.
+- O servico local respondendo em `http://127.0.0.1:8100/stream`.
 
 ## Execucao
 
@@ -30,7 +30,7 @@ Forma mais simples, em um comando:
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File scripts\run_cloudflare_stream_tunnel.ps1 `
-  -Hostname stream.seu-dominio.com
+  -Hostname stream.brasildesconto.com.br
 ```
 
 Para publicar o `api_hub` inteiro, sem limitar ao caminho `/stream`:
@@ -38,7 +38,7 @@ Para publicar o `api_hub` inteiro, sem limitar ao caminho `/stream`:
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File scripts\setup_cloudflare_stream_tunnel.ps1 `
-  -Hostname stream.seu-dominio.com `
+  -Hostname stream.brasildesconto.com.br `
   -OriginUrl http://127.0.0.1:8100 `
   -PublishAllPaths `
   -SkipOriginCheck
@@ -51,13 +51,13 @@ powershell -NoProfile -ExecutionPolicy Bypass `
   -File scripts\run_cloudflare_stream_tunnel.ps1
 ```
 
-Se o servico local ainda nao estiver respondendo em `localhost:58578/stream`,
+Se o servico local ainda nao estiver respondendo em `127.0.0.1:8100/stream`,
 mas voce quiser publicar o tunnel mesmo assim e ajustar a origin depois:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File scripts\run_cloudflare_stream_tunnel.ps1 `
-  -Hostname stream.seu-dominio.com `
+  -Hostname stream.brasildesconto.com.br `
   -SkipOriginCheck
 ```
 
@@ -77,9 +77,9 @@ Tambem e possivel sobrescrever os valores diretamente:
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass `
   -File scripts\setup_cloudflare_stream_tunnel.ps1 `
-  -Hostname stream.seu-dominio.com `
+  -Hostname stream.brasildesconto.com.br `
   -TunnelName all-in-one-stream `
-  -OriginUrl http://localhost:58578
+  -OriginUrl http://127.0.0.1:8100
 ```
 
 ## Resultado esperado
@@ -87,16 +87,16 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 Ao final, o endpoint publico deve ficar assim:
 
 ```text
-https://stream.seu-dominio.com/stream
+https://stream.brasildesconto.com.br/stream
 ```
 
 O script escreve uma regra de ingress equivalente a:
 
 ```yml
 ingress:
-  - hostname: stream.seu-dominio.com
+  - hostname: stream.brasildesconto.com.br
     path: ^/stream$
-    service: http://localhost:58578
+    service: http://127.0.0.1:8100
   - service: http_status:404
 ```
 
