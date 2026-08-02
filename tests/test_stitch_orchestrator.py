@@ -123,10 +123,10 @@ def test_stitch_remote_workflow_uses_codex_director_and_manual_fallback() -> Non
         encoding="utf-8"
     )
     assert "workflow_dispatch:" in workflow
-    assert "schedule:" in workflow
+    assert "schedule:" not in workflow
     assert "branches: [main]" in workflow
     assert "if: ${{ false }}" not in workflow
-    assert 'STITCH_REMOTE_SYNC_ENABLED: "true"' in workflow
+    assert 'STITCH_REMOTE_SYNC_ENABLED: "false"' in workflow
     assert "secrets.STITCH_API_KEY" in workflow
     assert "python scripts/codex_stitch_director.py plan" in workflow
     assert "python scripts/codex_stitch_director.py status" in workflow

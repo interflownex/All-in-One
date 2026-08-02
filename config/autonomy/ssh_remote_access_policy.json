@@ -1,0 +1,60 @@
+{
+  "version": "2026-08-02.1",
+  "language": "pt-BR",
+  "enabled": true,
+  "scope": "all-in-one-wsl",
+  "access_channel": "tailscale_only",
+  "server": {
+    "service": "ssh",
+    "port": 22,
+    "user": "eretazan",
+    "authentication_methods": ["publickey"],
+    "password_authentication": false,
+    "keyboard_interactive_authentication": false,
+    "permit_root_login": false,
+    "authorized_keys_file": "/home/eretazan/.ssh/authorized_keys",
+    "allowed_sources": [
+      "100.64.0.0/10",
+      "fd7a:115c:a1e0::/48",
+      "127.0.0.1",
+      "::1"
+    ]
+  },
+  "client_key": {
+    "type": "ed25519",
+    "private_key_path": "/home/eretazan/.ssh/all_in_one_wsl_ed25519",
+    "public_key_path": "/home/eretazan/.ssh/all_in_one_wsl_ed25519.pub",
+    "storage": "outside_git",
+    "fingerprint_sha256": "SHA256:hzCwChwQ8OdA3QEE+SGqbn9jShjhntKr1DmZ4CO4kGw"
+  },
+  "tailscale": {
+    "required": true,
+    "hostname": "valley-wsl2",
+    "magic_dns": "valley-wsl2-1.tailb44596.ts.net",
+    "ipv4": "100.99.245.76",
+    "accept_dns": true,
+    "health_required_empty": true
+  },
+  "cloudflare": {
+    "publish_ssh": false,
+    "tunnel_must_not_expose": ["ssh", "postgres", "mongodb", "rabbitmq", "redis"]
+  },
+  "manual": {
+    "pdf_path": "/home/eretazan/.local/share/all-in-one/secure/manual-termius-termux-all-in-one-wsl-20260802.pdf",
+    "telegram_send_script": "/home/eretazan/.local/share/all-in-one/secure/send-termius-manual-telegram.sh",
+    "storage": "outside_git"
+  },
+  "validation_commands": [
+    "ssh -i /home/eretazan/.ssh/all_in_one_wsl_ed25519 -o BatchMode=yes eretazan@127.0.0.1 true",
+    "ssh -i /home/eretazan/.ssh/all_in_one_wsl_ed25519 -o BatchMode=yes eretazan@100.99.245.76 true",
+    "tailscale status --json | jq .Health",
+    "resolvectl query valley-wsl2-1.tailb44596.ts.net"
+  ],
+  "rules": [
+    "Nunca versionar a chave privada, a chave publica operacional nem o PDF sensivel.",
+    "Nunca publicar SSH por Cloudflare Tunnel neste workspace.",
+    "Termius e Termux devem acessar o WSL pela tailnet Tailscale.",
+    "Senha SSH deve permanecer desabilitada; acesso apenas por chave publica.",
+    "Telegram so pode enviar arquivos quando TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID existirem fora do Git."
+  ]
+}

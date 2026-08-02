@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Valida e prepara a configuracao persistente do Google Cloud Data Agent Kit."""
+"""Valida a configuracao persistente do Google Cloud Data Agent Kit.
+
+No perfil local-first o Data Agent Kit fica documentado, mas suspenso por
+padrao para evitar ativacao acidental de recursos Google Cloud pagos.
+"""
 
 from __future__ import annotations
 
@@ -31,35 +35,24 @@ def validate() -> list[str]:
     extensions = load_json(EXTENSIONS)
     settings = load_json(SETTINGS)
 
-    if not policy.get("enabled"):
-        errors.append("Data Agent Kit deve permanecer habilitado.")
+    if policy.get("enabled") is not False:
+        errors.append("Data Agent Kit deve permanecer suspenso no modo local-first.")
     starter = policy.get("starter_pack", {})
     if starter.get("version") != "0.6.1":
         errors.append("Versao homologada do starter pack deve ser 0.6.1.")
-    if starter.get("vscode_extension") not in extensions.get("recommendations", []):
+    if starter.get("vscode_extension") in extensions.get("recommendations", []):
         errors.append(
-            "Extensao oficial do Data Agent Kit ausente das recomendacoes do VS Code."
+            "Extensao oficial do Data Agent Kit nao deve ser recomendada no modo local-first."
         )
     defaults = policy.get("defaults", {})
-    expected_settings = {
-        "google.cloud.project": defaults.get("project_id"),
-        "google.cloud.billingQuotaProject": defaults.get("project_id"),
-        "google.cloud.region": defaults.get("region"),
-        "google.datacloud.bigqueryRegion": defaults.get("bigquery_location"),
-        "google.datacloud.composer.project": defaults.get("project_id"),
-        "google.datacloud.composer.region": defaults.get("region"),
-        "google.datacloud.agent.skills.autoUpdate": True,
-        "google.datacloud.agent.skills.installLocation": "workspace",
-        "google.datacloud.executeCellToolForNotebookMCP": False,
-        "google.datacloud.executeCellToolConsent": True,
-    }
-    for key, expected in expected_settings.items():
-        if settings.get(key) != expected:
+    forbidden_prefixes = ("google.cloud.", "google.datacloud.", "cloudcode.")
+    for key in settings:
+        if key.startswith(forbidden_prefixes):
             errors.append(
-                f"Configuracao persistente invalida para {key}: esperado {expected!r}."
+                f"Configuracao Google Cloud paga nao deve permanecer ativa: {key}."
             )
     expected_environment = {
-        "DATA_AGENT_KIT_ENABLED": "true",
+        "DATA_AGENT_KIT_ENABLED": "false",
         defaults.get("project_environment_variable"): defaults.get("project_id"),
         defaults.get("region_environment_variable"): defaults.get("region"),
         defaults.get("bigquery_location_environment_variable"): defaults.get(
@@ -76,8 +69,10 @@ def validate() -> list[str]:
                 errors.append(
                     f"Variavel persistente ausente ou invalida em {terminal_key}: {key}."
                 )
-    missing_apis = sorted(
-        set(policy.get("required_apis", [])) - set(profile.get("required_apis", []))
+    missing_apis = (
+        sorted(set(policy.get("required_apis", [])) - set(profile.get("required_apis", [])))
+        if policy.get("enabled")
+        else []
     )
     if missing_apis:
         errors.append(

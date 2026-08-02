@@ -23,6 +23,13 @@ GOOGLE_INTEGRATIONS_POLICY = (
 DATA_AGENT_KIT_POLICY = ROOT / "config" / "autonomy" / "data_agent_kit_policy.json"
 FIREBASE_AUTH_POLICY = ROOT / "config" / "autonomy" / "firebase_auth_policy.json"
 CLOUDFLARE_WEB_POLICY = ROOT / "config" / "autonomy" / "cloudflare_web_policy.json"
+WSL_DNS_POLICY = ROOT / "config" / "autonomy" / "wsl_dns_policy.json"
+SSH_REMOTE_ACCESS_POLICY = (
+    ROOT / "config" / "autonomy" / "ssh_remote_access_policy.json"
+)
+ANTIGRAVITY_TRUST_POLICY = (
+    ROOT / "config" / "autonomy" / "antigravity_trust_policy.json"
+)
 TELEGRAM_DELIVERY_POLICY = (
     ROOT / "config" / "autonomy" / "telegram_delivery_policy.json"
 )
@@ -390,18 +397,12 @@ def main() -> int:
                     "cloudcode.kubeconfigs nao pode registrar .vscode/settings.json como kubeconfig.",
                     errors,
                 )
-        expected_cloudcode = {
-            "google.cloud.project": "all-in-one-498012",
-            "cloudcode.autoDependencies": "on",
-            "cloudcode.active-kubeconfig": "all-in-one-local",
-            "cloudcode.enableTelemetry": False,
-            "cloudcode.enableCrashReporting": False,
-            "cloudcode.useGcloudAuthSkaffold": True,
-            "cloudcode.enableGkeAutopilotSupport": True,
-        }
-        for setting_name, expected_value in expected_cloudcode.items():
-            if settings.get(setting_name) != expected_value:
-                fail(f"Configuracao Cloud Code invalida: {setting_name}.", errors)
+        for setting_name in settings:
+            if setting_name.startswith(("google.cloud.", "google.datacloud.", "cloudcode.")):
+                fail(
+                    f"Configuracao Google Cloud paga deve ficar ausente no modo local-first: {setting_name}.",
+                    errors,
+                )
         expected_kubernetes = {
             "vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
             "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
@@ -413,6 +414,27 @@ def main() -> int:
         for setting_name, expected_value in expected_kubernetes.items():
             if settings.get(setting_name) != expected_value:
                 fail(f"Configuracao Kubernetes invalida: {setting_name}.", errors)
+        for env_scope in [
+            "terminal.integrated.env.windows",
+            "terminal.integrated.env.linux",
+        ]:
+            terminal_env = settings.get(env_scope, {})
+            expected_local_first = {
+                "GOOGLE_INTEGRATIONS_ENABLED": "false",
+                "GOOGLE_CLOUD_ENABLED": "false",
+                "GOOGLE_AI_STUDIO_ENABLED": "false",
+                "GOOGLE_CODE_CLI_ENABLED": "false",
+                "ALLOYDB_ENABLED": "false",
+                "STITCH_REMOTE_SYNC_ENABLED": "false",
+                "DATA_AGENT_KIT_ENABLED": "false",
+                "GEMINI_CODE_ASSIST_ENABLED": "true",
+            }
+            for env_name, expected_value in expected_local_first.items():
+                if terminal_env.get(env_name) != expected_value:
+                    fail(
+                        f"{env_scope}.{env_name} deve permanecer {expected_value} no modo local-first.",
+                        errors,
+                    )
     vscode_extensions = ROOT / ".vscode" / "extensions.json"
     if not vscode_extensions.is_file():
         fail("Configuracao VS Code ausente: .vscode/extensions.json", errors)
@@ -424,11 +446,16 @@ def main() -> int:
             "ms-python.vscode-pylance",
             "ms-python.debugpy",
             "ms-kubernetes-tools.vscode-kubernetes-tools",
-            "googlecloudtools.cloudcode",
         ]:
             if extension not in recommendations:
                 fail(
                     f"Extensao VS Code Python obrigatoria ausente em .vscode/extensions.json: {extension}",
+                    errors,
+                )
+        for extension in ["googlecloudtools.cloudcode", "GoogleCloudTools.datacloud"]:
+            if extension in recommendations:
+                fail(
+                    f"Extensao Google Cloud paga nao deve ser recomendada no modo local-first: {extension}",
                     errors,
                 )
     if not VSCODE_TASKS.is_file():
@@ -484,6 +511,26 @@ def main() -> int:
                 f"Docker Compose deve manter o contrato local-first com coordenada futura Google: {active_env}",
                 errors,
             )
+    if not WSL_DNS_POLICY.is_file():
+        fail("Politica obrigatoria de DNS WSL ausente.", errors)
+    else:
+        wsl_dns_policy = json.loads(WSL_DNS_POLICY.read_text(encoding="utf-8"))
+        resolved = wsl_dns_policy.get("resolved", {})
+        validation = wsl_dns_policy.get("validation", {})
+        if wsl_dns_policy.get("wsl", {}).get("disable_generated_resolv_conf") is not True:
+            fail("DNS WSL deve desativar generateResolvConf.", errors)
+        if resolved.get("resolv_conf_symlink_target") != "/run/systemd/resolve/stub-resolv.conf":
+            fail("DNS WSL deve manter /etc/resolv.conf no stub systemd-resolved.", errors)
+        if resolved.get("stub_nameserver") != "127.0.0.53":
+            fail("DNS WSL deve expor o stub 127.0.0.53.", errors)
+        if "10.255.255.254" not in resolved.get("dns", []):
+            fail("DNS WSL deve preservar o resolvedor do gateway WSL.", errors)
+        if "1.1.1.1" not in resolved.get("fallback_dns", []) and "1.1.1.1" not in resolved.get("dns", []):
+            fail("DNS WSL deve manter fallback publico Cloudflare.", errors)
+        if validation.get("command") != "python3 scripts/configure_wsl_dns.py --check":
+            fail("DNS WSL deve declarar o comando de validacao versionado.", errors)
+        if not (ROOT / "scripts" / "configure_wsl_dns.py").is_file():
+            fail("Script de DNS WSL ausente: scripts/configure_wsl_dns.py", errors)
     kubernetes = "\n".join(
         manifest.read_text(encoding="utf-8")
         for manifest in sorted(KUBERNETES_PLATFORM.parent.glob("*.yaml"))
@@ -563,16 +610,16 @@ def main() -> int:
             )
         runtime = google_policy.get("runtime_environment", {})
         expected_runtime = {
-            "GOOGLE_INTEGRATIONS_ENABLED": "true",
+            "GOOGLE_INTEGRATIONS_ENABLED": "false",
             "GOOGLE_CLOUD_ENABLED": "false",
             "GOOGLE_AI_STUDIO_ENABLED": "false",
-            "GOOGLE_CODE_CLI_ENABLED": "true",
+            "GOOGLE_CODE_CLI_ENABLED": "false",
             "ALLOYDB_ENABLED": "false",
             "GEMINI_CODE_ASSIST_ENABLED": "true",
-            "STITCH_REMOTE_SYNC_ENABLED": "true",
+            "STITCH_REMOTE_SYNC_ENABLED": "false",
             "STITCH_COORDINATOR": "codex",
             "STITCH_LEGACY_MODULE_SYNC_ENABLED": "false",
-            "DATA_AGENT_KIT_ENABLED": "true",
+            "DATA_AGENT_KIT_ENABLED": "false",
         }
         for variable, expected_value in expected_runtime.items():
             if runtime.get(variable) != expected_value:
@@ -580,11 +627,12 @@ def main() -> int:
                     f"Politica Google deve manter {variable}={expected_value}.",
                     errors,
                 )
-        if "google_cloud_data_agent_kit" not in google_policy.get(
-            "explicit_exceptions", []
-        ):
+        if set(google_policy.get("explicit_exceptions", [])) != {
+            "google_stitch_mcp",
+            "gemini_code_assist",
+        }:
             fail(
-                "Politica Google deve registrar o Data Agent Kit como excecao ativa.",
+                "Politica Google deve manter somente Stitch MCP e Gemini Code Assist como excecoes ativas.",
                 errors,
             )
     if not DATA_AGENT_KIT_POLICY.is_file():
@@ -597,11 +645,11 @@ def main() -> int:
         defaults = data_agent_policy.get("defaults", {})
         security = data_agent_policy.get("security", {})
         if (
-            data_agent_policy.get("enabled") is not True
+            data_agent_policy.get("enabled") is not False
             or starter_pack.get("version") != "0.6.1"
         ):
             fail(
-                "Data Agent Kit deve permanecer ativo na versao homologada 0.6.1.",
+                "Data Agent Kit deve permanecer suspenso na versao homologada 0.6.1.",
                 errors,
             )
         if (
@@ -684,6 +732,40 @@ def main() -> int:
                 "Politica Cloudflare deve exigir token e account ID fora do Git.",
                 errors,
             )
+    if not SSH_REMOTE_ACCESS_POLICY.is_file():
+        fail("Politica obrigatoria de acesso SSH remoto ausente.", errors)
+    else:
+        ssh_policy = json.loads(SSH_REMOTE_ACCESS_POLICY.read_text(encoding="utf-8"))
+        server = ssh_policy.get("server", {})
+        client_key = ssh_policy.get("client_key", {})
+        tailscale = ssh_policy.get("tailscale", {})
+        cloudflare_ssh = ssh_policy.get("cloudflare", {})
+        manual = ssh_policy.get("manual", {})
+        if ssh_policy.get("enabled") is not True:
+            fail("Politica SSH deve permanecer enabled=true.", errors)
+        if ssh_policy.get("access_channel") != "tailscale_only":
+            fail("Acesso SSH remoto deve permanecer restrito ao Tailscale.", errors)
+        if (
+            server.get("password_authentication") is not False
+            or server.get("keyboard_interactive_authentication") is not False
+            or server.get("permit_root_login") is not False
+            or server.get("authentication_methods") != ["publickey"]
+        ):
+            fail("Politica SSH deve exigir somente chave publica e bloquear senha/root.", errors)
+        if client_key.get("storage") != "outside_git" or not str(
+            client_key.get("private_key_path", "")
+        ).startswith("/home/eretazan/.ssh/"):
+            fail("Chave privada SSH deve permanecer fora do Git em ~/.ssh.", errors)
+        if manual.get("storage") != "outside_git" or not str(
+            manual.get("pdf_path", "")
+        ).startswith("/home/eretazan/.local/share/all-in-one/secure/"):
+            fail("Manual SSH sensivel deve permanecer fora do Git.", errors)
+        if tailscale.get("required") is not True or tailscale.get("accept_dns") is not True:
+            fail("Politica SSH deve exigir Tailscale com accept-dns ativo.", errors)
+        if cloudflare_ssh.get("publish_ssh") is not False:
+            fail("Cloudflare Tunnel nao pode publicar SSH.", errors)
+        if "ssh" not in set(cloudflare_ssh.get("tunnel_must_not_expose", [])):
+            fail("Politica SSH deve bloquear exposicao SSH em tunnel Cloudflare.", errors)
     if not TELEGRAM_DELIVERY_POLICY.is_file():
         fail("Politica obrigatoria de entrega via Telegram ausente.", errors)
     else:
@@ -985,6 +1067,21 @@ def main() -> int:
                 errors,
             )
     antigravity_config = ROOT / ".agents" / "antigravity.json"
+    if not ANTIGRAVITY_TRUST_POLICY.is_file():
+        fail("Politica Antigravity trust ausente.", errors)
+    else:
+        antigravity_policy = json.loads(
+            ANTIGRAVITY_TRUST_POLICY.read_text(encoding="utf-8")
+        )
+        if antigravity_policy.get("docker_mcp", {}).get("profile") != "all_in_one_local":
+            fail("Antigravity deve usar o perfil Docker MCP all_in_one_local.", errors)
+        trusted_wsl = antigravity_policy.get("trusted_workspaces", {}).get("wsl", "")
+        if not trusted_wsl.startswith("/home/") or not trusted_wsl.endswith("/all-in-one"):
+            fail("Antigravity deve confiar no workspace WSL All-in-One.", errors)
+        if "cloudflare-api" not in antigravity_policy.get("essential_mcp_servers", []):
+            fail("Antigravity deve manter Cloudflare MCP API essencial.", errors)
+        if "datacloud_bigquery_remote" not in antigravity_policy.get("disabled_mcp_servers", []):
+            fail("Antigravity deve desativar DataCloud BigQuery no modo local-first.", errors)
     if not antigravity_config.is_file():
         fail("Contrato Antigravity ausente: .agents/antigravity.json", errors)
     else:
@@ -1038,16 +1135,17 @@ def main() -> int:
             )
     for active_trigger in [
         "  push:",
-        "  schedule:",
-        'STITCH_REMOTE_SYNC_ENABLED: "true"',
+        'STITCH_REMOTE_SYNC_ENABLED: "false"',
         'STITCH_COORDINATOR: "codex"',
         'STITCH_LEGACY_MODULE_SYNC_ENABLED: "false"',
     ]:
         if active_trigger not in stitch_workflow:
             fail(
-                f"Workflow Stitch deve manter sincronizacao remota ativa: {active_trigger}",
+                f"Workflow Stitch deve manter validacao ativa e sincronizacao remota manual: {active_trigger}",
                 errors,
             )
+    if "  schedule:" in stitch_workflow:
+        fail("Workflow Stitch nao deve executar sincronizacao remota agendada no modo local-first.", errors)
     if "if: ${{ false }}" in stitch_workflow:
         fail("Workflow Stitch nao pode manter o job explicitamente desativado.", errors)
     if not (ROOT / "docs" / "COMPLIANCE.md").is_file():

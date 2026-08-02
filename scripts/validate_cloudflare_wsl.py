@@ -17,15 +17,24 @@ CLOUDFLARE_API_HOST = "api.cloudflare.com"
 
 
 def run(args: list[str], timeout: int = 45) -> tuple[int, str]:
-    process = subprocess.run(
-        args,
-        cwd=ROOT,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        timeout=timeout,
-        check=False,
-    )
+    environment = os.environ.copy()
+    environment.setdefault("CI", "1")
+    environment.setdefault("WRANGLER_SEND_METRICS", "false")
+    environment.setdefault("NO_UPDATE_NOTIFIER", "1")
+    try:
+        process = subprocess.run(
+            args,
+            cwd=ROOT,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=timeout,
+            check=False,
+            env=environment,
+        )
+    except subprocess.TimeoutExpired as exc:
+        output = exc.stdout or ""
+        return 124, f"timeout apos {timeout}s: {' '.join(args)}\n{output}"
     return process.returncode, process.stdout
 
 
