@@ -14,6 +14,7 @@ def test_cloudflare_profile_keeps_runtime_secrets_out_of_git() -> None:
 
     assert profile["account"]["account_id"] == "474fc26bf9c6bcf5e1a84b7f63a516d8"
     assert profile["pages"]["project_name"] == "all-in-one-web"
+    assert profile["pages"]["production_branch"] == "main"
     assert "brasildesconto.com.br" in profile["pages"]["known_domains"]
     assert profile["tunnel"]["tunnel_name"] == "all-in-one-stream"
     assert profile["tunnel"]["tunnel_id"] == "7b9ce5bc-7f6e-4416-bff3-3a278ce4b96f"

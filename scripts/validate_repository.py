@@ -710,6 +710,8 @@ def main() -> int:
             fail("Ambiente web deve usar Cloudflare Pages.", errors)
         if cloudflare_policy.get("project_name") != "all-in-one-web":
             fail("Projeto Cloudflare Pages deve ser all-in-one-web.", errors)
+        if cloudflare_policy.get("production_branch") != "main":
+            fail("Cloudflare Pages deve publicar producao a partir da branch main.", errors)
         if (
             cloudflare_policy.get("spa_fallback")
             != "cloudflare_pages_automatic_without_404"
@@ -727,6 +729,8 @@ def main() -> int:
             fail("Perfil Cloudflare WSL ausente.", errors)
         else:
             cloudflare_profile = json.loads(cloudflare_profile_path.read_text(encoding="utf-8"))
+            if cloudflare_profile.get("pages", {}).get("production_branch") != "main":
+                fail("Perfil Cloudflare deve fixar production_branch=main.", errors)
             if cloudflare_profile.get("tunnel", {}).get("token_env_var") != "CLOUDFLARE_TUNNEL_TOKEN":
                 fail("Cloudflare Tunnel deve depender de CLOUDFLARE_TUNNEL_TOKEN fora do Git.", errors)
             if cloudflare_profile.get("tunnel", {}).get("no_inbound_ports_required") is not True:

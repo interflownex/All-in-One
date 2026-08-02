@@ -1,8 +1,9 @@
 {
   "version": 2,
-  "updated_at": "2026-08-01T23:58:00-03:00",
+  "updated_at": "2026-08-02T02:31:00-03:00",
   "provider": "cloudflare_pages",
   "project_name": "all-in-one-web",
+  "production_branch": "main",
   "workspace_profile": "config/cloudflare/workspace_profile.json",
   "account_id": "474fc26bf9c6bcf5e1a84b7f63a516d8",
   "application": "apps/all-in-one",
@@ -46,6 +47,7 @@
     "Wrangler deve autenticar por OAuth local ou CLOUDFLARE_API_TOKEN fora do Git.",
     "Cloudflare MCP API deve usar OAuth ou CLOUDFLARE_API_TOKEN via bearer-token-env-var.",
     "O tunnel all-in-one-stream e a trilha canonica para stream.brasildesconto.com.br e deve apontar para http://127.0.0.1:8100.",
+    "A branch de producao do Cloudflare Pages deve permanecer main.",
     "Cloudflared deve rodar no Windows como servico automatico ou no WSL por systemd apenas quando CLOUDFLARE_TUNNEL_TOKEN estiver disponivel fora do Git.",
     "SSH administrativo deve permanecer em Tailscale; Cloudflare Tunnel nao publica SSH.",
     "Nao reintroduzir AAAA no dominio raiz brasildesconto.com.br enquanto a validacao AppDeploy exigir somente IPv4.",

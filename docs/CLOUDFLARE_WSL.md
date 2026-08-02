@@ -1,7 +1,7 @@
 # Cloudflare WSL
 
-**Versao:** 1.2
-**Data:** 2026-08-02 02:09, America/Sao_Paulo
+**Versao:** 1.3
+**Data:** 2026-08-02 02:31, America/Sao_Paulo
 **Escopo:** workspace `all-in-one` no WSL
 
 ## Estado desejado
@@ -10,6 +10,8 @@
   `CLOUDFLARE_API_TOKEN`.
 - `cloudflared` instalado no WSL.
 - Cloudflare Pages publica `apps/all-in-one` no projeto `all-in-one-web`.
+- A branch de producao do projeto Pages e `main`; `worktree-sync` nao deve
+  voltar a ser branch produtiva.
 - O workflow de Pages usa `wrangler` `4.118.0` e so tenta publicar quando
   `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID` existirem em GitHub Secrets.
 - MCPs `cloudflare-docs` e `cloudflare-api` ficam cadastrados no Codex.
@@ -112,6 +114,14 @@ versiona o segredo nem arquivos `cert.pem` ou `*.json` de credenciais.
   workflow termina verde com aviso e sem publicar.
 - `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` sao opcionais para a notificacao
   pos-deploy; quando ausentes, a publicacao Cloudflare nao deve falhar por isso.
+
+## Producao
+
+- `production_branch`: `main`.
+- Deployment produtivo validado em 02/08/2026 02:30 America/Sao_Paulo:
+  `https://6286ca59.all-in-one-web-7fa.pages.dev`.
+- Dominio customizado validado: `https://brasildesconto.com.br`, HTTP 200,
+  titulo `All-in-One - Ecossistema Digital` e headers de seguranca ativos.
 
 ## Fontes oficiais
 
