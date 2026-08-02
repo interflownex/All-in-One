@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "deploy:cloudflare": "npm run build && npx --yes wrangler@4.112.0 pages deploy dist --project-name all-in-one-web",
+    "deploy:cloudflare": "npm run build && npx --yes wrangler@4.118.0 pages deploy dist --project-name all-in-one-web",
     "lint": "eslint .",
     "preview": "vite preview"
   },

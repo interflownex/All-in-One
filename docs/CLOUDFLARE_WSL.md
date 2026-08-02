@@ -1,7 +1,7 @@
 # Cloudflare WSL
 
-**Versao:** 1.1
-**Data:** 2026-08-01 23:58, America/Sao_Paulo
+**Versao:** 1.2
+**Data:** 2026-08-02 02:09, America/Sao_Paulo
 **Escopo:** workspace `all-in-one` no WSL
 
 ## Estado desejado
@@ -10,6 +10,8 @@
   `CLOUDFLARE_API_TOKEN`.
 - `cloudflared` instalado no WSL.
 - Cloudflare Pages publica `apps/all-in-one` no projeto `all-in-one-web`.
+- O workflow de Pages usa `wrangler` `4.118.0` e so tenta publicar quando
+  `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID` existirem em GitHub Secrets.
 - MCPs `cloudflare-docs` e `cloudflare-api` ficam cadastrados no Codex.
 - Tunnel existente `all-in-one-stream` esta registrado no Cloudflare como
   `healthy` e publicado por `stream.brasildesconto.com.br`.
@@ -41,6 +43,16 @@ Aplicar MCPs e validar CLI local:
 
 ```bash
 python3 scripts/configure_cloudflare_wsl.py --apply
+```
+
+Publicar manualmente a build atual pelo OAuth local do `wrangler`, sem depender
+dos secrets do GitHub Actions:
+
+```bash
+cd apps/all-in-one
+npm ci
+npm run build
+wrangler pages deploy dist --project-name all-in-one-web --branch main
 ```
 
 Ativar uma replica persistente no WSL quando o token ja estiver disponivel no
@@ -86,6 +98,20 @@ versiona o segredo nem arquivos `cert.pem` ou `*.json` de credenciais.
 - `stream.brasildesconto.com.br` deve continuar apontando para o API Hub em
   `http://127.0.0.1:8100`; nao redirecionar para ERP `8107` sem nova decisao
   tecnica registrada.
+
+## GitHub Actions
+
+- Variaveis nao sensiveis configuradas: `VITE_API_HUB_URL`,
+  `CLOUDFLARE_PAGES_PROJECT_NAME`, `CLOUDFLARE_PAGES_DOMAIN`,
+  `CLOUDFLARE_TUNNEL_NAME`, `CLOUDFLARE_TUNNEL_API_HOSTNAME`,
+  `CLOUDFLARE_TUNNEL_API_ORIGIN`, `CLOUDFLARE_TUNNEL_STREAM_HOSTNAME` e
+  `CLOUDFLARE_TUNNEL_STREAM_ORIGIN`.
+- `CLOUDFLARE_ACCOUNT_ID` fica em GitHub Secrets.
+- `CLOUDFLARE_API_TOKEN` deve ser um token Cloudflare persistente e escopado
+  para Pages/Workers conforme a documentacao oficial; enquanto ausente, o
+  workflow termina verde com aviso e sem publicar.
+- `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` sao opcionais para a notificacao
+  pos-deploy; quando ausentes, a publicacao Cloudflare nao deve falhar por isso.
 
 ## Fontes oficiais
 

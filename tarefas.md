@@ -1,5 +1,76 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 5.7 — Cloudflare completo e coerente no modo local-first
+
+**Data e hora:** 02/08/2026 02:09, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/cloudflare-completo-coerente-20260802`
+**Referência local antes do commit da entrega:** `5e75511`
+**Objetivo:** deixar Cloudflare Pages, Tunnel, MCP, GitHub Actions e variáveis
+externas coerentes com o workspace WSL local-first, sem versionar segredos e sem
+falhas automáticas quando o token persistente de deploy não existir.
+
+### Contexto
+
+Cloudflare está ativo no ambiente local: `wrangler` autenticado, Pages
+`all-in-one-web` confirmado, MCPs Cloudflare cadastrados e Tunnel
+`all-in-one-stream` remoto em estado `healthy`. As falhas históricas do workflow
+Cloudflare Pages vinham de credenciais ausentes no GitHub Actions; a entrega
+passa a tratar essa ausência como preflight auditável, não como erro vermelho.
+
+### Escopo
+
+- Atualizar `.github/workflows/cloudflare-pages.yml` para `wrangler` `4.118.0`.
+- Adicionar preflight de `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID`.
+- Manter deploy automático apenas quando os secrets existirem fora do Git.
+- Ignorar notificação Telegram quando `TELEGRAM_BOT_TOKEN` ou
+  `TELEGRAM_CHAT_ID` estiverem ausentes, sem falhar a publicação Cloudflare.
+- Atualizar `apps/all-in-one/package.json` para usar o mesmo pin de Wrangler.
+- Adicionar teste `tests/test_cloudflare_pages_workflow.py`.
+- Atualizar `scripts/validate_repository.py`, `docs/CLOUDFLARE_WSL.md`,
+  `docs/Pendências Do desenvolvedor.md` e relatórios v5.4.
+
+### Fontes de verdade
+
+- `config/cloudflare/workspace_profile.json`
+- `config/autonomy/cloudflare_web_policy.json`
+- `.github/workflows/cloudflare-pages.yml`
+- `scripts/validate_cloudflare_wsl.py`
+- `scripts/configure_cloudflare_wsl.py`
+
+### Pré-requisitos
+
+- `CLOUDFLARE_API_TOKEN` deve permanecer somente em GitHub Secrets, variável de
+  ambiente local ou cofre externo.
+- `CLOUDFLARE_ACCOUNT_ID` já pode ficar em GitHub Secrets.
+- Variáveis não sensíveis esperadas no GitHub: `VITE_API_HUB_URL`,
+  `CLOUDFLARE_PAGES_PROJECT_NAME`, `CLOUDFLARE_PAGES_DOMAIN`,
+  `CLOUDFLARE_TUNNEL_NAME`, `CLOUDFLARE_TUNNEL_API_HOSTNAME`,
+  `CLOUDFLARE_TUNNEL_API_ORIGIN`, `CLOUDFLARE_TUNNEL_STREAM_HOSTNAME` e
+  `CLOUDFLARE_TUNNEL_STREAM_ORIGIN`.
+
+### Sequência de execução
+
+1. Validar Cloudflare local: `python3 scripts/configure_cloudflare_wsl.py --apply`.
+2. Validar estado remoto: `python3 scripts/validate_cloudflare_wsl.py`.
+3. Testar app web: `cd apps/all-in-one && npm ci && npm run build`.
+4. Validar workflow: `.venv/bin/python -m pytest --capture=no -q tests/test_cloudflare_pages_workflow.py tests/test_cloudflare_wsl_configuration.py`.
+5. Validar repositório: `python3 scripts/validate_repository.py`.
+6. Abrir PR, aguardar checks verdes e integrar por Squash and Merge.
+
+### Critérios de aceite
+
+- Cloudflare Pages/Tunnel/MCP validam sem erro no WSL.
+- Workflow de Pages não usa Wrangler obsoleto.
+- Ausência de `CLOUDFLARE_API_TOKEN` não causa falha automática em push.
+- Nenhum token, chave privada ou PDF sensível é versionado.
+- Deploy real no CI só ocorre com secrets persistentes configurados fora do Git.
+
+### Histórico resumido
+
+- v5.7: Cloudflare Pages/Tunnel/MCP validados; CI protegido por preflight de
+  secrets e Wrangler alinhado ao ambiente local.
+
 ## Versão 5.6 — GKE manual no modo local-first
 
 **Data e hora:** 02/08/2026 01:46, `America/Sao_Paulo`
