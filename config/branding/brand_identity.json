@@ -1,5 +1,5 @@
 {
-  "version": "2026-07-24",
+  "version": "2026-08-01",
   "asset_manifest": "config/branding/authorized_assets.json",
   "platform_brand": {
     "name": "All in One",
@@ -35,14 +35,29 @@
     "secondary_color": "#7C3AED"
   },
   "riders_brand": {
-    "name": "Valley Riders",
+    "name": "Valley Rider",
+    "technical_alias": "Valley Riders",
+    "wordmark": "VALLEY RIDER",
     "logo_asset": "assets/brand/valley-riders-logo-official.png",
-    "original_filename": "LOGO OFICIAL VALLEY RIDERS_2.png",
+    "application_asset": "apps/valley_rider/public/brand/valley-riders-logo-official.png",
+    "original_filename": "LOGO OFICIAL VALLEY RIDERS.png",
+    "sha256": "f5fba898ee9c660a35e359b8968b1b7d7256d7ded7434e34d1abd601e609db73",
     "transparent_background_required": true,
-    "asset_status": "original_binary_pending_ingestion",
+    "asset_status": "external_binary_validated_pending_git_ingestion",
     "substitution_allowed": false,
-    "placement": "top-left inside Riders surfaces, alongside the All in One platform mark when required",
-    "safe_area_px": 16
+    "ingestion_script": "scripts/branding/ingest_valley_rider_logo.py",
+    "placement": "top-left inside Rider surfaces and navigation overlays, without covering road guidance or safety information",
+    "minimum_width_px": 92,
+    "safe_area_px": 16,
+    "navigation_usage": {
+      "logo_treatment": "proportional_resize_only",
+      "maximum_overlay_width_pct": 30,
+      "background": "neutral translucent panel only when needed for contrast",
+      "route_color": "#20C8F3",
+      "pickup_color": "#F2A93B",
+      "destination_color": "#22B86B",
+      "danger_color": "#E45B6A"
+    }
   },
   "valley_apps": ["valley", "valley-business"],
   "riders_apps": ["valley-rider", "all-in-one-riders"],
@@ -58,11 +73,12 @@
   "rules": [
     "Every application shell must include the canonical All in One platform logo.",
     "Every Valley screen must also include the canonical Valley logo.",
-    "Every Riders screen must use the canonical Valley Riders logo after the original binary is ingested; alternative or reconstructed logos are forbidden.",
+    "Every Rider screen must use the canonical Valley Rider logo after the original binary is ingested; alternative or reconstructed logos are forbidden.",
+    "The visual wordmark remains VALLEY RIDER while Valley Riders may remain as a technical alias in code, routes and legacy contracts until a separate migration is approved.",
     "Do not redraw, recolor, stretch, crop, rotate, distort, filter, mask, alter typography or change the composition of any logo.",
     "Only external background removal and proportional resizing are authorized without a new explicit approval.",
     "All digital brand assets must keep a fully transparent external background.",
-    "Use text alternatives: All in One, Valley and Valley Riders.",
+    "Use text alternatives: All in One, Valley and Valley Rider.",
     "A clear violation must be corrected immediately by the agent that identifies it, followed by integrity validation and Git synchronization.",
     "Never place secrets, document images, biometric samples or sensitive records inside logo examples or brand mockups."
   ]
