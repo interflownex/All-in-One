@@ -25,11 +25,15 @@ command -v npm >/dev/null 2>&1 || fail "npm não foi encontrado."
 
 printf '\nConfiguração segura Mapbox — Valley Rider\n'
 printf 'O token secreto será lido sem aparecer na tela e não será gravado no Git.\n\n'
+printf 'O token temporário sk. precisa conter TODOS estes escopos:\n'
+printf '  Public scopes: styles:read, fonts:read\n'
+printf '  Secret scopes: tokens:write\n\n'
+printf 'Um token criado apenas com tokens:write será rejeitado pela Mapbox com "scopes are invalid".\n\n'
 
 read -r -p "Usuário da conta Mapbox: " MAPBOX_USERNAME
 [[ -n "${MAPBOX_USERNAME// }" ]] || fail "Usuário Mapbox obrigatório."
 
-read -r -s -p "Token temporário Mapbox (sk.): " MAPBOX_ADMIN_TOKEN
+read -r -s -p "Novo token temporário Mapbox (sk.): " MAPBOX_ADMIN_TOKEN
 printf '\n'
 [[ "$MAPBOX_ADMIN_TOKEN" == sk.* ]] || fail "O token administrativo deve começar com sk."
 
