@@ -142,32 +142,49 @@ class MercadoPagoClient:
         return payload
 
 
+def _webhook_timestamp_seconds(timestamp: int) -> float:
+    """Normaliza timestamps documentados pelo Mercado Pago.
+
+    A documentação do Checkout Pro usa milissegundos em exemplos atuais,
+    enquanto páginas gerais ainda exibem segundos. Aceitamos ambos sem alterar
+    o valor original usado na composição do manifesto HMAC.
+    """
+
+    if timestamp < 0:
+        raise ValueError("timestamp negativo")
+    if timestamp >= 10_000_000_000:
+        return timestamp / 1000
+    return float(timestamp)
+
+
 def verify_webhook_signature(
     *,
     x_signature: str | None,
     x_request_id: str | None,
     data_id: str | None,
     secret: str,
-    now: int | None = None,
+    now: int | float | None = None,
     max_age_seconds: int = 300,
 ) -> bool:
     """Valida ts=...,v1=... conforme a assinatura HMAC do Mercado Pago."""
     if not x_signature or not x_request_id or not data_id or not secret:
         return False
     parts = {
-        item.split("=", 1)[0]: item.split("=", 1)[1]
+        key.strip(): value.strip()
         for item in x_signature.split(",")
         if "=" in item
+        for key, value in (item.split("=", 1),)
     }
     timestamp, signature = parts.get("ts"), parts.get("v1")
     if not timestamp or not signature:
         return False
     try:
         timestamp_int = int(timestamp)
+        timestamp_seconds = _webhook_timestamp_seconds(timestamp_int)
     except ValueError:
         return False
-    current = int(time.time()) if now is None else now
-    if abs(current - timestamp_int) > max_age_seconds:
+    current = time.time() if now is None else float(now)
+    if abs(current - timestamp_seconds) > max_age_seconds:
         return False
     manifest = f"id:{data_id};request-id:{x_request_id};ts:{timestamp};"
     expected = hmac.new(secret.encode(), manifest.encode(), hashlib.sha256).hexdigest()
