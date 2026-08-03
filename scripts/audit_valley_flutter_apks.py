@@ -66,7 +66,12 @@ def _resolve_archive_reference(reference: str) -> str | None:
     return normalized
 
 
-def _audit_web_bundle(apk_name: str, archive: zipfile.ZipFile, errors: list[str]) -> None:
+def _audit_web_bundle(
+    apk_name: str,
+    archive: zipfile.ZipFile,
+    errors: list[str],
+    expected_text: str | None = None,
+) -> None:
     names = set(archive.namelist())
     try:
         index = archive.read(INDEX_PATH).decode("utf-8")
@@ -101,8 +106,20 @@ def _audit_web_bundle(apk_name: str, archive: zipfile.ZipFile, errors: list[str]
         if target.endswith((".js", ".css")) and archive.getinfo(target).file_size < 32:
             errors.append(f"{apk_name}: recurso web vazio ou truncado: {reference}")
 
+    if expected_text:
+        identity_found = any(
+            expected_text in archive.read(name).decode("utf-8", errors="ignore")
+            for name in names
+            if name.startswith("assets/flutter_assets/assets/valley/")
+            and name.endswith((".html", ".js"))
+        )
+        if not identity_found:
+            errors.append(
+                f"{apk_name}: identidade esperada ausente do bundle: {expected_text}"
+            )
 
-def audit(directory: Path) -> list[str]:
+
+def audit(directory: Path, expected_text: str | None = None) -> list[str]:
     errors: list[str] = []
     discovered = {path.name for path in directory.glob("*.apk")}
     missing = sorted(REQUIRED_APKS - discovered)
@@ -131,7 +148,7 @@ def audit(directory: Path) -> list[str]:
                         errors.append(
                             f"{apk.name}: conteúdo obrigatório ausente: {marker}"
                         )
-                _audit_web_bundle(apk.name, archive, errors)
+                _audit_web_bundle(apk.name, archive, errors, expected_text)
         except zipfile.BadZipFile:
             errors.append(f"{apk.name}: ZIP/APK inválido")
 
@@ -149,8 +166,9 @@ def audit(directory: Path) -> list[str]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", type=Path)
+    parser.add_argument("--expected-text")
     args = parser.parse_args()
-    errors = audit(args.directory)
+    errors = audit(args.directory, args.expected_text)
     if errors:
         print("Auditoria dos APKs Flutter reprovada:")
         for error in errors:

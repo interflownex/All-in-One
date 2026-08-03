@@ -9,6 +9,10 @@ import 'api_bridge.dart';
 const _valleyPurple = Color(0xFF5D2CE6);
 const _valleyBackground = Color(0xFFF6F2FF);
 const _localEntryPoint = 'assets/valley/index.html';
+const _applicationName = String.fromEnvironment(
+  'VALLEY_APP_NAME',
+  defaultValue: 'Valley',
+);
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +25,7 @@ class ValleyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Valley',
+      title: _applicationName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -111,13 +115,10 @@ class _ValleyShellState extends State<ValleyShell> {
   ) async {
     final uri = Uri.tryParse(request.url);
     if (uri == null) return NavigationDecision.prevent;
-    if (uri.scheme == 'file' ||
-        uri.scheme == 'about' ||
-        uri.scheme == 'data') {
+    if (uri.scheme == 'file' || uri.scheme == 'about' || uri.scheme == 'data') {
       return NavigationDecision.navigate;
     }
-    if (uri.scheme == 'https' &&
-        uri.host == 'all-in-one-api-hub.web.app') {
+    if (uri.scheme == 'https' && uri.host == 'all-in-one-api-hub.web.app') {
       return NavigationDecision.navigate;
     }
     if (uri.scheme == 'mailto' || uri.scheme == 'tel') {
@@ -174,9 +175,7 @@ class _LoadingSurface extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Image(
-                image: AssetImage(
-                  'assets/brand/valley-logo-official.png',
-                ),
+                image: AssetImage('assets/brand/valley-logo-official.png'),
                 width: 160,
               ),
               SizedBox(height: 24),
@@ -185,7 +184,7 @@ class _LoadingSurface extends StatelessWidget {
                 child: LinearProgressIndicator(color: _valleyPurple),
               ),
               SizedBox(height: 12),
-              Text('Carregando o Valley...'),
+              Text('Carregando $_applicationName...'),
             ],
           ),
         ),
@@ -211,14 +210,12 @@ class _LoadFailure extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Image(
-                image: AssetImage(
-                  'assets/brand/valley-logo-official.png',
-                ),
+                image: AssetImage('assets/brand/valley-logo-official.png'),
                 width: 160,
               ),
               const SizedBox(height: 24),
               const Text(
-                'Não foi possível abrir o Valley.',
+                'Não foi possível abrir $_applicationName.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
               ),

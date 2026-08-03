@@ -13,7 +13,10 @@ from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 FLUTTER_APP = ROOT / "apps" / "valley-flutter"
-VALLEY_DIST = ROOT / "apps" / "valley" / "dist"
+WEB_DIST_BY_VARIANT = {
+    "consumer": ROOT / "apps" / "valley" / "dist",
+    "rider": ROOT / "apps" / "valley_rider" / "dist",
+}
 VALLEY_ASSETS = FLUTTER_APP / "assets" / "valley"
 FLUTTER_BRANDS = FLUTTER_APP / "assets" / "brand"
 CANONICAL_BRANDS = ROOT / "assets" / "brand"
@@ -105,10 +108,11 @@ def _resolve_reference(index: Path, reference: str) -> Path | None:
     return candidate
 
 
-def prepare() -> None:
-    if not VALLEY_DIST.joinpath("index.html").is_file():
+def prepare(variant: str = "consumer") -> None:
+    web_dist = WEB_DIST_BY_VARIANT[variant]
+    if not web_dist.joinpath("index.html").is_file():
         raise FileNotFoundError(
-            "apps/valley/dist ausente; execute npm --prefix apps/valley run build"
+            f"{web_dist.relative_to(ROOT)} ausente; execute o build web da variante"
         )
     if not MANIFEST.is_file():
         raise FileNotFoundError(
@@ -116,7 +120,7 @@ def prepare() -> None:
         )
 
     shutil.rmtree(VALLEY_ASSETS, ignore_errors=True)
-    shutil.copytree(VALLEY_DIST, VALLEY_ASSETS)
+    shutil.copytree(web_dist, VALLEY_ASSETS)
     _copy_official_brands(FLUTTER_BRANDS)
     _copy_official_brands(VALLEY_ASSETS / "assets" / "brand")
     _rewrite_local_asset_urls()
@@ -130,7 +134,7 @@ def prepare() -> None:
     MANIFEST.write_text(manifest, encoding="utf-8")
 
 
-def validate() -> None:
+def validate(variant: str = "consumer") -> None:
     index = VALLEY_ASSETS / "index.html"
     if not index.is_file():
         raise FileNotFoundError("bundle Valley não foi copiado para o app Flutter")
@@ -154,6 +158,14 @@ def validate() -> None:
         if candidate is not None and not candidate.is_file():
             raise FileNotFoundError(f"asset referenciado não existe: {reference}")
 
+    if variant == "rider":
+        javascript_content = "\n".join(
+            path.read_text(encoding="utf-8", errors="ignore")
+            for path in VALLEY_ASSETS.rglob("*.js")
+        )
+        if "Valley Rider" not in javascript_content:
+            raise ValueError("bundle Flutter não contém a identidade Valley Rider")
+
     pubspec = PUBSPEC.read_text(encoding="utf-8")
     for directory in _asset_directories():
         marker = f"    - {directory}/"
@@ -161,7 +173,11 @@ def validate() -> None:
             raise ValueError(f"pubspec sem diretório obrigatório: {directory}/")
 
     manifest = MANIFEST.read_text(encoding="utf-8")
-    for marker in ("android.permission.INTERNET", 'android:label="Valley"'):
+    expected_label = "Valley Rider" if variant == "rider" else "Valley"
+    for marker in (
+        "android.permission.INTERNET",
+        f'android:label="{expected_label}"',
+    ):
         if marker not in manifest:
             raise ValueError(f"AndroidManifest sem marcador obrigatório: {marker}")
 
@@ -169,11 +185,14 @@ def validate() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
+    parser.add_argument(
+        "--variant", choices=sorted(WEB_DIST_BY_VARIANT), default="consumer"
+    )
     args = parser.parse_args()
     if not args.check:
-        prepare()
-    validate()
-    print("Projeto Flutter Valley preparado e validado.")
+        prepare(args.variant)
+    validate(args.variant)
+    print(f"Projeto Flutter Valley ({args.variant}) preparado e validado.")
     return 0
 
 

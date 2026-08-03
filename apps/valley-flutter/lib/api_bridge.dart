@@ -44,10 +44,7 @@ class ValleyApiBridge {
         request.headers.set(HttpHeaders.acceptHeader, 'application/json');
         request.headers.set('X-Valley-Api-Version', '1');
         if (token != null && token.isNotEmpty && token != 'null') {
-          request.headers.set(
-            HttpHeaders.authorizationHeader,
-            'Bearer $token',
-          );
+          request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
         }
         if (forwardedHeaders is Map) {
           for (final entry in forwardedHeaders.entries) {
