@@ -1,5 +1,74 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 6.0 — Flutter Linux persistente no VS Code WSL
+
+**Data e hora:** 03/08/2026 15:15, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/corrigir-flutter-wsl-20260803`
+**Commit de referência antes da entrega:** `88adc8e`
+
+### Objetivo
+
+Impedir que o VS Code em `WSL: Ubuntu` execute Flutter/Dart do Windows por
+`/mnt/c` e fixar o SDK Linux nativo compatível com o projeto Valley Flutter.
+
+### Contexto, escopo e fontes de verdade
+
+- O log Dart Code selecionou o SDK Windows e reportou Flutter `999.999.888`,
+  Dart `3.11.1`, disputa de startup lock e queda do Dart Tooling Daemon.
+- `apps/valley-flutter/pubspec.yaml` exige Dart `^3.12.0`.
+- O SDK nativo `/home/eretazan/develop/flutter` fornece Flutter `3.44.8`, Dart
+  `3.12.2` e DevTools `2.57.0`.
+- `.vscode/settings.json`, `all-in-one.code-workspace` e
+  `tests/test_vscode_workspace_contract.py` são as fontes de verdade locais.
+
+### Pré-requisitos, sequência e prioridades
+
+1. Preservar o SDK fora do Git em `/home/eretazan/develop/flutter`.
+2. Abrir `all-in-one.code-workspace` por uma janela `WSL: Ubuntu`.
+3. Executar `Developer: Reload Window` para reiniciar Dart Code e invalidar o
+   segredo temporário do Tooling Daemon exposto no log.
+4. Confirmar que Dart Code mostra Flutter `3.44.8` e Dart `3.12.2` no caminho
+   Linux, nunca em `/mnt/c`.
+5. Executar `flutter pub get`, `flutter analyze` e `flutter test` em
+   `apps/valley-flutter`.
+
+### Testes e critérios de aceite
+
+- `/home/eretazan/develop/flutter/bin/flutter --version` termina com código 0.
+- O teste de contrato exige SDK e `PATH` Linux nos dois modos do workspace.
+- `flutter pub get` deve resolver as dependências no SDK nativo; análise e teste
+  devem terminar com código 0 após a restauração dos ativos canônicos.
+- Caches `.dart_tool`, `.flutter-plugins-dependencies` e `build` não entram no
+  Git.
+
+### Riscos, bloqueios e evidências esperadas
+
+- Uma janela já aberta conserva processos `dart.exe` até ser recarregada; a
+  confirmação visual pós-reload depende do usuário.
+- Android/emulador não é necessário para testes Dart, mas será necessário para
+  evidência móvel final.
+- Ativos canônicos ausentes não podem ser substituídos por aproximações.
+- `flutter pub get` passou. `flutter test` permaneceu bloqueado porque
+  `assets/brand/` e `assets/valley/`, declarados no `pubspec.yaml`, estão
+  ausentes; a execução foi encerrada pelo timeout sem fabricar substitutos.
+- `dart analyze` executou com o SDK Linux e retornou código 2 exclusivamente
+  pelos mesmos dois diretórios de ativos ausentes.
+- Evidências: versões do SDK, caminhos dos processos, testes verdes, diff,
+  commit, PR e checks no mesmo SHA.
+
+### Pendências restantes e procedimento de entrega
+
+Publicar esta branch, abrir PR para `main`, aguardar gates verdes e integrar
+somente por **Squash and Merge**. Depois do merge, recarregar a janela WSL e
+confirmar no log Dart Code que nenhum processo parte de `/mnt/c/.../flutter`.
+
+### Histórico resumido
+
+- v6.0: SDK Flutter Linux fixado nos dois modos do VS Code WSL, com teste de
+  regressão e exclusão dos caches gerados.
+- v5.9: credenciais Mapbox conectadas ao pipeline do Valley Rider.
+
 ## Versão 5.9 — Credenciais Mapbox conectadas ao Valley Rider
 
 **Data e hora:** 03/08/2026 14:22, `America/Sao_Paulo`

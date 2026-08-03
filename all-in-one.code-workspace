@@ -7,6 +7,7 @@
   ],
   "settings": {
     "python.defaultInterpreterPath": "${workspaceFolder:all-in-one}/.venv/bin/python",
+    "dart.flutterSdkPath": "/home/eretazan/develop/flutter",
     "powershell.powerShellAdditionalExePaths": [
       "/mnt/c/Users/ereta/.local/bin/pwsh"
     ],
@@ -84,6 +85,7 @@
       "STITCH_REMOTE_SYNC_ENABLED": "true"
     },
     "terminal.integrated.env.linux": {
+      "PATH": "/home/eretazan/develop/flutter/bin:${env:PATH}",
       "GOOGLE_INTEGRATIONS_ENABLED": "true",
       "GOOGLE_CLOUD_ENABLED": "true",
       "GOOGLE_AI_STUDIO_ENABLED": "true",

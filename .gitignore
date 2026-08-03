@@ -34,3 +34,8 @@ tmp/
 *.keystore
 valley-release.properties
 firebase-debug.log
+
+# Caches e artefatos locais do Flutter/Dart
+**/.dart_tool/
+**/.flutter-plugins-dependencies
+**/build/

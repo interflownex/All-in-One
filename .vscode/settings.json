@@ -1,5 +1,6 @@
 {
   "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "dart.flutterSdkPath": "/home/eretazan/develop/flutter",
   "vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
   "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
   "vs-kubernetes.kubectlVersioning": "user-provided",
@@ -131,7 +132,7 @@
     "GCP_REGION": "southamerica-east1",
     "BIGQUERY_LOCATION": "southamerica-east1",
     "MINIKUBE_WANTUPDATENOTIFICATION": "false",
-    "PATH": "${env:PATH}:/home/eretazan/.local/bin"
+    "PATH": "/home/eretazan/develop/flutter/bin:${env:PATH}:/home/eretazan/.local/bin"
   },
   "geminicodeassist.outlines.automaticOutlineGeneration": true,
   "geminicodeassist.agentYoloMode": false,
