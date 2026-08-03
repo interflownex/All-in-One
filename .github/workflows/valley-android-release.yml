@@ -11,6 +11,7 @@ on:
       - "config/stitch/**"
       - "scripts/audit_valley_flutter_apks.py"
       - "scripts/configure_valley_flutter_android.py"
+      - "scripts/materialize_valley_dynamic_icon.py"
       - "scripts/prepare_valley_flutter_build.py"
       - "scripts/validate_valley_android_release.py"
       - "scripts/validate_valley_android_release_v29.py"
@@ -33,43 +34,33 @@ jobs:
       VITE_API_HUB_URL: https://all-in-one-api-hub.web.app
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
           cache-dependency-path: apps/valley/package-lock.json
-
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-
       - name: Validar contrato Valley v2.9
         run: python scripts/validate_valley_android_release_v29.py
-
       - name: Instalar Flutter estável
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.44.8"
           channel: stable
           cache: true
-
       - name: Materializar e configurar a plataforma Android
         run: |
           flutter_project="$(mktemp -d)"
-          flutter create \
-            --platforms=android \
-            --org br.com.interflownex \
-            --project-name valley_consumer \
-            "$flutter_project"
+          flutter create --platforms=android --org br.com.interflownex --project-name valley_consumer "$flutter_project"
           cp -R "$flutter_project/android" apps/valley-flutter/android
           python3 scripts/configure_valley_flutter_android.py
           python3 scripts/configure_valley_flutter_android.py --check
-
+          python3 scripts/materialize_valley_dynamic_icon.py
       - name: Validar telas, ações e sincronização
         run: python3 scripts/validate_valley_functional_completeness.py
-
       - name: Compilar e preparar a interface Valley
         run: |
           test -f config/stitch/template_project_state.json
@@ -78,7 +69,6 @@ jobs:
           npm --prefix apps/valley run build
           python3 scripts/prepare_valley_flutter_build.py
           python3 scripts/prepare_valley_flutter_build.py --check
-
       - name: Validar Flutter e contratos do repositório
         working-directory: apps/valley-flutter
         run: |
@@ -86,23 +76,17 @@ jobs:
           dart format lib test
           flutter analyze
           flutter test
-
       - name: Gerar APK universal e APKs por arquitetura
         working-directory: apps/valley-flutter
         run: |
           flutter build apk --release
           flutter build apk --release --split-per-abi
-
       - name: Auditar conteúdo e assinatura dos APKs
-        run: >-
-          python3 scripts/audit_valley_flutter_apks.py
-          apps/valley-flutter/build/app/outputs/flutter-apk
-
+        run: python3 scripts/audit_valley_flutter_apks.py apps/valley-flutter/build/app/outputs/flutter-apk
       - name: Atestar proveniência dos APKs
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: apps/valley-flutter/build/app/outputs/flutter-apk/*.apk
-
       - name: Publicar APKs Valley funcionais
         uses: actions/upload-artifact@v4
         with:
