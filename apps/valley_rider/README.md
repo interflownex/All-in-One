@@ -40,3 +40,14 @@ npm run build
 ```
 
 O token Mapbox deve ser público e restrito. Chaves secretas não podem ser inseridas no bundle Vite.
+
+O pipeline `.github/workflows/valley-rider-mapbox.yml` exige credenciais
+separadas para staging e produção, valida Style, Directions e Geocoding ao vivo
+e publica o diretório `dist` como artefato. Os secrets obrigatórios são:
+
+- `VITE_MAPBOX_ACCESS_TOKEN_STAGING`;
+- `VITE_MAPBOX_ACCESS_TOKEN_PRODUCTION`;
+- `MAPBOX_MOBILE_ACCESS_TOKEN_STAGING`;
+- `MAPBOX_MOBILE_ACCESS_TOKEN_PRODUCTION`.
+
+O token mobile é verificado pelo pipeline, mas não é inserido no bundle web.

@@ -1,5 +1,69 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 5.9 — Credenciais Mapbox conectadas ao Valley Rider
+
+**Data e hora:** 03/08/2026 14:22, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/mapbox-credenciais-pipeline-20260803`
+**Commit de referência antes da entrega:** `de69008`
+
+### Objetivo
+
+Conectar as credenciais Mapbox já provisionadas ao Valley Rider local e ao
+GitHub Actions, com separação obrigatória entre staging/produção e web/mobile.
+
+### Contexto e escopo
+
+Quatro tokens públicos restritos foram gerados fora do Git. Esta etapa instala
+o token web de staging em `apps/valley_rider/.env.local`, cadastra os quatro
+valores em GitHub Secrets e cria o workflow de validação e empacotamento. O
+arquivo local e o diretório `tmp/mapbox-secrets` permanecem ignorados pelo Git.
+
+### Fontes de verdade
+
+- `scripts/mapbox/provision_valley_rider_tokens.mjs`;
+- `scripts/mapbox/validate_valley_rider_mapbox.mjs`;
+- `.github/workflows/valley-rider-mapbox.yml`;
+- `apps/valley_rider/.env.example` e `README.md`;
+- GitHub Secrets do repositório, consultados apenas pelos nomes.
+
+### Pré-requisitos e sequência de execução
+
+1. Manter os quatro tokens públicos ativos e restritos no painel Mapbox.
+2. Confirmar `.env.local` com modo `600`, sem adicionar o arquivo ao Git.
+3. Executar validação ao vivo para staging e produção.
+4. Executar testes de contrato, lint e build.
+5. Publicar a branch, abrir PR para `main` e aguardar gates verdes no mesmo SHA.
+6. Integrar somente por Squash and Merge; depois executar manualmente o workflow
+   para staging e confirmar o artefato gerado.
+
+### Prioridades, testes e critérios de aceite
+
+Prioridade P0: nenhum token secreto `sk.` ou público `pk.` pode aparecer em Git,
+logs ou documentação. São obrigatórios `pytest`, lint, build e respostas HTTP
+200 de Style, Directions e Geocoding nos dois ambientes. O pipeline deve falhar
+quando qualquer secret do ambiente estiver ausente e publicar `dist` somente
+depois das validações.
+
+### Riscos, bloqueios e evidências esperadas
+
+Tokens web com restrição incorreta de URL provocam HTTP 403. Rotação no Mapbox
+exige atualização do secret correspondente. A publicação pública do Valley
+Rider requer um projeto/domínio próprio e não deve reutilizar silenciosamente o
+projeto `all-in-one-web`. Evidências: nomes dos quatro secrets, testes verdes,
+checks HTTP 200, artefato do Actions e PR integrado.
+
+### Pendências restantes e procedimento de entrega
+
+Após o merge, disparar `Valley Rider Mapbox` em staging, baixar/verificar o
+artefato e decidir em atividade própria o destino público do Valley Rider. Não
+declarar deploy público enquanto projeto e domínio não estiverem definidos.
+
+### Histórico resumido
+
+- v5.9: credenciais Mapbox locais/GitHub conectadas a workflow obrigatório de
+  validação e empacotamento.
+
 ## Versão 5.8 — Cloudflare Pages produção em `main`
 
 **Data e hora:** 02/08/2026 02:31, `America/Sao_Paulo`
