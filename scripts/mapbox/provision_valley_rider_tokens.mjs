@@ -5,7 +5,17 @@ import path from "node:path";
 
 const API_ROOT = "https://api.mapbox.com/tokens/v2";
 const PUBLIC_SCOPES = ["styles:read", "fonts:read"];
+const REQUIRED_ADMIN_SCOPES = ["tokens:write", ...PUBLIC_SCOPES];
 const DEFAULT_ENVIRONMENTS = ["staging", "production"];
+
+class MapboxApiError extends Error {
+  constructor(message, { status, detail } = {}) {
+    super(message);
+    this.name = "MapboxApiError";
+    this.status = status;
+    this.detail = detail;
+  }
+}
 
 function required(name) {
   const value = String(process.env[name] || "").trim();
@@ -52,6 +62,25 @@ function sanitize(message, secret) {
   return String(message || "Erro Mapbox").split(secret).join("[REDACTED]");
 }
 
+function scopeRemediationMessage() {
+  return [
+    "O token administrativo Mapbox não possui todos os escopos exigidos para criar os tokens públicos.",
+    "Crie um NOVO token secreto no console Mapbox e marque exatamente:",
+    "  Public scopes: styles:read, fonts:read",
+    "  Secret scopes: tokens:write",
+    `Escopos necessários no token criador: ${REQUIRED_ADMIN_SCOPES.join(", ")}.`,
+    "Depois substitua MAPBOX_ADMIN_TOKEN pelo novo valor sk. e execute novamente.",
+    "Não reutilize o token anterior e não envie o novo token pelo chat.",
+  ].join("\n");
+}
+
+function explainApiError(error) {
+  if (error instanceof MapboxApiError && /scopes are invalid/i.test(error.detail || error.message)) {
+    return scopeRemediationMessage();
+  }
+  return error instanceof Error ? error.message : "Falha desconhecida no provisionamento Mapbox.";
+}
+
 async function requestMapbox(username, adminToken, pathname, init) {
   const url = `${API_ROOT}/${encodeURIComponent(username)}${pathname}?access_token=${encodeURIComponent(adminToken)}`;
   const response = await fetch(url, {
@@ -70,8 +99,11 @@ async function requestMapbox(username, adminToken, pathname, init) {
     body = { message: text };
   }
   if (!response.ok) {
-    const detail = body?.message || body?.code || `HTTP ${response.status}`;
-    throw new Error(sanitize(`Mapbox Tokens API: ${detail}`, adminToken));
+    const detail = String(body?.message || body?.code || `HTTP ${response.status}`);
+    throw new MapboxApiError(
+      sanitize(`Mapbox Tokens API: ${detail}`, adminToken),
+      { status: response.status, detail: sanitize(detail, adminToken) },
+    );
   }
   return body;
 }
@@ -105,7 +137,9 @@ async function main() {
   const username = required("MAPBOX_USERNAME");
   const adminToken = required("MAPBOX_ADMIN_TOKEN");
   if (!adminToken.startsWith("sk.")) {
-    throw new Error("MAPBOX_ADMIN_TOKEN deve ser um token secreto sk. com tokens:write e os escopos públicos solicitados.");
+    throw new Error(
+      `MAPBOX_ADMIN_TOKEN deve ser um token secreto sk. com os escopos: ${REQUIRED_ADMIN_SCOPES.join(", ")}.`,
+    );
   }
 
   const environments = parseEnvironments();
@@ -192,9 +226,9 @@ async function main() {
       }
     }
     const rollbackText = rollbackFailures.length
-      ? ` Rollback incompleto: ${rollbackFailures.join("; ")}`
-      : " Todos os tokens criados nesta execução foram revogados.";
-    throw new Error(`${sanitize(error?.message, adminToken)}${rollbackText}`);
+      ? `\nRollback incompleto: ${rollbackFailures.join("; ")}`
+      : "\nTodos os tokens criados nesta execução foram revogados.";
+    throw new Error(`${explainApiError(error)}${rollbackText}`);
   }
 }
 

@@ -23,7 +23,8 @@ Cada botão possui ação local verificável ou chamada para contrato existente.
 
 ## Dependências de homologação
 
-- configurar token público Mapbox com restrição de origem;
+- manter os quatro secrets Mapbox de staging/produção no GitHub e validar o
+  workflow `Valley Rider Mapbox` após qualquer rotação;
 - injetar token Play Integrity pelo shell Android em produção;
 - homologar provedor de KYC/OCR e armazenamento privado dos binários;
 - homologar processamento financeiro do repasse após a solicitação auditável;

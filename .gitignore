@@ -35,7 +35,7 @@ tmp/
 valley-release.properties
 firebase-debug.log
 
-# Flutter local
-apps/valley-flutter/.dart_tool/
-apps/valley-flutter/.flutter-plugins-dependencies
-apps/valley-flutter/build/
+# Caches e artefatos locais do Flutter/Dart
+**/.dart_tool/
+**/.flutter-plugins-dependencies
+**/build/

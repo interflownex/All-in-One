@@ -1,127 +1,202 @@
 # Tarefas da IA Desenvolvedora
 
-## Versão 6.0 — Flutter Linux persistente no VS Code WSL e gate do checkout
+## Versão 6.1 — Integração do checkout e publicação Rider Flutter
 
-**Data e hora:** 03/08/2026 07:58, `America/Sao_Paulo`
+**Data e hora:** 03/08/2026 16:24, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
 **Branch:** `codex/integrar-checkout-pagamentos-20260802`
-**Referência de base:** `1b152dac1ec7de06a561233a40316af79d624fc1`
-**Objetivo:** impedir que o VS Code em `WSL: Ubuntu` execute o SDK Flutter do
-Windows e restaurar o gate de segurança do checkout Mercado Pago.
+**Referência de base:** `origin/main` em `272a4cf06b48e1bb82493ab5b4f2da83584d7bc8`
+
+### Objetivo
+
+Integrar o Checkout Pro Mercado Pago sobre a `main` atual, resolver conflitos
+diretos e indiretos sem descartar trabalho concorrente e publicar um APK Valley
+Rider Flutter de produção com proveniência e link verificáveis.
 
 ### Contexto, escopo e fontes de verdade
 
-- O log Dart Code selecionava `/mnt/c/Users/ereta/flutter/flutter/flutter` e
-  falhava ao localizar `packages/flutter_tools/bin/flutter_tools.dart`.
-- O SDK Linux oficial Flutter `3.44.8`, alinhado ao workflow
-  `.github/workflows/valley-android-release.yml`, fica em
-  `/home/eretazan/develop/flutter`.
-- `.vscode/settings.json` e `all-in-one.code-workspace` são os contratos dos
-  dois modos de abertura do repositório.
-- `modules/shared/mercado_pago_checkout.py` deve aceitar no sink de rede apenas
-  uma base HTTPS sem credenciais, conforme o gate Bandit B310.
+- PRs #121 e #123 foram integradas primeiro por Squash and Merge, com gates
+  verdes, para estabilizar Mapbox e o SDK Flutter Linux.
+- A PR #120 deve manter checkout, migration `033`, MCP sem credencial literal,
+  validação HTTPS do cliente Mercado Pago e recuperação segura de lock morto.
+- Fontes: `modules/shared/mercado_pago_checkout.py`, contrato OpenAPI,
+  migration/rollback `033`, `.github/workflows/valley-android-release.yml`,
+  `apps/valley-flutter/pubspec.yaml` e scripts de auditoria de APK.
 
-### Pré-requisitos, sequência e prioridades
+### Pré-requisitos e sequência de execução
 
-1. Abrir `all-in-one.code-workspace` em uma janela `WSL: Ubuntu`.
-2. Confirmar que `/home/eretazan/develop/flutter/bin/flutter --version` retorna
-   Flutter `3.44.8` e Dart `3.12.2`.
-3. Executar `Developer: Reload Window` para a extensão Dart reler
-   `dart.flutterSdkPath`.
-4. Executar `flutter pub get` e os testes em `apps/valley-flutter`, registrando
-   separadamente qualquer asset declarado ainda ausente.
-5. Executar os testes de contrato do VS Code e Mercado Pago e o mesmo comando
-   Bandit do workflow Security.
-6. Publicar o commit na PR #120 e exigir gates verdes no mesmo SHA antes de
-   qualquer **Squash and Merge**.
+1. Preservar tokens Mercado Pago, Mapbox, signing e Telegram exclusivamente em
+   GitHub Secrets, variáveis de ambiente ou cofres externos.
+2. Resolver `.gitignore` pela política genérica mais nova da `main` e preservar
+   o histórico autoritativo de `tarefas.md`.
+3. Validar checkout, migrations, Bandit, repositório e Flutter no SDK Linux.
+4. Atualizar a PR #120 e aguardar todos os gates verdes no mesmo SHA.
+5. Integrar exclusivamente por **Squash and Merge**.
+6. Disparar o workflow do Valley Rider em `production`, baixar e auditar os
+   APKs, publicar release gratuito no GitHub e verificar o download.
 
-### Testes e critérios de aceite
+### Prioridades, testes e critérios de aceite
 
-- `flutter --version` usa exclusivamente o SDK Linux `3.44.8`.
-- `flutter pub get` resolve as dependências e `flutter test` passa em
-  `apps/valley-flutter`.
-- `tests/test_vscode_workspace_contract.py` protege SDK e PATH nos dois modos.
-- `tests/test_mercado_pago_checkout.py` rejeita `http:`, `file:` e credenciais
-  embutidas, preservando HTTPS legítimo.
-- Bandit completo termina com código zero e a PR #120 fica verde no SHA final.
+- Nenhum segredo ou ativo de marca aproximado entra no Git.
+- `MARKETPLACE_CHECKOUT_V1_ENABLED` permanece desligada até concluir a issue
+  #95: webhook idempotente, reconciliação PSP, escrow/ledger, refund e
+  chargeback.
+- Testes do checkout, migrations, Bandit, contrato Flutter e validador geral
+  terminam com código zero.
+- O APK de produção deve vir do SHA integrado em `main`, ser auditado, ter
+  checksum SHA-256 e permanecer acessível em uma GitHub Release.
+- Não declarar publicação em loja paga; a distribuição atual é gratuita por
+  artefato/release GitHub.
 
 ### Riscos, bloqueios, evidências e pendências
 
-- A janela já aberta precisa ser recarregada; o estado visual pós-reload deve
-  ser confirmado pelo usuário e não é provado apenas por teste estático.
-- `flutter pub get` apontou que `assets/brand/` e `assets/valley/` ainda não
-  existem. A criação desses diretórios depende dos ativos canônicos e não pode
-  usar substitutos por causa da governança de marca.
-- Dispositivo/emulador Android não é necessário para os testes Dart unitários,
-  mas continua necessário para evidência final de execução móvel.
-- Evidências esperadas: versões do SDK, testes reproduzíveis, diff conhecido,
-  commit publicado, PR #120 e checks verdes.
-- Se a extensão voltar a escolher `/mnt/c/...`, conferir primeiro se a janela
-  exibe `WSL: Ubuntu` e se o arquivo de workspace correto foi reaberto.
+- Ausência de signing secrets impede afirmar assinatura produtiva; nesse caso,
+  publicar somente se o workflow produzir um APK release instalável e registrar
+  claramente o tipo de assinatura comprovado.
+- Mapbox produção deve validar os secrets do ambiente sem expor valores.
+- Evidências esperadas: SHAs dos merges, PR #120 verde e integrada, run do
+  workflow, nomes/tamanhos dos APKs, auditoria, checksum e URL da release.
+- Após publicação, manter issue #95 como bloqueio para ativação financeira real.
 
-### Procedimento de entrega
+### Procedimento de entrega e histórico resumido
 
-- Versionar somente os arquivos deste escopo na branch atual, publicar na PR
-  #120, aguardar todos os gates obrigatórios e integrar somente por **Squash and
-  Merge**. Não versionar SDK, cache, credenciais nem artefatos temporários.
+- v6.1: reconciliação integral do checkout Mercado Pago e preparação da entrega
+  gratuita do Valley Rider Flutter em produção.
+- v6.0: Flutter Linux persistente no VS Code WSL.
+- v5.9: credenciais Mapbox conectadas ao pipeline do Valley Rider.
+
+## Versão 6.0 — Flutter Linux persistente no VS Code WSL
+
+**Data e hora:** 03/08/2026 15:15, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/corrigir-flutter-wsl-20260803`
+**Commit de referência antes da entrega:** `88adc8e`
+
+### Objetivo
+
+Impedir que o VS Code em `WSL: Ubuntu` execute Flutter/Dart do Windows por
+`/mnt/c` e fixar o SDK Linux nativo compatível com o projeto Valley Flutter.
+
+### Contexto, escopo e fontes de verdade
+
+- O log Dart Code selecionou o SDK Windows e reportou Flutter `999.999.888`,
+  Dart `3.11.1`, disputa de startup lock e queda do Dart Tooling Daemon.
+- `apps/valley-flutter/pubspec.yaml` exige Dart `^3.12.0`.
+- O SDK nativo `/home/eretazan/develop/flutter` fornece Flutter `3.44.8`, Dart
+  `3.12.2` e DevTools `2.57.0`.
+- `.vscode/settings.json`, `all-in-one.code-workspace` e
+  `tests/test_vscode_workspace_contract.py` são as fontes de verdade locais.
+
+### Pré-requisitos, sequência e prioridades
+
+1. Preservar o SDK fora do Git em `/home/eretazan/develop/flutter`.
+2. Abrir `all-in-one.code-workspace` por uma janela `WSL: Ubuntu`.
+3. Executar `Developer: Reload Window` para reiniciar Dart Code e invalidar o
+   segredo temporário do Tooling Daemon exposto no log.
+4. Confirmar que Dart Code mostra Flutter `3.44.8` e Dart `3.12.2` no caminho
+   Linux, nunca em `/mnt/c`.
+5. Executar `flutter pub get`, `flutter analyze` e `flutter test` em
+   `apps/valley-flutter`.
+
+### Testes e critérios de aceite
+
+- `/home/eretazan/develop/flutter/bin/flutter --version` termina com código 0.
+- O teste de contrato exige SDK e `PATH` Linux nos dois modos do workspace.
+- `flutter pub get` deve resolver as dependências no SDK nativo; análise e teste
+  devem terminar com código 0 após a restauração dos ativos canônicos.
+- Caches `.dart_tool`, `.flutter-plugins-dependencies` e `build` não entram no
+  Git.
+
+### Riscos, bloqueios e evidências esperadas
+
+- Uma janela já aberta conserva processos `dart.exe` até ser recarregada; a
+  confirmação visual pós-reload depende do usuário.
+- Android/emulador não é necessário para testes Dart, mas será necessário para
+  evidência móvel final.
+- Ativos canônicos ausentes não podem ser substituídos por aproximações.
+- `flutter pub get` passou. `flutter test` permaneceu bloqueado porque
+  `assets/brand/` e `assets/valley/`, declarados no `pubspec.yaml`, estão
+  ausentes; a execução foi encerrada pelo timeout sem fabricar substitutos.
+- `dart analyze` executou com o SDK Linux e retornou código 2 exclusivamente
+  pelos mesmos dois diretórios de ativos ausentes.
+- Evidências: versões do SDK, caminhos dos processos, testes verdes, diff,
+  commit, PR e checks no mesmo SHA.
+
+### Pendências restantes e procedimento de entrega
+
+Publicar esta branch, abrir PR para `main`, aguardar gates verdes e integrar
+somente por **Squash and Merge**. Depois do merge, recarregar a janela WSL e
+confirmar no log Dart Code que nenhum processo parte de `/mnt/c/.../flutter`.
 
 ### Histórico resumido
 
-- v6.0: SDK Flutter Linux fixado nos dois modos do VS Code WSL e validação HTTPS
-  adicionada ao cliente Mercado Pago para restaurar o gate `python-security`.
-- v5.9: checkout Mercado Pago integrado de forma seletiva sobre a `main`.
+- v6.0: SDK Flutter Linux fixado nos dois modos do VS Code WSL, com teste de
+  regressão e exclusão dos caches gerados.
+- v5.9: credenciais Mapbox conectadas ao pipeline do Valley Rider.
 
-## Versão 5.9 — Integração limpa do Checkout Mercado Pago
+## Versão 5.9 — Credenciais Mapbox conectadas ao Valley Rider
 
-**Data e hora:** 02/08/2026 15:55, `America/Sao_Paulo`
+**Data e hora:** 03/08/2026 14:22, `America/Sao_Paulo`
 **Repositório:** `interflownex/All-in-One`
-**Branch:** `codex/integrar-checkout-pagamentos-20260802`
-**Referência de base:** `origin/main` em `de69008282ed8c30b63c18c798730383866bd6bd`
-**Objetivo:** integrar sobre a `main` atual somente o checkout Mercado Pago e a
-configuração MCP correspondente, sem carregar o histórico divergente da branch
-antiga `codex/corrigir-vscode-persistente-20260731`.
+**Branch:** `codex/mapbox-credenciais-pipeline-20260803`
+**Commit de referência antes da entrega:** `de69008`
+
+### Objetivo
+
+Conectar as credenciais Mapbox já provisionadas ao Valley Rider local e ao
+GitHub Actions, com separação obrigatória entre staging/produção e web/mobile.
 
 ### Contexto e escopo
 
-- `payment_method` aceita `wallet` ou `mercado_pago`.
-- O backend cria preferências server-side em
-  `POST /valley/checkout/{checkout_id}/mercadopago/preference`.
-- A migration `033` e seu rollback ampliam a constraint de pagamento.
-- O MCP Mercado Pago é referenciado sem versionar credenciais.
-- `MARKETPLACE_CHECKOUT_V1_ENABLED` permanece desligada por padrão.
+Quatro tokens públicos restritos foram gerados fora do Git. Esta etapa instala
+o token web de staging em `apps/valley_rider/.env.local`, cadastra os quatro
+valores em GitHub Secrets e cria o workflow de validação e empacotamento. O
+arquivo local e o diretório `tmp/mapbox-secrets` permanecem ignorados pelo Git.
 
-### Fontes de verdade e pré-requisitos
+### Fontes de verdade
 
-- `modules/marketplace/CHECKOUT_CONTRACT.md`
-- `modules/marketplace/checkout/OPENAPI.yaml`
-- `modules/shared/mercado_pago_checkout.py`
-- `database/postgres/migrations/033_marketplace_checkout_mercado_pago.sql`
-- Credenciais `MERCADO_PAGO_ACCESS_TOKEN`, `MERCADO_PAGO_WEBHOOK_SECRET` e
-  `MERCADO_PAGO_NOTIFICATION_URL` permanecem exclusivamente fora do Git.
+- `scripts/mapbox/provision_valley_rider_tokens.mjs`;
+- `scripts/mapbox/validate_valley_rider_mapbox.mjs`;
+- `.github/workflows/valley-rider-mapbox.yml`;
+- `apps/valley_rider/.env.example` e `README.md`;
+- GitHub Secrets do repositório, consultados apenas pelos nomes.
 
-### Sequência, prioridades e testes
+### Pré-requisitos e sequência de execução
 
-1. Validar compilação dos módulos Python alterados.
-2. Executar os testes de Mercado Pago, contrato e rotas do checkout.
-3. Executar `git diff --check` e o validador geral do repositório.
-4. Publicar a branch, abrir PR para `main` e aguardar gates verdes no mesmo SHA.
-5. Integrar exclusivamente por **Squash and Merge**.
+1. Manter os quatro tokens públicos ativos e restritos no painel Mapbox.
+2. Confirmar `.env.local` com modo `600`, sem adicionar o arquivo ao Git.
+3. Executar validação ao vivo para staging e produção.
+4. Executar testes de contrato, lint e build.
+5. Publicar a branch, abrir PR para `main` e aguardar gates verdes no mesmo SHA.
+6. Integrar somente por Squash and Merge; depois executar manualmente o workflow
+   para staging e confirmar o artefato gerado.
 
-### Critérios de aceite, riscos e bloqueios
+### Prioridades, testes e critérios de aceite
 
-- Nenhum token é enviado ao cliente ou versionado.
-- A assinatura HMAC `id;request-id;ts` expira em 300 segundos.
-- Sem credenciais, nenhuma chamada real ao PSP é declarada como validada.
-- Produção permanece bloqueada até consumidor idempotente de webhook, consulta
-  autoritativa, escrow/ledger transacional, reconciliação, refund e chargeback
-  previstos na issue #95.
-- Evidências esperadas: testes locais reproduzíveis, diff conhecido, PR e checks
-  verdes no SHA final.
+Prioridade P0: nenhum token secreto `sk.` ou público `pk.` pode aparecer em Git,
+logs ou documentação. São obrigatórios `pytest`, lint, build e respostas HTTP
+200 de Style, Directions e Geocoding nos dois ambientes. O pipeline deve falhar
+quando qualquer secret do ambiente estiver ausente e publicar `dist` somente
+depois das validações.
+
+### Riscos, bloqueios e evidências esperadas
+
+Tokens web com restrição incorreta de URL provocam HTTP 403. Rotação no Mapbox
+exige atualização do secret correspondente. A publicação pública do Valley
+Rider requer um projeto/domínio próprio e não deve reutilizar silenciosamente o
+projeto `all-in-one-web`. Evidências: nomes dos quatro secrets, testes verdes,
+checks HTTP 200, artefato do Actions e PR integrado.
+
+### Pendências restantes e procedimento de entrega
+
+Após o merge, disparar `Valley Rider Mapbox` em staging, baixar/verificar o
+artefato e decidir em atividade própria o destino público do Valley Rider. Não
+declarar deploy público enquanto projeto e domínio não estiverem definidos.
 
 ### Histórico resumido
 
-- v5.9: checkout Mercado Pago extraído seletivamente da branch divergente e
-  reaplicado sobre a `main` atual para integração segura.
+- v5.9: credenciais Mapbox locais/GitHub conectadas a workflow obrigatório de
+  validação e empacotamento.
 
 ## Versão 5.8 — Cloudflare Pages produção em `main`
 
