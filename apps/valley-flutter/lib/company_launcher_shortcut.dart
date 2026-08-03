@@ -8,7 +8,10 @@ enum ValleyBrandVariant { consumer, rider }
 
 /// Resultado normalizado da solicitação feita ao launcher Android.
 class CompanyShortcutResult {
-  const CompanyShortcutResult({required this.supported, required this.requested});
+  const CompanyShortcutResult({
+    required this.supported,
+    required this.requested,
+  });
 
   final bool supported;
   final bool requested;
@@ -20,7 +23,7 @@ class CompanyShortcutResult {
 /// aplicativo continua disponível pelo ícone padrão.
 class CompanyLauncherShortcut {
   CompanyLauncherShortcut({MethodChannel? channel})
-      : _channel = channel ?? const MethodChannel(_channelName);
+    : _channel = channel ?? const MethodChannel(_channelName);
 
   static const _channelName = 'com.allinone.valley/company_shortcut';
   static const int _iconSize = 512;
@@ -42,7 +45,8 @@ class CompanyLauncherShortcut {
     if (normalizedCompanyId.isEmpty || normalizedCompanyName.isEmpty) {
       throw ArgumentError('Empresa inválida para criação do atalho.');
     }
-    if (companyLogo.isEmpty || companyLogo.lengthInBytes > _maxCompanyLogoBytes) {
+    if (companyLogo.isEmpty ||
+        companyLogo.lengthInBytes > _maxCompanyLogoBytes) {
       throw ArgumentError('Logomarca inválida ou acima do limite de 4 MiB.');
     }
 
@@ -55,7 +59,8 @@ class CompanyLauncherShortcut {
         ? 'assets/brand/valley-rider-shortcut-frame.png'
         : 'assets/brand/valley-shortcut-frame.png';
     final icon = await _composeIcon(companyLogo, frameAsset);
-    final requested = await _channel.invokeMethod<bool>('pin', {
+    final requested =
+        await _channel.invokeMethod<bool>('pin', {
           'companyId': normalizedCompanyId,
           'companyName': normalizedCompanyName,
           'variant': variant.name,
