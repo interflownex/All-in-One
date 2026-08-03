@@ -1,5 +1,70 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 6.1 — Integração do checkout e publicação Rider Flutter
+
+**Data e hora:** 03/08/2026 16:24, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/integrar-checkout-pagamentos-20260802`
+**Referência de base:** `origin/main` em `272a4cf06b48e1bb82493ab5b4f2da83584d7bc8`
+
+### Objetivo
+
+Integrar o Checkout Pro Mercado Pago sobre a `main` atual, resolver conflitos
+diretos e indiretos sem descartar trabalho concorrente e publicar um APK Valley
+Rider Flutter de produção com proveniência e link verificáveis.
+
+### Contexto, escopo e fontes de verdade
+
+- PRs #121 e #123 foram integradas primeiro por Squash and Merge, com gates
+  verdes, para estabilizar Mapbox e o SDK Flutter Linux.
+- A PR #120 deve manter checkout, migration `033`, MCP sem credencial literal,
+  validação HTTPS do cliente Mercado Pago e recuperação segura de lock morto.
+- Fontes: `modules/shared/mercado_pago_checkout.py`, contrato OpenAPI,
+  migration/rollback `033`, `.github/workflows/valley-android-release.yml`,
+  `apps/valley-flutter/pubspec.yaml` e scripts de auditoria de APK.
+
+### Pré-requisitos e sequência de execução
+
+1. Preservar tokens Mercado Pago, Mapbox, signing e Telegram exclusivamente em
+   GitHub Secrets, variáveis de ambiente ou cofres externos.
+2. Resolver `.gitignore` pela política genérica mais nova da `main` e preservar
+   o histórico autoritativo de `tarefas.md`.
+3. Validar checkout, migrations, Bandit, repositório e Flutter no SDK Linux.
+4. Atualizar a PR #120 e aguardar todos os gates verdes no mesmo SHA.
+5. Integrar exclusivamente por **Squash and Merge**.
+6. Disparar o workflow do Valley Rider em `production`, baixar e auditar os
+   APKs, publicar release gratuito no GitHub e verificar o download.
+
+### Prioridades, testes e critérios de aceite
+
+- Nenhum segredo ou ativo de marca aproximado entra no Git.
+- `MARKETPLACE_CHECKOUT_V1_ENABLED` permanece desligada até concluir a issue
+  #95: webhook idempotente, reconciliação PSP, escrow/ledger, refund e
+  chargeback.
+- Testes do checkout, migrations, Bandit, contrato Flutter e validador geral
+  terminam com código zero.
+- O APK de produção deve vir do SHA integrado em `main`, ser auditado, ter
+  checksum SHA-256 e permanecer acessível em uma GitHub Release.
+- Não declarar publicação em loja paga; a distribuição atual é gratuita por
+  artefato/release GitHub.
+
+### Riscos, bloqueios, evidências e pendências
+
+- Ausência de signing secrets impede afirmar assinatura produtiva; nesse caso,
+  publicar somente se o workflow produzir um APK release instalável e registrar
+  claramente o tipo de assinatura comprovado.
+- Mapbox produção deve validar os secrets do ambiente sem expor valores.
+- Evidências esperadas: SHAs dos merges, PR #120 verde e integrada, run do
+  workflow, nomes/tamanhos dos APKs, auditoria, checksum e URL da release.
+- Após publicação, manter issue #95 como bloqueio para ativação financeira real.
+
+### Procedimento de entrega e histórico resumido
+
+- v6.1: reconciliação integral do checkout Mercado Pago e preparação da entrega
+  gratuita do Valley Rider Flutter em produção.
+- v6.0: Flutter Linux persistente no VS Code WSL.
+- v5.9: credenciais Mapbox conectadas ao pipeline do Valley Rider.
+
 ## Versão 6.0 — Flutter Linux persistente no VS Code WSL
 
 **Data e hora:** 03/08/2026 15:15, `America/Sao_Paulo`
