@@ -1,0 +1,80 @@
+name: Valley Rider Mapbox
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Ambiente Mapbox usado no pacote
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+  push:
+    branches: [main]
+    paths:
+      - "apps/valley_rider/**"
+      - "scripts/mapbox/**"
+      - ".github/workflows/valley-rider-mapbox.yml"
+
+concurrency:
+  group: valley-rider-mapbox-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Validar e empacotar
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      TARGET_ENVIRONMENT: ${{ github.event_name == 'workflow_dispatch' && inputs.environment || 'production' }}
+      VITE_MAPBOX_ACCESS_TOKEN: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'staging' && secrets.VITE_MAPBOX_ACCESS_TOKEN_STAGING || secrets.VITE_MAPBOX_ACCESS_TOKEN_PRODUCTION }}
+      MAPBOX_MOBILE_ACCESS_TOKEN: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'staging' && secrets.MAPBOX_MOBILE_ACCESS_TOKEN_STAGING || secrets.MAPBOX_MOBILE_ACCESS_TOKEN_PRODUCTION }}
+      MAPBOX_TEST_REFERER: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'staging' && 'https://all-in-one-web-7fa.pages.dev' || 'https://brasildesconto.com.br' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Exigir credenciais Mapbox do ambiente
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          [[ "$VITE_MAPBOX_ACCESS_TOKEN" == pk.* ]] || {
+            echo "::error title=Secret Mapbox web ausente::Cadastre VITE_MAPBOX_ACCESS_TOKEN_${TARGET_ENVIRONMENT^^}."
+            exit 1
+          }
+          [[ "$MAPBOX_MOBILE_ACCESS_TOKEN" == pk.* ]] || {
+            echo "::error title=Secret Mapbox mobile ausente::Cadastre MAPBOX_MOBILE_ACCESS_TOKEN_${TARGET_ENVIRONMENT^^}."
+            exit 1
+          }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/valley_rider/package-lock.json
+
+      - name: Instalar dependências reproduzíveis
+        working-directory: apps/valley_rider
+        run: npm ci
+
+      - name: Validar APIs Mapbox ao vivo
+        run: node scripts/mapbox/validate_valley_rider_mapbox.mjs
+
+      - name: Executar lint
+        working-directory: apps/valley_rider
+        run: npm run lint
+
+      - name: Gerar pacote Valley Rider
+        working-directory: apps/valley_rider
+        run: npm run build
+
+      - name: Publicar artefato validado
+        uses: actions/upload-artifact@v4
+        with:
+          name: valley-rider-${{ env.TARGET_ENVIRONMENT }}-${{ github.sha }}
+          path: apps/valley_rider/dist
+          if-no-files-found: error
+          retention-days: 14
+
