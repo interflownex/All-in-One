@@ -60,25 +60,80 @@ def test_client_accepts_https_api_base_url():
     assert MercadoPagoClient(settings).settings is settings
 
 
-def test_webhook_signature_requires_fresh_hmac_manifest():
-    secret = "test-secret"
-    timestamp = "1700000000"
-    request_id = "request-1"
-    data_id = "payment-1"
+def _signed_webhook(
+    *, timestamp: str, request_id: str, data_id: str, secret: str
+) -> str:
     manifest = f"id:{data_id};request-id:{request_id};ts:{timestamp};"
     digest = hmac.new(secret.encode(), manifest.encode(), hashlib.sha256).hexdigest()
-    signature = f"ts={timestamp},v1={digest}"
+    return f"ts={timestamp},v1={digest}"
+
+
+@pytest.mark.parametrize(
+    ("timestamp", "now"),
+    (
+        ("1700000000", 1700000100),
+        ("1700000000000", 1700000100),
+    ),
+)
+def test_webhook_signature_accepts_fresh_seconds_and_milliseconds(timestamp, now):
+    secret = "test-secret"
+    request_id = "request-1"
+    data_id = "payment-1"
+    signature = _signed_webhook(
+        timestamp=timestamp,
+        request_id=request_id,
+        data_id=data_id,
+        secret=secret,
+    )
+
     assert verify_webhook_signature(
         x_signature=signature,
         x_request_id=request_id,
         data_id=data_id,
         secret=secret,
-        now=1700000100,
+        now=now,
     )
+
+
+@pytest.mark.parametrize(
+    ("timestamp", "now"),
+    (
+        ("1700000000", 1700000401),
+        ("1700000000000", 1700000401),
+    ),
+)
+def test_webhook_signature_rejects_expired_seconds_and_milliseconds(timestamp, now):
+    secret = "test-secret"
+    request_id = "request-1"
+    data_id = "payment-1"
+    signature = _signed_webhook(
+        timestamp=timestamp,
+        request_id=request_id,
+        data_id=data_id,
+        secret=secret,
+    )
+
     assert not verify_webhook_signature(
         x_signature=signature,
         x_request_id=request_id,
         data_id=data_id,
         secret=secret,
-        now=1700000401,
+        now=now,
+    )
+
+
+def test_webhook_signature_rejects_negative_or_malformed_timestamp():
+    assert not verify_webhook_signature(
+        x_signature="ts=-1,v1=invalid",
+        x_request_id="request-1",
+        data_id="payment-1",
+        secret="test-secret",
+        now=0,
+    )
+    assert not verify_webhook_signature(
+        x_signature="ts=not-a-number,v1=invalid",
+        x_request_id="request-1",
+        data_id="payment-1",
+        secret="test-secret",
+        now=0,
     )
