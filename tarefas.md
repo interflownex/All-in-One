@@ -1,5 +1,64 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 6.3 — Evidência da publicação Valley Rider Flutter
+
+**Data e hora:** 03/08/2026 17:15, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/registrar-release-rider-20260803`
+**Commit de produção:** `634f6515478bdd2e6d77728f53fe92e549d3cb87`
+
+### Objetivo, contexto e escopo
+
+Registrar a evidência reproduzível da integração e da publicação gratuita do
+APK Valley Rider real em Flutter. O código foi integrado pelo PR #124, o build
+foi executado na `main` e a release pública contém o APK universal, três APKs
+por ABI e o manifesto SHA-256.
+
+### Fontes de verdade e pré-requisitos
+
+- PR integrado: `https://github.com/interflownex/All-in-One/pull/124`.
+- Workflow verde: `https://github.com/interflownex/All-in-One/actions/runs/30848702880`.
+- Release: `https://github.com/interflownex/All-in-One/releases/tag/valley-rider-flutter-v1.1.0-3`.
+- Tag/versão: `valley-rider-flutter-v1.1.0-3` / `1.1.0+3`.
+- Manter Mapbox e qualquer credencial financeira somente em secrets externos.
+
+### Sequência, prioridades e testes reproduzíveis
+
+1. Confirmar que a tag aponta para o commit de produção acima.
+2. Conferir que o run `30848702880` concluiu com sucesso no mesmo SHA.
+3. Baixar `SHA256SUMS.txt` e validar cada APK com `sha256sum -c`.
+4. Usar `app-release.apk` para instalação universal; selecionar por ABI apenas
+   quando a arquitetura do aparelho for conhecida.
+5. Manter a issue #95 bloqueando a ativação financeira até os requisitos de
+   webhook, ledger, reconciliação, refund e chargeback estarem comprovados.
+
+### Critérios de aceite, riscos e bloqueios
+
+- O build Flutter release, Mapbox produção, identidade Rider, assinatura,
+  conteúdo e proveniência passaram no runner Linux em 6m36s.
+- `app-release.apk`: 54.034.583 bytes, SHA-256
+  `0dc9c6e7332c6c76ad0e3de3cccbbc04a96823b338ba086108865d4daee4a4b1`.
+- ARM64: 24.920.277 bytes; ARMv7: 22.218.213 bytes; x86_64: 26.328.955 bytes.
+- A publicação atual é GitHub Release, não Google Play. Não há credenciais de
+  Telegram disponíveis neste ambiente para entrega adicional por mensagem.
+- A ativação financeira produtiva continua bloqueada pela issue #95; a
+  integração do checkout não equivale a liberar transações reais.
+
+### Evidências esperadas, pendências e entrega
+
+- Evidência disponível: PR #124, commit `634f651`, run `30848702880`, atestado
+  de proveniência e cinco assets públicos na release (quatro APKs e checksums).
+- Próxima etapa: concluir a issue #95 e provisionar assinatura de distribuição
+  em cofre externo caso seja necessária publicação futura em loja.
+- Procedimento de entrega: validar hashes, instalar o APK universal em aparelho
+  Android compatível e registrar o teste funcional sem versionar segredos.
+
+### Histórico resumido
+
+- v6.3: registrou publicação pública, hashes, tamanhos e bloqueios restantes.
+- v6.2: criou pipeline e auditoria próprios do Valley Rider Flutter.
+- v6.1: integrou checkout Mercado Pago e conflitos relacionados.
+
 ## Versão 6.2 — APK Valley Rider Flutter de produção
 
 **Data e hora:** 03/08/2026 16:55, `America/Sao_Paulo`
