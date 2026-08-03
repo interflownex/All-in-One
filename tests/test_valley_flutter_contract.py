@@ -70,6 +70,12 @@ def test_android_manifest_materialization_is_idempotent() -> None:
     assert 'android:allowBackup="false"' in configured
 
 
+def test_android_manifest_supports_rider_identity() -> None:
+    source = '<manifest xmlns:android="http://schemas.android.com/apk/res/android"><application android:label="${applicationName}"></application></manifest>'
+    configured = _materialize_manifest(source, "Valley Rider")
+    assert 'android:label="Valley Rider"' in configured
+
+
 def test_pubspec_has_generated_asset_block() -> None:
     pubspec = (FLUTTER_APP / "pubspec.yaml").read_text(encoding="utf-8")
     assert "# BEGIN GENERATED VALLEY WEB ASSETS" in pubspec
@@ -99,6 +105,37 @@ def test_apk_bundle_audit_accepts_packaged_local_references(tmp_path: Path) -> N
     with zipfile.ZipFile(apk) as archive:
         _audit_web_bundle(apk.name, archive, errors)
     assert errors == []
+
+
+def test_apk_bundle_audit_requires_rider_identity(tmp_path: Path) -> None:
+    apk = tmp_path / "consumer.apk"
+    index = '<div id="root"></div><script src="./assets/app.js"></script><link rel="stylesheet" href="./assets/app.css">'
+    with zipfile.ZipFile(apk, "w") as archive:
+        archive.writestr(INDEX_PATH, index)
+        archive.writestr(
+            "assets/flutter_assets/assets/valley/assets/app.js",
+            "console.log('Valley consumidor');",
+        )
+        archive.writestr(
+            "assets/flutter_assets/assets/valley/assets/app.css",
+            "body { min-height: 100vh; background: white; }",
+        )
+    errors: list[str] = []
+    with zipfile.ZipFile(apk) as archive:
+        _audit_web_bundle(apk.name, archive, errors, "Valley Rider")
+    assert any("identidade esperada ausente" in error for error in errors)
+
+
+def test_rider_flutter_workflow_uses_production_identity_and_artifact() -> None:
+    workflow = (
+        ROOT / ".github" / "workflows" / "valley-rider-flutter-release.yml"
+    ).read_text(encoding="utf-8")
+    assert "VITE_MAPBOX_ACCESS_TOKEN_PRODUCTION" in workflow
+    assert "--project-name valley_rider" in workflow
+    assert '--label "Valley Rider"' in workflow
+    assert '--variant rider' in workflow
+    assert '--dart-define=VALLEY_APP_NAME="Valley Rider"' in workflow
+    assert 'valley-rider-flutter-production-${{ github.sha }}' in workflow
 
 
 def test_absolute_asset_reference_is_rejected() -> None:

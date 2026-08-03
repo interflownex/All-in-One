@@ -15,7 +15,6 @@ DRAWABLE = FLUTTER_APP / "android" / "app" / "src" / "main" / "res" / "drawable-
 ICON = DRAWABLE / "valley_logo.png"
 PERMISSIONS = ("android.permission.INTERNET", "android.permission.ACCESS_NETWORK_STATE")
 APPLICATION_ATTRIBUTES = {
-    "label": "Valley",
     "icon": "@drawable/valley_logo",
     "roundIcon": "@drawable/valley_logo",
     "usesCleartextTraffic": "false",
@@ -31,7 +30,7 @@ def _set_android_attribute(tag: str, name: str, value: str) -> str:
     return tag[:-1].rstrip() + f"\n        {attribute}>"
 
 
-def _materialize_manifest(text: str) -> str:
+def _materialize_manifest(text: str, app_label: str = "Valley") -> str:
     if "<manifest" not in text or "<application" not in text:
         raise RuntimeError("Manifesto Android fora do formato esperado.")
     permission_lines = []
@@ -49,23 +48,24 @@ def _materialize_manifest(text: str) -> str:
     if match is None:
         raise RuntimeError("Elemento application não encontrado no manifesto Android.")
     application_tag = match.group(0)
-    for name, value in APPLICATION_ATTRIBUTES.items():
+    attributes = {"label": app_label, **APPLICATION_ATTRIBUTES}
+    for name, value in attributes.items():
         application_tag = _set_android_attribute(application_tag, name, value)
     return text[: match.start()] + application_tag + text[match.end() :]
 
 
-def configure() -> None:
+def configure(app_label: str = "Valley") -> None:
     if not MANIFEST.is_file():
         raise FileNotFoundError("AndroidManifest.xml ausente; execute flutter create antes desta etapa.")
     if not OFFICIAL_LOGO.is_file():
         raise FileNotFoundError("Logomarca oficial Valley ausente.")
     original = MANIFEST.read_text(encoding="utf-8")
-    MANIFEST.write_text(_materialize_manifest(original), encoding="utf-8")
+    MANIFEST.write_text(_materialize_manifest(original, app_label), encoding="utf-8")
     DRAWABLE.mkdir(parents=True, exist_ok=True)
     shutil.copy2(OFFICIAL_LOGO, ICON)
 
 
-def check() -> None:
+def check(app_label: str = "Valley") -> None:
     if not MANIFEST.is_file() or not ICON.is_file():
         raise SystemExit("Configuração Android Valley não materializada.")
     text = MANIFEST.read_text(encoding="utf-8")
@@ -76,7 +76,8 @@ def check() -> None:
     if match is None:
         raise SystemExit("Elemento application ausente.")
     application_tag = match.group(0)
-    for name, value in APPLICATION_ATTRIBUTES.items():
+    attributes = {"label": app_label, **APPLICATION_ATTRIBUTES}
+    for name, value in attributes.items():
         if f'android:{name}="{value}"' not in application_tag:
             raise SystemExit(f"Manifesto Android divergente em {name}.")
     if ICON.read_bytes() != OFFICIAL_LOGO.read_bytes():
@@ -86,13 +87,14 @@ def check() -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--label", default="Valley")
     args = parser.parse_args()
     if args.check:
-        check()
+        check(args.label)
     else:
-        configure()
-        check()
-        print("Android Valley configurado com rede segura e ícone oficial.")
+        configure(args.label)
+        check(args.label)
+        print(f"Android {args.label} configurado com rede segura e ícone oficial.")
 
 
 if __name__ == "__main__":

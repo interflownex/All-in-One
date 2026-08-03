@@ -1,5 +1,63 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 6.2 — APK Valley Rider Flutter de produção
+
+**Data e hora:** 03/08/2026 16:55, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/publicar-rider-flutter-producao-20260803`
+**Referência de base:** `55bdbb6a9c560a9092655ba39a28ee2473a99497`
+
+### Objetivo e contexto
+
+Criar e publicar o APK Valley Rider real em Flutter, sem reutilizar ou renomear
+indevidamente o APK `valley_consumer`. A interface funcional vem de
+`apps/valley_rider`, empacotada pelo wrapper Flutter existente em variante
+compatível, com nome Android `Valley Rider` e projeto `valley_rider`.
+
+### Escopo e fontes de verdade
+
+- `.github/workflows/valley-rider-flutter-release.yml` gera APK universal e por
+  ABI usando Flutter `3.44.8` e Mapbox produção.
+- `scripts/prepare_valley_flutter_build.py --variant rider` materializa o bundle
+  Rider e rejeita identidade incorreta.
+- `scripts/configure_valley_flutter_android.py --label "Valley Rider"` aplica
+  rede segura e somente a marca oficial Valley.
+- `scripts/audit_valley_flutter_apks.py --expected-text "Valley Rider"` valida
+  conteúdo, estrutura e assinatura dos APKs.
+- `apps/valley_rider/package-lock.json` é a fonte reproduzível das dependências.
+
+### Pré-requisitos, sequência e prioridades
+
+1. Manter os secrets Mapbox de produção fora do Git.
+2. Executar contratos Python, `npm audit`, lint, build, análise e testes Flutter.
+3. Publicar PR para `main` e integrar somente com gates verdes no mesmo SHA.
+4. Disparar o workflow Rider Flutter na `main` integrada.
+5. Baixar e auditar os APKs, calcular SHA-256 e publicar GitHub Release gratuita.
+6. Verificar a URL e registrar versão, commit, run e tamanhos dos artefatos.
+
+### Testes, critérios de aceite e evidências
+
+- Contratos Rider/Flutter e validadores do repositório terminam com código zero.
+- `npm audit --audit-level=moderate` retorna zero vulnerabilidades.
+- `flutter analyze` e `flutter test` passam no SDK Linux.
+- Workflow usa apenas secrets de produção e termina verde no SHA de `main`.
+- APK consumidor sem a identidade Rider é rejeitado pelo auditor.
+- Release contém APK universal e APKs por ABI, checksums e proveniência do build.
+
+### Riscos, bloqueios e pendências
+
+- O SDK Android montado em `/mnt/c` pode travar o Gradle local; o runner Linux é
+  a evidência autoritativa do build de produção.
+- Esta entrega é gratuita via GitHub Release e não declara publicação em loja.
+- Credenciais financeiras e Mapbox permanecem fora do APK/Git; a issue #95 segue
+  bloqueando a ativação financeira produtiva incompleta.
+
+### Procedimento de entrega e histórico resumido
+
+- v6.2: pipeline e auditoria próprios do Valley Rider Flutter de produção.
+- v6.1: checkout Mercado Pago e conflitos integrados por PR #120.
+- v6.0: Flutter Linux persistente no VS Code WSL.
+
 ## Versão 6.1 — Integração do checkout e publicação Rider Flutter
 
 **Data e hora:** 03/08/2026 16:24, `America/Sao_Paulo`
