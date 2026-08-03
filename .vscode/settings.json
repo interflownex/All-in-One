@@ -1,5 +1,5 @@
 {
-  "python.defaultInterpreterPath": "/home/eretazan/.codex/worktrees/1781507772-23398/all-in-one/.venv/bin/python",
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
   "dart.flutterSdkPath": "/home/eretazan/develop/flutter",
   "vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
   "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
@@ -159,5 +159,12 @@
     "**/target/**": true,
     "**/.gemini/skills/**": true,
     "**/.github/skills/**": true
-  }
+  },
+  "python-envs.pythonProjects": [
+    {
+      "path": ".",
+      "envManager": "ms-python.python:system",
+      "packageManager": "ms-python.python:pip"
+    }
+  ]
 }

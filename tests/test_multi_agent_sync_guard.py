@@ -37,6 +37,26 @@ def test_stale_lock_can_be_replaced(monkeypatch, tmp_path: Path) -> None:
     assert guard.read_lock(path)["activity"] == "retomada segura"
 
 
+def test_lock_owned_by_dead_process_is_released_for_recovery(
+    monkeypatch, tmp_path: Path
+) -> None:
+    path = tmp_path / "agent.lock"
+    path.write_text(
+        (
+            '{"agent":"agente_antigo","pid":2147483647,'
+            f'"acquired_at":"{datetime.now(UTC).isoformat()}"'
+            "}"
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(guard, "lock_path", lambda scope="workspace": path)
+
+    acquired = guard.acquire_lock("codex_cli", "recuperacao de lock morto", 120)
+
+    assert acquired["agent"] == "codex_cli"
+    assert guard.read_lock(path)["activity"] == "recuperacao de lock morto"
+
+
 def test_release_refuses_another_agent(monkeypatch, tmp_path: Path) -> None:
     path = tmp_path / "agent.lock"
     monkeypatch.setattr(guard, "lock_path", lambda scope="workspace": path)

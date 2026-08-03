@@ -44,6 +44,20 @@ def now_utc() -> datetime:
     return datetime.now(UTC)
 
 
+def process_is_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+    return True
+
+
 def read_lock(
     path: Path | None = None, scope: str = "workspace"
 ) -> dict[str, Any] | None:
@@ -65,7 +79,13 @@ def lock_is_stale(payload: dict[str, Any], ttl_minutes: int) -> bool:
         return True
     if acquired_at.tzinfo is None:
         acquired_at = acquired_at.replace(tzinfo=UTC)
-    return now_utc() - acquired_at > timedelta(minutes=ttl_minutes)
+    if now_utc() - acquired_at > timedelta(minutes=ttl_minutes):
+        return True
+    pid = payload.get("pid")
+    host = payload.get("host")
+    if isinstance(pid, int) and pid > 0 and host in (None, socket.gethostname()):
+        return not process_is_alive(pid)
+    return False
 
 
 def acquire_lock(
