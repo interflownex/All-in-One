@@ -1,0 +1,274 @@
+{
+  "schema_version": "2.2",
+  "round": "002",
+  "module_count": 24,
+  "forbidden_modules": [
+    "vision"
+  ],
+  "ideas": [
+    {
+      "id": "R2-001",
+      "module": "Identity",
+      "title": "Cofre de Recuperação sem Senha",
+      "problem": "Perda de celular, troca de aparelho e esquecimento de credenciais podem bloquear o usuário ou abrir espaço para golpes.",
+      "proposal": "Criar um plano de recuperação configurado previamente, combinando passkey, dispositivo confiável, código físico de emergência e contatos de confiança, com tempo de espera, alertas e cancelamento de tentativas suspeitas.",
+      "benefit": "Reduz fraude, bloqueios de conta e atendimento manual inseguro.",
+      "commercial": "Plano empresarial de identidade e redução de custos de suporte.",
+      "effort": "Alto",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-002",
+      "module": "Business",
+      "title": "Clube de Compras Empresarial Automatizado",
+      "problem": "Pequenas empresas compram pouco individualmente e recebem preços e fretes piores.",
+      "proposal": "Reunir automaticamente empresas com necessidades semelhantes para formar pedidos coletivos, mantendo cobrança, documentação e entrega separadas para cada participante.",
+      "benefit": "Aumenta o poder de negociação e reduz custos dos clientes empresariais.",
+      "commercial": "Comissão de negociação e assinatura empresarial.",
+      "effort": "Médio",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-003",
+      "module": "Permissions",
+      "title": "Permissão com Finalidade e Prazo",
+      "problem": "Acessos temporários frequentemente permanecem ativos depois que a tarefa termina.",
+      "proposal": "Toda permissão deve registrar finalidade, dados permitidos, período, limite financeiro e operação autorizada, sendo encerrada automaticamente ao concluir a finalidade ou expirar o prazo.",
+      "benefit": "Reduz acessos esquecidos, indevidos ou excessivos.",
+      "commercial": "Governança premium para empresas e integrações.",
+      "effort": "Médio",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-004",
+      "module": "Finance",
+      "title": "Cobrança Antiatraso Conversacional",
+      "problem": "Muitas cobranças atrasam porque a data escolhida não combina com o fluxo financeiro do cliente.",
+      "proposal": "Antes do vencimento, oferecer opções previamente autorizadas pela empresa, como alterar data, dividir o valor, pagar parte agora ou ativar Pix Automático.",
+      "benefit": "Reduz inadimplência e aumenta a recuperação de recebimentos.",
+      "commercial": "Cobrança por operação recuperada e plano financeiro.",
+      "effort": "Alto",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-005",
+      "module": "Marketplace",
+      "title": "Compra Coletiva de Bairro",
+      "problem": "Consumidores locais têm dificuldade para alcançar preços de atacado e pagam frete individual.",
+      "proposal": "Permitir compras coletivas regionais com quantidade mínima, prazo, evolução transparente de preço e retirada ou entrega agrupada.",
+      "benefit": "Gera preços melhores e fortalece o comércio local.",
+      "commercial": "Comissão, publicidade local e logística agrupada.",
+      "effort": "Médio",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-006",
+      "module": "STOCK",
+      "title": "Bolsa de Devoluções e Recondicionados",
+      "problem": "Produtos devolvidos perdem valor mesmo quando permanecem em boas condições.",
+      "proposal": "Classificar devoluções como lacradas, caixa aberta, recondicionadas, reparáveis ou recicláveis, com histórico de condição, reparos, origem e garantia.",
+      "benefit": "Recupera valor e reduz desperdício.",
+      "commercial": "Comissão de revenda e serviços de garantia.",
+      "effort": "Alto",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-007",
+      "module": "Delivery",
+      "title": "Logística Reversa na Mesma Rota",
+      "problem": "Devoluções e coletas normalmente exigem uma segunda viagem.",
+      "proposal": "Combinar entregas novas com coleta de devoluções, embalagens, equipamentos para reparo ou materiais recicláveis no caminho de retorno.",
+      "benefit": "Reduz viagens vazias e cria nova receita logística.",
+      "commercial": "Taxa de coleta e contratos de logística reversa.",
+      "effort": "Médio",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-008",
+      "module": "Riders",
+      "title": "Conta de Estabilidade do Rider",
+      "problem": "Ganhos variáveis dificultam separar dinheiro para combustível, manutenção, impostos e períodos de baixa demanda.",
+      "proposal": "Permitir divisões automáticas voluntárias de cada recebimento para despesas, manutenção, reserva e valor disponível, com previsão de custos do veículo.",
+      "benefit": "Aumenta estabilidade financeira e continuidade operacional.",
+      "commercial": "Serviços financeiros parceiros e maior retenção de Riders.",
+      "effort": "Alto",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-009",
+      "module": "One Services",
+      "title": "Garantia Transferível do Serviço",
+      "problem": "Quando um bem muda de dono, o histórico de serviços e garantias costuma se perder.",
+      "proposal": "Gerar certificado digital com profissional, escopo, evidências, peças, garantia e próximas manutenções, permitindo transferência ao novo proprietário.",
+      "benefit": "Aumenta confiança e valor do serviço realizado.",
+      "commercial": "Planos profissionais e renovação de garantias.",
+      "effort": "Médio",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-010",
+      "module": "Mobility",
+      "title": "Mapa Vivo de Acessibilidade",
+      "problem": "Rotas aparentemente curtas podem ser inviáveis para idosos ou pessoas com mobilidade reduzida.",
+      "proposal": "Mapear rampas, elevadores, calçadas, escadas, embarques acessíveis, iluminação, pontos de apoio e obstáculos temporários, com validade e nível de confiança.",
+      "benefit": "Melhora segurança e inclusão nos deslocamentos.",
+      "commercial": "Mobilidade corporativa, contratos públicos e serviço premium.",
+      "effort": "Alto",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-011",
+      "module": "Jobs",
+      "title": "Microexperiência Profissional Remunerada",
+      "problem": "Empresas têm dificuldade para avaliar candidatos sem experiência formal.",
+      "proposal": "Criar projetos curtos, remunerados e com escopo claro, duração limitada, entrega definida e avaliação bilateral, sem substituir vagas permanentes de forma abusiva.",
+      "benefit": "Permite comprovação prática de habilidade e entrada profissional.",
+      "commercial": "Taxa por projeto, recrutamento e contratação concluída.",
+      "effort": "Médio",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-012",
+      "module": "ERP",
+      "title": "Simulador de Decisões Empresariais",
+      "problem": "Mudanças de preço, fornecedor, comissão ou política podem gerar efeitos inesperados.",
+      "proposal": "Testar decisões em ambiente de simulação antes de aplicá-las, exibindo possíveis impactos em margem, caixa, estoque, equipe, prazos e impostos.",
+      "benefit": "Reduz o risco de decisões empresariais mal calculadas.",
+      "commercial": "Plano avançado de gestão e simulação.",
+      "effort": "Alto",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-013",
+      "module": "WMS",
+      "title": "Separação Guiada por Voz e Vibração",
+      "problem": "Pequenos armazéns nem sempre conseguem comprar equipamentos especializados.",
+      "proposal": "Transformar o celular do operador em guia de picking com voz, vibração, leitura de código e funcionamento temporário sem internet.",
+      "benefit": "Aumenta produtividade com baixo investimento.",
+      "commercial": "Assinatura por operador ou depósito.",
+      "effort": "Médio",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-014",
+      "module": "TMS",
+      "title": "Bolsa de Retorno Vazio",
+      "problem": "Veículos de carga frequentemente retornam sem mercadoria.",
+      "proposal": "Identificar capacidade livre em rotas de retorno e combinar com cargas compatíveis, considerando prazo, documentação, segurança, desvio e tipo de carga.",
+      "benefit": "Reduz viagens vazias e melhora o aproveitamento da frota.",
+      "commercial": "Comissão por carga combinada.",
+      "effort": "Alto",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-015",
+      "module": "CRM",
+      "title": "Sala de Recuperação de Clientes",
+      "problem": "Empresas tentam recuperar clientes com promoções genéricas sem entender a causa do afastamento.",
+      "proposal": "Reunir reclamações, atrasos, devoluções, contatos e histórico autorizado para identificar a provável causa da perda e sugerir uma solução específica.",
+      "benefit": "Recupera clientes com correção real do problema.",
+      "commercial": "Cobrança por cliente recuperado e automações premium.",
+      "effort": "Médio",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-016",
+      "module": "BPM",
+      "title": "SLA com Compensação Automática",
+      "problem": "Prazos descumpridos nem sempre geram reação clara para o cliente.",
+      "proposal": "Transformar compromissos em regras executáveis, com alerta, escalonamento e compensação previamente aprovada, como crédito, prioridade ou reembolso.",
+      "benefit": "Aumenta transparência e reduz conflitos.",
+      "commercial": "Planos de automação e gestão de SLA.",
+      "effort": "Médio",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-017",
+      "module": "GED/ECM",
+      "title": "Sala Segura de Compartilhamento",
+      "problem": "Enviar documentos completos por mensagem ou e-mail cria cópias permanentes e exposição desnecessária.",
+      "proposal": "Criar salas temporárias mostrando somente páginas e campos autorizados, com prazo, marca d'água, registro de visualização e revogação.",
+      "benefit": "Reduz exposição de dados pessoais e empresariais.",
+      "commercial": "Cobrança por armazenamento, compartilhamento e assinatura.",
+      "effort": "Médio",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-018",
+      "module": "HR/HCM/ATS/LMS",
+      "title": "Escala Saudável e Justa",
+      "problem": "Escalas podem concentrar horários ruins nas mesmas pessoas e ignorar descanso ou deslocamento.",
+      "proposal": "Montar escalas considerando cobertura, legislação, intervalos, transporte, disponibilidade e distribuição equilibrada, explicando as escolhas.",
+      "benefit": "Reduz faltas, horas extras e rotatividade.",
+      "commercial": "Plano por colaborador e gestão de escalas.",
+      "effort": "Alto",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-019",
+      "module": "Health",
+      "title": "Fila Inteligente de Encaixes",
+      "problem": "Consultas são perdidas por cancelamentos enquanto outros pacientes aguardam.",
+      "proposal": "Oferecer horários antecipados conforme disponibilidade, localização, prioridade clínica definida pelos profissionais, consentimento e tempo de deslocamento.",
+      "benefit": "Melhora o uso da agenda e reduz espera.",
+      "commercial": "Plano de gestão para clínicas e profissionais.",
+      "effort": "Médio",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-020",
+      "module": "Legal",
+      "title": "Prevenção de Litígios por Evidências",
+      "problem": "Conflitos repetidos podem virar processos porque a empresa não identifica padrões.",
+      "proposal": "Organizar fatos, documentos, prazos e opções de mediação para análise e aprovação de um profissional jurídico, sem substituir sua decisão.",
+      "benefit": "Ajuda a prevenir processos e preparar mediações.",
+      "commercial": "Assinatura jurídica e integração com escritórios.",
+      "effort": "Alto",
+      "priority": "P1"
+    },
+    {
+      "id": "R2-021",
+      "module": "Property",
+      "title": "Mercado Interno de Espaços e Ativos",
+      "problem": "Vagas, salas, depósitos, ferramentas e espaços permanecem ociosos.",
+      "proposal": "Permitir reserva ou locação interna com regras, horários, autorização, pagamento, acesso, responsabilidade e manutenção.",
+      "benefit": "Transforma recursos parados em receita ou economia.",
+      "commercial": "Comissão por reserva e plano por unidade.",
+      "effort": "Médio",
+      "priority": "P2"
+    },
+    {
+      "id": "R2-022",
+      "module": "BI",
+      "title": "Benchmark Cooperativo Anônimo",
+      "problem": "Pequenas empresas não sabem se seus resultados estão bons em comparação com negócios semelhantes.",
+      "proposal": "Comparar indicadores com grupos anônimos do mesmo segmento, porte e região, exibindo faixas e tendências sem revelar dados individuais.",
+      "benefit": "Entrega inteligência de mercado acessível e preserva privacidade.",
+      "commercial": "Relatórios premium e inteligência setorial.",
+      "effort": "Alto",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-023",
+      "module": "AI Core",
+      "title": "Agente Local e Offline",
+      "problem": "Algumas tarefas precisam funcionar sem internet ou envolvem dados que não devem sair do dispositivo.",
+      "proposal": "Executar modelos menores no celular, computador, PDV ou terminal para classificação, preenchimento, busca e orientação básica, sincronizando apenas resultados autorizados.",
+      "benefit": "Aumenta privacidade, continuidade operacional e economia de nuvem.",
+      "commercial": "Plano empresarial e redução de custo computacional.",
+      "effort": "Alto",
+      "priority": "P0"
+    },
+    {
+      "id": "R2-024",
+      "module": "API Hub",
+      "title": "Laboratório de Falhas para Integrações",
+      "problem": "Integrações funcionam em testes simples, mas quebram com atraso, duplicidade, indisponibilidade ou mudança de formato.",
+      "proposal": "Criar sandbox que simule respostas lentas, eventos repetidos, dados ausentes e versões incompatíveis, exigindo recuperação e idempotência antes da certificação.",
+      "benefit": "Reduz incidentes e aumenta a confiabilidade das integrações.",
+      "commercial": "Certificação, sandbox premium e SLA de integração.",
+      "effort": "Médio",
+      "priority": "P0"
+    }
+  ]
+}
