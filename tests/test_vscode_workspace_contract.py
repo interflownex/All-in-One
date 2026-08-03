@@ -28,6 +28,8 @@ WATCHER_EXCLUDES = {
     "**/.github/skills/**",
 }
 
+FLUTTER_SDK = "/home/eretazan/develop/flutter"
+
 
 def _load(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -44,6 +46,17 @@ def test_python_interpreter_is_configured_in_both_workspace_modes() -> None:
     assert workspace["settings"]["python.defaultInterpreterPath"] == (
         "${workspaceFolder:all-in-one}/.venv/bin/python"
     )
+
+
+def test_linux_flutter_sdk_is_configured_in_both_workspace_modes() -> None:
+    folder_settings = _load(FOLDER_SETTINGS)
+    workspace_settings = _load(WORKSPACE)["settings"]
+
+    for settings in (folder_settings, workspace_settings):
+        assert settings["dart.flutterSdkPath"] == FLUTTER_SDK
+        assert settings["terminal.integrated.env.linux"]["PATH"].startswith(
+            f"{FLUTTER_SDK}/bin:${{env:PATH}}"
+        )
 
 
 def test_pylance_excludes_large_generated_trees_in_both_workspace_modes() -> None:
