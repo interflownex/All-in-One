@@ -4,6 +4,7 @@ import hmac
 import pytest
 
 from modules.shared.mercado_pago_checkout import (
+    MercadoPagoClient,
     MercadoPagoConfigurationError,
     MercadoPagoSettings,
     verify_webhook_signature,
@@ -17,6 +18,39 @@ def test_settings_reject_missing_access_token(monkeypatch):
     with pytest.raises(MercadoPagoConfigurationError) as error:
         MercadoPagoSettings.from_environment()
     assert "ACCESS_TOKEN" in str(error.value)
+
+
+@pytest.mark.parametrize(
+    "api_base_url",
+    (
+        "http://api.mercadopago.com",
+        "file:///tmp/mercado-pago.json",
+        "https://token@example.test",
+    ),
+)
+def test_client_rejects_unsafe_api_base_url(api_base_url):
+    settings = MercadoPagoSettings(
+        access_token="test-token",
+        webhook_secret="test-secret",
+        notification_url="https://example.test/webhooks",
+        api_base_url=api_base_url,
+    )
+
+    with pytest.raises(MercadoPagoConfigurationError) as error:
+        MercadoPagoClient(settings)
+
+    assert "URL HTTPS sem credenciais" in str(error.value)
+
+
+def test_client_accepts_https_api_base_url():
+    settings = MercadoPagoSettings(
+        access_token="test-token",
+        webhook_secret="test-secret",
+        notification_url="https://example.test/webhooks",
+        api_base_url="https://api.mercadopago.com",
+    )
+
+    assert MercadoPagoClient(settings).settings is settings
 
 
 def test_webhook_signature_requires_fresh_hmac_manifest():

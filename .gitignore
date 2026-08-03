@@ -34,3 +34,8 @@ tmp/
 *.keystore
 valley-release.properties
 firebase-debug.log
+
+# Flutter local
+apps/valley-flutter/.dart_tool/
+apps/valley-flutter/.flutter-plugins-dependencies
+apps/valley-flutter/build/

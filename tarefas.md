@@ -1,5 +1,76 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 6.0 — Flutter Linux persistente no VS Code WSL e gate do checkout
+
+**Data e hora:** 03/08/2026 07:58, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/integrar-checkout-pagamentos-20260802`
+**Referência de base:** `1b152dac1ec7de06a561233a40316af79d624fc1`
+**Objetivo:** impedir que o VS Code em `WSL: Ubuntu` execute o SDK Flutter do
+Windows e restaurar o gate de segurança do checkout Mercado Pago.
+
+### Contexto, escopo e fontes de verdade
+
+- O log Dart Code selecionava `/mnt/c/Users/ereta/flutter/flutter/flutter` e
+  falhava ao localizar `packages/flutter_tools/bin/flutter_tools.dart`.
+- O SDK Linux oficial Flutter `3.44.8`, alinhado ao workflow
+  `.github/workflows/valley-android-release.yml`, fica em
+  `/home/eretazan/develop/flutter`.
+- `.vscode/settings.json` e `all-in-one.code-workspace` são os contratos dos
+  dois modos de abertura do repositório.
+- `modules/shared/mercado_pago_checkout.py` deve aceitar no sink de rede apenas
+  uma base HTTPS sem credenciais, conforme o gate Bandit B310.
+
+### Pré-requisitos, sequência e prioridades
+
+1. Abrir `all-in-one.code-workspace` em uma janela `WSL: Ubuntu`.
+2. Confirmar que `/home/eretazan/develop/flutter/bin/flutter --version` retorna
+   Flutter `3.44.8` e Dart `3.12.2`.
+3. Executar `Developer: Reload Window` para a extensão Dart reler
+   `dart.flutterSdkPath`.
+4. Executar `flutter pub get` e os testes em `apps/valley-flutter`, registrando
+   separadamente qualquer asset declarado ainda ausente.
+5. Executar os testes de contrato do VS Code e Mercado Pago e o mesmo comando
+   Bandit do workflow Security.
+6. Publicar o commit na PR #120 e exigir gates verdes no mesmo SHA antes de
+   qualquer **Squash and Merge**.
+
+### Testes e critérios de aceite
+
+- `flutter --version` usa exclusivamente o SDK Linux `3.44.8`.
+- `flutter pub get` resolve as dependências e `flutter test` passa em
+  `apps/valley-flutter`.
+- `tests/test_vscode_workspace_contract.py` protege SDK e PATH nos dois modos.
+- `tests/test_mercado_pago_checkout.py` rejeita `http:`, `file:` e credenciais
+  embutidas, preservando HTTPS legítimo.
+- Bandit completo termina com código zero e a PR #120 fica verde no SHA final.
+
+### Riscos, bloqueios, evidências e pendências
+
+- A janela já aberta precisa ser recarregada; o estado visual pós-reload deve
+  ser confirmado pelo usuário e não é provado apenas por teste estático.
+- `flutter pub get` apontou que `assets/brand/` e `assets/valley/` ainda não
+  existem. A criação desses diretórios depende dos ativos canônicos e não pode
+  usar substitutos por causa da governança de marca.
+- Dispositivo/emulador Android não é necessário para os testes Dart unitários,
+  mas continua necessário para evidência final de execução móvel.
+- Evidências esperadas: versões do SDK, testes reproduzíveis, diff conhecido,
+  commit publicado, PR #120 e checks verdes.
+- Se a extensão voltar a escolher `/mnt/c/...`, conferir primeiro se a janela
+  exibe `WSL: Ubuntu` e se o arquivo de workspace correto foi reaberto.
+
+### Procedimento de entrega
+
+- Versionar somente os arquivos deste escopo na branch atual, publicar na PR
+  #120, aguardar todos os gates obrigatórios e integrar somente por **Squash and
+  Merge**. Não versionar SDK, cache, credenciais nem artefatos temporários.
+
+### Histórico resumido
+
+- v6.0: SDK Flutter Linux fixado nos dois modos do VS Code WSL e validação HTTPS
+  adicionada ao cliente Mercado Pago para restaurar o gate `python-security`.
+- v5.9: checkout Mercado Pago integrado de forma seletiva sobre a `main`.
+
 ## Versão 5.9 — Integração limpa do Checkout Mercado Pago
 
 **Data e hora:** 02/08/2026 15:55, `America/Sao_Paulo`

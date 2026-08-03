@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 from typing import Any
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
 
@@ -57,6 +58,16 @@ class MercadoPagoSettings:
 
 class MercadoPagoClient:
     def __init__(self, settings: MercadoPagoSettings) -> None:
+        parsed_api_url = urlsplit(settings.api_base_url)
+        if (
+            parsed_api_url.scheme != "https"
+            or not parsed_api_url.hostname
+            or parsed_api_url.username is not None
+            or parsed_api_url.password is not None
+        ):
+            raise MercadoPagoConfigurationError(
+                "MERCADO_PAGO_API_BASE_URL deve ser uma URL HTTPS sem credenciais."
+            )
         self.settings = settings
 
     def create_preference(
@@ -106,7 +117,10 @@ class MercadoPagoClient:
             headers=headers,
         )
         try:
-            with urlopen(request, timeout=self.settings.timeout_seconds) as response:
+            # A URL é validada no construtor; B310 não modela esse limite.
+            with urlopen(  # nosec B310
+                request, timeout=self.settings.timeout_seconds
+            ) as response:
                 payload = json.loads(response.read().decode("utf-8"))
         except (HTTPError, URLError, ValueError) as exc:
             raise MercadoPagoAPIError(
