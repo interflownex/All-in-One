@@ -1,13 +1,11 @@
 {
-  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.defaultInterpreterPath": "/home/eretazan/.codex/worktrees/1781507772-23398/all-in-one/.venv/bin/python",
   "dart.flutterSdkPath": "/home/eretazan/develop/flutter",
   "vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
   "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
   "vs-kubernetes.kubectlVersioning": "user-provided",
   "vs-kubernetes.kubeconfig": "/home/eretazan/.kube/config",
-  "vs-kubernetes.knownKubeconfigs": [
-    "/home/eretazan/.kube/config"
-  ],
+  "vs-kubernetes.knownKubeconfigs": ["/home/eretazan/.kube/config"],
   "vs-kubernetes.namespace": "default",
   "vs-kubernetes.outputFormat": "yaml",
   "imageBuildTool": "Docker",
@@ -45,9 +43,7 @@
     "**/build/**",
     "**/testcontainers-cloud-java-example/**"
   ],
-  "python.analysis.fixAll": [
-    "source.unusedImports"
-  ],
+  "python.analysis.fixAll": ["source.unusedImports"],
   "ruff.importStrategy": "fromEnvironment",
   "files.eol": "\n",
   "files.insertFinalNewline": true,
@@ -95,12 +91,7 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "yaml.validate": true,
   "docker.extension.enableComposeLanguageServer": true,
   "docker.lsp.telemetry": "off",
@@ -141,9 +132,7 @@
   "geminicodeassist.telemetry.enable": false,
   "editor.codeActions.triggerOnFocusChange": true,
   "gradle.autoDetect": "off",
-  "gradle.nestedProjects": [
-    "apps/valley-android"
-  ],
+  "gradle.nestedProjects": ["apps/valley-android"],
   "gradle.debug": false,
   "java.import.exclusions": [
     "**/node_modules/**",
