@@ -26,6 +26,13 @@ def test_settings_reject_missing_access_token(monkeypatch):
         "http://api.mercadopago.com",
         "file:///tmp/mercado-pago.json",
         "https://token@example.test",
+        "https://example.test",
+        "https://api.mercadopago.com.example.test",
+        "https://api.mercadopago.com:8443",
+        "https://api.mercadopago.com/v1",
+        "https://api.mercadopago.com?redirect=example.test",
+        "https://api.mercadopago.com#fragment",
+        "https://api.mercadopago.com:invalid",
     ),
 )
 def test_client_rejects_unsafe_api_base_url(api_base_url):
@@ -39,7 +46,7 @@ def test_client_rejects_unsafe_api_base_url(api_base_url):
     with pytest.raises(MercadoPagoConfigurationError) as error:
         MercadoPagoClient(settings)
 
-    assert "URL HTTPS sem credenciais" in str(error.value)
+    assert "MERCADO_PAGO_API_BASE_URL" in str(error.value)
 
 
 def test_client_accepts_https_api_base_url():

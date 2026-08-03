@@ -59,14 +59,25 @@ class MercadoPagoSettings:
 class MercadoPagoClient:
     def __init__(self, settings: MercadoPagoSettings) -> None:
         parsed_api_url = urlsplit(settings.api_base_url)
+        try:
+            api_port = parsed_api_url.port
+        except ValueError as exc:
+            raise MercadoPagoConfigurationError(
+                "MERCADO_PAGO_API_BASE_URL inválida."
+            ) from exc
         if (
             parsed_api_url.scheme != "https"
-            or not parsed_api_url.hostname
+            or parsed_api_url.hostname != "api.mercadopago.com"
+            or api_port not in (None, 443)
             or parsed_api_url.username is not None
             or parsed_api_url.password is not None
+            or parsed_api_url.path not in ("", "/")
+            or parsed_api_url.query
+            or parsed_api_url.fragment
         ):
             raise MercadoPagoConfigurationError(
-                "MERCADO_PAGO_API_BASE_URL deve ser uma URL HTTPS sem credenciais."
+                "MERCADO_PAGO_API_BASE_URL deve usar exclusivamente "
+                "https://api.mercadopago.com sem credenciais, parâmetros ou fragmentos."
             )
         self.settings = settings
 
