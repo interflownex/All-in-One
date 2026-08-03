@@ -16,6 +16,7 @@ def test_flutter_bridge_preserves_default_icon_fallback() -> None:
         "_maxCompanyLogoBytes",
         "assets/brand/valley-shortcut-frame.png",
         "assets/brand/valley-rider-shortcut-frame.png",
+        "createWithAdaptiveBitmap",
     ):
         assert marker in text
 
