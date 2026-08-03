@@ -60,7 +60,9 @@ def test_client_accepts_https_api_base_url():
     assert MercadoPagoClient(settings).settings is settings
 
 
-def _signed_webhook(*, timestamp: str, request_id: str, data_id: str, secret: str) -> str:
+def _signed_webhook(
+    *, timestamp: str, request_id: str, data_id: str, secret: str
+) -> str:
     manifest = f"id:{data_id};request-id:{request_id};ts:{timestamp};"
     digest = hmac.new(secret.encode(), manifest.encode(), hashlib.sha256).hexdigest()
     return f"ts={timestamp},v1={digest}"
