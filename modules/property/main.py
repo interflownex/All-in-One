@@ -135,10 +135,11 @@ def valley_property_catalog(
     }
 
 
-# O runtime genérico registra rotas dinâmicas como ``/{resource_type}`` antes
-# das especializações do módulo. A rota estática precisa ser avaliada primeiro
-# para que ``/valley/catalog`` não seja interpretada como uma listagem genérica.
+# O runtime genérico também registra ``/valley/catalog``. Como o FastAPI
+# resolve rotas na ordem de registro, a especialização Property precisa vir
+# antes da rota genérica. Identificar pelo endpoint evita mover a rota errada
+# quando existem dois caminhos idênticos.
 for route_index, route in enumerate(app.router.routes):
-    if getattr(route, "path", None) == "/valley/catalog":
+    if getattr(route, "endpoint", None) is valley_property_catalog:
         app.router.routes.insert(0, app.router.routes.pop(route_index))
         break
