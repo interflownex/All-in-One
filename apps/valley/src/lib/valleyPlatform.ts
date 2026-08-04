@@ -518,6 +518,7 @@ export async function signInWithEmail(
   if (password.length < 6) {
     throw new Error("A senha precisa ter ao menos 6 caracteres.");
   }
+  const passwordHash = await hashPassword(password);
 
   if (!isDemoModeEnabled()) {
     try {
@@ -552,15 +553,27 @@ export async function signInWithEmail(
     user = {
       userId: `usr-${slugify(normalizedEmail)}-${randomId(6)}`,
       email: normalizedEmail,
-      password,
+      passwordHash,
       source: "email",
     };
     users.unshift(user);
     writeStorage(DEMO_USERS_KEY, users);
   }
-  if (!user || user.password !== password) {
+  if (!user) {
     throw new Error("E-mail ou senha invalidos.");
   }
+
+  const storedHash = user.passwordHash ?? (user.password ? await hashPassword(user.password) : null);
+  if (!storedHash || storedHash !== passwordHash) {
+    throw new Error("E-mail ou senha invalidos.");
+  }
+
+  if (!user.passwordHash) {
+    user.passwordHash = storedHash;
+    delete user.password;
+    writeStorage(DEMO_USERS_KEY, users);
+  }
+
   return demoSessionFor(user, "email");
 }
 
@@ -595,7 +608,7 @@ export async function signInWithGoogle(email: string): Promise<DemoSession> {
     user = {
       userId: `usr-google-${slugify(normalizedEmail)}`,
       email: normalizedEmail,
-      password: buildGooglePassword(normalizedEmail),
+      passwordHash: await hashPassword(buildGooglePassword(normalizedEmail)),
       source: "google",
     };
     users.unshift(user);
@@ -1039,11 +1052,11 @@ function emptyFacets(): CatalogFacets {
 
 function defaultUsers(): DemoUser[] {
   return [
-    { userId: "usr-demo-001", email: "cliente@valley.app", password: "valley123", source: "email" },
+    { userId: "usr-demo-001", email: "cliente@valley.app", passwordHash: hashPasswordSync("valley123"), source: "email" },
     {
       userId: "usr-demo-google",
       email: "google@valley.app",
-      password: buildGooglePassword("google@valley.app"),
+      passwordHash: hashPasswordSync(buildGooglePassword("google@valley.app")),
       source: "google",
     },
   ];
@@ -1275,6 +1288,32 @@ function randomId(length: number) {
 
 function slugify(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+}
+
+async function hashPassword(value: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return bufferToHex(digest);
+}
+
+function hashPasswordSync(value: string): string {
+  return simpleHash(value);
+}
+
+function bufferToHex(buffer: ArrayBuffer): string {
+  return Array.from(new Uint8Array(buffer))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function simpleHash(value: string): string {
+  let hash = 2166136261;
+  for (let i = 0; i < value.length; i += 1) {
+    hash ^= value.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return `legacy-${(hash >>> 0).toString(16)}`;
 }
 
 function normalizeOfferType(value: string): "food" | "product" | "service" {
