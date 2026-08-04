@@ -45,7 +45,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Configurar Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Instalar Android 36
         run: sdkmanager "platforms;android-36" "build-tools;36.1.0"
