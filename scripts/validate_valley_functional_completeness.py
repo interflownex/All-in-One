@@ -177,9 +177,10 @@ def main() -> None:
         ),
         "Workflow Android",
     )
+    button_count = len(re.findall(r"<button\b", app))
     print(
         f"Valley validado: {len(SCREEN_KEYS)} grupos Stitch e "
-        f"{len(re.findall(r'<button\\b', app))} botões com ação."
+        f"{button_count} botões com ação."
     )
 
 
