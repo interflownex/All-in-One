@@ -63,6 +63,7 @@ def test_deploy_command_is_scoped_to_project_and_region(tmp_path: Path) -> None:
     )
     assert command[:4] == ["gcloud", "run", "services", "replace"]
     assert command[-5:] == [
+        "--project",
         "sample-project",
         "--region",
         "southamerica-east1",
