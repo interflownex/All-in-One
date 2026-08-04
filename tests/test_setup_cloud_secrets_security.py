@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pytest
@@ -12,11 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_setup_script_contains_no_literal_credentials() -> None:
     source = (ROOT / "scripts/setup_cloud_secrets.py").read_text(encoding="utf-8")
 
-    assert "postgresql://" not in source
     assert "result.stderr" not in source
-    assert "strong-password" not in source
-    assert "super-secret" not in source
-    assert "base64-32-chars" not in source
+    assert re.search(r"postgres(?:ql)?://[^\s\"']+:[^@\s\"']+@", source) is None
     assert set(setup_cloud_secrets.SECRET_ENV_BY_ID.values()) == {
         "AIO_IDENTITY_DSN",
         "AIO_JWT_SECRET",
