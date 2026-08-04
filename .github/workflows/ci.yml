@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -26,6 +28,12 @@ jobs:
 
       - name: Check generated artifacts
         run: python scripts/check_generated_artifacts.py
+
+      - name: Build F0.1 data inventory
+        run: python scripts/compliance_inventory.py
+
+      - name: Validate regulatory field catalog
+        run: python scripts/validate_compliance_catalog.py
 
       - name: Validate Valley Android release contract
         run: python scripts/validate_valley_android_release_v29.py
