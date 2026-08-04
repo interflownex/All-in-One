@@ -10,11 +10,15 @@ if str(ROOT) not in sys.path:
 from scripts import scaffold_modules
 
 STOCK_OPENAPI = "modules/stock/OPENAPI.yaml"
-CUSTOMIZED_ARTIFACTS = set(scaffold_modules.CUSTOMIZED_ARTIFACTS) | {STOCK_OPENAPI}
+PROPERTY_MAIN = "modules/property/main.py"
+CUSTOMIZED_ARTIFACTS = set(scaffold_modules.CUSTOMIZED_ARTIFACTS) | {
+    STOCK_OPENAPI,
+    PROPERTY_MAIN,
+}
 
 
 def main() -> int:
-    """Executa o scaffold oficial preservando o contrato especializado do Stock."""
+    """Executa o scaffold oficial preservando contratos especializados."""
 
     scaffold_modules.CUSTOMIZED_ARTIFACTS.clear()
     scaffold_modules.CUSTOMIZED_ARTIFACTS.update(CUSTOMIZED_ARTIFACTS)
