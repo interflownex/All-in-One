@@ -79,6 +79,7 @@ class CompanyLauncherShortcut {
     final frame = await _decode(frameData.buffer.asUint8List());
     final recorder = ui.PictureRecorder();
     final canvas = ui.Canvas(recorder);
+    canvas.drawColor(const ui.Color(0x00000000), ui.BlendMode.src);
 
     const logoBounds = ui.Rect.fromLTWH(
       _iconSize * .22,

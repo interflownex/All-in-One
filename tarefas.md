@@ -1,5 +1,79 @@
 # Tarefas da IA Desenvolvedora
 
+## Versão 6.4 — Correção dos diagnósticos Flutter, Gradle e Java no VS Code
+
+**Data e hora:** 03/08/2026 18:23, `America/Sao_Paulo`  
+**Repositório:** `interflownex/All-in-One`  
+**Branch:** `codex/corrigir-diagnosticos-vscode-20260803`  
+**Referência de base:** `5ea69c22fc8b69fd3918415e15a5ad03c02a041f`  
+**Pull request prioritária:** `#129`
+
+### Objetivo, contexto e escopo
+
+Eliminar os diagnósticos reproduzíveis do Valley Flutter e recuperar os gates
+falhos da PR #129, além de registrar o procedimento seguro para a contenção do
+lock `jars-9` do Gradle. O projeto Testcontainers é um repositório Git aninhado
+e já está excluído da importação Java do workspace; nenhuma alteração interna
+foi incorporada nesta entrega para não sobrescrever sua origem independente.
+
+### Fontes de verdade e pré-requisitos
+
+- `apps/valley-flutter/pubspec.yaml` declara os diretórios de assets.
+- `scripts/prepare_valley_flutter_build.py` materializa os binários canônicos.
+- `config/branding/authorized_assets.json` continua autoritativo para marcas.
+- `.vscode/settings.json` e `all-in-one.code-workspace` mantêm o Gradle Build
+  Server desligado e excluem `testcontainers-cloud-java-example` da importação.
+- Usar JDK 17 e o wrapper `apps/valley-android/gradlew`; não remover locks com
+  processo proprietário ativo.
+
+### Sequência de execução e prioridades
+
+1. Recarregar a janela WSL do VS Code para aplicar as exclusões e encerrar a
+   sessão antiga do Gradle Build Server.
+2. Confirmar que o PID informado no diagnóstico não existe e consultar o lock
+   com `lsof` antes de qualquer recuperação.
+3. Executar `bash apps/valley-android/gradlew --stop` e, em seguida,
+   `bash apps/valley-android/gradlew --version --no-daemon`.
+4. Executar os contratos Python, `flutter analyze` e `flutter test`.
+5. Atualizar a PR #129 e integrar somente por Squash and Merge quando todos os
+   gates estiverem verdes no mesmo head SHA.
+
+### Testes, critérios de aceite e evidências esperadas
+
+- `20 passed` nos contratos de Flutter, Gradle/VS Code e atalho empresarial.
+- Wrapper Gradle 9.1.0 iniciado com JDK 17 sem novo timeout em `jars-9`.
+- `flutter analyze` sem `undefined_method` ou `const_eval_method_invocation`.
+- Os diretórios `assets/brand/` e `assets/valley/` existem no checkout sem
+  duplicar nem modificar a arte oficial; o build continua copiando os binários.
+- A PR #129 deve mostrar `unit-tests`, `flutter-apk` e segurança verdes no SHA
+  final antes da integração.
+
+### Riscos, bloqueios e pendências restantes
+
+- O SDK Flutter local referencia atualmente o caminho inexistente
+  `/mnt/c/Users/ereta/flutter/flutter`; por isso a validação Flutter completa
+  deve ser repetida após reparar/recarregar o SDK WSL e também no GitHub Actions.
+- Os avisos Java do exemplo Testcontainers desaparecem após a exclusão ser
+  aplicada pela recarga. Alterar seu `pom.xml` exige uma atividade própria no
+  repositório aninhado, com revisão de compatibilidade Java 8/17.
+- A PR #127 contém uma implementação concorrente do mesmo objetivo e precisa
+  ser reconciliada ou encerrada para evitar duplicidade com a PR #129.
+
+### Procedimento de entrega
+
+Publicar esta branch, atualizar a PR #129 com o diff conhecido, registrar os
+testes e o bloqueio local do SDK Flutter, aguardar todos os gates no novo SHA e
+usar Squash and Merge. Após a integração, recarregar o workspace WSL e confirmar
+que a coleção de diagnósticos Java/Gradle foi limpa.
+
+### Histórico resumido
+
+- v6.4: corrige Dart/contratos, materializa diretórios vazios e documenta a
+  recuperação segura dos diagnósticos Gradle e Java.
+- v6.3: registrou publicação pública, hashes, tamanhos e bloqueios restantes.
+- v6.2: criou pipeline e auditoria próprios do Valley Rider Flutter.
+- v6.1: integrou checkout Mercado Pago e conflitos relacionados.
+
 ## Versão 6.3 — Evidência da publicação Valley Rider Flutter
 
 **Data e hora:** 03/08/2026 17:15, `America/Sao_Paulo`
