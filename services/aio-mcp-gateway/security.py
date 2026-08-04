@@ -5,24 +5,23 @@ import hashlib
 import json
 import logging
 import os
-import re
 import secrets
 import time
 import uuid
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, Protocol, Self, cast
 
 import jwt
 from jwt import PyJWKClient
+from mcp.server.auth.provider import AccessToken, TokenVerifier
+from mcp.server.transport_security import TransportSecuritySettings
 from redis.asyncio import Redis
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 LOGGER = logging.getLogger("aio_mcp_gateway.security")
-TRACEPARENT_PATTERN = re.compile(
-    r"^00-[0-9a-f]{32}-[0-9a-f]{16}-[0-9a-f]{2}$"
-)
-REQUEST_ID_PATTERN = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
+TRACEPARENT_VERSION = "00"
+REQUEST_ID_MAX_LENGTH = 128
 SENSITIVE_KEY_PARTS = (
     "authorization",
     "token",
@@ -32,17 +31,18 @@ SENSITIVE_KEY_PARTS = (
     "apikey",
     "credential",
 )
+
 DEFAULT_TOOL_SCOPES: dict[str, frozenset[str]] = {
     "project_status": frozenset({"aio:mcp:read"}),
     "list_pending_tasks": frozenset({"aio:mcp:read"}),
-    "search_repository": frozenset({"aio:mcp:read", "aio:github:read"}),
-    "read_project_document": frozenset({"aio:mcp:read", "aio:documents:read"}),
+    "search_repository": frozenset({"aio:mcp:read"}),
+    "read_project_document": frozenset({"aio:mcp:read"}),
     "create_technical_report": frozenset({"aio:mcp:read"}),
-    "valley_consumer_status": frozenset({"aio:mcp:read", "aio:valley:read"}),
-    "valley_rider_status": frozenset({"aio:mcp:read", "aio:rider:read"}),
-    "aio_admin_status": frozenset({"aio:mcp:read", "aio:admin:read"}),
-    "list_recent_pull_requests": frozenset({"aio:mcp:read", "aio:github:read"}),
-    "inspect_failed_jobs": frozenset({"aio:mcp:read", "aio:github:read"}),
+    "valley_consumer_status": frozenset({"aio:mcp:read"}),
+    "valley_rider_status": frozenset({"aio:mcp:read"}),
+    "aio_admin_status": frozenset({"aio:mcp:read"}),
+    "list_recent_pull_requests": frozenset({"aio:mcp:read"}),
+    "inspect_failed_jobs": frozenset({"aio:mcp:read"}),
 }
 
 
@@ -50,19 +50,8 @@ class SecurityConfigurationError(RuntimeError):
     """Raised when mandatory production controls are not configured."""
 
 
-class AuthenticationError(RuntimeError):
-    """Raised when an access token cannot be validated."""
-
-
 class RateLimitBackendError(RuntimeError):
     """Raised when the production rate-limit backend is unavailable."""
-
-
-@dataclass(frozen=True)
-class AuthContext:
-    subject: str
-    scopes: frozenset[str]
-    claims: Mapping[str, Any]
 
 
 @dataclass(frozen=True)
@@ -73,7 +62,9 @@ class SecuritySettings:
     oidc_audience: str | None
     oidc_jwks_url: str | None
     oidc_algorithms: tuple[str, ...]
+    required_scope: str
     allowed_origins: frozenset[str]
+    allowed_hosts: frozenset[str]
     protected_resource_url: str
     redis_url: str | None
     rate_limit_requests: int
@@ -82,7 +73,7 @@ class SecuritySettings:
 
     @property
     def is_production(self) -> bool:
-        return self.deployment_env.casefold() == "production"
+        return self.deployment_env == "production"
 
     @classmethod
     def from_env(cls) -> Self:
@@ -99,22 +90,44 @@ class SecuritySettings:
             for item in os.getenv("OIDC_ALGORITHMS", "RS256").split(",")
             if item.strip()
         )
-        origins = frozenset(
+        required_scope = os.getenv("MCP_REQUIRED_SCOPE", "aio:mcp:read").strip()
+        allowed_origins = frozenset(
             _normalize_origin(item)
             for item in os.getenv(
-                "ALLOWED_ORIGINS",
-                (
-                    "https://brasildesconto.com.br,"
-                    "https://mcp.brasildesconto.com.br,"
-                    "https://staging-mcp.brasildesconto.com.br,"
-                    "https://preview-mcp.brasildesconto.com.br"
+                "MCP_ALLOWED_ORIGINS",
+                ",".join(
+                    [
+                        "https://brasildesconto.com.br",
+                        "https://mcp.brasildesconto.com.br",
+                        "https://mcp-staging.brasildesconto.com.br",
+                        "https://mcp-preview.brasildesconto.com.br",
+                        "http://localhost:8080",
+                        "http://127.0.0.1:8080",
+                    ]
+                ),
+            ).split(",")
+            if item.strip()
+        )
+        allowed_hosts = frozenset(
+            item.strip().casefold()
+            for item in os.getenv(
+                "MCP_ALLOWED_HOSTS",
+                ",".join(
+                    [
+                        "mcp.brasildesconto.com.br",
+                        "mcp-staging.brasildesconto.com.br",
+                        "mcp-preview.brasildesconto.com.br",
+                        "testserver",
+                        "localhost:*",
+                        "127.0.0.1:*",
+                    ]
                 ),
             ).split(",")
             if item.strip()
         )
         protected_resource_url = os.getenv(
             "PROTECTED_RESOURCE_URL",
-            "https://mcp.brasildesconto.com.br",
+            "https://mcp.brasildesconto.com.br/mcp",
         ).strip().rstrip("/")
         redis_url = _clean_optional(os.getenv("REDIS_URL"))
         rate_limit_requests = _env_positive_int("RATE_LIMIT_REQUESTS", 120)
@@ -134,7 +147,9 @@ class SecuritySettings:
             oidc_audience=audience,
             oidc_jwks_url=jwks_url,
             oidc_algorithms=algorithms,
-            allowed_origins=origins,
+            required_scope=required_scope,
+            allowed_origins=allowed_origins,
+            allowed_hosts=allowed_hosts,
             protected_resource_url=protected_resource_url,
             redis_url=redis_url,
             rate_limit_requests=rate_limit_requests,
@@ -155,10 +170,16 @@ class SecuritySettings:
                 missing.append("OIDC_JWKS_URL")
             if not self.oidc_algorithms:
                 missing.append("OIDC_ALGORITHMS")
+            if not self.required_scope:
+                missing.append("MCP_REQUIRED_SCOPE")
         if self.is_production and not self.redis_url:
             missing.append("REDIS_URL")
         if not self.allowed_origins:
-            missing.append("ALLOWED_ORIGINS")
+            missing.append("MCP_ALLOWED_ORIGINS")
+        if not self.allowed_hosts:
+            missing.append("MCP_ALLOWED_HOSTS")
+        if not self.protected_resource_url.startswith("https://") and self.is_production:
+            missing.append("PROTECTED_RESOURCE_URL_HTTPS")
         if missing:
             joined = ", ".join(sorted(set(missing)))
             raise SecurityConfigurationError(
@@ -166,20 +187,9 @@ class SecuritySettings:
             )
 
 
-class TokenValidator(Protocol):
-    async def validate(self, token: str) -> AuthContext:
-        """Validate a bearer token and return its authorization context."""
+class OIDCTokenVerifier(TokenVerifier):
+    """Validate JWT access tokens against an external OIDC provider."""
 
-
-class RateLimiter(Protocol):
-    async def allow(self, identity: str) -> bool:
-        """Return whether a request is allowed for the current window."""
-
-    async def close(self) -> None:
-        """Release resources held by the limiter."""
-
-
-class OIDCValidator:
     def __init__(self, settings: SecuritySettings) -> None:
         if not (
             settings.oidc_issuer
@@ -187,10 +197,11 @@ class OIDCValidator:
             and settings.oidc_jwks_url
         ):
             raise SecurityConfigurationError(
-                "OIDCValidator exige issuer, audience e JWKS URL"
+                "OIDCTokenVerifier exige issuer, audience e JWKS URL"
             )
         self._issuer = settings.oidc_issuer
         self._audience = settings.oidc_audience
+        self._resource = settings.protected_resource_url
         self._algorithms = list(settings.oidc_algorithms)
         self._jwks = PyJWKClient(
             settings.oidc_jwks_url,
@@ -198,18 +209,31 @@ class OIDCValidator:
             lifespan=300,
         )
 
-    async def validate(self, token: str) -> AuthContext:
+    async def verify_token(self, token: str) -> AccessToken | None:
         try:
             claims = await asyncio.to_thread(self._decode, token)
-        except jwt.PyJWTError as exc:
-            raise AuthenticationError("token inválido") from exc
+        except jwt.PyJWTError:
+            return None
+
         subject = claims.get("sub")
         if not isinstance(subject, str) or not subject.strip():
-            raise AuthenticationError("token sem subject válido")
-        scopes = _extract_scopes(claims)
-        return AuthContext(
+            return None
+
+        client_id = claims.get("azp") or claims.get("client_id") or subject
+        if not isinstance(client_id, str) or not client_id.strip():
+            return None
+
+        expires_at = claims.get("exp")
+        if not isinstance(expires_at, int):
+            return None
+
+        return AccessToken(
+            token=token,
+            client_id=client_id,
+            scopes=sorted(_extract_scopes(claims)),
+            expires_at=expires_at,
+            resource=self._resource,
             subject=subject,
-            scopes=frozenset(scopes),
             claims=claims,
         )
 
@@ -224,6 +248,14 @@ class OIDCValidator:
             options={"require": ["exp", "iss", "aud", "sub"]},
         )
         return cast(dict[str, Any], decoded)
+
+
+class RateLimiter(Protocol):
+    async def allow(self, identity: str) -> bool:
+        """Return whether a request is allowed for the current window."""
+
+    async def close(self) -> None:
+        """Release resources held by the limiter."""
 
 
 class InMemoryRateLimiter:
@@ -302,17 +334,27 @@ def build_limiter(settings: SecuritySettings) -> RateLimiter:
     )
 
 
+def build_transport_security(
+    settings: SecuritySettings,
+) -> TransportSecuritySettings:
+    return TransportSecuritySettings(
+        enable_dns_rebinding_protection=True,
+        allowed_hosts=sorted(settings.allowed_hosts),
+        allowed_origins=sorted(settings.allowed_origins),
+    )
+
+
 class SecurityMiddleware:
+    """Add rate limiting, response hardening and structured request logs."""
+
     def __init__(
         self,
         app: ASGIApp,
         settings: SecuritySettings,
-        validator: TokenValidator | None,
         limiter: RateLimiter,
     ) -> None:
         self.app = app
         self.settings = settings
-        self.validator = validator
         self.limiter = limiter
 
     async def __call__(
@@ -321,6 +363,9 @@ class SecurityMiddleware:
         receive: Receive,
         send: Send,
     ) -> None:
+        if scope["type"] == "lifespan":
+            await self._lifespan(scope, receive, send)
+            return
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
@@ -344,32 +389,39 @@ class SecurityMiddleware:
                         (b"traceparent", traceparent.encode("ascii")),
                         (b"x-content-type-options", b"nosniff"),
                         (b"cache-control", b"no-store"),
+                        (b"referrer-policy", b"no-referrer"),
+                        (
+                            b"permissions-policy",
+                            b"camera=(), microphone=(), geolocation=()",
+                        ),
                     ]
                 )
                 message["headers"] = response_headers
             await send(message)
 
         try:
-            if path.startswith("/mcp"):
-                body, downstream_receive = await _buffer_body(
-                    receive,
-                    self.settings.max_request_body_bytes,
-                )
-                error = await self._authorize(
-                    scope,
-                    headers,
-                    body,
-                    request_id,
-                    traceparent,
-                    send_with_observability,
-                )
-                if error:
+            if path == "/mcp" or path.startswith("/mcp/"):
+                identity = _client_identity(scope, headers)
+                if not await self.limiter.allow(identity):
+                    await _json_response(
+                        send_with_observability,
+                        429,
+                        {
+                            "error": "rate_limit_exceeded",
+                            "request_id": request_id,
+                        },
+                        headers=[
+                            (
+                                b"retry-after",
+                                str(self.settings.rate_limit_window_seconds).encode(
+                                    "ascii"
+                                ),
+                            )
+                        ],
+                    )
                     return
-                await self.app(scope, downstream_receive, send_with_observability)
-            else:
-                await self.app(scope, receive, send_with_observability)
+            await self.app(scope, receive, send_with_observability)
         except RateLimitBackendError:
-            status_code = 503
             await _json_response(
                 send_with_observability,
                 503,
@@ -377,13 +429,6 @@ class SecurityMiddleware:
                     "error": "rate_limit_backend_unavailable",
                     "request_id": request_id,
                 },
-            )
-        except BodyTooLargeError:
-            status_code = 413
-            await _json_response(
-                send_with_observability,
-                413,
-                {"error": "request_too_large", "request_id": request_id},
             )
         finally:
             _log_request(
@@ -395,179 +440,28 @@ class SecurityMiddleware:
                 duration_ms=round((time.monotonic() - started_at) * 1000, 2),
             )
 
-    async def _authorize(
+    async def _lifespan(
         self,
         scope: Scope,
-        headers: Mapping[str, str],
-        body: bytes,
-        request_id: str,
-        traceparent: str,
+        receive: Receive,
         send: Send,
-    ) -> bool:
-        origin = headers.get("origin")
-        if origin and _normalize_origin(origin) not in self.settings.allowed_origins:
-            await _json_response(
-                send,
-                403,
-                {"error": "origin_not_allowed", "request_id": request_id},
-            )
-            return True
+    ) -> None:
+        async def send_with_shutdown(message: Message) -> None:
+            if message["type"] in {
+                "lifespan.shutdown.complete",
+                "lifespan.shutdown.failed",
+            }:
+                await self.limiter.close()
+            await send(message)
 
-        auth_context: AuthContext | None = None
-        if self.settings.auth_required:
-            token = _bearer_token(headers.get("authorization"))
-            if token is None:
-                await _authentication_response(
-                    send,
-                    self.settings,
-                    request_id,
-                    "missing_token",
-                )
-                return True
-            if self.validator is None:
-                raise SecurityConfigurationError(
-                    "autenticação obrigatória sem validador OIDC"
-                )
-            try:
-                auth_context = await self.validator.validate(token)
-            except AuthenticationError:
-                await _authentication_response(
-                    send,
-                    self.settings,
-                    request_id,
-                    "invalid_token",
-                )
-                return True
-
-            required_scopes = _required_scopes(body)
-            missing_scopes = required_scopes.difference(auth_context.scopes)
-            if missing_scopes:
-                await _json_response(
-                    send,
-                    403,
-                    {
-                        "error": "insufficient_scope",
-                        "required_scopes": sorted(required_scopes),
-                        "request_id": request_id,
-                    },
-                    headers=[
-                        (
-                            b"www-authenticate",
-                            (
-                                'Bearer error="insufficient_scope", scope="'
-                                + " ".join(sorted(required_scopes))
-                                + '"'
-                            ).encode("ascii"),
-                        )
-                    ],
-                )
-                return True
-
-        identity = (
-            auth_context.subject
-            if auth_context is not None
-            else _client_identity(scope, headers)
-        )
-        if not await self.limiter.allow(identity):
-            await _json_response(
-                send,
-                429,
-                {"error": "rate_limit_exceeded", "request_id": request_id},
-                headers=[
-                    (
-                        b"retry-after",
-                        str(self.settings.rate_limit_window_seconds).encode("ascii"),
-                    )
-                ],
-            )
-            return True
-
-        LOGGER.debug(
-            json.dumps(
-                {
-                    "event": "mcp_request_authorized",
-                    "request_id": request_id,
-                    "traceparent": traceparent,
-                    "auth_required": self.settings.auth_required,
-                },
-                separators=(",", ":"),
-                sort_keys=True,
-            )
-        )
-        return False
-
-
-class BodyTooLargeError(RuntimeError):
-    """Raised when a buffered MCP request exceeds its configured maximum."""
-
-
-async def _buffer_body(
-    receive: Receive,
-    max_bytes: int,
-) -> tuple[bytes, Receive]:
-    body = bytearray()
-    while True:
-        message = await receive()
-        if message["type"] == "http.disconnect":
-            break
-        if message["type"] != "http.request":
-            continue
-        chunk = message.get("body", b"")
-        body.extend(chunk)
-        if len(body) > max_bytes:
-            raise BodyTooLargeError
-        if not message.get("more_body", False):
-            break
-
-    sent = False
-
-    async def replay() -> Message:
-        nonlocal sent
-        if sent:
-            return {"type": "http.request", "body": b"", "more_body": False}
-        sent = True
-        return {
-            "type": "http.request",
-            "body": bytes(body),
-            "more_body": False,
-        }
-
-    return bytes(body), replay
-
-
-async def _authentication_response(
-    send: Send,
-    settings: SecuritySettings,
-    request_id: str,
-    error: str,
-) -> None:
-    metadata_url = (
-        f"{settings.protected_resource_url}/.well-known/oauth-protected-resource"
-    )
-    await _json_response(
-        send,
-        401,
-        {"error": error, "request_id": request_id},
-        headers=[
-            (
-                b"www-authenticate",
-                (
-                    'Bearer resource_metadata="'
-                    + metadata_url
-                    + '", error="'
-                    + error
-                    + '"'
-                ).encode("ascii"),
-            )
-        ],
-    )
+        await self.app(scope, receive, send_with_shutdown)
 
 
 async def _json_response(
     send: Send,
     status: int,
     payload: Mapping[str, Any],
-    headers: Sequence[tuple[bytes, bytes]] = (),
+    headers: list[tuple[bytes, bytes]] | None = None,
 ) -> None:
     body = json.dumps(
         redact(payload),
@@ -578,7 +472,7 @@ async def _json_response(
     response_headers = [
         (b"content-type", b"application/json; charset=utf-8"),
         (b"content-length", str(len(body)).encode("ascii")),
-        *headers,
+        *(headers or []),
     ]
     await send(
         {
@@ -588,23 +482,6 @@ async def _json_response(
         }
     )
     await send({"type": "http.response.body", "body": body})
-
-
-def protected_resource_metadata(settings: SecuritySettings) -> dict[str, Any]:
-    authorization_servers = (
-        [settings.oidc_issuer] if settings.oidc_issuer else []
-    )
-    scopes = sorted(
-        set().union(*DEFAULT_TOOL_SCOPES.values())
-        if DEFAULT_TOOL_SCOPES
-        else {"aio:mcp:read"}
-    )
-    return {
-        "resource": settings.protected_resource_url,
-        "authorization_servers": authorization_servers,
-        "bearer_methods_supported": ["header"],
-        "scopes_supported": scopes,
-    }
 
 
 def redact(value: Any) -> Any:
@@ -624,46 +501,13 @@ def redact(value: Any) -> Any:
     return value
 
 
-def _required_scopes(body: bytes) -> frozenset[str]:
-    base = {"aio:mcp:read"}
-    if not body:
-        return frozenset(base)
-    try:
-        payload = json.loads(body)
-    except (json.JSONDecodeError, UnicodeDecodeError):
-        return frozenset(base)
-
-    calls = payload if isinstance(payload, list) else [payload]
-    for call in calls:
-        if not isinstance(call, Mapping):
-            continue
-        if call.get("method") != "tools/call":
-            continue
-        params = call.get("params")
-        if not isinstance(params, Mapping):
-            continue
-        name = params.get("name")
-        if isinstance(name, str):
-            base.update(DEFAULT_TOOL_SCOPES.get(name, {"aio:mcp:read"}))
-    return frozenset(base)
-
-
 def _extract_scopes(claims: Mapping[str, Any]) -> set[str]:
     raw = claims.get("scope", claims.get("scp", []))
     if isinstance(raw, str):
         return {item for item in raw.split() if item}
-    if isinstance(raw, Sequence) and not isinstance(raw, (str, bytes)):
+    if isinstance(raw, list):
         return {str(item) for item in raw if str(item)}
     return set()
-
-
-def _bearer_token(value: str | None) -> str | None:
-    if not value:
-        return None
-    scheme, separator, token = value.partition(" ")
-    if separator != " " or scheme.casefold() != "bearer" or not token.strip():
-        return None
-    return token.strip()
 
 
 def _headers(scope: Scope) -> dict[str, str]:
@@ -677,6 +521,11 @@ def _headers(scope: Scope) -> dict[str, str]:
 
 
 def _client_identity(scope: Scope, headers: Mapping[str, str]) -> str:
+    authorization = headers.get("authorization")
+    if authorization and authorization.casefold().startswith("bearer "):
+        digest = hashlib.sha256(authorization.encode("utf-8")).hexdigest()
+        return f"token:{digest}"
+
     forwarded = headers.get("cf-connecting-ip") or headers.get("x-forwarded-for")
     if forwarded:
         return f"ip:{forwarded.split(',', maxsplit=1)[0].strip()}"
@@ -687,15 +536,39 @@ def _client_identity(scope: Scope, headers: Mapping[str, str]) -> str:
 
 
 def _request_id(value: str | None) -> str:
-    if value and REQUEST_ID_PATTERN.fullmatch(value):
-        return value
+    if value:
+        cleaned = value.strip()
+        if 0 < len(cleaned) <= REQUEST_ID_MAX_LENGTH and all(
+            character.isalnum() or character in "._:-" for character in cleaned
+        ):
+            return cleaned
     return str(uuid.uuid4())
 
 
 def _traceparent(value: str | None) -> str:
-    if value and TRACEPARENT_PATTERN.fullmatch(value.casefold()):
-        return value.casefold()
+    if value:
+        normalized = value.strip().casefold()
+        parts = normalized.split("-")
+        if (
+            len(parts) == 4
+            and parts[0] == TRACEPARENT_VERSION
+            and len(parts[1]) == 32
+            and len(parts[2]) == 16
+            and len(parts[3]) == 2
+            and all(_is_hex(part) for part in parts)
+            and parts[1] != "0" * 32
+            and parts[2] != "0" * 16
+        ):
+            return normalized
     return f"00-{secrets.token_hex(16)}-{secrets.token_hex(8)}-01"
+
+
+def _is_hex(value: str) -> bool:
+    try:
+        int(value, 16)
+    except ValueError:
+        return False
+    return True
 
 
 def _normalize_origin(value: str) -> str:
