@@ -1,0 +1,5 @@
+/*
+ * Ponto de extensão reservado para o feed vertical de produtos.
+ * Os seletores ativos permanecem centralizados em experience.css para evitar
+ * duplicação, conflito de especificidade e divergência entre web e APK.
+ */
