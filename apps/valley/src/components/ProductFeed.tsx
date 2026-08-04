@@ -120,7 +120,7 @@ export function ProductFeed({
     <header className='feed-toolbar'>
       <div className='feed-toolbar-left'>
         <button className='feed-logo-button' type='button' onClick={onHome} aria-label='Voltar para a Home Valley'>
-          <span className='feed-logo-neon' />
+          <span className='feed-home-glow' />
           <img src='/assets/brand/valley-logo-official.png' alt='Valley' />
         </button>
         <button className='feed-toolbar-button' type='button' onClick={onBack} aria-label='Voltar para a tela anterior' title='Voltar'><Icon name='back' /></button>
