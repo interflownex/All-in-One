@@ -1,0 +1,154 @@
+name: Temporary Governance F0 Inventory
+
+on:
+  push:
+    branches:
+      - feat/governance-f0-executable-catalog
+    paths:
+      - .github/workflows/_temporary-governance-f0-inventory.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-governance-f0-inventory
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout da branch
+        uses: actions/checkout@v6
+        with:
+          ref: feat/governance-f0-executable-catalog
+          fetch-depth: 0
+
+      - name: Incorporar baseline imutável de migrations
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("scripts/compliance_inventory.py")
+          text = path.read_text(encoding="utf-8")
+
+          replacements = [
+              (
+                  'MIGRATIONS_DIR = ROOT / "database" / "postgres" / "migrations"\n',
+                  'MIGRATIONS_DIR = ROOT / "database" / "postgres" / "migrations"\n'
+                  'MIGRATION_BASELINE_PATH = ROOT / "config" / "compliance" / "migration_baseline.json"\n',
+              ),
+              (
+                  '    target = baseline["target"]\n'
+                  '    field_registry_contract = root / "config" / "compliance" / "field_registry.json"\n'
+                  '    physical_registry = any(\n'
+                  '        "compliance.field_registry" in entry["tables"] for entry in migration_entries\n'
+                  '    )\n',
+                  '    target = baseline["target"]\n'
+                  '    field_registry_contract = root / "config" / "compliance" / "field_registry.json"\n'
+                  '    migration_baseline_path = root / MIGRATION_BASELINE_PATH.relative_to(ROOT)\n'
+                  '    migration_baseline = (\n'
+                  '        _load_json(migration_baseline_path)\n'
+                  '        if migration_baseline_path.exists()\n'
+                  '        else {"migrations": []}\n'
+                  '    )\n'
+                  '    physical_registry = any(\n'
+                  '        "compliance.field_registry" in entry["tables"] for entry in migration_entries\n'
+                  '    )\n',
+              ),
+              (
+                  '            "migration_count": len(migration_entries),\n'
+                  '            "schema_count": len(schemas),',
+                  '            "migration_count": len(migration_entries),\n'
+                  '            "baseline_migration_count": len(migration_baseline["migrations"]),\n'
+                  '            "schema_count": len(schemas),',
+              ),
+              (
+                  'def write_outputs(root: Path = ROOT) -> None:\n'
+                  '    inventory = build_inventory(root)\n',
+                  'def initialize_migration_baseline(root: Path = ROOT) -> None:\n'
+                  '    baseline = _load_json(root / BASELINE_PATH.relative_to(ROOT))\n'
+                  '    migrations_dir = root / MIGRATIONS_DIR.relative_to(ROOT)\n'
+                  '    snapshot = [\n'
+                  '        {\n'
+                  '            "path": path.relative_to(root).as_posix(),\n'
+                  '            "sha256": _sha256(path),\n'
+                  '        }\n'
+                  '        for path in sorted(migrations_dir.glob("*.sql"))\n'
+                  '    ]\n'
+                  '    target = root / MIGRATION_BASELINE_PATH.relative_to(ROOT)\n'
+                  '    target.parent.mkdir(parents=True, exist_ok=True)\n'
+                  '    target.write_text(\n'
+                  '        _canonical_json(\n'
+                  '            {\n'
+                  '                "schema_version": "1.0.0",\n'
+                  '                "source_issue": baseline["source_issue"],\n'
+                  '                "source_main_sha": baseline["source_main_sha"],\n'
+                  '                "immutable": True,\n'
+                  '                "migrations": snapshot,\n'
+                  '            }\n'
+                  '        ),\n'
+                  '        encoding="utf-8",\n'
+                  '    )\n'
+                  '    write_outputs(root)\n\n\n'
+                  'def write_outputs(root: Path = ROOT) -> None:\n'
+                  '    inventory = build_inventory(root)\n',
+              ),
+              (
+                  '    mode.add_argument("--write", action="store_true", help="write generated evidence")\n'
+                  '    mode.add_argument("--check", action="store_true", help="verify committed evidence")',
+                  '    mode.add_argument(\n'
+                  '        "--initialize-baseline",\n'
+                  '        action="store_true",\n'
+                  '        help="freeze current migration paths and hashes, then write evidence",\n'
+                  '    )\n'
+                  '    mode.add_argument("--write", action="store_true", help="write generated evidence")\n'
+                  '    mode.add_argument("--check", action="store_true", help="verify committed evidence")',
+              ),
+              (
+                  '    if args.write:\n'
+                  '        write_outputs()\n'
+                  '        print(f"Wrote {INVENTORY_PATH.relative_to(ROOT)} and {REPORT_PATH.relative_to(ROOT)}")\n'
+                  '        return 0',
+                  '    if args.initialize_baseline:\n'
+                  '        initialize_migration_baseline()\n'
+                  '        print(\n'
+                  '            f"Initialized {MIGRATION_BASELINE_PATH.relative_to(ROOT)} and generated evidence"\n'
+                  '        )\n'
+                  '        return 0\n'
+                  '    if args.write:\n'
+                  '        write_outputs()\n'
+                  '        print(f"Wrote {INVENTORY_PATH.relative_to(ROOT)} and {REPORT_PATH.relative_to(ROOT)}")\n'
+                  '        return 0',
+              ),
+          ]
+
+          for old, new in replacements:
+              if text.count(old) != 1:
+                  raise SystemExit(f"Marcador não encontrado de forma única: {old[:80]!r}")
+              text = text.replace(old, new)
+
+          compile(text, str(path), "exec")
+          path.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Gerar baseline e evidências
+        run: python scripts/compliance_inventory.py --initialize-baseline
+
+      - name: Remover automação temporária e publicar resultados
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/_temporary-governance-f0-inventory.yml
+          git add scripts/compliance_inventory.py \
+            config/compliance/migration_baseline.json \
+            docs/governance/generated/fase0_inventory.json \
+            docs/governance/generated/F0_INVENTORY_BASELINE.md
+          git diff --cached --check
+          git commit -m "feat(governance): gerar inventário e baseline F0"
+          git push origin HEAD:feat/governance-f0-executable-catalog
