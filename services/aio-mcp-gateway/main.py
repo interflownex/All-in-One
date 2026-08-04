@@ -14,6 +14,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from production_invariants import enforce_runtime_security_invariants
+from request_limits import RequestBodyLimitMiddleware
 from security import (
     OIDCTokenVerifier,
     SecurityMiddleware,
@@ -29,25 +30,13 @@ TOOL_SCOPES: dict[str, frozenset[str]] = {
     "project_status": frozenset({"aio:mcp:read"}),
     "list_pending_tasks": frozenset({"aio:mcp:read"}),
     "search_repository": frozenset({"aio:mcp:read", "aio:github:read"}),
-    "read_project_document": frozenset(
-        {"aio:mcp:read", "aio:documents:read"}
-    ),
+    "read_project_document": frozenset({"aio:mcp:read", "aio:documents:read"}),
     "create_technical_report": frozenset({"aio:mcp:read"}),
-    "valley_consumer_status": frozenset(
-        {"aio:mcp:read", "aio:valley:read"}
-    ),
-    "valley_rider_status": frozenset(
-        {"aio:mcp:read", "aio:rider:read"}
-    ),
-    "aio_admin_status": frozenset(
-        {"aio:mcp:read", "aio:admin:read"}
-    ),
-    "list_recent_pull_requests": frozenset(
-        {"aio:mcp:read", "aio:github:read"}
-    ),
-    "inspect_failed_jobs": frozenset(
-        {"aio:mcp:read", "aio:github:read"}
-    ),
+    "valley_consumer_status": frozenset({"aio:mcp:read", "aio:valley:read"}),
+    "valley_rider_status": frozenset({"aio:mcp:read", "aio:rider:read"}),
+    "aio_admin_status": frozenset({"aio:mcp:read", "aio:admin:read"}),
+    "list_recent_pull_requests": frozenset({"aio:mcp:read", "aio:github:read"}),
+    "inspect_failed_jobs": frozenset({"aio:mcp:read", "aio:github:read"}),
 }
 
 logging.basicConfig(
@@ -55,24 +44,17 @@ logging.basicConfig(
     format="%(message)s",
 )
 
-security_settings = enforce_runtime_security_invariants(
-    SecuritySettings.from_env()
-)
+security_settings = enforce_runtime_security_invariants(SecuritySettings.from_env())
 token_verifier = (
-    OIDCTokenVerifier(security_settings)
-    if security_settings.auth_required
-    else None
+    OIDCTokenVerifier(security_settings) if security_settings.auth_required else None
 )
 auth_settings = (
     AuthSettings(
         issuer_url=AnyHttpUrl(security_settings.oidc_issuer),
-        resource_server_url=AnyHttpUrl(
-            security_settings.protected_resource_url
-        ),
+        resource_server_url=AnyHttpUrl(security_settings.protected_resource_url),
         required_scopes=[security_settings.required_scope],
     )
-    if security_settings.auth_required
-    and security_settings.oidc_issuer is not None
+    if security_settings.auth_required and security_settings.oidc_issuer is not None
     else None
 )
 rate_limiter = build_limiter(security_settings)
@@ -87,7 +69,6 @@ mcp = FastMCP(
     stateless_http=True,
     json_response=True,
     streamable_http_path="/mcp",
-    max_request_body_size=security_settings.max_request_body_bytes,
     token_verifier=token_verifier,
     auth=auth_settings,
     transport_security=build_transport_security(security_settings),
@@ -119,8 +100,7 @@ def _require_tool_scope(tool_name: str) -> None:
     missing = required.difference(access_token.scopes)
     if missing:
         raise PermissionError(
-            "escopo insuficiente para a ferramenta: "
-            + ", ".join(sorted(missing))
+            "escopo insuficiente para a ferramenta: " + ", ".join(sorted(missing))
         )
 
 
@@ -275,8 +255,12 @@ async def health(_: Request) -> JSONResponse:
     )
 
 
-app = SecurityMiddleware(
+limited_app = RequestBodyLimitMiddleware(
     mcp.streamable_http_app(),
+    max_body_bytes=security_settings.max_request_body_bytes,
+)
+app = SecurityMiddleware(
+    limited_app,
     settings=security_settings,
     limiter=rate_limiter,
 )
