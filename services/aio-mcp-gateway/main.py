@@ -10,6 +10,7 @@ from mcp.server.auth.settings import AuthSettings
 from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 from pydantic import AnyHttpUrl
+from production_invariants import enforce_runtime_security_invariants
 from security import (
     OIDCTokenVerifier,
     SecurityMiddleware,
@@ -53,7 +54,9 @@ logging.basicConfig(
     format="%(message)s",
 )
 
-security_settings = SecuritySettings.from_env()
+security_settings = enforce_runtime_security_invariants(
+    SecuritySettings.from_env()
+)
 token_verifier = (
     OIDCTokenVerifier(security_settings)
     if security_settings.auth_required
