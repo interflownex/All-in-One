@@ -1,0 +1,14 @@
+mcp[cli]==1.28.1
+PyJWT[crypto]<3.0.0,>=2.13.0
+redis<9.0.0,>=8.0.1
+starlette<2.0.0,>=0.47.0
+uvicorn[standard]<1.0.0,>=0.34.0
+
+[dev]
+cyclonedx-bom<8.0.0,>=7.3.0
+httpx<1.0.0,>=0.28.0
+mypy<2.0.0,>=1.15.0
+pip-audit<3.0.0,>=2.10.1
+pytest<9.0.0,>=8.3.0
+pytest-asyncio<1.0.0,>=0.25.0
+ruff<1.0.0,>=0.11.0

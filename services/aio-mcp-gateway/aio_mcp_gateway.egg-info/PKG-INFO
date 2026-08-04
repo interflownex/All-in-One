@@ -1,0 +1,18 @@
+Metadata-Version: 2.4
+Name: aio-mcp-gateway
+Version: 0.2.0
+Summary: Gateway MCP remoto do ecossistema All in One + Valley
+Requires-Python: <3.13,>=3.12
+Requires-Dist: mcp[cli]==1.28.1
+Requires-Dist: PyJWT[crypto]<3.0.0,>=2.13.0
+Requires-Dist: redis<9.0.0,>=8.0.1
+Requires-Dist: starlette<2.0.0,>=0.47.0
+Requires-Dist: uvicorn[standard]<1.0.0,>=0.34.0
+Provides-Extra: dev
+Requires-Dist: cyclonedx-bom<8.0.0,>=7.3.0; extra == "dev"
+Requires-Dist: httpx<1.0.0,>=0.28.0; extra == "dev"
+Requires-Dist: mypy<2.0.0,>=1.15.0; extra == "dev"
+Requires-Dist: pip-audit<3.0.0,>=2.10.1; extra == "dev"
+Requires-Dist: pytest<9.0.0,>=8.3.0; extra == "dev"
+Requires-Dist: pytest-asyncio<1.0.0,>=0.25.0; extra == "dev"
+Requires-Dist: ruff<1.0.0,>=0.11.0; extra == "dev"

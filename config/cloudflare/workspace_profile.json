@@ -1,6 +1,6 @@
 {
-  "version": "2026-08-02",
-  "updated_at": "2026-08-02T02:31:00-03:00",
+  "version": "2026-08-04",
+  "updated_at": "2026-08-04T02:07:00-03:00",
   "timezone": "America/Sao_Paulo",
   "scope": "all-in-one-wsl",
   "cost_policy": "free_or_existing_plan_only",
@@ -78,14 +78,43 @@
       "url": "https://mcp.cloudflare.com/mcp",
       "authentication": "oauth_or_bearer_env",
       "bearer_token_env_var": "CLOUDFLARE_API_TOKEN"
+    },
+    "gateway": {
+      "source": "services/aio-mcp-gateway",
+      "zone_name": "brasildesconto.com.br",
+      "canonical_hostname": "mcp.brasildesconto.com.br",
+      "canonical_url": "https://mcp.brasildesconto.com.br/mcp",
+      "health_url": "https://mcp.brasildesconto.com.br/health",
+      "deployment_model": "single_gateway_with_dns_aliases",
+      "dns_plan": "config/cloudflare/mcp_dns_plan.json",
+      "dns_script": "scripts/configure_cloudflare_mcp_dns.py",
+      "environments": {
+        "staging": "staging-mcp.brasildesconto.com.br",
+        "preview": "preview-mcp.brasildesconto.com.br"
+      },
+      "aliases": [
+        "mcp-valley.brasildesconto.com.br",
+        "mcp-rider.brasildesconto.com.br",
+        "mcp-admin.brasildesconto.com.br"
+      ],
+      "required_secrets": [
+        "CLOUDFLARE_API_TOKEN"
+      ],
+      "required_variables": [
+        "MCP_PRODUCTION_DNS_TARGET"
+      ],
+      "status": "declarative_pending_external_apply"
     }
   },
   "dns_guardrails": [
     "Nao publicar registros AAAA no dominio raiz enquanto a validacao AppDeploy exigir somente IPv4.",
     "Nao alterar o proxy Cloudflare do dominio raiz sem validar o impacto no AppDeploy.",
     "Publicar APIs por subdominios dedicados, nunca abrindo portas locais diretamente.",
-    "Administracao SSH permanece via Tailscale; Cloudflare Tunnel nao deve expor SSH neste workspace."
+    "Administracao SSH permanece via Tailscale; Cloudflare Tunnel nao deve expor SSH neste workspace.",
+    "Todos os MCPs privados devem usar subdominios de brasildesconto.com.br e compartilhar o gateway centralizado."
   ],
   "validation_command": "python3 scripts/validate_cloudflare_wsl.py",
+  "mcp_dns_check_command": "python3 scripts/configure_cloudflare_mcp_dns.py --check --environment production",
+  "mcp_dns_apply_command": "python3 scripts/configure_cloudflare_mcp_dns.py --apply --environment production --confirm-zone brasildesconto.com.br --verify-https",
   "strict_activation_command": "sudo -E python3 scripts/configure_cloudflare_wsl.py --apply --install-service"
 }
