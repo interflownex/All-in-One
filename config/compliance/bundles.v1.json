@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "bundles": [
+    {"id":"B0","name":"Identificação técnica","required_metadata":["owner","source","lineage"]},
+    {"id":"B1","name":"Finalidade e necessidade","required_metadata":["purpose"]},
+    {"id":"B2","name":"Base legal","required_metadata":["legal_basis"]},
+    {"id":"B3","name":"Classificação e sensibilidade","required_metadata":["sensitivity"]},
+    {"id":"B4","name":"Retenção e descarte","required_metadata":["retention_policy","disposal_policy"]},
+    {"id":"B5","name":"Acesso e isolamento","required_metadata":["access_policy"]},
+    {"id":"B6","name":"Criptografia e tokenização","required_metadata":["security_policy"]},
+    {"id":"B7","name":"Compartilhamento e operador","required_metadata":["lineage"]},
+    {"id":"B8","name":"Direitos do titular","required_metadata":["owner","purpose"]},
+    {"id":"B9","name":"Consentimento e preferência","required_metadata":["legal_basis","status"]},
+    {"id":"B10","name":"Incidente e evidência","required_metadata":["security_policy","owner"]},
+    {"id":"B11","name":"Logs e rastreabilidade","required_metadata":["source","lineage","retention_policy"]},
+    {"id":"B12","name":"Decisão automatizada e IA","required_metadata":["purpose","legal_basis","status"]},
+    {"id":"B13","name":"KYC, KYB e explicabilidade","required_metadata":["purpose","legal_basis","access_policy"]},
+    {"id":"B14","name":"Certificados, chaves e cofre","required_metadata":["security_policy","access_policy","disposal_policy"]}
+  ]
+}
