@@ -36,8 +36,21 @@ def test_health() -> None:
     assert response.json() == {
         "status": "ok",
         "service": "aio-mcp-gateway",
-        "version": "0.1.0",
+        "version": "0.2.0",
+        "mode": "development",
     }
+    assert response.headers["x-request-id"]
+    assert response.headers["traceparent"].startswith("00-")
+
+
+def test_oauth_protected_resource_metadata() -> None:
+    with TestClient(app) as client:
+        response = client.get("/.well-known/oauth-protected-resource")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["resource"] == "https://mcp.brasildesconto.com.br"
+    assert payload["bearer_methods_supported"] == ["header"]
+    assert "aio:mcp:read" in payload["scopes_supported"]
 
 
 def test_mcp_streamable_http_route_is_mounted() -> None:
@@ -49,6 +62,9 @@ def test_project_status_is_read_only() -> None:
     result = project_status("all")
     assert result["gateway"]["mode"] == "read-only"
     assert result["project"] == "All in One + Valley"
+    assert result["canonical_endpoint"] == (
+        "https://mcp.brasildesconto.com.br/mcp"
+    )
 
 
 def test_repository_search_blocks_sensitive_paths() -> None:
