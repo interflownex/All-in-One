@@ -1,0 +1,55 @@
+name: React lockfile refresh
+
+on:
+  pull_request:
+    paths:
+      - "apps/all-in-one/package.json"
+      - "apps/all-in-one/package-lock.json"
+      - "apps/all-in-one-admin/package.json"
+      - "apps/all-in-one-admin/package-lock.json"
+      - ".github/workflows/react-lock-refresh.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  refresh-lockfiles:
+    if: >-
+      github.head_ref == 'chore/react-19-2-8-consolidated-20260804' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Regenerate lockfiles
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefix apps/all-in-one
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefix apps/all-in-one-admin
+      - name: Verify clean installs
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund --prefix apps/all-in-one
+          npm ci --ignore-scripts --no-audit --no-fund --prefix apps/all-in-one-admin
+      - name: Commit lockfiles to the React branch
+        env:
+          TARGET_BRANCH: ${{ github.head_ref }}
+        run: |
+          if git diff --quiet -- \
+            apps/all-in-one/package-lock.json \
+            apps/all-in-one-admin/package-lock.json; then
+            echo "Lockfiles already match the manifests."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            apps/all-in-one/package-lock.json \
+            apps/all-in-one-admin/package-lock.json
+          git diff --cached --quiet && { echo "No lockfile changes staged"; exit 1; }
+          git commit -m "chore(deps-react): regenerate consolidated lockfiles"
+          git push origin "HEAD:${TARGET_BRANCH}"
