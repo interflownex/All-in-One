@@ -15,6 +15,27 @@ updates:
     commit-message:
       prefix: "chore(deps-actions)"
 
+  - package-ecosystem: "pip"
+    directories:
+      - "/"
+      - "/services/aio-mcp-gateway"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:15"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "security"
+    groups:
+      python-security-patches:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "chore(deps-python)"
+
   - package-ecosystem: "npm"
     directories:
       - "/apps/all-in-one"
