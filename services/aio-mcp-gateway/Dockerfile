@@ -1,15 +1,28 @@
-FROM python:3.12-slim AS runtime
+FROM python:3.12.13-alpine3.23 AS builder
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /build
+
+COPY pyproject.toml ./
+RUN python -m venv /opt/venv \
+    && /opt/venv/bin/python -m pip install --upgrade pip==26.1.2 \
+    && /opt/venv/bin/pip install --no-cache-dir .
+
+FROM python:3.12.13-alpine3.23 AS runtime
+
+ENV PATH="/opt/venv/bin:${PATH}" \
+    PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PORT=8080
 
-RUN groupadd --system app && useradd --system --gid app --create-home app
+RUN addgroup -S app \
+    && adduser -S -G app -h /home/app app
+
 WORKDIR /app
 
-COPY pyproject.toml ./
-RUN pip install --no-cache-dir .
-
+COPY --from=builder /opt/venv /opt/venv
 COPY main.py ./main.py
 COPY production_invariants.py ./production_invariants.py
 COPY request_limits.py ./request_limits.py
