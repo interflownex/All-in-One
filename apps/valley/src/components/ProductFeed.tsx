@@ -71,7 +71,11 @@ function colorFor(product: FeedProduct) {
 
 async function shareProduct(product: FeedProduct) {
   const shareText = `${product.title} · ${product.provider}`;
-  const shareData = { title: product.title, text: shareText, url: `${window.location.href.split('#')[0]}#offer=${encodeURIComponent(product.offerId)}` };
+  const shareData = {
+    title: product.title,
+    text: shareText,
+    url: `${window.location.href.split('#')[0]}#offer=${encodeURIComponent(product.offerId)}`,
+  };
   try {
     if (navigator.share) {
       await navigator.share(shareData);
@@ -83,8 +87,25 @@ async function shareProduct(product: FeedProduct) {
   }
 }
 
-function ActionButton({ icon, label, onClick, disabled = false }: { icon: IconName; label: string; onClick: () => void; disabled?: boolean }) {
-  return <button className='feed-action-button' type='button' aria-label={label} title={label} onClick={onClick} disabled={disabled}><Icon name={icon} /></button>;
+function ActionButton({
+  icon,
+  label,
+  onClick,
+  disabled = false,
+}: {
+  icon: IconName;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
+  return <button
+    className='feed-action-button'
+    type='button'
+    aria-label={label}
+    title={label}
+    onClick={onClick}
+    disabled={disabled}
+  ><Icon name={icon} /></button>;
 }
 
 function ProductMedia({ product }: { product: FeedProduct }) {
@@ -96,7 +117,9 @@ function ProductMedia({ product }: { product: FeedProduct }) {
     const video = videoRef.current;
     if (!container || !video || !('IntersectionObserver' in window)) return;
     const observer = new IntersectionObserver(entries => {
-      const active = entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.65);
+      const active = entries.some(
+        entry => entry.isIntersecting && entry.intersectionRatio >= 0.65,
+      );
       if (active) void video.play().catch(() => undefined);
       else video.pause();
     }, { threshold: [0.25, 0.65, 0.9] });
@@ -106,9 +129,17 @@ function ProductMedia({ product }: { product: FeedProduct }) {
 
   return <div className='feed-media-layer' ref={containerRef}>
     {product.videoUrl
-      ? <video ref={videoRef} src={product.videoUrl} poster={product.imageUrl} loop muted playsInline preload='metadata' />
+      ? <video
+          ref={videoRef}
+          src={product.videoUrl}
+          poster={product.imageUrl}
+          loop
+          muted
+          playsInline
+          preload="none"
+        />
       : product.imageUrl
-        ? <img src={product.imageUrl} alt='' loading='lazy' />
+        ? <img src={product.imageUrl} alt='' loading="lazy" />
         : <div className='feed-media-placeholder' aria-hidden='true' />}
   </div>;
 }
@@ -187,7 +218,12 @@ export function ProductFeed({
           <aside className='feed-action-rail' aria-label={`Ações para ${product.title}`}>
             <ActionButton icon='heart' label='Favoritar' onClick={() => onFavorite(product)} />
             <ActionButton icon='share' label='Compartilhar' onClick={() => void shareProduct(product)} />
-            <ActionButton icon='comment' label={reviewEnabled ? 'Comentar compra' : 'Comentário disponível após compra concluída'} disabled={!reviewEnabled} onClick={() => onComment(product)} />
+            <ActionButton
+              icon='comment'
+              label={reviewEnabled ? 'Comentar compra' : 'Comentário disponível após compra concluída'}
+              disabled={!reviewEnabled}
+              onClick={() => onComment(product)}
+            />
             <ActionButton icon='cart' label='Adicionar ao carrinho' onClick={() => onAddToCart(product)} />
             <ActionButton icon='buy' label='Comprar agora' onClick={() => onBuy(product)} />
             <ActionButton icon='chat' label='Falar com o fornecedor' onClick={() => onSupplier(product)} />
@@ -204,7 +240,11 @@ export function ProductFeed({
         </article>;
       })}
 
-      {hasMore && onLoadMore && <div className='feed-load-more'><button className='secondary' type='button' disabled={loadingMore} onClick={onLoadMore}>{loadingMore ? 'Carregando...' : 'Carregar mais'}</button></div>}
+      {hasMore && onLoadMore && <div className='feed-load-more'>
+        <button className='secondary' type='button' disabled={loadingMore} onClick={onLoadMore}>
+          {loadingMore ? 'Carregando...' : 'Carregar mais ofertas'}
+        </button>
+      </div>}
     </div>
   </section>;
 }
