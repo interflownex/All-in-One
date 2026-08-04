@@ -9,16 +9,22 @@ on:
       - ".github/workflows/cloudflare-pages.yml"
 
 concurrency:
-  group: cloudflare-pages-all-in-one
-  cancel-in-progress: true
+  group: cloudflare-pages-all-in-one-production
+  cancel-in-progress: false
 
 env:
   WRANGLER_VERSION: "4.118.0"
+  CLOUDFLARE_PAGES_PROJECT: "all-in-one-web"
   HAS_TELEGRAM_DELIVERY: ${{ secrets.TELEGRAM_BOT_TOKEN != '' && secrets.TELEGRAM_CHAT_ID != '' }}
 
 jobs:
   deploy:
+    name: Deploy Cloudflare Pages production
+    if: ${{ vars.ENABLE_CLOUDFLARE_PAGES == 'true' }}
     runs-on: ubuntu-latest
+    environment:
+      name: cloudflare-pages-production
+      url: ${{ steps.deploy.outputs.deployment-url }}
     permissions:
       contents: read
       deployments: write
@@ -26,36 +32,48 @@ jobs:
       run:
         working-directory: apps/all-in-one
     steps:
-      - name: Conferir credenciais Cloudflare
-        id: credentials
+      - name: Validar configuração obrigatória
         working-directory: ${{ github.workspace }}
         env:
-          HAS_CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
-          HAS_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          VITE_API_HUB_URL: ${{ vars.VITE_API_HUB_URL }}
         run: |
-          if [ "$HAS_CLOUDFLARE_API_TOKEN" = "true" ] && [ "$HAS_CLOUDFLARE_ACCOUNT_ID" = "true" ]; then
-            echo "deploy_enabled=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "::notice title=Cloudflare Pages nao publicado::Defina CLOUDFLARE_API_TOKEN e CLOUDFLARE_ACCOUNT_ID em GitHub Secrets para habilitar o deploy automatico."
-          echo "deploy_enabled=false" >> "$GITHUB_OUTPUT"
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          test -n "$VITE_API_HUB_URL"
+          case "$VITE_API_HUB_URL" in
+            https://*) ;;
+            *) echo "VITE_API_HUB_URL deve usar HTTPS." >&2; exit 1 ;;
+          esac
 
-      - uses: actions/checkout@v4
-        if: steps.credentials.outputs.deploy_enabled == 'true'
-      - uses: actions/setup-node@v7
-        if: steps.credentials.outputs.deploy_enabled == 'true'
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: apps/all-in-one/package-lock.json
-      - run: npm ci
-        if: steps.credentials.outputs.deploy_enabled == 'true'
-      - run: npm run build
-        if: steps.credentials.outputs.deploy_enabled == 'true'
+
+      - name: Instalar dependências reproduzíveis
+        run: npm ci
+
+      - name: Executar testes
+        run: npm test --if-present
+
+      - name: Gerar build de produção
+        run: npm run build
         env:
           VITE_API_HUB_URL: ${{ vars.VITE_API_HUB_URL }}
+
+      - name: Validar artefato web
+        run: |
+          test -f dist/index.html
+          grep -Fq "<title>All-in-One — Ecossistema Digital</title>" dist/index.html
+
       - name: Publicar no Cloudflare Pages
-        if: steps.credentials.outputs.deploy_enabled == 'true'
         id: deploy
         uses: cloudflare/wrangler-action@v4
         with:
@@ -63,10 +81,26 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/all-in-one
           wranglerVersion: ${{ env.WRANGLER_VERSION }}
-          command: pages deploy dist --project-name all-in-one-web --branch main --commit-hash ${{ github.sha }}
+          command: pages deploy dist --project-name ${{ env.CLOUDFLARE_PAGES_PROJECT }} --branch main --commit-hash ${{ github.sha }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validar publicação por HTTPS
+        working-directory: ${{ github.workspace }}
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          test -n "$DEPLOYMENT_URL"
+          case "$DEPLOYMENT_URL" in
+            https://*) ;;
+            *) echo "Cloudflare não retornou URL HTTPS válida." >&2; exit 1 ;;
+          esac
+          curl --fail --silent --show-error \
+            --retry 8 --retry-delay 5 --retry-all-errors \
+            "$DEPLOYMENT_URL" \
+            | grep -Fq "<title>All-in-One — Ecossistema Digital</title>"
+
       - name: Encaminhar ambiente web pronto via Telegram
-        if: steps.credentials.outputs.deploy_enabled == 'true' && env.HAS_TELEGRAM_DELIVERY == 'true'
+        if: ${{ env.HAS_TELEGRAM_DELIVERY == 'true' }}
         working-directory: ${{ github.workspace }}
         run: python3 scripts/send_ready_artifact_to_telegram.py --kind web --url "$DEPLOYMENT_URL" --version "$GITHUB_SHA" --expected-marker "<title>All-in-One — Ecossistema Digital</title>" --verified
         env:

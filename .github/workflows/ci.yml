@@ -6,26 +6,41 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: Install dependencies
-        run: pip install -r requirements-dev.txt
+        run: python -m pip install -r requirements-dev.txt
 
       - name: Cleanup artifacts
         run: python scripts/cleanup_artifacts.py
 
       - name: Check generated artifacts
         run: python scripts/check_generated_artifacts.py
+
+      - name: Build F0.1 data inventory
+        run: python scripts/compliance_inventory.py
+
+      - name: Validate regulatory field catalog
+        run: python scripts/validate_compliance_catalog.py
+
+      - name: Test regulatory field catalog
+        run: python -m pytest -q tests/test_compliance_catalog.py
 
       - name: Validate Valley Android release contract
         run: python scripts/validate_valley_android_release_v29.py
