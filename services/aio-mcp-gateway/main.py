@@ -11,7 +11,6 @@ from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 from pydantic import AnyHttpUrl
 from security import (
-    DEFAULT_TOOL_SCOPES,
     OIDCTokenVerifier,
     SecurityMiddleware,
     SecuritySettings,
@@ -24,6 +23,30 @@ from starlette.responses import JSONResponse
 SERVICE_NAME = "aio-mcp-gateway"
 SERVICE_VERSION = "0.2.0"
 READ_ONLY = ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+TOOL_SCOPES: dict[str, frozenset[str]] = {
+    "project_status": frozenset({"aio:mcp:read"}),
+    "list_pending_tasks": frozenset({"aio:mcp:read"}),
+    "search_repository": frozenset({"aio:mcp:read", "aio:github:read"}),
+    "read_project_document": frozenset(
+        {"aio:mcp:read", "aio:documents:read"}
+    ),
+    "create_technical_report": frozenset({"aio:mcp:read"}),
+    "valley_consumer_status": frozenset(
+        {"aio:mcp:read", "aio:valley:read"}
+    ),
+    "valley_rider_status": frozenset(
+        {"aio:mcp:read", "aio:rider:read"}
+    ),
+    "aio_admin_status": frozenset(
+        {"aio:mcp:read", "aio:admin:read"}
+    ),
+    "list_recent_pull_requests": frozenset(
+        {"aio:mcp:read", "aio:github:read"}
+    ),
+    "inspect_failed_jobs": frozenset(
+        {"aio:mcp:read", "aio:github:read"}
+    ),
+}
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO").upper(),
@@ -85,7 +108,7 @@ def _require_tool_scope(tool_name: str) -> None:
     if access_token is None:
         raise PermissionError("contexto de autenticação ausente")
 
-    required = DEFAULT_TOOL_SCOPES.get(
+    required = TOOL_SCOPES.get(
         tool_name,
         frozenset({security_settings.required_scope}),
     )
