@@ -85,16 +85,27 @@ jobs:
       - name: Build container
         run: docker build --pull -t aio-mcp-gateway:${{ github.sha }} services/aio-mcp-gateway
       - name: Start container
-        run: docker run --rm -d --name aio-mcp-gateway -p 8080:8080 aio-mcp-gateway:${{ github.sha }}
+        run: >-
+          docker run -d --name aio-mcp-gateway
+          -p 8080:8080
+          aio-mcp-gateway:${{ github.sha }}
       - name: Health check
         run: |
           for attempt in {1..20}; do
             if curl --fail --silent http://127.0.0.1:8080/health; then
               exit 0
             fi
+            if [ "$(docker inspect --format='{{.State.Running}}' aio-mcp-gateway 2>/dev/null || true)" != "true" ]; then
+              echo "Container encerrou antes de ficar saudável."
+              docker ps -a
+              docker logs aio-mcp-gateway || true
+              exit 1
+            fi
             sleep 1
           done
-          docker logs aio-mcp-gateway
+          echo "Timeout aguardando /health."
+          docker ps -a
+          docker logs aio-mcp-gateway || true
           exit 1
       - name: Scan image for high and critical findings
         uses: aquasecurity/trivy-action@v0.36.0
@@ -122,6 +133,6 @@ jobs:
           path: image-sbom.cdx.json
           if-no-files-found: warn
           retention-days: 30
-      - name: Stop container
+      - name: Remove container
         if: always()
-        run: docker stop aio-mcp-gateway || true
+        run: docker rm -f aio-mcp-gateway || true
