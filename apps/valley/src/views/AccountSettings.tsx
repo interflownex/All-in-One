@@ -1,21 +1,173 @@
 import { useCallback, useEffect, useState } from 'react';
+import { ValleyAvatarPicker } from '../components/ValleyProfileAvatar';
 import { errorMessage, request, type ApiItem, type JsonRecord, type Session, type ViewProps } from '../lib/api';
 import { Metric, SectionHeader } from '../ui';
 
-export function AccountView({ session, setNotice, onSessionChange }: ViewProps & { onSessionChange: (session: Session) => void }) {
-  const [users,setUsers] = useState<ApiItem[]>([]); const [sessions,setSessions] = useState<ApiItem[]>([]); const [consents,setConsents] = useState<ApiItem[]>([]); const [fullName,setFullName] = useState(''); const [phone,setPhone] = useState(''); const [mfaSecret,setMfaSecret] = useState(''); const [mfaCode,setMfaCode] = useState('');
-  const load = useCallback(async () => { try { const [u,s,c] = await Promise.all([request<ApiItem[]>('/identity/resources/users','GET',undefined,session.accessToken),request<ApiItem[]>('/identity/resources/sessions','GET',undefined,session.accessToken),request<ApiItem[]>('/identity/resources/consent_records','GET',undefined,session.accessToken)]); setUsers(u ?? []); setSessions(s ?? []); setConsents(c ?? []); const current = u.find(item => item.id === session.userId)?.payload; setFullName(String(current?.full_name ?? '')); setPhone(String(current?.phone ?? '')); } catch (err) { setNotice(errorMessage(err)); } }, [session.accessToken, session.userId, setNotice]);
-  useEffect(() => { const timer = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(timer); }, [load]);
-  const saveProfile = async () => { try { await request(`/identity/resources/users/${session.userId}`,'PATCH',{ payload:{ full_name:fullName, phone } },session.accessToken); setNotice('Perfil atualizado no servidor.'); await load(); } catch (err) { setNotice(errorMessage(err)); } };
-  const recordConsent = async () => { try { await request('/identity/resources/consent_records','POST',{ user_id:session.userId,status:'APPROVED',payload:{ purpose:'valley_app_operation',granted:true,recorded_at:new Date().toISOString() } },session.accessToken); setNotice('Consentimento registrado.'); await load(); } catch (err) { setNotice(errorMessage(err)); } };
-  const setupMfa = async () => { try { const data = await request<JsonRecord>('/identity/mfa/setup','POST',{ user_id:session.userId,method:'totp',idempotency_key:window.crypto.randomUUID() },session.accessToken); setMfaSecret(String(data.secret ?? '')); setNotice('MFA iniciado. Adicione o segredo ao autenticador.'); } catch (err) { setNotice(errorMessage(err)); } };
-  const verifyMfa = async () => { try { const data = await request<JsonRecord>('/identity/mfa/verify','POST',{ user_id:session.userId,session_id:session.sessionId,method:'totp',code:mfaCode },session.accessToken); onSessionChange({ ...session, accessToken:String(data.access_token), expiresAt:String(data.expires_at) }); setMfaCode(''); setNotice('MFA verificado e sessão elevada.'); } catch (err) { setNotice(errorMessage(err)); } };
-  return <section><SectionHeader title='Conta e segurança' subtitle='Perfil, sessões, consentimentos e autenticação multifator.' actionLabel='Atualizar' onAction={load} /><div className='form-card'><h2>Meu perfil</h2><label>Nome<input value={fullName} onChange={e => setFullName(e.target.value)} /></label><label>Telefone<input value={phone} onChange={e => setPhone(e.target.value)} /></label><button className='primary' type='button' onClick={saveProfile}>Salvar perfil</button></div><div className='form-card'><h2>Privacidade</h2><p>{consents.length} consentimento(s) registrado(s).</p><button className='secondary' type='button' onClick={recordConsent}>Registrar consentimento atual</button></div><div className='form-card'><h2>MFA por autenticador</h2>{!mfaSecret ? <button className='secondary' type='button' onClick={setupMfa}>Configurar MFA</button> : <><code className='secret-code'>{mfaSecret}</code><label>Código de 6 dígitos<input inputMode='numeric' pattern='[0-9]{6}' value={mfaCode} onChange={e => setMfaCode(e.target.value)} /></label><button className='primary' type='button' disabled={!/^\d{6}$/.test(mfaCode)} onClick={verifyMfa}>Verificar código</button></>}</div><div className='metric-grid'><Metric label='Usuários' value={String(users.length)} /><Metric label='Sessões' value={String(sessions.length)} /><Metric label='Consentimentos' value={String(consents.length)} /></div></section>;
+export function AccountView({
+  session,
+  setNotice,
+  onSessionChange,
+  avatarDataUrl,
+  onAvatarChange,
+}: ViewProps & {
+  onSessionChange: (session: Session) => void;
+  avatarDataUrl: string;
+  onAvatarChange: (value: string) => void;
+}) {
+  const [users, setUsers] = useState<ApiItem[]>([]);
+  const [sessions, setSessions] = useState<ApiItem[]>([]);
+  const [consents, setConsents] = useState<ApiItem[]>([]);
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [mfaSecret, setMfaSecret] = useState('');
+  const [mfaCode, setMfaCode] = useState('');
+
+  const load = useCallback(async () => {
+    try {
+      const [userData, sessionData, consentData] = await Promise.all([
+        request<ApiItem[]>('/identity/resources/users', 'GET', undefined, session.accessToken),
+        request<ApiItem[]>('/identity/resources/sessions', 'GET', undefined, session.accessToken),
+        request<ApiItem[]>('/identity/resources/consent_records', 'GET', undefined, session.accessToken),
+      ]);
+      setUsers(userData ?? []);
+      setSessions(sessionData ?? []);
+      setConsents(consentData ?? []);
+      const current = userData.find(item => item.id === session.userId)?.payload;
+      setFullName(String(current?.full_name ?? ''));
+      setPhone(String(current?.phone ?? ''));
+    } catch (err) {
+      setNotice(errorMessage(err));
+    }
+  }, [session.accessToken, session.userId, setNotice]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
+
+  const saveProfile = async () => {
+    try {
+      await request(`/identity/resources/users/${session.userId}`, 'PATCH', {
+        payload: {
+          full_name: fullName,
+          phone,
+          profile_avatar_mode: avatarDataUrl ? 'personalized_valley_frame' : 'official_default',
+        },
+      }, session.accessToken);
+      setNotice('Perfil atualizado no servidor.');
+      await load();
+    } catch (err) {
+      setNotice(errorMessage(err));
+    }
+  };
+
+  const recordConsent = async () => {
+    try {
+      await request('/identity/resources/consent_records', 'POST', {
+        user_id: session.userId,
+        status: 'APPROVED',
+        payload: {
+          purpose: 'valley_app_operation',
+          granted: true,
+          recorded_at: new Date().toISOString(),
+        },
+      }, session.accessToken);
+      setNotice('Consentimento registrado.');
+      await load();
+    } catch (err) {
+      setNotice(errorMessage(err));
+    }
+  };
+
+  const setupMfa = async () => {
+    try {
+      const data = await request<JsonRecord>('/identity/mfa/setup', 'POST', {
+        user_id: session.userId,
+        method: 'totp',
+        idempotency_key: window.crypto.randomUUID(),
+      }, session.accessToken);
+      setMfaSecret(String(data.secret ?? ''));
+      setNotice('MFA iniciado. Adicione o segredo ao autenticador.');
+    } catch (err) {
+      setNotice(errorMessage(err));
+    }
+  };
+
+  const verifyMfa = async () => {
+    try {
+      const data = await request<JsonRecord>('/identity/mfa/verify', 'POST', {
+        user_id: session.userId,
+        session_id: session.sessionId,
+        method: 'totp',
+        code: mfaCode,
+      }, session.accessToken);
+      onSessionChange({
+        ...session,
+        accessToken: String(data.access_token),
+        expiresAt: String(data.expires_at),
+      });
+      setMfaCode('');
+      setNotice('MFA verificado e sessão elevada.');
+    } catch (err) {
+      setNotice(errorMessage(err));
+    }
+  };
+
+  return <section>
+    <SectionHeader title='Conta e segurança' subtitle='Perfil, foto opcional, sessões, consentimentos e autenticação multifator.' actionLabel='Atualizar' onAction={load} />
+    <div className='account-profile-grid'>
+      <div className='form-card'>
+        <h2>Minha foto de perfil</h2>
+        <ValleyAvatarPicker value={avatarDataUrl} onChange={onAvatarChange} onError={setNotice} />
+      </div>
+      <div className='form-card'>
+        <h2>Meus dados</h2>
+        <label>Nome<input value={fullName} onChange={event => setFullName(event.target.value)} /></label>
+        <label>Telefone<input value={phone} onChange={event => setPhone(event.target.value)} /></label>
+        <button className='primary' type='button' onClick={saveProfile}>Salvar perfil</button>
+      </div>
+    </div>
+    <div className='form-card'><h2>Privacidade</h2><p>{consents.length} consentimento(s) registrado(s).</p><button className='secondary' type='button' onClick={recordConsent}>Registrar consentimento atual</button></div>
+    <div className='form-card'><h2>MFA por autenticador</h2>{!mfaSecret ? <button className='secondary' type='button' onClick={setupMfa}>Configurar MFA</button> : <><code className='secret-code'>{mfaSecret}</code><label>Código de 6 dígitos<input inputMode='numeric' pattern='[0-9]{6}' value={mfaCode} onChange={event => setMfaCode(event.target.value)} /></label><button className='primary' type='button' disabled={!/^\d{6}$/.test(mfaCode)} onClick={verifyMfa}>Verificar código</button></>}</div>
+    <div className='metric-grid'><Metric label='Usuários' value={String(users.length)} /><Metric label='Sessões' value={String(sessions.length)} /><Metric label='Consentimentos' value={String(consents.length)} /></div>
+  </section>;
 }
 
-export function SettingsView({ session,setNotice,onRefreshSession,onLogout }: ViewProps & { onRefreshSession: () => Promise<void>; onLogout: () => Promise<void> }) {
-  const [status,setStatus] = useState<JsonRecord | null>(null); const [notifications,setNotifications] = useState(true);
-  const check = async () => { try { const data = await request<JsonRecord>('/gateway/status'); setStatus(data); setNotice('Servidor verificado.'); } catch (err) { setNotice(errorMessage(err)); } };
-  const saveNotifications = async () => { try { await request('/identity/resources/consent_records','POST',{ user_id:session.userId,status:'APPROVED',payload:{ purpose:'notifications',granted:notifications,recorded_at:new Date().toISOString() } },session.accessToken); setNotice('Preferência de notificações sincronizada.'); } catch (err) { setNotice(errorMessage(err)); } };
-  return <section><SectionHeader title='Notificações, suporte e ajustes' subtitle='Preferências, integridade da conexão e controle da sessão.' /><div className='form-card'><h2>Notificações</h2><label className='checkbox-row'><input type='checkbox' checked={notifications} onChange={e => setNotifications(e.target.checked)} />Receber avisos operacionais</label><button className='primary' type='button' onClick={saveNotifications}>Salvar preferência</button></div><div className='form-card'><h2>Conexão</h2><button className='secondary' type='button' onClick={check}>Verificar servidor</button>{status && <pre>{JSON.stringify(status,null,2)}</pre>}</div><div className='form-card'><h2>Sessão</h2><p>{session.email}</p><div className='button-row'><button className='secondary' type='button' onClick={() => onRefreshSession().then(() => setNotice('Sessão renovada.')).catch(err => setNotice(errorMessage(err)))}>Renovar sessão</button><button className='danger' type='button' onClick={() => onLogout()}>Sair do Valley</button></div></div></section>;
+export function SettingsView({ session, setNotice, onRefreshSession, onLogout }: ViewProps & { onRefreshSession: () => Promise<void>; onLogout: () => Promise<void> }) {
+  const [status, setStatus] = useState<JsonRecord | null>(null);
+  const [notifications, setNotifications] = useState(true);
+
+  const check = async () => {
+    try {
+      const data = await request<JsonRecord>('/gateway/status');
+      setStatus(data);
+      setNotice('Servidor verificado.');
+    } catch (err) {
+      setNotice(errorMessage(err));
+    }
+  };
+
+  const saveNotifications = async () => {
+    try {
+      await request('/identity/resources/consent_records', 'POST', {
+        user_id: session.userId,
+        status: 'APPROVED',
+        payload: {
+          purpose: 'notifications',
+          granted: notifications,
+          recorded_at: new Date().toISOString(),
+        },
+      }, session.accessToken);
+      setNotice('Preferência de notificações sincronizada.');
+    } catch (err) {
+      setNotice(errorMessage(err));
+    }
+  };
+
+  return <section>
+    <SectionHeader title='Notificações, suporte e ajustes' subtitle='Preferências, integridade da conexão e controle da sessão.' />
+    <div className='form-card'><h2>Notificações</h2><label className='checkbox-row'><input type='checkbox' checked={notifications} onChange={event => setNotifications(event.target.checked)} />Receber avisos operacionais</label><button className='primary' type='button' onClick={saveNotifications}>Salvar preferência</button></div>
+    <div className='form-card'><h2>Conexão</h2><button className='secondary' type='button' onClick={check}>Verificar servidor</button>{status && <pre>{JSON.stringify(status, null, 2)}</pre>}</div>
+    <div className='form-card'><h2>Sessão</h2><p>{session.email}</p><div className='button-row'><button className='secondary' type='button' onClick={() => onRefreshSession().then(() => setNotice('Sessão renovada.')).catch(err => setNotice(errorMessage(err)))}>Renovar sessão</button><button className='danger' type='button' onClick={() => onLogout()}>Sair do Valley</button></div></div>
+  </section>;
 }
