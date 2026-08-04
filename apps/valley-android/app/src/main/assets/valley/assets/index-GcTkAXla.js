@@ -12675,9 +12675,12 @@ function Ze(e) {
   }
 }
 function Qe(e) {
-  return Math.random()
-    .toString(36)
-    .slice(2, 2 + e);
+  let t = `abcdefghijklmnopqrstuvwxyz0123456789`,
+    n = new Uint8Array(e);
+  window.crypto.getRandomValues(n);
+  let r = ``;
+  for (let i = 0; i < e; i++) r += t[n[i] % t.length];
+  return r;
 }
 function $e(e) {
   return e.toLowerCase().replace(/[^a-z0-9]+/g, `-`);
