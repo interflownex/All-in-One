@@ -1,4 +1,4 @@
-import { type CSSProperties, type FormEvent, useMemo, useState } from 'react';
+import { type CSSProperties, type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { ValleyProfileAvatar } from './ValleyProfileAvatar';
 import { formatMoney } from '../lib/api';
 
@@ -70,17 +70,47 @@ function colorFor(product: FeedProduct) {
 }
 
 async function shareProduct(product: FeedProduct) {
-  const text = `${product.title} · ${product.provider}`;
-  const shareData = { title: product.title, text, url: window.location.href };
-  if (navigator.share) {
-    await navigator.share(shareData);
-    return;
+  const shareText = `${product.title} · ${product.provider}`;
+  const shareData = { title: product.title, text: shareText, url: `${window.location.href.split('#')[0]}#offer=${encodeURIComponent(product.offerId)}` };
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      return;
+    }
+    await navigator.clipboard.writeText(`${shareText}\n${shareData.url}`);
+  } catch (error) {
+    if ((error as DOMException)?.name !== 'AbortError') throw error;
   }
-  await navigator.clipboard.writeText(`${text}\n${window.location.href}`);
 }
 
-function ActionButton({ icon, label, onClick }: { icon: IconName; label: string; onClick: () => void }) {
-  return <button className='feed-action-button' type='button' aria-label={label} title={label} onClick={onClick}><Icon name={icon} /></button>;
+function ActionButton({ icon, label, onClick, disabled = false }: { icon: IconName; label: string; onClick: () => void; disabled?: boolean }) {
+  return <button className='feed-action-button' type='button' aria-label={label} title={label} onClick={onClick} disabled={disabled}><Icon name={icon} /></button>;
+}
+
+function ProductMedia({ product }: { product: FeedProduct }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const video = videoRef.current;
+    if (!container || !video || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver(entries => {
+      const active = entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= 0.65);
+      if (active) void video.play().catch(() => undefined);
+      else video.pause();
+    }, { threshold: [0.25, 0.65, 0.9] });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div className='feed-media-layer' ref={containerRef}>
+    {product.videoUrl
+      ? <video ref={videoRef} src={product.videoUrl} poster={product.imageUrl} loop muted playsInline preload='metadata' />
+      : product.imageUrl
+        ? <img src={product.imageUrl} alt='' loading='lazy' />
+        : <div className='feed-media-placeholder' aria-hidden='true' />}
+  </div>;
 }
 
 export function ProductFeed({
@@ -119,14 +149,14 @@ export function ProductFeed({
   return <section className='immersive-product-feed' aria-label={title}>
     <header className='feed-toolbar'>
       <div className='feed-toolbar-left'>
-        <button className='feed-logo-button' type='button' onClick={onHome} aria-label='Voltar para a Home Valley'>
+        <button className='feed-logo-button' type='button' onClick={onHome} aria-label='Voltar para a Home Valley' title='Home'>
           <span className='feed-home-glow' />
-          <img src='/assets/brand/valley-logo-official.png' alt='Valley' />
+          <img src='/assets/brand/valley-logo-official.png' alt='' aria-hidden='true' />
         </button>
         <button className='feed-toolbar-button' type='button' onClick={onBack} aria-label='Voltar para a tela anterior' title='Voltar'><Icon name='back' /></button>
         <button className='feed-toolbar-button' type='button' onClick={() => setSearchOpen(value => !value)} aria-label='Pesquisar produtos' title='Pesquisar'><Icon name='search' /></button>
       </div>
-      <button className='feed-profile-button' type='button' onClick={onProfile} aria-label='Abrir meu perfil'>
+      <button className='feed-profile-button' type='button' onClick={onProfile} aria-label='Abrir meu perfil' title='Meu perfil'>
         <ValleyProfileAvatar src={avatarDataUrl} size='small' />
       </button>
     </header>
@@ -147,14 +177,9 @@ export function ProductFeed({
 
       {products.map(product => {
         const style = { '--feed-accent': colorFor(product) } as CSSProperties;
+        const reviewEnabled = canComment(product);
         return <article className='product-feed-item' key={product.id} style={style}>
-          <div className='feed-media-layer'>
-            {product.videoUrl
-              ? <video src={product.videoUrl} poster={product.imageUrl} autoPlay loop muted playsInline preload='metadata' />
-              : product.imageUrl
-                ? <img src={product.imageUrl} alt='' loading='lazy' />
-                : <div className='feed-media-placeholder' aria-hidden='true' />}
-          </div>
+          <ProductMedia product={product} />
           <div className='feed-media-shade' />
 
           <div className='feed-title-frame' title={product.title}><h2>{product.title}</h2></div>
@@ -162,7 +187,7 @@ export function ProductFeed({
           <aside className='feed-action-rail' aria-label={`Ações para ${product.title}`}>
             <ActionButton icon='heart' label='Favoritar' onClick={() => onFavorite(product)} />
             <ActionButton icon='share' label='Compartilhar' onClick={() => void shareProduct(product)} />
-            {canComment(product) && <ActionButton icon='comment' label='Comentar compra' onClick={() => onComment(product)} />}
+            <ActionButton icon='comment' label={reviewEnabled ? 'Comentar compra' : 'Comentário disponível após compra concluída'} disabled={!reviewEnabled} onClick={() => onComment(product)} />
             <ActionButton icon='cart' label='Adicionar ao carrinho' onClick={() => onAddToCart(product)} />
             <ActionButton icon='buy' label='Comprar agora' onClick={() => onBuy(product)} />
             <ActionButton icon='chat' label='Falar com o fornecedor' onClick={() => onSupplier(product)} />
