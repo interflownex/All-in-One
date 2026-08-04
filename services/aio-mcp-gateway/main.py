@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import contextlib
 import os
+from collections.abc import AsyncIterator
 from datetime import UTC, datetime
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
+from mcp.types import ToolAnnotations
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -13,7 +15,7 @@ from starlette.routing import Mount, Route
 
 SERVICE_NAME = "aio-mcp-gateway"
 SERVICE_VERSION = "0.1.0"
-READ_ONLY = {"readOnlyHint": True, "destructiveHint": False}
+READ_ONLY = ToolAnnotations(readOnlyHint=True, destructiveHint=False)
 
 mcp = FastMCP(
     "All in One + Valley",
@@ -154,7 +156,7 @@ async def health(_: Request) -> JSONResponse:
 
 
 @contextlib.asynccontextmanager
-async def lifespan(_: Starlette):
+async def lifespan(_: Starlette) -> AsyncIterator[None]:
     async with mcp.session_manager.run():
         yield
 
