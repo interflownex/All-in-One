@@ -119,8 +119,13 @@ def main() -> int:
         print("Iniciando configuração segura no Google Secret Manager.")
         for secret_id, payload in payloads.items():
             configure_secret(project_id, secret_id, payload)
-    except (RuntimeError, ValueError) as exc:
-        print(f"Falha de configuração: {exc}", file=sys.stderr)
+    except (RuntimeError, ValueError):
+        # Não propaga texto de exceção para logs: mensagens derivadas de fluxos
+        # sensíveis podem ser classificadas como exposição pelo CodeQL.
+        print(
+            "Falha na configuração segura. Verifique ambiente, permissões e gcloud.",
+            file=sys.stderr,
+        )
         return 1
 
     print("Configuração concluída sem exposição de payloads.")
@@ -129,4 +134,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
