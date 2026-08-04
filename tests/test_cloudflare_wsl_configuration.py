@@ -20,6 +20,18 @@ def test_cloudflare_profile_keeps_runtime_secrets_out_of_git() -> None:
     assert profile["tunnel"]["tunnel_id"] == "7b9ce5bc-7f6e-4416-bff3-3a278ce4b96f"
     assert profile["tunnel"]["token_env_var"] == "CLOUDFLARE_TUNNEL_TOKEN"
     assert profile["mcp"]["api"]["bearer_token_env_var"] == "CLOUDFLARE_API_TOKEN"
+    gateway = profile["mcp"]["gateway"]
+    assert gateway["zone_name"] == "brasildesconto.com.br"
+    assert gateway["canonical_hostname"] == "mcp.brasildesconto.com.br"
+    assert gateway["canonical_url"] == "https://mcp.brasildesconto.com.br/mcp"
+    assert gateway["health_url"] == "https://mcp.brasildesconto.com.br/health"
+    assert gateway["deployment_model"] == "single_gateway_with_dns_aliases"
+    assert gateway["aliases"] == [
+        "mcp-valley.brasildesconto.com.br",
+        "mcp-rider.brasildesconto.com.br",
+        "mcp-admin.brasildesconto.com.br",
+    ]
+    assert gateway["status"] == "declarative_pending_external_apply"
     assert profile["tunnel"]["desired_public_hostnames"] == [
         {
             "hostname": "stream.brasildesconto.com.br",
@@ -27,7 +39,9 @@ def test_cloudflare_profile_keeps_runtime_secrets_out_of_git() -> None:
             "purpose": "api_hub_stream_path",
         }
     ]
-    assert profile["tunnel"]["reserved_public_hostnames"][0]["hostname"] == "api.brasildesconto.com.br"
+    assert profile["tunnel"]["reserved_public_hostnames"][0]["hostname"] == (
+        "api.brasildesconto.com.br"
+    )
     assert "AQ." not in serialized
     assert "BEGIN " not in serialized
 
@@ -39,12 +53,21 @@ def test_cloudflare_scripts_install_only_token_backed_service() -> None:
     validate = (ROOT / "scripts" / "validate_cloudflare_wsl.py").read_text(
         encoding="utf-8"
     )
+    dns = (ROOT / "scripts" / "configure_cloudflare_mcp_dns.py").read_text(
+        encoding="utf-8"
+    )
 
     assert "cloudflared-all-in-one.service" in configure
     assert "EnvironmentFile={token_file}" in configure
     assert "CLOUDFLARE_TUNNEL_TOKEN" in configure
     assert "CLOUDFLARE_TUNNEL_TOKEN" in validate
     assert "--strict" in validate
+    assert "--confirm-zone" in dns
+    assert "allow_delete" in dns
+    assert "PATCH" in dns
+    assert 'request("DELETE"' not in dns
     assert "ssh" not in json.dumps(
-        json.loads((ROOT / "config" / "cloudflare" / "workspace_profile.json").read_text())
+        json.loads(
+            (ROOT / "config" / "cloudflare" / "workspace_profile.json").read_text()
+        )
     ).split('"do_not_expose"')[0]
