@@ -1,7 +1,9 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DART_BRIDGE = ROOT / "apps" / "valley-flutter" / "lib" / "company_launcher_shortcut.dart"
+DART_BRIDGE = (
+    ROOT / "apps" / "valley-flutter" / "lib" / "company_launcher_shortcut.dart"
+)
 ANDROID_TEMPLATE = ROOT / "scripts" / "templates" / "valley" / "MainActivity.kt.tpl"
 ANDROID_CONFIGURATOR = ROOT / "scripts" / "configure_valley_flutter_android.py"
 

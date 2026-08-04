@@ -2,10 +2,10 @@
 
 ## Versão 6.4 — Correção dos diagnósticos Flutter, Gradle e Java no VS Code
 
-**Data e hora:** 03/08/2026 18:23, `America/Sao_Paulo`  
-**Repositório:** `interflownex/All-in-One`  
-**Branch:** `codex/corrigir-diagnosticos-vscode-20260803`  
-**Referência de base:** `5ea69c22fc8b69fd3918415e15a5ad03c02a041f`  
+**Data e hora:** 03/08/2026 18:23, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/corrigir-diagnosticos-vscode-20260803`
+**Referência de base:** `5ea69c22fc8b69fd3918415e15a5ad03c02a041f`
 **Pull request prioritária:** `#129`
 
 ### Objetivo, contexto e escopo
@@ -73,6 +73,39 @@ que a coleção de diagnósticos Java/Gradle foi limpa.
 - v6.3: registrou publicação pública, hashes, tamanhos e bloqueios restantes.
 - v6.2: criou pipeline e auditoria próprios do Valley Rider Flutter.
 - v6.1: integrou checkout Mercado Pago e conflitos relacionados.
+
+## Versão 6.5 — Resolução segura do conflito do launcher shortcut Valley Flutter
+
+**Data e hora:** 04/08/2026 02:16, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Branch:** `codex/corrigir-diagnosticos-vscode-20260803`
+**Referência de base:** `20cf3a9`
+**Status:** rebase concluído com conflito de shortcut resolvido no arquivo afetado.
+
+### Objetivo, contexto e escopo
+
+Reconstruir o bridge de atalho empresarial do Valley Flutter com a versão final e segura do código, preservando validação de entrada, fallback de ícone, limite de tamanho da imagem e composição do frame oficial do launcher Android.
+
+### Evidências verificadas
+
+- O arquivo [apps/valley-flutter/lib/company_launcher_shortcut.dart](apps/valley-flutter/lib/company_launcher_shortcut.dart) foi reescrito com o conteúdo final consistente, sem marcadores de conflito.
+- `dart analyze lib/company_launcher_shortcut.dart` retornou `No issues found!` após a correção.
+- O fluxo de rebase foi retomado e concluído com sucesso na branch de trabalho, com o commit `20cf3a9` registrado no histórico local.
+- O contrato de teste do shortcut foi alinhado com a API oficial do Android e com a proteção de fallback de ícone.
+
+### Riscos e bloqueios
+
+- O ambiente atual não possui o módulo `pytest` instalado no path do interpretador, portanto o teste Python específico não foi executado pela ferramenta de terminal neste ciclo.
+- O script oficial de validação do repositório continua apontando falhas de secrets do workflow Cloudflare Pages, fora do escopo do conflito de shortcut.
+
+### Procedimento de entrega
+
+Manter a branch atual como fonte de verdade para a próxima etapa de PR ou squash, usando a mesma SHA validada pelo rebase e pelo `dart analyze` sem defeitos.
+
+### Histórico resumido
+
+- v6.5: registra a resolução segura do conflito do shortcut Valley Flutter no rebase, com validação do bridge e evidência local do fluxo.
+- v6.4: corrige Dart/contratos, materializa diretórios vazios e documenta a recuperação segura dos diagnósticos Gradle e Java.
 
 ## Versão 6.3 — Evidência da publicação Valley Rider Flutter
 
@@ -576,7 +609,7 @@ segredo fora do Git.
   `/etc/wsl.conf` sem `generateResolvConf` e preservação do MagicDNS Tailscale.
 - Aplicar o DNS real no WSL e limpar alerta Tailscale de `setLinkDomains`.
 - Normalizar MCPs do Codex: Docker usa `docker mcp gateway run --profile
-  all_in_one_local`; filesystem aponta para o workspace WSL; Cloudflare e Stitch
+all_in_one_local`; filesystem aponta para o workspace WSL; Cloudflare e Stitch
   usam variáveis de ambiente sem token literal.
 - Criar política e script de confiança do Antigravity, mantendo apenas MCPs
   essenciais: Cloudflare, Context7, Docker, filesystem do workspace e Stitch.
@@ -627,7 +660,7 @@ segredo fora do Git.
 4. Validar Docker: `python3 scripts/configure_docker_dx.py --check --print-status`
    e `docker compose -f infra/docker/docker-compose.yml config --quiet`.
 5. Validar SSH: `ssh -i /home/eretazan/.ssh/all_in_one_wsl_ed25519 -o
-   BatchMode=yes eretazan@100.99.245.76 true`.
+BatchMode=yes eretazan@100.99.245.76 true`.
 6. Validar repositório: `python3 scripts/validate_repository.py`.
 
 ### Prioridades
@@ -806,13 +839,13 @@ Merge após gates verdes.
   de origem `stream -> 8100` e migração do MCP Stitch para variável de ambiente.
 
 **Versão:** 5.2
-**Data e hora:** 01/08/2026 04:18, `America/Sao_Paulo`  
-**Repositório:** `interflownex/All-in-One`  
-**Marcos integrados:** PR `#108` (`1d05e56ca3bc1a66eb1e280743db24308d6da1b1`) e PR `#109` (`90d518cf65b90ec54c8dc6995f47c061cbba2e23`)  
-**Issue-mãe:** `#51`  
-**Prioridade funcional:** `#95`  
-**Bloqueio externo:** `#107`  
-**Classificação:** `Pendências > Técnico > Equipe Técnica`  
+**Data e hora:** 01/08/2026 04:18, `America/Sao_Paulo`
+**Repositório:** `interflownex/All-in-One`
+**Marcos integrados:** PR `#108` (`1d05e56ca3bc1a66eb1e280743db24308d6da1b1`) e PR `#109` (`90d518cf65b90ec54c8dc6995f47c061cbba2e23`)
+**Issue-mãe:** `#51`
+**Prioridade funcional:** `#95`
+**Bloqueio externo:** `#107`
+**Classificação:** `Pendências > Técnico > Equipe Técnica`
 **Público-alvo:** Equipe Técnica
 
 ## 1. Estado autoritativo
