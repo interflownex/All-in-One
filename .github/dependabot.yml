@@ -9,9 +9,6 @@ updates:
       time: "09:00"
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "security"
     commit-message:
       prefix: "chore(deps-actions)"
 
@@ -25,9 +22,6 @@ updates:
       time: "09:15"
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "security"
     groups:
       python-security-patches:
         applies-to: "security-updates"
@@ -56,9 +50,6 @@ updates:
       time: "09:30"
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 10
-    labels:
-      - "dependencies"
-      - "security"
     groups:
       npm-security-patches:
         applies-to: "security-updates"
@@ -81,9 +72,6 @@ updates:
       time: "10:00"
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "security"
     commit-message:
       prefix: "chore(deps-android)"
 
@@ -95,8 +83,5 @@ updates:
       time: "10:30"
       timezone: "America/Sao_Paulo"
     open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "security"
     commit-message:
       prefix: "chore(deps-flutter)"
