@@ -91,7 +91,7 @@ def configure_secret(project_id: str, secret_id: str, payload: str) -> None:
     if not _secret_exists(project_id, secret_id):
         _create_secret(project_id, secret_id)
     _add_secret_version(project_id, secret_id, payload)
-    print(f"Segredo '{secret_id}' configurado com nova versão.")
+    print("Segredo configurado com nova versão.")
 
 
 def _load_configuration() -> tuple[str, dict[str, str]]:
