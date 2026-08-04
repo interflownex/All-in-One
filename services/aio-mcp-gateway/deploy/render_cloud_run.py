@@ -10,9 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / "deploy" / "cloud-run-service.template.yaml"
 SERVICE_NAME = "aio-mcp-gateway"
-IMAGE_DIGEST_PATTERN = re.compile(
-    r"^[a-z0-9][a-z0-9._/-]*@sha256:[0-9a-f]{64}$"
-)
+IMAGE_DIGEST_PATTERN = re.compile(r"^[a-z0-9][a-z0-9._/-]*@sha256:[0-9a-f]{64}$")
 PROJECT_PATTERN = re.compile(r"^[a-z][a-z0-9-]{4,28}[a-z0-9]$")
 REGION_PATTERN = re.compile(r"^[a-z]+-[a-z]+[0-9]$")
 SERVICE_ACCOUNT_PATTERN = re.compile(

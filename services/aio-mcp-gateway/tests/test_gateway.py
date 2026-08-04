@@ -113,10 +113,7 @@ def test_project_status_is_read_only(
 
     assert result["gateway"]["mode"] == "read-only"
     assert result["project"] == "All in One + Valley"
-    assert (
-        result["canonical_endpoint"]
-        == "https://mcp.brasildesconto.com.br/mcp"
-    )
+    assert result["canonical_endpoint"] == "https://mcp.brasildesconto.com.br/mcp"
 
 
 def test_repository_search_blocks_sensitive_paths(
@@ -134,9 +131,7 @@ def test_oauth_protected_resource_metadata(
     gateway = _load_gateway(monkeypatch, **_auth_environment())
 
     with TestClient(gateway.app) as client:
-        response = client.get(
-            "/.well-known/oauth-protected-resource/mcp"
-        )
+        response = client.get("/.well-known/oauth-protected-resource/mcp")
 
     assert response.status_code == 200
     payload = response.json()
@@ -176,8 +171,7 @@ def test_mcp_rejects_missing_bearer_token(
     assert "Bearer" in challenge
     assert (
         "https://mcp.brasildesconto.com.br/"
-        ".well-known/oauth-protected-resource/mcp"
-        in challenge
+        ".well-known/oauth-protected-resource/mcp" in challenge
     )
 
 

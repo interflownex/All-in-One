@@ -46,8 +46,7 @@ def enforce_runtime_security_invariants(
 
     if errors:
         raise SecurityConfigurationError(
-            "invariantes produtivos inválidos: "
-            + ", ".join(sorted(set(errors)))
+            "invariantes produtivos inválidos: " + ", ".join(sorted(set(errors)))
         )
     return settings
 
@@ -70,9 +69,7 @@ def _validate_oidc(
     errors: list[str],
 ) -> None:
     algorithms = frozenset(settings.oidc_algorithms)
-    if not algorithms or not algorithms.issubset(
-        SAFE_ASYMMETRIC_OIDC_ALGORITHMS
-    ):
+    if not algorithms or not algorithms.issubset(SAFE_ASYMMETRIC_OIDC_ALGORITHMS):
         errors.append("OIDC_ALGORITHMS_UNSAFE")
 
     for name, value in (

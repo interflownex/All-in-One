@@ -101,9 +101,7 @@ def test_production_rejects_noncanonical_resource_url(
 ) -> None:
     settings = _load_production_settings(
         monkeypatch,
-        PROTECTED_RESOURCE_URL=(
-            "https://mcp-preview.brasildesconto.com.br/mcp"
-        ),
+        PROTECTED_RESOURCE_URL=("https://mcp-preview.brasildesconto.com.br/mcp"),
     )
 
     with pytest.raises(

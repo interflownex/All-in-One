@@ -125,10 +125,14 @@ class SecuritySettings:
             ).split(",")
             if item.strip()
         )
-        protected_resource_url = os.getenv(
-            "PROTECTED_RESOURCE_URL",
-            "https://mcp.brasildesconto.com.br/mcp",
-        ).strip().rstrip("/")
+        protected_resource_url = (
+            os.getenv(
+                "PROTECTED_RESOURCE_URL",
+                "https://mcp.brasildesconto.com.br/mcp",
+            )
+            .strip()
+            .rstrip("/")
+        )
         redis_url = _clean_optional(os.getenv("REDIS_URL"))
         rate_limit_requests = _env_positive_int("RATE_LIMIT_REQUESTS", 120)
         rate_limit_window_seconds = _env_positive_int(
@@ -178,7 +182,10 @@ class SecuritySettings:
             missing.append("MCP_ALLOWED_ORIGINS")
         if not self.allowed_hosts:
             missing.append("MCP_ALLOWED_HOSTS")
-        if not self.protected_resource_url.startswith("https://") and self.is_production:
+        if (
+            not self.protected_resource_url.startswith("https://")
+            and self.is_production
+        ):
             missing.append("PROTECTED_RESOURCE_URL_HTTPS")
         if missing:
             joined = ", ".join(sorted(set(missing)))
@@ -192,9 +199,7 @@ class OIDCTokenVerifier(TokenVerifier):
 
     def __init__(self, settings: SecuritySettings) -> None:
         if not (
-            settings.oidc_issuer
-            and settings.oidc_audience
-            and settings.oidc_jwks_url
+            settings.oidc_issuer and settings.oidc_audience and settings.oidc_jwks_url
         ):
             raise SecurityConfigurationError(
                 "OIDCTokenVerifier exige issuer, audience e JWKS URL"
@@ -313,9 +318,7 @@ class RedisRateLimiter:
                 await self._redis.expire(key, self._window_seconds + 5)
             return count <= self._limit
         except Exception as exc:
-            raise RateLimitBackendError(
-                "backend de rate limit indisponível"
-            ) from exc
+            raise RateLimitBackendError("backend de rate limit indisponível") from exc
 
     async def close(self) -> None:
         await self._redis.aclose()

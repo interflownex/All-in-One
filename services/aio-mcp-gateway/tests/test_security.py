@@ -38,9 +38,7 @@ def _settings(
     return SecuritySettings(
         deployment_env="development",
         auth_required=auth_required,
-        oidc_issuer=(
-            "https://identity.example.com" if auth_required else None
-        ),
+        oidc_issuer=("https://identity.example.com" if auth_required else None),
         oidc_audience="aio-mcp-gateway" if auth_required else None,
         oidc_jwks_url=(
             "https://identity.example.com/.well-known/jwks.json"
@@ -55,9 +53,7 @@ def _settings(
                 "http://testserver",
             }
         ),
-        allowed_hosts=frozenset(
-            {"mcp.brasildesconto.com.br", "testserver"}
-        ),
+        allowed_hosts=frozenset({"mcp.brasildesconto.com.br", "testserver"}),
         protected_resource_url="https://mcp.brasildesconto.com.br/mcp",
         redis_url=None,
         rate_limit_requests=rate_limit_requests,
@@ -169,10 +165,7 @@ def test_transport_security_uses_canonical_hosts() -> None:
 
     assert transport.enable_dns_rebinding_protection is True
     assert "mcp.brasildesconto.com.br" in transport.allowed_hosts
-    assert (
-        "https://mcp.brasildesconto.com.br"
-        in transport.allowed_origins
-    )
+    assert "https://mcp.brasildesconto.com.br" in transport.allowed_origins
 
 
 async def _ok(_: Request) -> JSONResponse:

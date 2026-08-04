@@ -22,9 +22,7 @@ def _load(name: str, filename: str) -> ModuleType:
 render = _load("aio_mcp_render", "render_cloud_run.py")
 rollback = _load("aio_mcp_rollback", "rollback_cloud_run.py")
 
-IMAGE = (
-    "us-docker.pkg.dev/sample-project/aio/aio-mcp-gateway@sha256:" + "a" * 64
-)
+IMAGE = "us-docker.pkg.dev/sample-project/aio/aio-mcp-gateway@sha256:" + "a" * 64
 SERVICE_ACCOUNT = "aio-mcp-runtime@sample-project.iam.gserviceaccount.com"
 
 
