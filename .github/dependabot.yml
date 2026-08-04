@@ -27,6 +27,12 @@ updates:
         applies-to: "security-updates"
         patterns:
           - "*"
+    # O MCP SDK 2.x remove mcp.server.fastmcp, ainda usado pelo gateway.
+    # Manter a linha 1.x até uma migração arquitetural explícita e testada.
+    ignore:
+      - dependency-name: "mcp"
+        versions:
+          - ">= 2.0.0"
     commit-message:
       prefix: "chore(deps-python)"
 
