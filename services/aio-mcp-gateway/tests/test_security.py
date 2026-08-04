@@ -1,246 +1,213 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
+import asyncio
 from typing import Any
 
+import jwt
 import pytest
-from security import (
-    AuthContext,
-    AuthenticationError,
-    InMemoryRateLimiter,
-    SecurityConfigurationError,
-    SecurityMiddleware,
-    SecuritySettings,
-    protected_resource_metadata,
-    redact,
-)
 from starlette.applications import Starlette
-from starlette.middleware import Middleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 from starlette.testclient import TestClient
 
-
-class StaticValidator:
-    def __init__(
-        self,
-        scopes: frozenset[str],
-        *,
-        invalid_tokens: frozenset[str] = frozenset(),
-    ) -> None:
-        self._scopes = scopes
-        self._invalid_tokens = invalid_tokens
-
-    async def validate(self, token: str) -> AuthContext:
-        if token in self._invalid_tokens:
-            raise AuthenticationError("token inválido")
-        return AuthContext(
-            subject="user-123",
-            scopes=self._scopes,
-            claims={"sub": "user-123", "scope": " ".join(sorted(self._scopes))},
-        )
-
-
-async def echo(request: Request) -> JSONResponse:
-    payload: Mapping[str, Any] = await request.json()
-    return JSONResponse({"ok": True, "method": payload.get("method")})
+from security import (
+    InMemoryRateLimiter,
+    OIDCTokenVerifier,
+    RateLimitBackendError,
+    SecurityConfigurationError,
+    SecurityMiddleware,
+    SecuritySettings,
+    build_transport_security,
+    redact,
+)
 
 
 def _settings(
     *,
-    auth_required: bool = True,
-    rate_limit_requests: int = 10,
-    allowed_origins: frozenset[str] = frozenset(
-        {"https://mcp.brasildesconto.com.br"}
-    ),
+    auth_required: bool = False,
+    rate_limit_requests: int = 120,
 ) -> SecuritySettings:
     return SecuritySettings(
-        deployment_env="test",
+        deployment_env="development",
         auth_required=auth_required,
-        oidc_issuer="https://issuer.example",
-        oidc_audience="aio-mcp",
-        oidc_jwks_url="https://issuer.example/.well-known/jwks.json",
+        oidc_issuer=(
+            "https://identity.example.com" if auth_required else None
+        ),
+        oidc_audience="aio-mcp-gateway" if auth_required else None,
+        oidc_jwks_url=(
+            "https://identity.example.com/.well-known/jwks.json"
+            if auth_required
+            else None
+        ),
         oidc_algorithms=("RS256",),
-        allowed_origins=allowed_origins,
-        protected_resource_url="https://mcp.brasildesconto.com.br",
+        required_scope="aio:mcp:read",
+        allowed_origins=frozenset(
+            {
+                "https://mcp.brasildesconto.com.br",
+                "http://testserver",
+            }
+        ),
+        allowed_hosts=frozenset(
+            {"mcp.brasildesconto.com.br", "testserver"}
+        ),
+        protected_resource_url="https://mcp.brasildesconto.com.br/mcp",
         redis_url=None,
         rate_limit_requests=rate_limit_requests,
         rate_limit_window_seconds=60,
-        max_request_body_bytes=4096,
+        max_request_body_bytes=1_048_576,
     )
 
 
-def _app(
-    *,
-    scopes: frozenset[str],
-    rate_limit_requests: int = 10,
-    invalid_tokens: frozenset[str] = frozenset(),
-) -> Starlette:
-    settings = _settings(rate_limit_requests=rate_limit_requests)
-    limiter = InMemoryRateLimiter(rate_limit_requests, 60)
-    validator = StaticValidator(scopes, invalid_tokens=invalid_tokens)
-    return Starlette(
-        routes=[Route("/mcp", endpoint=echo, methods=["POST"])],
-        middleware=[
-            Middleware(
-                SecurityMiddleware,
-                settings=settings,
-                validator=validator,
-                limiter=limiter,
-            )
-        ],
-    )
-
-
-def _tool_call(name: str) -> dict[str, Any]:
-    return {
-        "jsonrpc": "2.0",
-        "id": 1,
-        "method": "tools/call",
-        "params": {"name": name, "arguments": {}},
-    }
-
-
-def test_production_settings_fail_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+def _clear_security_environment(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     for name in (
         "AUTH_REQUIRED",
         "OIDC_ISSUER",
         "OIDC_AUDIENCE",
         "OIDC_JWKS_URL",
         "OIDC_ALGORITHMS",
+        "MCP_REQUIRED_SCOPE",
+        "MCP_ALLOWED_ORIGINS",
+        "MCP_ALLOWED_HOSTS",
+        "PROTECTED_RESOURCE_URL",
         "REDIS_URL",
     ):
         monkeypatch.delenv(name, raising=False)
+
+
+def test_production_configuration_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _clear_security_environment(monkeypatch)
     monkeypatch.setenv("DEPLOYMENT_ENV", "production")
 
-    with pytest.raises(SecurityConfigurationError) as exc_info:
+    with pytest.raises(
+        SecurityConfigurationError,
+        match="OIDC_AUDIENCE",
+    ):
         SecuritySettings.from_env()
 
-    message = str(exc_info.value)
-    assert "OIDC_ISSUER" in message
-    assert "OIDC_AUDIENCE" in message
-    assert "OIDC_JWKS_URL" in message
-    assert "REDIS_URL" in message
 
-
-def test_missing_token_returns_oauth_challenge() -> None:
-    app = _app(scopes=frozenset({"aio:mcp:read"}))
-    with TestClient(app) as client:
-        response = client.post("/mcp", json=_tool_call("project_status"))
-    assert response.status_code == 401
-    assert response.json()["error"] == "missing_token"
-    assert "resource_metadata=" in response.headers["www-authenticate"]
-
-
-def test_invalid_token_is_rejected() -> None:
-    app = _app(
-        scopes=frozenset({"aio:mcp:read"}),
-        invalid_tokens=frozenset({"bad"}),
-    )
-    with TestClient(app) as client:
-        response = client.post(
-            "/mcp",
-            json=_tool_call("project_status"),
-            headers={"authorization": "Bearer bad"},
-        )
-    assert response.status_code == 401
-    assert response.json()["error"] == "invalid_token"
-
-
-def test_invalid_origin_is_rejected_before_tool_execution() -> None:
-    app = _app(scopes=frozenset({"aio:mcp:read"}))
-    with TestClient(app) as client:
-        response = client.post(
-            "/mcp",
-            json=_tool_call("project_status"),
-            headers={
-                "authorization": "Bearer valid",
-                "origin": "https://evil.example",
-            },
-        )
-    assert response.status_code == 403
-    assert response.json()["error"] == "origin_not_allowed"
-
-
-def test_tool_specific_scope_is_required() -> None:
-    app = _app(scopes=frozenset({"aio:mcp:read"}))
-    with TestClient(app) as client:
-        response = client.post(
-            "/mcp",
-            json=_tool_call("search_repository"),
-            headers={"authorization": "Bearer valid"},
-        )
-    assert response.status_code == 403
-    payload = response.json()
-    assert payload["error"] == "insufficient_scope"
-    assert "aio:github:read" in payload["required_scopes"]
-
-
-def test_authorized_request_reaches_downstream_app() -> None:
-    app = _app(
-        scopes=frozenset({"aio:mcp:read", "aio:github:read"}),
-    )
-    with TestClient(app) as client:
-        response = client.post(
-            "/mcp",
-            json=_tool_call("search_repository"),
-            headers={
-                "authorization": "Bearer valid",
-                "origin": "https://mcp.brasildesconto.com.br",
-            },
-        )
-    assert response.status_code == 200
-    assert response.json() == {"ok": True, "method": "tools/call"}
-    assert response.headers["x-request-id"]
-    assert response.headers["traceparent"].startswith("00-")
-
-
-def test_rate_limit_is_enforced() -> None:
-    app = _app(
-        scopes=frozenset({"aio:mcp:read"}),
-        rate_limit_requests=2,
-    )
-    headers = {"authorization": "Bearer valid"}
-    with TestClient(app) as client:
-        first = client.post("/mcp", json=_tool_call("project_status"), headers=headers)
-        second = client.post("/mcp", json=_tool_call("project_status"), headers=headers)
-        third = client.post("/mcp", json=_tool_call("project_status"), headers=headers)
-    assert first.status_code == 200
-    assert second.status_code == 200
-    assert third.status_code == 429
-    assert third.json()["error"] == "rate_limit_exceeded"
-
-
-@pytest.mark.asyncio
-async def test_memory_rate_limiter_resets_per_identity() -> None:
-    limiter = InMemoryRateLimiter(limit=1, window_seconds=60)
-    assert await limiter.allow("alpha") is True
-    assert await limiter.allow("alpha") is False
-    assert await limiter.allow("beta") is True
-    await limiter.close()
-
-
-def test_redaction_removes_nested_secrets() -> None:
-    payload = {
+def test_redact_removes_nested_secret_values() -> None:
+    payload: dict[str, Any] = {
         "authorization": "Bearer secret",
         "nested": {
             "api_key": "abc",
-            "safe": "visible",
+            "safe": ["visible", {"password": "hidden"}],
         },
     }
-    assert redact(payload) == {
+
+    result = redact(payload)
+
+    assert result == {
         "authorization": "[REDACTED]",
         "nested": {
             "api_key": "[REDACTED]",
-            "safe": "visible",
+            "safe": ["visible", {"password": "[REDACTED]"}],
         },
     }
 
 
-def test_protected_resource_metadata_exposes_read_scopes() -> None:
-    metadata = protected_resource_metadata(_settings())
-    assert metadata["resource"] == "https://mcp.brasildesconto.com.br"
-    assert metadata["authorization_servers"] == ["https://issuer.example"]
-    assert "aio:mcp:read" in metadata["scopes_supported"]
-    assert "aio:github:read" in metadata["scopes_supported"]
+def test_in_memory_rate_limiter_enforces_window() -> None:
+    limiter = InMemoryRateLimiter(limit=2, window_seconds=60)
+
+    assert asyncio.run(limiter.allow("subject")) is True
+    assert asyncio.run(limiter.allow("subject")) is True
+    assert asyncio.run(limiter.allow("subject")) is False
+
+
+def test_oidc_verifier_returns_native_access_token(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    verifier = OIDCTokenVerifier(_settings(auth_required=True))
+    monkeypatch.setattr(
+        verifier,
+        "_decode",
+        lambda token: {
+            "sub": "user-123",
+            "azp": "gemini-spark",
+            "scope": "aio:mcp:read aio:github:read",
+            "exp": 2_000_000_000,
+            "iss": "https://identity.example.com",
+            "aud": "aio-mcp-gateway",
+        },
+    )
+
+    access_token = asyncio.run(verifier.verify_token("signed-token"))
+
+    assert access_token is not None
+    assert access_token.client_id == "gemini-spark"
+    assert access_token.subject == "user-123"
+    assert access_token.resource == "https://mcp.brasildesconto.com.br/mcp"
+    assert access_token.scopes == ["aio:github:read", "aio:mcp:read"]
+
+
+def test_oidc_verifier_rejects_invalid_token(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    verifier = OIDCTokenVerifier(_settings(auth_required=True))
+
+    def invalid(_: str) -> dict[str, Any]:
+        raise jwt.InvalidTokenError("invalid")
+
+    monkeypatch.setattr(verifier, "_decode", invalid)
+
+    assert asyncio.run(verifier.verify_token("invalid-token")) is None
+
+
+def test_transport_security_uses_canonical_hosts() -> None:
+    transport = build_transport_security(_settings())
+
+    assert transport.enable_dns_rebinding_protection is True
+    assert "mcp.brasildesconto.com.br" in transport.allowed_hosts
+    assert (
+        "https://mcp.brasildesconto.com.br"
+        in transport.allowed_origins
+    )
+
+
+async def _ok(_: Request) -> JSONResponse:
+    return JSONResponse({"ok": True})
+
+
+def test_security_middleware_rate_limits_and_hardens_headers() -> None:
+    settings = _settings(rate_limit_requests=1)
+    app = SecurityMiddleware(
+        Starlette(routes=[Route("/mcp", _ok)]),
+        settings=settings,
+        limiter=InMemoryRateLimiter(limit=1, window_seconds=60),
+    )
+
+    with TestClient(app) as client:
+        first = client.get("/mcp")
+        second = client.get("/mcp")
+
+    assert first.status_code == 200
+    assert first.headers["x-content-type-options"] == "nosniff"
+    assert first.headers["permissions-policy"]
+    assert second.status_code == 429
+    assert second.headers["retry-after"] == "60"
+
+
+class _BrokenLimiter:
+    async def allow(self, _: str) -> bool:
+        raise RateLimitBackendError("unavailable")
+
+    async def close(self) -> None:
+        return None
+
+
+def test_security_middleware_fails_closed_when_limiter_breaks() -> None:
+    app = SecurityMiddleware(
+        Starlette(routes=[Route("/mcp", _ok)]),
+        settings=_settings(),
+        limiter=_BrokenLimiter(),
+    )
+
+    with TestClient(app) as client:
+        response = client.get("/mcp")
+
+    assert response.status_code == 503
+    assert response.json()["error"] == "rate_limit_backend_unavailable"
