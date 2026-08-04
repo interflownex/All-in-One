@@ -1,0 +1,98 @@
+name: Compliance Database F0.2
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "config/compliance/**"
+      - "database/postgres/migrations/034_compliance_field_registry.sql"
+      - "database/postgres/rollbacks/034_compliance_field_registry.sql"
+      - "scripts/validate_compliance_catalog.py"
+      - "tests/test_compliance_catalog.py"
+      - "tests/test_compliance_field_registry_migration.py"
+      - ".github/workflows/compliance-database.yml"
+  push:
+    branches: [main]
+    paths:
+      - "config/compliance/**"
+      - "database/postgres/migrations/034_compliance_field_registry.sql"
+      - "database/postgres/rollbacks/034_compliance_field_registry.sql"
+      - "scripts/validate_compliance_catalog.py"
+      - "tests/test_compliance_catalog.py"
+      - "tests/test_compliance_field_registry_migration.py"
+      - ".github/workflows/compliance-database.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  compliance-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: all_in_one
+          POSTGRES_USER: all_in_one
+          POSTGRES_PASSWORD: test-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U all_in_one -d all_in_one"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGPASSWORD: test-password
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install focused test dependency
+        run: python -m pip install pytest==9.0.3
+
+      - name: Validate catalog and migration contracts
+        run: |
+          python scripts/validate_compliance_catalog.py
+          python -m pytest -q \
+            tests/test_compliance_catalog.py \
+            tests/test_compliance_field_registry_migration.py
+
+      - name: Apply all PostgreSQL migrations
+        run: |
+          for file in database/postgres/migrations/*.sql; do
+            psql -h localhost -U all_in_one -d all_in_one \
+              -v ON_ERROR_STOP=1 -f "$file"
+          done
+
+      - name: Verify physical catalog seed
+        run: |
+          test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM compliance.catalog_versions WHERE schema_version = '1.0.0' AND status = 'active';")" = "1"
+          test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM compliance.field_registry;")" = "33"
+          test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM compliance.field_registry WHERE jsonb_typeof(lineage) <> 'array' OR jsonb_typeof(bundle_ids) <> 'array';")" = "0"
+
+      - name: Prove F0.2 rollback in ephemeral database
+        run: |
+          psql -h localhost -U all_in_one -d all_in_one \
+            -v ON_ERROR_STOP=1 \
+            -f database/postgres/rollbacks/034_compliance_field_registry.sql
+          test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'compliance' AND table_name IN ('catalog_versions', 'field_registry');")" = "0"
+
+      - name: Reapply F0.2 after rollback
+        run: |
+          psql -h localhost -U all_in_one -d all_in_one \
+            -v ON_ERROR_STOP=1 \
+            -f database/postgres/migrations/034_compliance_field_registry.sql
+          test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM compliance.catalog_versions WHERE schema_version = '1.0.0' AND status = 'active';")" = "1"
+          test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM compliance.field_registry;")" = "33"
