@@ -17,12 +17,12 @@ async def _test_identity_e2e_flow():
     async with httpx.AsyncClient(base_url=BASE_URL, timeout=3.0) as client:
         try:
             health_resp = await client.get("/health")
+            if health_resp.status_code != 200:
+                pytest.skip(
+                    f"Identity E2E indisponivel em {BASE_URL}: HTTP {health_resp.status_code}"
+                )
         except httpx.HTTPError as exc:
             pytest.skip(f"Identity E2E indisponivel em {BASE_URL}: {exc}")
-        if health_resp.status_code != 200:
-            pytest.skip(
-                f"Identity E2E indisponivel em {BASE_URL}: HTTP {health_resp.status_code}"
-            )
 
     user_email = f"test_{uuid.uuid4().hex[:8]}@allinone.com"
     user_password = "SecurePassword123!"
