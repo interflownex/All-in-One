@@ -16,7 +16,8 @@ def _load_gateway() -> ModuleType:
         "aio_mcp_gateway_main",
         SERVICE_ROOT / "main.py",
     )
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
