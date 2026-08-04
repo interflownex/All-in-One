@@ -6,12 +6,69 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LEGACY_VALIDATOR = ROOT / "scripts" / "validate_repository.py"
+CLOUDFLARE_WORKFLOW = ROOT / ".github" / "workflows" / "cloudflare-pages.yml"
+
+LEGACY_CLOUDFLARE_ERRORS = {
+    "Workflow Cloudflare Pages deve ser idempotente e protegido por secrets: HAS_CLOUDFLARE_API_TOKEN": True,
+    "Workflow Cloudflare Pages deve ser idempotente e protegido por secrets: HAS_CLOUDFLARE_ACCOUNT_ID": True,
+    "Workflow Cloudflare Pages deve ser idempotente e protegido por secrets: deploy_enabled=true": True,
+    "Workflow Cloudflare Pages deve ser idempotente e protegido por secrets: deploy_enabled=false": True,
+    "Workflow Cloudflare Pages deve ser idempotente e protegido por secrets: if: steps.credentials.outputs.deploy_enabled == 'true'": True,
+}
+
+REQUIRED_CLOUDFLARE_MARKERS = (
+    "if: ${{ vars.ENABLE_CLOUDFLARE_PAGES == 'true' }}",
+    "CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}",
+    "CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}",
+    "VITE_API_HUB_URL: ${{ vars.VITE_API_HUB_URL }}",
+    'test -n "$CLOUDFLARE_API_TOKEN"',
+    'test -n "$CLOUDFLARE_ACCOUNT_ID"',
+    'test -n "$VITE_API_HUB_URL"',
+    "uses: actions/checkout@v6",
+    "uses: cloudflare/wrangler-action@v4",
+    "curl --fail --silent --show-error",
+    "cloudflare-pages-production",
+)
+
+FORBIDDEN_CLOUDFLARE_MARKERS = (
+    "deploy_enabled=false",
+    "actions/checkout@v4",
+    "your-app-name",
+)
 
 
 def compatibility_exceptions() -> dict[str, bool]:
-    """Mantém o filtro fail-closed sem ocultar falhas do validador principal."""
+    """Compatibiliza apenas regras legadas substituídas por gates mais fortes.
 
-    return {}
+    Cada exceção é literal, auditável e acompanhada por uma validação nova
+    fail-closed. Nenhuma mensagem genérica é suprimida.
+    """
+
+    return dict(LEGACY_CLOUDFLARE_ERRORS)
+
+
+def validate_cloudflare_pages_contract() -> list[str]:
+    """Valida o contrato Cloudflare atual sem depender do validador legado."""
+
+    if not CLOUDFLARE_WORKFLOW.is_file():
+        return ["Workflow Cloudflare Pages ausente: .github/workflows/cloudflare-pages.yml"]
+
+    workflow = CLOUDFLARE_WORKFLOW.read_text(encoding="utf-8")
+    errors: list[str] = []
+
+    for marker in REQUIRED_CLOUDFLARE_MARKERS:
+        if marker not in workflow:
+            errors.append(
+                f"Contrato Cloudflare Pages endurecido deve conter: {marker}"
+            )
+
+    for marker in FORBIDDEN_CLOUDFLARE_MARKERS:
+        if marker in workflow:
+            errors.append(
+                f"Contrato Cloudflare Pages não pode conter marcador legado: {marker}"
+            )
+
+    return errors
 
 
 def filter_validation_errors(
@@ -48,25 +105,19 @@ def main() -> int:
         stderr=subprocess.PIPE,
     )
 
-    if result.returncode == 0:
-        if result.stdout:
-            print(result.stdout, end="")
-        if result.stderr:
-            print(result.stderr, end="", file=sys.stderr)
-        return 0
-
     combined = "\n".join(part for part in [result.stdout, result.stderr] if part)
     errors, context = extract_errors(combined)
     remaining, suppressed = filter_validation_errors(
         errors, compatibility_exceptions()
     )
+    remaining.extend(validate_cloudflare_pages_contract())
 
     for line in context:
         if line.strip():
             print(line)
 
     if suppressed:
-        print("Regras legadas compatibilizadas pela baseline v2.9:")
+        print("Regras legadas substituídas por contrato Cloudflare fail-closed:")
         for message in suppressed:
             print(f"- {message}")
 
@@ -76,9 +127,9 @@ def main() -> int:
             print(f"- {message}", file=sys.stderr)
         return result.returncode or 1
 
-    if not errors:
+    if result.returncode != 0 and not errors:
         print(
-            "O validador legado falhou sem emitir mensagens reconheciveis.",
+            "O validador legado falhou sem emitir mensagens reconhecíveis.",
             file=sys.stderr,
         )
         return result.returncode or 1
