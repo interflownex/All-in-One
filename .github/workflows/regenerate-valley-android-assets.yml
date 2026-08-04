@@ -1,0 +1,63 @@
+name: Regenerar assets Valley Android
+
+on:
+  push:
+    branches:
+      - fix/security-alerts-source-and-assets
+    paths:
+      - "apps/valley/src/**"
+      - "apps/valley/package.json"
+      - "apps/valley/package-lock.json"
+      - ".github/workflows/regenerate-valley-android-assets.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: regenerate-valley-android-assets
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/valley/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/valley
+        run: npm ci
+
+      - name: Validate source
+        working-directory: apps/valley
+        run: |
+          npm run lint
+          npm run build
+
+      - name: Synchronize generated Android assets
+        run: |
+          rm -rf apps/valley-android/app/src/main/assets/valley
+          mkdir -p apps/valley-android/app/src/main/assets/valley
+          cp -a apps/valley/dist/. apps/valley-android/app/src/main/assets/valley/
+
+      - name: Commit reproducible assets
+        run: |
+          if git diff --quiet -- apps/valley-android/app/src/main/assets/valley; then
+            echo "Assets já estavam sincronizados."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/valley-android/app/src/main/assets/valley
+          git commit -m "build(valley): regenerar assets Android a partir da fonte"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
