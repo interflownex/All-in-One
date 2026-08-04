@@ -22,6 +22,8 @@ EXPLICIT_TASKS = (
 )
 OBSOLETE_UPLOAD_ACTION = "actions/upload-artifact@v4"
 CURRENT_UPLOAD_ACTION = "actions/upload-artifact@v7"
+OBSOLETE_ATTEST_ACTION = "actions/attest-build-provenance@v2"
+CURRENT_ATTEST_ACTION = "actions/attest-build-provenance@v4"
 OBSOLETE_ERROR = (
     ".github/workflows/security.yml: marcador obrigatorio ausente: "
     f"{OBSOLETE_TASKS}"
@@ -29,6 +31,10 @@ OBSOLETE_ERROR = (
 OBSOLETE_UPLOAD_ERROR = (
     ".github/workflows/valley-android-release.yml: marcador obrigatorio ausente: "
     f"{OBSOLETE_UPLOAD_ACTION}"
+)
+OBSOLETE_ATTEST_ERROR = (
+    ".github/workflows/valley-android-release.yml: marcador obrigatorio ausente: "
+    f"{OBSOLETE_ATTEST_ACTION}"
 )
 
 
@@ -59,11 +65,25 @@ def validate_release_workflow(text: str) -> list[str]:
             ".github/workflows/valley-android-release.yml: ação obsoleta de "
             f"publicação não é aceita: {OBSOLETE_UPLOAD_ACTION}"
         )
+    if CURRENT_ATTEST_ACTION not in text:
+        errors.append(
+            ".github/workflows/valley-android-release.yml: ação atual de "
+            f"atestação ausente: {CURRENT_ATTEST_ACTION}"
+        )
+    if OBSOLETE_ATTEST_ACTION in text:
+        errors.append(
+            ".github/workflows/valley-android-release.yml: ação obsoleta de "
+            f"atestação não é aceita: {OBSOLETE_ATTEST_ACTION}"
+        )
     return errors
 
 
 def validate() -> list[str]:
-    ignored_legacy_errors = {OBSOLETE_ERROR, OBSOLETE_UPLOAD_ERROR}
+    ignored_legacy_errors = {
+        OBSOLETE_ERROR,
+        OBSOLETE_UPLOAD_ERROR,
+        OBSOLETE_ATTEST_ERROR,
+    }
     errors = [
         error for error in legacy.validate() if error not in ignored_legacy_errors
     ]

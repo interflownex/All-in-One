@@ -86,7 +86,7 @@ jobs:
           --expected-text "Valley Rider"
 
       - name: Atestar proveniência
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: apps/valley-flutter/build/app/outputs/flutter-apk/*.apk
 
