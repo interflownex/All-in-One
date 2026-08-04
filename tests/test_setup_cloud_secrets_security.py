@@ -59,7 +59,7 @@ def test_configuration_loads_payloads_only_from_environment(
     }
 
 
-def test_secret_creation_and_versioning_do_not_emit_payload(
+def test_secret_creation_and_versioning_emit_no_sensitive_metadata(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     calls: list[tuple[list[str], str | None]] = []
@@ -71,11 +71,15 @@ def test_secret_creation_and_versioning_do_not_emit_payload(
 
     monkeypatch.setattr(setup_cloud_secrets, "_run_quiet", fake_run)
     payload = "payload-that-must-not-appear"
+    secret_id = "jwt-secret"
 
-    setup_cloud_secrets.configure_secret("project-test", "jwt-secret", payload)
+    setup_cloud_secrets.configure_secret("project-test", secret_id, payload)
 
     output = capsys.readouterr()
     assert payload not in output.out
     assert payload not in output.err
+    assert secret_id not in output.out
+    assert secret_id not in output.err
+    assert output.out.strip() == "Segredo configurado com nova versão."
     assert [call[0][2] for call in calls] == ["describe", "create", "versions"]
     assert calls[-1][1] == payload
