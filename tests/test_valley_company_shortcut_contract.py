@@ -11,9 +11,11 @@ def test_flutter_bridge_preserves_default_icon_fallback() -> None:
     for marker in (
         "CompanyLauncherShortcut",
         "isSupported",
-        "createWithAdaptiveBitmap",
         "ValleyBrandVariant",
         "supported: false, requested: false",
+        "_maxCompanyLogoBytes",
+        "assets/brand/valley-shortcut-frame.png",
+        "assets/brand/valley-rider-shortcut-frame.png",
     ):
         assert marker in text
 
