@@ -1,5 +1,16 @@
-import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { ProductFeed, type FeedProduct } from '../components/ProductFeed';
+import {
+  type FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import {
+  ProductFeed,
+  type FeedFact,
+  type FeedMedia,
+  type FeedProduct,
+} from '../components/ProductFeed';
 import {
   errorMessage,
   request,
@@ -41,14 +52,25 @@ type ShoppingContext = {
 
 type MarketplaceCatalogItem = {
   id: string;
+  store_id?: string | null;
   store_name?: string | null;
+  sku?: string | null;
   name?: string | null;
   description?: string | null;
   category?: string | null;
+  subcategory?: string | null;
+  brand?: string | null;
   price_brl?: string | null;
+  currency?: string | null;
   image_url?: string | null;
   media?: unknown[];
+  rating?: number | string | null;
+  review_count?: number | string | null;
+  in_stock?: boolean;
+  stock_quantity?: number | null;
   distance_km?: number | null;
+  sponsored?: boolean;
+  published_at?: string | null;
   promotion?: Record<string, unknown> | null;
 };
 
@@ -95,35 +117,76 @@ function locationFrom(value: unknown): Coordinates | null {
   return { lat, lng };
 }
 
-function mediaUrl(
-  media: unknown[] | undefined,
-  kind: 'image' | 'video',
-) {
-  for (const candidate of media ?? []) {
+function isVideoUrl(url: string) {
+  return /\.(mp4|webm|mov|m4v)(?:\?|$)/i.test(url);
+}
+
+function mediaFrom(
+  rawMedia: unknown,
+  primaryImage?: unknown,
+  primaryVideo?: unknown,
+): FeedMedia[] {
+  const output: FeedMedia[] = [];
+  const push = (item: FeedMedia) => {
+    const normalized = item.url.trim();
+    if (!normalized || output.some(existing => existing.url === normalized)) return;
+    output.push({ ...item, url: normalized });
+  };
+
+  const videoUrl = text(primaryVideo);
+  const imageUrl = text(primaryImage);
+  if (videoUrl) {
+    push({
+      url: videoUrl,
+      type: 'video',
+      posterUrl: imageUrl || undefined,
+    });
+  }
+
+  for (const candidate of Array.isArray(rawMedia) ? rawMedia : []) {
     if (typeof candidate === 'string') {
-      const lower = candidate.toLocaleLowerCase('pt-BR');
-      const video = /\.(mp4|webm|mov)(?:\?|$)/.test(lower);
-      if ((kind === 'video') === video) return candidate;
+      push({
+        url: candidate,
+        type: isVideoUrl(candidate) ? 'video' : 'image',
+      });
       continue;
     }
     if (!candidate || typeof candidate !== 'object') continue;
     const record = candidate as Record<string, unknown>;
     const url = text(record.url ?? record.src ?? record.media_url);
-    const type = text(record.type ?? record.kind ?? record.mime_type)
-      .toLocaleLowerCase('pt-BR');
     if (!url) continue;
-    if (kind === 'video' && (type.includes('video') || /\.(mp4|webm|mov)(?:\?|$)/i.test(url))) {
-      return url;
-    }
-    if (kind === 'image' && !type.includes('video') && !/\.(mp4|webm|mov)(?:\?|$)/i.test(url)) {
-      return url;
-    }
+    const declaredType = text(
+      record.type ?? record.kind ?? record.mime_type,
+    ).toLocaleLowerCase('pt-BR');
+    const type = declaredType.includes('video') || isVideoUrl(url)
+      ? 'video'
+      : 'image';
+    push({
+      url,
+      type,
+      posterUrl: text(record.poster_url ?? record.poster) || undefined,
+      alt: text(record.alt ?? record.description) || undefined,
+    });
   }
-  return undefined;
+
+  if (imageUrl) push({ url: imageUrl, type: 'image' });
+  return output;
+}
+
+function fact(label: string, value: unknown): FeedFact | null {
+  if (value == null || value === '') return null;
+  return { label, value: String(value) };
+}
+
+function compactFacts(items: Array<FeedFact | null>) {
+  return items.filter((item): item is FeedFact => item !== null);
 }
 
 function normalizeMarketplaceItem(item: MarketplaceCatalogItem): FeedProduct {
   const promotion = item.promotion ?? {};
+  const rating = numberOrNull(item.rating);
+  const reviewCount = numberOrNull(item.review_count);
+  const media = mediaFrom(item.media, item.image_url);
   return {
     id: item.id,
     offerId: `marketplace:products:${item.id}`,
@@ -131,19 +194,56 @@ function normalizeMarketplaceItem(item: MarketplaceCatalogItem): FeedProduct {
     sourceModule: 'marketplace',
     title: text(item.name) || 'Produto sem título',
     description: text(item.description),
+    fullDescription: text(item.description),
     category: text(item.category) || 'Produtos',
     provider: text(item.store_name) || 'Fornecedor verificado',
     region: 'Disponível em até 10 km',
     distanceKm: item.distance_km,
     priceAmount: item.price_brl,
-    imageUrl: text(item.image_url) || mediaUrl(item.media, 'image'),
-    videoUrl: mediaUrl(item.media, 'video'),
+    imageUrl: media.find(entry => entry.type === 'image')?.url,
+    videoUrl: media.find(entry => entry.type === 'video')?.url,
+    media,
+    facts: compactFacts([
+      fact('Categoria', item.category),
+      fact('Subcategoria', item.subcategory),
+      fact('Marca', item.brand),
+      fact('SKU', item.sku),
+      fact('Disponibilidade', item.in_stock === false ? 'Indisponível' : 'Disponível'),
+      fact('Estoque informado', item.stock_quantity),
+      fact('Moeda', item.currency || 'BRL'),
+      fact('Avaliação', rating == null ? null : rating.toFixed(1)),
+      fact('Quantidade de avaliações', reviewCount),
+      fact('Distância', item.distance_km == null ? null : `${item.distance_km.toFixed(1)} km`),
+      fact('Anúncio patrocinado', item.sponsored ? 'Sim' : null),
+      fact('Publicado em', item.published_at),
+    ]),
+    supplier: {
+      name: text(item.store_name) || 'Fornecedor verificado',
+      verified: true,
+      region: 'Atendimento pelo Marketplace Valley',
+      rating,
+      reviewCount,
+      sourceLabel: 'Marketplace local Valley',
+    },
     accentColor: text(promotion.accent_color) || undefined,
   };
 }
 
 function normalizeOffer(offer: Offer): FeedProduct {
   const metadata = (offer.metadata ?? {}) as Record<string, unknown>;
+  const gallery = [
+    ...(Array.isArray(metadata.media) ? metadata.media : []),
+    ...(Array.isArray(metadata.gallery) ? metadata.gallery : []),
+    ...(Array.isArray(metadata.images) ? metadata.images : []),
+    ...(Array.isArray(metadata.videos) ? metadata.videos : []),
+  ];
+  const media = mediaFrom(
+    gallery,
+    metadata.primary_image_url ?? metadata.image_url,
+    metadata.video_url,
+  );
+  const rating = numberOrNull(metadata.rating);
+  const reviewCount = numberOrNull(metadata.review_count);
   return {
     id: offer.offer_id,
     offerId: offer.offer_id,
@@ -151,33 +251,103 @@ function normalizeOffer(offer: Offer): FeedProduct {
     sourceModule: offer.source_module,
     title: offer.title,
     description: offer.short_description ?? offer.description ?? '',
+    fullDescription: offer.description ?? offer.short_description ?? '',
     category: offer.consumer_category,
     provider: offer.provider_label,
     region: offer.region_label,
     distanceKm: offer.distance_km,
     priceAmount: offer.price_amount,
-    imageUrl: text(metadata.primary_image_url ?? metadata.image_url) || undefined,
-    videoUrl: text(metadata.video_url) || undefined,
+    imageUrl: media.find(entry => entry.type === 'image')?.url,
+    videoUrl: media.find(entry => entry.type === 'video')?.url,
+    media,
+    facts: compactFacts([
+      fact('Categoria', offer.consumer_category),
+      fact('Tipo de oferta', offer.offer_type_label),
+      fact('Marca', metadata.brand),
+      fact('Modelo', metadata.model),
+      fact('SKU', metadata.sku),
+      fact('Condição', metadata.condition),
+      fact('Disponibilidade', metadata.availability),
+      fact('Itens vendidos', metadata.sold_count),
+      fact('Avaliação', rating == null ? null : rating.toFixed(1)),
+      fact('Quantidade de avaliações', reviewCount),
+      fact('Origem', offer.source_module === 'stock' ? 'Estoque Valley' : offer.source_module),
+    ]),
+    supplier: {
+      name: offer.provider_label,
+      verified: offer.verified_seller === true,
+      region: offer.region_label,
+      rating,
+      reviewCount,
+      sourceLabel: offer.source_module === 'stock'
+        ? 'Fornecedor homologado do Estoque Valley'
+        : 'Fornecedor cadastrado no Valley',
+    },
     accentColor: text(metadata.accent_color) || undefined,
   };
 }
 
 function normalizeStockItem(item: ApiItem): FeedProduct {
   const payload = item.payload ?? {};
+  const gallery = [
+    ...(Array.isArray(payload.media) ? payload.media : []),
+    ...(Array.isArray(payload.gallery) ? payload.gallery : []),
+    ...(Array.isArray(payload.images) ? payload.images : []),
+    ...(Array.isArray(payload.videos) ? payload.videos : []),
+  ];
+  const media = mediaFrom(
+    gallery,
+    payload.primary_image_url ?? payload.image_url,
+    payload.video_url,
+  );
+  const rating = numberOrNull(payload.rating);
+  const reviewCount = numberOrNull(payload.review_count);
+  const provider = text(
+    payload.supplier_name ?? payload.provider_label ?? 'Fornecedor homologado',
+  );
+  const region = text(
+    payload.region ?? payload.region_label ?? 'Entrega sob demanda',
+  );
   return {
     id: item.id,
     offerId: text(payload.offer_id) || `stock:catalog_products:${item.id}`,
     sourceEntityId: item.id,
     sourceModule: 'stock',
     title: text(payload.title ?? payload.name ?? item.id),
-    description: text(payload.description ?? payload.short_description),
+    description: text(payload.short_description ?? payload.description),
+    fullDescription: text(payload.description ?? payload.short_description),
     category: text(payload.category ?? payload.consumer_category ?? 'Produtos'),
-    provider: text(payload.supplier_name ?? payload.provider_label ?? 'Fornecedor homologado'),
-    region: text(payload.region ?? payload.region_label ?? 'Entrega sob demanda'),
+    provider,
+    region,
     distanceKm: payload.distance_km == null ? null : Number(payload.distance_km),
-    priceAmount: payload.price_amount == null ? null : text(payload.price_amount),
-    imageUrl: text(payload.primary_image_url ?? payload.image_url) || undefined,
-    videoUrl: text(payload.video_url) || undefined,
+    priceAmount: payload.price_amount == null
+      ? payload.price_brl == null ? null : text(payload.price_brl)
+      : text(payload.price_amount),
+    imageUrl: media.find(entry => entry.type === 'image')?.url,
+    videoUrl: media.find(entry => entry.type === 'video')?.url,
+    media,
+    facts: compactFacts([
+      fact('Categoria', payload.category ?? payload.consumer_category),
+      fact('Subcategoria', payload.subcategory),
+      fact('Marca', payload.brand),
+      fact('Modelo', payload.model),
+      fact('SKU', payload.sku ?? payload.external_sku),
+      fact('Condição', payload.condition),
+      fact('Disponibilidade', payload.availability),
+      fact('Prazo estimado', payload.delivery_estimate),
+      fact('Itens vendidos', payload.sales_count),
+      fact('Avaliação', rating == null ? null : rating.toFixed(1)),
+      fact('Quantidade de avaliações', reviewCount),
+    ]),
+    supplier: {
+      name: provider,
+      verified: payload.supplier_status === 'approved'
+        || payload.verified_supplier === true,
+      region,
+      rating,
+      reviewCount,
+      sourceLabel: 'Fornecedor homologado do Estoque Valley',
+    },
     accentColor: text(payload.accent_color) || undefined,
   };
 }
@@ -380,40 +550,19 @@ function SellerComposer({
     />
     <form className='form-card listing-composer' onSubmit={submit}>
       <label>{repair ? 'Item que precisa de conserto' : 'Título do anúncio'}
-        <input
-          value={title}
-          onChange={event => setTitle(event.target.value)}
-          required
-        />
+        <input value={title} onChange={event => setTitle(event.target.value)} required />
       </label>
       <label>{repair ? 'Defeito ou problema' : 'Descrição'}
-        <textarea
-          value={description}
-          onChange={event => setDescription(event.target.value)}
-          required
-        />
+        <textarea value={description} onChange={event => setDescription(event.target.value)} required />
       </label>
       <label>{repair ? 'Especialidade necessária' : 'Categoria'}
-        <input
-          value={category}
-          onChange={event => setCategory(event.target.value)}
-          required
-        />
+        <input value={category} onChange={event => setCategory(event.target.value)} required />
       </label>
       {!repair && <label>Preço
-        <input
-          inputMode='decimal'
-          value={price}
-          onChange={event => setPrice(event.target.value)}
-          required
-        />
+        <input inputMode='decimal' value={price} onChange={event => setPrice(event.target.value)} required />
       </label>}
       <label>Região
-        <input
-          value={region}
-          onChange={event => setRegion(event.target.value)}
-          required
-        />
+        <input value={region} onChange={event => setRegion(event.target.value)} required />
       </label>
       <button className='primary' type='submit'>
         {repair ? 'Enviar pedido para análise' : 'Enviar anúncio para análise'}
@@ -492,33 +641,21 @@ function FeedDialogs({
     {commentProduct && <Modal title='Comentar compra' onClose={onCloseComment}>
       <p>{commentProduct.title}</p>
       <label>Nota
-        <input
-          type='number'
-          min='1'
-          max='5'
-          value={rating}
-          onChange={event => setRating(Number(event.target.value))}
-        />
+        <input type='number' min='1' max='5' value={rating} onChange={event => setRating(Number(event.target.value))} />
       </label>
       <label>Comentário
-        <textarea
-          value={comment}
-          onChange={event => setComment(event.target.value)}
-          maxLength={1000}
-        />
+        <textarea value={comment} onChange={event => setComment(event.target.value)} maxLength={1000} />
       </label>
-      <button
-        className='primary'
-        type='button'
-        onClick={() => { void submitComment(); }}
-      >Publicar comentário</button>
+      <button className='primary' type='button' onClick={() => { void submitComment(); }}>
+        Publicar comentário
+      </button>
     </Modal>}
 
-    {supplierProduct && <Modal
-      title='Falar com o fornecedor'
-      onClose={onCloseSupplier}
-    >
+    {supplierProduct && <Modal title='Falar com o fornecedor' onClose={onCloseSupplier}>
       <p>{supplierProduct.provider} · {supplierProduct.title}</p>
+      <p className='supplier-privacy-note'>
+        A conversa permanece dentro do Valley. Dados externos de contato não são exibidos.
+      </p>
       <label>Mensagem
         <textarea
           value={message}
@@ -627,9 +764,7 @@ function useFeedActions(
   return {
     commentProduct,
     supplierProduct,
-    canComment: (product: FeedProduct) => Boolean(
-      eligibleOrder(reviewOrders, product),
-    ),
+    canComment: (product: FeedProduct) => Boolean(eligibleOrder(reviewOrders, product)),
     favorite,
     addToCart,
     buy,
@@ -652,9 +787,7 @@ export function MarketplaceView({
   const [products, setProducts] = useState<FeedProduct[]>([]);
   const [reviewOrders, setReviewOrders] = useState<ReviewOrder[]>([]);
   const [context, setContext] = useState<ShoppingContext>(EMPTY_CONTEXT);
-  const [deviceCoordinates, setDeviceCoordinates] = useState<
-    Coordinates | null | undefined
-  >(undefined);
+  const [deviceCoordinates, setDeviceCoordinates] = useState<Coordinates | null | undefined>(undefined);
   const [query, setQuery] = useState(hint?.query ?? '');
   const [appliedQuery, setAppliedQuery] = useState(hint?.query ?? '');
   const [category, setCategory] = useState('');
@@ -712,18 +845,14 @@ export function MarketplaceView({
       );
       const nextProducts = (data.items ?? [])
         .map(normalizeMarketplaceItem)
-        .filter(product => (
-          product.distanceKm != null && product.distanceKm <= 10
-        ))
+        .filter(product => product.distanceKm != null && product.distanceKm <= 10)
         .sort((left, right) => {
           const interestDifference = interestScore(right, context.interests)
             - interestScore(left, context.interests);
           if (interestDifference) return interestDifference;
           return (left.distanceKm ?? 10) - (right.distanceKm ?? 10);
         });
-      setProducts(current => (
-        append ? [...current, ...nextProducts] : nextProducts
-      ));
+      setProducts(current => append ? [...current, ...nextProducts] : nextProducts);
       setTotal(data.total ?? nextProducts.length);
     } catch (loadError) {
       setError(errorMessage(loadError));
@@ -747,20 +876,10 @@ export function MarketplaceView({
     return () => window.clearTimeout(timer);
   }, [load]);
 
-  const actions = useFeedActions(
-    session,
-    setNotice,
-    reviewOrders,
-    reloadReviewOrders,
-  );
+  const actions = useFeedActions(session, setNotice, reviewOrders, reloadReviewOrders);
   const mode = hint?.mode;
   if (mode === 'sell' || mode === 'repair-request') {
-    return <SellerComposer
-      session={session}
-      setNotice={setNotice}
-      mode={mode}
-      onDone={onHome}
-    />;
+    return <SellerComposer session={session} setNotice={setNotice} mode={mode} onDone={onHome} />;
   }
 
   return <>
@@ -840,17 +959,9 @@ export function StockView({
     });
     if (appliedQuery.trim()) params.set('q', appliedQuery.trim());
     if (category) params.set('category', category);
-    if (context.interests.length) {
-      params.set('interests', context.interests.join(','));
-    }
-    if (
-      context.affordabilityConsent
-      && context.safeMonthlyLimit != null
-    ) {
-      params.set(
-        'safe_monthly_commitment_max',
-        context.safeMonthlyLimit.toFixed(2),
-      );
+    if (context.interests.length) params.set('interests', context.interests.join(','));
+    if (context.affordabilityConsent && context.safeMonthlyLimit != null) {
+      params.set('safe_monthly_commitment_max', context.safeMonthlyLimit.toFixed(2));
     }
 
     try {
@@ -873,10 +984,7 @@ export function StockView({
           ? directResult.value ?? []
           : [],
       );
-      if (
-        catalogResult.status === 'rejected'
-        && directResult.status === 'rejected'
-      ) {
+      if (catalogResult.status === 'rejected' && directResult.status === 'rejected') {
         throw catalogResult.reason;
       }
     } catch (loadError) {
@@ -884,12 +992,7 @@ export function StockView({
     } finally {
       setLoading(false);
     }
-  }, [
-    appliedQuery,
-    category,
-    context,
-    session.accessToken,
-  ]);
+  }, [appliedQuery, category, context, session.accessToken]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => { void load(); }, 0);
@@ -900,9 +1003,7 @@ export function StockView({
     const catalog = offers
       .filter(offer => offer.source_module === 'stock')
       .map(normalizeOffer);
-    const base = catalog.length
-      ? catalog
-      : fallbackItems.map(normalizeStockItem);
+    const base = catalog.length ? catalog : fallbackItems.map(normalizeStockItem);
     const normalizedQuery = appliedQuery.toLocaleLowerCase('pt-BR');
     return base
       .filter(product => !normalizedQuery || (
@@ -912,10 +1013,7 @@ export function StockView({
       ))
       .filter(product => !category || product.category === category)
       .filter(product => {
-        if (
-          !context.affordabilityConsent
-          || context.safeMonthlyLimit == null
-        ) return true;
+        if (!context.affordabilityConsent || context.safeMonthlyLimit == null) return true;
         const commitment = monthlyCommitment(product);
         return commitment === 0 || commitment <= context.safeMonthlyLimit;
       })
@@ -924,31 +1022,16 @@ export function StockView({
           - interestScore(left, context.interests);
         if (interestDifference) return interestDifference;
         const rightSales = Number(
-          (fallbackItems.find(
-            item => item.id === right.sourceEntityId,
-          )?.payload ?? {}).sales_count ?? 0,
+          (fallbackItems.find(item => item.id === right.sourceEntityId)?.payload ?? {}).sales_count ?? 0,
         );
         const leftSales = Number(
-          (fallbackItems.find(
-            item => item.id === left.sourceEntityId,
-          )?.payload ?? {}).sales_count ?? 0,
+          (fallbackItems.find(item => item.id === left.sourceEntityId)?.payload ?? {}).sales_count ?? 0,
         );
         return rightSales - leftSales;
       });
-  }, [
-    appliedQuery,
-    category,
-    context,
-    fallbackItems,
-    offers,
-  ]);
+  }, [appliedQuery, category, context, fallbackItems, offers]);
 
-  const actions = useFeedActions(
-    session,
-    setNotice,
-    reviewOrders,
-    reloadReviewOrders,
-  );
+  const actions = useFeedActions(session, setNotice, reviewOrders, reloadReviewOrders);
 
   return <>
     <ProductFeed
