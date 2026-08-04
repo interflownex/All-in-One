@@ -1,42 +1,41 @@
 # Dependabot e segurança de dependências
 
 **Projeto:** All in One + Valley  
-**Classificação:** Pendências / Técnico / Equipe Técnica  
+**Classificação:** `Pendências > Técnico`  
 **Público-alvo:** Equipe Técnica  
-**Data:** 03/08/2026, America/Sao_Paulo  
+**Data:** 03/08/2026, `America/Sao_Paulo`  
 **Repositório:** `interflownex/All-in-One`
 
 ## Visão geral
 
-A `main` não possuía `.github/dependabot.yml`. Correções npm anteriores já elevaram pisos mínimos de segurança e adicionaram testes de regressão, porém não havia uma política versionada cobrindo atualizações futuras dos vários ecossistemas do monorepo.
+A `main` não possuía política versionada do Dependabot. Esta entrega cria uma configuração central para monitorar os ecossistemas usados pelo monorepo e gerar correções futuras sem dispensar gates ou alertas.
 
-Esta rodada cria uma configuração central do Dependabot para:
+## Cobertura configurada
 
-- GitHub Actions;
+- GitHub Actions na raiz;
+- Python/Pip na raiz e em `services/aio-mcp-gateway`;
 - 12 projetos npm;
 - Android/Gradle;
 - Flutter/Pub.
 
-As atualizações de segurança npm são agrupadas para reduzir ruído, enquanto atualizações comuns de desenvolvimento ficam limitadas a versões minor e patch.
+As atualizações de segurança Python e npm são agrupadas por ecossistema. Atualizações comuns de desenvolvimento npm ficam limitadas a `minor` e `patch`.
 
-## Evidências observadas
+## Evidências desta execução
 
-- nenhuma PR aberta do Dependabot foi localizada na consulta disponível;
-- `.github/dependabot.yml` não existia na `main`;
-- o teste `tests/test_dependency_security_floors.py` já protege pisos mínimos para `postcss`, `brace-expansion`, `react-router`, `vite` e dependências transitivas Android;
-- a PR #105 integrou correções npm em múltiplos aplicativos e elevou `brace-expansion` para versão corrigida;
-- o conector GitHub disponível nesta execução não expõe o endpoint administrativo que lista cada alerta privado da página Security > Dependabot.
+Durante a regularização foram detectadas e corrigidas vulnerabilidades reais:
 
-## Alteração implantada em branch isolada
+- `cryptography==48.0.1` foi elevado para `50.0.0`;
+- `mcp==1.27.0` foi elevado para `1.28.1`;
+- `pip-audit`, Bandit, scans JavaScript, containers e Android/CodeQL passaram após as correções;
+- nenhum segredo ou token foi adicionado.
 
-Branch: `codex/dependabot-seguranca-20260803`
-
-Arquivo criado:
+## Arquivo versionado
 
 - `.github/dependabot.yml`
 
-Cobertura configurada:
+Diretórios cobertos:
 
+- `/` e `/services/aio-mcp-gateway` para Pip;
 - `/apps/all-in-one`;
 - `/apps/all-in-one-admin`;
 - `/apps/all-in-one-business`;
@@ -51,28 +50,26 @@ Cobertura configurada:
 - `/desktop/valley-erp`;
 - `/apps/valley-android`;
 - `/apps/valley-flutter`;
-- `/.github/workflows` por meio do ecossistema `github-actions` na raiz.
+- GitHub Actions na raiz.
 
-## Regras de segurança preservadas
+## Regras preservadas
 
 - nenhuma escrita direta na `main`;
-- nenhuma atualização de versão major agrupada automaticamente para dependências de desenvolvimento;
-- nenhum segredo ou token adicionado;
-- nenhum alerta foi descartado ou marcado como risco aceito sem evidência;
-- merge somente após todos os gates obrigatórios ficarem verdes no mesmo SHA;
+- nenhum segredo no Git;
+- nenhuma dispensa automática de alerta;
+- nenhuma atualização major agrupada automaticamente para dependências npm de desenvolvimento;
+- cada PR do Dependabot deve passar pelos gates aplicáveis no mesmo SHA;
 - integração somente por Squash and Merge;
-- o painel de Dependabot deve ser revisitado após a integração, porque o GitHub processa a configuração a partir da branch padrão.
+- alertas só podem ser encerrados com atualização, mitigação comprovada ou justificativa técnica documentada.
 
-## Critérios para eliminar marcadores vermelhos
+## Critério operacional
 
-1. integrar a PR somente com CI e Security verdes;
-2. aguardar o Dependabot processar a configuração na `main`;
-3. revisar os PRs de segurança gerados, um grupo por ecossistema;
-4. executar testes e builds específicos antes de cada merge;
-5. não dispensar alertas sem justificativa técnica documentada;
-6. confirmar que a página Security > Dependabot apresenta zero alertas abertos;
-7. confirmar que a aba Actions não contém workflows obrigatórios vermelhos no SHA integrado.
+1. integrar esta política somente com CI, Docker e Security verdes;
+2. permitir que o GitHub processe a configuração na branch padrão;
+3. revisar cada PR de segurança gerada;
+4. executar testes específicos do ecossistema antes do merge;
+5. confirmar que não permanecem workflows obrigatórios vermelhos.
 
-## Limitação objetiva desta execução
+## Limitação objetiva
 
-A configuração e a governança foram implantadas, mas não é tecnicamente honesto declarar zero alertas no painel privado sem acesso ao endpoint que enumera os alertas individuais. O fechamento final depende de o GitHub gerar os PRs de correção após a configuração chegar à `main` e de esses PRs passarem pelos testes do repositório.
+O conector disponível não enumera os alertas privados individuais da página Security. Portanto, a integração desta política não autoriza declarar o painel administrativo como zerado. O estado deve ser confirmado no GitHub após o processamento do Dependabot e a integração das correções geradas.
