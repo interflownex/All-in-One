@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "source_blueprint_version": "1.2.0",
+  "status": "mandatory",
+  "source_issue": 204,
+  "bundles": [
+    {
+      "code": "B0",
+      "name": "identity_and_tenancy",
+      "purpose": "Owner, tenant, subject and authoritative identity boundaries",
+      "required_attributes": ["owner_service", "tenant_scope", "subject_scope"]
+    },
+    {
+      "code": "B1",
+      "name": "purpose_and_processing",
+      "purpose": "Processing activity, purpose and necessity",
+      "required_attributes": ["processing_activity", "purpose", "necessity_assessment"]
+    },
+    {
+      "code": "B2",
+      "name": "legal_basis_and_consent",
+      "purpose": "Legal basis, consent version and revocation where applicable",
+      "required_attributes": ["legal_basis", "consent_required", "consent_version"]
+    },
+    {
+      "code": "B3",
+      "name": "classification_and_sensitivity",
+      "purpose": "Data class, personal-data category and risk",
+      "required_attributes": ["sensitivity", "personal_data_category", "risk_level"]
+    },
+    {
+      "code": "B4",
+      "name": "retention_legal_hold_disposal",
+      "purpose": "Retention, legal hold, anonymization and disposal proof",
+      "required_attributes": ["retention_policy", "legal_hold_policy", "disposal_method"]
+    },
+    {
+      "code": "B5",
+      "name": "encryption_tokenization_keys",
+      "purpose": "Encryption, tokenization and key segregation",
+      "required_attributes": ["encryption_policy", "tokenization_policy", "key_scope"]
+    },
+    {
+      "code": "B6",
+      "name": "masking_redaction_minimization",
+      "purpose": "Masking, redaction and minimization",
+      "required_attributes": ["masking_policy", "redaction_policy", "minimum_collection"]
+    },
+    {
+      "code": "B7",
+      "name": "access_rls_abac_relationships",
+      "purpose": "RBAC, ABAC, RLS and relationship-based access",
+      "required_attributes": ["access_policy", "row_isolation_policy", "relationship_policy"]
+    },
+    {
+      "code": "B8",
+      "name": "sharing_transfers_processors",
+      "purpose": "Internal sharing, processors and international transfer",
+      "required_attributes": ["sharing_policy", "processor_policy", "transfer_policy"]
+    },
+    {
+      "code": "B9",
+      "name": "origin_lineage_quality",
+      "purpose": "Origin, lineage, quality and reconciliation",
+      "required_attributes": ["source_system", "lineage", "quality_policy"]
+    },
+    {
+      "code": "B10",
+      "name": "audit_incident_and_evidence",
+      "purpose": "Audit trail, incidents and immutable evidence",
+      "required_attributes": ["audit_policy", "incident_policy", "evidence_policy"]
+    },
+    {
+      "code": "B11",
+      "name": "data_subject_rights",
+      "purpose": "Access, correction, portability, opposition, review, blocking and deletion",
+      "required_attributes": ["rights_workflow", "identity_verification", "response_sla_policy"]
+    },
+    {
+      "code": "B12",
+      "name": "ai_and_automated_decisions",
+      "purpose": "AI use, automated decisions, explainability and human review",
+      "required_attributes": ["automated_decision", "explainability_policy", "human_review_policy"]
+    },
+    {
+      "code": "B13",
+      "name": "regulated_domain_controls",
+      "purpose": "KYC/KYB, health, legal, fiscal and certificate-specific controls",
+      "required_attributes": ["regulated_domain", "professional_review", "credential_vault_policy"]
+    },
+    {
+      "code": "B14",
+      "name": "readiness_rollback_and_homologation",
+      "purpose": "Readiness gate, rollback, homologation and environment evidence",
+      "required_attributes": ["gate", "rollback_plan", "homologation_evidence"]
+    }
+  ]
+}
