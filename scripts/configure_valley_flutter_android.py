@@ -13,6 +13,7 @@ MANIFEST = FLUTTER_APP / "android" / "app" / "src" / "main" / "AndroidManifest.x
 OFFICIAL_LOGO = ROOT / "assets" / "brand" / "valley-logo-official.png"
 DRAWABLE = FLUTTER_APP / "android" / "app" / "src" / "main" / "res" / "drawable-nodpi"
 ICON = DRAWABLE / "valley_logo.png"
+SHORTCUT_TEMPLATE = ROOT / "scripts" / "templates" / "valley" / "MainActivity.kt.tpl"
 PERMISSIONS = ("android.permission.INTERNET", "android.permission.ACCESS_NETWORK_STATE")
 APPLICATION_ATTRIBUTES = {
     "icon": "@drawable/valley_logo",
@@ -54,6 +55,29 @@ def _materialize_manifest(text: str, app_label: str = "Valley") -> str:
     return text[: match.start()] + application_tag + text[match.end() :]
 
 
+def _install_company_shortcut_bridge() -> Path:
+    if not SHORTCUT_TEMPLATE.is_file():
+        raise FileNotFoundError("Template Android do atalho empresarial ausente.")
+    kotlin_root = FLUTTER_APP / "android" / "app" / "src" / "main" / "kotlin"
+    candidates = list(kotlin_root.rglob("MainActivity.kt"))
+    if len(candidates) != 1:
+        raise RuntimeError(
+            "Esperado exatamente um MainActivity.kt gerado pelo Flutter; "
+            f"encontrados: {len(candidates)}."
+        )
+    main_activity = candidates[0]
+    original = main_activity.read_text(encoding="utf-8")
+    package_match = re.search(r"^package\s+([\w.]+)\s*$", original, flags=re.MULTILINE)
+    if package_match is None:
+        raise RuntimeError("Package Kotlin não encontrado no MainActivity gerado.")
+    template = SHORTCUT_TEMPLATE.read_text(encoding="utf-8")
+    main_activity.write_text(
+        template.replace("__PACKAGE__", package_match.group(1)),
+        encoding="utf-8",
+    )
+    return main_activity
+
+
 def configure(app_label: str = "Valley") -> None:
     if not MANIFEST.is_file():
         raise FileNotFoundError("AndroidManifest.xml ausente; execute flutter create antes desta etapa.")
@@ -63,6 +87,7 @@ def configure(app_label: str = "Valley") -> None:
     MANIFEST.write_text(_materialize_manifest(original, app_label), encoding="utf-8")
     DRAWABLE.mkdir(parents=True, exist_ok=True)
     shutil.copy2(OFFICIAL_LOGO, ICON)
+    _install_company_shortcut_bridge()
 
 
 def check(app_label: str = "Valley") -> None:
@@ -82,6 +107,19 @@ def check(app_label: str = "Valley") -> None:
             raise SystemExit(f"Manifesto Android divergente em {name}.")
     if ICON.read_bytes() != OFFICIAL_LOGO.read_bytes():
         raise SystemExit("Ícone Android não corresponde byte a byte à logomarca oficial Valley.")
+    kotlin_root = FLUTTER_APP / "android" / "app" / "src" / "main" / "kotlin"
+    candidates = list(kotlin_root.rglob("MainActivity.kt"))
+    if len(candidates) != 1:
+        raise SystemExit("Ponte Android do atalho empresarial não foi materializada.")
+    main_activity = candidates[0].read_text(encoding="utf-8")
+    for marker in (
+        "com.allinone.valley/company_shortcut",
+        "requestPinShortcut",
+        "createWithAdaptiveBitmap",
+        "initialCompanyId",
+    ):
+        if marker not in main_activity:
+            raise SystemExit(f"Ponte Android incompleta: {marker}")
 
 
 def main() -> None:
@@ -94,7 +132,10 @@ def main() -> None:
     else:
         configure(args.label)
         check(args.label)
-        print(f"Android {args.label} configurado com rede segura e ícone oficial.")
+        print(
+            f"Android {args.label} configurado com rede segura, ícone oficial "
+            "e ponte de atalho empresarial."
+        )
 
 
 if __name__ == "__main__":
