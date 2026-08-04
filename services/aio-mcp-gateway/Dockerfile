@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir .
 
 COPY main.py ./main.py
 COPY production_invariants.py ./production_invariants.py
+COPY request_limits.py ./request_limits.py
 COPY security.py ./security.py
 
 USER app
