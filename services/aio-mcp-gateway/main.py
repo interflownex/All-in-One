@@ -68,7 +68,7 @@ def list_pending_tasks() -> dict[str, Any]:
 
 @mcp.tool(annotations=READ_ONLY)
 def search_repository(query: str, limit: int = 20) -> dict[str, Any]:
-    """Valida uma consulta de repositório; integração GitHub será adicionada com OAuth."""
+    """Valida consulta; a integração GitHub será adicionada com OAuth."""
     normalized = query.strip()
     if not normalized:
         raise ValueError("query não pode ser vazia")
