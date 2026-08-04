@@ -109,7 +109,7 @@ jobs:
           languages: java-kotlin
           build-mode: manual
       - name: Submeter grafo completo de dependências Gradle
-        uses: gradle/actions/dependency-submission@v6
+        uses: gradle/actions/dependency-submission@v6.2.0
         with:
           build-root-directory: apps/valley-android
           dependency-graph: ${{ github.event_name == 'pull_request' && 'generate-and-upload' || 'generate-and-submit' }}
