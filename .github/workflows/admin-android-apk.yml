@@ -42,7 +42,7 @@ jobs:
           cache: gradle
 
       - name: Configurar Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6.2.0
 
       - name: Configurar Android SDK
         uses: android-actions/setup-android@v4
