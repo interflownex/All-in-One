@@ -2,25 +2,23 @@
   "folders": [
     {
       "name": "all-in-one",
-      "path": "."
-    }
+      "path": ".",
+    },
   ],
   "settings": {
     "python.defaultInterpreterPath": "${workspaceFolder:all-in-one}/.venv/bin/python",
     "dart.flutterSdkPath": "/home/eretazan/develop/flutter",
-    "powershell.powerShellAdditionalExePaths": [
-      "/mnt/c/Users/ereta/.local/bin/pwsh"
-    ],
+    "powershell.powerShellAdditionalExePaths": ["/mnt/c/Users/ereta/.local/bin/pwsh"],
     "google.cloud.project": "all-in-one-498012",
     "cloudcode.autoDependencies": "on",
     "cloudcode.dependencyPaths": {
-      "kubectl": "/usr/local/bin/kubectl"
+      "kubectl": "/usr/local/bin/kubectl",
     },
     "cloudcode.kubeconfigs": [
       {
         "name": "all-in-one-local",
-        "configPath": "/home/eretazan/.kube/config"
-      }
+        "configPath": "/home/eretazan/.kube/config",
+      },
     ],
     "cloudcode.active-kubeconfig": "all-in-one-local",
     "cloudcode.kubectlRequestTimeout": "20s",
@@ -36,9 +34,7 @@
     "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
     "vs-kubernetes.kubectlVersioning": "user-provided",
     "vs-kubernetes.kubeconfig": "/home/eretazan/.kube/config",
-    "vs-kubernetes.knownKubeconfigs": [
-      "/home/eretazan/.kube/config"
-    ],
+    "vs-kubernetes.knownKubeconfigs": ["/home/eretazan/.kube/config"],
     "vs-kubernetes.namespace": "default",
     "vs-kubernetes.outputFormat": "yaml",
     "imageBuildTool": "Docker",
@@ -62,7 +58,7 @@
       "**/.ruff_cache/**",
       "**/dist/**",
       "**/build/**",
-      "**/testcontainers-cloud-java-example/**"
+      "**/testcontainers-cloud-java-example/**",
     ],
     "ruff.importStrategy": "fromEnvironment",
     "docker.lsp.telemetry": "off",
@@ -70,7 +66,7 @@
     "java.import.exclusions": [
       "**/node_modules/**",
       "**/.git/**",
-      "**/testcontainers-cloud-java-example/**"
+      "**/testcontainers-cloud-java-example/**",
     ],
     "java.import.gradle.enabled": true,
     "terminal.integrated.defaultProfile.windows": "PowerShell",
@@ -82,7 +78,7 @@
       "GOOGLE_CODE_CLI_ENABLED": "true",
       "ALLOYDB_ENABLED": "true",
       "GEMINI_CODE_ASSIST_ENABLED": "true",
-      "STITCH_REMOTE_SYNC_ENABLED": "true"
+      "STITCH_REMOTE_SYNC_ENABLED": "true",
     },
     "terminal.integrated.env.linux": {
       "PATH": "/home/eretazan/develop/flutter/bin:${env:PATH}",
@@ -92,15 +88,15 @@
       "GOOGLE_CODE_CLI_ENABLED": "true",
       "ALLOYDB_ENABLED": "true",
       "GEMINI_CODE_ASSIST_ENABLED": "true",
-      "STITCH_REMOTE_SYNC_ENABLED": "true"
+      "STITCH_REMOTE_SYNC_ENABLED": "true",
     },
     "terminal.integrated.profiles.windows": {
       "PowerShell": {
-        "source": "PowerShell"
+        "source": "PowerShell",
       },
       "Git Bash": {
-        "path": "C:\\Program Files\\Git\\bin\\bash.exe"
-      }
+        "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      },
     },
     "geminicodeassist.outlines.automaticOutlineGeneration": true,
     "geminicodeassist.agentYoloMode": false,
@@ -117,18 +113,16 @@
     "workbench.browser.enableRemoteProxy": true,
     "remote.portsAttributes": {
       "443": {
-        "protocol": "https"
+        "protocol": "https",
       },
       "8443": {
-        "protocol": "https"
-      }
+        "protocol": "https",
+      },
     },
     "workbench.browser.openLocalhostLinks": false,
     "editor.codeActions.triggerOnFocusChange": true,
     "gradle.autoDetect": "off",
-    "gradle.nestedProjects": [
-      "apps/valley-android"
-    ],
+    "gradle.nestedProjects": ["apps/valley-android"],
     "gradle.debug": false,
     "java.import.gradle.wrapper.enabled": true,
     "java.gradle.buildServer.enabled": "off",
@@ -147,7 +141,8 @@
       "**/dist/**": true,
       "**/target/**": true,
       "**/.gemini/skills/**": true,
-      "**/.github/skills/**": true
-    }
-  }
+      "**/.github/skills/**": true,
+    },
+    "githubPullRequests.pullRequestDescription": "template",
+  },
 }

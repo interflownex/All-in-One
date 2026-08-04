@@ -950,6 +950,21 @@ O deploy GKE autentica no Google Cloud, mas recebe HTTP 403 porque o faturamento
 
 ## 8. Histórico resumido
 
+<<<<<<< Updated upstream
 - v5.0: política de fonte única, gate de regressão e reconciliação das issues;
 - v5.1: registro da integração e estado pós-merge;
 - v5.2: remoção de passos autorreferentes; fila inicia na auditoria local e na issue #95.
+=======
+## 12. Histórico de versões
+
+| Versão | Data e hora         | Alteração principal                                                                                                                                                                                     |
+| ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.8    | 26/07/2026 15:25:55 | Execução autônoma de pré-flight multiagente, lock de atividade e checks do commit atual; auditoria v7 OK com registro de ressalva sobre `modules/api_hub/openapi.json`; `validate_repository` aprovado. |
+| 1.7    | 26/07/2026 15:07:30 | Conclusão autônoma Onda 2: persistência PostgreSQL completa; DelegationRepository + Service criados; 23 módulos integrados; validação 100% OK; commit 1a8aebf; roadmap Ondas 3-4 refinado.              |
+| 1.6    | 26/07/2026 14:59:11 | Estabilização autônoma pós-onda: correção de import dinâmico no módulo `permissions`, ajuste do teste de integração de primícias e atualização do validador web para JSONC e regras não bloqueantes.    |
+| 1.5    | 26/07/2026 14:46:30 | Consolidação final: primícias Onda 1 ✅ CONCLUÍDA (138 endpoints, 23 módulos, commit 7cf7729); roadmap para Ondas 2-4 definido; passa operacional completa para próxima IA.                             |
+| 1.4    | 26/07/2026 14:46:06 | Execução autônoma dos checks mandatórios no commit atual com resultado verde para validação de repositório e OpenAPI, além da atualização de passagem operacional para a próxima IA.                    |
+| 1.3    | 26/07/2026 14:41:16 | Consolidação autônoma da onda de implementação das primícias com validação técnica mínima: `py_compile` em arquivos alterados e `16 passed` em testes de `feature_flags` e `permissions`.               |
+| 1.2    | 26/07/2026 14:32:04 | Registro da aprovação formal da primeira rodada de inovação do APK Valley Consumidor (24 ideias), com mapeamento técnico e plano de implementação por ondas em `docs/relatorios/inovacao/`.             |
+| 1.1    | 26/07/2026 14:01:53 | Primeiro teste completo, consolidação v2.6, issue #43 e tarefas para checks, PRs, skills, ambiente público, Telegram, APK Admin e PDV Desktop.                                                          |
+>>>>>>> Stashed changes
