@@ -61,6 +61,12 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    # typescript-eslint 8.65.0 aceita TypeScript abaixo de 6.1.0.
+    # Evita PRs automaticamente quebrados até a toolchain declarar suporte ao 7.x.
+    ignore:
+      - dependency-name: "typescript"
+        versions:
+          - ">= 7.0.0"
     commit-message:
       prefix: "chore(deps-npm)"
 
