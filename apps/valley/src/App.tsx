@@ -5,12 +5,8 @@ import { MarketplaceView, StockView } from './views/ProductViews';
 import { FinanceView, HealthView, LegalView, PropertyView } from './views/IntentViews';
 import { JobsView } from './views/JobsView';
 import { DeliveryView, LifeView, MobilityView, ServicesView } from './views/OperationalViews';
-import {
-  ValleyAvatarPicker,
-  ValleyProfileAvatar,
-  loadProfileAvatar,
-  saveProfileAvatar,
-} from './components/ValleyProfileAvatar';
+import { ValleyAvatarPicker, ValleyProfileAvatar } from './components/ValleyProfileAvatar';
+import { loadProfileAvatar, saveProfileAvatar } from './lib/profileAvatarStorage';
 import {
   deviceFingerprint,
   errorMessage,
@@ -29,13 +25,17 @@ type RouteState = { view: ViewKey; hint?: JourneyHint };
 function App() {
   const [session, setSession] = useState<Session | null>(() => loadSession());
   const [route, setRoute] = useState<RouteState>({ view: 'home' });
-  const [history, setHistory] = useState<RouteState[]>([]);
+  const [, setHistory] = useState<RouteState[]>([]);
   const [notice, setNotice] = useState('');
-  const [avatarDataUrl, setAvatarDataUrl] = useState('');
+  const [avatarDataUrl, setAvatarDataUrl] = useState(() => {
+    const active = loadSession();
+    return active ? loadProfileAvatar(active.userId) : '';
+  });
 
   const updateSession = useCallback((next: Session | null) => {
     saveSession(next);
     setSession(next);
+    setAvatarDataUrl(next ? loadProfileAvatar(next.userId) : '');
   }, []);
 
   const navigate = useCallback((view: ViewKey, hint?: JourneyHint) => {
@@ -76,14 +76,11 @@ function App() {
   }, [session, updateSession]);
 
   useEffect(() => {
-    if (!session) {
-      setAvatarDataUrl('');
-      return;
-    }
-    setAvatarDataUrl(loadProfileAvatar(session.userId));
+    if (!session) return;
+    const userId = session.userId;
     const listener = (event: Event) => {
       const detail = (event as CustomEvent<{ userId: string; dataUrl: string }>).detail;
-      if (detail?.userId === session.userId) setAvatarDataUrl(detail.dataUrl);
+      if (detail?.userId === userId) setAvatarDataUrl(detail.dataUrl);
     };
     window.addEventListener('valley-profile-avatar-changed', listener);
     return () => window.removeEventListener('valley-profile-avatar-changed', listener);
@@ -116,7 +113,10 @@ function App() {
 
   const authenticated = useCallback((next: Session, pendingAvatar: string) => {
     updateSession(next);
-    if (pendingAvatar) saveProfileAvatar(next.userId, pendingAvatar);
+    if (pendingAvatar) {
+      saveProfileAvatar(next.userId, pendingAvatar);
+      setAvatarDataUrl(pendingAvatar);
+    }
     setHistory([]);
     setRoute({ view: 'home' });
   }, [updateSession]);
@@ -125,7 +125,9 @@ function App() {
 
   const props = { session, setNotice };
   const view = route.view;
-  const immersiveFeed = (view === 'marketplace' && (route.hint?.mode ?? 'feed') === 'feed') || view === 'stock';
+  const immersiveFeed = (
+    view === 'marketplace' && (route.hint?.mode ?? 'feed') === 'feed'
+  ) || view === 'stock';
   const feedNavigation = {
     avatarDataUrl,
     onHome: goHome,
@@ -161,15 +163,27 @@ function App() {
       {view === 'delivery' && <DeliveryView {...props} />}
       {view === 'mobility' && <MobilityView {...props} />}
       {view === 'life' && <LifeView {...props} />}
-      {view === 'account' && <AccountView {...props} avatarDataUrl={avatarDataUrl} onAvatarChange={value => saveProfileAvatar(session.userId, value)} onSessionChange={updateSession} />}
-      {view === 'settings' && <SettingsView {...props} onRefreshSession={refreshSession} onLogout={logout} />}
+      {view === 'account' && <AccountView
+        {...props}
+        avatarDataUrl={avatarDataUrl}
+        onAvatarChange={value => saveProfileAvatar(session.userId, value)}
+        onSessionChange={updateSession}
+      />}
+      {view === 'settings' && <SettingsView
+        {...props}
+        onRefreshSession={refreshSession}
+        onLogout={logout}
+      />}
     </main>
 
     {!immersiveFeed && <BottomNav route={route} navigate={navigate} />}
   </div>;
 }
 
-function AuthScreen({ notice, onAuthenticated }: { notice: string; onAuthenticated: (session: Session, avatarDataUrl: string) => void }) {
+function AuthScreen({ notice, onAuthenticated }: {
+  notice: string;
+  onAuthenticated: (session: Session, avatarDataUrl: string) => void;
+}) {
   const [registering, setRegistering] = useState(false);
   const [fullName, setFullName] = useState('');
   const [cpf, setCpf] = useState('');
@@ -195,7 +209,9 @@ function AuthScreen({ notice, onAuthenticated }: { notice: string; onAuthenticat
           document_cpf: cpf.replace(/\D/g, ''),
           terms_accepted_at: now,
           lgpd_consent_at: now,
-          profile_avatar_mode: avatarDataUrl ? 'personalized_valley_frame' : 'official_default',
+          profile_avatar_mode: avatarDataUrl
+            ? 'personalized_valley_frame'
+            : 'official_default',
         });
       }
 
@@ -216,7 +232,10 @@ function AuthScreen({ notice, onAuthenticated }: { notice: string; onAuthenticat
       const message = errorMessage(err);
       if (!registering && /credenciais|cadastro|conta/i.test(message)) {
         setRegistering(true);
-        setError('Não foi possível validar um cadastro ativo. Conclua o cadastro ou volte para corrigir seus dados de acesso.');
+        setError(
+          'Não foi possível validar um cadastro ativo. Conclua o cadastro '
+          + 'ou volte para corrigir seus dados de acesso.',
+        );
       } else {
         setError(message);
       }
@@ -229,7 +248,9 @@ function AuthScreen({ notice, onAuthenticated }: { notice: string; onAuthenticat
     <section className='auth-card'>
       <img className='auth-logo' src='/assets/brand/valley-logo-official.png' alt='Valley' />
       <h1>{registering ? 'Crie sua conta Valley' : 'Entre no Valley'}</h1>
-      <p>{registering ? 'Conclua seu cadastro para acessar a Home.' : 'Somente usuários autenticados entram no aplicativo.'}</p>
+      <p>{registering
+        ? 'Conclua seu cadastro para acessar a Home.'
+        : 'Somente usuários autenticados entram no aplicativo.'}</p>
       {notice && <div className='notice warning'>{notice}</div>}
       <form onSubmit={submit}>
         {registering && <>
@@ -239,25 +260,87 @@ function AuthScreen({ notice, onAuthenticated }: { notice: string; onAuthenticat
         </>}
         <label>E-mail<input type='email' value={email} onChange={event => setEmail(event.target.value)} required /></label>
         <label>Senha<input type='password' value={password} onChange={event => setPassword(event.target.value)} required minLength={6} /></label>
-        {registering && <label className='checkbox-row'><input type='checkbox' checked={accepted} onChange={event => setAccepted(event.target.checked)} />Aceito os termos e o tratamento necessário dos dados.</label>}
+        {registering && <label className='checkbox-row'>
+          <input type='checkbox' checked={accepted} onChange={event => setAccepted(event.target.checked)} />
+          Aceito os termos e o tratamento necessário dos dados.
+        </label>}
         {error && <div className='notice error'>{error}</div>}
-        <button className='primary' type='submit' disabled={loading}>{loading ? 'Conectando...' : registering ? 'Cadastrar e entrar' : 'Entrar'}</button>
-        <button className='text-button' type='button' onClick={() => { setRegistering(value => !value); setError(''); }}>{registering ? 'Já tenho cadastro ativo' : 'Ainda não tenho cadastro'}</button>
+        <button className='primary' type='submit' disabled={loading}>
+          {loading ? 'Conectando...' : registering ? 'Cadastrar e entrar' : 'Entrar'}
+        </button>
+        <button className='text-button' type='button' onClick={() => {
+          setRegistering(value => !value);
+          setError('');
+        }}>
+          {registering ? 'Já tenho cadastro ativo' : 'Ainda não tenho cadastro'}
+        </button>
       </form>
     </section>
   </main>;
 }
 
-function BottomNav({ route, navigate }: { route: RouteState; navigate: (view: ViewKey, hint?: JourneyHint) => void }) {
-  const items: Array<{ key: ViewKey; label: string; icon: string; hint?: JourneyHint; active: ViewKey[] }> = [
-    { key: 'home', label: 'Início', icon: '⌂', active: ['home', 'delivery', 'mobility', 'life', 'legal', 'health', 'property', 'services'] },
-    { key: 'marketplace', label: 'Comprar', icon: '▦', hint: { intent: 'comprar', mode: 'feed' }, active: ['marketplace', 'stock'] },
-    { key: 'finance', label: 'Financeiro', icon: '◈', active: ['finance'] },
-    { key: 'jobs', label: 'Trabalhar', icon: '✦', hint: { intent: 'trabalhar', mode: 'seek' }, active: ['jobs'] },
-    { key: 'account', label: 'Conta', icon: '●', active: ['account', 'settings'] },
+function BottomNav({ route, navigate }: {
+  route: RouteState;
+  navigate: (view: ViewKey, hint?: JourneyHint) => void;
+}) {
+  const items: Array<{
+    key: ViewKey;
+    label: string;
+    icon: string;
+    hint?: JourneyHint;
+    active: ViewKey[];
+  }> = [
+    {
+      key: 'home',
+      label: 'Início',
+      icon: '⌂',
+      active: [
+        'home',
+        'delivery',
+        'mobility',
+        'life',
+        'legal',
+        'health',
+        'property',
+        'services',
+      ],
+    },
+    {
+      key: 'marketplace',
+      label: 'Comprar',
+      icon: '▦',
+      hint: { intent: 'comprar', mode: 'feed' },
+      active: ['marketplace', 'stock'],
+    },
+    {
+      key: 'finance',
+      label: 'Financeiro',
+      icon: '◈',
+      active: ['finance'],
+    },
+    {
+      key: 'jobs',
+      label: 'Trabalhar',
+      icon: '✦',
+      hint: { intent: 'trabalhar', mode: 'seek' },
+      active: ['jobs'],
+    },
+    {
+      key: 'account',
+      label: 'Conta',
+      icon: '●',
+      active: ['account', 'settings'],
+    },
   ];
   return <nav className='bottom-nav' aria-label='Navegação principal'>
-    {items.map(item => <button key={item.key} type='button' className={item.active.includes(route.view) ? 'active' : ''} onClick={() => navigate(item.key, item.hint)}><span>{item.icon}</span><small>{item.label}</small></button>)}
+    {items.map(item => <button
+      key={item.key}
+      type='button'
+      className={item.active.includes(route.view) ? 'active' : ''}
+      onClick={() => navigate(item.key, item.hint)}
+    >
+      <span>{item.icon}</span><small>{item.label}</small>
+    </button>)}
   </nav>;
 }
 
