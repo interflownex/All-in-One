@@ -35,9 +35,17 @@ def test_plan_uses_only_brasildesconto_subdomains() -> None:
     dns.validate_plan(plan)
     assert plan["zone_name"] == "brasildesconto.com.br"
     assert plan["canonical"]["hostname"] == "mcp.brasildesconto.com.br"
+    environment_hostnames = {
+        item["environment"]: item["hostname"]
+        for item in plan["environments"]
+    }
+    assert environment_hostnames == {
+        "staging": "mcp-staging.brasildesconto.com.br",
+        "preview": "mcp-preview.brasildesconto.com.br",
+    }
     hostnames = {
         plan["canonical"]["hostname"],
-        *(item["hostname"] for item in plan["environments"]),
+        *environment_hostnames.values(),
         *(item["hostname"] for item in plan["aliases"]),
     }
     assert "brasildesconto.com.br" not in hostnames
