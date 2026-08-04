@@ -70,7 +70,7 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew \
-            :app:assembleDebug \
+            :app:assembleProductionDebug \
             :admin:assembleDebug \
             :universal:assembleDebug \
             --no-daemon \
