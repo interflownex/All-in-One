@@ -19,7 +19,9 @@ type FeedNavigationProps = {
   onProfile: () => void;
 };
 
-type ConsumerOrder = {
+type Coordinates = { lat: number; lng: number };
+
+type ReviewOrder = {
   id: string;
   title?: string;
   status?: string;
@@ -29,13 +31,39 @@ type ConsumerOrder = {
   can_review?: boolean;
 };
 
-type UserShoppingContext = {
+type ShoppingContext = {
+  ready: boolean;
   interests: string[];
   affordabilityConsent: boolean;
   safeMonthlyLimit: number | null;
+  fallbackCoordinates: Coordinates | null;
 };
 
-const completedStatuses = new Set(['completed', 'delivered', 'paid', 'received']);
+type MarketplaceCatalogItem = {
+  id: string;
+  store_name?: string | null;
+  name?: string | null;
+  description?: string | null;
+  category?: string | null;
+  price_brl?: string | null;
+  image_url?: string | null;
+  media?: unknown[];
+  distance_km?: number | null;
+  promotion?: Record<string, unknown> | null;
+};
+
+type MarketplaceCatalogResponse = {
+  items?: MarketplaceCatalogItem[];
+  total?: number;
+};
+
+const EMPTY_CONTEXT: ShoppingContext = {
+  ready: false,
+  interests: [],
+  affordabilityConsent: false,
+  safeMonthlyLimit: null,
+  fallbackCoordinates: null,
+};
 
 function text(value: unknown) {
   return value == null ? '' : String(value);
@@ -47,6 +75,71 @@ function stringList(value: unknown) {
     return value.split(',').map(item => item.trim()).filter(Boolean);
   }
   return [];
+}
+
+function numberOrNull(value: unknown) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function locationFrom(value: unknown): Coordinates | null {
+  if (!value || typeof value !== 'object') return null;
+  const record = value as Record<string, unknown>;
+  const nested = record.location && typeof record.location === 'object'
+    ? record.location as Record<string, unknown>
+    : record;
+  const lat = numberOrNull(nested.latitude ?? nested.lat);
+  const lng = numberOrNull(nested.longitude ?? nested.lng ?? nested.lon);
+  if (lat == null || lng == null) return null;
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
+  return { lat, lng };
+}
+
+function mediaUrl(
+  media: unknown[] | undefined,
+  kind: 'image' | 'video',
+) {
+  for (const candidate of media ?? []) {
+    if (typeof candidate === 'string') {
+      const lower = candidate.toLocaleLowerCase('pt-BR');
+      const video = /\.(mp4|webm|mov)(?:\?|$)/.test(lower);
+      if ((kind === 'video') === video) return candidate;
+      continue;
+    }
+    if (!candidate || typeof candidate !== 'object') continue;
+    const record = candidate as Record<string, unknown>;
+    const url = text(record.url ?? record.src ?? record.media_url);
+    const type = text(record.type ?? record.kind ?? record.mime_type)
+      .toLocaleLowerCase('pt-BR');
+    if (!url) continue;
+    if (kind === 'video' && (type.includes('video') || /\.(mp4|webm|mov)(?:\?|$)/i.test(url))) {
+      return url;
+    }
+    if (kind === 'image' && !type.includes('video') && !/\.(mp4|webm|mov)(?:\?|$)/i.test(url)) {
+      return url;
+    }
+  }
+  return undefined;
+}
+
+function normalizeMarketplaceItem(item: MarketplaceCatalogItem): FeedProduct {
+  const promotion = item.promotion ?? {};
+  return {
+    id: item.id,
+    offerId: `marketplace:products:${item.id}`,
+    sourceEntityId: item.id,
+    sourceModule: 'marketplace',
+    title: text(item.name) || 'Produto sem título',
+    description: text(item.description),
+    category: text(item.category) || 'Produtos',
+    provider: text(item.store_name) || 'Fornecedor verificado',
+    region: 'Disponível em até 10 km',
+    distanceKm: item.distance_km,
+    priceAmount: item.price_brl,
+    imageUrl: text(item.image_url) || mediaUrl(item.media, 'image'),
+    videoUrl: mediaUrl(item.media, 'video'),
+    accentColor: text(promotion.accent_color) || undefined,
+  };
 }
 
 function normalizeOffer(offer: Offer): FeedProduct {
@@ -89,11 +182,13 @@ function normalizeStockItem(item: ApiItem): FeedProduct {
   };
 }
 
-function orderMatches(order: ConsumerOrder, product: FeedProduct) {
-  if (order.can_review === false) return false;
+function reviewMatches(order: ReviewOrder, product: FeedProduct) {
+  if (order.can_review !== true) return false;
   if (order.source_module && order.source_module !== product.sourceModule) return false;
   if (order.offer_id && order.offer_id === product.offerId) return true;
-  if (order.source_entity_id && order.source_entity_id === product.sourceEntityId) return true;
+  if (order.source_entity_id && order.source_entity_id === product.sourceEntityId) {
+    return true;
+  }
   return Boolean(
     order.title
     && order.title.trim().toLocaleLowerCase('pt-BR')
@@ -101,53 +196,98 @@ function orderMatches(order: ConsumerOrder, product: FeedProduct) {
   );
 }
 
-function getReviewOrder(orders: ConsumerOrder[], product: FeedProduct) {
-  return orders.find(order => (
-    order.can_review === true
-    || completedStatuses.has((order.status ?? '').toLocaleLowerCase('pt-BR'))
-  ) && orderMatches(order, product));
+function eligibleOrder(orders: ReviewOrder[], product: FeedProduct) {
+  return orders.find(order => reviewMatches(order, product));
 }
 
 function currentLocation() {
-  return new Promise<{ lat: number; lng: number } | null>(resolve => {
+  return new Promise<Coordinates | null>(resolve => {
     if (!navigator.geolocation) {
       resolve(null);
       return;
     }
     navigator.geolocation.getCurrentPosition(
-      position => resolve({ lat: position.coords.latitude, lng: position.coords.longitude }),
+      position => resolve({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      }),
       () => resolve(null),
-      { enableHighAccuracy: false, maximumAge: 300000, timeout: 5000 },
+      {
+        enableHighAccuracy: false,
+        maximumAge: 300000,
+        timeout: 5000,
+      },
     );
   });
 }
 
-async function loadShoppingContext(session: ViewProps['session']): Promise<UserShoppingContext> {
+async function loadShoppingContext(
+  session: ViewProps['session'],
+): Promise<ShoppingContext> {
   try {
-    const users = await request<ApiItem[]>('/identity/resources/users', 'GET', undefined, session.accessToken);
+    const users = await request<ApiItem[]>(
+      '/identity/resources/users',
+      'GET',
+      undefined,
+      session.accessToken,
+    );
     const payload = users.find(item => item.id === session.userId)?.payload ?? {};
     const interests = stringList(
-      payload.shopping_interests ?? payload.interests ?? payload.favorite_categories,
+      payload.shopping_interests
+      ?? payload.interests
+      ?? payload.favorite_categories,
+    );
+    const fallbackCoordinates = (
+      locationFrom(payload.delivery_address)
+      ?? locationFrom(payload.residential_address)
+      ?? locationFrom(payload.address)
     );
     const consent = payload.purchase_power_consent === true;
     if (!consent) {
-      return { interests, affordabilityConsent: false, safeMonthlyLimit: null };
+      return {
+        ready: true,
+        interests,
+        affordabilityConsent: false,
+        safeMonthlyLimit: null,
+        fallbackCoordinates,
+      };
     }
 
     const verifiedIncome = Number(payload.verified_monthly_income_brl ?? 0);
     const declaredIncome = Number(payload.declared_monthly_income_brl ?? 0);
     const income = verifiedIncome > 0 ? verifiedIncome : declaredIncome;
-    const commitments = Math.max(0, Number(payload.monthly_fixed_commitments_brl ?? 0));
+    const commitments = Math.max(
+      0,
+      Number(payload.monthly_fixed_commitments_brl ?? 0),
+    );
     const disposable = Math.max(0, income - commitments);
     const configuredPercent = Number(payload.max_purchase_commitment_percent ?? 20);
     const percent = Math.min(25, Math.max(5, configuredPercent)) / 100;
     return {
+      ready: true,
       interests,
       affordabilityConsent: true,
       safeMonthlyLimit: disposable > 0 ? disposable * percent : null,
+      fallbackCoordinates,
     };
   } catch {
-    return { interests: [], affordabilityConsent: false, safeMonthlyLimit: null };
+    return { ...EMPTY_CONTEXT, ready: true };
+  }
+}
+
+async function loadReviewEligibility(
+  session: ViewProps['session'],
+): Promise<ReviewOrder[]> {
+  try {
+    const result = await request<ReviewOrder[]>(
+      '/marketplace/valley/feed/review-eligibility',
+      'GET',
+      undefined,
+      session.accessToken,
+    );
+    return Array.isArray(result) ? result : [];
+  } catch {
+    return [];
   }
 }
 
@@ -162,28 +302,22 @@ function interestScore(product: FeedProduct, interests: string[]) {
   );
 }
 
-function estimatedMonthlyCost(product: FeedProduct) {
+function monthlyCommitment(product: FeedProduct) {
   const price = Number(product.priceAmount ?? 0);
-  return price > 0 ? price / 12 : 0;
+  return Number.isFinite(price) && price > 0 ? price : 0;
 }
 
 function categoriesFor(products: FeedProduct[]) {
-  return Array.from(new Set(products.map(product => product.category).filter(Boolean)))
-    .sort((left, right) => left.localeCompare(right, 'pt-BR'));
+  return Array.from(new Set(
+    products.map(product => product.category).filter(Boolean),
+  )).sort((left, right) => left.localeCompare(right, 'pt-BR'));
 }
 
-async function loadConsumerOrders(session: ViewProps['session']): Promise<ConsumerOrder[]> {
-  try {
-    const result = await request<{ data?: ConsumerOrder[] }>(
-      '/gateway/consumer/orders',
-      'GET',
-      undefined,
-      session.accessToken,
-    );
-    return result.data ?? [];
-  } catch {
-    return [];
-  }
+function isUuid(value: string | undefined) {
+  return Boolean(
+    value
+    && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value),
+  );
 }
 
 function SellerComposer({
@@ -202,17 +336,21 @@ function SellerComposer({
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     try {
-      await request('/marketplace/resources/products', 'POST', {
+      await request('/crm/resources/leads', 'POST', {
         user_id: session.userId,
-        status: 'draft',
+        status: 'requested',
         payload: {
+          lead_type: repair
+            ? 'consumer_marketplace_repair_request'
+            : 'consumer_marketplace_listing',
           title,
           description,
           category,
           price_amount: repair ? null : price,
           region,
-          listing_type: repair ? 'repair_request' : 'sale',
           requested_specialty: repair ? category : null,
+          moderation_required: true,
+          source_channel: 'valley_consumer',
         },
       }, session.accessToken);
       setTitle('');
@@ -222,8 +360,8 @@ function SellerComposer({
       setRegion('');
       setNotice(
         repair
-          ? 'Pedido de conserto enviado para análise.'
-          : 'Item enviado para análise e publicação.',
+          ? 'Pedido de conserto enviado para análise e publicação.'
+          : 'Anúncio enviado para análise e publicação.',
       );
       onDone();
     } catch (error) {
@@ -237,27 +375,48 @@ function SellerComposer({
       subtitle={
         repair
           ? 'Descreva o item, o problema e a especialidade necessária.'
-          : 'Cadastre descrição, preço e região do anúncio.'
+          : 'Cadastre descrição, preço e região para moderação do anúncio.'
       }
     />
     <form className='form-card listing-composer' onSubmit={submit}>
       <label>{repair ? 'Item que precisa de conserto' : 'Título do anúncio'}
-        <input value={title} onChange={event => setTitle(event.target.value)} required />
+        <input
+          value={title}
+          onChange={event => setTitle(event.target.value)}
+          required
+        />
       </label>
       <label>{repair ? 'Defeito ou problema' : 'Descrição'}
-        <textarea value={description} onChange={event => setDescription(event.target.value)} required />
+        <textarea
+          value={description}
+          onChange={event => setDescription(event.target.value)}
+          required
+        />
       </label>
       <label>{repair ? 'Especialidade necessária' : 'Categoria'}
-        <input value={category} onChange={event => setCategory(event.target.value)} required />
+        <input
+          value={category}
+          onChange={event => setCategory(event.target.value)}
+          required
+        />
       </label>
       {!repair && <label>Preço
-        <input inputMode='decimal' value={price} onChange={event => setPrice(event.target.value)} required />
+        <input
+          inputMode='decimal'
+          value={price}
+          onChange={event => setPrice(event.target.value)}
+          required
+        />
       </label>}
       <label>Região
-        <input value={region} onChange={event => setRegion(event.target.value)} required />
+        <input
+          value={region}
+          onChange={event => setRegion(event.target.value)}
+          required
+        />
       </label>
       <button className='primary' type='submit'>
-        {repair ? 'Publicar pedido' : 'Cadastrar item'}
+        {repair ? 'Enviar pedido para análise' : 'Enviar anúncio para análise'}
       </button>
     </form>
   </section>;
@@ -266,7 +425,7 @@ function SellerComposer({
 function FeedDialogs({
   commentProduct,
   supplierProduct,
-  orders,
+  reviewOrders,
   session,
   setNotice,
   onCloseComment,
@@ -274,7 +433,7 @@ function FeedDialogs({
 }: {
   commentProduct: FeedProduct | null;
   supplierProduct: FeedProduct | null;
-  orders: ConsumerOrder[];
+  reviewOrders: ReviewOrder[];
   session: ViewProps['session'];
   setNotice: ViewProps['setNotice'];
   onCloseComment: () => void;
@@ -286,7 +445,7 @@ function FeedDialogs({
 
   const submitComment = async () => {
     if (!commentProduct) return;
-    const order = getReviewOrder(orders, commentProduct);
+    const order = eligibleOrder(reviewOrders, commentProduct);
     if (!order) {
       setNotice('Comentários são permitidos somente após a compra concluída.');
       return;
@@ -314,6 +473,7 @@ function FeedDialogs({
         payload: {
           activity_type: 'supplier_message',
           offer_id: supplierProduct.offerId,
+          source_entity_id: supplierProduct.sourceEntityId,
           source_module: supplierProduct.sourceModule,
           provider_label: supplierProduct.provider,
           message: message.trim(),
@@ -347,12 +507,17 @@ function FeedDialogs({
           maxLength={1000}
         />
       </label>
-      <button className='primary' type='button' onClick={submitComment}>
-        Publicar comentário
-      </button>
+      <button
+        className='primary'
+        type='button'
+        onClick={() => { void submitComment(); }}
+      >Publicar comentário</button>
     </Modal>}
 
-    {supplierProduct && <Modal title='Falar com o fornecedor' onClose={onCloseSupplier}>
+    {supplierProduct && <Modal
+      title='Falar com o fornecedor'
+      onClose={onCloseSupplier}
+    >
       <p>{supplierProduct.provider} · {supplierProduct.title}</p>
       <label>Mensagem
         <textarea
@@ -367,10 +532,8 @@ function FeedDialogs({
         className='primary'
         type='button'
         disabled={message.trim().length < 5}
-        onClick={submitSupplierMessage}
-      >
-        Enviar mensagem
-      </button>
+        onClick={() => { void submitSupplierMessage(); }}
+      >Enviar mensagem</button>
     </Modal>}
   </>;
 }
@@ -378,21 +541,36 @@ function FeedDialogs({
 function useFeedActions(
   session: ViewProps['session'],
   setNotice: ViewProps['setNotice'],
-  orders: ConsumerOrder[],
-  reloadOrders: () => Promise<void>,
+  reviewOrders: ReviewOrder[],
+  reloadReviewOrders: () => Promise<void>,
 ) {
   const [commentProduct, setCommentProduct] = useState<FeedProduct | null>(null);
   const [supplierProduct, setSupplierProduct] = useState<FeedProduct | null>(null);
 
   const favorite = async (product: FeedProduct) => {
     try {
-      const entity = encodeURIComponent(product.sourceEntityId ?? product.offerId);
-      await request(
-        `/marketplace/valley/favorites/${entity}`,
-        'PUT',
-        undefined,
-        session.accessToken,
-      );
+      if (product.sourceModule === 'marketplace' && isUuid(product.sourceEntityId)) {
+        await request(
+          `/marketplace/valley/favorites/${product.sourceEntityId}`,
+          'PUT',
+          undefined,
+          session.accessToken,
+        );
+      } else {
+        await request('/marketplace/resources/carts', 'POST', {
+          user_id: session.userId,
+          status: 'active',
+          payload: {
+            cart_type: 'favorites',
+            source_module: product.sourceModule,
+            items: [{
+              offer_id: product.offerId,
+              source_entity_id: product.sourceEntityId,
+              title: product.title,
+            }],
+          },
+        }, session.accessToken);
+      }
       setNotice('Produto adicionado aos favoritos.');
     } catch (error) {
       setNotice(errorMessage(error));
@@ -401,17 +579,29 @@ function useFeedActions(
 
   const addToCart = async (product: FeedProduct) => {
     try {
-      await request('/marketplace/resources/carts', 'POST', {
-        user_id: session.userId,
-        status: 'active',
-        payload: {
-          offer_id: product.offerId,
-          source_entity_id: product.sourceEntityId,
-          source_module: product.sourceModule,
-          title: product.title,
-          quantity: 1,
-        },
-      }, session.accessToken);
+      if (product.sourceModule === 'marketplace' && isUuid(product.sourceEntityId)) {
+        await request(
+          `/marketplace/valley/cart/items/${product.sourceEntityId}`,
+          'PUT',
+          { quantity: 1 },
+          session.accessToken,
+        );
+      } else {
+        await request('/marketplace/resources/carts', 'POST', {
+          user_id: session.userId,
+          status: 'active',
+          payload: {
+            cart_type: 'cart',
+            items: [{
+              offer_id: product.offerId,
+              source_entity_id: product.sourceEntityId,
+              source_module: product.sourceModule,
+              title: product.title,
+              quantity: 1,
+            }],
+          },
+        }, session.accessToken);
+      }
       setNotice('Produto adicionado ao carrinho.');
     } catch (error) {
       setNotice(errorMessage(error));
@@ -428,7 +618,7 @@ function useFeedActions(
         quantity: 1,
       }, session.accessToken);
       setNotice('Pedido criado. Continue no Financeiro para concluir o pagamento.');
-      await reloadOrders();
+      await reloadReviewOrders();
     } catch (error) {
       setNotice(errorMessage(error));
     }
@@ -437,7 +627,9 @@ function useFeedActions(
   return {
     commentProduct,
     supplierProduct,
-    canComment: (product: FeedProduct) => Boolean(getReviewOrder(orders, product)),
+    canComment: (product: FeedProduct) => Boolean(
+      eligibleOrder(reviewOrders, product),
+    ),
     favorite,
     addToCart,
     buy,
@@ -457,82 +649,110 @@ export function MarketplaceView({
   onBack,
   onProfile,
 }: ViewProps & { hint?: JourneyHint } & FeedNavigationProps) {
-  const [offers, setOffers] = useState<Offer[]>([]);
-  const [orders, setOrders] = useState<ConsumerOrder[]>([]);
-  const [shoppingContext, setShoppingContext] = useState<UserShoppingContext>({
-    interests: [],
-    affordabilityConsent: false,
-    safeMonthlyLimit: null,
-  });
+  const [products, setProducts] = useState<FeedProduct[]>([]);
+  const [reviewOrders, setReviewOrders] = useState<ReviewOrder[]>([]);
+  const [context, setContext] = useState<ShoppingContext>(EMPTY_CONTEXT);
+  const [deviceCoordinates, setDeviceCoordinates] = useState<
+    Coordinates | null | undefined
+  >(undefined);
   const [query, setQuery] = useState(hint?.query ?? '');
   const [appliedQuery, setAppliedQuery] = useState(hint?.query ?? '');
   const [category, setCategory] = useState('');
-  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState('');
   const [total, setTotal] = useState(0);
 
-  const reloadOrders = useCallback(async () => {
-    setOrders(await loadConsumerOrders(session));
+  const reloadReviewOrders = useCallback(async () => {
+    setReviewOrders(await loadReviewEligibility(session));
   }, [session]);
 
   useEffect(() => {
-    void currentLocation().then(setCoordinates);
-    void loadShoppingContext(session).then(setShoppingContext);
-    void reloadOrders();
-  }, [reloadOrders, session]);
+    void currentLocation().then(setDeviceCoordinates);
+    void loadShoppingContext(session).then(setContext);
+    void reloadReviewOrders();
+  }, [reloadReviewOrders, session]);
+
+  const coordinates = deviceCoordinates ?? context.fallbackCoordinates;
 
   const load = useCallback(async (append = false, offset = 0) => {
+    if (!context.ready || deviceCoordinates === undefined) return;
+    if (!coordinates) {
+      setProducts([]);
+      setTotal(0);
+      setError(
+        'Ative a localização ou cadastre um endereço de entrega/residencial '
+        + 'com coordenadas para ver ofertas em até 10 km.',
+      );
+      setLoading(false);
+      return;
+    }
+
     if (append) setLoadingMore(true);
     else setLoading(true);
     setError('');
     const params = new URLSearchParams({
+      latitude: String(coordinates.lat),
+      longitude: String(coordinates.lng),
+      radius_km: '10',
       offset: String(offset),
       limit: '30',
-      radius_km: '10',
-      location_fallback: 'delivery_address,residential_address',
-      ranking: 'interest_distance',
+      sort: 'relevance',
+      in_stock_only: 'true',
     });
     if (appliedQuery.trim()) params.set('q', appliedQuery.trim());
     if (category) params.set('category', category);
-    if (coordinates) {
-      params.set('lat', String(coordinates.lat));
-      params.set('lng', String(coordinates.lng));
-    }
-    if (shoppingContext.interests.length) {
-      params.set('interests', shoppingContext.interests.join(','));
-    }
+
     try {
-      const data = await request<CatalogResponse>(`/gateway/catalog/offers?${params}`);
-      setOffers(current => append ? [...current, ...(data.data ?? [])] : (data.data ?? []));
-      setTotal(data.total ?? 0);
+      const data = await request<MarketplaceCatalogResponse>(
+        `/marketplace/valley/marketplace/catalog?${params}`,
+        'GET',
+        undefined,
+        session.accessToken,
+      );
+      const nextProducts = (data.items ?? [])
+        .map(normalizeMarketplaceItem)
+        .filter(product => (
+          product.distanceKm != null && product.distanceKm <= 10
+        ))
+        .sort((left, right) => {
+          const interestDifference = interestScore(right, context.interests)
+            - interestScore(left, context.interests);
+          if (interestDifference) return interestDifference;
+          return (left.distanceKm ?? 10) - (right.distanceKm ?? 10);
+        });
+      setProducts(current => (
+        append ? [...current, ...nextProducts] : nextProducts
+      ));
+      setTotal(data.total ?? nextProducts.length);
     } catch (loadError) {
       setError(errorMessage(loadError));
-      if (!append) setOffers([]);
+      if (!append) setProducts([]);
     } finally {
       if (append) setLoadingMore(false);
       else setLoading(false);
     }
-  }, [appliedQuery, category, coordinates, shoppingContext.interests]);
+  }, [
+    appliedQuery,
+    category,
+    context.interests,
+    context.ready,
+    coordinates,
+    deviceCoordinates,
+    session.accessToken,
+  ]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => { void load(false, 0); }, 0);
     return () => window.clearTimeout(timer);
   }, [load]);
 
-  const products = useMemo(() => offers
-    .filter(offer => offer.source_module !== 'stock')
-    .map(normalizeOffer)
-    .filter(product => product.distanceKm == null || product.distanceKm <= 10)
-    .sort((left, right) => {
-      const interestDifference = interestScore(right, shoppingContext.interests)
-        - interestScore(left, shoppingContext.interests);
-      if (interestDifference) return interestDifference;
-      return (left.distanceKm ?? 999) - (right.distanceKm ?? 999);
-    }), [offers, shoppingContext.interests]);
-
-  const actions = useFeedActions(session, setNotice, orders, reloadOrders);
+  const actions = useFeedActions(
+    session,
+    setNotice,
+    reviewOrders,
+    reloadReviewOrders,
+  );
   const mode = hint?.mode;
   if (mode === 'sell' || mode === 'repair-request') {
     return <SellerComposer
@@ -553,7 +773,7 @@ export function MarketplaceView({
       avatarDataUrl={avatarDataUrl}
       loading={loading}
       error={error}
-      hasMore={offers.length < total}
+      hasMore={products.length < total}
       loadingMore={loadingMore}
       canComment={actions.canComment}
       onHome={onHome}
@@ -567,12 +787,12 @@ export function MarketplaceView({
       onAddToCart={product => { void actions.addToCart(product); }}
       onBuy={product => { void actions.buy(product); }}
       onSupplier={actions.openSupplier}
-      onLoadMore={() => { void load(true, offers.length); }}
+      onLoadMore={() => { void load(true, products.length); }}
     />
     <FeedDialogs
       commentProduct={actions.commentProduct}
       supplierProduct={actions.supplierProduct}
-      orders={orders}
+      reviewOrders={reviewOrders}
       session={session}
       setNotice={setNotice}
       onCloseComment={actions.closeComment}
@@ -592,28 +812,25 @@ export function StockView({
 }: ViewProps & { hint?: JourneyHint } & FeedNavigationProps) {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [fallbackItems, setFallbackItems] = useState<ApiItem[]>([]);
-  const [orders, setOrders] = useState<ConsumerOrder[]>([]);
-  const [shoppingContext, setShoppingContext] = useState<UserShoppingContext>({
-    interests: [],
-    affordabilityConsent: false,
-    safeMonthlyLimit: null,
-  });
+  const [reviewOrders, setReviewOrders] = useState<ReviewOrder[]>([]);
+  const [context, setContext] = useState<ShoppingContext>(EMPTY_CONTEXT);
   const [query, setQuery] = useState(hint?.query ?? '');
   const [appliedQuery, setAppliedQuery] = useState(hint?.query ?? '');
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const reloadOrders = useCallback(async () => {
-    setOrders(await loadConsumerOrders(session));
+  const reloadReviewOrders = useCallback(async () => {
+    setReviewOrders(await loadReviewEligibility(session));
   }, [session]);
 
   useEffect(() => {
-    void loadShoppingContext(session).then(setShoppingContext);
-    void reloadOrders();
-  }, [reloadOrders, session]);
+    void loadShoppingContext(session).then(setContext);
+    void reloadReviewOrders();
+  }, [reloadReviewOrders, session]);
 
   const load = useCallback(async () => {
+    if (!context.ready) return;
     setLoading(true);
     setError('');
     const params = new URLSearchParams({
@@ -623,18 +840,19 @@ export function StockView({
     });
     if (appliedQuery.trim()) params.set('q', appliedQuery.trim());
     if (category) params.set('category', category);
-    if (shoppingContext.interests.length) {
-      params.set('interests', shoppingContext.interests.join(','));
+    if (context.interests.length) {
+      params.set('interests', context.interests.join(','));
     }
     if (
-      shoppingContext.affordabilityConsent
-      && shoppingContext.safeMonthlyLimit != null
+      context.affordabilityConsent
+      && context.safeMonthlyLimit != null
     ) {
       params.set(
         'safe_monthly_commitment_max',
-        shoppingContext.safeMonthlyLimit.toFixed(2),
+        context.safeMonthlyLimit.toFixed(2),
       );
     }
+
     try {
       const [catalogResult, directResult] = await Promise.allSettled([
         request<CatalogResponse>(`/gateway/catalog/offers?${params}`),
@@ -655,7 +873,10 @@ export function StockView({
           ? directResult.value ?? []
           : [],
       );
-      if (catalogResult.status === 'rejected' && directResult.status === 'rejected') {
+      if (
+        catalogResult.status === 'rejected'
+        && directResult.status === 'rejected'
+      ) {
         throw catalogResult.reason;
       }
     } catch (loadError) {
@@ -663,7 +884,12 @@ export function StockView({
     } finally {
       setLoading(false);
     }
-  }, [appliedQuery, category, session.accessToken, shoppingContext]);
+  }, [
+    appliedQuery,
+    category,
+    context,
+    session.accessToken,
+  ]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => { void load(); }, 0);
@@ -674,7 +900,9 @@ export function StockView({
     const catalog = offers
       .filter(offer => offer.source_module === 'stock')
       .map(normalizeOffer);
-    const base = catalog.length ? catalog : fallbackItems.map(normalizeStockItem);
+    const base = catalog.length
+      ? catalog
+      : fallbackItems.map(normalizeStockItem);
     const normalizedQuery = appliedQuery.toLocaleLowerCase('pt-BR');
     return base
       .filter(product => !normalizedQuery || (
@@ -685,29 +913,43 @@ export function StockView({
       .filter(product => !category || product.category === category)
       .filter(product => {
         if (
-          !shoppingContext.affordabilityConsent
-          || shoppingContext.safeMonthlyLimit == null
+          !context.affordabilityConsent
+          || context.safeMonthlyLimit == null
         ) return true;
-        const monthlyCost = estimatedMonthlyCost(product);
-        return monthlyCost === 0 || monthlyCost <= shoppingContext.safeMonthlyLimit;
+        const commitment = monthlyCommitment(product);
+        return commitment === 0 || commitment <= context.safeMonthlyLimit;
       })
       .sort((left, right) => {
-        const interestDifference = interestScore(right, shoppingContext.interests)
-          - interestScore(left, shoppingContext.interests);
+        const interestDifference = interestScore(right, context.interests)
+          - interestScore(left, context.interests);
         if (interestDifference) return interestDifference;
         const rightSales = Number(
-          (fallbackItems.find(item => item.id === right.sourceEntityId)?.payload ?? {})
-            .sales_count ?? 0,
+          (fallbackItems.find(
+            item => item.id === right.sourceEntityId,
+          )?.payload ?? {}).sales_count ?? 0,
         );
         const leftSales = Number(
-          (fallbackItems.find(item => item.id === left.sourceEntityId)?.payload ?? {})
-            .sales_count ?? 0,
+          (fallbackItems.find(
+            item => item.id === left.sourceEntityId,
+          )?.payload ?? {}).sales_count ?? 0,
         );
         return rightSales - leftSales;
       });
-  }, [appliedQuery, category, fallbackItems, offers, shoppingContext]);
+  }, [
+    appliedQuery,
+    category,
+    context,
+    fallbackItems,
+    offers,
+  ]);
 
-  const actions = useFeedActions(session, setNotice, orders, reloadOrders);
+  const actions = useFeedActions(
+    session,
+    setNotice,
+    reviewOrders,
+    reloadReviewOrders,
+  );
+
   return <>
     <ProductFeed
       title='Estoque'
@@ -734,7 +976,7 @@ export function StockView({
     <FeedDialogs
       commentProduct={actions.commentProduct}
       supplierProduct={actions.supplierProduct}
-      orders={orders}
+      reviewOrders={reviewOrders}
       session={session}
       setNotice={setNotice}
       onCloseComment={actions.closeComment}
@@ -742,8 +984,11 @@ export function StockView({
     />
     {!loading
       && products.length === 0
-      && shoppingContext.affordabilityConsent
-      && shoppingContext.safeMonthlyLimit != null
-      && <StateCard text='Nenhum produto encontrado dentro dos interesses e do limite mensal informado. Ajuste seus dados ou use a busca.' />}
+      && context.affordabilityConsent
+      && context.safeMonthlyLimit != null
+      && <StateCard text={
+        'Nenhum produto foi encontrado dentro dos interesses e do limite '
+        + 'mensal autorizado. Ajuste seus dados ou use a busca.'
+      } />}
   </>;
 }
