@@ -1,10 +1,31 @@
 from __future__ import annotations
 
+import importlib.util
+from pathlib import Path
+from types import ModuleType
+
 import pytest
 from starlette.routing import Mount
 from starlette.testclient import TestClient
 
-from main import app, project_status, search_repository
+SERVICE_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _load_gateway() -> ModuleType:
+    spec = importlib.util.spec_from_file_location(
+        "aio_mcp_gateway_main",
+        SERVICE_ROOT / "main.py",
+    )
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+gateway = _load_gateway()
+app = gateway.app
+project_status = gateway.project_status
+search_repository = gateway.search_repository
 
 
 def test_health() -> None:
