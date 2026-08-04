@@ -17,98 +17,55 @@ import { Modal, SectionHeader, StateCard } from '../ui';
 
 type Navigate = (view: ViewKey, hint?: JourneyHint) => void;
 type IntentOption = { label: string; description: string; view: ViewKey; hint?: JourneyHint };
-type ConsumerIntent = {
-  key: string;
-  label: string;
-  description: string;
-  symbol: string;
-  options: IntentOption[];
-};
+type ConsumerIntent = { key: string; label: string; description: string; symbol: string; options: IntentOption[] };
 
 const intents: ConsumerIntent[] = [
   {
-    key: 'comprar',
-    label: 'Comprar',
-    description: 'Produtos, ofertas e itens disponíveis perto de você.',
-    symbol: '↓',
+    key: 'comprar', label: 'Comprar', description: 'Produtos, ofertas e itens disponíveis perto de você.', symbol: '↓',
     options: [
-      { label: 'Marketplace', description: 'Entrar direto no feed de produtos e novidades.', view: 'marketplace', hint: { intent: 'comprar', mode: 'feed' } },
-      { label: 'Estoque', description: 'Consultar produtos disponíveis por empresa e localização.', view: 'stock', hint: { intent: 'comprar', mode: 'browse' } },
+      { label: 'Marketplace', description: 'Abrir o feed de produtos, categorias e novidades.', view: 'marketplace', hint: { intent: 'comprar', mode: 'feed' } },
+      { label: 'Estoque', description: 'Abrir o feed de produtos de fornecedores e empresas.', view: 'stock', hint: { intent: 'comprar', mode: 'feed' } },
     ],
   },
   {
-    key: 'vender',
-    label: 'Vender',
-    description: 'Anuncie produtos ou organize o que sua empresa oferece.',
-    symbol: '↑',
+    key: 'vender', label: 'Vender', description: 'Crie um anúncio de venda de forma simples e guiada.', symbol: '↑',
+    options: [{ label: 'Vender um item', description: 'Cadastrar item, fotos, preço e condições no Marketplace.', view: 'marketplace', hint: { intent: 'vender', mode: 'sell' } }],
+  },
+  {
+    key: 'contratar', label: 'Contratar', description: 'Escolha o tipo de profissional ou atendimento necessário.', symbol: '+',
     options: [
-      { label: 'Anunciar no Marketplace', description: 'Preparar um anúncio para o catálogo do Valley.', view: 'marketplace', hint: { intent: 'vender', mode: 'sell' } },
-      { label: 'Cadastrar no Estoque', description: 'Registrar item, preço e disponibilidade.', view: 'stock', hint: { intent: 'vender', mode: 'sell' } },
+      { label: 'Contratar para uma vaga', description: 'Publicar uma oportunidade e encontrar candidatos.', view: 'jobs', hint: { intent: 'contratar', mode: 'recruit' } },
+      { label: 'Contratar apoio jurídico', description: 'Encontrar orientação, contratos e acompanhamento jurídico.', view: 'legal', hint: { intent: 'contratar', mode: 'hire' } },
+      { label: 'Contratar atendimento de saúde', description: 'Buscar especialidade, profissional ou agendamento.', view: 'health', hint: { intent: 'contratar', mode: 'hire' } },
     ],
   },
   {
-    key: 'contratar',
-    label: 'Contratar',
-    description: 'Encontre profissionais, serviços ou pessoas para uma vaga.',
-    symbol: '+',
-    options: [
-      { label: 'Contratar um serviço', description: 'Buscar profissionais e horários disponíveis.', view: 'services', hint: { intent: 'contratar', mode: 'hire' } },
-      { label: 'Contratar para uma vaga', description: 'Criar ou acompanhar uma oportunidade de trabalho.', view: 'jobs', hint: { intent: 'contratar', mode: 'recruit' } },
-    ],
+    key: 'alugar', label: 'Alugar', description: 'Encontre propriedades, imóveis e unidades disponíveis.', symbol: '◇',
+    options: [{ label: 'Buscar imóvel ou propriedade', description: 'Abrir o catálogo de propriedades e locações.', view: 'property', hint: { intent: 'alugar', mode: 'rent' } }],
   },
   {
-    key: 'alugar',
-    label: 'Alugar',
-    description: 'Encontre ou anuncie itens, espaços e equipamentos para aluguel.',
-    symbol: '◇',
-    options: [
-      { label: 'Buscar para alugar', description: 'Abrir resultados e ofertas de aluguel.', view: 'marketplace', hint: { intent: 'alugar', mode: 'feed', query: 'aluguel' } },
-      { label: 'Anunciar para aluguel', description: 'Preparar uma oferta de aluguel.', view: 'marketplace', hint: { intent: 'alugar', mode: 'sell', query: 'aluguel' } },
-    ],
+    key: 'consertar', label: 'Consertar', description: 'Anuncie um item que precisa de um profissional especializado.', symbol: '⌁',
+    options: [{ label: 'Publicar pedido de conserto', description: 'Descrever o item, o defeito e a região no Marketplace.', view: 'marketplace', hint: { intent: 'consertar', mode: 'repair-request' } }],
   },
   {
-    key: 'consertar',
-    label: 'Consertar',
-    description: 'Ache assistência, manutenção ou solicite um orçamento.',
-    symbol: '⌁',
-    options: [
-      { label: 'Encontrar assistência', description: 'Buscar oficinas e profissionais de reparo.', view: 'services', hint: { intent: 'consertar', mode: 'hire', query: 'conserto' } },
-      { label: 'Solicitar orçamento', description: 'Abrir uma solicitação de reparo.', view: 'services', hint: { intent: 'consertar', mode: 'request', query: 'reparo' } },
-    ],
+    key: 'pagar', label: 'Pagar', description: 'Acesse cobranças, pedidos e pagamentos.', symbol: '−',
+    options: [{ label: 'Abrir financeiro', description: 'Consultar valores, cobranças e formas de pagamento.', view: 'finance', hint: { intent: 'pagar', mode: 'pay' } }],
   },
   {
-    key: 'pagar',
-    label: 'Pagar',
-    description: 'Pedidos, cobranças e pagamentos em um só lugar.',
-    symbol: '−',
-    options: [
-      { label: 'Abrir pagamentos', description: 'Consultar pedidos e valores a pagar.', view: 'commerce', hint: { intent: 'pagar', mode: 'pay' } },
-    ],
+    key: 'receber', label: 'Receber', description: 'Acompanhe carteira, repasses e valores a receber.', symbol: '=',
+    options: [{ label: 'Abrir financeiro', description: 'Consultar recebimentos, carteira e valores protegidos.', view: 'finance', hint: { intent: 'receber', mode: 'receive' } }],
   },
   {
-    key: 'receber',
-    label: 'Receber',
-    description: 'Acompanhe carteira, repasses e valores protegidos.',
-    symbol: '=',
+    key: 'trabalhar', label: 'Trabalhar', description: 'Busque emprego ou ofereça seu trabalho especializado.', symbol: '✦',
     options: [
-      { label: 'Abrir recebimentos', description: 'Consultar carteira, escrow e histórico.', view: 'commerce', hint: { intent: 'receber', mode: 'receive' } },
-    ],
-  },
-  {
-    key: 'trabalhar',
-    label: 'Trabalhar',
-    description: 'Busque emprego ou cadastre-se para novas oportunidades.',
-    symbol: '✦',
-    options: [
-      { label: 'Buscar emprego', description: 'Pesquisar vagas e acompanhar candidaturas.', view: 'jobs', hint: { intent: 'trabalhar', mode: 'seek' } },
-      { label: 'Quero trabalhar', description: 'Criar seu cadastro profissional e demonstrar interesse.', view: 'jobs', hint: { intent: 'trabalhar', mode: 'offer' } },
+      { label: 'Buscar emprego', description: 'Cadastrar ou editar currículo e abrir o feed de vagas.', view: 'jobs', hint: { intent: 'trabalhar', mode: 'seek' } },
+      { label: 'Oferecer trabalho', description: 'Cadastrar-se como prestador especializado em uma área.', view: 'jobs', hint: { intent: 'trabalhar', mode: 'offer' } },
     ],
   },
 ];
 
 export function HomeView({ onNavigate }: { onNavigate: Navigate }) {
   const [selectedIntent, setSelectedIntent] = useState<ConsumerIntent | null>(null);
-
   const chooseIntent = (intent: ConsumerIntent) => {
     if (intent.options.length === 1) {
       const option = intent.options[0];
@@ -117,37 +74,11 @@ export function HomeView({ onNavigate }: { onNavigate: Navigate }) {
     }
     setSelectedIntent(intent);
   };
-
   return <section className='intent-home'>
-    <div className='intent-hero'>
-      <span className='intent-kicker'>O que você quer fazer agora?</span>
-      <h1>Escolha uma intenção.</h1>
-      <p>O Valley leva você ao lugar certo sem exigir que conheça nomes de módulos ou menus técnicos.</p>
-    </div>
-    <div className='intent-grid'>
-      {intents.map(intent => <button key={intent.key} type='button' className='intent-card' onClick={() => chooseIntent(intent)}>
-        <span className='intent-symbol' aria-hidden='true'>{intent.symbol}</span>
-        <span className='intent-copy'><strong>{intent.label}</strong><small>{intent.description}</small></span>
-        <span className='intent-arrow' aria-hidden='true'>›</span>
-      </button>)}
-    </div>
-    <details className='utility-drawer'>
-      <summary>Outras utilidades</summary>
-      <div className='utility-links'>
-        <button type='button' onClick={() => onNavigate('delivery')}>Entregas</button>
-        <button type='button' onClick={() => onNavigate('mobility')}>Mobilidade</button>
-        <button type='button' onClick={() => onNavigate('life')}>Saúde e documentos</button>
-        <button type='button' onClick={() => onNavigate('settings')}>Ajustes</button>
-      </div>
-    </details>
-    {selectedIntent && <Modal title={selectedIntent.label} onClose={() => setSelectedIntent(null)}>
-      <p className='intent-modal-copy'>{selectedIntent.description}</p>
-      <div className='intent-option-list'>
-        {selectedIntent.options.map(option => <button key={option.label} type='button' className='intent-option' onClick={() => { setSelectedIntent(null); onNavigate(option.view, option.hint); }}>
-          <strong>{option.label}</strong><span>{option.description}</span><b aria-hidden='true'>›</b>
-        </button>)}
-      </div>
-    </Modal>}
+    <div className='intent-hero'><h1>O que você quer fazer?</h1><p>Escolha uma ação simples e o Valley leva você diretamente ao contexto necessário.</p></div>
+    <div className='intent-grid'>{intents.map(intent => <button key={intent.key} type='button' className='intent-card' onClick={() => chooseIntent(intent)}><span className='intent-symbol' aria-hidden='true'>{intent.symbol}</span><span className='intent-copy'><strong>{intent.label}</strong><small>{intent.description}</small></span><span className='intent-arrow' aria-hidden='true'>›</span></button>)}</div>
+    <details className='utility-drawer'><summary>Outras utilidades</summary><div className='utility-links'><button type='button' onClick={() => onNavigate('delivery')}>Entregas</button><button type='button' onClick={() => onNavigate('mobility')}>Mobilidade</button><button type='button' onClick={() => onNavigate('life')}>Documentos</button><button type='button' onClick={() => onNavigate('settings')}>Ajustes</button></div></details>
+    {selectedIntent && <Modal title={selectedIntent.label} onClose={() => setSelectedIntent(null)}><p className='intent-modal-copy'>{selectedIntent.description}</p><div className='intent-option-list'>{selectedIntent.options.map(option => <button key={option.label} type='button' className='intent-option' onClick={() => { setSelectedIntent(null); onNavigate(option.view, option.hint); }}><strong>{option.label}</strong><span>{option.description}</span><b aria-hidden='true'>›</b></button>)}</div></Modal>}
   </section>;
 }
 
@@ -162,19 +93,17 @@ export function MarketplaceView({ session, setNotice, hint }: ViewProps & { hint
   const [error, setError] = useState('');
   const [selected, setSelected] = useState<Offer | null>(null);
   const [actionResult, setActionResult] = useState<JsonRecord | null>(null);
+  const [listingTitle, setListingTitle] = useState('');
+  const [listingDescription, setListingDescription] = useState('');
+  const [listingCategory, setListingCategory] = useState('');
+  const [listingPrice, setListingPrice] = useState('');
+  const [listingRegion, setListingRegion] = useState('');
 
-  useEffect(() => {
-    const nextQuery = hint?.query ?? '';
-    setQuery(nextQuery);
-    setAppliedQuery(nextQuery);
-  }, [hint?.query]);
-
+  useEffect(() => { const nextQuery = hint?.query ?? ''; setQuery(nextQuery); setAppliedQuery(nextQuery); }, [hint?.query]);
   const load = useCallback(async (append = false, offset = 0) => {
     if (append) setLoadingMore(true); else setLoading(true);
     setError('');
-    const params = new URLSearchParams();
-    params.append('offset', String(offset));
-    params.append('limit', '20');
+    const params = new URLSearchParams({ offset: String(offset), limit: '20' });
     if (appliedQuery.trim()) params.set('q', appliedQuery.trim());
     if (category) params.set('category', category);
     try {
@@ -182,24 +111,34 @@ export function MarketplaceView({ session, setNotice, hint }: ViewProps & { hint
       setOffers(current => append ? [...current, ...(data.data ?? [])] : (data.data ?? []));
       setTotal(data.total ?? 0);
       if (data.partial) setNotice('Algumas fontes estão temporariamente indisponíveis.');
-    } catch (err) {
-      setError(errorMessage(err));
-      if (!append) setOffers([]);
-    } finally {
-      if (append) setLoadingMore(false); else setLoading(false);
-    }
+    } catch (err) { setError(errorMessage(err)); if (!append) setOffers([]); }
+    finally { if (append) setLoadingMore(false); else setLoading(false); }
   }, [appliedQuery, category, setNotice]);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => { void load(false, 0); }, 0);
-    return () => window.clearTimeout(timer);
-  }, [load]);
+  useEffect(() => { const timer = window.setTimeout(() => { void load(false, 0); }, 0); return () => window.clearTimeout(timer); }, [load]);
 
   const categories = useMemo(() => Array.from(new Set(offers.map(item => item.consumer_category))).filter(Boolean), [offers]);
-  const submitSearch = (event: FormEvent) => {
+  const submitSearch = (event: FormEvent) => { event.preventDefault(); const normalized = query.trim(); if (normalized === appliedQuery) void load(false, 0); else setAppliedQuery(normalized); };
+  const submitListing = async (event: FormEvent) => {
     event.preventDefault();
-    const normalized = query.trim();
-    if (normalized === appliedQuery) void load(false, 0); else setAppliedQuery(normalized);
+    const repairRequest = hint?.mode === 'repair-request';
+    try {
+      await request('/marketplace/resources/products', 'POST', {
+        user_id: session.userId,
+        status: 'draft',
+        payload: {
+          title: listingTitle,
+          description: listingDescription,
+          category: listingCategory,
+          price_amount: repairRequest ? null : listingPrice,
+          region: listingRegion,
+          listing_type: repairRequest ? 'repair_request' : 'sale',
+          requested_specialty: repairRequest ? listingCategory : null,
+        },
+      }, session.accessToken);
+      setListingTitle(''); setListingDescription(''); setListingCategory(''); setListingPrice(''); setListingRegion('');
+      setNotice(repairRequest ? 'Pedido de conserto publicado para análise.' : 'Item cadastrado para análise e publicação.');
+      await load(false, 0);
+    } catch (err) { setNotice(errorMessage(err)); }
   };
   const executeAction = async (offer: Offer) => {
     if (['view', 'coming_soon'].includes(offer.consumer_action)) { setSelected(offer); return; }
@@ -209,10 +148,10 @@ export function MarketplaceView({ session, setNotice, hint }: ViewProps & { hint
     } catch (err) { setNotice(errorMessage(err)); }
   };
   const pay = async () => {
-    const intent = actionResult?.payment_intent as JsonRecord | undefined;
-    if (!intent) return;
+    const paymentIntent = actionResult?.payment_intent as JsonRecord | undefined;
+    if (!paymentIntent) return;
     try {
-      const result = await request<JsonRecord>('/gateway/payments/sandbox/authorize', 'POST', { order_id: intent.order_id, method: 'pix_sandbox', idempotency_key: `payment-${intent.order_id}` }, session.accessToken);
+      const result = await request<JsonRecord>('/gateway/payments/sandbox/authorize', 'POST', { order_id: paymentIntent.order_id, method: 'pix_sandbox', idempotency_key: `payment-${paymentIntent.order_id}` }, session.accessToken);
       setNotice(String(result.message ?? 'Pagamento autorizado.')); setSelected(null); setActionResult(null);
     } catch (err) { setNotice(errorMessage(err)); }
   };
@@ -223,9 +162,13 @@ export function MarketplaceView({ session, setNotice, hint }: ViewProps & { hint
   };
 
   const isSelling = hint?.mode === 'sell';
-  return <section className='media-surface'><SectionHeader title={isSelling ? 'Vender no Marketplace' : 'Marketplace'} subtitle={isSelling ? 'Prepare sua oferta e acompanhe o catálogo em que ela será publicada.' : 'Feed de atualizações, categorias, produtos e ofertas verificadas.'} />
-    {isSelling && <div className='context-banner'><strong>Modo vendedor</strong><span>O fluxo comercial completo será liberado conforme as permissões da empresa.</span></div>}
-    <form className='search-panel search-panel-sticky' onSubmit={submitSearch}><label>Buscar produto, categoria ou empresa<input value={query} onChange={e => setQuery(e.target.value)} placeholder='Digite o que procura' /></label><button className='primary' type='submit'>Buscar</button></form>
+  const isRepairRequest = hint?.mode === 'repair-request';
+  const title = isSelling ? 'Vender um item' : isRepairRequest ? 'Publicar pedido de conserto' : 'Marketplace';
+  const subtitle = isSelling ? 'Cadastre o item que deseja vender, com informações claras para os compradores.' : isRepairRequest ? 'Anuncie o item, descreva o defeito e encontre alguém especializado.' : 'Feed de atualizações, categorias, produtos e ofertas verificadas.';
+
+  return <section className='media-surface'><SectionHeader title={title} subtitle={subtitle} />
+    {(isSelling || isRepairRequest) && <form className='form-card listing-composer' onSubmit={submitListing}><h2>{isRepairRequest ? 'O que precisa ser consertado?' : 'O que você quer vender?'}</h2><label>{isRepairRequest ? 'Item' : 'Título do anúncio'}<input value={listingTitle} onChange={event => setListingTitle(event.target.value)} required /></label><label>{isRepairRequest ? 'Defeito ou problema' : 'Descrição'}<textarea value={listingDescription} onChange={event => setListingDescription(event.target.value)} required /></label><label>{isRepairRequest ? 'Especialidade necessária' : 'Categoria'}<input value={listingCategory} onChange={event => setListingCategory(event.target.value)} placeholder={isRepairRequest ? 'Ex.: eletrônica, mecânica, costura' : 'Ex.: casa, tecnologia, moda'} required /></label>{!isRepairRequest && <label>Preço<input inputMode='decimal' value={listingPrice} onChange={event => setListingPrice(event.target.value)} required /></label>}<label>Região<input value={listingRegion} onChange={event => setListingRegion(event.target.value)} required /></label><button className='primary' type='submit'>{isRepairRequest ? 'Publicar pedido de conserto' : 'Cadastrar item para vender'}</button></form>}
+    <form className='search-panel search-panel-sticky' onSubmit={submitSearch}><label>Buscar produto, categoria ou empresa<input type='search' value={query} onChange={event => setQuery(event.target.value)} placeholder='Digite o que procura' /></label><button className='primary' type='submit'>Buscar</button></form>
     <div className='chip-row'><button type='button' className={!category ? 'chip active' : 'chip'} onClick={() => setCategory('')}>Tudo</button>{categories.map(item => <button type='button' key={item} className={category === item ? 'chip active' : 'chip'} onClick={() => setCategory(item)}>{item}</button>)}</div>
     {loading && <StateCard text='Sincronizando catálogo...' />}{error && <StateCard text={error} tone='error' actionLabel='Tentar novamente' onAction={() => void load(false, 0)} />}{!loading && !error && !offers.length && <StateCard text='Nenhuma oferta encontrada para estes filtros.' />}
     <div className='offer-grid feed-grid'>{offers.map(offer => <article className='offer-card feed-card' key={offer.offer_id}>{offer.metadata?.image_url && <img src={offer.metadata.image_url} alt='' loading='lazy' />}{offer.metadata?.video_url && <video src={offer.metadata.video_url} preload='none' muted controls playsInline />}<span className='eyebrow'>{offer.offer_type_label} · {offer.source_module}</span><h2>{offer.title}</h2><p>{offer.short_description ?? offer.description}</p><small>{offer.provider_label} · {offer.region_label}{offer.distance_km != null ? ` · ${offer.distance_km.toFixed(1)} km` : ''}</small><strong>{formatMoney(offer.price_amount)}</strong><div className='button-row'><button type='button' className='secondary' onClick={() => setSelected(offer)}>Detalhes</button>{offer.source_entity_id && <button type='button' className='secondary' onClick={() => favorite(offer)}>Favoritar</button>}{offer.consumer_action !== 'coming_soon' && <button type='button' className='primary' onClick={() => executeAction(offer)}>{offer.primary_action_label}</button>}</div></article>)}</div>
@@ -238,40 +181,14 @@ export function StockView({ session, setNotice, hint }: ViewProps & { hint?: Jou
   const [items, setItems] = useState<ApiItem[]>([]);
   const [query, setQuery] = useState(hint?.query ?? '');
   const [loading, setLoading] = useState(true);
-  const [title, setTitle] = useState('');
-  const [sku, setSku] = useState('');
-  const [price, setPrice] = useState('');
-
   const load = useCallback(async () => {
     setLoading(true);
-    try { setItems(await request<ApiItem[]>('/stock/resources/inventory_items', 'GET', undefined, session.accessToken) ?? []); }
+    try { setItems(await request<ApiItem[]>('/stock/resources/catalog_products', 'GET', undefined, session.accessToken) ?? []); }
     catch (err) { setNotice(errorMessage(err)); }
     finally { setLoading(false); }
   }, [session.accessToken, setNotice]);
-
   useEffect(() => { const timer = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(timer); }, [load]);
   useEffect(() => { setQuery(hint?.query ?? ''); }, [hint?.query]);
-
-  const filtered = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase('pt-BR');
-    if (!normalized) return items;
-    return items.filter(item => `${itemTitle(item)} ${itemSubtitle(item)} ${JSON.stringify(item.payload ?? {})}`.toLocaleLowerCase('pt-BR').includes(normalized));
-  }, [items, query]);
-
-  const create = async (event: FormEvent) => {
-    event.preventDefault();
-    try {
-      await request('/stock/resources/inventory_items', 'POST', { user_id: session.userId, status: 'ACTIVE', payload: { title, sku, price_amount: price } }, session.accessToken);
-      setTitle(''); setSku(''); setPrice(''); setNotice('Item enviado para o estoque.'); await load();
-    } catch (err) { setNotice(errorMessage(err)); }
-  };
-
-  const isSelling = hint?.mode === 'sell';
-  return <section><SectionHeader title={isSelling ? 'Cadastrar no Estoque' : 'Estoque'} subtitle='Consulte itens disponíveis por nome, código, empresa ou descrição.' actionLabel='Atualizar' onAction={load} />
-    <div className='search-panel single-search'><label>Buscar no estoque<input type='search' value={query} onChange={event => setQuery(event.target.value)} placeholder='Produto, SKU, empresa ou categoria' /></label></div>
-    {isSelling && <form className='form-card compact-form' onSubmit={create}><h2>Novo item</h2><label>Produto<input value={title} onChange={event => setTitle(event.target.value)} required /></label><label>Código ou SKU<input value={sku} onChange={event => setSku(event.target.value)} required /></label><label>Preço<input inputMode='decimal' value={price} onChange={event => setPrice(event.target.value)} required /></label><button className='primary' type='submit'>Cadastrar item</button></form>}
-    {loading && <StateCard text='Sincronizando estoque...' />}
-    {!loading && !filtered.length && <StateCard text='Nenhum item encontrado para esta busca.' />}
-    <div className='offer-grid'>{filtered.map(item => { const payload = item.payload ?? {}; const priceAmount = payload.price_amount == null ? null : String(payload.price_amount); return <article className='offer-card' key={item.id}><span className='eyebrow'>{item.status ?? 'disponível'}</span><h2>{itemTitle(item)}</h2><p>{itemSubtitle(item)}</p><small>{String(payload.sku ?? payload.code ?? 'Sem código informado')}</small><strong>{formatMoney(priceAmount)}</strong><button type='button' className='primary' onClick={() => setNotice(`Item ${itemTitle(item)} selecionado.`)}>Ver disponibilidade</button></article>; })}</div>
-  </section>;
+  const filtered = useMemo(() => { const normalized = query.trim().toLocaleLowerCase('pt-BR'); if (!normalized) return items; return items.filter(item => `${itemTitle(item)} ${itemSubtitle(item)} ${JSON.stringify(item.payload ?? {})}`.toLocaleLowerCase('pt-BR').includes(normalized)); }, [items, query]);
+  return <section className='media-surface'><SectionHeader title='Estoque' subtitle='Feed de produtos de fornecedores e empresas, com disponibilidade e busca direta.' actionLabel='Atualizar' onAction={load} /><div className='search-panel single-search search-panel-sticky'><label>Buscar no estoque<input type='search' value={query} onChange={event => setQuery(event.target.value)} placeholder='Produto, código, fornecedor ou categoria' /></label></div>{loading && <StateCard text='Sincronizando estoque...' />}{!loading && !filtered.length && <StateCard text='Nenhum produto encontrado para esta busca.' />}<div className='offer-grid feed-grid'>{filtered.map(item => { const payload = item.payload ?? {}; const priceAmount = payload.price_amount == null ? null : String(payload.price_amount); return <article className='offer-card feed-card' key={item.id}><span className='eyebrow'>{item.status ?? 'disponível'}</span><h2>{itemTitle(item)}</h2><p>{itemSubtitle(item)}</p><small>{String(payload.supplier_name ?? payload.external_sku ?? payload.sku ?? 'Fornecedor não informado')}</small><strong>{formatMoney(priceAmount)}</strong><button type='button' className='primary' onClick={() => setNotice(`Produto ${itemTitle(item)} selecionado.`)}>Ver produto</button></article>; })}</div></section>;
 }
