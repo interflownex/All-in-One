@@ -59,8 +59,10 @@ jobs:
         run: >-
           python -m compileall -q
           main.py security.py production_invariants.py request_limits.py deploy tests
+      - name: Remove local package from audit inventory
+        run: python -m pip uninstall --yes aio-mcp-gateway
       - name: Audit Python dependencies
-        run: pip-audit --strict --skip-editable --progress-spinner off
+        run: pip-audit --strict --progress-spinner off
       - name: Generate application SBOM
         run: cyclonedx-py environment --output-format JSON --output-file sbom.cdx.json
       - name: Package attestable source
