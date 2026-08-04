@@ -8,6 +8,13 @@ MIGRATION = (
     / "migrations"
     / "033_marketplace_checkout_mercado_pago.sql"
 )
+PREVIOUS_MIGRATION = (
+    ROOT
+    / "database"
+    / "postgres"
+    / "migrations"
+    / "032_marketplace_checkout_attempts.sql"
+)
 ROLLBACK = (
     ROOT
     / "database"
@@ -22,9 +29,15 @@ OPENAPI = ROOT / "modules" / "marketplace" / "checkout" / "OPENAPI.yaml"
 CONTRACT = ROOT / "modules" / "marketplace" / "CHECKOUT_CONTRACT.md"
 
 
-def test_migration_033_is_latest_and_extends_checkout_payment_methods() -> None:
-    migrations = sorted((ROOT / "database" / "postgres" / "migrations").glob("*.sql"))
-    assert migrations[-1].name == MIGRATION.name
+def test_migration_033_follows_checkout_base_and_extends_payment_methods() -> None:
+    migrations = sorted(
+        (ROOT / "database" / "postgres" / "migrations").glob("*.sql")
+    )
+    migration_names = [path.name for path in migrations]
+    previous_index = migration_names.index(PREVIOUS_MIGRATION.name)
+    migration_index = migration_names.index(MIGRATION.name)
+
+    assert migration_index == previous_index + 1
 
     sql = MIGRATION.read_text(encoding="utf-8")
     assert (
