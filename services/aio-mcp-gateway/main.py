@@ -10,6 +10,9 @@ from mcp.server.auth.settings import AuthSettings
 from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 from pydantic import AnyHttpUrl
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+
 from production_invariants import enforce_runtime_security_invariants
 from security import (
     OIDCTokenVerifier,
@@ -18,8 +21,6 @@ from security import (
     build_limiter,
     build_transport_security,
 )
-from starlette.requests import Request
-from starlette.responses import JSONResponse
 
 SERVICE_NAME = "aio-mcp-gateway"
 SERVICE_VERSION = "0.2.0"
