@@ -1,9 +1,10 @@
 import { type FormEvent, useCallback, useEffect, useState } from 'react';
 import { AccountView, SettingsView } from './views/AccountSettings';
-import { HomeView, MarketplaceView, StockView } from './views/HomeView';
+import { ConsumerHome } from './views/ConsumerHome';
+import { MarketplaceView, StockView } from './views/ProductViews';
 import { FinanceView, HealthView, LegalView, PropertyView } from './views/IntentViews';
 import { JobsView } from './views/JobsView';
-import { DeliveryView, LifeView, MobilityView } from './views/OperationalViews';
+import { DeliveryView, LifeView, MobilityView, ServicesView } from './views/OperationalViews';
 import {
   ValleyAvatarPicker,
   ValleyProfileAvatar,
@@ -28,6 +29,7 @@ type RouteState = { view: ViewKey; hint?: JourneyHint };
 function App() {
   const [session, setSession] = useState<Session | null>(() => loadSession());
   const [route, setRoute] = useState<RouteState>({ view: 'home' });
+  const [history, setHistory] = useState<RouteState[]>([]);
   const [notice, setNotice] = useState('');
   const [avatarDataUrl, setAvatarDataUrl] = useState('');
 
@@ -37,7 +39,23 @@ function App() {
   }, []);
 
   const navigate = useCallback((view: ViewKey, hint?: JourneyHint) => {
+    setHistory(current => [...current.slice(-19), route]);
     setRoute({ view, hint });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [route]);
+
+  const goHome = useCallback(() => {
+    setHistory([]);
+    setRoute({ view: 'home' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  const goBack = useCallback(() => {
+    setHistory(current => {
+      const previous = current.at(-1) ?? { view: 'home' as ViewKey };
+      setRoute(previous);
+      return current.slice(0, -1);
+    });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -92,12 +110,14 @@ function App() {
       }).catch(() => undefined);
     }
     updateSession(null);
+    setHistory([]);
     setRoute({ view: 'home' });
   }, [session, updateSession]);
 
   const authenticated = useCallback((next: Session, pendingAvatar: string) => {
     updateSession(next);
     if (pendingAvatar) saveProfileAvatar(next.userId, pendingAvatar);
+    setHistory([]);
     setRoute({ view: 'home' });
   }, [updateSession]);
 
@@ -105,9 +125,17 @@ function App() {
 
   const props = { session, setNotice };
   const view = route.view;
-  return <div className='app-shell'>
-    <header className='topbar'>
-      <button className='brand-button' type='button' onClick={() => navigate('home')} aria-label='Ir para o início'>
+  const immersiveFeed = (view === 'marketplace' && (route.hint?.mode ?? 'feed') === 'feed') || view === 'stock';
+  const feedNavigation = {
+    avatarDataUrl,
+    onHome: goHome,
+    onBack: goBack,
+    onProfile: () => navigate('account'),
+  };
+
+  return <div className={`app-shell ${immersiveFeed ? 'immersive-shell' : ''}`}>
+    {!immersiveFeed && <header className='topbar'>
+      <button className='brand-button' type='button' onClick={goHome} aria-label='Ir para o início'>
         <img src='/assets/brand/valley-logo-official.png' alt='Valley' />
       </button>
       <div className='topbar-actions'>
@@ -116,16 +144,17 @@ function App() {
           <ValleyProfileAvatar src={avatarDataUrl} size='small' />
         </button>
       </div>
-    </header>
+    </header>}
 
     {notice && <button className='global-notice' type='button' onClick={() => setNotice('')}>{notice}<span> ×</span></button>}
 
-    <main className='app-content'>
-      {view === 'home' && <HomeView onNavigate={navigate} />}
-      {view === 'marketplace' && <MarketplaceView {...props} hint={route.hint} />}
-      {view === 'stock' && <StockView {...props} hint={route.hint} />}
+    <main className={`app-content ${immersiveFeed ? 'immersive-content' : ''}`}>
+      {view === 'home' && <ConsumerHome onNavigate={navigate} />}
+      {view === 'marketplace' && <MarketplaceView {...props} hint={route.hint} {...feedNavigation} />}
+      {view === 'stock' && <StockView {...props} hint={route.hint} {...feedNavigation} />}
       {view === 'finance' && <FinanceView {...props} hint={route.hint} />}
       {view === 'jobs' && <JobsView {...props} hint={route.hint} />}
+      {view === 'services' && <ServicesView {...props} hint={route.hint} />}
       {view === 'legal' && <LegalView {...props} hint={route.hint} />}
       {view === 'health' && <HealthView {...props} hint={route.hint} />}
       {view === 'property' && <PropertyView {...props} hint={route.hint} />}
@@ -136,7 +165,7 @@ function App() {
       {view === 'settings' && <SettingsView {...props} onRefreshSession={refreshSession} onLogout={logout} />}
     </main>
 
-    <BottomNav route={route} navigate={navigate} />
+    {!immersiveFeed && <BottomNav route={route} navigate={navigate} />}
   </div>;
 }
 
@@ -221,7 +250,7 @@ function AuthScreen({ notice, onAuthenticated }: { notice: string; onAuthenticat
 
 function BottomNav({ route, navigate }: { route: RouteState; navigate: (view: ViewKey, hint?: JourneyHint) => void }) {
   const items: Array<{ key: ViewKey; label: string; icon: string; hint?: JourneyHint; active: ViewKey[] }> = [
-    { key: 'home', label: 'Início', icon: '⌂', active: ['home', 'delivery', 'mobility', 'life', 'legal', 'health', 'property'] },
+    { key: 'home', label: 'Início', icon: '⌂', active: ['home', 'delivery', 'mobility', 'life', 'legal', 'health', 'property', 'services'] },
     { key: 'marketplace', label: 'Comprar', icon: '▦', hint: { intent: 'comprar', mode: 'feed' }, active: ['marketplace', 'stock'] },
     { key: 'finance', label: 'Financeiro', icon: '◈', active: ['finance'] },
     { key: 'jobs', label: 'Trabalhar', icon: '✦', hint: { intent: 'trabalhar', mode: 'seek' }, active: ['jobs'] },
