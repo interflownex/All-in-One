@@ -32,7 +32,7 @@ jobs:
       run:
         working-directory: services/aio-mcp-gateway
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.12"
@@ -96,7 +96,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7
       - name: Build container
         run: docker build --pull -t aio-mcp-gateway:${{ github.sha }} services/aio-mcp-gateway
       - name: Start container

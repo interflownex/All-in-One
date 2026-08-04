@@ -34,7 +34,7 @@ jobs:
       MAPBOX_MOBILE_ACCESS_TOKEN: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'staging' && secrets.MAPBOX_MOBILE_ACCESS_TOKEN_STAGING || secrets.MAPBOX_MOBILE_ACCESS_TOKEN_PRODUCTION }}
       MAPBOX_TEST_REFERER: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'staging' && 'https://all-in-one-web-7fa.pages.dev' || 'https://brasildesconto.com.br' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Exigir credenciais Mapbox do ambiente
         shell: bash

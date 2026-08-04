@@ -55,7 +55,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Baixar repositorio
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -102,7 +102,7 @@ jobs:
       ALLOW_CREATE_MISSING_PROJECTS: ${{ inputs.allow_create_missing_official_projects }}
     steps:
       - name: Baixar repositorio
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
