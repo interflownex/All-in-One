@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import argparse
 import http.client
+import ipaddress
 import json
+import re
 import os
 import sys
 import urllib.parse
@@ -18,6 +20,8 @@ API_HOST = "api.cloudflare.com"
 API_PREFIX = "/client/v4"
 ALLOWED_ZONE = "brasildesconto.com.br"
 ALLOWED_RECORD_TYPES = {"CNAME"}
+ZONE_ID_PATTERN = re.compile(r"^[a-f0-9]{32}$")
+DNS_LABEL_PATTERN = re.compile(r"^(?!-)[a-z0-9-]{1,63}(?<!-)$")
 
 
 class ConfigurationError(RuntimeError):
@@ -127,6 +131,18 @@ def _validate_target(target: str, record_name: str) -> None:
         raise ConfigurationError(
             f"target CNAME deve ser apenas hostname para {record_name}"
         )
+    try:
+        ipaddress.ip_address(normalized)
+    except ValueError:
+        pass
+    else:
+        raise ConfigurationError(
+            f"target CNAME não pode ser endereço IP para {record_name}"
+        )
+    if len(normalized) > 253 or "." not in normalized:
+        raise ConfigurationError(f"target CNAME inválido para {record_name}")
+    if any(not DNS_LABEL_PATTERN.fullmatch(label) for label in normalized.split(".")):
+        raise ConfigurationError(f"target CNAME inválido para {record_name}")
     if normalized == record_name.casefold().rstrip("."):
         raise ConfigurationError(f"CNAME circular para {record_name}")
 
@@ -244,8 +260,7 @@ class CloudflareClient:
             ) from exc
         if response.status >= 400 or data.get("success") is not True:
             messages = ", ".join(
-                str(error.get("message", error))
-                for error in data.get("errors", [])
+                str(error.get("message", error)) for error in data.get("errors", [])
             )
             raise CloudflareAPIError(
                 f"Cloudflare rejeitou {method} {path}: "
@@ -254,8 +269,35 @@ class CloudflareClient:
         return data
 
     def zone_id(self, zone_name: str, account_id: str | None) -> str:
-        explicit = os.getenv("CLOUDFLARE_ZONE_ID", "").strip()
+        explicit = os.getenv("CLOUDFLARE_ZONE_ID", "").strip().casefold()
         if explicit:
+            if not ZONE_ID_PATTERN.fullmatch(explicit):
+                raise ConfigurationError("CLOUDFLARE_ZONE_ID inválido")
+            data = self.request("GET", f"/zones/{explicit}")
+            result = data.get("result")
+            if not isinstance(result, Mapping):
+                raise CloudflareAPIError("resposta de zona inválida")
+            actual_name = str(result.get("name", "")).strip().casefold()
+            actual_status = str(result.get("status", "")).strip().casefold()
+            account = result.get("account", {})
+            actual_account_id = (
+                str(account.get("id", "")).strip()
+                if isinstance(account, Mapping)
+                else ""
+            )
+            if actual_name != zone_name.casefold():
+                raise CloudflareAPIError(
+                    f"Zone ID pertence a {actual_name or '<desconhecida>'}, "
+                    f"não a {zone_name}"
+                )
+            if actual_status != "active":
+                raise CloudflareAPIError(
+                    f"zona {zone_name} não está ativa: {actual_status or '<ausente>'}"
+                )
+            if account_id and actual_account_id != account_id:
+                raise CloudflareAPIError(
+                    f"zona {zone_name} pertence a outra conta Cloudflare"
+                )
             return explicit
         query: dict[str, str] = {"name": zone_name, "status": "active"}
         if account_id:
@@ -266,9 +308,9 @@ class CloudflareClient:
             raise CloudflareAPIError(
                 f"zona {zone_name} não foi resolvida de forma única"
             )
-        zone_id = str(results[0].get("id", "")).strip()
-        if not zone_id:
-            raise CloudflareAPIError(f"zona {zone_name} sem id")
+        zone_id = str(results[0].get("id", "")).strip().casefold()
+        if not ZONE_ID_PATTERN.fullmatch(zone_id):
+            raise CloudflareAPIError(f"zona {zone_name} com id inválido")
         return zone_id
 
     def find_record(
@@ -302,8 +344,7 @@ class CloudflareClient:
         existing = self.find_record(zone_id, name)
         if len(existing) > 1:
             raise CloudflareAPIError(
-                f"mais de um registro existente para {name}; "
-                "revisão manual necessária"
+                f"mais de um registro existente para {name}; revisão manual necessária"
             )
         body = {
             "type": desired["type"],
@@ -477,4 +518,4 @@ if __name__ == "__main__":
         raise SystemExit(main())
     except Exception as exc:
         print(f"Erro DNS MCP: {redacted(str(exc))}", file=sys.stderr)
-        raise SystemExit(1)
+        raise SystemExit(1) from exc

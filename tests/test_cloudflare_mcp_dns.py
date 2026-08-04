@@ -36,8 +36,7 @@ def test_plan_uses_only_brasildesconto_subdomains() -> None:
     assert plan["zone_name"] == "brasildesconto.com.br"
     assert plan["canonical"]["hostname"] == "mcp.brasildesconto.com.br"
     environment_hostnames = {
-        item["environment"]: item["hostname"]
-        for item in plan["environments"]
+        item["environment"]: item["hostname"] for item in plan["environments"]
     }
     assert environment_hostnames == {
         "staging": "mcp-staging.brasildesconto.com.br",
@@ -72,9 +71,7 @@ def test_production_records_use_one_gateway_and_aliases(
         "mcp-rider.brasildesconto.com.br",
         "mcp-admin.brasildesconto.com.br",
     }
-    assert {item["content"] for item in aliases} == {
-        "mcp.brasildesconto.com.br"
-    }
+    assert {item["content"] for item in aliases} == {"mcp.brasildesconto.com.br"}
 
 
 def test_missing_environment_target_fails_closed(
@@ -116,6 +113,78 @@ def test_url_is_rejected_as_cname_target() -> None:
             "https://origin.example.net/path",
             "mcp.brasildesconto.com.br",
         )
+
+
+@pytest.mark.parametrize(
+    "target",
+    [
+        "127.0.0.1",
+        "single-label",
+        "-invalid.example.net",
+        "invalid-.example.net",
+        "invalid_underscore.example.net",
+    ],
+)
+def test_invalid_cname_targets_are_rejected(target: str) -> None:
+    with pytest.raises(dns.ConfigurationError, match="target CNAME"):
+        dns._validate_target(target, "mcp.brasildesconto.com.br")
+
+
+class ZoneClient(dns.CloudflareClient):
+    def __init__(self, result: dict[str, Any]) -> None:
+        super().__init__("test-token")
+        self.result = result
+
+    def request(
+        self,
+        method: str,
+        path: str,
+        payload: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        assert method == "GET"
+        assert path.startswith("/zones/")
+        assert payload is None
+        return {"success": True, "result": self.result}
+
+
+def test_explicit_zone_id_must_belong_to_allowed_zone(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("CLOUDFLARE_ZONE_ID", "a" * 32)
+    client = ZoneClient(
+        {
+            "name": "example.com",
+            "status": "active",
+            "account": {"id": "account-id"},
+        }
+    )
+    with pytest.raises(dns.CloudflareAPIError, match="não a brasildesconto.com.br"):
+        client.zone_id("brasildesconto.com.br", "account-id")
+
+
+def test_explicit_zone_id_must_be_active_and_match_account(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("CLOUDFLARE_ZONE_ID", "b" * 32)
+    inactive = ZoneClient(
+        {
+            "name": "brasildesconto.com.br",
+            "status": "pending",
+            "account": {"id": "account-id"},
+        }
+    )
+    with pytest.raises(dns.CloudflareAPIError, match="não está ativa"):
+        inactive.zone_id("brasildesconto.com.br", "account-id")
+
+    other_account = ZoneClient(
+        {
+            "name": "brasildesconto.com.br",
+            "status": "active",
+            "account": {"id": "other-account"},
+        }
+    )
+    with pytest.raises(dns.CloudflareAPIError, match="outra conta"):
+        other_account.zone_id("brasildesconto.com.br", "account-id")
 
 
 class FakeClient(dns.CloudflareClient):

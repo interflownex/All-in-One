@@ -239,7 +239,7 @@ def inspect_failed_jobs(limit: int = 10) -> dict[str, Any]:
     return {"items": [], "limit": limit, "integration_status": "oauth_required"}
 
 
-@mcp.custom_route("/health", methods=["GET"])
+@mcp.custom_route("/health", methods=["GET"])  # type: ignore[untyped-decorator]
 async def health(_: Request) -> JSONResponse:
     return JSONResponse(
         {
