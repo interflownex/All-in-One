@@ -35,7 +35,7 @@ type UserShoppingContext = {
   safeMonthlyLimit: number | null;
 };
 
-const completedStatuses = new Set(['completed', 'delivered']);
+const completedStatuses = new Set(['completed', 'delivered', 'paid', 'received']);
 
 function text(value: unknown) {
   return value == null ? '' : String(value);
@@ -43,12 +43,14 @@ function text(value: unknown) {
 
 function stringList(value: unknown) {
   if (Array.isArray(value)) return value.map(String).filter(Boolean);
-  if (typeof value === 'string') return value.split(',').map(item => item.trim()).filter(Boolean);
+  if (typeof value === 'string') {
+    return value.split(',').map(item => item.trim()).filter(Boolean);
+  }
   return [];
 }
 
 function normalizeOffer(offer: Offer): FeedProduct {
-  const metadata = offer.metadata as (Offer['metadata'] & Record<string, unknown>) | undefined;
+  const metadata = (offer.metadata ?? {}) as Record<string, unknown>;
   return {
     id: offer.offer_id,
     offerId: offer.offer_id,
@@ -61,9 +63,9 @@ function normalizeOffer(offer: Offer): FeedProduct {
     region: offer.region_label,
     distanceKm: offer.distance_km,
     priceAmount: offer.price_amount,
-    imageUrl: metadata?.primary_image_url ?? metadata?.image_url,
-    videoUrl: metadata?.video_url,
-    accentColor: text(metadata?.accent_color) || undefined,
+    imageUrl: text(metadata.primary_image_url ?? metadata.image_url) || undefined,
+    videoUrl: text(metadata.video_url) || undefined,
+    accentColor: text(metadata.accent_color) || undefined,
   };
 }
 
@@ -92,11 +94,18 @@ function orderMatches(order: ConsumerOrder, product: FeedProduct) {
   if (order.source_module && order.source_module !== product.sourceModule) return false;
   if (order.offer_id && order.offer_id === product.offerId) return true;
   if (order.source_entity_id && order.source_entity_id === product.sourceEntityId) return true;
-  return Boolean(order.title && order.title.trim().toLocaleLowerCase('pt-BR') === product.title.trim().toLocaleLowerCase('pt-BR'));
+  return Boolean(
+    order.title
+    && order.title.trim().toLocaleLowerCase('pt-BR')
+      === product.title.trim().toLocaleLowerCase('pt-BR'),
+  );
 }
 
 function getReviewOrder(orders: ConsumerOrder[], product: FeedProduct) {
-  return orders.find(order => (order.can_review === true || completedStatuses.has((order.status ?? '').toLocaleLowerCase('pt-BR'))) && orderMatches(order, product));
+  return orders.find(order => (
+    order.can_review === true
+    || completedStatuses.has((order.status ?? '').toLocaleLowerCase('pt-BR'))
+  ) && orderMatches(order, product));
 }
 
 function currentLocation() {
@@ -117,9 +126,13 @@ async function loadShoppingContext(session: ViewProps['session']): Promise<UserS
   try {
     const users = await request<ApiItem[]>('/identity/resources/users', 'GET', undefined, session.accessToken);
     const payload = users.find(item => item.id === session.userId)?.payload ?? {};
-    const interests = stringList(payload.shopping_interests ?? payload.interests ?? payload.favorite_categories);
+    const interests = stringList(
+      payload.shopping_interests ?? payload.interests ?? payload.favorite_categories,
+    );
     const consent = payload.purchase_power_consent === true;
-    if (!consent) return { interests, affordabilityConsent: false, safeMonthlyLimit: null };
+    if (!consent) {
+      return { interests, affordabilityConsent: false, safeMonthlyLimit: null };
+    }
 
     const verifiedIncome = Number(payload.verified_monthly_income_brl ?? 0);
     const declaredIncome = Number(payload.declared_monthly_income_brl ?? 0);
@@ -139,8 +152,14 @@ async function loadShoppingContext(session: ViewProps['session']): Promise<UserS
 }
 
 function interestScore(product: FeedProduct, interests: string[]) {
-  const haystack = `${product.category} ${product.title} ${product.description}`.toLocaleLowerCase('pt-BR');
-  return interests.reduce((score, interest) => score + (haystack.includes(interest.toLocaleLowerCase('pt-BR')) ? 1 : 0), 0);
+  const haystack = `${product.category} ${product.title} ${product.description}`
+    .toLocaleLowerCase('pt-BR');
+  return interests.reduce(
+    (score, interest) => score + (
+      haystack.includes(interest.toLocaleLowerCase('pt-BR')) ? 1 : 0
+    ),
+    0,
+  );
 }
 
 function estimatedMonthlyCost(product: FeedProduct) {
@@ -149,18 +168,30 @@ function estimatedMonthlyCost(product: FeedProduct) {
 }
 
 function categoriesFor(products: FeedProduct[]) {
-  return Array.from(new Set(products.map(product => product.category).filter(Boolean))).sort((left, right) => left.localeCompare(right, 'pt-BR'));
+  return Array.from(new Set(products.map(product => product.category).filter(Boolean)))
+    .sort((left, right) => left.localeCompare(right, 'pt-BR'));
 }
 
-async function loadReviewEligibleOrders(session: ViewProps['session']): Promise<ConsumerOrder[]> {
+async function loadConsumerOrders(session: ViewProps['session']): Promise<ConsumerOrder[]> {
   try {
-    return await request<ConsumerOrder[]>('/marketplace/valley/feed/review-eligibility', 'GET', undefined, session.accessToken) ?? [];
+    const result = await request<{ data?: ConsumerOrder[] }>(
+      '/gateway/consumer/orders',
+      'GET',
+      undefined,
+      session.accessToken,
+    );
+    return result.data ?? [];
   } catch {
     return [];
   }
 }
 
-function SellerComposer({ session, setNotice, mode, onDone }: ViewProps & { mode: 'sell' | 'repair-request'; onDone: () => void }) {
+function SellerComposer({
+  session,
+  setNotice,
+  mode,
+  onDone,
+}: ViewProps & { mode: 'sell' | 'repair-request'; onDone: () => void }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
@@ -184,22 +215,50 @@ function SellerComposer({ session, setNotice, mode, onDone }: ViewProps & { mode
           requested_specialty: repair ? category : null,
         },
       }, session.accessToken);
-      setTitle(''); setDescription(''); setCategory(''); setPrice(''); setRegion('');
-      setNotice(repair ? 'Pedido de conserto enviado para análise.' : 'Item enviado para análise e publicação.');
+      setTitle('');
+      setDescription('');
+      setCategory('');
+      setPrice('');
+      setRegion('');
+      setNotice(
+        repair
+          ? 'Pedido de conserto enviado para análise.'
+          : 'Item enviado para análise e publicação.',
+      );
       onDone();
     } catch (error) {
       setNotice(errorMessage(error));
     }
   };
 
-  return <section><SectionHeader title={repair ? 'Publicar pedido de conserto' : 'Vender um item'} subtitle={repair ? 'Descreva o item, o problema e a especialidade necessária.' : 'Cadastre fotos, descrição, preço e região do anúncio.'} />
+  return <section>
+    <SectionHeader
+      title={repair ? 'Publicar pedido de conserto' : 'Vender um item'}
+      subtitle={
+        repair
+          ? 'Descreva o item, o problema e a especialidade necessária.'
+          : 'Cadastre descrição, preço e região do anúncio.'
+      }
+    />
     <form className='form-card listing-composer' onSubmit={submit}>
-      <label>{repair ? 'Item que precisa de conserto' : 'Título do anúncio'}<input value={title} onChange={event => setTitle(event.target.value)} required /></label>
-      <label>{repair ? 'Defeito ou problema' : 'Descrição'}<textarea value={description} onChange={event => setDescription(event.target.value)} required /></label>
-      <label>{repair ? 'Especialidade necessária' : 'Categoria'}<input value={category} onChange={event => setCategory(event.target.value)} required /></label>
-      {!repair && <label>Preço<input inputMode='decimal' value={price} onChange={event => setPrice(event.target.value)} required /></label>}
-      <label>Região<input value={region} onChange={event => setRegion(event.target.value)} required /></label>
-      <button className='primary' type='submit'>{repair ? 'Publicar pedido' : 'Cadastrar item'}</button>
+      <label>{repair ? 'Item que precisa de conserto' : 'Título do anúncio'}
+        <input value={title} onChange={event => setTitle(event.target.value)} required />
+      </label>
+      <label>{repair ? 'Defeito ou problema' : 'Descrição'}
+        <textarea value={description} onChange={event => setDescription(event.target.value)} required />
+      </label>
+      <label>{repair ? 'Especialidade necessária' : 'Categoria'}
+        <input value={category} onChange={event => setCategory(event.target.value)} required />
+      </label>
+      {!repair && <label>Preço
+        <input inputMode='decimal' value={price} onChange={event => setPrice(event.target.value)} required />
+      </label>}
+      <label>Região
+        <input value={region} onChange={event => setRegion(event.target.value)} required />
+      </label>
+      <button className='primary' type='submit'>
+        {repair ? 'Publicar pedido' : 'Cadastrar item'}
+      </button>
     </form>
   </section>;
 }
@@ -270,21 +329,74 @@ function FeedDialogs({
   };
 
   return <>
-    {commentProduct && <Modal title='Comentar compra' onClose={onCloseComment}><p>{commentProduct.title}</p><label>Nota<input type='number' min='1' max='5' value={rating} onChange={event => setRating(Number(event.target.value))} /></label><label>Comentário<textarea value={comment} onChange={event => setComment(event.target.value)} maxLength={1000} /></label><button className='primary' type='button' onClick={submitComment}>Publicar comentário</button></Modal>}
-    {supplierProduct && <Modal title='Falar com o fornecedor' onClose={onCloseSupplier}><p>{supplierProduct.provider} · {supplierProduct.title}</p><label>Mensagem<textarea value={message} onChange={event => setMessage(event.target.value)} minLength={5} maxLength={1000} placeholder='Digite sua dúvida sobre o produto' /></label><button className='primary' type='button' disabled={message.trim().length < 5} onClick={submitSupplierMessage}>Enviar mensagem</button></Modal>}
+    {commentProduct && <Modal title='Comentar compra' onClose={onCloseComment}>
+      <p>{commentProduct.title}</p>
+      <label>Nota
+        <input
+          type='number'
+          min='1'
+          max='5'
+          value={rating}
+          onChange={event => setRating(Number(event.target.value))}
+        />
+      </label>
+      <label>Comentário
+        <textarea
+          value={comment}
+          onChange={event => setComment(event.target.value)}
+          maxLength={1000}
+        />
+      </label>
+      <button className='primary' type='button' onClick={submitComment}>
+        Publicar comentário
+      </button>
+    </Modal>}
+
+    {supplierProduct && <Modal title='Falar com o fornecedor' onClose={onCloseSupplier}>
+      <p>{supplierProduct.provider} · {supplierProduct.title}</p>
+      <label>Mensagem
+        <textarea
+          value={message}
+          onChange={event => setMessage(event.target.value)}
+          minLength={5}
+          maxLength={1000}
+          placeholder='Digite sua dúvida sobre o produto'
+        />
+      </label>
+      <button
+        className='primary'
+        type='button'
+        disabled={message.trim().length < 5}
+        onClick={submitSupplierMessage}
+      >
+        Enviar mensagem
+      </button>
+    </Modal>}
   </>;
 }
 
-function useFeedActions(session: ViewProps['session'], setNotice: ViewProps['setNotice'], orders: ConsumerOrder[], reloadOrders: () => Promise<void>) {
+function useFeedActions(
+  session: ViewProps['session'],
+  setNotice: ViewProps['setNotice'],
+  orders: ConsumerOrder[],
+  reloadOrders: () => Promise<void>,
+) {
   const [commentProduct, setCommentProduct] = useState<FeedProduct | null>(null);
   const [supplierProduct, setSupplierProduct] = useState<FeedProduct | null>(null);
 
   const favorite = async (product: FeedProduct) => {
     try {
       const entity = encodeURIComponent(product.sourceEntityId ?? product.offerId);
-      await request(`/marketplace/valley/favorites/${entity}`, 'PUT', undefined, session.accessToken);
+      await request(
+        `/marketplace/valley/favorites/${entity}`,
+        'PUT',
+        undefined,
+        session.accessToken,
+      );
       setNotice('Produto adicionado aos favoritos.');
-    } catch (error) { setNotice(errorMessage(error)); }
+    } catch (error) {
+      setNotice(errorMessage(error));
+    }
   };
 
   const addToCart = async (product: FeedProduct) => {
@@ -301,7 +413,9 @@ function useFeedActions(session: ViewProps['session'], setNotice: ViewProps['set
         },
       }, session.accessToken);
       setNotice('Produto adicionado ao carrinho.');
-    } catch (error) { setNotice(errorMessage(error)); }
+    } catch (error) {
+      setNotice(errorMessage(error));
+    }
   };
 
   const buy = async (product: FeedProduct) => {
@@ -315,7 +429,9 @@ function useFeedActions(session: ViewProps['session'], setNotice: ViewProps['set
       }, session.accessToken);
       setNotice('Pedido criado. Continue no Financeiro para concluir o pagamento.');
       await reloadOrders();
-    } catch (error) { setNotice(errorMessage(error)); }
+    } catch (error) {
+      setNotice(errorMessage(error));
+    }
   };
 
   return {
@@ -332,10 +448,22 @@ function useFeedActions(session: ViewProps['session'], setNotice: ViewProps['set
   };
 }
 
-export function MarketplaceView({ session, setNotice, hint, avatarDataUrl, onHome, onBack, onProfile }: ViewProps & { hint?: JourneyHint } & FeedNavigationProps) {
+export function MarketplaceView({
+  session,
+  setNotice,
+  hint,
+  avatarDataUrl,
+  onHome,
+  onBack,
+  onProfile,
+}: ViewProps & { hint?: JourneyHint } & FeedNavigationProps) {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [orders, setOrders] = useState<ConsumerOrder[]>([]);
-  const [shoppingContext, setShoppingContext] = useState<UserShoppingContext>({ interests: [], affordabilityConsent: false, safeMonthlyLimit: null });
+  const [shoppingContext, setShoppingContext] = useState<UserShoppingContext>({
+    interests: [],
+    affordabilityConsent: false,
+    safeMonthlyLimit: null,
+  });
   const [query, setQuery] = useState(hint?.query ?? '');
   const [appliedQuery, setAppliedQuery] = useState(hint?.query ?? '');
   const [category, setCategory] = useState('');
@@ -346,7 +474,7 @@ export function MarketplaceView({ session, setNotice, hint, avatarDataUrl, onHom
   const [total, setTotal] = useState(0);
 
   const reloadOrders = useCallback(async () => {
-    setOrders(await loadReviewEligibleOrders(session));
+    setOrders(await loadConsumerOrders(session));
   }, [session]);
 
   useEffect(() => {
@@ -356,13 +484,25 @@ export function MarketplaceView({ session, setNotice, hint, avatarDataUrl, onHom
   }, [reloadOrders, session]);
 
   const load = useCallback(async (append = false, offset = 0) => {
-    if (append) setLoadingMore(true); else setLoading(true);
+    if (append) setLoadingMore(true);
+    else setLoading(true);
     setError('');
-    const params = new URLSearchParams({ offset: String(offset), limit: '30', radius_km: '10', location_fallback: 'delivery_address,residential_address', ranking: 'interest_distance' });
+    const params = new URLSearchParams({
+      offset: String(offset),
+      limit: '30',
+      radius_km: '10',
+      location_fallback: 'delivery_address,residential_address',
+      ranking: 'interest_distance',
+    });
     if (appliedQuery.trim()) params.set('q', appliedQuery.trim());
     if (category) params.set('category', category);
-    if (coordinates) { params.set('lat', String(coordinates.lat)); params.set('lng', String(coordinates.lng)); }
-    if (shoppingContext.interests.length) params.set('interests', shoppingContext.interests.join(','));
+    if (coordinates) {
+      params.set('lat', String(coordinates.lat));
+      params.set('lng', String(coordinates.lng));
+    }
+    if (shoppingContext.interests.length) {
+      params.set('interests', shoppingContext.interests.join(','));
+    }
     try {
       const data = await request<CatalogResponse>(`/gateway/catalog/offers?${params}`);
       setOffers(current => append ? [...current, ...(data.data ?? [])] : (data.data ?? []));
@@ -371,18 +511,23 @@ export function MarketplaceView({ session, setNotice, hint, avatarDataUrl, onHom
       setError(errorMessage(loadError));
       if (!append) setOffers([]);
     } finally {
-      if (append) setLoadingMore(false); else setLoading(false);
+      if (append) setLoadingMore(false);
+      else setLoading(false);
     }
   }, [appliedQuery, category, coordinates, shoppingContext.interests]);
 
-  useEffect(() => { const timer = window.setTimeout(() => { void load(false, 0); }, 0); return () => window.clearTimeout(timer); }, [load]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void load(false, 0); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
 
   const products = useMemo(() => offers
     .filter(offer => offer.source_module !== 'stock')
     .map(normalizeOffer)
     .filter(product => product.distanceKm == null || product.distanceKm <= 10)
     .sort((left, right) => {
-      const interestDifference = interestScore(right, shoppingContext.interests) - interestScore(left, shoppingContext.interests);
+      const interestDifference = interestScore(right, shoppingContext.interests)
+        - interestScore(left, shoppingContext.interests);
       if (interestDifference) return interestDifference;
       return (left.distanceKm ?? 999) - (right.distanceKm ?? 999);
     }), [offers, shoppingContext.interests]);
@@ -390,7 +535,12 @@ export function MarketplaceView({ session, setNotice, hint, avatarDataUrl, onHom
   const actions = useFeedActions(session, setNotice, orders, reloadOrders);
   const mode = hint?.mode;
   if (mode === 'sell' || mode === 'repair-request') {
-    return <SellerComposer session={session} setNotice={setNotice} mode={mode} onDone={() => onHome()} />;
+    return <SellerComposer
+      session={session}
+      setNotice={setNotice}
+      mode={mode}
+      onDone={onHome}
+    />;
   }
 
   return <>
@@ -412,22 +562,42 @@ export function MarketplaceView({ session, setNotice, hint, avatarDataUrl, onHom
       onQueryChange={setQuery}
       onSearch={() => setAppliedQuery(query.trim())}
       onCategoryChange={setCategory}
-      onFavorite={product => void actions.favorite(product)}
+      onFavorite={product => { void actions.favorite(product); }}
       onComment={actions.openComment}
-      onAddToCart={product => void actions.addToCart(product)}
-      onBuy={product => void actions.buy(product)}
+      onAddToCart={product => { void actions.addToCart(product); }}
+      onBuy={product => { void actions.buy(product); }}
       onSupplier={actions.openSupplier}
-      onLoadMore={() => void load(true, offers.length)}
+      onLoadMore={() => { void load(true, offers.length); }}
     />
-    <FeedDialogs commentProduct={actions.commentProduct} supplierProduct={actions.supplierProduct} orders={orders} session={session} setNotice={setNotice} onCloseComment={actions.closeComment} onCloseSupplier={actions.closeSupplier} />
+    <FeedDialogs
+      commentProduct={actions.commentProduct}
+      supplierProduct={actions.supplierProduct}
+      orders={orders}
+      session={session}
+      setNotice={setNotice}
+      onCloseComment={actions.closeComment}
+      onCloseSupplier={actions.closeSupplier}
+    />
   </>;
 }
 
-export function StockView({ session, setNotice, hint, avatarDataUrl, onHome, onBack, onProfile }: ViewProps & { hint?: JourneyHint } & FeedNavigationProps) {
+export function StockView({
+  session,
+  setNotice,
+  hint,
+  avatarDataUrl,
+  onHome,
+  onBack,
+  onProfile,
+}: ViewProps & { hint?: JourneyHint } & FeedNavigationProps) {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [fallbackItems, setFallbackItems] = useState<ApiItem[]>([]);
   const [orders, setOrders] = useState<ConsumerOrder[]>([]);
-  const [shoppingContext, setShoppingContext] = useState<UserShoppingContext>({ interests: [], affordabilityConsent: false, safeMonthlyLimit: null });
+  const [shoppingContext, setShoppingContext] = useState<UserShoppingContext>({
+    interests: [],
+    affordabilityConsent: false,
+    safeMonthlyLimit: null,
+  });
   const [query, setQuery] = useState(hint?.query ?? '');
   const [appliedQuery, setAppliedQuery] = useState(hint?.query ?? '');
   const [category, setCategory] = useState('');
@@ -435,7 +605,7 @@ export function StockView({ session, setNotice, hint, avatarDataUrl, onHome, onB
   const [error, setError] = useState('');
 
   const reloadOrders = useCallback(async () => {
-    setOrders(await loadReviewEligibleOrders(session));
+    setOrders(await loadConsumerOrders(session));
   }, [session]);
 
   useEffect(() => {
@@ -446,19 +616,48 @@ export function StockView({ session, setNotice, hint, avatarDataUrl, onHome, onB
   const load = useCallback(async () => {
     setLoading(true);
     setError('');
-    const params = new URLSearchParams({ offset:'0', limit:'100', ranking:'interest_affordability_best_sellers' });
+    const params = new URLSearchParams({
+      offset: '0',
+      limit: '100',
+      ranking: 'interest_affordability_best_sellers',
+    });
     if (appliedQuery.trim()) params.set('q', appliedQuery.trim());
     if (category) params.set('category', category);
-    if (shoppingContext.interests.length) params.set('interests', shoppingContext.interests.join(','));
-    if (shoppingContext.affordabilityConsent && shoppingContext.safeMonthlyLimit != null) params.set('safe_monthly_commitment_max', shoppingContext.safeMonthlyLimit.toFixed(2));
+    if (shoppingContext.interests.length) {
+      params.set('interests', shoppingContext.interests.join(','));
+    }
+    if (
+      shoppingContext.affordabilityConsent
+      && shoppingContext.safeMonthlyLimit != null
+    ) {
+      params.set(
+        'safe_monthly_commitment_max',
+        shoppingContext.safeMonthlyLimit.toFixed(2),
+      );
+    }
     try {
       const [catalogResult, directResult] = await Promise.allSettled([
         request<CatalogResponse>(`/gateway/catalog/offers?${params}`),
-        request<ApiItem[]>('/stock/resources/catalog_products', 'GET', undefined, session.accessToken),
+        request<ApiItem[]>(
+          '/stock/resources/catalog_products',
+          'GET',
+          undefined,
+          session.accessToken,
+        ),
       ]);
-      setOffers(catalogResult.status === 'fulfilled' ? catalogResult.value.data ?? [] : []);
-      setFallbackItems(directResult.status === 'fulfilled' ? directResult.value ?? [] : []);
-      if (catalogResult.status === 'rejected' && directResult.status === 'rejected') throw catalogResult.reason;
+      setOffers(
+        catalogResult.status === 'fulfilled'
+          ? catalogResult.value.data ?? []
+          : [],
+      );
+      setFallbackItems(
+        directResult.status === 'fulfilled'
+          ? directResult.value ?? []
+          : [],
+      );
+      if (catalogResult.status === 'rejected' && directResult.status === 'rejected') {
+        throw catalogResult.reason;
+      }
     } catch (loadError) {
       setError(errorMessage(loadError));
     } finally {
@@ -466,25 +665,44 @@ export function StockView({ session, setNotice, hint, avatarDataUrl, onHome, onB
     }
   }, [appliedQuery, category, session.accessToken, shoppingContext]);
 
-  useEffect(() => { const timer = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(timer); }, [load]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
 
   const products = useMemo(() => {
-    const catalog = offers.filter(offer => offer.source_module === 'stock').map(normalizeOffer);
+    const catalog = offers
+      .filter(offer => offer.source_module === 'stock')
+      .map(normalizeOffer);
     const base = catalog.length ? catalog : fallbackItems.map(normalizeStockItem);
     const normalizedQuery = appliedQuery.toLocaleLowerCase('pt-BR');
     return base
-      .filter(product => !normalizedQuery || `${product.title} ${product.description} ${product.category}`.toLocaleLowerCase('pt-BR').includes(normalizedQuery))
+      .filter(product => !normalizedQuery || (
+        `${product.title} ${product.description} ${product.category}`
+          .toLocaleLowerCase('pt-BR')
+          .includes(normalizedQuery)
+      ))
       .filter(product => !category || product.category === category)
       .filter(product => {
-        if (!shoppingContext.affordabilityConsent || shoppingContext.safeMonthlyLimit == null) return true;
+        if (
+          !shoppingContext.affordabilityConsent
+          || shoppingContext.safeMonthlyLimit == null
+        ) return true;
         const monthlyCost = estimatedMonthlyCost(product);
         return monthlyCost === 0 || monthlyCost <= shoppingContext.safeMonthlyLimit;
       })
       .sort((left, right) => {
-        const interestDifference = interestScore(right, shoppingContext.interests) - interestScore(left, shoppingContext.interests);
+        const interestDifference = interestScore(right, shoppingContext.interests)
+          - interestScore(left, shoppingContext.interests);
         if (interestDifference) return interestDifference;
-        const rightSales = Number((fallbackItems.find(item => item.id === right.sourceEntityId)?.payload ?? {}).sales_count ?? 0);
-        const leftSales = Number((fallbackItems.find(item => item.id === left.sourceEntityId)?.payload ?? {}).sales_count ?? 0);
+        const rightSales = Number(
+          (fallbackItems.find(item => item.id === right.sourceEntityId)?.payload ?? {})
+            .sales_count ?? 0,
+        );
+        const leftSales = Number(
+          (fallbackItems.find(item => item.id === left.sourceEntityId)?.payload ?? {})
+            .sales_count ?? 0,
+        );
         return rightSales - leftSales;
       });
   }, [appliedQuery, category, fallbackItems, offers, shoppingContext]);
@@ -507,13 +725,25 @@ export function StockView({ session, setNotice, hint, avatarDataUrl, onHome, onB
       onQueryChange={setQuery}
       onSearch={() => setAppliedQuery(query.trim())}
       onCategoryChange={setCategory}
-      onFavorite={product => void actions.favorite(product)}
+      onFavorite={product => { void actions.favorite(product); }}
       onComment={actions.openComment}
-      onAddToCart={product => void actions.addToCart(product)}
-      onBuy={product => void actions.buy(product)}
+      onAddToCart={product => { void actions.addToCart(product); }}
+      onBuy={product => { void actions.buy(product); }}
       onSupplier={actions.openSupplier}
     />
-    <FeedDialogs commentProduct={actions.commentProduct} supplierProduct={actions.supplierProduct} orders={orders} session={session} setNotice={setNotice} onCloseComment={actions.closeComment} onCloseSupplier={actions.closeSupplier} />
-    {!loading && products.length === 0 && shoppingContext.affordabilityConsent && shoppingContext.safeMonthlyLimit != null && <StateCard text='Nenhum produto encontrado dentro dos interesses e do limite mensal informado. Ajuste seus dados ou use a busca.' />}
+    <FeedDialogs
+      commentProduct={actions.commentProduct}
+      supplierProduct={actions.supplierProduct}
+      orders={orders}
+      session={session}
+      setNotice={setNotice}
+      onCloseComment={actions.closeComment}
+      onCloseSupplier={actions.closeSupplier}
+    />
+    {!loading
+      && products.length === 0
+      && shoppingContext.affordabilityConsent
+      && shoppingContext.safeMonthlyLimit != null
+      && <StateCard text='Nenhum produto encontrado dentro dos interesses e do limite mensal informado. Ajuste seus dados ou use a busca.' />}
   </>;
 }
