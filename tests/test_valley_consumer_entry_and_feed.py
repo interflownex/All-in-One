@@ -5,15 +5,17 @@ from uuid import uuid4
 from platform_test_support import fresh_client_for
 
 
-def actor_headers(user_id: str) -> dict[str, str]:
-    return {"X-Actor-User-Id": user_id, "X-Actor-Roles": "consumer"}
+def actor_headers(user_id: str, idempotency_key: str | None = None) -> dict[str, str]:
+    headers = {"X-Actor-User-Id": user_id, "X-Actor-Roles": "consumer"}
+    if idempotency_key:
+        headers["X-Idempotency-Key"] = idempotency_key
+    return headers
 
 
 def test_access_recovery_is_generic_and_hashes_device_fingerprint() -> None:
     identity = fresh_client_for("identity")
     nonce = uuid4().hex
     cpf = f"{int(nonce[:10], 16):011d}"[-11:]
-    password = "Valley-Recovery-2026!"
     registered = identity.post(
         "/registrations",
         json={
@@ -22,7 +24,6 @@ def test_access_recovery_is_generic_and_hashes_device_fingerprint() -> None:
             "document_cpf": cpf,
             "email": f"{cpf}@cpf.valley.local",
             "phone_e164": "+5511999999999",
-            "password_hash": password,
             "face_hash": f"face-{nonce}",
             "terms_accepted_at": "2026-08-04T12:00:00Z",
             "lgpd_consent_at": "2026-08-04T12:00:00Z",
@@ -71,7 +72,7 @@ def test_feed_review_eligibility_returns_only_completed_purchase_for_owner() -> 
 
     created = marketplace.post(
         "/resources/orders",
-        headers=actor_headers(buyer_id),
+        headers=actor_headers(buyer_id, f"create-{uuid4()}"),
         json={
             "user_id": buyer_id,
             "payload": {
@@ -95,13 +96,13 @@ def test_feed_review_eligibility_returns_only_completed_purchase_for_owner() -> 
 
     paid = marketplace.post(
         f"/resources/orders/{order_id}/actions/pay",
-        headers=actor_headers(buyer_id),
+        headers=actor_headers(buyer_id, f"pay-{uuid4()}"),
         json={"reason": "Pagamento confirmado", "payload": {}},
     )
     assert paid.status_code == 200, paid.text
     delivered = marketplace.post(
         f"/resources/orders/{order_id}/actions/deliver",
-        headers=actor_headers(buyer_id),
+        headers=actor_headers(buyer_id, f"deliver-{uuid4()}"),
         json={"reason": "Entrega confirmada", "payload": {}},
     )
     assert delivered.status_code == 200, delivered.text
