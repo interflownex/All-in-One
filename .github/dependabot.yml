@@ -1,0 +1,168 @@
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Sao_Paulo"
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "security"
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: "npm"
+    directory: "/apps/all-in-one"
+    schedule: &npm_schedule
+      interval: "weekly"
+      day: "monday"
+      time: "09:30"
+      timezone: "America/Sao_Paulo"
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: &dependency_labels
+      - "dependencies"
+      - "security"
+    groups: &npm_groups
+      security-patches:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+      development-dependencies:
+        applies-to: "version-updates"
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    commit-message: &npm_commit
+      prefix: "chore(deps)"
+
+  - package-ecosystem: "npm"
+    directory: "/apps/all-in-one-admin"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "npm"
+    directory: "/apps/all-in-one-business"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "npm"
+    directory: "/apps/all-in-one-health"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "npm"
+    directory: "/apps/all-in-one-mobility"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "npm"
+    directory: "/apps/all-in-one-riders"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "npm"
+    directory: "/apps/all-in-one-services"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "npm"
+    directory: "/apps/all-in-one-user"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "npm"
+    directory: "/apps/valley"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "npm"
+    directory: "/apps/valley_business"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "npm"
+    directory: "/apps/valley_rider"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "npm"
+    directory: "/desktop/valley-erp"
+    schedule: *npm_schedule
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    groups: *npm_groups
+    commit-message: *npm_commit
+
+  - package-ecosystem: "gradle"
+    directory: "/apps/valley-android"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+      timezone: "America/Sao_Paulo"
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    commit-message:
+      prefix: "chore(deps-android)"
+
+  - package-ecosystem: "pub"
+    directory: "/apps/valley-flutter"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:30"
+      timezone: "America/Sao_Paulo"
+    target-branch: "main"
+    open-pull-requests-limit: 5
+    labels: *dependency_labels
+    commit-message:
+      prefix: "chore(deps-flutter)"
