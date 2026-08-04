@@ -1,51 +1,131 @@
+from __future__ import annotations
+
+import os
 import subprocess
+import sys
+from collections.abc import Mapping
 
-PROJECT_ID = "all-in-one-498012"
+SECRET_ENV_BY_ID: Mapping[str, str] = {
+    "identity-dsn": "AIO_IDENTITY_DSN",
+    "jwt-secret": "AIO_JWT_SECRET",
+    "document-encryption-key": "AIO_DOCUMENT_ENCRYPTION_KEY",
+}
 
 
-def create_secret(secret_id, payload):
-    print(f"🏷️ Processando segredo: {secret_id}...")
+def _run_quiet(command: list[str], *, input_text: str | None = None) -> int:
+    """Executa gcloud sem expor payload, stdout ou stderr nos logs."""
 
-    # 1. Tentar criar o segredo
-    create_cmd = [
-        "gcloud",
-        "secrets",
-        "create",
-        secret_id,
-        "--replication-policy=automatic",
-        "--project",
-        PROJECT_ID,
-    ]
-    subprocess.run(create_cmd, capture_output=True)
+    try:
+        result = subprocess.run(
+            command,
+            input=input_text,
+            text=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+    except FileNotFoundError as exc:
+        raise RuntimeError("A CLI gcloud não está instalada ou não está no PATH.") from exc
+    return result.returncode
 
-    # 2. Adicionar versão
-    add_cmd = [
-        "gcloud",
-        "secrets",
-        "versions",
-        "add",
-        secret_id,
-        "--data-file=-",
-        "--project",
-        PROJECT_ID,
-    ]
-    # Passando payload como string e usando text=True
-    result = subprocess.run(add_cmd, input=payload, capture_output=True, text=True)
 
-    if result.returncode == 0:
-        print(f"✅ Versão adicionada para {secret_id}")
-    else:
-        print(f"❌ Erro ao adicionar versão para {secret_id}: {result.stderr}")
+def _secret_exists(project_id: str, secret_id: str) -> bool:
+    return (
+        _run_quiet(
+            [
+                "gcloud",
+                "secrets",
+                "describe",
+                secret_id,
+                "--project",
+                project_id,
+            ]
+        )
+        == 0
+    )
+
+
+def _create_secret(project_id: str, secret_id: str) -> None:
+    return_code = _run_quiet(
+        [
+            "gcloud",
+            "secrets",
+            "create",
+            secret_id,
+            "--replication-policy=automatic",
+            "--project",
+            project_id,
+        ]
+    )
+    if return_code != 0:
+        raise RuntimeError(
+            f"Falha ao criar o segredo '{secret_id}' (código={return_code})."
+        )
+
+
+def _add_secret_version(project_id: str, secret_id: str, payload: str) -> None:
+    if not payload:
+        raise ValueError(f"Payload vazio para o segredo '{secret_id}'.")
+
+    return_code = _run_quiet(
+        [
+            "gcloud",
+            "secrets",
+            "versions",
+            "add",
+            secret_id,
+            "--data-file=-",
+            "--project",
+            project_id,
+        ],
+        input_text=payload,
+    )
+    if return_code != 0:
+        raise RuntimeError(
+            f"Falha ao adicionar versão ao segredo '{secret_id}' "
+            f"(código={return_code})."
+        )
+
+
+def configure_secret(project_id: str, secret_id: str, payload: str) -> None:
+    if not _secret_exists(project_id, secret_id):
+        _create_secret(project_id, secret_id)
+    _add_secret_version(project_id, secret_id, payload)
+    print(f"Segredo '{secret_id}' configurado com nova versão.")
+
+
+def _load_configuration() -> tuple[str, dict[str, str]]:
+    project_id = os.environ.get("GCP_PROJECT_ID", "").strip()
+    missing = ["GCP_PROJECT_ID"] if not project_id else []
+    payloads: dict[str, str] = {}
+
+    for secret_id, env_name in SECRET_ENV_BY_ID.items():
+        value = os.environ.get(env_name, "")
+        if not value:
+            missing.append(env_name)
+        else:
+            payloads[secret_id] = value
+
+    if missing:
+        raise ValueError(
+            "Variáveis de ambiente obrigatórias ausentes: " + ", ".join(missing)
+        )
+    return project_id, payloads
+
+
+def main() -> int:
+    try:
+        project_id, payloads = _load_configuration()
+        print("Iniciando configuração segura no Google Secret Manager.")
+        for secret_id, payload in payloads.items():
+            configure_secret(project_id, secret_id, payload)
+    except (RuntimeError, ValueError) as exc:
+        print(f"Falha de configuração: {exc}", file=sys.stderr)
+        return 1
+
+    print("Configuração concluída sem exposição de payloads.")
+    return 0
 
 
 if __name__ == "__main__":
-    secrets = {
-        "identity-dsn": "postgresql://all-in-one-user:strong-password@all-in-one-cluster.us-central1.alloydb.goog/identity_db",
-        "jwt-secret": "super-secret-key-for-auth-gateway-all-in-one",
-        "document-encryption-key": "base64-32-chars-long-encryption-key-for-jobs",
-    }
-
-    print(f"🚀 Iniciando configuração de segredos via gcloud no projeto {PROJECT_ID}\n")
-    for sid, val in secrets.items():
-        create_secret(sid, val)
-    print("\n🏁 Finalizado.")
+    raise SystemExit(main())
