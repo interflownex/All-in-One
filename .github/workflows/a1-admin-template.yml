@@ -39,7 +39,7 @@ jobs:
       - name: Auditar dependências de produção
         run: npm audit --omit=dev --audit-level=critical
       - name: Publicar lockfile como evidência
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: a1-admin-package-lock
           path: apps/all-in-one-admin/package-lock.json

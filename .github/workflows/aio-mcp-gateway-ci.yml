@@ -75,7 +75,7 @@ jobs:
           pyproject.toml SPEC.md README.md Dockerfile
           .env.example deploy
       - name: Upload quality evidence
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7
         with:
           name: aio-mcp-gateway-quality-${{ github.sha }}
           path: |
@@ -142,7 +142,7 @@ jobs:
           scanners: vuln
       - name: Upload container evidence
         if: always()
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7
         with:
           name: aio-mcp-gateway-container-${{ github.sha }}
           path: image-sbom.cdx.json

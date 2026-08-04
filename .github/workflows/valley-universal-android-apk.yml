@@ -83,7 +83,7 @@ jobs:
             > Valley-Universal-1.0.0-debug.apk.sha256
 
       - name: Publicar instalador Android
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: valley-universal-android-1.0.0-${{ github.sha }}
           if-no-files-found: error

@@ -66,7 +66,7 @@ jobs:
           --fail-at high
       - name: Preservar evidências DAST
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: valley-dast-evidence
           if-no-files-found: error
