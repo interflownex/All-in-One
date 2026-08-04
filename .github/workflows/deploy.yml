@@ -9,6 +9,9 @@ on:
         default: false
         type: boolean
 
+permissions:
+  contents: read
+
 env:
   GOOGLE_CLOUD_ENABLED: "false"
 
