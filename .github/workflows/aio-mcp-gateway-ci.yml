@@ -23,7 +23,7 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       id-token: write
       attestations: write
     defaults:
@@ -31,8 +31,6 @@ jobs:
         working-directory: services/aio-mcp-gateway
     steps:
       - uses: actions/checkout@v6.0.2
-        with:
-          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
       - uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.12"
@@ -40,99 +38,6 @@ jobs:
           cache-dependency-path: services/aio-mcp-gateway/pyproject.toml
       - name: Install
         run: python -m pip install --upgrade pip==26.1.2 && pip install -e ".[dev]"
-      - name: Apply reviewed MCP and Cloudflare hardening patch
-        if: >-
-          github.event_name == 'pull_request' &&
-          github.head_ref == 'feat/mcp-production-hardening-20260804' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        working-directory: ${{ github.workspace }}
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          def replace_once(path: str, old: str, new: str) -> None:
-              target = Path(path)
-              content = target.read_text(encoding="utf-8")
-              count = content.count(old)
-              if count != 1:
-                  raise SystemExit(
-                      f"expected one match in {path}, found {count}: {old[:80]!r}"
-                  )
-              target.write_text(content.replace(old, new), encoding="utf-8")
-
-          replace_once(
-              "services/aio-mcp-gateway/security.py",
-              "from typing import Any, Protocol, Self, cast",
-              "from typing import Any, Protocol, Self",
-          )
-          replace_once(
-              "services/aio-mcp-gateway/security.py",
-              "        return cast(dict[str, Any], decoded)",
-              "        return decoded",
-          )
-          replace_once(
-              "services/aio-mcp-gateway/main.py",
-              '@mcp.custom_route("/health", methods=["GET"])',
-              '@mcp.custom_route("/health", methods=["GET"])  # type: ignore[untyped-decorator]',
-          )
-          replace_once(
-              "scripts/configure_cloudflare_mcp_dns.py",
-              "import http.client\nimport json",
-              "import http.client\nimport ipaddress\nimport json\nimport re",
-          )
-          replace_once(
-              "scripts/configure_cloudflare_mcp_dns.py",
-              'ALLOWED_RECORD_TYPES = {"CNAME"}\n',
-              'ALLOWED_RECORD_TYPES = {"CNAME"}\nZONE_ID_PATTERN = re.compile(r"^[a-f0-9]{32}$")\nDNS_LABEL_PATTERN = re.compile(r"^(?!-)[a-z0-9-]{1,63}(?<!-)$")\n',
-          )
-          replace_once(
-              "scripts/configure_cloudflare_mcp_dns.py",
-              '''def _validate_target(target: str, record_name: str) -> None:\n    normalized = target.strip().casefold().rstrip(".")\n    if not normalized:\n        raise ConfigurationError(f"target vazio para {record_name}")\n    if "://" in normalized or "/" in normalized or " " in normalized:\n        raise ConfigurationError(\n            f"target CNAME deve ser apenas hostname para {record_name}"\n        )\n    if normalized == record_name.casefold().rstrip("."):\n        raise ConfigurationError(f"CNAME circular para {record_name}")\n''',
-              '''def _validate_target(target: str, record_name: str) -> None:\n    normalized = target.strip().casefold().rstrip(".")\n    if not normalized:\n        raise ConfigurationError(f"target vazio para {record_name}")\n    if "://" in normalized or "/" in normalized or " " in normalized:\n        raise ConfigurationError(\n            f"target CNAME deve ser apenas hostname para {record_name}"\n        )\n    try:\n        ipaddress.ip_address(normalized)\n    except ValueError:\n        pass\n    else:\n        raise ConfigurationError(\n            f"target CNAME não pode ser endereço IP para {record_name}"\n        )\n    if len(normalized) > 253 or "." not in normalized:\n        raise ConfigurationError(f"target CNAME inválido para {record_name}")\n    if any(not DNS_LABEL_PATTERN.fullmatch(label) for label in normalized.split(".")):\n        raise ConfigurationError(f"target CNAME inválido para {record_name}")\n    if normalized == record_name.casefold().rstrip("."):\n        raise ConfigurationError(f"CNAME circular para {record_name}")\n''',
-          )
-          replace_once(
-              "scripts/configure_cloudflare_mcp_dns.py",
-              '''    def zone_id(self, zone_name: str, account_id: str | None) -> str:\n        explicit = os.getenv("CLOUDFLARE_ZONE_ID", "").strip()\n        if explicit:\n            return explicit\n        query: dict[str, str] = {"name": zone_name, "status": "active"}\n        if account_id:\n            query["account.id"] = account_id\n        data = self.request("GET", f"/zones?{urllib.parse.urlencode(query)}")\n        results = data.get("result", [])\n        if not isinstance(results, list) or len(results) != 1:\n            raise CloudflareAPIError(\n                f"zona {zone_name} não foi resolvida de forma única"\n            )\n        zone_id = str(results[0].get("id", "")).strip()\n        if not zone_id:\n            raise CloudflareAPIError(f"zona {zone_name} sem id")\n        return zone_id\n''',
-              '''    def zone_id(self, zone_name: str, account_id: str | None) -> str:\n        explicit = os.getenv("CLOUDFLARE_ZONE_ID", "").strip().casefold()\n        if explicit:\n            if not ZONE_ID_PATTERN.fullmatch(explicit):\n                raise ConfigurationError("CLOUDFLARE_ZONE_ID inválido")\n            data = self.request("GET", f"/zones/{explicit}")\n            result = data.get("result")\n            if not isinstance(result, Mapping):\n                raise CloudflareAPIError("resposta de zona inválida")\n            actual_name = str(result.get("name", "")).strip().casefold()\n            actual_status = str(result.get("status", "")).strip().casefold()\n            account = result.get("account", {})\n            actual_account_id = (\n                str(account.get("id", "")).strip()\n                if isinstance(account, Mapping)\n                else ""\n            )\n            if actual_name != zone_name.casefold():\n                raise CloudflareAPIError(\n                    f"Zone ID pertence a {actual_name or '<desconhecida>'}, "\n                    f"não a {zone_name}"\n                )\n            if actual_status != "active":\n                raise CloudflareAPIError(\n                    f"zona {zone_name} não está ativa: {actual_status or '<ausente>'}"\n                )\n            if account_id and actual_account_id != account_id:\n                raise CloudflareAPIError(\n                    f"zona {zone_name} pertence a outra conta Cloudflare"\n                )\n            return explicit\n        query: dict[str, str] = {"name": zone_name, "status": "active"}\n        if account_id:\n            query["account.id"] = account_id\n        data = self.request("GET", f"/zones?{urllib.parse.urlencode(query)}")\n        results = data.get("result", [])\n        if not isinstance(results, list) or len(results) != 1:\n            raise CloudflareAPIError(\n                f"zona {zone_name} não foi resolvida de forma única"\n            )\n        zone_id = str(results[0].get("id", "")).strip().casefold()\n        if not ZONE_ID_PATTERN.fullmatch(zone_id):\n            raise CloudflareAPIError(f"zona {zone_name} com id inválido")\n        return zone_id\n''',
-          )
-          replace_once(
-              "scripts/configure_cloudflare_mcp_dns.py",
-              "        raise SystemExit(1)\n",
-              "        raise SystemExit(1) from exc\n",
-          )
-
-          tests = Path("tests/test_cloudflare_mcp_dns.py")
-          content = tests.read_text(encoding="utf-8")
-          marker = "\n\nclass FakeClient(dns.CloudflareClient):\n"
-          if content.count(marker) != 1:
-              raise SystemExit("test insertion marker not found exactly once")
-          addition = '''\n\n@pytest.mark.parametrize(\n    "target",\n    [\n        "127.0.0.1",\n        "single-label",\n        "-invalid.example.net",\n        "invalid-.example.net",\n        "invalid_underscore.example.net",\n    ],\n)\ndef test_invalid_cname_targets_are_rejected(target: str) -> None:\n    with pytest.raises(dns.ConfigurationError, match="target CNAME"):\n        dns._validate_target(target, "mcp.brasildesconto.com.br")\n\n\nclass ZoneClient(dns.CloudflareClient):\n    def __init__(self, result: dict[str, Any]) -> None:\n        super().__init__("test-token")\n        self.result = result\n\n    def request(\n        self,\n        method: str,\n        path: str,\n        payload: dict[str, Any] | None = None,\n    ) -> dict[str, Any]:\n        assert method == "GET"\n        assert path.startswith("/zones/")\n        assert payload is None\n        return {"success": True, "result": self.result}\n\n\ndef test_explicit_zone_id_must_belong_to_allowed_zone(\n    monkeypatch: pytest.MonkeyPatch,\n) -> None:\n    monkeypatch.setenv("CLOUDFLARE_ZONE_ID", "a" * 32)\n    client = ZoneClient(\n        {\n            "name": "example.com",\n            "status": "active",\n            "account": {"id": "account-id"},\n        }\n    )\n    with pytest.raises(dns.CloudflareAPIError, match="não a brasildesconto.com.br"):\n        client.zone_id("brasildesconto.com.br", "account-id")\n\n\ndef test_explicit_zone_id_must_be_active_and_match_account(\n    monkeypatch: pytest.MonkeyPatch,\n) -> None:\n    monkeypatch.setenv("CLOUDFLARE_ZONE_ID", "b" * 32)\n    inactive = ZoneClient(\n        {\n            "name": "brasildesconto.com.br",\n            "status": "pending",\n            "account": {"id": "account-id"},\n        }\n    )\n    with pytest.raises(dns.CloudflareAPIError, match="não está ativa"):\n        inactive.zone_id("brasildesconto.com.br", "account-id")\n\n    other_account = ZoneClient(\n        {\n            "name": "brasildesconto.com.br",\n            "status": "active",\n            "account": {"id": "other-account"},\n        }\n    )\n    with pytest.raises(dns.CloudflareAPIError, match="outra conta"):\n        other_account.zone_id("brasildesconto.com.br", "account-id")\n'''
-          tests.write_text(content.replace(marker, addition + marker), encoding="utf-8")
-          PY
-          ruff format \
-            services/aio-mcp-gateway/main.py \
-            services/aio-mcp-gateway/security.py \
-            scripts/configure_cloudflare_mcp_dns.py \
-            tests/test_cloudflare_mcp_dns.py
-      - name: Commit reviewed hardening patch to the MCP branch
-        if: >-
-          github.event_name == 'pull_request' &&
-          github.head_ref == 'feat/mcp-production-hardening-20260804' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        working-directory: ${{ github.workspace }}
-        env:
-          TARGET_BRANCH: ${{ github.head_ref }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            services/aio-mcp-gateway/main.py \
-            services/aio-mcp-gateway/security.py \
-            scripts/configure_cloudflare_mcp_dns.py \
-            tests/test_cloudflare_mcp_dns.py
-          git diff --cached --quiet && { echo "Expected patch produced no changes"; exit 1; }
-          git commit -m "fix(mcp): close typing and Cloudflare trust gaps"
-          git push origin "HEAD:${TARGET_BRANCH}"
       - name: Ruff lint
         run: ruff check .
       - name: Ruff format
@@ -142,8 +47,14 @@ jobs:
           mypy main.py security.py production_invariants.py request_limits.py
           deploy/render_cloud_run.py
           deploy/rollback_cloud_run.py
-      - name: Tests
+      - name: Gateway tests
         run: pytest
+      - name: Cloudflare DNS tests
+        working-directory: ${{ github.workspace }}
+        run: >-
+          python -m pytest
+          tests/test_cloudflare_mcp_dns.py
+          tests/test_cloudflare_wsl_configuration.py
       - name: Compile
         run: >-
           python -m compileall -q
