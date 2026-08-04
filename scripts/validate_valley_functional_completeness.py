@@ -52,7 +52,10 @@ SCREEN_KEYS = {
     "mobility": (
         "MobilityView",
         "module='mobility'",
-        "useState<'rides'|'tickets'>",
+        "setTab('rides')",
+        "setTab('tickets')",
+        ">Corridas</button>",
+        ">Bilhetes</button>",
     ),
     "jobs_health_documents": (
         "JobsView",
