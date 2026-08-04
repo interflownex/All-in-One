@@ -11,6 +11,7 @@ COPY pyproject.toml ./
 RUN pip install --no-cache-dir .
 
 COPY main.py ./main.py
+COPY production_invariants.py ./production_invariants.py
 COPY security.py ./security.py
 
 USER app
