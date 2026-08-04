@@ -1268,9 +1268,14 @@ function readOptionalStorage<T>(key: string): T | null {
 }
 
 function randomId(length: number) {
-  return Math.random()
-    .toString(36)
-    .slice(2, 2 + length);
+  const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const bytes = new Uint8Array(length);
+  window.crypto.getRandomValues(bytes);
+  let id = "";
+  for (let i = 0; i < length; i += 1) {
+    id += alphabet[bytes[i] % alphabet.length];
+  }
+  return id;
 }
 
 function slugify(value: string) {
