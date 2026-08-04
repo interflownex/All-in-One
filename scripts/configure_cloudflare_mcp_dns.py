@@ -8,7 +8,6 @@ import re
 import os
 import sys
 import urllib.parse
-import urllib.request
 from collections.abc import Iterable, Mapping
 from pathlib import Path
 from typing import Any
@@ -22,6 +21,13 @@ ALLOWED_ZONE = "brasildesconto.com.br"
 ALLOWED_RECORD_TYPES = {"CNAME"}
 ZONE_ID_PATTERN = re.compile(r"^[a-f0-9]{32}$")
 DNS_LABEL_PATTERN = re.compile(r"^(?!-)[a-z0-9-]{1,63}(?<!-)$")
+ALLOWED_HEALTH_HOSTS = frozenset(
+    {
+        "mcp.brasildesconto.com.br",
+        "mcp-staging.brasildesconto.com.br",
+        "mcp-preview.brasildesconto.com.br",
+    }
+)
 
 
 class ConfigurationError(RuntimeError):
@@ -401,17 +407,53 @@ def workspace_account_id() -> str | None:
 
 
 def verify_https(health_url: str) -> None:
-    request = urllib.request.Request(
-        health_url,
-        headers={"User-Agent": "aio-mcp-dns-validator/1.0"},
-    )
-    with urllib.request.urlopen(request, timeout=20) as response:
-        if response.status != 200:
-            raise RuntimeError(
-                f"health check retornou HTTP {response.status}: {health_url}"
-            )
-        payload = json.loads(response.read().decode("utf-8"))
-    if payload.get("status") != "ok":
+    parsed = urllib.parse.urlsplit(health_url)
+    try:
+        port = parsed.port
+    except ValueError as exc:
+        raise ConfigurationError("health URL contém porta inválida") from exc
+
+    hostname = (parsed.hostname or "").casefold().rstrip(".")
+    if (
+        parsed.scheme.casefold() != "https"
+        or hostname not in ALLOWED_HEALTH_HOSTS
+        or parsed.path.rstrip("/") != "/health"
+        or port not in (None, 443)
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise ConfigurationError(
+            "health URL deve usar HTTPS, porta 443, host aprovado e /health"
+        )
+
+    connection = http.client.HTTPSConnection(hostname, 443, timeout=20)
+    try:
+        connection.request(
+            "GET",
+            "/health",
+            headers={
+                "User-Agent": "aio-mcp-dns-validator/1.0",
+                "Accept": "application/json",
+            },
+        )
+        response = connection.getresponse()
+        raw = response.read()
+    finally:
+        connection.close()
+
+    if response.status != 200:
+        raise RuntimeError(
+            f"health check retornou HTTP {response.status}: {health_url}"
+        )
+    try:
+        payload = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            f"health check retornou JSON inválido: {health_url}"
+        ) from exc
+    if not isinstance(payload, Mapping) or payload.get("status") != "ok":
         raise RuntimeError(f"health check não retornou status=ok: {health_url}")
 
 
