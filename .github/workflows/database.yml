@@ -150,7 +150,7 @@ jobs:
         run: python -m pytest -q tests/test_postgres_priority_stores_integration.py::test_legal_case_create_update_and_soft_delete
       - name: Exercise Property PostgreSQL store
         env:
-          ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in-one
+          ALL_IN_ONE_POSTGRES_MATRIX_DSN: postgresql://all_in_one:test-password@localhost:5432/all_in_one
         run: python -m pytest -q tests/test_postgres_priority_stores_integration.py::test_property_create_update_and_soft_delete
       - name: Exercise WMS PostgreSQL store
         env:
