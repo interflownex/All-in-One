@@ -127,7 +127,7 @@ jobs:
           output: codeql-results
       - name: Publicar evidência SARIF do Pull Request
         if: always() && github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: valley-android-codeql-sarif
           path: codeql-results

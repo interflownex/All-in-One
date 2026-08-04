@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Adapta o contrato Android legado à variante explícita productionDebug."""
+"""Adapta contratos legados do release Android às versões atuais."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ except ModuleNotFoundError:  # Execução direta a partir de scripts/.
     import validate_valley_android_release as legacy
 
 ROOT = Path(__file__).resolve().parents[1]
+RELEASE_WORKFLOW = ROOT / ".github" / "workflows" / "valley-android-release.yml"
 SECURITY_WORKFLOW = ROOT / ".github" / "workflows" / "security.yml"
 OBSOLETE_TASKS = "testDebugUnitTest lintDebug assembleDebug"
 EXPLICIT_TASKS = (
@@ -19,9 +20,15 @@ EXPLICIT_TASKS = (
     "lintProductionDebug "
     "assembleProductionDebug"
 )
+OBSOLETE_UPLOAD_ACTION = "actions/upload-artifact@v4"
+CURRENT_UPLOAD_ACTION = "actions/upload-artifact@v7"
 OBSOLETE_ERROR = (
     ".github/workflows/security.yml: marcador obrigatorio ausente: "
     f"{OBSOLETE_TASKS}"
+)
+OBSOLETE_UPLOAD_ERROR = (
+    ".github/workflows/valley-android-release.yml: marcador obrigatorio ausente: "
+    f"{OBSOLETE_UPLOAD_ACTION}"
 )
 
 
@@ -40,10 +47,30 @@ def validate_security_workflow(text: str) -> list[str]:
     return errors
 
 
+def validate_release_workflow(text: str) -> list[str]:
+    errors: list[str] = []
+    if CURRENT_UPLOAD_ACTION not in text:
+        errors.append(
+            ".github/workflows/valley-android-release.yml: ação atual de "
+            f"publicação ausente: {CURRENT_UPLOAD_ACTION}"
+        )
+    if OBSOLETE_UPLOAD_ACTION in text:
+        errors.append(
+            ".github/workflows/valley-android-release.yml: ação obsoleta de "
+            f"publicação não é aceita: {OBSOLETE_UPLOAD_ACTION}"
+        )
+    return errors
+
+
 def validate() -> list[str]:
-    errors = [error for error in legacy.validate() if error != OBSOLETE_ERROR]
-    workflow = SECURITY_WORKFLOW.read_text(encoding="utf-8")
-    errors.extend(validate_security_workflow(workflow))
+    ignored_legacy_errors = {OBSOLETE_ERROR, OBSOLETE_UPLOAD_ERROR}
+    errors = [
+        error for error in legacy.validate() if error not in ignored_legacy_errors
+    ]
+    security_workflow = SECURITY_WORKFLOW.read_text(encoding="utf-8")
+    release_workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
+    errors.extend(validate_security_workflow(security_workflow))
+    errors.extend(validate_release_workflow(release_workflow))
     return errors
 
 

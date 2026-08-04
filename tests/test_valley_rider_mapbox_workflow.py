@@ -26,8 +26,8 @@ def test_mapbox_workflow_validates_and_packages_valley_rider() -> None:
     assert "node scripts/mapbox/validate_valley_rider_mapbox.mjs" in source
     assert "npm run lint" in source
     assert "npm run build" in source
-    assert "actions/upload-artifact@v4" in source
+    assert "actions/upload-artifact@v7" in source
+    assert "actions/upload-artifact@v4" not in source
     assert "apps/valley_rider/dist" in source
     assert "https://all-in-one-web-7fa.pages.dev" in source
     assert "https://brasildesconto.com.br" in source
-

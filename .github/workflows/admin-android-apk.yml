@@ -83,7 +83,7 @@ jobs:
           sha256sum AIO-Admin-2.0.0-debug.apk > AIO-Admin-2.0.0-debug.apk.sha256
 
       - name: Publicar APK para download
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: aio-admin-android-2.0.0-${{ github.sha }}
           if-no-files-found: error

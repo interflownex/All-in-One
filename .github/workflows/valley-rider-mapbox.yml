@@ -71,7 +71,7 @@ jobs:
         run: npm run build
 
       - name: Publicar artefato validado
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: valley-rider-${{ env.TARGET_ENVIRONMENT }}-${{ github.sha }}
           path: apps/valley_rider/dist

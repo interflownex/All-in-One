@@ -37,7 +37,8 @@ def test_release_is_server_bound_without_demo_fallback() -> None:
     assert "configure_valley_flutter_android.py --check" in workflow
     assert "validate_valley_functional_completeness.py" in workflow
     assert "flutter build apk --release" in workflow
-    assert "actions/upload-artifact@v4" in workflow
+    assert "actions/upload-artifact@v7" in workflow
+    assert "actions/upload-artifact@v4" not in workflow
     assert "https://all-in-one-api-hub.web.app" in bridge
     assert "ValleyNative" in bridge
     assert "verifyCriticalResponse" in bridge
