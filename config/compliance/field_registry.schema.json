@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://allinone.com.br/schemas/compliance/field-registry-v1.json",
+  "title": "All in One + Valley Compliance Field Registry",
+  "type": "object",
+  "required": ["schema_version", "baseline_sha", "fields"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "baseline_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field_id", "asset", "field", "owner", "physical_type",
+          "required", "purpose", "legal_basis", "sensitivity",
+          "retention_policy", "access_policy", "security_policy",
+          "source", "lineage", "disposal_policy", "status"
+        ],
+        "properties": {
+          "field_id": {"type": "string", "pattern": "^[a-z0-9_.-]+$"},
+          "asset": {"type": "string", "minLength": 3},
+          "field": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 2},
+          "physical_type": {"type": "string", "minLength": 1},
+          "required": {"type": "boolean"},
+          "purpose": {"type": "string", "minLength": 3},
+          "legal_basis": {"type": "string", "minLength": 3},
+          "sensitivity": {"enum": ["public", "internal", "personal", "sensitive_personal", "financial", "secret"]},
+          "retention_policy": {"type": "string", "minLength": 3},
+          "access_policy": {"type": "string", "minLength": 3},
+          "security_policy": {"type": "string", "minLength": 3},
+          "source": {"type": "string", "minLength": 2},
+          "lineage": {"type": "array", "items": {"type": "string"}},
+          "disposal_policy": {"type": "string", "minLength": 3},
+          "status": {"enum": ["implemented", "partial", "planned", "conditional", "divergent"]},
+          "bundle_ids": {"type": "array", "items": {"type": "string", "pattern": "^B([0-9]|1[0-4])$"}, "uniqueItems": true},
+          "notes": {"type": "string"}
+        }
+      }
+    }
+  }
+}
