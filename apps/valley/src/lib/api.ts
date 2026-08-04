@@ -1,7 +1,19 @@
 import { apiRequest } from './nativeBridge';
 
 export type JsonRecord = Record<string, unknown>;
-export type ViewKey = 'home' | 'commerce' | 'services' | 'delivery' | 'mobility' | 'life' | 'account' | 'settings';
+export type ViewKey =
+  | 'home'
+  | 'marketplace'
+  | 'stock'
+  | 'commerce'
+  | 'services'
+  | 'delivery'
+  | 'mobility'
+  | 'jobs'
+  | 'life'
+  | 'account'
+  | 'settings';
+export type JourneyHint = { intent?: string; mode?: string; query?: string };
 export type Session = { accessToken: string; refreshToken: string; userId: string; sessionId: string; email: string; expiresAt: string; refreshExpiresAt: string };
 export type Offer = { offer_id: string; title: string; short_description?: string; description?: string; price_amount?: string | null; consumer_category: string; offer_type_label: string; source_module: string; source_entity_id?: string; provider_label: string; region_label: string; distance_km?: number | null; consumer_action: 'buy' | 'book' | 'hire' | 'request' | 'view' | 'coming_soon'; primary_action_label: string; verified_seller?: boolean; metadata?: { image_url?: string; video_url?: string } };
 export type CatalogResponse = { data: Offer[]; total: number; partial?: boolean };
