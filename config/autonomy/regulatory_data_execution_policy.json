@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "project": "All in One + Valley",
+  "status": "mandatory",
+  "effective_from": "2026-08-04",
+  "source_blueprint_version": "1.2.0",
+  "logical_tables": 702,
+  "product_modules": 24,
+  "cross_cutting_domains": 7,
+  "gate_range": "G0-G23",
+  "existing_issue_anchors": [39, 51, 95, 134],
+  "rules": {
+    "search_existing_activity_first": true,
+    "fit_compatible_work_into_existing_activity": true,
+    "create_issue_only_when_no_compatible_activity_exists": true,
+    "duplicate_implementation_forbidden": true,
+    "field_registration_before_migration": true,
+    "feature_flag_until_homologation": true,
+    "rollback_required": true,
+    "evidence_required": true
+  },
+  "phases": [
+    {"phase": 0, "name": "foundation", "gates": ["G0", "G1", "G2", "G3", "G4", "G10", "G11", "G12", "G13", "G14", "G23"]},
+    {"phase": 1, "name": "identity_business_permissions", "sprints": [1, 2], "depends_on": [0]},
+    {"phase": 2, "name": "marketplace_stock_finance_services", "sprints": [3, 4], "depends_on": [0, 1], "blocking_issue": 95},
+    {"phase": 3, "name": "erp_wms_jobs_documents", "sprints": [5, 6], "depends_on": [0, 1]},
+    {"phase": 4, "name": "ai_health_legal_mobility", "sprints": [7, 8], "depends_on": [0, 1]},
+    {"phase": 5, "name": "property_hr_bi_api_hub", "sprints": [9, 10], "depends_on": [0, 1]}
+  ],
+  "delivery": {
+    "direct_push_to_main": false,
+    "pull_request_required": true,
+    "merge_method": "squash",
+    "same_head_sha_gates": true
+  }
+}
