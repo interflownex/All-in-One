@@ -25,6 +25,7 @@ type ConsumerOrder = {
   status?: string;
   offer_id?: string;
   source_entity_id?: string;
+  source_module?: string;
   can_review?: boolean;
 };
 
@@ -34,7 +35,7 @@ type UserShoppingContext = {
   safeMonthlyLimit: number | null;
 };
 
-const completedStatuses = new Set(['completed', 'delivered', 'paid', 'received']);
+const completedStatuses = new Set(['completed', 'delivered']);
 
 function text(value: unknown) {
   return value == null ? '' : String(value);
@@ -60,7 +61,7 @@ function normalizeOffer(offer: Offer): FeedProduct {
     region: offer.region_label,
     distanceKm: offer.distance_km,
     priceAmount: offer.price_amount,
-    imageUrl: metadata?.image_url,
+    imageUrl: metadata?.primary_image_url ?? metadata?.image_url,
     videoUrl: metadata?.video_url,
     accentColor: text(metadata?.accent_color) || undefined,
   };
@@ -80,7 +81,7 @@ function normalizeStockItem(item: ApiItem): FeedProduct {
     region: text(payload.region ?? payload.region_label ?? 'Entrega sob demanda'),
     distanceKm: payload.distance_km == null ? null : Number(payload.distance_km),
     priceAmount: payload.price_amount == null ? null : text(payload.price_amount),
-    imageUrl: text(payload.image_url ?? payload.primary_image_url) || undefined,
+    imageUrl: text(payload.primary_image_url ?? payload.image_url) || undefined,
     videoUrl: text(payload.video_url) || undefined,
     accentColor: text(payload.accent_color) || undefined,
   };
@@ -88,13 +89,14 @@ function normalizeStockItem(item: ApiItem): FeedProduct {
 
 function orderMatches(order: ConsumerOrder, product: FeedProduct) {
   if (order.can_review === false) return false;
+  if (order.source_module && order.source_module !== product.sourceModule) return false;
   if (order.offer_id && order.offer_id === product.offerId) return true;
   if (order.source_entity_id && order.source_entity_id === product.sourceEntityId) return true;
   return Boolean(order.title && order.title.trim().toLocaleLowerCase('pt-BR') === product.title.trim().toLocaleLowerCase('pt-BR'));
 }
 
 function getReviewOrder(orders: ConsumerOrder[], product: FeedProduct) {
-  return orders.find(order => (order.can_review || completedStatuses.has((order.status ?? '').toLocaleLowerCase('pt-BR'))) && orderMatches(order, product));
+  return orders.find(order => (order.can_review === true || completedStatuses.has((order.status ?? '').toLocaleLowerCase('pt-BR'))) && orderMatches(order, product));
 }
 
 function currentLocation() {
@@ -148,6 +150,14 @@ function estimatedMonthlyCost(product: FeedProduct) {
 
 function categoriesFor(products: FeedProduct[]) {
   return Array.from(new Set(products.map(product => product.category).filter(Boolean))).sort((left, right) => left.localeCompare(right, 'pt-BR'));
+}
+
+async function loadReviewEligibleOrders(session: ViewProps['session']): Promise<ConsumerOrder[]> {
+  try {
+    return await request<ConsumerOrder[]>('/marketplace/valley/feed/review-eligibility', 'GET', undefined, session.accessToken) ?? [];
+  } catch {
+    return [];
+  }
 }
 
 function SellerComposer({ session, setNotice, mode, onDone }: ViewProps & { mode: 'sell' | 'repair-request'; onDone: () => void }) {
@@ -336,13 +346,8 @@ export function MarketplaceView({ session, setNotice, hint, avatarDataUrl, onHom
   const [total, setTotal] = useState(0);
 
   const reloadOrders = useCallback(async () => {
-    try {
-      const data = await request<{ data?: ConsumerOrder[] }>('/gateway/consumer/orders', 'GET', undefined, session.accessToken);
-      setOrders(data.data ?? []);
-    } catch {
-      setOrders([]);
-    }
-  }, [session.accessToken]);
+    setOrders(await loadReviewEligibleOrders(session));
+  }, [session]);
 
   useEffect(() => {
     void currentLocation().then(setCoordinates);
@@ -430,11 +435,8 @@ export function StockView({ session, setNotice, hint, avatarDataUrl, onHome, onB
   const [error, setError] = useState('');
 
   const reloadOrders = useCallback(async () => {
-    try {
-      const data = await request<{ data?: ConsumerOrder[] }>('/gateway/consumer/orders', 'GET', undefined, session.accessToken);
-      setOrders(data.data ?? []);
-    } catch { setOrders([]); }
-  }, [session.accessToken]);
+    setOrders(await loadReviewEligibleOrders(session));
+  }, [session]);
 
   useEffect(() => {
     void loadShoppingContext(session).then(setShoppingContext);
@@ -444,7 +446,7 @@ export function StockView({ session, setNotice, hint, avatarDataUrl, onHome, onB
   const load = useCallback(async () => {
     setLoading(true);
     setError('');
-    const params = new URLSearchParams({ offset: '0', limit: '100', ranking: 'interest_affordability_best_sellers' });
+    const params = new URLSearchParams({ offset:'0', limit:'100', ranking:'interest_affordability_best_sellers' });
     if (appliedQuery.trim()) params.set('q', appliedQuery.trim());
     if (category) params.set('category', category);
     if (shoppingContext.interests.length) params.set('interests', shoppingContext.interests.join(','));
