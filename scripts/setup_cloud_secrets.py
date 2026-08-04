@@ -35,7 +35,7 @@ def create_secret(secret_id, payload):
     if result.returncode == 0:
         print(f"✅ Versão adicionada para {secret_id}")
     else:
-        print(f"❌ Erro ao adicionar versão para {secret_id}: {result.stderr}")
+        print(f"❌ Erro ao adicionar versão do segredo (código={result.returncode}).")
 
 
 if __name__ == "__main__":
