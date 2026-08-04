@@ -488,7 +488,13 @@ class ApiHubSandbox:
         )
 
     def verify_api_key(self, api_key: str, allowed_hashes: set[str]) -> SandboxResult:
-        api_key_hash = hashlib.sha256(api_key.encode("utf-8")).hexdigest()
+        salt = f"{self.provider_key}:{self.adapter}:api_key".encode("utf-8")
+        api_key_hash = hashlib.pbkdf2_hmac(
+            "sha256",
+            api_key.encode("utf-8"),
+            salt,
+            210_000,
+        ).hex()
         status = "accepted" if api_key_hash in allowed_hashes else "rejected"
         payload = {"api_key_hash": api_key_hash, "provider_environment": "sandbox"}
         return SandboxResult(
