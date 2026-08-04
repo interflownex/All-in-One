@@ -99,7 +99,7 @@ jobs:
           apps/valley-flutter/build/app/outputs/flutter-apk
 
       - name: Atestar proveniência dos APKs
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: apps/valley-flutter/build/app/outputs/flutter-apk/*.apk
 
