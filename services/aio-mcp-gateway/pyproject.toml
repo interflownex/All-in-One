@@ -4,7 +4,7 @@ version = "0.2.0"
 description = "Gateway MCP remoto do ecossistema All in One + Valley"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-  "mcp[cli]==1.28.1",
+  "mcp[cli]==1.29.0",
   "PyJWT[crypto]>=2.13.0,<3.0.0",
   "redis>=8.0.1,<9.0.0",
   "starlette>=0.47.0,<2.0.0",
