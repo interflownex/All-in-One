@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import sys
+from pathlib import Path
 from typing import Any
 
 import jwt
@@ -11,7 +13,12 @@ from starlette.responses import JSONResponse
 from starlette.routing import Route
 from starlette.testclient import TestClient
 
-from security import (
+SERVICE_ROOT = Path(__file__).resolve().parents[1]
+SERVICE_PATH = str(SERVICE_ROOT)
+if SERVICE_PATH not in sys.path:
+    sys.path.insert(0, SERVICE_PATH)
+
+from security import (  # noqa: E402
     InMemoryRateLimiter,
     OIDCTokenVerifier,
     RateLimitBackendError,
