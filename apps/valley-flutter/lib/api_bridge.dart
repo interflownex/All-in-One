@@ -6,6 +6,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 const _apiHubOrigin = 'https://all-in-one-api-hub.web.app';
 const _maxResponseBytes = 4 * 1024 * 1024;
+const _maxRequestBytes = 12 * 1024 * 1024;
 
 class ValleyApiBridge {
   ValleyApiBridge(this.controller);
@@ -24,6 +25,7 @@ class ValleyApiBridge {
       final method = (decoded['method']?.toString() ?? 'GET').toUpperCase();
       final token = decoded['token']?.toString();
       final body = decoded['body']?.toString();
+      final bodyBase64 = decoded['bodyBase64']?.toString();
       final forwardedHeaders = decoded['headers'];
       if (!path.startsWith('/') || path.startsWith('//')) {
         throw const FormatException('Caminho inválido.');
@@ -35,6 +37,17 @@ class ValleyApiBridge {
       if (uri.scheme != 'https' || uri.host != Uri.parse(_apiHubOrigin).host) {
         throw const FormatException('Destino não permitido.');
       }
+
+      List<int>? binaryBody;
+      if (bodyBase64 != null &&
+          bodyBase64.isNotEmpty &&
+          bodyBase64 != 'null') {
+        binaryBody = base64Decode(bodyBase64);
+        if (binaryBody.length > _maxRequestBytes) {
+          throw const FormatException('Arquivo acima do limite permitido.');
+        }
+      }
+
       final client = HttpClient()
         ..connectionTimeout = const Duration(seconds: 8);
       try {
@@ -55,27 +68,42 @@ class ValleyApiBridge {
             }
           }
         }
-        if (body != null && body.isNotEmpty && body != 'null') {
-          request.headers.contentType = ContentType.json;
+        if (binaryBody != null) {
+          request.add(binaryBody);
+        } else if (body != null && body.isNotEmpty && body != 'null') {
+          if (request.headers.value(HttpHeaders.contentTypeHeader) == null) {
+            request.headers.contentType = ContentType.json;
+          }
           request.write(body);
         }
+
         final response = await request.close().timeout(
-          const Duration(seconds: 20),
+          const Duration(seconds: 30),
         );
         final bytes = <int>[];
         await for (final chunk in response.timeout(
-          const Duration(seconds: 20),
+          const Duration(seconds: 30),
         )) {
           bytes.addAll(chunk);
           if (bytes.length > _maxResponseBytes) {
             throw const FormatException('Resposta acima do limite.');
           }
         }
-        final text = utf8.decode(bytes, allowMalformed: false);
+
+        final contentType = response.headers.contentType?.mimeType ?? '';
         Object responseBody = <String, Object?>{};
-        if (text.trim().isNotEmpty) {
-          responseBody = jsonDecode(text);
+        if (bytes.isNotEmpty) {
+          if (contentType.contains('application/json') ||
+              contentType.contains('+json')) {
+            responseBody = jsonDecode(utf8.decode(bytes, allowMalformed: false));
+          } else {
+            responseBody = {
+              'content_type': contentType,
+              'body_base64': base64Encode(bytes),
+            };
+          }
         }
+
         final headers = <String, String>{};
         response.headers.forEach(
           (name, values) => headers[name] = values.join(','),
