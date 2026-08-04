@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
@@ -24,6 +23,9 @@ class CompanyLauncherShortcut {
       : _channel = channel ?? const MethodChannel(_channelName);
 
   static const _channelName = 'com.allinone.valley/company_shortcut';
+  static const int _iconSize = 512;
+  static const int _maxCompanyLogoBytes = 4 * 1024 * 1024;
+
   final MethodChannel _channel;
 
   Future<bool> isSupported() async =>
@@ -35,9 +37,15 @@ class CompanyLauncherShortcut {
     required Uint8List companyLogo,
     required ValleyBrandVariant variant,
   }) async {
-    if (companyId.trim().isEmpty || companyName.trim().isEmpty) {
+    final normalizedCompanyId = companyId.trim();
+    final normalizedCompanyName = companyName.trim();
+    if (normalizedCompanyId.isEmpty || normalizedCompanyName.isEmpty) {
       throw ArgumentError('Empresa inválida para criação do atalho.');
     }
+    if (companyLogo.isEmpty || companyLogo.lengthInBytes > _maxCompanyLogoBytes) {
+      throw ArgumentError('Logomarca inválida ou acima do limite de 4 MiB.');
+    }
+
     final supported = await isSupported();
     if (!supported) {
       return const CompanyShortcutResult(supported: false, requested: false);
@@ -48,8 +56,8 @@ class CompanyLauncherShortcut {
         : 'assets/brand/valley-shortcut-frame.png';
     final icon = await _composeIcon(companyLogo, frameAsset);
     final requested = await _channel.invokeMethod<bool>('pin', {
-          'companyId': companyId,
-          'companyName': companyName,
+          'companyId': normalizedCompanyId,
+          'companyName': normalizedCompanyName,
           'variant': variant.name,
           'iconBase64': base64Encode(icon),
         }) ??
@@ -64,16 +72,14 @@ class CompanyLauncherShortcut {
     final logo = await _decode(logoBytes);
     final frameData = await rootBundle.load(frameAsset);
     final frame = await _decode(frameData.buffer.asUint8List());
-    const size = 512;
     final recorder = ui.PictureRecorder();
     final canvas = ui.Canvas(recorder);
-    canvas.clear();
 
     final logoBounds = ui.Rect.fromLTWH(
-      size * .22,
-      size * .20,
-      size * .56,
-      size * .52,
+      _iconSize * .22,
+      _iconSize * .20,
+      _iconSize * .56,
+      _iconSize * .52,
     );
     final fitted = _fitCenter(
       ui.Size(logo.width.toDouble(), logo.height.toDouble()),
@@ -88,18 +94,24 @@ class CompanyLauncherShortcut {
     canvas.drawImageRect(
       frame,
       ui.Rect.fromLTWH(0, 0, frame.width.toDouble(), frame.height.toDouble()),
-      const ui.Rect.fromLTWH(0, 0, size.toDouble(), size.toDouble()),
+      ui.Rect.fromLTWH(0, 0, _iconSize.toDouble(), _iconSize.toDouble()),
       ui.Paint()..filterQuality = ui.FilterQuality.high,
     );
-    final image = await recorder.endRecording().toImage(size, size);
+    final image = await recorder.endRecording().toImage(_iconSize, _iconSize);
     final png = await image.toByteData(format: ui.ImageByteFormat.png);
-    if (png == null) throw StateError('Falha ao gerar o ícone personalizado.');
+    if (png == null) {
+      throw StateError('Falha ao gerar o ícone personalizado.');
+    }
     return png.buffer.asUint8List();
   }
 
   Future<ui.Image> _decode(Uint8List bytes) async {
-    final codec = await ui.instantiateImageCodec(bytes);
-    return (await codec.getNextFrame()).image;
+    try {
+      final codec = await ui.instantiateImageCodec(bytes);
+      return (await codec.getNextFrame()).image;
+    } on Exception catch (error) {
+      throw FormatException('Imagem inválida para composição do ícone.', error);
+    }
   }
 
   ui.Rect _fitCenter(ui.Size source, ui.Rect bounds) {
