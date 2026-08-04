@@ -17,11 +17,36 @@ Disponibilizar um único gateway MCP remoto para o ecossistema All in One + Vall
 - Escopo mínimo por ferramenta.
 - Observabilidade sem conteúdo sensível.
 - Deploy reproduzível e reversível.
+- Um único gateway produtivo; aliases DNS não podem criar implementações paralelas.
 
 ## Contrato HTTP
 
 - `GET /health`: saúde básica, sem autenticação e sem dados confidenciais.
 - `/mcp`: MCP Streamable HTTP, protegido por OAuth 2.0/OIDC quando `DEPLOYMENT_ENV=production` ou `AUTH_REQUIRED=true`.
+
+## DNS MCP
+
+Enquanto não houver outro domínio próprio homologado, todo endpoint MCP que exigir DNS privado deve usar `brasildesconto.com.br`.
+
+Endpoint canônico de produção:
+
+- `https://mcp.brasildesconto.com.br/mcp`
+- `https://mcp.brasildesconto.com.br/health`
+
+Variações reservadas por ambiente:
+
+- `https://staging-mcp.brasildesconto.com.br/mcp`
+- `https://preview-mcp.brasildesconto.com.br/mcp`
+
+Aliases funcionais opcionais, todos apontando para o mesmo gateway centralizado:
+
+- `mcp-valley.brasildesconto.com.br`
+- `mcp-rider.brasildesconto.com.br`
+- `mcp-admin.brasildesconto.com.br`
+
+Os aliases não devem duplicar código, infraestrutura ou bancos. Devem resolver para o mesmo serviço e aplicar isolamento por escopo, tenant e autorização.
+
+DNS, certificado e publicação só podem ser marcados como concluídos após comprovação real no provedor.
 
 ## Autenticação OIDC
 
