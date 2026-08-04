@@ -7,6 +7,9 @@ on:
   pull_request:
     paths: ["modules/**/OPENAPI.yaml", ".github/workflows/openapi.yml"]
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
