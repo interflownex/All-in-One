@@ -133,3 +133,12 @@ def valley_property_catalog(
         "offset": offset,
         "limit": limit,
     }
+
+
+# O runtime genérico registra rotas dinâmicas como ``/{resource_type}`` antes
+# das especializações do módulo. A rota estática precisa ser avaliada primeiro
+# para que ``/valley/catalog`` não seja interpretada como uma listagem genérica.
+for route_index, route in enumerate(app.router.routes):
+    if getattr(route, "path", None) == "/valley/catalog":
+        app.router.routes.insert(0, app.router.routes.pop(route_index))
+        break
