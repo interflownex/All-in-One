@@ -42,7 +42,24 @@ def test_release_is_server_bound_without_demo_fallback() -> None:
     assert "https://all-in-one-api-hub.web.app" in bridge
     assert "ValleyNative" in bridge
     assert "verifyCriticalResponse" in bridge
-    assert "export type ViewKey = 'home' | 'commerce' | 'services' | 'delivery' | 'mobility' | 'life' | 'account' | 'settings'" in api
+    assert "export type ViewKey" in api
+    for view_key in (
+        "home",
+        "marketplace",
+        "stock",
+        "finance",
+        "services",
+        "jobs",
+        "legal",
+        "health",
+        "property",
+        "delivery",
+        "mobility",
+        "life",
+        "account",
+        "settings",
+    ):
+        assert f"| '{view_key}'" in api or f"= '{view_key}'" in api
     assert "AuthScreen" in app
 
 
