@@ -5,11 +5,14 @@ export type ViewKey =
   | 'home'
   | 'marketplace'
   | 'stock'
-  | 'commerce'
+  | 'finance'
   | 'services'
+  | 'jobs'
+  | 'legal'
+  | 'health'
+  | 'property'
   | 'delivery'
   | 'mobility'
-  | 'jobs'
   | 'life'
   | 'account'
   | 'settings';
@@ -41,6 +44,11 @@ export async function request<T = JsonRecord>(path: string, method = 'GET', body
   const headers: Record<string, string> = { 'X-Device-Fingerprint': deviceFingerprint() };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   return (await apiRequest<T>(path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) }, token)).body;
+}
+export async function uploadPdf<T = JsonRecord>(path: string, file: File, token?: string) {
+  if (file.type !== 'application/pdf') throw new Error('Selecione um arquivo PDF válido.');
+  if (file.size > 10 * 1024 * 1024) throw new Error('O PDF deve ter no máximo 10 MB.');
+  return (await apiRequest<T>(path, { method: 'POST', headers: { 'Content-Type': 'application/pdf', 'X-Device-Fingerprint': deviceFingerprint() }, body: await file.arrayBuffer() }, token)).body;
 }
 export function errorMessage(error: unknown) { return error instanceof Error ? error.message : 'Não foi possível concluir a operação.'; }
 export function formatMoney(value?: string | null) { return value ? Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'Sob orçamento'; }
