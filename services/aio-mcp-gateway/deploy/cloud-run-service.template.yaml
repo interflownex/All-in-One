@@ -29,9 +29,13 @@ spec:
             - name: AUTH_REQUIRED
               value: "true"
             - name: PROTECTED_RESOURCE_URL
-              value: https://mcp.brasildesconto.com.br
-            - name: ALLOWED_ORIGINS
-              value: https://brasildesconto.com.br,https://mcp.brasildesconto.com.br
+              value: https://mcp.brasildesconto.com.br/mcp
+            - name: MCP_REQUIRED_SCOPE
+              value: aio:mcp:read
+            - name: MCP_ALLOWED_ORIGINS
+              value: https://brasildesconto.com.br,https://mcp.brasildesconto.com.br,https://mcp-staging.brasildesconto.com.br,https://mcp-preview.brasildesconto.com.br
+            - name: MCP_ALLOWED_HOSTS
+              value: mcp.brasildesconto.com.br
             - name: OIDC_ALGORITHMS
               value: RS256
             - name: RATE_LIMIT_REQUESTS
