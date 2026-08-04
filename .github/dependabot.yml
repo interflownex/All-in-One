@@ -27,6 +27,12 @@ updates:
         applies-to: "security-updates"
         patterns:
           - "*"
+    # O MCP SDK 2 removeu mcp.server.fastmcp e exige migração arquitetural.
+    # Mantém a linha 1.x, ainda suportada para correções críticas, até a migração dedicada.
+    ignore:
+      - dependency-name: "mcp"
+        versions:
+          - ">= 2.0.0"
     commit-message:
       prefix: "chore(deps-python)"
 
