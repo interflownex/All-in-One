@@ -48,7 +48,7 @@ def atomic_copy(source: Path, destination: Path) -> None:
         temp_path = Path(temporary.name)
     try:
         shutil.copyfile(source, temp_path)
-        os.chmod(temp_path, 0o644)
+        os.chmod(temp_path, 0o600)
         temp_path.replace(destination)
     finally:
         temp_path.unlink(missing_ok=True)
