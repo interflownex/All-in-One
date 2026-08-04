@@ -75,7 +75,7 @@ class CompanyLauncherShortcut {
     final recorder = ui.PictureRecorder();
     final canvas = ui.Canvas(recorder);
 
-    final logoBounds = ui.Rect.fromLTWH(
+    const logoBounds = ui.Rect.fromLTWH(
       _iconSize * .22,
       _iconSize * .20,
       _iconSize * .56,
