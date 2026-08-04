@@ -15,12 +15,14 @@ def test_release_workflow_uses_v29_contract_adapter() -> None:
     assert "python scripts/validate_valley_android_release.py\n" not in workflow
 
 
-def test_release_workflow_uses_current_upload_action() -> None:
+def test_release_workflow_uses_current_actions() -> None:
     workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
 
     assert contract.validate_release_workflow(workflow) == []
     assert contract.CURRENT_UPLOAD_ACTION in workflow
     assert contract.OBSOLETE_UPLOAD_ACTION not in workflow
+    assert contract.CURRENT_ATTEST_ACTION in workflow
+    assert contract.OBSOLETE_ATTEST_ACTION not in workflow
 
 
 def test_security_workflow_uses_explicit_production_debug_tasks() -> None:
@@ -41,5 +43,12 @@ def test_adapter_rejects_legacy_ambiguous_tasks() -> None:
 def test_adapter_rejects_legacy_upload_action() -> None:
     errors = contract.validate_release_workflow(contract.OBSOLETE_UPLOAD_ACTION)
 
-    assert any("ação obsoleta" in error for error in errors)
-    assert any("ação atual" in error for error in errors)
+    assert any("ação obsoleta de publicação" in error for error in errors)
+    assert any("ação atual de publicação" in error for error in errors)
+
+
+def test_adapter_rejects_legacy_attestation_action() -> None:
+    errors = contract.validate_release_workflow(contract.OBSOLETE_ATTEST_ACTION)
+
+    assert any("ação obsoleta de atestação" in error for error in errors)
+    assert any("ação atual de atestação" in error for error in errors)
