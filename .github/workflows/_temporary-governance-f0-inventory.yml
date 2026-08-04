@@ -41,6 +41,97 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Robustecer parser SQL PostgreSQL
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("scripts/compliance_inventory.py")
+          text = path.read_text(encoding="utf-8")
+          old = '''def _balanced_body(text: str, opening: int) -> tuple[str, int]:
+    depth = 0
+    quote: str | None = None
+    i = opening
+    while i < len(text):
+        char = text[i]
+        if quote:
+            if char == quote:
+                if quote == "'" and i + 1 < len(text) and text[i + 1] == "'":
+                    i += 2
+                    continue
+                quote = None
+        elif char in {"'", '"'}:
+            quote = char
+        elif char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+            if depth == 0:
+                return text[opening + 1 : i], i
+        i += 1
+    raise ValueError("Unbalanced CREATE TABLE body")
+'''
+          new = '''def _balanced_body(text: str, opening: int) -> tuple[str, int]:
+    depth = 0
+    quote: str | None = None
+    dollar_quote: str | None = None
+    i = opening
+    while i < len(text):
+        if dollar_quote:
+            if text.startswith(dollar_quote, i):
+                i += len(dollar_quote)
+                dollar_quote = None
+                continue
+            i += 1
+            continue
+
+        char = text[i]
+        if quote:
+            if quote == "'" and char == "\\\\" and i + 1 < len(text):
+                i += 2
+                continue
+            if char == quote:
+                if quote == "'" and i + 1 < len(text) and text[i + 1] == "'":
+                    i += 2
+                    continue
+                quote = None
+        else:
+            dollar = re.match(r"\\$(?:[A-Za-z_][A-Za-z0-9_]*)?\\$", text[i:])
+            if dollar:
+                dollar_quote = dollar.group(0)
+                i += len(dollar_quote)
+                continue
+            if char in {"'", '"'}:
+                quote = char
+            elif char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+                if depth == 0:
+                    return text[opening + 1 : i], i
+        i += 1
+    raise ValueError("Unbalanced CREATE TABLE body")
+'''
+          if text.count(old) != 1:
+              raise SystemExit("Função _balanced_body original não encontrada de forma única")
+          text = text.replace(old, new)
+
+          old_call = '''        assets = extract_sql_assets(path.read_text(encoding="utf-8"))
+'''
+          new_call = '''        try:
+            assets = extract_sql_assets(path.read_text(encoding="utf-8"))
+        except ValueError as exc:
+            raise ValueError(f"{path.relative_to(root)}: {exc}") from exc
+'''
+          if text.count(old_call) != 1:
+              raise SystemExit("Chamada de extract_sql_assets não encontrada de forma única")
+          text = text.replace(old_call, new_call)
+          compile(text, str(path), "exec")
+          path.write_text(text, encoding="utf-8")
+          PY
+
       - name: Congelar migrations atuais por caminho e SHA-256
         shell: bash
         run: |
@@ -92,7 +183,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git rm .github/workflows/_temporary-governance-f0-inventory.yml
-          git add config/compliance/migration_baseline.json \
+          git add scripts/compliance_inventory.py \
+            config/compliance/migration_baseline.json \
             docs/governance/generated/fase0_inventory.json \
             docs/governance/generated/F0_INVENTORY_BASELINE.md
           git diff --cached --check
