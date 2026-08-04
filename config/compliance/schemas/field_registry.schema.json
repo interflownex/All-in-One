@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://allinone.com.br/schemas/compliance/field-registry.schema.json",
+  "title": "All in One + Valley Field Registry",
+  "type": "object",
+  "required": ["schema_version", "registry_version", "status", "source_issue", "baseline_sha", "field_defaults", "fields"],
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "registry_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "status": {"enum": ["planned_foundation", "active", "deprecated"]},
+    "source_issue": {"type": "integer", "minimum": 1},
+    "orchestrator_issue": {"type": "integer", "minimum": 1},
+    "baseline_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "bundles_ref": {"type": "string", "minLength": 1},
+    "field_defaults": {"$ref": "#/$defs/metadata"},
+    "fields": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {"$ref": "#/$defs/physicalField"},
+          {
+            "type": "object",
+            "properties": {
+              "json_schema_ref": {"type": "string", "minLength": 1},
+              "allow_unregistered_personal_keys": {"type": "boolean"}
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "required": ["domain", "owner_service", "processing_activity", "purpose", "legal_basis", "sensitivity", "retention_policy", "encryption_policy", "masking_policy", "access_policy", "sharing_policy", "source_system", "lineage", "disposal_method", "status", "bundle_codes"],
+      "properties": {
+        "domain": {"type": "string", "minLength": 1},
+        "owner_service": {"type": "string", "minLength": 1},
+        "processing_activity": {"type": "string", "minLength": 1},
+        "purpose": {"type": "string", "minLength": 1},
+        "legal_basis": {"type": "string", "minLength": 1},
+        "sensitivity": {"type": "string", "minLength": 1},
+        "retention_policy": {"type": "string", "minLength": 1},
+        "encryption_policy": {"type": "string", "minLength": 1},
+        "masking_policy": {"type": "string", "minLength": 1},
+        "access_policy": {"type": "string", "minLength": 1},
+        "sharing_policy": {"type": "string", "minLength": 1},
+        "source_system": {"type": "string", "minLength": 1},
+        "lineage": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "disposal_method": {"type": "string", "minLength": 1},
+        "status": {"enum": ["planned", "active", "deprecated"]},
+        "bundle_codes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^B(?:[0-9]|1[0-4])$"}}
+      }
+    },
+    "physicalField": {
+      "type": "object",
+      "required": ["field_id", "schema_name", "table_name", "field_name", "physical_type", "nullable"],
+      "properties": {
+        "field_id": {"type": "string", "pattern": "^[a-z0-9_]+\\.[a-z0-9_]+\\.[a-z0-9_]+$"},
+        "schema_name": {"type": "string", "pattern": "^[a-z_][a-z0-9_]*$"},
+        "table_name": {"type": "string", "pattern": "^[a-z_][a-z0-9_]*$"},
+        "field_name": {"type": "string", "pattern": "^[a-z_][a-z0-9_]*$"},
+        "physical_type": {"type": "string", "minLength": 1},
+        "nullable": {"type": "boolean"}
+      }
+    }
+  }
+}
