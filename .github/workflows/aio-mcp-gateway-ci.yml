@@ -40,13 +40,15 @@ jobs:
         run: ruff format --check .
       - name: Mypy
         run: >-
-          mypy main.py security.py
+          mypy main.py security.py production_invariants.py
           deploy/render_cloud_run.py
           deploy/rollback_cloud_run.py
       - name: Tests
         run: pytest
       - name: Compile
-        run: python -m compileall -q main.py security.py deploy tests
+        run: >-
+          python -m compileall -q
+          main.py security.py production_invariants.py deploy tests
       - name: Audit Python dependencies
         run: pip-audit --strict --progress-spinner off
       - name: Generate application SBOM
@@ -54,7 +56,8 @@ jobs:
       - name: Package attestable source
         run: >-
           tar -czf aio-mcp-gateway-source.tgz
-          main.py security.py pyproject.toml SPEC.md README.md Dockerfile
+          main.py security.py production_invariants.py
+          pyproject.toml SPEC.md README.md Dockerfile
           .env.example deploy
       - name: Upload quality evidence
         uses: actions/upload-artifact@v7.0.1
