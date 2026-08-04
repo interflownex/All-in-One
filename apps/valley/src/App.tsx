@@ -23,11 +23,8 @@ import {
   type ViewKey,
 } from './lib/api';
 import './functional.css';
-import './valley_experience.css';
-import './product_feed.css';
 
 type RouteState = { view: ViewKey; hint?: JourneyHint };
-type AuthMode = 'welcome' | 'login' | 'register';
 
 function App() {
   const [session, setSession] = useState<Session | null>(() => loadSession());
@@ -124,7 +121,7 @@ function App() {
     setRoute({ view: 'home' });
   }, [updateSession]);
 
-  if (!session) return <AuthScreen notice={notice} setNotice={setNotice} onAuthenticated={authenticated} />;
+  if (!session) return <AuthScreen notice={notice} onAuthenticated={authenticated} />;
 
   const props = { session, setNotice };
   const view = route.view;
@@ -172,128 +169,80 @@ function App() {
   </div>;
 }
 
-function AuthScreen({ notice, setNotice, onAuthenticated }: { notice: string; setNotice: (message: string) => void; onAuthenticated: (session: Session, avatarDataUrl: string) => void }) {
-  const [mode, setMode] = useState<AuthMode>('welcome');
+function AuthScreen({ notice, onAuthenticated }: { notice: string; onAuthenticated: (session: Session, avatarDataUrl: string) => void }) {
+  const [registering, setRegistering] = useState(false);
   const [fullName, setFullName] = useState('');
   const [cpf, setCpf] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [accepted, setAccepted] = useState(false);
   const [avatarDataUrl, setAvatarDataUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [loginAttempts, setLoginAttempts] = useState(0);
-  const normalizedCpf = cpf.replace(/\D/g, '');
 
-  const authenticate = async () => {
-    const data = await request<JsonRecord>('/auth/login', 'POST', {
-      email: authEmail(normalizedCpf),
-      cpf: normalizedCpf,
-      password,
-    });
-    onAuthenticated({
-      accessToken: String(data.access_token),
-      refreshToken: String(data.refresh_token),
-      userId: String(data.user_id),
-      sessionId: String(data.session_id),
-      email: normalizedCpf,
-      expiresAt: String(data.expires_at),
-      refreshExpiresAt: String(data.refresh_expires_at),
-    }, avatarDataUrl);
-  };
-
-  const submitLogin = async (event: FormEvent) => {
+  const submit = async (event: FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError('');
     try {
-      validateCpf(normalizedCpf);
-      await authenticate();
-    } catch (caught) {
-      setLoginAttempts(current => current + 1);
-      setError(errorMessage(caught));
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (registering) {
+        if (!accepted) throw new Error('Aceite os termos e a privacidade.');
+        const now = new Date().toISOString();
+        await request('/registrations', 'POST', {
+          full_name: fullName.trim(),
+          email: email.trim().toLowerCase(),
+          password_hash: password,
+          document_cpf: cpf.replace(/\D/g, ''),
+          terms_accepted_at: now,
+          lgpd_consent_at: now,
+          profile_avatar_mode: avatarDataUrl ? 'personalized_valley_frame' : 'official_default',
+        });
+      }
 
-  const submitRegistration = async (event: FormEvent) => {
-    event.preventDefault();
-    setLoading(true);
-    setError('');
-    try {
-      validateCpf(normalizedCpf);
-      if (!accepted) throw new Error('Aceite os termos e a política de privacidade.');
-      const now = new Date().toISOString();
-      await request('/registrations', 'POST', {
-        full_name: fullName.trim(),
-        email: authEmail(normalizedCpf),
-        contact_email: contactEmail.trim().toLowerCase() || null,
-        phone_e164: normalizeBrazilPhone(phone),
-        password_hash: password,
-        document_cpf: normalizedCpf,
-        cpf_document: normalizedCpf,
-        terms_accepted_at: now,
-        lgpd_consent_at: now,
-        profile_avatar_mode: avatarDataUrl ? 'personalized_valley_frame' : 'official_default',
-        launcher_icon_policy: 'official_valley_only',
+      const data = await request<JsonRecord>('/auth/login', 'POST', {
+        email: email.trim().toLowerCase(),
+        password,
       });
-      await authenticate();
-    } catch (caught) {
-      setError(errorMessage(caught));
+      onAuthenticated({
+        accessToken: String(data.access_token),
+        refreshToken: String(data.refresh_token),
+        userId: String(data.user_id),
+        sessionId: String(data.session_id),
+        email: email.trim().toLowerCase(),
+        expiresAt: String(data.expires_at),
+        refreshExpiresAt: String(data.refresh_expires_at),
+      }, avatarDataUrl);
+    } catch (err) {
+      const message = errorMessage(err);
+      if (!registering && /credenciais|cadastro|conta/i.test(message)) {
+        setRegistering(true);
+        setError('Não foi possível validar um cadastro ativo. Conclua o cadastro ou volte para corrigir seus dados de acesso.');
+      } else {
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const requestRecovery = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      validateCpf(normalizedCpf);
-      await request('/identity/valley/access-recovery', 'POST', {
-        cpf: normalizedCpf,
-        device_fingerprint: deviceFingerprint(),
-      });
-      setNotice('Solicitação de recuperação registrada. Confira o canal seguro cadastrado.');
-    } catch (caught) {
-      setError(errorMessage(caught));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (mode === 'welcome') return <main className='valley-entry'>
-    <section className='valley-entry-shell'>
-      <img className='valley-entry-logo' src='/assets/brand/valley-logo-official.png' alt='VALLEY' />
-      <div className='valley-entry-actions'>
-        <button className='primary' type='button' onClick={() => setMode('login')}>Entrar</button>
-        <button className='secondary' type='button' onClick={() => setMode('register')}>Cadastrar</button>
-      </div>
+  return <main className='auth-page'>
+    <section className='auth-card'>
+      <img className='auth-logo' src='/assets/brand/valley-logo-official.png' alt='Valley' />
+      <h1>{registering ? 'Crie sua conta Valley' : 'Entre no Valley'}</h1>
+      <p>{registering ? 'Conclua seu cadastro para acessar a Home.' : 'Somente usuários autenticados entram no aplicativo.'}</p>
       {notice && <div className='notice warning'>{notice}</div>}
-    </section>
-  </main>;
-
-  return <main className='valley-entry'>
-    <section className='auth-flow-card'>
-      <button className='auth-back' type='button' onClick={() => { setMode('welcome'); setError(''); }}>‹ Voltar</button>
-      <img className='auth-logo' src='/assets/brand/valley-logo-official.png' alt='VALLEY' />
-      <h1>{mode === 'login' ? 'Entrar' : 'Cadastrar'}</h1>
-      <p>{mode === 'login' ? 'Use seu CPF e sua senha.' : 'Crie seu cadastro para acessar a Home do VALLEY.'}</p>
-      <form onSubmit={mode === 'login' ? submitLogin : submitRegistration}>
-        {mode === 'register' && <label>Nome completo<input value={fullName} onChange={event => setFullName(event.target.value)} autoComplete='name' required /></label>}
-        <label>CPF<input inputMode='numeric' autoComplete='username' value={cpf} onChange={event => setCpf(formatCpf(event.target.value))} placeholder='000.000.000-00' required /></label>
-        {mode === 'register' && <>
-          <label>E-mail de contato<input type='email' value={contactEmail} onChange={event => setContactEmail(event.target.value)} autoComplete='email' /></label>
-          <label>Telefone<input inputMode='tel' value={phone} onChange={event => setPhone(event.target.value)} autoComplete='tel' /></label>
+      <form onSubmit={submit}>
+        {registering && <>
+          <label>Nome completo<input value={fullName} onChange={event => setFullName(event.target.value)} required /></label>
+          <label>CPF<input inputMode='numeric' value={cpf} onChange={event => setCpf(event.target.value)} required minLength={11} /></label>
           <ValleyAvatarPicker value={avatarDataUrl} onChange={setAvatarDataUrl} onError={setError} />
         </>}
-        <label>Senha<input type='password' value={password} onChange={event => setPassword(event.target.value)} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} minLength={6} required /></label>
-        {mode === 'register' && <label className='checkbox-row'><input type='checkbox' checked={accepted} onChange={event => setAccepted(event.target.checked)} />Aceito os termos e o tratamento necessário dos dados.</label>}
+        <label>E-mail<input type='email' value={email} onChange={event => setEmail(event.target.value)} required /></label>
+        <label>Senha<input type='password' value={password} onChange={event => setPassword(event.target.value)} required minLength={6} /></label>
+        {registering && <label className='checkbox-row'><input type='checkbox' checked={accepted} onChange={event => setAccepted(event.target.checked)} />Aceito os termos e o tratamento necessário dos dados.</label>}
         {error && <div className='notice error'>{error}</div>}
-        <button className='primary' type='submit' disabled={loading}>{loading ? 'Processando...' : mode === 'login' ? 'Entrar' : 'Cadastrar e entrar'}</button>
-        {mode === 'login' && loginAttempts > 0 && <button className='text-button' type='button' onClick={requestRecovery} disabled={loading}>Recuperar acesso</button>}
+        <button className='primary' type='submit' disabled={loading}>{loading ? 'Conectando...' : registering ? 'Cadastrar e entrar' : 'Entrar'}</button>
+        <button className='text-button' type='button' onClick={() => { setRegistering(value => !value); setError(''); }}>{registering ? 'Já tenho cadastro ativo' : 'Ainda não tenho cadastro'}</button>
       </form>
     </section>
   </main>;
@@ -301,20 +250,15 @@ function AuthScreen({ notice, setNotice, onAuthenticated }: { notice: string; se
 
 function BottomNav({ route, navigate }: { route: RouteState; navigate: (view: ViewKey, hint?: JourneyHint) => void }) {
   const items: Array<{ key: ViewKey; label: string; icon: string; hint?: JourneyHint; active: ViewKey[] }> = [
-    { key:'home', label:'Início', icon:'⌂', active:['home','delivery','mobility','life','legal','health','property','services'] },
-    { key:'marketplace', label:'Comprar', icon:'▦', hint:{ intent:'comprar', mode:'feed' }, active:['marketplace','stock'] },
-    { key:'finance', label:'Financeiro', icon:'◈', active:['finance'] },
-    { key:'jobs', label:'Trabalhar', icon:'✦', hint:{ intent:'trabalhar', mode:'seek' }, active:['jobs'] },
-    { key:'account', label:'Conta', icon:'●', active:['account','settings'] },
+    { key: 'home', label: 'Início', icon: '⌂', active: ['home', 'delivery', 'mobility', 'life', 'legal', 'health', 'property', 'services'] },
+    { key: 'marketplace', label: 'Comprar', icon: '▦', hint: { intent: 'comprar', mode: 'feed' }, active: ['marketplace', 'stock'] },
+    { key: 'finance', label: 'Financeiro', icon: '◈', active: ['finance'] },
+    { key: 'jobs', label: 'Trabalhar', icon: '✦', hint: { intent: 'trabalhar', mode: 'seek' }, active: ['jobs'] },
+    { key: 'account', label: 'Conta', icon: '●', active: ['account', 'settings'] },
   ];
   return <nav className='bottom-nav' aria-label='Navegação principal'>
     {items.map(item => <button key={item.key} type='button' className={item.active.includes(route.view) ? 'active' : ''} onClick={() => navigate(item.key, item.hint)}><span>{item.icon}</span><small>{item.label}</small></button>)}
   </nav>;
 }
-
-function authEmail(cpf: string) { return `${cpf}@cpf.valley.local`; }
-function validateCpf(cpf: string) { if (!/^\d{11}$/.test(cpf)) throw new Error('Informe um CPF válido com 11 números.'); }
-function formatCpf(value: string) { const digits = value.replace(/\D/g, '').slice(0, 11); return digits.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2'); }
-function normalizeBrazilPhone(value: string) { const digits = value.replace(/\D/g, ''); if (!digits) return undefined; return digits.startsWith('55') ? `+${digits}` : `+55${digits}`; }
 
 export default App;
