@@ -1,6 +1,34 @@
-import { type CSSProperties, type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  type CSSProperties,
+  type FormEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { ValleyProfileAvatar } from './ValleyProfileAvatar';
 import { formatMoney } from '../lib/api';
+
+export type FeedMedia = {
+  url: string;
+  type: 'image' | 'video';
+  posterUrl?: string;
+  alt?: string;
+};
+
+export type FeedFact = {
+  label: string;
+  value: string;
+};
+
+export type FeedSupplierProfile = {
+  name: string;
+  verified?: boolean;
+  region?: string;
+  rating?: number | null;
+  reviewCount?: number | null;
+  sourceLabel?: string;
+};
 
 export type FeedProduct = {
   id: string;
@@ -9,6 +37,7 @@ export type FeedProduct = {
   sourceModule: string;
   title: string;
   description: string;
+  fullDescription?: string;
   category: string;
   provider: string;
   region: string;
@@ -16,6 +45,9 @@ export type FeedProduct = {
   priceAmount?: string | null;
   imageUrl?: string;
   videoUrl?: string;
+  media?: FeedMedia[];
+  facts?: FeedFact[];
+  supplier?: FeedSupplierProfile;
   accentColor?: string;
 };
 
@@ -45,10 +77,20 @@ type ProductFeedProps = {
   onLoadMore?: () => void;
 };
 
-type IconName = 'back' | 'search' | 'heart' | 'share' | 'comment' | 'cart' | 'buy' | 'chat';
+type IconName =
+  | 'back'
+  | 'close'
+  | 'search'
+  | 'heart'
+  | 'share'
+  | 'comment'
+  | 'cart'
+  | 'buy'
+  | 'chat';
 
 const paths: Record<IconName, string> = {
   back: 'M15 18l-6-6 6-6M9 12h10',
+  close: 'M6 6l12 12M18 6 6 18',
   search: 'm21 21-4.35-4.35M19 11a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z',
   heart: 'M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z',
   share: 'M18 8a3 3 0 1 0-2.83-4M6 14a3 3 0 1 0 0-4M18 20a3 3 0 1 0 0-4M8.59 11.51l6.83-3.02M8.59 12.49l6.83 3.02',
@@ -63,10 +105,41 @@ function Icon({ name }: { name: IconName }) {
 }
 
 function colorFor(product: FeedProduct) {
-  if (product.accentColor && /^#[0-9a-f]{6}$/i.test(product.accentColor)) return product.accentColor;
+  if (product.accentColor && /^#[0-9a-f]{6}$/i.test(product.accentColor)) {
+    return product.accentColor;
+  }
   const palette = ['#5d2ce6', '#006d77', '#9c2f52', '#9a6700', '#185fa5', '#2d6a4f', '#7b2cbf'];
-  const score = [...product.title].reduce((total, character) => total + character.charCodeAt(0), 0);
+  const score = [...product.title].reduce(
+    (total, character) => total + character.charCodeAt(0),
+    0,
+  );
   return palette[score % palette.length];
+}
+
+function mediaFor(product: FeedProduct): FeedMedia[] {
+  const candidates: FeedMedia[] = [];
+  if (product.videoUrl) {
+    candidates.push({
+      url: product.videoUrl,
+      type: 'video',
+      posterUrl: product.imageUrl,
+      alt: product.title,
+    });
+  }
+  for (const item of product.media ?? []) {
+    if (item.url) candidates.push(item);
+  }
+  if (product.imageUrl) {
+    candidates.push({ url: product.imageUrl, type: 'image', alt: product.title });
+  }
+
+  const seen = new Set<string>();
+  return candidates.filter(item => {
+    const key = item.url.trim();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 async function shareProduct(product: FeedProduct) {
@@ -108,39 +181,240 @@ function ActionButton({
   ><Icon name={icon} /></button>;
 }
 
-function ProductMedia({ product }: { product: FeedProduct }) {
+function ProductMediaCarousel({
+  product,
+  onOpenDetails,
+  detailMode = false,
+}: {
+  product: FeedProduct;
+  onOpenDetails?: () => void;
+  detailMode?: boolean;
+}) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
+  const pointerMoved = useRef(false);
+  const pointerStart = useRef({ x: 0, y: 0 });
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [visible, setVisible] = useState(detailMode);
+  const media = useMemo(() => mediaFor(product), [product]);
 
   useEffect(() => {
+    if (detailMode) {
+      setVisible(true);
+      return;
+    }
     const container = containerRef.current;
-    const video = videoRef.current;
-    if (!container || !video || !('IntersectionObserver' in window)) return;
+    if (!container || !('IntersectionObserver' in window)) {
+      setVisible(true);
+      return;
+    }
     const observer = new IntersectionObserver(entries => {
-      const active = entries.some(
+      setVisible(entries.some(
         entry => entry.isIntersecting && entry.intersectionRatio >= 0.65,
-      );
-      if (active) void video.play().catch(() => undefined);
-      else video.pause();
+      ));
     }, { threshold: [0.25, 0.65, 0.9] });
     observer.observe(container);
     return () => observer.disconnect();
-  }, []);
+  }, [detailMode]);
 
-  return <div className='feed-media-layer' ref={containerRef}>
-    {product.videoUrl
-      ? <video
-          ref={videoRef}
-          src={product.videoUrl}
-          poster={product.imageUrl}
-          loop
-          muted
-          playsInline
-          preload="none"
-        />
-      : product.imageUrl
-        ? <img src={product.imageUrl} alt='' loading="lazy" />
-        : <div className='feed-media-placeholder' aria-hidden='true' />}
+  useEffect(() => {
+    videoRefs.current.forEach((video, index) => {
+      if (!video) return;
+      if (visible && index === activeIndex) {
+        void video.play().catch(() => undefined);
+      } else {
+        video.pause();
+      }
+    });
+  }, [activeIndex, visible]);
+
+  const syncIndex = () => {
+    const track = trackRef.current;
+    if (!track || track.clientWidth <= 0) return;
+    const nextIndex = Math.max(
+      0,
+      Math.min(media.length - 1, Math.round(track.scrollLeft / track.clientWidth)),
+    );
+    setActiveIndex(nextIndex);
+  };
+
+  const openDetails = () => {
+    if (!pointerMoved.current) onOpenDetails?.();
+  };
+
+  return <div
+    className={detailMode ? 'feed-media-layer detail-media-layer' : 'feed-media-layer'}
+    ref={containerRef}
+  >
+    {media.length > 0
+      ? <>
+          <div
+            className='feed-media-carousel'
+            ref={trackRef}
+            onScroll={syncIndex}
+            onPointerDown={event => {
+              pointerMoved.current = false;
+              pointerStart.current = { x: event.clientX, y: event.clientY };
+            }}
+            onPointerMove={event => {
+              const horizontal = Math.abs(event.clientX - pointerStart.current.x);
+              const vertical = Math.abs(event.clientY - pointerStart.current.y);
+              if (horizontal > 8 || vertical > 8) pointerMoved.current = true;
+            }}
+          >
+            {media.map((item, index) => <div
+              className='feed-media-slide'
+              key={`${item.type}-${item.url}`}
+              role={onOpenDetails ? 'button' : undefined}
+              tabIndex={onOpenDetails ? 0 : undefined}
+              aria-label={onOpenDetails ? `Abrir detalhes de ${product.title}` : undefined}
+              onClick={openDetails}
+              onKeyDown={event => {
+                if (onOpenDetails && (event.key === 'Enter' || event.key === ' ')) {
+                  event.preventDefault();
+                  onOpenDetails();
+                }
+              }}
+            >
+              {item.type === 'video'
+                ? <video
+                    ref={element => { videoRefs.current[index] = element; }}
+                    src={item.url}
+                    poster={item.posterUrl ?? product.imageUrl}
+                    loop
+                    muted
+                    playsInline
+                    preload='metadata'
+                  />
+                : <img
+                    src={item.url}
+                    alt={item.alt ?? product.title}
+                    loading={detailMode ? 'eager' : 'lazy'}
+                  />}
+            </div>)}
+          </div>
+          {media.length > 1 && <div
+            className='feed-media-pagination'
+            aria-label={`Mídia ${activeIndex + 1} de ${media.length}`}
+          >
+            {media.map((item, index) => <span
+              key={`${item.url}-dot`}
+              className={index === activeIndex ? 'active' : ''}
+            />)}
+          </div>}
+        </>
+      : <div
+          className='feed-media-placeholder'
+          role={onOpenDetails ? 'button' : undefined}
+          tabIndex={onOpenDetails ? 0 : undefined}
+          onClick={openDetails}
+          onKeyDown={event => {
+            if (onOpenDetails && (event.key === 'Enter' || event.key === ' ')) {
+              onOpenDetails();
+            }
+          }}
+        />}
+  </div>;
+}
+
+function ProductDetailDialog({
+  product,
+  onClose,
+  onAddToCart,
+  onBuy,
+  onSupplier,
+}: {
+  product: FeedProduct;
+  onClose: () => void;
+  onAddToCart: (product: FeedProduct) => void;
+  onBuy: (product: FeedProduct) => void;
+  onSupplier: (product: FeedProduct) => void;
+}) {
+  const supplier = product.supplier ?? {
+    name: product.provider,
+    region: product.region,
+    sourceLabel: product.sourceModule === 'stock' ? 'Estoque Valley' : 'Marketplace Valley',
+  };
+
+  return <div
+    className='product-detail-backdrop'
+    role='presentation'
+    onClick={event => {
+      if (event.currentTarget === event.target) onClose();
+    }}
+  >
+    <section
+      className='product-detail-sheet'
+      role='dialog'
+      aria-modal='true'
+      aria-label={`Detalhes de ${product.title}`}
+    >
+      <header className='product-detail-header'>
+        <button type='button' onClick={onClose} aria-label='Fechar detalhes'>
+          <Icon name='close' />
+        </button>
+        <h2>{product.title}</h2>
+        <strong>{formatMoney(product.priceAmount)}</strong>
+      </header>
+
+      <div className='product-detail-media'>
+        <ProductMediaCarousel product={product} detailMode />
+      </div>
+
+      <div className='product-detail-content'>
+        <section>
+          <h3>Descrição completa</h3>
+          <p>{
+            product.fullDescription
+            || product.description
+            || 'O anunciante ainda não informou uma descrição detalhada.'
+          }</p>
+        </section>
+
+        {Boolean(product.facts?.length) && <section>
+          <h3>Características e informações</h3>
+          <dl className='product-detail-facts'>
+            {product.facts?.map(fact => <div key={`${fact.label}-${fact.value}`}>
+              <dt>{fact.label}</dt>
+              <dd>{fact.value}</dd>
+            </div>)}
+          </dl>
+        </section>}
+
+        <section className='product-detail-supplier'>
+          <h3>Fornecedor</h3>
+          <div className='supplier-public-card'>
+            <div>
+              <strong>{supplier.name}</strong>
+              <span>{supplier.verified ? 'Fornecedor verificado' : 'Fornecedor cadastrado'}</span>
+            </div>
+            {supplier.region && <span>{supplier.region}</span>}
+            {supplier.rating != null && <span>
+              Avaliação {supplier.rating.toFixed(1)}
+              {supplier.reviewCount != null ? ` · ${supplier.reviewCount} avaliações` : ''}
+            </span>}
+            {supplier.sourceLabel && <small>{supplier.sourceLabel}</small>}
+          </div>
+          <p className='supplier-privacy-note'>
+            Telefone, e-mail, redes sociais e outros dados externos de contato não são exibidos.
+            A comunicação com o fornecedor acontece somente dentro do aplicativo Valley.
+          </p>
+        </section>
+      </div>
+
+      <footer className='product-detail-actions'>
+        <button className='secondary' type='button' onClick={() => onSupplier(product)}>
+          Falar no Valley
+        </button>
+        <button className='secondary' type='button' onClick={() => onAddToCart(product)}>
+          Adicionar ao carrinho
+        </button>
+        <button className='primary' type='button' onClick={() => onBuy(product)}>
+          Comprar
+        </button>
+      </footer>
+    </section>
   </div>;
 }
 
@@ -170,7 +444,11 @@ export function ProductFeed({
   onLoadMore,
 }: ProductFeedProps) {
   const [searchOpen, setSearchOpen] = useState(false);
-  const activeCategories = useMemo(() => categories.filter(Boolean), [categories]);
+  const [detailProduct, setDetailProduct] = useState<FeedProduct | null>(null);
+  const activeCategories = useMemo(
+    () => categories.filter(Boolean),
+    [categories],
+  );
 
   const submitSearch = (event: FormEvent) => {
     event.preventDefault();
@@ -210,7 +488,10 @@ export function ProductFeed({
         const style = { '--feed-accent': colorFor(product) } as CSSProperties;
         const reviewEnabled = canComment(product);
         return <article className='product-feed-item' key={product.id} style={style}>
-          <ProductMedia product={product} />
+          <ProductMediaCarousel
+            product={product}
+            onOpenDetails={() => setDetailProduct(product)}
+          />
           <div className='feed-media-shade' />
 
           <div className='feed-title-frame' title={product.title}><h2>{product.title}</h2></div>
@@ -246,5 +527,16 @@ export function ProductFeed({
         </button>
       </div>}
     </div>
+
+    {detailProduct && <ProductDetailDialog
+      product={detailProduct}
+      onClose={() => setDetailProduct(null)}
+      onAddToCart={onAddToCart}
+      onBuy={onBuy}
+      onSupplier={product => {
+        setDetailProduct(null);
+        onSupplier(product);
+      }}
+    />}
   </section>;
 }
