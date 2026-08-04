@@ -18,7 +18,35 @@ export type ViewKey =
   | 'settings';
 export type JourneyHint = { intent?: string; mode?: string; query?: string };
 export type Session = { accessToken: string; refreshToken: string; userId: string; sessionId: string; email: string; expiresAt: string; refreshExpiresAt: string };
-export type Offer = { offer_id: string; title: string; short_description?: string; description?: string; price_amount?: string | null; consumer_category: string; offer_type_label: string; source_module: string; source_entity_id?: string; provider_label: string; region_label: string; distance_km?: number | null; consumer_action: 'buy' | 'book' | 'hire' | 'request' | 'view' | 'coming_soon'; primary_action_label: string; verified_seller?: boolean; metadata?: { image_url?: string; video_url?: string } };
+export type OfferMetadata = {
+  image_url?: string;
+  primary_image_url?: string;
+  video_url?: string;
+  accent_color?: string;
+  latitude?: number | string;
+  longitude?: number | string;
+  sold_count?: number | string;
+  bestseller_score?: number | string;
+  category?: string;
+};
+export type Offer = {
+  offer_id: string;
+  title: string;
+  short_description?: string;
+  description?: string;
+  price_amount?: string | null;
+  consumer_category: string;
+  offer_type_label: string;
+  source_module: string;
+  source_entity_id?: string;
+  provider_label: string;
+  region_label: string;
+  distance_km?: number | null;
+  consumer_action: 'buy' | 'book' | 'hire' | 'request' | 'view' | 'coming_soon';
+  primary_action_label: string;
+  verified_seller?: boolean;
+  metadata?: OfferMetadata;
+};
 export type CatalogResponse = { data: Offer[]; total: number; partial?: boolean };
 export type ApiItem = { id: string; status?: string; payload?: JsonRecord; created_at?: string; updated_at?: string };
 export type Order = { id: string; kind?: string; title?: string; status?: string; amount_brl?: string | null; scheduled_at?: string | null; created_at?: string };
