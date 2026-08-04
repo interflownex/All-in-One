@@ -1007,7 +1007,7 @@ def render_requirements(slug: str) -> str:
         )
     if slug == "jobs":
         return (
-            "cryptography==48.0.1\n"
+            "cryptography==50.0.0\n"
             "fastapi==0.136.1\n"
             "pypdf==6.14.2\n"
             "psycopg[binary]==3.3.4\n"
@@ -1024,7 +1024,7 @@ def render_requirements(slug: str) -> str:
             "PyJWT==2.13.0\n"
             "psycopg[binary]==3.3.4\n"
             "tenacity==9.0.0\n"
-            "cryptography==48.0.1\n"
+            "cryptography==50.0.0\n"
         )
     if slug == "finance":
         return "fastapi==0.136.1\npsycopg[binary]==3.3.4\nstarlette==1.3.1\nuvicorn[standard]==0.34.2\n"
