@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "source_issue": 204,
+  "orchestrator_issue": 203,
+  "source_main_sha": "ab2ebca1849d2e3ed31ca8922ab74a0215e04939",
+  "captured_on": "2026-08-04",
+  "scope": "repository_static",
+  "runtime_database_connected": false,
+  "target": {
+    "logical_tables": 702,
+    "product_modules": 24,
+    "cross_cutting_domains": 7,
+    "gate_range": "G0-G23"
+  },
+  "constraints": [
+    "No direct push to main",
+    "No indiscriminate creation of 702 tables",
+    "No production activation for regulated domains",
+    "No claim of full compliance without runtime and professional validation"
+  ]
+}
