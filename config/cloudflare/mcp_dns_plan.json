@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-08-04T02:07:00-03:00",
+  "updated_at": "2026-08-04T03:08:00-03:00",
   "zone_name": "brasildesconto.com.br",
   "deployment_model": "single_gateway_with_dns_aliases",
   "canonical": {
@@ -16,7 +16,7 @@
   "environments": [
     {
       "environment": "staging",
-      "hostname": "staging-mcp.brasildesconto.com.br",
+      "hostname": "mcp-staging.brasildesconto.com.br",
       "record_type": "CNAME",
       "target_env_var": "MCP_STAGING_DNS_TARGET",
       "proxied": true,
@@ -24,7 +24,7 @@
     },
     {
       "environment": "preview",
-      "hostname": "preview-mcp.brasildesconto.com.br",
+      "hostname": "mcp-preview.brasildesconto.com.br",
       "record_type": "CNAME",
       "target_env_var": "MCP_PREVIEW_DNS_TARGET",
       "proxied": true,
