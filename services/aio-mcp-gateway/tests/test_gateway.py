@@ -199,5 +199,33 @@ def test_every_registered_tool_has_a_scope_policy(
     gateway = _load_gateway(monkeypatch)
     registered = {tool.name for tool in gateway.mcp._tool_manager.list_tools()}
 
-    assert registered == set(gateway.DEFAULT_TOOL_SCOPES)
-    assert all(gateway.DEFAULT_TOOL_SCOPES.values())
+    assert registered == set(gateway.TOOL_SCOPES)
+    assert gateway.TOOL_SCOPES["search_repository"] == frozenset(
+        {"aio:mcp:read", "aio:github:read"}
+    )
+    assert gateway.TOOL_SCOPES["read_project_document"] == frozenset(
+        {"aio:mcp:read", "aio:documents:read"}
+    )
+
+
+def test_tool_specific_scope_is_enforced(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    gateway = _load_gateway(monkeypatch, **_auth_environment())
+    from mcp.server.auth.provider import AccessToken
+
+    monkeypatch.setattr(
+        gateway,
+        "get_access_token",
+        lambda: AccessToken(
+            token="token",
+            client_id="client",
+            scopes=["aio:mcp:read"],
+            expires_at=2_000_000_000,
+            resource="https://mcp.brasildesconto.com.br/mcp",
+            subject="user",
+        ),
+    )
+
+    with pytest.raises(PermissionError, match="aio:github:read"):
+        gateway._require_tool_scope("search_repository")
