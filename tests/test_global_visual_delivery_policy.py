@@ -22,6 +22,45 @@ def make_policy() -> dict:
             "official_assets_root": "assets/brand",
             "delivery_standard": "docs/design/PADRAO_GLOBAL_ENTREGA_VISUAL_REUTILIZAVEL.md",
         },
+        "design_governance": {
+            "design_is_strategic_project_requirement": True,
+            "required_in_all_applications": True,
+            "design_review_required_before_merge": True,
+            "required_quality_dimensions": [
+                "clareza da jornada",
+                "consistência visual",
+                "legibilidade",
+                "acessibilidade",
+                "responsividade",
+                "hierarquia da informação",
+                "feedback de interação",
+                "redução de esforço do usuário",
+                "continuidade entre telas",
+            ],
+            "required_artifacts_before_implementation": [
+                "fluxo da jornada",
+                "tela de referência ou wireframe",
+                "inventário de componentes reutilizáveis",
+                "estados vazio, carregando, erro e sucesso",
+                "critérios de aceite de design e experiência",
+            ],
+            "review_gates": {
+                "ux_review_required": True,
+                "accessibility_review_required": True,
+                "responsive_review_required": True,
+                "visual_consistency_review_required": True,
+                "visual_regression_review_required": True,
+            },
+            "minimum_viewports": ["mobile_small", "mobile_standard", "tablet"],
+            "definition_of_done": [
+                "interface consistente com a identidade e o design system",
+                "estados interativos e mensagens definidos",
+                "sem overflow ou corte de conteúdo",
+                "texto legível com escala do sistema",
+                "navegação sem duplicação desnecessária",
+            ],
+            "prohibited": ["tratar design como acabamento opcional"],
+        },
         "typography": {
             "mobile_sp": {
                 "small_auxiliary": 16,
@@ -128,6 +167,8 @@ def test_rejects_local_opt_out(tmp_path: Path) -> None:
     [
         (("mandatory",), False, "mandatory=true"),
         (("local_opt_out_allowed",), True, "local_opt_out_allowed=false"),
+        (("design_governance", "design_is_strategic_project_requirement"), False, "design_is_strategic_project_requirement"),
+        (("design_governance", "review_gates", "accessibility_review_required"), False, "accessibility_review_required"),
         (("typography", "mobile_sp", "button"), 18, "mobile_sp.button"),
         (("buttons", "debossed_text"), False, "debossed_text"),
         (("reusable_assets", "screen_crops_are_reusable_assets"), True, "Recortes de tela"),
@@ -149,3 +190,13 @@ def test_rejects_contract_regressions(
     violations = validate_policy(tmp_path, policy)
 
     assert any(expected in violation for violation in violations)
+
+
+def test_rejects_missing_design_artifacts(tmp_path: Path) -> None:
+    materialize_required_files(tmp_path)
+    policy = make_policy()
+    policy["design_governance"]["required_artifacts_before_implementation"] = []
+
+    violations = validate_policy(tmp_path, policy)
+
+    assert any("Artefatos obrigatórios de design" in violation for violation in violations)
