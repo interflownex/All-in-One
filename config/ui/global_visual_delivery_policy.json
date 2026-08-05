@@ -1,0 +1,175 @@
+{
+  "version": "1.0.0",
+  "updated_at": "2026-08-05T01:03:00-03:00",
+  "language": "pt-BR",
+  "mandatory": true,
+  "local_opt_out_allowed": false,
+  "scope": {
+    "repository": "interflownex/All-in-One",
+    "application_roots": [
+      "apps",
+      "desktop",
+      "frontend",
+      "mobile",
+      "web"
+    ],
+    "project_markers": [
+      "package.json",
+      "pubspec.yaml",
+      "build.gradle",
+      "build.gradle.kts",
+      "pom.xml",
+      "*.csproj"
+    ],
+    "applies_to": [
+      "All in One Web e Mobile",
+      "VALLEY Consumidor",
+      "VALLEY Business",
+      "VALLEY Rider",
+      "AIO Admin Web e Mobile",
+      "PDV Desktop",
+      "aplicativos futuros do repositório"
+    ]
+  },
+  "sources_of_truth": {
+    "brand_assets": "config/branding/authorized_assets.json",
+    "brand_identity": "config/branding/brand_identity.json",
+    "official_assets_root": "assets/brand",
+    "delivery_standard": "docs/design/PADRAO_GLOBAL_ENTREGA_VISUAL_REUTILIZAVEL.md"
+  },
+  "typography": {
+    "mobile_sp": {
+      "small_auxiliary": 16,
+      "body": 18,
+      "form_input": 18,
+      "form_label": 18,
+      "section_subtitle": 20,
+      "button": 22,
+      "screen_title": 32,
+      "hero_title_min": 36,
+      "hero_title_max": 40
+    },
+    "mockup_1080px": {
+      "small_auxiliary_min": 24,
+      "small_auxiliary_max": 28,
+      "form_input_min": 34,
+      "form_input_max": 38,
+      "form_label_min": 32,
+      "form_label_max": 34,
+      "button_min": 42,
+      "button_max": 46,
+      "screen_title_min": 56,
+      "screen_title_max": 60,
+      "hero_title_min": 60,
+      "hero_title_max": 68
+    },
+    "rules": {
+      "equal_font_size_for_equivalent_buttons": true,
+      "reduce_single_button_font_to_fit": false,
+      "prefer_more_width_or_padding_before_reducing_font": true,
+      "respect_system_font_scaling": true,
+      "minimum_line_height": 1.3,
+      "maximum_line_height": 1.5,
+      "minimum_wcag_level": "AA"
+    }
+  },
+  "brand_governance": {
+    "official_logo_immutable": true,
+    "allowed_without_new_authorization": [
+      "redimensionamento proporcional",
+      "remoção exclusiva do fundo externo sem tocar na arte"
+    ],
+    "forbidden": [
+      "redesenho",
+      "recoloração",
+      "recorte",
+      "distorção",
+      "troca de tipografia",
+      "alteração de linhas, curvas, formas ou composição",
+      "substituição por aproximação ou ativo gerado"
+    ]
+  },
+  "buttons": {
+    "intent_buttons_use_images": false,
+    "intent_buttons_use_icons": false,
+    "material": "plastificado ou acrílico translúcido",
+    "high_relief": true,
+    "visible_soft_shadow": true,
+    "upper_highlight": true,
+    "debossed_text": true,
+    "base_without_text_required": true,
+    "transparent_png_required_when_exported": true
+  },
+  "reusable_assets": {
+    "required": true,
+    "screen_crops_are_reusable_assets": false,
+    "transparent_png_when_applicable": true,
+    "required_examples_when_present": [
+      "fundo base",
+      "logomarca oficial sem alteração",
+      "botão base sem texto",
+      "botões rotulados",
+      "moldura de avatar",
+      "avatar de exemplo",
+      "bloco de título",
+      "cabeçalho",
+      "sombras separadas",
+      "brilhos separados",
+      "grade de botões"
+    ]
+  },
+  "profile": {
+    "position": "canto superior direito",
+    "compact": true,
+    "ring_based_on_brand_language": true,
+    "text_below": false,
+    "tap_action": "abrir perfil",
+    "must_not_replace_or_modify_official_logo": true,
+    "mockup_source_requirement": "pessoa fictícia, imagem licenciada ou criada especificamente para o modelo"
+  },
+  "logo_interaction": {
+    "tap_action_when_configured": "abrir dock com todos os módulos",
+    "independent_touch_target_from_profile": true,
+    "must_not_be_reduced_or_displaced_to_fit_profile_without_explicit_authorization": true
+  },
+  "delivery_package": {
+    "required": true,
+    "filename_pattern": "Tela_<numero>_<aplicativo>_Pacote_Completo.zip",
+    "first_visual_file_pattern": "01_tela_<numero>_pronta.png",
+    "ordered_contents": [
+      "tela pronta",
+      "elementos PNG reutilizáveis",
+      "arquivo Markdown",
+      "MANIFESTO_SHA256.json"
+    ],
+    "required_chat_downloads": [
+      "ZIP completo",
+      "imagem da tela pronta",
+      "arquivo Markdown",
+      "manifesto JSON"
+    ]
+  },
+  "manifest": {
+    "filename": "MANIFESTO_SHA256.json",
+    "required_fields": [
+      "arquivo",
+      "sha256",
+      "bytes",
+      "mime_type"
+    ],
+    "image_fields": [
+      "largura",
+      "altura",
+      "fundo_transparente"
+    ]
+  },
+  "approved_screens": {
+    "modify_only_with_explicit_owner_authorization": true
+  },
+  "enforcement": {
+    "validator": "scripts/validate_global_visual_delivery.py",
+    "workflow": ".github/workflows/global-visual-delivery.yml",
+    "tests": "tests/test_global_visual_delivery_policy.py",
+    "failure_blocks_merge": true
+  }
+}
