@@ -25,7 +25,7 @@ permissions:
 jobs:
   access-context:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:16-alpine
@@ -47,10 +47,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Apply compliance foundation
+      - name: Apply PostgreSQL foundation through F0.3
         run: |
-          psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f database/postgres/migrations/034_compliance_field_registry.sql
-          psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f database/postgres/migrations/035_compliance_access_context.sql
+          for file in database/postgres/migrations/*.sql; do
+            psql -h localhost -U all_in_one -d all_in_one \
+              -v ON_ERROR_STOP=1 -f "$file"
+          done
 
       - name: Exercise fail-closed access context
         run: psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f tests/sql/compliance_access_context_runtime.sql
