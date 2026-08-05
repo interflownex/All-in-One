@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Valida a política visual e de entrega reutilizável de todos os aplicativos."""
+"""Valida a política visual, de design e de entrega reutilizável dos aplicativos."""
 
 from __future__ import annotations
 
@@ -64,6 +64,64 @@ def collect_local_opt_outs(root: Path, policy: dict[str, Any]) -> list[str]:
     return opt_outs
 
 
+def validate_design_governance(policy: dict[str, Any]) -> list[str]:
+    violations: list[str] = []
+    design = policy.get("design_governance", {})
+
+    required_flags = {
+        "design_is_strategic_project_requirement": True,
+        "required_in_all_applications": True,
+        "design_review_required_before_merge": True,
+    }
+    for key, expected in required_flags.items():
+        if design.get(key) is not expected:
+            violations.append(f"Governança de design inválida: {key}={expected!r}.")
+
+    required_dimensions = {
+        "clareza da jornada",
+        "consistência visual",
+        "legibilidade",
+        "acessibilidade",
+        "responsividade",
+        "hierarquia da informação",
+        "feedback de interação",
+        "redução de esforço do usuário",
+        "continuidade entre telas",
+    }
+    if not required_dimensions.issubset(set(design.get("required_quality_dimensions", []))):
+        violations.append("Dimensões obrigatórias de qualidade de design estão incompletas.")
+
+    required_artifacts = {
+        "fluxo da jornada",
+        "tela de referência ou wireframe",
+        "inventário de componentes reutilizáveis",
+        "estados vazio, carregando, erro e sucesso",
+        "critérios de aceite de design e experiência",
+    }
+    if not required_artifacts.issubset(set(design.get("required_artifacts_before_implementation", []))):
+        violations.append("Artefatos obrigatórios de design antes da implementação estão incompletos.")
+
+    gates = design.get("review_gates", {})
+    for key in (
+        "ux_review_required",
+        "accessibility_review_required",
+        "responsive_review_required",
+        "visual_consistency_review_required",
+        "visual_regression_review_required",
+    ):
+        if gates.get(key) is not True:
+            violations.append(f"Gate obrigatório de design ausente ou desativado: {key}.")
+
+    if len(design.get("minimum_viewports", [])) < 3:
+        violations.append("A validação responsiva deve cobrir ao menos três classes de viewport.")
+    if len(design.get("definition_of_done", [])) < 5:
+        violations.append("A definição de pronto de design está incompleta.")
+    if "tratar design como acabamento opcional" not in set(design.get("prohibited", [])):
+        violations.append("A política deve proibir design como acabamento opcional.")
+
+    return violations
+
+
 def validate_policy(root: Path, policy: dict[str, Any]) -> list[str]:
     violations: list[str] = []
 
@@ -86,6 +144,8 @@ def validate_policy(root: Path, policy: dict[str, Any]) -> list[str]:
             continue
         if not (root / value).exists():
             violations.append(f"Fonte de verdade não encontrada: {value}")
+
+    violations.extend(validate_design_governance(policy))
 
     typography = policy.get("typography", {})
     mobile = typography.get("mobile_sp", {})
@@ -206,12 +266,12 @@ def main() -> int:
     projects = discover_projects(ROOT, policy)
 
     if violations:
-        print("Falha no padrão visual global:")
+        print("Falha no padrão visual e de design global:")
         for violation in violations:
             print(f"- {violation}")
         return 1
 
-    print("Padrão visual global aprovado.")
+    print("Padrão visual e governança de design global aprovados.")
     print(f"Aplicativos/projetos cobertos automaticamente: {len(projects)}")
     for project in projects:
         print(f"- {project}")
