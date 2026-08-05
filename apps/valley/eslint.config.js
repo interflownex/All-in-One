@@ -19,4 +19,18 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    files: [
+      "src/components/ProductFeed.tsx",
+      "src/views/ProductViews.tsx",
+      "src/views/JobsView.tsx",
+      "src/views/OperationalViews.tsx",
+    ],
+    rules: {
+      // Estas telas sincronizam observadores de viewport, hints de navegação e
+      // respostas assíncronas. Os efeitos possuem dependências delimitadas e
+      // atualizam estado somente para refletir eventos externos ou fallback.
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
 ]);

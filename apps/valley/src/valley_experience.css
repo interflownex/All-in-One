@@ -1,0 +1,6 @@
+/*
+ * Ponto de extensão reservado para a entrada VALLEY.
+ * O sistema visual ativo está centralizado em experience.css e é carregado
+ * por main.tsx. Este arquivo mantém o limite de responsabilidade explícito
+ * sem duplicar seletores ou alterar a ordem da cascata.
+ */

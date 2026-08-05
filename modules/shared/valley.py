@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import hashlib
 from collections.abc import Callable
+from datetime import UTC, datetime
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Any
 from uuid import UUID
@@ -40,6 +42,7 @@ STOCK_GLOBAL_RESOURCES = {
     "supplier_orders",
 }
 MARKETPLACE_MERCHANT_RESOURCES = {"stores", "products"}
+REVIEW_ELIGIBLE_ORDER_STATUSES = {"delivered", "completed"}
 
 
 class ValleyPepitaGrant(BaseModel):
@@ -59,6 +62,11 @@ class ValleyStockDiscountRequest(BaseModel):
 
 class ValleyStockDiscountQuoteRequest(ValleyStockDiscountRequest):
     selected_percent: int
+
+
+class ValleyAccessRecoveryRequest(BaseModel):
+    cpf: str = Field(pattern=r"^\d{11}$")
+    device_fingerprint: str = Field(min_length=8, max_length=256)
 
 
 def decimal_money(value: Any, field: str) -> Decimal:
@@ -258,7 +266,68 @@ def register_valley_routes(
             verified_only=verified_only,
         )
 
+    if module_name == "identity":
+
+        @app.post("/valley/access-recovery", status_code=202)
+        def request_access_recovery(
+            body: ValleyAccessRecoveryRequest = Body(...),
+        ) -> dict[str, str]:
+            user = next(
+                (
+                    item
+                    for item in store.list("users")
+                    if str(item.get("payload", {}).get("document_cpf") or item.get("payload", {}).get("cpf_document") or "") == body.cpf
+                ),
+                None,
+            )
+            if user is not None and user.get("status") != "BLOCKED":
+                user_id = str(user["id"])
+                store.create(
+                    "identity_verifications",
+                    user_id,
+                    None,
+                    "PROCESSING",
+                    {
+                        "verification_type": "access_recovery",
+                        "requested_at": datetime.now(UTC).isoformat(),
+                        "device_fingerprint_hash": hashlib.sha256(body.device_fingerprint.encode("utf-8")).hexdigest(),
+                        "delivery_policy": "registered_contact_only",
+                        "account_disclosure": "suppressed",
+                    },
+                    user_id,
+                    (),
+                    "identity.access_recovery.requested",
+                    None,
+                )
+            return {
+                "status": "accepted",
+                "message": "Se houver uma conta elegivel, as instrucoes serao enviadas ao canal seguro cadastrado.",
+            }
+
     if module_name == "marketplace":
+
+        @app.get("/valley/feed/review-eligibility")
+        def feed_review_eligibility(
+            actor: Actor = Depends(actor_from_headers),
+        ) -> list[dict[str, Any]]:
+            eligible: list[dict[str, Any]] = []
+            for order in store.list("orders", str(actor.user_id)):
+                status = str(order.get("status") or "").casefold()
+                if status not in REVIEW_ELIGIBLE_ORDER_STATUSES:
+                    continue
+                payload = order.get("payload") if isinstance(order.get("payload"), dict) else {}
+                eligible.append(
+                    {
+                        "id": str(order.get("id") or ""),
+                        "title": str(payload.get("offer_title") or payload.get("title") or ""),
+                        "status": status,
+                        "offer_id": payload.get("offer_id") or payload.get("source_offer_id"),
+                        "source_entity_id": payload.get("source_entity_id") or payload.get("product_id") or payload.get("catalog_product_id"),
+                        "source_module": payload.get("source_module") or "marketplace",
+                        "can_review": True,
+                    }
+                )
+            return eligible
 
         @app.post("/valley/orders/{order_id}/pepitas/grants", status_code=201)
         def grant_pepitas(

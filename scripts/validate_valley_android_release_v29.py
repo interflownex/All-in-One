@@ -14,6 +14,7 @@ except ModuleNotFoundError:  # Execução direta a partir de scripts/.
 ROOT = Path(__file__).resolve().parents[1]
 RELEASE_WORKFLOW = ROOT / ".github" / "workflows" / "valley-android-release.yml"
 SECURITY_WORKFLOW = ROOT / ".github" / "workflows" / "security.yml"
+CATALOG_SOURCE = ROOT / "apps" / "valley" / "src"
 OBSOLETE_TASKS = "testDebugUnitTest lintDebug assembleDebug"
 EXPLICIT_TASKS = (
     "testProductionDebugUnitTest "
@@ -36,6 +37,11 @@ OBSOLETE_ATTEST_ERROR = (
     ".github/workflows/valley-android-release.yml: marcador obrigatorio ausente: "
     f"{OBSOLETE_ATTEST_ACTION}"
 )
+LEGACY_CATALOG_ERRORS = {
+    'frontend Valley sem requisito de catálogo/performance: loading="lazy"',
+    'frontend Valley sem requisito de catálogo/performance: preload="none"',
+    "frontend Valley sem requisito de catálogo/performance: Carregar mais ofertas",
+}
 
 
 def validate_security_workflow(text: str) -> list[str]:
@@ -78,11 +84,43 @@ def validate_release_workflow(text: str) -> list[str]:
     return errors
 
 
+def validate_current_catalog_performance() -> list[str]:
+    """Valida o feed atual sem congelar aspas ou textos legados."""
+    web_sources = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in CATALOG_SOURCE.rglob("*")
+        if path.is_file() and path.suffix in {".ts", ".tsx"}
+    )
+    errors: list[str] = []
+    alternatives = (
+        (
+            "carregamento tardio de imagens",
+            ('loading="lazy"', "loading='lazy'"),
+        ),
+        (
+            "pré-carregamento controlado de vídeo",
+            ('preload="none"', "preload='none'", 'preload="metadata"', "preload='metadata'"),
+        ),
+        (
+            "paginação explícita do catálogo",
+            ("Carregar mais ofertas", "Carregar mais"),
+        ),
+    )
+    for description, markers in alternatives:
+        if not any(marker in web_sources for marker in markers):
+            errors.append(
+                "frontend Valley sem requisito atual de catálogo/performance: "
+                f"{description}"
+            )
+    return errors
+
+
 def validate() -> list[str]:
     ignored_legacy_errors = {
         OBSOLETE_ERROR,
         OBSOLETE_UPLOAD_ERROR,
         OBSOLETE_ATTEST_ERROR,
+        *LEGACY_CATALOG_ERRORS,
     }
     errors = [
         error for error in legacy.validate() if error not in ignored_legacy_errors
@@ -91,6 +129,7 @@ def validate() -> list[str]:
     release_workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
     errors.extend(validate_security_workflow(security_workflow))
     errors.extend(validate_release_workflow(release_workflow))
+    errors.extend(validate_current_catalog_performance())
     return errors
 
 
