@@ -33,7 +33,7 @@ jobs:
         working-directory: services/aio-mcp-gateway
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-python@v6.2.0
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
