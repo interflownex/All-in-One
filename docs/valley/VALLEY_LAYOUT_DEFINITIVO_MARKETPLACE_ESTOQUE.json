@@ -1,0 +1,83 @@
+{
+  "schema": "valley.marketplace-stock.layout.v1",
+  "status": "definitivo",
+  "applies_to": [
+    "marketplace",
+    "stock"
+  ],
+  "official_logo_path": "assets/brand/valley-logo-official.png",
+  "background": {
+    "type": "product_media_full_bleed",
+    "fills_entire_screen": true,
+    "video_or_image": true,
+    "footer": false
+  },
+  "top_navigation": {
+    "overlay_on_media": true,
+    "order_left_to_right": [
+      "valley_logo",
+      "back",
+      "search",
+      "profile_photo"
+    ],
+    "actions": {
+      "valley_logo": "open_module_dock",
+      "back": "go_previous",
+      "search": "open_module_search",
+      "profile_photo": "open_profile"
+    }
+  },
+  "right_actions": {
+    "overlay_on_media": true,
+    "items": [
+      "favorite",
+      "share",
+      "comment",
+      "cart",
+      "buy",
+      "chat"
+    ],
+    "chat_channel": "valley_in_app",
+    "external_contact": false
+  },
+  "bottom_information": {
+    "overlay_on_media": true,
+    "footer_container": false,
+    "fields": [
+      "campaign_label",
+      "product_title",
+      "variant_or_volume",
+      "price",
+      "description",
+      "verified_supplier",
+      "distance",
+      "availability"
+    ],
+    "price": {
+      "font_weight": 800,
+      "scale_vs_body": 2.0,
+      "accent_color": "#F48FE2",
+      "heavy_outline": false
+    }
+  },
+  "module_behavior": {
+    "marketplace": {
+      "source": "local_marketplace_catalog",
+      "local_radius_km": 10,
+      "search_required": true
+    },
+    "stock": {
+      "source": "approved_supplier_stock",
+      "search_required": true
+    }
+  },
+  "immutable_rules": [
+    "no_footer",
+    "no_bottom_cart_or_buy_bar",
+    "product_media_fills_screen",
+    "official_valley_logo_only",
+    "profile_photo_inside_valley_inspired_ring",
+    "buttons_overlay_media",
+    "same_layout_for_marketplace_and_stock"
+  ]
+}
