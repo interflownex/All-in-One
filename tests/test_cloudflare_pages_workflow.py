@@ -20,10 +20,11 @@ def test_cloudflare_pages_workflow_is_explicit_and_blocking() -> None:
     assert "test -n \"$CLOUDFLARE_API_TOKEN\"" in workflow
     assert "test -n \"$CLOUDFLARE_ACCOUNT_ID\"" in workflow
     assert "test -n \"$VITE_API_HUB_URL\"" in workflow
-    assert "uses: actions/checkout@v6" in workflow
+    assert "uses: actions/checkout@v7" in workflow
     assert "uses: cloudflare/wrangler-action@v4" in workflow
     assert "wranglerVersion: ${{ env.WRANGLER_VERSION }}" in workflow
     assert "curl --fail --silent --show-error" in workflow
     assert "HAS_TELEGRAM_DELIVERY" in workflow
     assert "deploy_enabled=false" not in workflow
     assert "actions/checkout@v4" not in workflow
+    assert "actions/checkout@v6" not in workflow
