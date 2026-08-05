@@ -1,0 +1,103 @@
+name: Firebase Valley Hosting
+
+on:
+  pull_request:
+    paths:
+      - "apps/valley/**"
+      - "firebase.json"
+      - ".firebaserc"
+      - ".github/workflows/firebase-valley-hosting.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/valley/**"
+      - "firebase.json"
+      - ".firebaserc"
+      - ".github/workflows/firebase-valley-hosting.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firebase-valley-hosting-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate-and-build:
+    name: Validate and build Valley Web
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    defaults:
+      run:
+        working-directory: apps/valley
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: apps/valley/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Build Valley Web
+        run: npm run build
+
+      - name: Validate build output
+        run: |
+          set -euo pipefail
+          test -f dist/index.html
+          test -d dist/assets
+
+      - name: Upload validated web artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: valley-web-dist-${{ github.sha }}
+          path: apps/valley/dist
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy-live:
+    name: Deploy Valley Web to Firebase Hosting
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: validate-and-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: firebase-valley-production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Download validated artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: valley-web-dist-${{ github.sha }}
+          path: apps/valley/dist
+
+      - name: Validate Firebase secret presence
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SECRETS_VALLEY }}
+        run: |
+          set -euo pipefail
+          test -n "${FIREBASE_SERVICE_ACCOUNT_JSON}"
+
+      - name: Deploy to Firebase Hosting live channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SECRETS_VALLEY }}
+          projectId: valley-3b421
+          channelId: live
