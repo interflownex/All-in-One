@@ -22,7 +22,7 @@ jobs:
       TARGET_ENVIRONMENT: production
       MAPBOX_TEST_REFERER: https://brasildesconto.com.br
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Exigir credenciais de produção
         shell: bash

@@ -14,7 +14,7 @@ jobs:
   python-security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
@@ -55,7 +55,7 @@ jobs:
           - apps/valley_rider
           - desktop/valley-erp
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: "24"
@@ -77,7 +77,7 @@ jobs:
           - dockerfile: modules/jobs/Dockerfile
             image: all-in-one-jobs:security
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Build container image
         run: docker build -f ${{ matrix.dockerfile }} -t ${{ matrix.image }} .
       - name: Scan container for vulnerabilities
@@ -95,7 +95,7 @@ jobs:
       contents: write
       security-events: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: temurin

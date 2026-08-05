@@ -34,7 +34,7 @@ jobs:
           test -n "$MAYHEM_API_SPEC"
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Run Mayhem for API
         uses: ForAllSecure/mapi-action@v1

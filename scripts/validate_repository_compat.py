@@ -24,7 +24,7 @@ REQUIRED_CLOUDFLARE_MARKERS = (
     'test -n "$CLOUDFLARE_API_TOKEN"',
     'test -n "$CLOUDFLARE_ACCOUNT_ID"',
     'test -n "$VITE_API_HUB_URL"',
-    "uses: actions/checkout@v6",
+    "uses: actions/checkout@v7",
     "uses: cloudflare/wrangler-action@v4",
     "curl --fail --silent --show-error",
     "cloudflare-pages-production",
@@ -33,6 +33,7 @@ REQUIRED_CLOUDFLARE_MARKERS = (
 FORBIDDEN_CLOUDFLARE_MARKERS = (
     "deploy_enabled=false",
     "actions/checkout@v4",
+    "actions/checkout@v6",
     "your-app-name",
 )
 
