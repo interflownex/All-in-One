@@ -1,0 +1,65 @@
+name: Compliance Access Context F0.3
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "database/postgres/migrations/035_compliance_access_context.sql"
+      - "database/postgres/rollbacks/035_compliance_access_context.sql"
+      - "tests/test_compliance_access_context_migration.py"
+      - "tests/sql/compliance_access_context_runtime.sql"
+      - ".github/workflows/compliance-access-context.yml"
+  push:
+    branches: [main]
+    paths:
+      - "database/postgres/migrations/035_compliance_access_context.sql"
+      - "database/postgres/rollbacks/035_compliance_access_context.sql"
+      - "tests/test_compliance_access_context_migration.py"
+      - "tests/sql/compliance_access_context_runtime.sql"
+      - ".github/workflows/compliance-access-context.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  access-context:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: all_in_one
+          POSTGRES_USER: all_in_one
+          POSTGRES_PASSWORD: local-ci-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U all_in_one -d all_in_one"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGPASSWORD: local-ci-only
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Apply PostgreSQL foundation through F0.3
+        run: |
+          for file in database/postgres/migrations/*.sql; do
+            psql -h localhost -U all_in_one -d all_in_one \
+              -v ON_ERROR_STOP=1 -f "$file"
+          done
+
+      - name: Exercise fail-closed access context
+        run: psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f tests/sql/compliance_access_context_runtime.sql
+
+      - name: Prove rollback and reapply
+        run: |
+          psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f database/postgres/rollbacks/035_compliance_access_context.sql
+          test "$(psql -h localhost -U all_in_one -d all_in_one -Atc "SELECT COUNT(*) FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace WHERE n.nspname = 'compliance' AND p.proname IN ('require_access_context', 'current_tenant_id', 'current_subject_id', 'current_processing_purpose');")" = "0"
+          psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f database/postgres/migrations/035_compliance_access_context.sql
+          psql -h localhost -U all_in_one -d all_in_one -v ON_ERROR_STOP=1 -f tests/sql/compliance_access_context_runtime.sql
