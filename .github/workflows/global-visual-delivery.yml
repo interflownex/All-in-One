@@ -1,0 +1,67 @@
+name: Padrão visual global obrigatório
+
+on:
+  pull_request:
+    paths:
+      - "AGENTS.md"
+      - "apps/**"
+      - "desktop/**"
+      - "frontend/**"
+      - "mobile/**"
+      - "web/**"
+      - "assets/brand/**"
+      - "config/branding/**"
+      - "config/ui/**"
+      - "docs/design/**"
+      - "scripts/validate_global_visual_delivery.py"
+      - "tests/test_global_visual_delivery_policy.py"
+      - ".github/workflows/global-visual-delivery.yml"
+  push:
+    branches: [main]
+    paths:
+      - "AGENTS.md"
+      - "apps/**"
+      - "desktop/**"
+      - "frontend/**"
+      - "mobile/**"
+      - "web/**"
+      - "assets/brand/**"
+      - "config/branding/**"
+      - "config/ui/**"
+      - "docs/design/**"
+      - "scripts/validate_global_visual_delivery.py"
+      - "tests/test_global_visual_delivery_policy.py"
+      - ".github/workflows/global-visual-delivery.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: global-visual-delivery-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-global-standard:
+    name: Validar padrão visual e entrega reutilizável
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar testes
+        run: python3 -m pip install --disable-pip-version-check --no-cache-dir "pytest==8.4.2"
+
+      - name: Validar política global
+        run: python3 scripts/validate_global_visual_delivery.py
+
+      - name: Executar testes do contrato visual
+        run: python3 -m pytest tests/test_global_visual_delivery_policy.py -q
+
+      - name: Verificar formatação do diff
+        run: git diff --check
