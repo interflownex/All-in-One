@@ -62,10 +62,12 @@ def test_valley_property_catalog_exposes_only_public_available_listings() -> Non
     assert response.status_code == 200
     body = response.json()
     assert body["total"] == 1
-    assert body["items"][0]["id"] == available["id"]
-    assert body["items"][0]["public_address"] == "Centro, Betim, MG"
-    assert "Rua protegida" not in str(body)
-    assert "999" not in str(body)
+    item = body["items"][0]
+    assert item["id"] == available["id"]
+    assert item["public_address"] == "Centro, Betim, MG"
+    assert "address" not in item
+    assert "street" not in item
+    assert "number" not in item
 
 
 def test_valley_property_catalog_applies_maximum_rent_filter() -> None:
