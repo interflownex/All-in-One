@@ -1,0 +1,69 @@
+{
+  "version": "1.0.0",
+  "status": "proposed",
+  "issue": 204,
+  "default_effect": "deny",
+  "activation": "contract_only",
+  "assets": [
+    {
+      "asset": "compliance.catalog_versions",
+      "data_domain": "regulatory_governance",
+      "owner": null,
+      "owner_status": "unconfirmed",
+      "consumer_status": "unconfirmed",
+      "allowed_consumers": [],
+      "tenant_scope": "global_governance_metadata",
+      "access_mode": "deny_all",
+      "rls_required": true,
+      "force_rls_required": true,
+      "application_role_may_own_table": false,
+      "bypass_rls_allowed": false,
+      "required_context": [
+        "app.tenant_id",
+        "app.subject_id",
+        "app.subject_type",
+        "app.processing_purpose",
+        "app.request_id"
+      ],
+      "allowed_purposes": [],
+      "production_activation_blocked": true,
+      "blockers": [
+        "owner_confirmation",
+        "consumer_inventory",
+        "minimum_policy_design",
+        "security_review",
+        "dpo_legal_validation"
+      ]
+    },
+    {
+      "asset": "compliance.field_registry",
+      "data_domain": "regulatory_governance",
+      "owner": null,
+      "owner_status": "unconfirmed",
+      "consumer_status": "unconfirmed",
+      "allowed_consumers": [],
+      "tenant_scope": "global_governance_metadata",
+      "access_mode": "deny_all",
+      "rls_required": true,
+      "force_rls_required": true,
+      "application_role_may_own_table": false,
+      "bypass_rls_allowed": false,
+      "required_context": [
+        "app.tenant_id",
+        "app.subject_id",
+        "app.subject_type",
+        "app.processing_purpose",
+        "app.request_id"
+      ],
+      "allowed_purposes": [],
+      "production_activation_blocked": true,
+      "blockers": [
+        "owner_confirmation",
+        "consumer_inventory",
+        "minimum_policy_design",
+        "security_review",
+        "dpo_legal_validation"
+      ]
+    }
+  ]
+}
