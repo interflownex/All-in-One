@@ -81,7 +81,7 @@ jobs:
       - name: Build container image
         run: docker build -f ${{ matrix.dockerfile }} -t ${{ matrix.image }} .
       - name: Scan container for vulnerabilities
-        uses: aquasecurity/trivy-action@v0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ matrix.image }}
           format: table
