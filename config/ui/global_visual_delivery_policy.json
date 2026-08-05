@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "updated_at": "2026-08-05T01:03:00-03:00",
+  "version": "1.1.0",
+  "updated_at": "2026-08-05T08:12:00-03:00",
   "language": "pt-BR",
   "mandatory": true,
   "local_opt_out_allowed": false,
@@ -36,6 +36,59 @@
     "brand_identity": "config/branding/brand_identity.json",
     "official_assets_root": "assets/brand",
     "delivery_standard": "docs/design/PADRAO_GLOBAL_ENTREGA_VISUAL_REUTILIZAVEL.md"
+  },
+  "design_governance": {
+    "design_is_strategic_project_requirement": true,
+    "required_in_all_applications": true,
+    "design_review_required_before_merge": true,
+    "required_quality_dimensions": [
+      "clareza da jornada",
+      "consistência visual",
+      "legibilidade",
+      "acessibilidade",
+      "responsividade",
+      "hierarquia da informação",
+      "feedback de interação",
+      "redução de esforço do usuário",
+      "continuidade entre telas"
+    ],
+    "required_artifacts_before_implementation": [
+      "fluxo da jornada",
+      "tela de referência ou wireframe",
+      "inventário de componentes reutilizáveis",
+      "estados vazio, carregando, erro e sucesso",
+      "critérios de aceite de design e experiência"
+    ],
+    "review_gates": {
+      "ux_review_required": true,
+      "accessibility_review_required": true,
+      "responsive_review_required": true,
+      "visual_consistency_review_required": true,
+      "visual_regression_review_required": true
+    },
+    "minimum_viewports": [
+      "mobile_small",
+      "mobile_standard",
+      "tablet",
+      "desktop_when_applicable"
+    ],
+    "definition_of_done": [
+      "interface consistente com a identidade e o design system",
+      "estados interativos e mensagens definidos",
+      "sem overflow ou corte de conteúdo",
+      "texto legível com escala do sistema",
+      "navegação sem duplicação desnecessária",
+      "telas aprovadas preservadas",
+      "componentes reutilizáveis documentados"
+    ],
+    "prohibited": [
+      "tratar design como acabamento opcional",
+      "implementar tela sem hierarquia visual definida",
+      "duplicar navegação sem necessidade funcional",
+      "reduzir legibilidade para acomodar conteúdo",
+      "aprovar tela sem validar estados de erro e carregamento",
+      "ignorar comportamento responsivo"
+    ]
   },
   "typography": {
     "mobile_sp": {
