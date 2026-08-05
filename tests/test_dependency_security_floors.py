@@ -65,7 +65,7 @@ def test_android_build_graph_declares_hardened_transitive_versions() -> None:
         "org.jdom:jdom2:2.0.6.1",
         "org.apache.commons:commons-lang3:3.18.0",
         "org.apache.httpcomponents:httpclient:4.5.14",
-        "com.google.protobuf:protobuf-java:3.25.5",
+        "com.google.protobuf:protobuf-java:4.35.1",
         "com.google.guava:guava:33.3.1-jre",
     )
     assert all(marker in build_script for marker in required)
