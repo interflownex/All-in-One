@@ -1,0 +1,77 @@
+name: Atualizar progresso dos módulos
+
+on:
+  schedule:
+    - cron: "15 10 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: module-progress-daily
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar repositório público
+        uses: actions/checkout@v4
+
+      - name: Confirmar acesso ao repositório privado
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          if [ -z "$PRIVATE_REPO_TOKEN" ]; then
+            echo "::error::Configure o secret PRIVATE_REPO_TOKEN com acesso somente de leitura ao repositório privado."
+            exit 1
+          fi
+
+      - name: Baixar fonte oficial privada
+        uses: actions/checkout@v4
+        with:
+          repository: interflownex/all-in-one-core-private
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          path: .private-core
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Gerar painel público
+        run: |
+          python3 scripts/generate_public_module_progress.py \
+            --private-root .private-core \
+            --public-root .
+
+      - name: Criar commit e pull request
+        id: progress_pr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ github.token }}
+          branch: automation/module-progress
+          delete-branch: true
+          commit-message: "docs: atualizar progresso diário dos módulos"
+          title: "docs: atualização diária do progresso dos módulos"
+          body: |
+            Atualização automática do painel público de módulos.
+
+            - fonte: plano oficial do repositório privado;
+            - conteúdo público: etapas, percentuais e média geral;
+            - conteúdo omitido: pendências, responsáveis, segredos e dados internos;
+            - testes: não executados por definição deste fluxo documental.
+          add-paths: |
+            README.md
+            docs/modules.md
+
+      - name: Fazer merge automático
+        if: steps.progress_pr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.progress_pr.outputs.pull-request-number }}
+        run: |
+          gh pr merge "$PR_NUMBER" \
+            --repo "${{ github.repository }}" \
+            --squash \
+            --delete-branch

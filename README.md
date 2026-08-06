@@ -206,30 +206,28 @@ A mobilidade abre novos horizontes.
 
 ## Evolução do projeto
 
-Os indicadores abaixo serão atualizados automaticamente, mostrando apenas a evolução consolidada de backend, frontend e desenvolvimento total.
+Os indicadores abaixo são atualizados automaticamente e mostram a evolução consolidada das etapas e dos módulos.
 
 <details>
 <summary>Ver evolução dos módulos</summary>
 
 <!-- PROJECT_PROGRESS_START -->
 
-| Módulo | Backend | Frontend | Total |
-|---|---:|---:|---:|
-| Identidade | Atualização automática | Atualização automática | Atualização automática |
-| Negócios | Atualização automática | Atualização automática | Atualização automática |
-| Marketplace | Atualização automática | Atualização automática | Atualização automática |
-| Dropshipping | Atualização automática | Atualização automática | Atualização automática |
-| Valley e delivery | Atualização automática | Atualização automática | Atualização automática |
-| Transporte de cargas | Atualização automática | Atualização automática | Atualização automática |
-| Mobilidade urbana | Atualização automática | Atualização automática | Atualização automática |
-| Transporte público | Atualização automática | Atualização automática | Atualização automática |
-| Pagamentos | Atualização automática | Atualização automática | Atualização automática |
-| Marcação de ponto | Atualização automática | Atualização automática | Atualização automática |
-| Administração | Atualização automática | Atualização automática | Atualização automática |
+| Etapa | Direção | Evolução |
+|---:|---|---:|
+| Etapa 1 | Base e entrada comercial | 78% |
+| Etapa 2 | Operação comercial e delivery | 76% |
+| Etapa 3 | Logística e mobilidade | 73% |
+| Etapa 4 | Gestão e inteligência | 70% |
+| Etapa 5 | Verticais especializadas | 68% |
 
-**Evolução total do projeto:** atualização automática.
+**Evolução total do projeto:** **73%**
 
-**Última atualização:** automática.
+**Módulos acompanhados:** **25**
+
+**Última atualização:** 06/08/2026 às 07:40.
+
+[Ver todos os módulos, etapas e percentuais](docs/modules.md)
 
 <!-- PROJECT_PROGRESS_END -->
 
@@ -296,7 +294,7 @@ E cada nova Pepita aproxima o ecossistema do Gold.
 ## Documentação pública
 
 - [Visão geral](docs/overview.md)
-- [Módulos](docs/modules.md)
+- [Módulos, etapas e evolução](docs/modules.md)
 - [Arquitetura pública](docs/architecture-public.md)
 - [Diretrizes técnicas e operação](docs/technical-operations-public.md)
 - [Roadmap público](docs/roadmap-public.md)

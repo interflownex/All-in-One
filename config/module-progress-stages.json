@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "timezone": "America/Sao_Paulo",
+  "source": "docs/EXECUTION_PLAN.md#3-matriz-por-modulo",
+  "stages": [
+    {
+      "id": 1,
+      "title": "Base e entrada comercial",
+      "objective": "Organizar identidade, empresas, acesso, finanças e a entrada pelo marketplace e dropshipping.",
+      "modules": [
+        "identity",
+        "business",
+        "permissions",
+        "finance",
+        "marketplace",
+        "stock",
+        "api_hub"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Operação comercial e delivery",
+      "objective": "Conectar consumidores, empresas, riders, serviços, empregos e rotinas comerciais.",
+      "modules": [
+        "delivery",
+        "riders",
+        "services",
+        "jobs",
+        "erp",
+        "crm"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Logística e mobilidade",
+      "objective": "Expandir da entrega para armazenagem, cargas, transporte urbano e transporte público.",
+      "modules": [
+        "wms",
+        "tms",
+        "mobility"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Gestão e inteligência",
+      "objective": "Ampliar processos, documentos, equipes, indicadores e automação inteligente.",
+      "modules": [
+        "bpm",
+        "document",
+        "hr",
+        "bi",
+        "ai_core"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Verticais especializadas",
+      "objective": "Atender setores com requisitos próprios de cuidado, segurança, jurídico e patrimônio.",
+      "modules": [
+        "health",
+        "vision",
+        "legal",
+        "property"
+      ]
+    }
+  ],
+  "fallback_titles": {
+    "identity": "Identity",
+    "business": "Business",
+    "permissions": "Permissions",
+    "finance": "Finance, Pay, Billing e Fiscal",
+    "marketplace": "Marketplace",
+    "stock": "Stock e Dropshipping",
+    "delivery": "Delivery",
+    "riders": "Riders",
+    "services": "One Services",
+    "mobility": "Mobility",
+    "jobs": "Jobs",
+    "api_hub": "API Hub",
+    "erp": "ERP",
+    "wms": "WMS",
+    "tms": "TMS",
+    "crm": "CRM",
+    "bpm": "BPM",
+    "document": "GED e ECM",
+    "hr": "HR, HCM, ATS e LMS",
+    "health": "Health",
+    "vision": "Vision",
+    "legal": "Legal",
+    "property": "Property",
+    "bi": "BI",
+    "ai_core": "AI Core"
+  },
+  "fallback_descriptions": {
+    "identity": "All-in-One ID, KYC, KYB, biometria, MFA, sessões e consentimentos.",
+    "business": "Matriz, filiais, documentos empresariais, equipes, memberships e ofertas comerciais.",
+    "permissions": "RBAC, ABAC, delegações e alçadas financeiras por entidade.",
+    "finance": "Wallet, ledger, Pix, split, escrow, cobrança, fiscal e conciliação.",
+    "marketplace": "Lojas, catálogo, checkout, pedidos, avaliações, disputas e Pepitas.",
+    "stock": "Fornecedores homologados, catálogo, pedido sob demanda, tracking e descontos por Pepitas.",
+    "delivery": "Entregas, coletas, fretes, cotações, rastreio, seguro e comprovantes.",
+    "riders": "Cadastro, documentos, veículos, aprovação, entregas, corridas e ganhos.",
+    "services": "Prestadores, visitas, orçamentos, contratos, evidências e avaliações.",
+    "mobility": "Corridas, transporte público, rotas, tickets, QR Code, NFC e ETA.",
+    "jobs": "Currículos, CTPS Digital, vagas, candidaturas e recrutamento empresarial.",
+    "api_hub": "OAuth2, API keys, webhooks, escopos, sandbox e integrações.",
+    "erp": "Financeiro empresarial, compras, vendas, fiscal, controladoria e aprovações.",
+    "wms": "Armazéns, endereçamento, recebimento, separação, lotes e inventário.",
+    "tms": "Transportadoras, frota, rotas, fretes, comprovantes e torre de controle.",
+    "crm": "Leads, oportunidades, propostas, campanhas e relacionamento.",
+    "bpm": "Processos, workflows, tarefas, SLA, escalonamento e automação.",
+    "document": "Documentos, OCR, versões, cofre privado, assinatura, retenção e indexação.",
+    "hr": "Colaboradores, folha, marcação de ponto, recrutamento e treinamento.",
+    "health": "Pacientes, agenda, prontuário, consulta, telemedicina e prescrições.",
+    "vision": "Dispositivos, streams, gravações, alertas e visão computacional auditável.",
+    "legal": "Processos, contratos, prazos, audiências, provisionamento e alertas.",
+    "property": "Imóveis, unidades, locações, condomínio, manutenção e assembleias.",
+    "bi": "Indicadores auditáveis, dashboards, datasets e exportações.",
+    "ai_core": "Memória autorizada, moderação, modelos, custos e governança de IA."
+  }
+}
