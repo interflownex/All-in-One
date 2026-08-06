@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://allinone.com.br/schemas/compliance/access-readiness-report.v1.json",
+  "title": "Compliance Access Readiness Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "issue",
+    "default_effect",
+    "ready",
+    "asset_count",
+    "assets"
+  ],
+  "properties": {
+    "issue": { "const": 204 },
+    "default_effect": { "const": "deny" },
+    "ready": { "type": "boolean" },
+    "asset_count": { "type": "integer", "minimum": 1 },
+    "assets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "asset",
+          "ready",
+          "access_mode",
+          "production_activation_blocked",
+          "accepted_evidence",
+          "missing_required_evidence",
+          "contract_blockers"
+        ],
+        "properties": {
+          "asset": { "type": "string", "minLength": 1 },
+          "ready": { "type": "boolean" },
+          "access_mode": { "type": ["string", "null"] },
+          "production_activation_blocked": { "type": "boolean" },
+          "accepted_evidence": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "missing_required_evidence": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "contract_blockers": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}
