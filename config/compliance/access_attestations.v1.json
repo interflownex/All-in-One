@@ -1,0 +1,60 @@
+{
+  "version": "1.0.0",
+  "status": "proposed",
+  "issue": 204,
+  "default_effect": "deny",
+  "activation": "contract_only",
+  "required_evidence": {
+    "owner_confirmation": {
+      "required": true,
+      "fields": [
+        "asset",
+        "owner_identifier",
+        "owner_role",
+        "confirmed_at",
+        "evidence_reference",
+        "reviewed_by"
+      ]
+    },
+    "consumer_inventory": {
+      "required": true,
+      "fields": [
+        "asset",
+        "consumer_identifier",
+        "consumer_type",
+        "processing_purpose",
+        "environment",
+        "evidence_reference",
+        "reviewed_by"
+      ]
+    },
+    "security_review": {
+      "required": true,
+      "fields": [
+        "asset",
+        "review_status",
+        "reviewed_at",
+        "evidence_reference",
+        "reviewed_by"
+      ]
+    },
+    "dpo_legal_validation": {
+      "required": true,
+      "fields": [
+        "asset",
+        "validation_status",
+        "validated_at",
+        "evidence_reference",
+        "validated_by"
+      ]
+    }
+  },
+  "activation_rules": {
+    "all_required_evidence_must_exist": true,
+    "evidence_reference_must_be_non_secret": true,
+    "pending_or_rejected_evidence_denies_access": true,
+    "manual_status_override_forbidden": true,
+    "production_activation_requires_separate_pull_request": true
+  },
+  "attestations": []
+}
