@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://allinone.com.br/schemas/governance/field-catalog.v1.json",
+  "title": "All in One + Valley Executable Field Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "default_effect", "fields"],
+  "properties": {
+    "version": { "const": 1 },
+    "default_effect": { "const": "deny" },
+    "fields": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id", "domain", "audience", "data_type", "classification",
+          "purpose", "legal_basis", "retention", "encryption",
+          "access_policy", "production_gate", "evidence"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$" },
+          "domain": { "enum": ["identity", "commerce", "mobility", "delivery", "work", "finance", "support", "platform"] },
+          "audience": { "enum": ["B2C", "B2B", "TECH"] },
+          "data_type": { "enum": ["string", "integer", "decimal", "boolean", "date", "datetime", "uuid", "json"] },
+          "classification": { "enum": ["public", "internal", "personal", "sensitive", "financial", "credential"] },
+          "purpose": { "type": "string", "minLength": 10 },
+          "legal_basis": { "enum": ["not_applicable", "consent", "contract", "legal_obligation", "legitimate_interest", "credit_protection", "fraud_prevention", "health_protection"] },
+          "retention": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["policy", "review_required"],
+            "properties": {
+              "policy": { "type": "string", "minLength": 5 },
+              "review_required": { "type": "boolean" }
+            }
+          },
+          "encryption": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["at_rest", "in_transit"],
+            "properties": {
+              "at_rest": { "type": "boolean" },
+              "in_transit": { "type": "boolean" }
+            }
+          },
+          "access_policy": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["least_privilege", "audited", "roles"],
+            "properties": {
+              "least_privilege": { "type": "boolean" },
+              "audited": { "type": "boolean" },
+              "roles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 2 } }
+            }
+          },
+          "production_gate": {
+            "enum": ["approved", "blocked_pending_legal", "blocked_pending_security", "blocked_pending_owner", "blocked_pending_evidence"]
+          },
+          "evidence": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 3 }
+          }
+        }
+      }
+    }
+  }
+}
