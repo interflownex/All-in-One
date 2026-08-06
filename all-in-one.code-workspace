@@ -144,5 +144,6 @@
       "**/.github/skills/**": true,
     },
     "githubPullRequests.pullRequestDescription": "template",
+    "geminicodeassist.project": "valley-504702",
   },
 }

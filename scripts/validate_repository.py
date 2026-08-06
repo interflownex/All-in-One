@@ -400,7 +400,9 @@ def main() -> int:
                     errors,
                 )
         for setting_name in settings:
-            if setting_name.startswith(("google.cloud.", "google.datacloud.", "cloudcode.")):
+            if setting_name.startswith(
+                ("google.cloud.", "google.datacloud.", "cloudcode.")
+            ):
                 fail(
                     f"Configuracao Google Cloud paga deve ficar ausente no modo local-first: {setting_name}.",
                     errors,
@@ -519,15 +521,25 @@ def main() -> int:
         wsl_dns_policy = json.loads(WSL_DNS_POLICY.read_text(encoding="utf-8"))
         resolved = wsl_dns_policy.get("resolved", {})
         validation = wsl_dns_policy.get("validation", {})
-        if wsl_dns_policy.get("wsl", {}).get("disable_generated_resolv_conf") is not True:
+        if (
+            wsl_dns_policy.get("wsl", {}).get("disable_generated_resolv_conf")
+            is not True
+        ):
             fail("DNS WSL deve desativar generateResolvConf.", errors)
-        if resolved.get("resolv_conf_symlink_target") != "/run/systemd/resolve/stub-resolv.conf":
-            fail("DNS WSL deve manter /etc/resolv.conf no stub systemd-resolved.", errors)
+        if (
+            resolved.get("resolv_conf_symlink_target")
+            != "/run/systemd/resolve/stub-resolv.conf"
+        ):
+            fail(
+                "DNS WSL deve manter /etc/resolv.conf no stub systemd-resolved.", errors
+            )
         if resolved.get("stub_nameserver") != "127.0.0.53":
             fail("DNS WSL deve expor o stub 127.0.0.53.", errors)
         if "10.255.255.254" not in resolved.get("dns", []):
             fail("DNS WSL deve preservar o resolvedor do gateway WSL.", errors)
-        if "1.1.1.1" not in resolved.get("fallback_dns", []) and "1.1.1.1" not in resolved.get("dns", []):
+        if "1.1.1.1" not in resolved.get(
+            "fallback_dns", []
+        ) and "1.1.1.1" not in resolved.get("dns", []):
             fail("DNS WSL deve manter fallback publico Cloudflare.", errors)
         if validation.get("command") != "python3 scripts/configure_wsl_dns.py --check":
             fail("DNS WSL deve declarar o comando de validacao versionado.", errors)
@@ -711,7 +723,10 @@ def main() -> int:
         if cloudflare_policy.get("project_name") != "all-in-one-web":
             fail("Projeto Cloudflare Pages deve ser all-in-one-web.", errors)
         if cloudflare_policy.get("production_branch") != "main":
-            fail("Cloudflare Pages deve publicar producao a partir da branch main.", errors)
+            fail(
+                "Cloudflare Pages deve publicar producao a partir da branch main.",
+                errors,
+            )
         if (
             cloudflare_policy.get("spa_fallback")
             != "cloudflare_pages_automatic_without_404"
@@ -722,22 +737,43 @@ def main() -> int:
             )
         if cloudflare_policy.get("wrangler_config") != "apps/all-in-one/wrangler.jsonc":
             fail("Cloudflare Pages deve declarar o wrangler.jsonc versionado.", errors)
-        if cloudflare_policy.get("workspace_profile") != "config/cloudflare/workspace_profile.json":
+        if (
+            cloudflare_policy.get("workspace_profile")
+            != "config/cloudflare/workspace_profile.json"
+        ):
             fail("Cloudflare deve declarar o perfil WSL versionado.", errors)
-        cloudflare_profile_path = ROOT / "config" / "cloudflare" / "workspace_profile.json"
+        cloudflare_profile_path = (
+            ROOT / "config" / "cloudflare" / "workspace_profile.json"
+        )
         if not cloudflare_profile_path.is_file():
             fail("Perfil Cloudflare WSL ausente.", errors)
         else:
-            cloudflare_profile = json.loads(cloudflare_profile_path.read_text(encoding="utf-8"))
+            cloudflare_profile = json.loads(
+                cloudflare_profile_path.read_text(encoding="utf-8")
+            )
             if cloudflare_profile.get("pages", {}).get("production_branch") != "main":
                 fail("Perfil Cloudflare deve fixar production_branch=main.", errors)
-            if cloudflare_profile.get("tunnel", {}).get("token_env_var") != "CLOUDFLARE_TUNNEL_TOKEN":
-                fail("Cloudflare Tunnel deve depender de CLOUDFLARE_TUNNEL_TOKEN fora do Git.", errors)
-            if cloudflare_profile.get("tunnel", {}).get("no_inbound_ports_required") is not True:
-                fail("Cloudflare Tunnel deve manter origem sem portas inbound publicas.", errors)
+            if (
+                cloudflare_profile.get("tunnel", {}).get("token_env_var")
+                != "CLOUDFLARE_TUNNEL_TOKEN"
+            ):
+                fail(
+                    "Cloudflare Tunnel deve depender de CLOUDFLARE_TUNNEL_TOKEN fora do Git.",
+                    errors,
+                )
+            if (
+                cloudflare_profile.get("tunnel", {}).get("no_inbound_ports_required")
+                is not True
+            ):
+                fail(
+                    "Cloudflare Tunnel deve manter origem sem portas inbound publicas.",
+                    errors,
+                )
             stream_hostnames = [
                 hostname
-                for hostname in cloudflare_profile.get("tunnel", {}).get("desired_public_hostnames", [])
+                for hostname in cloudflare_profile.get("tunnel", {}).get(
+                    "desired_public_hostnames", []
+                )
                 if hostname.get("hostname") == "stream.brasildesconto.com.br"
             ]
             if stream_hostnames != [
@@ -747,9 +783,20 @@ def main() -> int:
                     "purpose": "api_hub_stream_path",
                 }
             ]:
-                fail("Cloudflare Tunnel stream deve apontar apenas para API Hub em 8100.", errors)
-            if cloudflare_profile.get("mcp", {}).get("api", {}).get("bearer_token_env_var") != "CLOUDFLARE_API_TOKEN":
-                fail("Cloudflare MCP API deve usar CLOUDFLARE_API_TOKEN por variavel de ambiente.", errors)
+                fail(
+                    "Cloudflare Tunnel stream deve apontar apenas para API Hub em 8100.",
+                    errors,
+                )
+            if (
+                cloudflare_profile.get("mcp", {})
+                .get("api", {})
+                .get("bearer_token_env_var")
+                != "CLOUDFLARE_API_TOKEN"
+            ):
+                fail(
+                    "Cloudflare MCP API deve usar CLOUDFLARE_API_TOKEN por variavel de ambiente.",
+                    errors,
+                )
         if (
             cloudflare_policy.get("security_headers")
             != "apps/all-in-one/public/_headers"
@@ -776,20 +823,29 @@ def main() -> int:
         else:
             for forbidden in ['wranglerVersion: "4.112.0"']:
                 if forbidden in cloudflare_pages_workflow:
-                    fail(f"Workflow Cloudflare Pages usa Wrangler obsoleto: {forbidden}", errors)
+                    fail(
+                        f"Workflow Cloudflare Pages usa Wrangler obsoleto: {forbidden}",
+                        errors,
+                    )
             for needle in [
                 'WRANGLER_VERSION: "4.118.0"',
-                "HAS_CLOUDFLARE_API_TOKEN",
-                "HAS_CLOUDFLARE_ACCOUNT_ID",
-                "deploy_enabled=true",
-                "deploy_enabled=false",
-                "if: steps.credentials.outputs.deploy_enabled == 'true'",
+                "if: ${{ vars.ENABLE_CLOUDFLARE_PAGES == 'true' }}",
+                "CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}",
+                "CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}",
+                "VITE_API_HUB_URL: ${{ vars.VITE_API_HUB_URL }}",
+                'test -n "$CLOUDFLARE_API_TOKEN"',
+                'test -n "$CLOUDFLARE_ACCOUNT_ID"',
+                'test -n "$VITE_API_HUB_URL"',
+                "uses: actions/checkout@v6",
+                "uses: cloudflare/wrangler-action@v4",
                 "wranglerVersion: ${{ env.WRANGLER_VERSION }}",
+                "curl --fail --silent --show-error",
                 "HAS_TELEGRAM_DELIVERY",
+                "cloudflare-pages-production",
             ]:
                 if needle not in cloudflare_pages_workflow:
                     fail(
-                        f"Workflow Cloudflare Pages deve ser idempotente e protegido por secrets: {needle}",
+                        f"Workflow Cloudflare Pages deve seguir o contrato endurecido: {needle}",
                         errors,
                     )
     if not SSH_REMOTE_ACCESS_POLICY.is_file():
@@ -811,7 +867,10 @@ def main() -> int:
             or server.get("permit_root_login") is not False
             or server.get("authentication_methods") != ["publickey"]
         ):
-            fail("Politica SSH deve exigir somente chave publica e bloquear senha/root.", errors)
+            fail(
+                "Politica SSH deve exigir somente chave publica e bloquear senha/root.",
+                errors,
+            )
         if client_key.get("storage") != "outside_git" or not str(
             client_key.get("private_key_path", "")
         ).startswith("/home/eretazan/.ssh/"):
@@ -820,12 +879,17 @@ def main() -> int:
             manual.get("pdf_path", "")
         ).startswith("/home/eretazan/.local/share/all-in-one/secure/"):
             fail("Manual SSH sensivel deve permanecer fora do Git.", errors)
-        if tailscale.get("required") is not True or tailscale.get("accept_dns") is not True:
+        if (
+            tailscale.get("required") is not True
+            or tailscale.get("accept_dns") is not True
+        ):
             fail("Politica SSH deve exigir Tailscale com accept-dns ativo.", errors)
         if cloudflare_ssh.get("publish_ssh") is not False:
             fail("Cloudflare Tunnel nao pode publicar SSH.", errors)
         if "ssh" not in set(cloudflare_ssh.get("tunnel_must_not_expose", [])):
-            fail("Politica SSH deve bloquear exposicao SSH em tunnel Cloudflare.", errors)
+            fail(
+                "Politica SSH deve bloquear exposicao SSH em tunnel Cloudflare.", errors
+            )
     if not TELEGRAM_DELIVERY_POLICY.is_file():
         fail("Politica obrigatoria de entrega via Telegram ausente.", errors)
     else:
@@ -1133,15 +1197,25 @@ def main() -> int:
         antigravity_policy = json.loads(
             ANTIGRAVITY_TRUST_POLICY.read_text(encoding="utf-8")
         )
-        if antigravity_policy.get("docker_mcp", {}).get("profile") != "all_in_one_local":
+        if (
+            antigravity_policy.get("docker_mcp", {}).get("profile")
+            != "all_in_one_local"
+        ):
             fail("Antigravity deve usar o perfil Docker MCP all_in_one_local.", errors)
         trusted_wsl = antigravity_policy.get("trusted_workspaces", {}).get("wsl", "")
-        if not trusted_wsl.startswith("/home/") or not trusted_wsl.endswith("/all-in-one"):
+        if not trusted_wsl.startswith("/home/") or not trusted_wsl.endswith(
+            "/all-in-one"
+        ):
             fail("Antigravity deve confiar no workspace WSL All-in-One.", errors)
         if "cloudflare-api" not in antigravity_policy.get("essential_mcp_servers", []):
             fail("Antigravity deve manter Cloudflare MCP API essencial.", errors)
-        if "datacloud_bigquery_remote" not in antigravity_policy.get("disabled_mcp_servers", []):
-            fail("Antigravity deve desativar DataCloud BigQuery no modo local-first.", errors)
+        if "datacloud_bigquery_remote" not in antigravity_policy.get(
+            "disabled_mcp_servers", []
+        ):
+            fail(
+                "Antigravity deve desativar DataCloud BigQuery no modo local-first.",
+                errors,
+            )
     if not antigravity_config.is_file():
         fail("Contrato Antigravity ausente: .agents/antigravity.json", errors)
     else:
@@ -1205,7 +1279,10 @@ def main() -> int:
                 errors,
             )
     if "  schedule:" in stitch_workflow:
-        fail("Workflow Stitch nao deve executar sincronizacao remota agendada no modo local-first.", errors)
+        fail(
+            "Workflow Stitch nao deve executar sincronizacao remota agendada no modo local-first.",
+            errors,
+        )
     if "if: ${{ false }}" in stitch_workflow:
         fail("Workflow Stitch nao pode manter o job explicitamente desativado.", errors)
     if not (ROOT / "docs" / "COMPLIANCE.md").is_file():
