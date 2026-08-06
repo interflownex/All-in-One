@@ -1,244 +1,295 @@
-# All-in-One
+# ALL-IN-ONE + VALLEY
 
-## A plataforma que conecta pessoas, empresas e oportunidades em um único ecossistema
+## Organizar empresas por dentro. Levá-las ao mercado por fora.
 
-Senhoras e senhores, preparem-se: o palco está montado para uma nova forma de viver o digital.
+Senhoras e senhores, existe uma enorme oportunidade escondida dentro da desorganização digital.
 
-Hoje, a vida das pessoas está espalhada em dezenas de aplicativos. Empresas operam com ferramentas que não conversam entre si. Serviços, pagamentos, mobilidade, empregos, saúde e relacionamento com clientes vivem separados.
+Empresas têm produtos, serviços e talento, mas operam com ferramentas separadas, processos repetidos e pouca conexão com o consumidor.
 
-O resultado é conhecido por todos: excesso de cadastros, experiências quebradas, retrabalho, perda de tempo, custos maiores e oportunidades que desaparecem entre uma plataforma e outra.
+Consumidores querem encontrar, comprar, receber e resolver tudo com menos atrito.
 
-O **All-in-One** entra em cena para mudar esse jogo.
+Riders procuram novas oportunidades.
 
-Uma plataforma modular. Uma identidade conectada. Múltiplas jornadas reunidas em um ecossistema preparado para crescer.
+O mercado tem oferta. Tem demanda. Tem movimento.
 
----
+O que falta é conexão.
 
-## As dores que o mercado já não pode ignorar
+É exatamente aí que entram o **All-in-One** e o **Valley**.
 
-### Para pessoas
+O All-in-One organiza a casa.
 
-- aplicativos demais para tarefas que fazem parte da mesma rotina;
-- cadastros repetidos, senhas espalhadas e informações duplicadas;
-- dificuldade para descobrir, contratar, pagar e acompanhar serviços;
-- experiências desconectadas entre mobilidade, trabalho, consumo e bem-estar;
-- pouco aproveitamento do histórico, das preferências e da reputação já construídos.
-
-### Para empresas
-
-- vendas, atendimento, pagamentos, recrutamento e operação em sistemas diferentes;
-- dados fragmentados e pouca visão da jornada completa do cliente;
-- integrações caras, lentas e difíceis de manter;
-- retrabalho entre equipes e canais;
-- dificuldade para crescer sem multiplicar fornecedores, ferramentas e custos.
-
-### Para parceiros e prestadores
-
-- aquisição de clientes fragmentada;
-- pouca recorrência entre serviços;
-- reputação presa a plataformas isoladas;
-- dificuldade para ampliar presença sem reconstruir toda a operação digital;
-- baixo aproveitamento de oportunidades entre diferentes jornadas.
+O Valley abre as portas para o mercado.
 
 ---
 
-## A solução que conecta o tabuleiro inteiro
+## All-in-One: uma empresa inteira, em uma única visão
 
-O All-in-One organiza múltiplos serviços ao redor do usuário e das empresas.
+O nome **All-in-One** traduz a missão do projeto: atender a empresa como um todo.
 
-A proposta combina:
+Não apenas vendas.
 
-- **identidade única**, conectando jornadas e reduzindo repetições;
-- **módulos especializados**, preparados para diferentes mercados;
-- **experiência integrada**, permitindo continuidade entre serviços;
-- **visão B2C e B2B**, aproximando consumidores, empresas e parceiros;
-- **expansão por verticais**, com crescimento progressivo do ecossistema;
-- **distribuição cruzada**, criando novas oportunidades entre módulos.
+Não apenas gestão.
 
-O usuário deixa de circular por um labirinto de plataformas. As empresas deixam de montar operações com peças incompatíveis. Os parceiros passam a participar de um ambiente com mais possibilidades de recorrência e alcance.
+Não apenas pessoas.
 
----
+Mas a conexão entre marketplace, pagamentos, serviços, equipes, marcação de ponto, relacionamento, logística e crescimento.
 
-## O grande diferencial
+Muitas empresas não precisam de mais uma ferramenta isolada.
 
-O All-in-One não é apenas um aplicativo com muitas funções.
+Precisam reunir o que está espalhado, organizar o que está confuso e transformar operação em oportunidade.
 
-É uma base comum para conectar:
+O All-in-One nasce para fazer isso.
 
-- pessoas;
-- empresas;
-- prestadores;
-- oportunidades;
-- serviços;
-- transações;
-- relacionamentos.
+Ele adapta a experiência ao perfil de cada negócio. A atividade econômica, o segmento e o contexto da empresa ajudam a apresentar os módulos mais relevantes desde o primeiro acesso.
 
-Cada novo módulo amplia o valor dos demais. Cada novo parceiro fortalece o ecossistema. Cada nova jornada aumenta o potencial de continuidade, retenção e distribuição.
+Uma loja encontra uma estrutura diferente de uma prestadora de serviços. Uma operação logística encontra caminhos diferentes de uma empresa de saúde.
 
-É o efeito rede entrando no palco principal.
+A empresa começa com o que faz sentido e adiciona novos módulos conforme cresce.
 
 ---
 
-## Para quem o All-in-One gera valor
+## Valley: onde empresas encontram o mercado
 
-### Pessoa Física
+O Valley começa por duas forças complementares:
 
-Uma experiência mais simples, conectada e contínua.
+**marketplace e dropshipping.**
 
-- menos aplicativos para gerenciar;
-- uma identidade para diferentes jornadas;
-- acesso integrado a mobilidade, serviços, empregos, saúde e pagamentos;
-- mais fluidez entre descoberta, contratação, pagamento e acompanhamento;
-- relacionamento construído ao longo do ecossistema.
+O marketplace é a porta de entrada comercial.
 
-### Pessoa Jurídica
+É nele que as empresas apresentam produtos e serviços, ampliam sua presença e encontram consumidores dentro de um ambiente conectado.
 
-Uma plataforma para operação, relacionamento e crescimento.
+O dropshipping é a entrada financeira inicial e uma base de sustentação para o crescimento do negócio.
 
-- presença digital integrada;
-- visão mais ampla da jornada do cliente;
-- módulos para atendimento, serviços, recrutamento, pagamentos e gestão;
-- redução de retrabalho;
-- novas possibilidades de distribuição e receita.
+Ele amplia o catálogo, conecta fornecedores, empresas e consumidores e permite gerar movimento comercial sem exigir que cada operação mantenha toda a estrutura de estoque.
 
-### Parceiros e prestadores
+O Valley transforma:
 
-Uma estrutura para alcançar mais clientes e participar de mais jornadas.
+**oferta em descoberta;**
 
-- presença em diferentes verticais;
-- potencial de recorrência;
-- reputação aproveitada em novas experiências;
-- integração progressiva;
-- crescimento sem a necessidade de construir um ecossistema próprio do zero.
+**descoberta em compra;**
+
+**compra em entrega;**
+
+**entrega em relacionamento.**
+
+Para a pessoa física, o Valley é o lugar onde produtos, serviços e oportunidades aparecem de forma simples e próxima.
+
+Para a empresa, é a ponte entre aquilo que ela oferece e o mercado que deseja alcançar.
+
+Para o rider, é uma nova rota de trabalho e participação no ecossistema.
 
 ---
 
-## Os módulos que compõem o ecossistema
+## Do marketplace ao movimento
 
-### Identidade e conta unificada
+Os serviços de transporte são a camada operacional que coloca o ecossistema em circulação.
 
-A porta de entrada para conectar perfis, permissões, preferências e experiências.
+Eles começam pelo **delivery**, movimentando os produtos do marketplace e conectando empresas, consumidores e riders.
 
-### Consumidor
+Depois, a estrutura evolui para:
 
-Descoberta, contratação, acompanhamento e relacionamento com produtos e serviços.
+- transporte de cargas;
+- mobilidade urbana de pessoas;
+- integração e adaptação a jornadas de transporte público.
 
-### Business
+O Valley não nasce limitado a uma corrida ou a uma entrega.
 
-Ferramentas para empresas, equipes, clientes, operações e crescimento.
+Ele nasce para movimentar valor.
 
-### Mobilidade e Riders
+Primeiro produtos.
 
-Experiências para passageiros, condutores, entregas e operações de mobilidade.
+Depois cargas.
 
-### Serviços e marketplace
+Depois pessoas.
 
-Conexão entre demanda, oferta, contratação, reputação e pagamento.
-
-### Jobs e desenvolvimento profissional
-
-Oportunidades, talentos, currículos, candidaturas e relacionamento entre profissionais e empresas.
-
-### Saúde e bem-estar
-
-Jornadas de cuidado, acompanhamento e conexão com serviços.
-
-### Pagamentos e carteira
-
-Transações, cobrança, repasses, carteira e relacionamento financeiro.
-
-### Administração e governança
-
-Gestão do ecossistema, operação, acompanhamento e evolução da plataforma.
-
-Consulte [docs/modules.md](docs/modules.md) para conhecer o catálogo público.
+Sempre conectado ao mesmo ecossistema.
 
 ---
 
-## Por que essa oportunidade chama atenção
+## Muitos módulos. Uma experiência simples.
 
-O All-in-One está posicionado onde grandes movimentos de mercado se encontram:
+Uma plataforma ampla não precisa ser confusa.
 
-1. consumidores querem experiências mais simples;
-2. empresas precisam integrar suas operações;
-3. plataformas buscam aumentar recorrência e retenção;
-4. parceiros querem novos canais de distribuição;
-5. mercados digitais caminham para ecossistemas mais conectados.
+No All-in-One + Valley, a navegação acontece por intenção.
 
-Enquanto soluções isoladas competem por uma pequena parte da jornada, o All-in-One constrói uma visão capaz de conectar várias delas.
+O usuário não precisa conhecer todos os menus. Ele informa o que deseja fazer, e a plataforma apresenta o caminho mais relevante.
 
----
+“Quero encontrar um produto.”
 
-## Um modelo preparado para escalar
+“Quero vender no marketplace.”
 
-A estrutura modular permite crescer por etapas e explorar diferentes caminhos comerciais:
+“Quero acompanhar uma entrega.”
 
-- assinaturas empresariais;
-- planos por módulo;
-- taxas de intermediação;
-- serviços premium;
-- soluções white-label;
-- integrações corporativas;
-- receitas transacionais;
-- distribuição de serviços de parceiros;
-- licenciamento institucional.
+“Quero transportar uma carga.”
 
-O crescimento pode acontecer por vertical, região, parceiro, público ou combinação de módulos.
+“Quero gerenciar minha empresa.”
 
-É uma plataforma desenhada para abrir portas, não para depender de uma única.
+“Quero registrar minha jornada de trabalho.”
 
----
+No Valley, essa experiência ganha uma voz: **Helena**.
 
-## A estratégia de expansão
+Helena funciona, neste momento, como a chamada por intenção do aplicativo.
 
-O caminho de crescimento combina:
+“Helena, quero acompanhar minha entrega.”
 
-1. fortalecer a identidade e a experiência central;
-2. validar módulos com problemas claros;
-3. conectar jornadas complementares;
-4. ampliar a presença de empresas e parceiros;
-5. estimular recorrência entre serviços;
-6. expandir por novas regiões e verticais.
+“Helena, quero encontrar um produto.”
 
-Cada etapa acrescenta valor à próxima. Cada módulo pode atrair novos usuários. Cada usuário pode descobrir novas jornadas. Cada parceiro pode ampliar o alcance do conjunto.
+“Helena, quero fazer uma entrega.”
+
+O nome homenageia a filha do criador, desenvolvedor e idealizador do projeto, dando à tecnologia uma identidade humana e uma história própria.
 
 ---
 
-## A visão de futuro
+## Organização empresarial que cresce junto
 
-O All-in-One quer ocupar um espaço ambicioso: tornar-se uma camada de conexão entre pessoas, empresas e serviços.
+O All-in-One reúne módulos que podem acompanhar diferentes momentos da empresa:
 
-Um ecossistema onde a vida digital deixa de ser um quebra-cabeça de aplicativos e passa a funcionar como uma experiência contínua.
+**identidade, negócios, marketplace, dropshipping, serviços, pagamentos, empregos, saúde, marcação de ponto, logística, Valley e governança.**
 
-Onde empresas encontram clientes, talentos e ferramentas.
+A marcação de ponto faz parte dessa visão integrada.
 
-Onde pessoas encontram mobilidade, oportunidades, serviços e soluções.
+Ela deixa de ser apenas um registro isolado e passa a contribuir para a organização das equipes e da operação.
 
-Onde parceiros entram em um ambiente preparado para crescer junto.
+Cada módulo resolve uma dor.
 
-A missão é clara: **transformar fragmentação em continuidade e complexidade em oportunidade**.
+Cada nova conexão aumenta o valor do conjunto.
+
+Cada empresa pode começar menor e crescer dentro da mesma base.
 
 ---
 
-## O convite aos investidores e parceiros
+## Valley, Gold e Pepita
 
-O All-in-One reúne elementos que tornam uma tese de plataforma especialmente atraente:
+O nome **Valley** nasce da inspiração em Helena Valley e da narrativa da corrida do ouro.
 
-- expansão por módulos;
-- atuação B2C e B2B;
-- potencial de recorrência;
-- distribuição cruzada;
-- crescimento por parceiros;
-- múltiplas possibilidades de monetização;
-- capacidade de conectar diferentes mercados em uma única visão.
+Valley representa território, movimento, descoberta e oportunidade.
 
-O projeto abre espaço para investidores estratégicos, fundos de tecnologia, empresas, operadores de mercado e parceiros que desejam participar da construção de um ecossistema digital com ambição de escala.
+**Gold** simboliza o valor construído ao longo da jornada.
 
-A próxima grande plataforma não precisa nascer limitada a uma única jornada.
+**Pepita** representa cada oportunidade encontrada pelo caminho:
 
-Ela pode nascer pronta para conectar muitas.
+um produto vendido;
 
-**Bem-vindo ao All-in-One. O próximo capítulo começa aqui.**
+uma entrega realizada;
+
+um novo cliente;
+
+um serviço contratado;
+
+uma carga transportada;
+
+uma conexão criada.
+
+Sozinha, uma pepita parece pequena.
+
+Dentro de um ecossistema, ela pode fazer parte de algo muito maior.
+
+---
+
+## A estratégia em uma linha
+
+**Organizar empresas, colocá-las no marketplace, criar sustentação pelo dropshipping, movimentar produtos pelo delivery e expandir a operação para cargas, mobilidade urbana e transporte público.**
+
+Essa sequência permite crescer por etapas sem perder a visão do todo.
+
+O marketplace amplia a oferta.
+
+O dropshipping fortalece a entrada financeira.
+
+O delivery cria movimento.
+
+A logística amplia a operação.
+
+A mobilidade abre novos horizontes.
+
+---
+
+## Evolução do projeto
+
+Os indicadores abaixo serão atualizados automaticamente, mostrando apenas a evolução consolidada de backend, frontend e desenvolvimento total.
+
+<details>
+<summary>Ver evolução dos módulos</summary>
+
+<!-- PROJECT_PROGRESS_START -->
+
+| Módulo | Backend | Frontend | Total |
+|---|---:|---:|---:|
+| Identidade | Atualização automática | Atualização automática | Atualização automática |
+| Negócios | Atualização automática | Atualização automática | Atualização automática |
+| Marketplace | Atualização automática | Atualização automática | Atualização automática |
+| Dropshipping | Atualização automática | Atualização automática | Atualização automática |
+| Valley e delivery | Atualização automática | Atualização automática | Atualização automática |
+| Transporte de cargas | Atualização automática | Atualização automática | Atualização automática |
+| Mobilidade urbana | Atualização automática | Atualização automática | Atualização automática |
+| Transporte público | Atualização automática | Atualização automática | Atualização automática |
+| Pagamentos | Atualização automática | Atualização automática | Atualização automática |
+| Marcação de ponto | Atualização automática | Atualização automática | Atualização automática |
+| Administração | Atualização automática | Atualização automática | Atualização automática |
+
+**Evolução total do projeto:** atualização automática.
+
+**Última atualização:** automática.
+
+<!-- PROJECT_PROGRESS_END -->
+
+</details>
+
+---
+
+## Investidores: esta não é apenas a história de um aplicativo
+
+É a construção de um ecossistema.
+
+Uma plataforma B2B e B2C que organiza empresas, conecta oferta e demanda e cria diferentes caminhos de expansão.
+
+Uma tese com:
+
+- marketplace como porta de entrada;
+- dropshipping como sustentação financeira inicial;
+- delivery como primeira camada logística;
+- expansão para cargas, mobilidade urbana e transporte público;
+- módulos adaptativos para diferentes empresas;
+- navegação por intenção para manter a experiência simples;
+- múltiplas possibilidades de recorrência, distribuição e monetização.
+
+O All-in-One organiza o negócio.
+
+O Valley conecta o negócio ao mercado.
+
+Helena simplifica a jornada.
+
+Pepita representa cada oportunidade.
+
+Gold representa o valor construído quando todas essas oportunidades começam a se conectar.
+
+O convite não é para acompanhar mais um aplicativo.
+
+É para participar da construção de uma plataforma preparada para transformar empresas organizadas em negócios visíveis, conectados e em movimento.
+
+---
+
+## O próximo capítulo começa agora
+
+O marketplace abre as portas.
+
+O dropshipping fortalece a base.
+
+O delivery coloca os produtos em movimento.
+
+A logística amplia as distâncias.
+
+A mobilidade conecta novos caminhos.
+
+O All-in-One organiza.
+
+O Valley acelera.
+
+E cada nova Pepita aproxima o ecossistema do Gold.
+
+**Bem-vindo ao All-in-One + Valley.**
+
+**Uma plataforma criada para organizar, conectar e crescer.**
 
 ---
 
