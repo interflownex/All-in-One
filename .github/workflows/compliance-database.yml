@@ -9,8 +9,10 @@ on:
       - "database/postgres/migrations/034_compliance_field_registry.sql"
       - "database/postgres/rollbacks/034_compliance_field_registry.sql"
       - "scripts/validate_compliance_catalog.py"
+      - "scripts/compliance/**"
       - "tests/test_compliance_catalog.py"
       - "tests/test_compliance_field_registry_migration.py"
+      - "tests/test_compliance_access_attestation_validator.py"
       - ".github/workflows/compliance-database.yml"
   push:
     branches: [main]
@@ -19,8 +21,10 @@ on:
       - "database/postgres/migrations/034_compliance_field_registry.sql"
       - "database/postgres/rollbacks/034_compliance_field_registry.sql"
       - "scripts/validate_compliance_catalog.py"
+      - "scripts/compliance/**"
       - "tests/test_compliance_catalog.py"
       - "tests/test_compliance_field_registry_migration.py"
+      - "tests/test_compliance_access_attestation_validator.py"
       - ".github/workflows/compliance-database.yml"
 
 permissions:
@@ -62,12 +66,14 @@ jobs:
       - name: Install focused test dependency
         run: python -m pip install pytest==9.0.3
 
-      - name: Validate catalog and migration contracts
+      - name: Validate catalog, access attestations, and migration contracts
         run: |
           python scripts/validate_compliance_catalog.py
+          python scripts/compliance/validate_access_attestations.py
           python -m pytest -q \
             tests/test_compliance_catalog.py \
-            tests/test_compliance_field_registry_migration.py
+            tests/test_compliance_field_registry_migration.py \
+            tests/test_compliance_access_attestation_validator.py
 
       - name: Apply all PostgreSQL migrations
         run: |
