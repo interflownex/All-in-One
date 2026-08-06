@@ -1,39 +1,76 @@
 # All-in-One
 
-O **All-in-One** é uma plataforma modular que reúne experiências para consumidores, empresas, mobilidade, serviços, empregos, saúde e operações empresariais sob uma identidade única.
+## Uma plataforma integrada para pessoas, empresas e operações
 
-Este repositório público apresenta a visão do produto, seus módulos e os princípios de arquitetura, privacidade e colaboração. O código-fonte principal, a infraestrutura, os contratos internos e a documentação operacional são mantidos em repositório privado.
+O **All-in-One** é uma plataforma modular concebida para reunir, sob uma identidade única, experiências destinadas a consumidores, empresas, mobilidade, prestação de serviços, empregos, saúde, pagamentos e administração.
 
-## Visão do produto
+Este repositório público funciona como uma **vitrine institucional e documental**. Ele apresenta a visão do produto, os módulos, os princípios de arquitetura, o compromisso com privacidade e segurança e as formas de colaboração.
 
-O projeto busca reduzir a fragmentação entre aplicativos e serviços, oferecendo uma experiência integrada com identidade única, jornadas conectadas e módulos especializados.
+O código-fonte, a infraestrutura, os contratos internos, os modelos de dados, os fluxos operacionais e a documentação técnica detalhada são mantidos em ambiente privado.
 
-## Módulos públicos
+## Para quem é o All-in-One
 
-- Identidade e conta unificada
-- Experiência do consumidor
-- Operações empresariais
-- Mobilidade e Riders
-- Serviços e marketplace
-- Empregos e desenvolvimento profissional
-- Saúde e bem-estar
-- Pagamentos e carteira
-- Administração e governança
+### Pessoa Física
 
-Consulte [docs/modules.md](docs/modules.md) para a descrição pública de cada área.
+- acesso unificado a serviços e jornadas;
+- mobilidade e deslocamento;
+- oportunidades profissionais;
+- saúde e bem-estar;
+- pagamentos e carteira;
+- contratação de serviços;
+- relacionamento com empresas e prestadores.
 
-## Estado
+### Pessoa Jurídica
 
-O projeto está em desenvolvimento contínuo. Informações públicas de evolução são registradas em [CHANGELOG_PUBLIC.md](CHANGELOG_PUBLIC.md) e [docs/roadmap-public.md](docs/roadmap-public.md).
+- presença digital integrada;
+- gestão de operações;
+- relacionamento com clientes;
+- contratação e recrutamento;
+- pagamentos e conciliação;
+- administração de equipes e permissões;
+- acesso a módulos especializados.
 
-## Segurança e privacidade
+### Parceiros e contribuidores
 
-O All-in-One adota princípios de privacidade desde a concepção, minimização de dados, consentimento, rastreabilidade e controles de acesso. Consulte [SECURITY.md](SECURITY.md) e [docs/privacy-and-security.md](docs/privacy-and-security.md).
+- apresentação pública do ecossistema;
+- documentação conceitual;
+- canais para sugestões, parcerias e colaboração;
+- processo controlado para acesso ao desenvolvimento privado.
 
-## Contribuições e parcerias
+## Módulos apresentados publicamente
 
-Sugestões, documentação, relatos de problemas e propostas de parceria são bem-vindos. O acesso ao desenvolvimento interno é concedido somente mediante avaliação e autorização. Consulte [CONTRIBUTING.md](CONTRIBUTING.md).
+- identidade e conta unificada;
+- experiência do consumidor;
+- negócios e operações empresariais;
+- mobilidade e Riders;
+- serviços e marketplace;
+- empregos e desenvolvimento profissional;
+- saúde e bem-estar;
+- pagamentos e carteira;
+- administração, governança e segurança.
 
-## Aviso
+Consulte [docs/modules.md](docs/modules.md) para conhecer o catálogo público.
 
-A presença de um módulo nesta documentação não representa disponibilidade comercial imediata, homologação regulatória ou integração oficial com terceiros.
+## Documentação
+
+- [Visão geral](docs/overview.md)
+- [Módulos](docs/modules.md)
+- [Arquitetura pública](docs/architecture-public.md)
+- [Roadmap público](docs/roadmap-public.md)
+- [Privacidade e segurança](docs/privacy-and-security.md)
+- [Como contribuir](CONTRIBUTING.md)
+- [Política de segurança](SECURITY.md)
+- [Código de conduta](CODE_OF_CONDUCT.md)
+- [Histórico público](CHANGELOG_PUBLIC.md)
+
+## Estado do projeto
+
+O All-in-One está em desenvolvimento contínuo. A presença de um módulo nesta documentação não representa disponibilidade comercial imediata, homologação regulatória, integração oficial com terceiros ou compromisso de entrega em data específica.
+
+## Licença
+
+O conteúdo deste repositório é disponibilizado sob licença proprietária e restritiva. Consulte [LICENSE](LICENSE).
+
+## Contato e colaboração
+
+Sugestões, relatos, propostas de parceria e contribuições documentais podem ser enviados pelos canais públicos do repositório. O acesso ao núcleo privado depende de avaliação, autorização e, quando aplicável, acordo de confidencialidade.
