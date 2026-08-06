@@ -298,6 +298,7 @@ E cada nova Pepita aproxima o ecossistema do Gold.
 - [Visão geral](docs/overview.md)
 - [Módulos](docs/modules.md)
 - [Arquitetura pública](docs/architecture-public.md)
+- [Diretrizes técnicas e operação](docs/technical-operations-public.md)
 - [Roadmap público](docs/roadmap-public.md)
 - [Privacidade e segurança](docs/privacy-and-security.md)
 - [Como contribuir](CONTRIBUTING.md)
