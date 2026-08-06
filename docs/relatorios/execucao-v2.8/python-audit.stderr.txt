@@ -1,2 +1,0 @@
-Found 4 known vulnerabilities in 1 package
-exit_code=1

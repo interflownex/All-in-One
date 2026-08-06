@@ -1,3 +1,0 @@
-risk,priority,control,status,evidence
-binding UI sem comprovação backend,P1,matriz API x DTO x campo,pendente,docs/data-audit/artifacts/matriz_formulario_campo.csv
-classificação LGPD heurística,P0,revisão por proprietário do domínio,pendente,docs/data-audit/artifacts/dicionario_de_dados.csv

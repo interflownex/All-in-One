@@ -1,6 +1,0 @@
-{
-  "hostname": "stream.brasildesconto.com.br",
-  "tunnelName": "all-in-one-stream",
-  "originUrl": "http://127.0.0.1:8100",
-  "publicPathRegex": "^/stream$"
-}
