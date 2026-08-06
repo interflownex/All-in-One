@@ -1,0 +1,105 @@
+name: Reconciliar alertas históricos do repositório público
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/reconcile-public-security-alerts.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/reconcile-public-security-alerts.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+
+concurrency:
+  group: reconcile-public-security-alerts-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reconcile:
+    name: Reconciliar categorias históricas
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Gerar SARIFs vazios para árvore documental
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p sarif
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          languages = (
+              "actions",
+              "java-kotlin",
+              "javascript-typescript",
+              "python",
+              "rust",
+          )
+
+          for language in languages:
+              payload = {
+                  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+                  "version": "2.1.0",
+                  "runs": [
+                      {
+                          "tool": {
+                              "driver": {
+                                  "name": "All-in-One public README reconciliation",
+                                  "informationUri": "https://github.com/interflownex/All-in-One",
+                                  "rules": [],
+                                  "version": "1.0.0",
+                              }
+                          },
+                          "results": [],
+                          "properties": {
+                              "repositoryPurpose": "public-documentation-only",
+                              "historicalLanguageCategory": language,
+                          },
+                      }
+                  ],
+              }
+              target = Path("sarif") / f"{language}.sarif"
+              target.write_text(
+                  json.dumps(payload, ensure_ascii=False, indent=2),
+                  encoding="utf-8",
+              )
+              print(target)
+          PY
+
+      - name: Publicar reconciliação de GitHub Actions
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4
+        with:
+          sarif_file: sarif/actions.sarif
+          category: /language:actions
+
+      - name: Publicar reconciliação de Java e Kotlin
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4
+        with:
+          sarif_file: sarif/java-kotlin.sarif
+          category: /language:java-kotlin
+
+      - name: Publicar reconciliação de JavaScript e TypeScript
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4
+        with:
+          sarif_file: sarif/javascript-typescript.sarif
+          category: /language:javascript-typescript
+
+      - name: Publicar reconciliação de Python
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4
+        with:
+          sarif_file: sarif/python.sarif
+          category: /language:python
+
+      - name: Publicar reconciliação de Rust
+        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4
+        with:
+          sarif_file: sarif/rust.sarif
+          category: /language:rust
