@@ -1,3 +1,0 @@
-Contrato de release Valley aprovado.
-
-exit_code=0

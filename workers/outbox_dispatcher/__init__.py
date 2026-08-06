@@ -1,1 +1,0 @@
-"""Transactional outbox dispatcher worker."""

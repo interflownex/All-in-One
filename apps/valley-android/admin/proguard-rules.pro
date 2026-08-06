@@ -1,2 +1,0 @@
--keepclassmembers class br.com.allinone.admin.BuildConfig { *; }
--dontwarn android.webkit.**
