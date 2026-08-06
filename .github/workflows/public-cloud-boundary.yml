@@ -2,6 +2,7 @@ name: Public Cloud Boundary
 
 on:
   pull_request:
+  workflow_dispatch:
   push:
     branches: [main]
 
@@ -48,9 +49,9 @@ jobs:
             esac
           done < <(git ls-files)
 
-          if git grep -nE '"project_number"[[:space:]]*:|"private_key"[[:space:]]*:|"client_email"[[:space:]]*:' -- ':!docs/**' ':!README.md' >/tmp/cloud-boundary-matches.txt 2>/dev/null; then
+          if git grep -nE '"project_number"[[:space:]]*:|"private_key"[[:space:]]*:|"client_email"[[:space:]]*:|all-in-one-[0-9]{6,}' -- ':!docs/**' ':!README.md' >/tmp/cloud-boundary-matches.txt 2>/dev/null; then
             cat /tmp/cloud-boundary-matches.txt
-            echo "::error::Metadados operacionais ou material de credencial do Google Cloud detectados fora da documentação pública permitida."
+            echo "::error::Metadados operacionais, identificador de projeto ou material de credencial do Google Cloud detectados fora da documentação pública permitida."
             violations=1
           fi
 
