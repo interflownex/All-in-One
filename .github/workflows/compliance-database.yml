@@ -13,6 +13,7 @@ on:
       - "tests/test_compliance_catalog.py"
       - "tests/test_compliance_field_registry_migration.py"
       - "tests/test_compliance_access_attestation_validator.py"
+      - "tests/test_compliance_access_readiness_report.py"
       - ".github/workflows/compliance-database.yml"
   push:
     branches: [main]
@@ -25,6 +26,7 @@ on:
       - "tests/test_compliance_catalog.py"
       - "tests/test_compliance_field_registry_migration.py"
       - "tests/test_compliance_access_attestation_validator.py"
+      - "tests/test_compliance_access_readiness_report.py"
       - ".github/workflows/compliance-database.yml"
 
 permissions:
@@ -66,14 +68,41 @@ jobs:
       - name: Install focused test dependency
         run: python -m pip install pytest==9.0.3
 
-      - name: Validate catalog, access attestations, and migration contracts
+      - name: Validate catalog, access attestations, readiness report, and migration contracts
         run: |
           python scripts/validate_compliance_catalog.py
           python scripts/compliance/validate_access_attestations.py
+          python scripts/compliance/report_access_readiness.py \
+            --output artifacts/compliance/access-readiness.json
           python -m pytest -q \
             tests/test_compliance_catalog.py \
             tests/test_compliance_field_registry_migration.py \
-            tests/test_compliance_access_attestation_validator.py
+            tests/test_compliance_access_attestation_validator.py \
+            tests/test_compliance_access_readiness_report.py
+
+      - name: Verify readiness evidence remains fail closed
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(
+              Path("artifacts/compliance/access-readiness.json").read_text(
+                  encoding="utf-8"
+              )
+          )
+          assert report["ready"] is False
+          assert report["asset_count"] > 0
+          assert all(asset["ready"] is False for asset in report["assets"])
+          PY
+
+      - name: Upload compliance readiness evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-access-readiness-${{ github.sha }}
+          path: artifacts/compliance/access-readiness.json
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Apply all PostgreSQL migrations
         run: |
