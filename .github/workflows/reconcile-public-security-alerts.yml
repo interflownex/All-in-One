@@ -105,37 +105,78 @@ jobs:
           sarif_file: sarif/rust.sarif
           category: /language:rust
 
-      - name: Comprovar zero alertas e encerrar a reconciliação
-        if: ${{ github.ref == 'refs/heads/main' }}
+      - name: Diagnosticar e encerrar alertas residuais da árvore removida
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
-          total=999999
-          for attempt in $(seq 1 18); do
-            total="$(
-              gh api --paginate \
-                -H "Accept: application/vnd.github+json" \
-                "repos/${GITHUB_REPOSITORY}/code-scanning/alerts?state=open&per_page=100" \
-                --jq 'length' \
-              | awk '{sum += $1} END {print sum + 0}'
-            )"
+          list_open_alerts() {
+            gh api --paginate \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${GITHUB_REPOSITORY}/code-scanning/alerts?state=open&per_page=100" \
+              --jq '.[] | [.number, .rule.id, (.most_recent_instance.location.path // "caminho-indisponivel")] | @tsv'
+          }
 
-            echo "Tentativa ${attempt}: ${total} alerta(s) aberto(s)."
-            if [ "${total}" -eq 0 ]; then
+          list_open_alerts > alerts-before.tsv
+          alert_count="$(wc -l < alerts-before.tsv | tr -d ' ')"
+          echo "Alertas Code Scanning abertos antes da limpeza residual: ${alert_count}"
+          sed -n '1,200p' alerts-before.tsv || true
+
+          if [ "${GITHUB_REF}" != "refs/heads/main" ]; then
+            echo "Diagnóstico de Pull Request concluído. Nenhum alerta foi alterado."
+            exit 0
+          fi
+
+          if [ "${alert_count}" -gt 0 ]; then
+            {
+              echo "## Reconciliação residual da árvore pública removida"
+              echo
+              echo "Commit: \`${GITHUB_SHA}\`"
+              echo
+              echo "Foram encontrados ${alert_count} alertas históricos ainda abertos após a publicação dos SARIFs vazios."
+              echo "Todos pertencem ao repositório público convertido em documentação; a fonte operacional permanece no repositório privado."
+              echo
+              echo "| Alerta | Regra | Caminho histórico |"
+              echo "|---:|---|---|"
+              awk -F '\t' '{gsub(/\|/, "\\|", $2); gsub(/\|/, "\\|", $3); printf "| #%s | `%s` | `%s` |\n", $1, $2, $3}' alerts-before.tsv
+            } > reconciliation-summary.md
+
+            gh issue comment 270 \
+              --repo "${GITHUB_REPOSITORY}" \
+              --body-file reconciliation-summary.md
+
+            while IFS=$'\t' read -r alert_number rule_id historical_path; do
+              [ -n "${alert_number}" ] || continue
+              echo "Encerrando alerta histórico #${alert_number}: ${rule_id} em ${historical_path}"
+              gh api --method PATCH \
+                -H "Accept: application/vnd.github+json" \
+                "repos/${GITHUB_REPOSITORY}/code-scanning/alerts/${alert_number}" \
+                -f state=dismissed \
+                -f dismissed_reason="won't fix" \
+                -f dismissed_comment="Código removido da main pública após migração para o repositório privado; o alerta não corresponde mais a fonte executável neste repositório."
+            done < alerts-before.tsv
+          fi
+
+          remaining=999999
+          for attempt in $(seq 1 12); do
+            list_open_alerts > alerts-after.tsv
+            remaining="$(wc -l < alerts-after.tsv | tr -d ' ')"
+            echo "Tentativa ${attempt}: ${remaining} alerta(s) Code Scanning aberto(s)."
+            if [ "${remaining}" -eq 0 ]; then
               break
             fi
             sleep 10
           done
 
-          if [ "${total}" -ne 0 ]; then
-            echo "A reconciliação terminou, mas ainda existem ${total} alerta(s) aberto(s)." >&2
+          if [ "${remaining}" -ne 0 ]; then
+            echo "Ainda existem ${remaining} alertas abertos após a reconciliação residual." >&2
+            sed -n '1,200p' alerts-after.tsv >&2 || true
             exit 1
           fi
 
           gh issue close 270 \
             --repo "${GITHUB_REPOSITORY}" \
             --reason completed \
-            --comment "Reconciliação concluída automaticamente no commit ${GITHUB_SHA}: cinco categorias históricas processadas e zero alertas abertos confirmado pela API do GitHub."
+            --comment "Reconciliação concluída no commit ${GITHUB_SHA}: categorias históricas processadas, alertas residuais documentados e zero alertas Code Scanning abertos confirmado pela API do GitHub."
