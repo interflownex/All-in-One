@@ -1,0 +1,61 @@
+name: Public Cloud Boundary
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  enforce-public-boundary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Block private Google Cloud operational artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          forbidden_paths=(
+            "config/cloud/google_cloud_inventory.json"
+            "config/cloud/google_cloud_profile.json"
+            "terraform.tfstate"
+            "terraform.tfstate.backup"
+            "service-account.json"
+            "service_account.json"
+            "application_default_credentials.json"
+          )
+
+          violations=0
+          for path in "${forbidden_paths[@]}"; do
+            if git ls-files --error-unmatch "$path" >/dev/null 2>&1; then
+              echo "::error file=$path::Artefato operacional privado do Google Cloud não pode existir no repositório público."
+              violations=1
+            fi
+          done
+
+          while IFS= read -r path; do
+            case "$path" in
+              *.tfstate|*.tfstate.backup|*service-account*.json|*service_account*.json|*application_default_credentials*.json)
+                echo "::error file=$path::Arquivo de estado ou credencial do Google Cloud proibido no repositório público."
+                violations=1
+                ;;
+            esac
+          done < <(git ls-files)
+
+          if git grep -nE '"project_number"[[:space:]]*:|"private_key"[[:space:]]*:|"client_email"[[:space:]]*:' -- ':!docs/**' ':!README.md' >/tmp/cloud-boundary-matches.txt 2>/dev/null; then
+            cat /tmp/cloud-boundary-matches.txt
+            echo "::error::Metadados operacionais ou material de credencial do Google Cloud detectados fora da documentação pública permitida."
+            violations=1
+          fi
+
+          if [[ "$violations" -ne 0 ]]; then
+            exit 1
+          fi
+
+          echo "Public cloud boundary validated."
