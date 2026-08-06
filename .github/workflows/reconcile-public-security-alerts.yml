@@ -15,6 +15,7 @@ permissions:
   contents: read
   actions: read
   security-events: write
+  issues: write
 
 concurrency:
   group: reconcile-public-security-alerts-${{ github.ref }}
@@ -103,3 +104,38 @@ jobs:
         with:
           sarif_file: sarif/rust.sarif
           category: /language:rust
+
+      - name: Comprovar zero alertas e encerrar a reconciliação
+        if: ${{ github.ref == 'refs/heads/main' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          total=999999
+          for attempt in $(seq 1 18); do
+            total="$(
+              gh api --paginate \
+                -H "Accept: application/vnd.github+json" \
+                "repos/${GITHUB_REPOSITORY}/code-scanning/alerts?state=open&per_page=100" \
+                --jq 'length' \
+              | awk '{sum += $1} END {print sum + 0}'
+            )"
+
+            echo "Tentativa ${attempt}: ${total} alerta(s) aberto(s)."
+            if [ "${total}" -eq 0 ]; then
+              break
+            fi
+            sleep 10
+          done
+
+          if [ "${total}" -ne 0 ]; then
+            echo "A reconciliação terminou, mas ainda existem ${total} alerta(s) aberto(s)." >&2
+            exit 1
+          fi
+
+          gh issue close 270 \
+            --repo "${GITHUB_REPOSITORY}" \
+            --reason completed \
+            --comment "Reconciliação concluída automaticamente no commit ${GITHUB_SHA}: cinco categorias históricas processadas e zero alertas abertos confirmado pela API do GitHub."
