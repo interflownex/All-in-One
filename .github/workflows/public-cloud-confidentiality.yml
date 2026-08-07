@@ -1,0 +1,46 @@
+name: Public Cloud Confidentiality
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  no-operational-cloud-material:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Enforce public/private cloud boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          violations=0
+
+          while IFS= read -r path; do
+            case "$path" in
+              config/cloud/*|*/config/cloud/*|.firebaserc|*/.firebaserc|firebase.json|*/firebase.json|google-services.json|*/google-services.json|GoogleService-Info.plist|*/GoogleService-Info.plist|*.tfstate|*.tfstate.backup)
+                echo "::error file=$path::Configuração operacional de cloud deve permanecer fora do repositório público."
+                violations=1
+                ;;
+            esac
+          done < <(git ls-files)
+
+          if git grep -nI -E 'project_(id|number)|projectId|\.iam\.gserviceaccount\.com|projects/[a-z][a-z0-9-]{4,28}[a-z0-9]' -- . \
+            ':!.github/workflows/public-cloud-boundary.yml' \
+            ':!.github/workflows/public-cloud-confidentiality.yml' \
+            >/tmp/public-cloud-confidentiality.txt 2>/dev/null; then
+            cat /tmp/public-cloud-confidentiality.txt
+            echo "::error::Identificador ou metadado operacional de cloud detectado. Use placeholders no conteúdo público."
+            violations=1
+          fi
+
+          test "$violations" -eq 0
