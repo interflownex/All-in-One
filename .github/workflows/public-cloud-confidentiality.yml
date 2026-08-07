@@ -34,7 +34,10 @@ jobs:
             esac
           done < <(git ls-files)
 
-          if git grep -nI -E 'project_(id|number)|projectId|\.iam\.gserviceaccount\.com|projects/[a-z][a-z0-9-]{4,28}[a-z0-9]' -- . >/tmp/public-cloud-confidentiality.txt 2>/dev/null; then
+          if git grep -nI -E 'project_(id|number)|projectId|\.iam\.gserviceaccount\.com|projects/[a-z][a-z0-9-]{4,28}[a-z0-9]' -- . \
+            ':!.github/workflows/public-cloud-boundary.yml' \
+            ':!.github/workflows/public-cloud-confidentiality.yml' \
+            >/tmp/public-cloud-confidentiality.txt 2>/dev/null; then
             cat /tmp/public-cloud-confidentiality.txt
             echo "::error::Identificador ou metadado operacional de cloud detectado. Use placeholders no conteúdo público."
             violations=1
