@@ -27,19 +27,18 @@ jobs:
 
           while IFS= read -r path; do
             case "$path" in
-              config/cloud/*|*/config/cloud/*|.firebaserc|*/.firebaserc|firebase.json|*/firebase.json|google-services.json|*/google-services.json|GoogleService-Info.plist|*/GoogleService-Info.plist|*.tfstate|*.tfstate.backup)
-                echo "::error file=$path::Configuração operacional de cloud deve permanecer fora do repositório público."
+              config/cloud/*|*/config/cloud/*|.firebaserc|*/.firebaserc|firebase.json|*/firebase.json|google-services.json|*/google-services.json|GoogleService-Info.plist|*/GoogleService-Info.plist|*.tfstate|*.tfstate.backup|*service-account*.json|*service_account*.json|*application_default_credentials*.json|*credentials*.json)
+                echo "::error file=$path::Configuração, estado ou credencial operacional de cloud deve permanecer fora do repositório público."
                 violations=1
                 ;;
             esac
           done < <(git ls-files)
 
-          if git grep -nI -E 'project_(id|number)|projectId|\.iam\.gserviceaccount\.com|projects/[a-z][a-z0-9-]{4,28}[a-z0-9]' -- . \
-            ':!.github/workflows/public-cloud-boundary.yml' \
+          if git grep -nI -E 'project_(id|number)|projectId|\.iam\.gserviceaccount\.com|projects/[a-z][a-z0-9-]{4,28}[a-z0-9]|"private_key"[[:space:]]*:|"client_email"[[:space:]]*:' -- . \
             ':!.github/workflows/public-cloud-confidentiality.yml' \
             >/tmp/public-cloud-confidentiality.txt 2>/dev/null; then
             cat /tmp/public-cloud-confidentiality.txt
-            echo "::error::Identificador ou metadado operacional de cloud detectado. Use placeholders no conteúdo público."
+            echo "::error::Identificador, metadado ou material operacional de cloud detectado. Use placeholders no conteúdo público."
             violations=1
           fi
 
