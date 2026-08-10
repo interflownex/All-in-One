@@ -1,107 +1,29 @@
 # Diretrizes técnicas e operação
 
-Este documento apresenta uma visão pública das regras de domínio, integridade, execução e organização técnica do All-in-One + Valley.
+Este documento apresenta somente princípios públicos de engenharia e governança do All-in-One + Valley.
 
-O código-fonte completo, os segredos, as credenciais e os detalhes internos de infraestrutura permanecem no repositório privado.
+Detalhes de infraestrutura, domínios operacionais, fornecedores, topologia, endpoints, credenciais, identificadores de projeto, caminhos internos e procedimentos de implantação permanecem privados.
 
-## Diretriz de domínio `brasildesconto.com.br`
+## Princípios públicos
 
-Toda alteração que envolva `brasildesconto.com.br` deve seguir o contrato versionado em:
-
-```text
-config/autonomy/brasildesconto_domain_policy.json
-```
-
-A operação do domínio segue estas regras:
-
-- automação priorizada por Terraform;
-- sincronização com Cloudflare;
-- validações obrigatórias de DNS;
-- validação de HTTPS;
-- validação de CORS;
-- validação de headers;
-- validação de cache;
-- validação de logs;
-- validação de monitoramento;
-- proibição de segredos no Git.
-
-O gate abaixo verifica o contrato automaticamente antes da sincronização:
-
-```bash
-python3 scripts/validate_repository.py
-```
-
-## Identidade e integridade
-
-`identity.users.id` é o vínculo central dos recursos de domínio.
-
-Wallets, cartões NFC/LED, perfis Rider e escrows usam foreign keys compostas para impedir que uma operação referencie a wallet de outro usuário.
-
-Recursos financeiros e logs de auditoria rejeitam operações de `UPDATE` e `DELETE`.
-
-## Execução local
-
-```bash
-python -m pip install -r requirements-dev.txt
-python scripts/scaffold_modules.py --check
-python scripts/validate_repository.py
-python -m pytest --import-mode=importlib
-docker compose -f infra/docker/docker-compose.yml up --build
-```
-
-### Exemplo isolado
-
-```bash
-cd modules/identity
-pip install -r requirements.txt
-uvicorn main:app --port 8000
-```
-
-## Organização
-
-| Caminho | Conteúdo |
-|---|---|
-| `apps/` | Contratos das seis experiências cliente |
-| `modules/` | Microserviços funcionais e testes |
-| `contracts/` | Contratos de domínio espelhados e versionáveis |
-| `database/` | Migrações PostgreSQL e validações MongoDB |
-| `docs/` | Arquitetura, segurança, eventos, operação e roadmap |
-| `infra/` | Docker, Kubernetes e Terraform inicial |
-| `workers/` | Dispatchers e consumidores assíncronos da plataforma |
-| `.github/workflows/` | Gates e automações de entrega |
-
-## Estado
-
-O motor de domínio torna todos os módulos inicializáveis e testáveis.
-
-Integrações reguladas ou externas permanecem bloqueadas para produção até que existam credenciais, homologação, DPIA/LGPD e testes E2E documentados.
-
-Isso inclui:
-
-- Pix e cartões;
-- fiscal oficial;
-- biometria;
-- assinatura;
-- OCR;
-- IA produtiva;
-- hospitais;
-- GPS de concessionárias.
-
-A referência de evolução e liberação permanece documentada em:
-
-```text
-docs/ROADMAP.md
-```
+- arquitetura modular e separação de responsabilidades;
+- controle de acesso por necessidade e autorização;
+- rastreabilidade de operações relevantes;
+- validação automatizada de integridade e segurança;
+- segregação entre ambientes;
+- proibição de segredos e dados pessoais em repositórios públicos;
+- integrações externas condicionadas a homologação, autorização e requisitos regulatórios aplicáveis;
+- publicação pública limitada a informações necessárias para compreensão do produto e colaboração segura.
 
 ## Segurança de publicação
 
-Este documento não contém:
+O repositório público não deve conter:
 
-- credenciais;
-- tokens;
-- chaves privadas;
-- segredos de infraestrutura;
-- dados pessoais;
-- detalhes operacionais sensíveis.
+- credenciais, tokens ou chaves privadas;
+- identificadores operacionais de cloud;
+- hostnames, domínios ou rotas internas de infraestrutura;
+- procedimentos de implantação que reduzam a segurança da plataforma;
+- dados pessoais ou amostras reais de produção;
+- planos internos, dependências comerciais ou detalhes regulatórios não destinados à divulgação.
 
-As referências de caminhos indicam contratos e estruturas da implementação privada, sem expor seus conteúdos internos.
+A documentação operacional completa permanece no repositório privado.
