@@ -1,0 +1,16 @@
+name: Stitch Sync
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "config/stitch/**"
+      - "scripts/stitch_*.py"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m compileall scripts
+

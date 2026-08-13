@@ -1,0 +1,3 @@
+'\\wsl.localhost\Ubuntu\home\eretazan\all-in-one'
+CMD.EXE foi iniciado tendo o caminho acima como pasta atual.
+NÆo h  suporte para caminhos UNC. Padronizando para pasta do Windows.

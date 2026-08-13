@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "server": "stitch",
+  "endpoint": "https://stitch.googleapis.com/mcp",
+  "accept": "application/json",
+  "header": "X-Goog-Api-Key",
+  "env_var": "STITCH_API_KEY"
+}
+

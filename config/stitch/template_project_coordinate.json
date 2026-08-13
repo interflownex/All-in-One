@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "version": "1.0.0",
+  "universal_directives": [
+    "Preserve the public/private boundary.",
+    "Do not expose credentials or private repositories.",
+    "Use Brazilian Portuguese for user-facing text.",
+    "Keep the official brand identity consistent."
+  ],
+  "projects": [
+    {
+      "id": "all_in_one_web_mobile_template",
+      "project_name": "All-in-One Web Mobile",
+      "product": "All-in-One",
+      "objective": "Portal publico unificado.",
+      "surfaces": ["web", "mobile"],
+      "module_scope": ["overview", "services", "marketplace"],
+      "branding_source": "brand_identity.json",
+      "branding_version": "1.0.0",
+      "screen_groups": [
+        {"key": "overview", "title": "Visao Geral"},
+        {"key": "discover", "title": "Discover"}
+      ]
+    },
+    {
+      "id": "aio_admin_web_mobile_template",
+      "project_name": "AIO Admin Web Mobile",
+      "product": "All-in-One",
+      "objective": "Painel administrativo oficial.",
+      "surfaces": ["web", "mobile"],
+      "module_scope": ["branding", "audit_permissions", "privacy"],
+      "branding_source": "brand_identity.json",
+      "branding_version": "1.0.0",
+      "screen_groups": [
+        {"key": "audit_permissions", "title": "Auditoria E Permissoes"}
+      ]
+    },
+    {
+      "id": "valley_riders_apk_template",
+      "project_name": "Valley Riders APK",
+      "product": "Valley",
+      "objective": "Entrega Android de riders.",
+      "surfaces": ["android"],
+      "module_scope": ["riders", "delivery"],
+      "branding_source": "brand_identity.json",
+      "branding_version": "1.0.0",
+      "screen_groups": [
+        {"key": "overview", "title": "Visao Geral"}
+      ]
+    },
+    {
+      "id": "valley_apk_template",
+      "project_name": "Valley APK",
+      "product": "Valley",
+      "objective": "Entrega Android principal.",
+      "surfaces": ["android"],
+      "module_scope": ["business", "services"],
+      "branding_source": "brand_identity.json",
+      "branding_version": "1.0.0",
+      "screen_groups": [
+        {"key": "overview", "title": "Visao Geral"}
+      ]
+    }
+  ],
+  "authorized_pending_projects": []
+}
+

@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "coordinate_version": 1,
+  "last_deferred": null,
+  "projects": {
+    "all_in_one_web_mobile_template": {
+      "project_id": "all_in_one_web_mobile_template",
+      "project_name": "All-in-One Web Mobile",
+      "screens": {
+        "overview": {
+          "screen_id": "overview",
+          "title": "Visao Geral",
+          "coordinate_digest": "94d91e1d3a0fc6f1b1b20ac225d18e022dff5a0267342527fe7f862088c94ddc"
+        },
+        "discover": {
+          "screen_id": "discover",
+          "title": "Discover",
+          "coordinate_digest": "94d91e1d3a0fc6f1b1b20ac225d18e022dff5a0267342527fe7f862088c94ddc"
+        }
+      }
+    },
+    "valley_riders_apk_template": {
+      "project_id": "valley_riders_apk_template",
+      "project_name": "Valley Riders APK",
+      "screens": {
+        "overview": {
+          "screen_id": "overview",
+          "title": "Visao Geral",
+          "coordinate_digest": "94d91e1d3a0fc6f1b1b20ac225d18e022dff5a0267342527fe7f862088c94ddc"
+        }
+      }
+    },
+    "valley_apk_template": {
+      "project_id": "valley_apk_template",
+      "project_name": "Valley APK",
+      "screens": {
+        "overview": {
+          "screen_id": "overview",
+          "title": "Visao Geral",
+          "coordinate_digest": "94d91e1d3a0fc6f1b1b20ac225d18e022dff5a0267342527fe7f862088c94ddc"
+        }
+      }
+    }
+  },
+  "director": [
+    {
+      "actor": "codex",
+      "command": "status",
+      "summary": {
+        "expected_projects": [
+          "all_in_one_web_mobile_template",
+          "aio_admin_web_mobile_template",
+          "valley_riders_apk_template",
+          "valley_apk_template"
+        ],
+        "synced_projects": 3,
+        "expected_screen_groups": 5,
+        "synced_screen_groups": 4,
+        "pending_screen_groups": 1,
+        "stale_screen_groups": [],
+        "last_deferred": null,
+        "status": "pending",
+        "coordinate_digest": "94d91e1d3a0fc6f1b1b20ac225d18e022dff5a0267342527fe7f862088c94ddc",
+        "projects": {
+          "all_in_one_web_mobile_template": {
+            "project_id": "all_in_one_web_mobile_template",
+            "project_name": "All-in-One Web Mobile",
+            "screens": {
+              "overview": {
+                "screen_id": "overview",
+                "title": "Visao Geral",
+                "coordinate_digest": "94d91e1d3a0fc6f1b1b20ac225d18e022dff5a0267342527fe7f862088c94ddc"
+              },
+              "discover": {
+                "screen_id": "discover",
+                "title": "Discover",
+                "coordinate_digest": "94d91e1d3a0fc6f1b1b20ac225d18e022dff5a0267342527fe7f862088c94ddc"
+              }
+            }
+          },
+          "valley_riders_apk_template": {
+            "project_id": "valley_riders_apk_template",
+            "project_name": "Valley Riders APK",
+            "screens": {
+              "overview": {
+                "screen_id": "overview",
+                "title": "Visao Geral",
+                "coordinate_digest": "94d91e1d3a0fc6f1b1b20ac225d18e022dff5a0267342527fe7f862088c94ddc"
+              }
+            }
+          },
+          "valley_apk_template": {
+            "project_id": "valley_apk_template",
+            "project_name": "Valley APK",
+            "screens": {
+              "overview": {
+                "screen_id": "overview",
+                "title": "Visao Geral",
+                "coordinate_digest": "94d91e1d3a0fc6f1b1b20ac225d18e022dff5a0267342527fe7f862088c94ddc"
+              }
+            }
+          }
+        }
+      },
+      "coordinate_digest": "94d91e1d3a0fc6f1b1b20ac225d18e022dff5a0267342527fe7f862088c94ddc"
+    }
+  ]
+}

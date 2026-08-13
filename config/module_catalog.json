@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "modules": [
+    {"name": "all_in_one", "purpose": "Portal principal"},
+    {"name": "business", "purpose": "Operacao empresarial"},
+    {"name": "riders", "purpose": "Entrega e mobilidade"},
+    {"name": "services", "purpose": "Servicos"},
+    {"name": "marketplace", "purpose": "Marketplace"},
+    {"name": "identity", "purpose": "Identidade"},
+    {"name": "erp", "purpose": "ERP"},
+    {"name": "jobs", "purpose": "Jobs"},
+    {"name": "wms", "purpose": "WMS"}
+  ]
+}
+

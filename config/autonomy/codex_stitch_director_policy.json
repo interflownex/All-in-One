@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "coordinator": "codex",
+  "mode": "direct_mcp",
+  "official_projects": [
+    {
+      "key": "all_in_one_web_mobile_template",
+      "project_id": "all_in_one_web_mobile_template"
+    },
+    {
+      "key": "aio_admin_web_mobile_template",
+      "project_id": "aio_admin_web_mobile_template"
+    },
+    {
+      "key": "valley_riders_apk_template",
+      "project_id": "valley_riders_apk_template"
+    },
+    {
+      "key": "valley_apk_template",
+      "project_id": "valley_apk_template"
+    }
+  ]
+}
+
