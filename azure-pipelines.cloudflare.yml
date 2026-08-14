@@ -1,0 +1,63 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - apps/public-web/**
+      - config/cloudflare/pages-public.json
+      - azure-pipelines.cloudflare.yml
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - apps/public-web/**
+      - config/cloudflare/pages-public.json
+      - azure-pipelines.cloudflare.yml
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  nodeVersion: "22.x"
+  pagesProject: "all-in-one-web"
+  appDirectory: "apps/public-web"
+
+steps:
+  - checkout: self
+    fetchDepth: 1
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: $(nodeVersion)
+    displayName: Preparar Node.js
+
+  - script: npm ci
+    workingDirectory: $(appDirectory)
+    displayName: Instalar dependências reproduzíveis
+
+  - script: npm run build && npm test
+    workingDirectory: $(appDirectory)
+    displayName: Compilar e validar site público
+
+  - script: |
+      deploy_branch="$BUILD_SOURCEBRANCH"
+      if [ "${BUILD_REASON:-}" = "PullRequest" ] && [ -n "${SYSTEM_PULLREQUEST_SOURCEBRANCH:-}" ]; then
+        deploy_branch="$SYSTEM_PULLREQUEST_SOURCEBRANCH"
+      fi
+      deploy_branch="${deploy_branch#refs/heads/}"
+      deploy_branch="${deploy_branch#refs/pull/}"
+      deploy_branch="${deploy_branch//\//-}"
+      npx wrangler pages deploy dist \
+        --project-name "$PAGES_PROJECT" \
+        --branch "$deploy_branch" \
+        --commit-hash "$BUILD_SOURCEVERSION"
+    workingDirectory: $(appDirectory)
+    displayName: Publicar no Cloudflare Pages
+    env:
+      CLOUDFLARE_API_TOKEN: $(CLOUDFLARE_API_TOKEN)
+      CLOUDFLARE_ACCOUNT_ID: $(CLOUDFLARE_ACCOUNT_ID)
+      PAGES_PROJECT: $(pagesProject)

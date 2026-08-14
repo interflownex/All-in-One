@@ -1,0 +1,15 @@
+{
+  "name": "@all-in-one/public-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/validate.mjs",
+    "dev": "npm run build && wrangler pages dev dist",
+    "deploy:preview": "npm run build && wrangler pages deploy dist --project-name all-in-one-web --branch cloudflare-integration",
+    "deploy:production": "npm run build && wrangler pages deploy dist --project-name all-in-one-web --branch main"
+  },
+  "devDependencies": {
+    "wrangler": "4.123.0"
+  }
+}

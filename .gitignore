@@ -1,3 +1,9 @@
 .env
 .pytest_tmp/
 /.private/
+/.wrangler/
+/NUL
+/nul
+/apps/public-web/node_modules/
+/apps/public-web/dist/
+/apps/public-web/.wrangler/
