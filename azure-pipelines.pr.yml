@@ -1,0 +1,42 @@
+trigger: none
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - apps/public-web/**
+      - config/cloudflare/pages-public.json
+      - docs/overview.md
+      - docs/architecture-public.md
+      - docs/technical-operations-public.md
+      - docs/modules.md
+      - docs/roadmap-public.md
+      - docs/privacy-and-security.md
+      - azure-pipelines.pr.yml
+      - azure-pipelines.cloudflare.yml
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  nodeVersion: "22.x"
+  appDirectory: "apps/public-web"
+
+steps:
+  - checkout: self
+    fetchDepth: 1
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: $(nodeVersion)
+    displayName: Preparar Node.js
+
+  - script: npm ci
+    workingDirectory: $(appDirectory)
+    displayName: Instalar dependências reproduzíveis
+
+  - script: npm run build && npm test
+    workingDirectory: $(appDirectory)
+    displayName: Compilar e validar site público sem credenciais

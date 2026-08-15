@@ -1,0 +1,55 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - apps/public-web/**
+      - config/cloudflare/pages-public.json
+      - docs/overview.md
+      - docs/architecture-public.md
+      - docs/technical-operations-public.md
+      - docs/modules.md
+      - docs/roadmap-public.md
+      - docs/privacy-and-security.md
+      - azure-pipelines.cloudflare.yml
+
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  nodeVersion: "22.x"
+  pagesProject: "all-in-one-web"
+  appDirectory: "apps/public-web"
+
+steps:
+  - checkout: self
+    fetchDepth: 1
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: $(nodeVersion)
+    displayName: Preparar Node.js
+
+  - script: npm ci
+    workingDirectory: $(appDirectory)
+    displayName: Instalar dependências reproduzíveis
+
+  - script: npm run build && npm test
+    workingDirectory: $(appDirectory)
+    displayName: Compilar e validar site público
+
+  - script: |
+      npx wrangler pages deploy dist \
+        --project-name "$PAGES_PROJECT" \
+        --branch main \
+        --commit-hash "$BUILD_SOURCEVERSION"
+    workingDirectory: $(appDirectory)
+    displayName: Publicar produção no Cloudflare Pages
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    env:
+      CLOUDFLARE_API_TOKEN: $(CLOUDFLARE_API_TOKEN)
+      CLOUDFLARE_ACCOUNT_ID: $(CLOUDFLARE_ACCOUNT_ID)
+      PAGES_PROJECT: $(pagesProject)
