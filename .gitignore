@@ -1,0 +1,10 @@
+.env
+.pytest_tmp/
+__pycache__/
+/.private/
+/.wrangler/
+/NUL
+/nul
+/apps/public-web/node_modules/
+/apps/public-web/dist/
+/apps/public-web/.wrangler/

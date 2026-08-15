@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "provider": "cloudflare_pages",
+  "account_id": "474fc26bf9c6bcf5e1a84b7f63a516d8",
+  "project_name": "all-in-one-web",
+  "production_branch": "main",
+  "custom_domain": "brasildesconto.com.br",
+  "pages_domain": "all-in-one-web-7fa.pages.dev",
+  "application": "apps/public-web",
+  "build_command": "npm ci && npm run build && npm test",
+  "output_directory": "apps/public-web/dist",
+  "wrangler_config": "apps/public-web/wrangler.jsonc",
+  "deployment_mode": "production_direct_upload_from_azure_pipelines",
+  "pull_request_validation": "build_and_test_without_cloudflare_credentials",
+  "preview_mode": "manual_trusted_operator",
+  "required_secret_variables": [
+    "CLOUDFLARE_API_TOKEN",
+    "CLOUDFLARE_ACCOUNT_ID"
+  ],
+  "rules": [
+    "Tokens e credenciais permanecem fora do Git.",
+    "Pull requests compilam e executam testes sem credenciais e sem deploy.",
+    "Previews manuais exigem um operador autenticado e confiavel.",
+    "Somente main pode publicar no ambiente de producao.",
+    "O dominio customizado nao deve ser alterado pelo pipeline.",
+    "A superficie publica usa apenas conteudo aprovado na documentacao publica."
+  ]
+}
