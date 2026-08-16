@@ -24,6 +24,12 @@ for (const relative of required) {
 const html = await readFile(path.join(root, "dist/index.html"), "utf8");
 const headers = await readFile(path.join(root, "dist/_headers"), "utf8");
 const config = JSON.parse(await readFile(path.join(root, "wrangler.jsonc"), "utf8"));
+const deploymentConfig = JSON.parse(
+  await readFile(
+    path.resolve(root, "..", "..", "config", "cloudflare", "pages-public.json"),
+    "utf8",
+  ),
+);
 const pipeline = await readFile(path.resolve(root, "..", "..", "azure-pipelines.cloudflare.yml"), "utf8");
 const prPipeline = await readFile(path.resolve(root, "..", "..", "azure-pipelines.pr.yml"), "utf8");
 
@@ -38,8 +44,13 @@ const checks = [
     "CSP restritiva",
   ],
   [headers.includes("X-Content-Type-Options: nosniff"), "nosniff"],
-  [config.name === "all-in-one-web", "projeto Pages"],
+  [!("name" in config), "identificador do projeto fora do Git público"],
   [config.pages_build_output_dir === "./dist", "diretório de saída"],
+  [deploymentConfig.production_branch === "main", "branch de produção declarada"],
+  [
+    deploymentConfig.project_binding === "azure_secret_variables",
+    "identificadores remotos vinculados por variáveis secretas",
+  ],
   [
     /condition:\s*and\(succeeded\(\),\s*ne\(variables\['Build\.Reason'\],\s*'PullRequest'\),\s*eq\(variables\['Build\.SourceBranch'\],\s*'refs\/heads\/main'\)\)/.test(pipeline),
     "deploy restrito a main fora de PullRequest",
@@ -49,10 +60,14 @@ const checks = [
     "deploy sem destino derivado de metadados da PR",
   ],
   [/pr:\s*none/.test(pipeline), "pipeline privilegiado sem gatilho de PR"],
+  [/validate-pages-project\.mjs/.test(pipeline), "estado remoto validado antes do deploy"],
   [
     !/CLOUDFLARE_|wrangler\s+pages\s+deploy/.test(prPipeline),
     "pipeline de PR sem credenciais nem deploy",
   ],
+  [!/^pr\s*:/m.test(prPipeline), "branch policy externa para Azure Repos"],
+  [/npm audit --audit-level=high/.test(prPipeline), "auditoria de dependências na PR"],
+  [/Varredura de segredos/.test(prPipeline), "secret scan na PR"],
 ];
 
 const failed = checks.filter(([ok]) => !ok).map(([, label]) => label);

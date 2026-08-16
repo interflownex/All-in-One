@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
 import { mkdtemp, mkdir, readFile, readdir, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { build } from "./build.mjs";
+import { validatePagesProject } from "./validate-pages-project.mjs";
 
 const docs = [
   "overview.md",
@@ -90,7 +93,69 @@ async function copiesOnlyApprovedRegularFiles() {
   }
 }
 
+function validatesProductionProjectState() {
+  const project = validatePagesProject(
+    {
+      success: true,
+      result: { name: "projeto-pages", production_branch: "main" },
+    },
+    { projectName: "projeto-pages", expectedBranch: "main" },
+  );
+
+  assert.equal(project.production_branch, "main");
+  assert.throws(
+    () =>
+      validatePagesProject(
+        {
+          success: true,
+          result: { name: "projeto-pages", production_branch: "preview" },
+        },
+        { projectName: "projeto-pages", expectedBranch: "main" },
+      ),
+    /branch de produção/i,
+  );
+  assert.throws(
+    () =>
+      validatePagesProject(
+        { success: true, result: null },
+        { projectName: "projeto-pages", expectedBranch: "main" },
+      ),
+    /não encontrado/i,
+  );
+}
+
+async function validatesProductionProjectCli() {
+  const validatorPath = fileURLToPath(
+    new URL("./validate-pages-project.mjs", import.meta.url),
+  );
+  const child = spawn(process.execPath, [validatorPath], {
+    env: {
+      ...process.env,
+      PAGES_PROJECT: "projeto-pages",
+      EXPECTED_PRODUCTION_BRANCH: "main",
+    },
+    stdio: ["pipe", "pipe", "pipe"],
+  });
+  child.stdin.end(
+    JSON.stringify({
+      success: true,
+      result: { name: "projeto-pages", production_branch: "main" },
+    }),
+  );
+
+  let stderr = "";
+  child.stderr.setEncoding("utf8");
+  child.stderr.on("data", (chunk) => {
+    stderr += chunk;
+  });
+  const exitCode = await new Promise((resolve) => child.once("close", resolve));
+
+  assert.equal(exitCode, 0, stderr);
+}
+
 await rejectsPublicSymlink();
 await rejectsAllowlistedDocumentSymlink();
 await copiesOnlyApprovedRegularFiles();
+validatesProductionProjectState();
+await validatesProductionProjectCli();
 console.log("Regressões de segurança do build aprovadas.");

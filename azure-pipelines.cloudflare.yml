@@ -21,7 +21,6 @@ pool:
 
 variables:
   nodeVersion: "22.x"
-  pagesProject: "all-in-one-web"
   appDirectory: "apps/public-web"
 
 steps:
@@ -42,14 +41,19 @@ steps:
     displayName: Compilar e validar site público
 
   - script: |
+      set -Eeuo pipefail
+      curl --fail --silent --show-error \
+        --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+        "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PAGES_PROJECT" \
+        | PAGES_PROJECT="$PAGES_PROJECT" EXPECTED_PRODUCTION_BRANCH=main node scripts/validate-pages-project.mjs
       npx wrangler pages deploy dist \
         --project-name "$PAGES_PROJECT" \
         --branch main \
         --commit-hash "$BUILD_SOURCEVERSION"
     workingDirectory: $(appDirectory)
-    displayName: Publicar produção no Cloudflare Pages
+    displayName: Validar destino e publicar produção no Cloudflare Pages
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
     env:
       CLOUDFLARE_API_TOKEN: $(CLOUDFLARE_API_TOKEN)
       CLOUDFLARE_ACCOUNT_ID: $(CLOUDFLARE_ACCOUNT_ID)
-      PAGES_PROJECT: $(pagesProject)
+      PAGES_PROJECT: $(CLOUDFLARE_PAGES_PROJECT)

@@ -1,4 +1,8 @@
 .env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
 .pytest_tmp/
 __pycache__/
 /.private/

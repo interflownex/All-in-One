@@ -2,11 +2,9 @@
 
 ## Escopo
 
-O site público está em `apps/public-web` e usa o projeto Direct Upload
-`all-in-one-web` da conta `474fc26bf9c6bcf5e1a84b7f63a516d8`.
+O site público está em `apps/public-web` e usa um projeto Cloudflare Pages
+Direct Upload já provisionado.
 
-- domínio Pages: `all-in-one-web-7fa.pages.dev`;
-- domínio customizado: `brasildesconto.com.br`;
 - branch de produção: `main`;
 - validação de pull request: `azure-pipelines.pr.yml`;
 - publicação de produção: `azure-pipelines.cloudflare.yml`;
@@ -25,21 +23,13 @@ npm test
 npm run dev
 ```
 
-## Preview manual
-
-```bash
-cd apps/public-web
-npm run deploy:preview
-```
-
-O script usa a branch `cloudflare-integration`, portanto não substitui o
-deployment de produção.
-
 ## Validação de pull requests
 
 Cadastre `azure-pipelines.pr.yml` como política obrigatória da branch `main`.
-Esse pipeline compila e testa o site sem receber credenciais Cloudflare e sem
-executar deploy. O SHA aprovado pela política deve ser exatamente o SHA da PR.
+No Azure Repos, a validação de PR é acionada pela branch policy, não pelo bloco
+`pr:` do YAML. Configure a política como automática e obrigatória. Esse pipeline
+compila, testa, audita dependências e procura segredos sem receber credenciais
+Cloudflare ou executar deploy.
 
 ## Produção pelo Azure Pipelines
 
@@ -48,6 +38,7 @@ variáveis secretas no Azure DevOps:
 
 - `CLOUDFLARE_API_TOKEN`: token de escopo mínimo para Pages Write;
 - `CLOUDFLARE_ACCOUNT_ID`: Account ID da conta Cloudflare.
+- `CLOUDFLARE_PAGES_PROJECT`: identificador do projeto Pages.
 
 As variáveis devem ser marcadas como secretas e ficar disponíveis somente ao
 pipeline de produção. Nenhuma credencial deve ser entregue à validação de PR ou
@@ -55,7 +46,8 @@ gravada em arquivos, logs, commits ou artefatos.
 
 O pipeline privilegiado não é acionado por pull requests. Apenas um commit já
 integrado em `main` pode publicar no ambiente produtivo do projeto Pages.
-Previews são deployments manuais feitos por um operador autenticado e confiável.
+Antes do upload, o pipeline consulta a API e falha se a branch de produção
+remota não for `main`.
 
 ## Rollback
 
@@ -63,8 +55,5 @@ O Pages mantém deployments anteriores. Em caso de problema, selecione um
 deployment saudável no painel Cloudflare e promova-o para produção antes de
 investigar a nova build. A aplicação não depende de migrações ou storage.
 
-## Tunnel
-
-O tunnel histórico `all-in-one-stream` não faz parte deste deploy. Sua gestão
-exige credencial própria fora do Git e deve permanecer separada da publicação
-estática. SSH e bancos de dados não são expostos por esta integração.
+Identificadores de conta, projeto, domínios e demais detalhes operacionais
+permanecem fora do Git público.

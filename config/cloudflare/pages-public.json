@@ -1,11 +1,8 @@
 {
   "version": 1,
   "provider": "cloudflare_pages",
-  "account_id": "474fc26bf9c6bcf5e1a84b7f63a516d8",
-  "project_name": "all-in-one-web",
   "production_branch": "main",
-  "custom_domain": "brasildesconto.com.br",
-  "pages_domain": "all-in-one-web-7fa.pages.dev",
+  "project_binding": "azure_secret_variables",
   "application": "apps/public-web",
   "build_command": "npm ci && npm run build && npm test",
   "output_directory": "apps/public-web/dist",
@@ -15,7 +12,8 @@
   "preview_mode": "manual_trusted_operator",
   "required_secret_variables": [
     "CLOUDFLARE_API_TOKEN",
-    "CLOUDFLARE_ACCOUNT_ID"
+    "CLOUDFLARE_ACCOUNT_ID",
+    "CLOUDFLARE_PAGES_PROJECT"
   ],
   "rules": [
     "Tokens e credenciais permanecem fora do Git.",

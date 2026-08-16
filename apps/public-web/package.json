@@ -5,9 +5,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node scripts/validate.mjs && node scripts/security.test.mjs",
-    "dev": "npm run build && wrangler pages dev dist",
-    "deploy:preview": "npm run build && wrangler pages deploy dist --project-name all-in-one-web --branch cloudflare-integration",
-    "deploy:production": "npm run build && wrangler pages deploy dist --project-name all-in-one-web --branch main"
+    "dev": "npm run build && wrangler pages dev dist"
   },
   "devDependencies": {
     "wrangler": "4.123.0"

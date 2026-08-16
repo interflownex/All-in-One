@@ -1,21 +1,6 @@
 trigger: none
 
-pr:
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - apps/public-web/**
-      - config/cloudflare/pages-public.json
-      - docs/overview.md
-      - docs/architecture-public.md
-      - docs/technical-operations-public.md
-      - docs/modules.md
-      - docs/roadmap-public.md
-      - docs/privacy-and-security.md
-      - azure-pipelines.pr.yml
-      - azure-pipelines.cloudflare.yml
+# Azure Repos executa este pipeline pela política obrigatória de build de main.
 
 pool:
   vmImage: ubuntu-latest
@@ -40,3 +25,34 @@ steps:
   - script: npm run build && npm test
     workingDirectory: $(appDirectory)
     displayName: Compilar e validar site público sem credenciais
+
+  - script: npm audit --audit-level=high
+    workingDirectory: $(appDirectory)
+    displayName: Auditar dependências
+
+  - script: |
+      set -Eeuo pipefail
+      token_pattern='AIza[0-9A-Za-z_-]{20,}|gh[pousr]_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}'
+      private_key_pattern='-----BEGIN (RSA |EC |OPENSSH )?PRIVATE '"KEY-----"
+      if git grep -I -l -E -e "$token_pattern" -- .; then
+        echo "Assinatura de token encontrada em arquivo rastreado."
+        exit 1
+      fi
+      if git grep -I -l -E -e "$private_key_pattern" -- .; then
+        echo "Material de chave privada encontrado em arquivo rastreado."
+        exit 1
+      fi
+    displayName: Varredura de segredos
+
+  - script: |
+      set -Eeuo pipefail
+      if git ls-files -s | grep -q '^120000 '; then
+        echo "Links simbólicos rastreados não são permitidos na superfície pública."
+        exit 1
+      fi
+      forbidden_path_pattern='(^|/)(node_modules|\.wrangler|dist)(/|$)|(^|/)(PENDENCIES_TRACKER|HISTORY_REWRITE_REPORT|LOCAL_WORKSPACE_LAYOUT_REPORT|PUBLIC_.*REPORT)\.md$'
+      if git ls-files | grep -E "$forbidden_path_pattern"; then
+        echo "Artefato operacional ou gerado encontrado no repositório público."
+        exit 1
+      fi
+    displayName: Validar fronteira pública
