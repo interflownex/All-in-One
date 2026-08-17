@@ -1,0 +1,11 @@
+# ARKHE | AIO — revisão obrigatória por responsabilidade
+# A existência deste arquivo não reduz as regras do ruleset; ele define propriedade explícita dos caminhos.
+
+* @interflownex
+
+/.github/workflows/ @interflownex
+/.github/CODEOWNERS @interflownex
+/SECURITY.md @interflownex
+/.gitignore @interflownex
+/docs/ARKHE_GOVERNANCE.md @interflownex
+/config/ @interflownex
