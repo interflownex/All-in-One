@@ -48,3 +48,59 @@ jobs:
           fi
 
           test "$violations" -eq 0
+
+      - name: Enforce workflow least privilege and immutable actions
+        shell: bash
+        run: |
+          set -euo pipefail
+          violations=0
+
+          if [[ ! -f .github/CODEOWNERS ]]; then
+            echo "::error file=.github/CODEOWNERS::CODEOWNERS é obrigatório para superfícies sensíveis."
+            violations=1
+          fi
+
+          while IFS= read -r workflow; do
+            if grep -nE 'pull_request_target:' "$workflow"; then
+              echo "::error file=$workflow::pull_request_target não é permitido no repositório público."
+              violations=1
+            fi
+
+            if grep -nE 'permissions:[[:space:]]*write-all|^[[:space:]]+[A-Za-z0-9_-]+:[[:space:]]*write([[:space:]]*#.*)?$' "$workflow"; then
+              echo "::error file=$workflow::Workflow público deve operar sem permissões de escrita."
+              violations=1
+            fi
+
+            if grep -nE '\$\{\{[[:space:]]*secrets\.|secrets\.[A-Za-z0-9_]+' "$workflow"; then
+              echo "::error file=$workflow::Workflow público não deve depender de secrets do repositório."
+              violations=1
+            fi
+
+            if grep -nE 'persist-credentials:[[:space:]]*true' "$workflow"; then
+              echo "::error file=$workflow::Checkout não pode persistir credenciais."
+              violations=1
+            fi
+
+            while IFS= read -r uses_line; do
+              uses_ref=$(printf '%s\n' "$uses_line" | sed -E 's/^[[:space:]-]*uses:[[:space:]]*([^[:space:]#]+).*/\1/')
+              case "$uses_ref" in
+                ./*|docker://*)
+                  continue
+                  ;;
+              esac
+
+              if [[ "$uses_ref" != *@* ]]; then
+                echo "::error file=$workflow::Action sem referência imutável: $uses_ref"
+                violations=1
+                continue
+              fi
+
+              ref="${uses_ref##*@}"
+              if [[ ! "$ref" =~ ^[0-9a-fA-F]{40}$ ]]; then
+                echo "::error file=$workflow::Action deve estar fixada por SHA completo: $uses_ref"
+                violations=1
+              fi
+            done < <(grep -E '^[[:space:]-]*uses:[[:space:]]*' "$workflow" || true)
+          done < <(git ls-files '.github/workflows/*.yml' '.github/workflows/*.yaml')
+
+          test "$violations" -eq 0
