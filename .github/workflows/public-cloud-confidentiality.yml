@@ -1,4 +1,4 @@
-name: Public Cloud Confidentiality
+name: Public Confidentiality Boundary
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  no-operational-cloud-material:
+  enforce-public-boundary:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Enforce public/private cloud boundary
+      - name: Reject sensitive paths and secret material
         shell: bash
         run: |
           set -euo pipefail
@@ -27,18 +27,23 @@ jobs:
 
           while IFS= read -r path; do
             case "$path" in
-              config/cloud/*|*/config/cloud/*|.firebaserc|*/.firebaserc|firebase.json|*/firebase.json|google-services.json|*/google-services.json|GoogleService-Info.plist|*/GoogleService-Info.plist|*.tfstate|*.tfstate.backup|*service-account*.json|*service_account*.json|*application_default_credentials*.json|*credentials*.json)
-                echo "::error file=$path::Configuração, estado ou credencial operacional de cloud deve permanecer fora do repositório público."
-                violations=1
+              .env|.env.*|*/.env|*/.env.*|*.pem|*.key|*.p12|*.pfx|*.jks|*.keystore|*credentials*.json|*service-account*.json|*service_account*.json|google-services.json|*/google-services.json|GoogleService-Info.plist|*/GoogleService-Info.plist|*.tfstate|*.tfstate.*|private/*|*/private/*|internal/*|*/internal/*|secrets/*|*/secrets/*|config/cloud/*|*/config/cloud/*|.firebaserc|*/.firebaserc|firebase.json|*/firebase.json)
+                if [[ "$path" != ".env.example" && "$path" != */.env.example ]]; then
+                  echo "::error file=$path::Material sensível, operacional ou privado não pode existir no repositório público."
+                  violations=1
+                fi
                 ;;
             esac
           done < <(git ls-files)
 
-          if git grep -nI -E 'project_(id|number)|projectId|\.iam\.gserviceaccount\.com|projects/[a-z][a-z0-9-]{4,28}[a-z0-9]|"private_key"[[:space:]]*:|"client_email"[[:space:]]*:' -- . \
+          patterns='BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|AIza[0-9A-Za-z_-]{30,}|sk-[A-Za-z0-9_-]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}|"private_key"[[:space:]]*:|"client_secret"[[:space:]]*:|"client_email"[[:space:]]*:|password[[:space:]]*[:=][[:space:]]*["'"''][^"'"'']{8,}["'"'']|token[[:space:]]*[:=][[:space:]]*["'"''][A-Za-z0-9._-]{16,}["'"'']|\.iam\.gserviceaccount\.com|projects/[a-z][a-z0-9-]{4,28}[a-z0-9]'
+
+          if git grep -nI -E "$patterns" -- . \
             ':!.github/workflows/public-cloud-confidentiality.yml' \
-            >/tmp/public-cloud-confidentiality.txt 2>/dev/null; then
-            cat /tmp/public-cloud-confidentiality.txt
-            echo "::error::Identificador, metadado ou material operacional de cloud detectado. Use placeholders no conteúdo público."
+            ':!SECURITY.md' \
+            >/tmp/public-confidentiality.txt 2>/dev/null; then
+            cat /tmp/public-confidentiality.txt
+            echo "::error::Possível segredo, credencial, identificador operacional ou chave detectado. Publique somente placeholders neutros."
             violations=1
           fi
 
