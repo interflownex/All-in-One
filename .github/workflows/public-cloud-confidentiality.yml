@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  enforce-public-boundary:
+  no-operational-cloud-material:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
