@@ -60,9 +60,11 @@ jobs:
             violations=1
           fi
 
+          forbidden_trigger='pull_request''_target:'
+
           while IFS= read -r workflow; do
-            if grep -nE 'pull_request_target:' "$workflow"; then
-              echo "::error file=$workflow::pull_request_target não é permitido no repositório público."
+            if grep -nF "$forbidden_trigger" "$workflow"; then
+              echo "::error file=$workflow::Trigger privilegiado de pull request não é permitido no repositório público."
               violations=1
             fi
 
