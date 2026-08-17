@@ -36,7 +36,7 @@ jobs:
             esac
           done < <(git ls-files)
 
-          patterns='BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|AIza[0-9A-Za-z_-]{30,}|sk-[A-Za-z0-9_-]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}|"private_key"[[:space:]]*:|"client_secret"[[:space:]]*:|"client_email"[[:space:]]*:|password[[:space:]]*[:=][[:space:]]*["'"''][^"'"'']{8,}["'"'']|token[[:space:]]*[:=][[:space:]]*["'"''][A-Za-z0-9._-]{16,}["'"'']|\.iam\.gserviceaccount\.com|projects/[a-z][a-z0-9-]{4,28}[a-z0-9]'
+          patterns='BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|AIza[0-9A-Za-z_-]{30,}|sk-[A-Za-z0-9_-]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}|"private_key"[[:space:]]*:|"client_secret"[[:space:]]*:|"client_email"[[:space:]]*:|password[[:space:]]*[:=][[:space:]]*"[^"]{8,}"|token[[:space:]]*[:=][[:space:]]*"[A-Za-z0-9._-]{16,}"|\.iam\.gserviceaccount\.com|projects/[a-z][a-z0-9-]{4,28}[a-z0-9]'
 
           if git grep -nI -E "$patterns" -- . \
             ':!.github/workflows/public-cloud-confidentiality.yml' \
